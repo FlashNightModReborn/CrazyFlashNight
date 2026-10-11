@@ -797,6 +797,18 @@ namespace CF7Launcher.Bus
                 });
             }
 
+            // AS2 → C# 存档投影静默刷新（G2-3②③④）：读档/落盘/任务完成的 best-effort 重绑，
+            // 不经面板；载荷与 ragchat panel_request 同白名单（savePath/character/progress）。
+            if (commandRouter != null)
+            {
+                router.RegisterSync("rag_bind_refresh", delegate(JObject msg)
+                {
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    commandRouter.HandleRagBindRefresh(callbackPayload ?? msg);
+                    return null;
+                });
+            }
+
             // 存档 shadow 备份
             if (archiveTask != null)
                 router.RegisterAsync("archive", archiveTask.HandleAsync);
@@ -933,6 +945,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "cursor_control", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "book_comic_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "rag_bind_refresh","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);

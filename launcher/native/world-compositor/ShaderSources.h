@@ -1,4 +1,39 @@
 #pragma once
+
+constexpr char CasSourceShader[] = R"hlsl(
+Texture2D image : register(t0);
+cbuffer SourceCas : register(b0) { float2 sourceSize; float peak; float sourceReserved; };
+float3 SourceLoad(int2 p) {
+    float3 c=image.Load(int3(clamp(p,int2(0,0),int2(sourceSize)-1),0)).rgb;
+    return c*c;
+}
+float4 SPS(float4 position : SV_POSITION) : SV_TARGET {
+    int2 p=int2(position.xy);
+    float3 b=SourceLoad(p+int2(0,-1)),d=SourceLoad(p+int2(-1,0));
+    float3 e=SourceLoad(p),f=SourceLoad(p+int2(1,0)),h=SourceLoad(p+int2(0,1));
+    float mn=min(min(min(d.g,e.g),f.g),min(b.g,h.g));
+    float mx=max(max(max(d.g,e.g),f.g),max(b.g,h.g));
+    float weight=sqrt(saturate(min(mn,1-mx)/max(mx,1.0e-6)))*peak;
+    return float4(sqrt(saturate((e+weight*(b+d+f+h))/(1+4*weight))),1);
+}
+)hlsl";
+
+constexpr char FeedbackShader[] = R"hlsl(
+Texture2D currentFrame : register(t0);
+Texture2D historyFrame : register(t1);
+cbuffer FeedbackMix : register(b0) { float historyWeight; float3 padding; };
+struct FeedbackVertex { float4 pos : SV_POSITION; };
+FeedbackVertex PVS(uint id : SV_VertexID) {
+    FeedbackVertex v;
+    float2 uv=float2((id<<1)&2,id&2);
+    v.pos=float4(uv*float2(2,-2)+float2(-1,1),0,1);
+    return v;
+}
+float4 PPS(FeedbackVertex v) : SV_TARGET {
+    int3 p=int3(int2(v.pos.xy),0);
+    return float4(lerp(currentFrame.Load(p).rgb,historyFrame.Load(p).rgb,historyWeight),1);
+}
+)hlsl";
 // Physical output pixels; HUD is already premultiplied and never receives world grading.
 constexpr char HudRasterShader[] = R"hlsl(
 Texture2D hudPixels : register(t0);
@@ -165,7 +200,10 @@ Texture3D lutTexture : register(t1);
 SamplerState pointSampler : register(s0);
 SamplerState lutSampler : register(s1);
 cbuffer Settings : register(b0) { float4 rowR; float4 rowG; float4 rowB; float4 offset; };
-cbuffer Sampling : register(b1) { float2 texel; float sharpness; float lutMode; };
+cbuffer Sampling : register(b1) {
+    float2 texel; float sharpness; float lutMode;
+    float2 outputTexel; float casEnabled; float casSharpness;
+};
 // A=(authored RGB,alpha); B=(preset,time,radial,pulse);
 // C=(pulse speed,min,max,camera scale); D=(camera x,y,unused,unused).
 cbuffer Atmosphere : register(b2) { float4 aA; float4 aB; float4 aC; float4 aD; };
@@ -173,6 +211,27 @@ cbuffer Atmosphere : register(b2) { float4 aA; float4 aB; float4 aC; float4 aD; 
 // focus/falloff/mix. Names select a fixed shader family, never injected code.
 cbuffer AtmosphereStyle : register(b3) { float4 lA; float4 lB; float4 lC; float4 lD; };
 struct Vertex { float4 pos : SV_POSITION; float2 uv : TEXCOORD0; };
+// Float32, green-weight, five-tap sharpening-only CAS, adapted from AMD's
+// ffx_cas.h at 9fabcc9a2c45f958aff55ddfda337e74ef894b7f (MIT).
+// Bilinear samples; adaptive L CAS can use a source-pixel neighborhood.
+// This is not AMD's fused upscaler; its fused-upscale ratio limit is not used.
+// Gamma-2 decode/encode is AMD's documented low-cost linear-light approximation.
+float3 CasLoad(float2 uv) {
+    float3 c=image.SampleLevel(pointSampler,uv,0).rgb;
+    return c*c;
+}
+float3 CasSharpen(float2 uv) {
+    float3 b=CasLoad(uv-float2(0,outputTexel.y));
+    float3 d=CasLoad(uv-float2(outputTexel.x,0));
+    float3 e=CasLoad(uv);
+    float3 f=CasLoad(uv+float2(outputTexel.x,0));
+    float3 h=CasLoad(uv+float2(0,outputTexel.y));
+    float mn=min(min(min(d.g,e.g),f.g),min(b.g,h.g));
+    float mx=max(max(max(d.g,e.g),f.g),max(b.g,h.g));
+    float amp=sqrt(saturate(min(mn,1-mx)/max(mx,1.0e-6)));
+    float w=amp*(-1.0/(8.0-3.0*casSharpness));
+    return sqrt(saturate((e+w*(b+d+f+h))/(1.0+4.0*w)));
+}
 Vertex VS(uint id : SV_VertexID) {
     Vertex v;
     v.uv = float2((id << 1) & 2, id & 2);
@@ -181,7 +240,8 @@ Vertex VS(uint id : SV_VertexID) {
 }
 float4 PS(Vertex v) : SV_TARGET {
     float4 c = float4(image.Sample(pointSampler, v.uv).rgb, 1);
-    if (sharpness > 0) {
+    if (casEnabled > .5) c.rgb=CasSharpen(v.uv);
+    else if (sharpness > 0) {
         float3 n = image.Sample(pointSampler, v.uv - float2(0,texel.y)).rgb;
         float3 s = image.Sample(pointSampler, v.uv + float2(0,texel.y)).rgb;
         float3 e = image.Sample(pointSampler, v.uv + float2(texel.x,0)).rgb;

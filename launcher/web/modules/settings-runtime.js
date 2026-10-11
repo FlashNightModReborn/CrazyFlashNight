@@ -245,6 +245,10 @@
         }
         var settings = copy(response.settings);
         var hostPrefs = copy(response.hostPrefs);
+        hostPrefs.imageEnhancementAvailable = typeof hostPrefs.casEnabled === 'boolean'
+            && typeof hostPrefs.motionFeedbackEnabled === 'boolean';
+        hostPrefs.casEnabled = typeof hostPrefs.casEnabled === 'boolean' ? hostPrefs.casEnabled : true;
+        hostPrefs.motionFeedbackEnabled = hostPrefs.motionFeedbackEnabled === true;
         hostPrefs.performance = normalizePerformanceState(response.hostPrefs.performance);
         return {revision:response.revision, settings:settings, keys:keys,
             defaultKeys:copy(response.defaultKeys), allowedKeyCodes:copy(response.allowedKeyCodes),

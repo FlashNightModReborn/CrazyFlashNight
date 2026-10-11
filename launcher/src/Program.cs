@@ -2102,6 +2102,8 @@ class Program
         var renderSettings=RenderScheduleSettings.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","render-schedule.json"));
         webOverlay.WorldDragInputRouter=worldCompositor.RouteCapturedPointer;
         worldCompositor.ReadFlashSourceSize=() => windowManager.ActualFlashSourceSize;
+        worldCompositor.ConfigurePostprocessing(workerPolicy==null && userPrefs.CasEnabled,
+            workerPolicy==null && userPrefs.MotionFeedbackEnabled);
         worldCompositor.PerformanceUnavailable=perfEngine.NotifyRenderUnavailable;
         var initialRender=RenderSchedule.Stages(userPrefs.Performance,windowManager.AvailableFlashSourceHeight)[0];
         worldCompositor.ApplyRenderSelection(initialRender,workerPolicy==null ? renderSettings.Sharpness : 0);
@@ -2354,6 +2356,9 @@ class Program
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
+            if(key=="casEnabled" || key=="motionFeedbackEnabled")
+                dispatchToUi(() => worldCompositor.ConfigurePostprocessing(
+                    workerPolicy==null && userPrefs.CasEnabled,workerPolicy==null && userPrefs.MotionFeedbackEnabled));
             if (key == "performance" || key == "performanceUndo")
                 perfEngine.ConfigurePerformancePolicy(userPrefs.Performance);
             if (key == "tutorialsAutoOpen" && nativeGuidanceTask != null)

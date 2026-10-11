@@ -1,5 +1,6 @@
 ﻿import org.flashNight.gesh.xml.LoadXml.BaseXMLLoader;
 import org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
+import org.flashNight.gesh.json.LoadJson.TaskOverlayLoader;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.aven.Promise.ListLoader;
 
@@ -11,6 +12,9 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
     // 增量热重载缓存：list.xml 的条目顺序与各条目已解析的子数据。
     private var entries:Array = null;
     private var sources:Object = null;
+    // 基础合并结果（不含存档覆盖层）。覆盖层单独判断、不进 entries；
+    // 覆盖层变化或回退时以它为底重应用，不重复解析共享文件。
+    private var baseData:Object = null;
 
     /**
      * 获取单例实例。
@@ -71,8 +75,10 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
                 initialValue: {}
             }).then(function(result:Object):Void {
                 self.entries = entries; self.sources = sources;
-                self.combinedData = result;
-                if (onLoadHandler != null) onLoadHandler(self.combinedData);
+                self.baseData = result;
+                self.applyOverlay(function():Void {
+                    if (onLoadHandler != null) onLoadHandler(self.combinedData);
+                });
             }).onCatch(function(reason:Object):Void {
                 trace("[TaskTextLoader] " + reason);
                 if (onErrorHandler != null) onErrorHandler();
@@ -104,6 +110,8 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
     /**
      * 只重读宿主判定变化的任务文本文件，其余条目沿用缓存后按 list.xml 原顺序重合并。
      * 缓存不全时退回整目录 reload，不猜半份数据。
+     * 覆盖层（data/rag/agent_saves/...）单独判断、不走 ownedEntries：
+     * 仅覆盖层变化时基础合并结果原样保留，只重新应用一次覆盖层。
      * @param names 宿主给出的变化文件相对路径清单；null/undefined 表示整目录重载。
      */
     public function reloadFiles(names:Array, onLoadHandler:Function, onErrorHandler:Function):Void {
@@ -111,12 +119,24 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
             this.reload(onLoadHandler, onErrorHandler);
             return;
         }
+        var self:TaskTextLoader = this;
         var owned:Array = ListLoader.ownedEntries(names, path, this.entries);
+        var overlayTouched:Boolean = false;
+        var i:Number = 0;
+        while (i < names.length) {
+            if (TaskOverlayLoader.isOverlayPath(String(names[i]))) { overlayTouched = true; break; }
+            i++;
+        }
         if (owned.length == 0) {
-            if (onLoadHandler != null) onLoadHandler(this.combinedData);
+            if (!overlayTouched) {
+                if (onLoadHandler != null) onLoadHandler(this.combinedData);
+                return;
+            }
+            this.applyOverlay(function():Void {
+                if (onLoadHandler != null) onLoadHandler(self.combinedData);
+            });
             return;
         }
-        var self:TaskTextLoader = this;
         ListLoader.reloadChanged({
             entries:      this.entries,
             sources:      this.sources,
@@ -126,12 +146,42 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
             mergeFn:      ListLoader.dictMerge(),
             initialValue: {}
         }).then(function(result:Object):Void {
-            self.combinedData = result;
-            if (onLoadHandler != null) onLoadHandler(self.combinedData);
+            self.baseData = result;
+            self.applyOverlay(function():Void {
+                if (onLoadHandler != null) onLoadHandler(self.combinedData);
+            });
         }).onCatch(function(reason:Object):Void {
             trace("[TaskTextLoader] " + reason);
             if (onErrorHandler != null) onErrorHandler();
         });
+    }
+
+    /**
+     * 在基础合并结果之上应用当前存档的覆盖层（G2-2）。文件缺失＝该存档无增量，
+     * 直接用基础数据；解析失败＝TaskOverlayLoader 已报错并回 null，同样回退基础数据。
+     */
+    private function applyOverlay(onDone:Function):Void {
+        var self:TaskTextLoader = this;
+        var base:Object = this.baseData;
+        var overlayPath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.TEXT_FILE);
+        if (overlayPath == null) {
+            this.combinedData = base;
+            if (onDone != null) onDone();
+            return;
+        }
+        TaskOverlayLoader.load(overlayPath, function(overlay:Object):Void {
+            self.combinedData = (overlay == null) ? base : self.mergeOverlayText(base, overlay);
+            if (onDone != null) onDone();
+        });
+    }
+
+    /** 文本覆盖层按 key 覆盖基础 dict；覆盖层键总是赢。 */
+    private function mergeOverlayText(baseObj:Object, overlay:Object):Object {
+        var result:Object = {};
+        var key:String;
+        for (key in baseObj) result[key] = baseObj[key];
+        for (key in overlay) result[key] = overlay[key];
+        return result;
     }
 
     /**

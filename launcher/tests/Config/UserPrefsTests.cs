@@ -13,6 +13,32 @@ namespace CF7Launcher.Tests.Config
         private string PreferenceFile => Path.Combine(PreferenceDirectory, "launcher_user_prefs.json");
         private UserPrefs Reload() => new UserPrefs(Path.Combine(_root,"project"), PreferenceDirectory);
 
+        [Theory]
+        [InlineData(false,false)]
+        [InlineData(false,true)]
+        [InlineData(true,false)]
+        [InlineData(true,true)]
+        public void ImageOptionsDefaultAndRoundTripIndependently(bool cas,bool feedback)
+        {
+            var prefs=Reload();Assert.True(prefs.CasEnabled);Assert.False(prefs.MotionFeedbackEnabled);
+            prefs.CasEnabled=cas;prefs.MotionFeedbackEnabled=feedback;
+            prefs.Performance=new PerformancePolicy("quality","fixed",720);
+            prefs.IntroEnabled=true;Assert.True(prefs.Save());
+            var next=Reload();Assert.Equal(cas,next.CasEnabled);Assert.Equal(feedback,next.MotionFeedbackEnabled);
+            Assert.Equal(prefs.Performance,next.Performance);Assert.True(next.IntroEnabled);
+            next.Performance=PerformancePolicy.Default;Assert.True(next.Save());
+            Assert.Equal(cas,Reload().CasEnabled);Assert.Equal(feedback,Reload().MotionFeedbackEnabled);
+        }
+        [Theory]
+        [InlineData("{}")]
+        [InlineData("{\"casEnabled\":\"false\",\"motionFeedbackEnabled\":1}")]
+        [InlineData("{\"casEnabled\":null,\"motionFeedbackEnabled\":null}")]
+        public void OldAndMalformedImageOptionsUseDefaults(string json)
+        {
+            Directory.CreateDirectory(PreferenceDirectory);File.WriteAllText(PreferenceFile,json);
+            var prefs=Reload();Assert.True(prefs.CasEnabled);Assert.False(prefs.MotionFeedbackEnabled);
+        }
+
         [Fact]
         public void TutorialOptOutSurvivesRestartAndPreservesOtherPreferences()
         {

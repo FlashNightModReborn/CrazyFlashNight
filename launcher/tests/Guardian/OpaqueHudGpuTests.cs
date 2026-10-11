@@ -27,9 +27,11 @@ namespace CF7Launcher.Tests.Guardian
         {
             protected override bool ShowWithoutActivation => true;
             internal Size? PaintedViewport;
+            internal Action<Graphics> FixturePaint;
             protected override void OnPaint(PaintEventArgs e)
             {
                 base.OnPaint(e);
+                if(FixturePaint!=null) {FixturePaint(e.Graphics);return;}
                 if(PaintedViewport is not { } size)return;
                 e.Graphics.Clear(Color.Black);
                 using var background=new SolidBrush(BackColor);

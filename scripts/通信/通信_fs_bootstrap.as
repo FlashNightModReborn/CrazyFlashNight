@@ -33,6 +33,11 @@ _root._bootstrap.startHandshake = function():Void {
     org.flashNight.neur.Server.BootstrapHandshake.start(_root._bootstrapAttemptId,
         function(resp:Object):Void {
             _root.savePath = resp.savePath;
+            // G2-3②：握手确定了本会话的存档槽位——向终端重推绑定并触发任务目录按槽位对齐。
+            if (_root.agent != undefined && _root.agent != null
+                    && typeof _root.agent.槽位已切换 == "function") {
+                _root.agent.槽位已切换();
+            }
             // 覆盖用 launcher 权威 attemptId (guid); Flash 本地 id 只是握手前的占位
             if (resp.attemptId != undefined && resp.attemptId != null) {
                 _root._bootstrapAttemptId = String(resp.attemptId);

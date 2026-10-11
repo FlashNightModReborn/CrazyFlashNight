@@ -106,6 +106,8 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 <a id="首版动态分辨率调度"></a>
 ## 动态分辨率与性能方案
 
+2026-10-11 画面增强：普通游戏 CAS 默认开启，按实际 H/M/L 与捕获/输出倍率适配；短时历史反馈默认关闭。“本机与 Web”提供两个独立、可保存的开关。配对正式运行库已推广，普通入口启动与窗口关闭复验通过；具体参数、合成顺序、Worker 例外、未通过的无人值守退出检查及画质验收边界见[CAS 与短时反馈](../../../docs/世界画面-CAS与短时反馈候选-2026-10-11.md)。实战观感和弱机收益仍待推广测试。
+
 2026-10-09 开发版性能方案：C# 是唯一策略与本机配置权威，AS2 只测量 Flash 实际帧时间、执行完整表现目标并回报；断连保持末次有效状态。AS2 自主后备、前馈 hold、旧两字段 P 指令及 Host 旧两档控制器已退役。旧存档“性能等级上限”仅保留 schema 兼容，不再约束调度，Web 不再展示该控制。维护者反馈“可行”并授权正式发布后，本批已完成 RuntimeBundleV2 promotion 与普通入口启动/关闭检查，测试员可从普通正式入口回归；身份与证明见[本轮发布记录](../../../docs/runtime-build-reproducibility.md#2026-10-09-本机性能方案与统一画面调度正式发布)。具体回归范围见[本机性能方案验收记录](../../../docs/设置-Web-Panel-人工体验验收-2026-08-21.md#2026-10-09-本机性能方案开发批)，不将反馈或入口检查扩大为全部战斗、弱机收益或跨屏 DPI 证明。
 
 `PerformancePolicy` 持有 `通用/性能/画质`、`自动/固定` 与可选绝对绘制高度上限，存于 Host `UserPrefs`，只保留当前与上一组；相同方案重应用不覆盖撤销点，撤销后消耗上一组。固定模式采用所选预设最高允许的完整目标；它不固定一个随 AS2 preset 改义的数组序号。内部档位唯一来源为 `RenderSchedule.Stages`，首版参数为起点，不声称全硬件最优。配置界面先不开放档位编辑、任意策略或学习系统。
@@ -116,7 +118,7 @@ Remove-Item Env:CF7_TEST_SHARED_WORLD_CANDIDATE
 
 唯一换档器保留阈值、持续确认、严重卡顿到允许底档、慢恢复及固定失败冷却，不再另外运行连续 softU 反馈。默认阈值仍来自 `launcher/data/world-lighting/render-schedule.json`；已去掉它的 benchmark `fixedStage` 开关。暂停、转场、失焦、过期样本及捕获未就绪时不积累压力。实际目标完整生效后才启动静置期和升档失败观察期，失败降回后再起冷却，交接等待不消耗这段保护。
 
-P wire 保留五字段并要求显式 quality、正整数 command 和当前 scene；scene 隔离连接与转场。旧回调由连接身份屏障拒绝，同 command 不得改载荷。AS2 执行成功才回显 command；Host 随后等待同高度画质变化也适用的重绘/新捕获及原生预算提交屏障，最后确认档位。尺寸失败进入现有呈现错误路径，不能只改 HUD 目标值。GPU 锐化仍复用现有有界参数，不新增算法平台。
+P wire 保留五字段并要求显式 quality、正整数 command 和当前 scene；scene 隔离连接与转场。旧回调由连接身份屏障拒绝，同 command 不得改载荷。AS2 执行成功才回显 command；Host 随后等待同高度画质变化也适用的重绘/新捕获及原生预算提交屏障，最后确认档位。尺寸失败进入现有呈现错误路径，不能只改 HUD 目标值。CAS 候选替换普通游戏的传统锐化分支，两项画面偏好由 Host 独立保存，AS2 的画质和玩法权威保持原合同。
 
 验证入口：`scripts/run-render-schedule-tests.ps1`、Host `RenderScheduleTests` / `RenderApplicationTests` / `PerformancePolicyTests` / `NativeVisualBudgetTests` / `WorldCompositorTests`，以及设置面板既有完整门。固定开发入口沿用根 `本地开发启动.cmd`。人验合并为三项：设置保存/撤销和重启读回；自动/固定下实际尺寸与画质变化；全屏、窗口缩放、DPI 与连续鼠标操作期间的清晰度和交接观感。下面保留首版历史实验，旧倍率和固定档编号不再代表当前设置入口。
 ### 2026-09-21 首版斗兽粗对照

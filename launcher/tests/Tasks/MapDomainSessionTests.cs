@@ -84,6 +84,56 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(content.DefinitionDigest, domain.Content.DefinitionDigest);
         }
         [Fact]
+        public void TaskSyncReadsAgentSaveOverlayScopedBySavePath()
+        {
+            using var domain = new MapDomainTask(content, root); var hello = Hello(domain);
+            string overlayDir = Path.Combine(root, "data", "rag", "agent_saves", "slotA");
+            Directory.CreateDirectory(overlayDir);
+            File.WriteAllText(Path.Combine(overlayDir, "agent_tasks.json"),
+                "{tasks:[{id:200001,title:'$AGENT_T1',chain:'委托#1',get_npc:'甲',get_npc_hotspot:'home',finish_npc:'甲',finish_npc_hotspot:'home'}]}");
+            File.WriteAllText(Path.Combine(overlayDir, "agent_text.json"), "{\"$AGENT_T1\":\"终端委托\"}");
+            var sync = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotA'}"), 1, () => true);
+            Assert.True(sync.Value<bool>("success"));
+            Assert.True(sync["result"].Value<bool>("changed"));
+            Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
+                ((JArray)sync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+            Assert.Contains("200001", ((JArray)sync["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
+            // 覆盖层与共享源都没变：不急切成变化清单。
+            var idle = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotA'}"), 1, () => true);
+            Assert.True(idle.Value<bool>("success"));
+            Assert.False(idle["result"].Value<bool>("changed"));
+            // 只改覆盖层文本：变化清单只列该文件。
+            File.WriteAllText(Path.Combine(overlayDir, "agent_text.json"), "{\"$AGENT_T1\":\"终端委托·改\"}");
+            var textSync = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotA'}"), 1, () => true);
+            Assert.True(textSync["result"].Value<bool>("changed"));
+            Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_text.json" },
+                ((JArray)textSync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+            // 换到没有覆盖层的槽：上一槽的增量退出内容，仍按变化清单收敛。
+            var switched = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotB'}"), 1, () => true);
+            Assert.True(switched["result"].Value<bool>("changed"));
+            Assert.DoesNotContain("200001", ((JArray)switched["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
+            Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
+                ((JArray)switched["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+        }
+        [Fact]
+        public void TaskSyncTreatsNonSlotSavePathAsNoOverlayAndRejectsNonString()
+        {
+            using var domain = new MapDomainTask(content, root); var hello = Hello(domain);
+            string overlayDir = Path.Combine(root, "data", "rag", "agent_saves", "slotA");
+            Directory.CreateDirectory(overlayDir);
+            File.WriteAllText(Path.Combine(overlayDir, "agent_tasks.json"), "{tasks:[{id:200001,title:'x',chain:'委托#1'}]}");
+            // 非槽位键形态不派生覆盖层路径（写盘与绑定两侧只接受同一形态），热更新照常收敛。
+            var stray = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'../slotA'}"), 1, () => true);
+            Assert.True(stray.Value<bool>("success"));
+            Assert.False(stray["result"].Value<bool>("changed"));
+            // 缺失 savePath＝未绑定/无覆盖层。
+            var absent = domain.Process(JObject.Parse("{version:2,op:'task_sync'}"), 1, () => true);
+            Assert.True(absent.Value<bool>("success"));
+            Assert.False(absent["result"].Value<bool>("changed"));
+            // 类型错误的载荷按协议错误拒绝。
+            Assert.False(domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:5}"), 1, () => true).Value<bool>("success"));
+        }
+        [Fact]
         public void RevisionRejectsOldOrReusedDifferentFactsAndReadyIsPartOfDigest()
         {
             using var domain = new MapDomainTask(content); var hello = Hello(domain); var request = Request(hello, 2, 3);

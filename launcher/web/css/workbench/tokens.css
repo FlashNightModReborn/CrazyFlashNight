@@ -1231,4 +1231,5 @@
     --wb-tablet-content-transition: opacity .14s ease-out;
     --wb-tablet-content-enter: tablet-in .3s ease-out both;
     --wb-tablet-row-transition: background 0.1s ease;
+    --wb-tablet-drone-wiggle: tablet-drone-wiggle 1.7s ease-in-out infinite alternate;
 }

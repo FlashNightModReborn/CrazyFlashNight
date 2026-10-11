@@ -286,6 +286,14 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   await page.goto(baseUrl, {waitUntil:'load'});
   await page.waitForSelector('.settings-panel .settings-rescue-strip');
   await page.waitForFunction(() => document.querySelector('.settings-status[data-state="ready"]'));
+  // The data-ready response may precede the terminal shell's entrance animation.
+  // Measure its settled geometry while keeping the existing size assertions exact.
+  await page.evaluate(async () => {
+    const panel = document.querySelector('.settings-panel');
+    const finite = panel.getAnimations().filter(animation =>
+      Number.isFinite(animation.effect.getTiming().iterations));
+    await Promise.all(finite.map(animation => animation.finished.catch(() => {})));
+  });
 
   const layout = await page.evaluate(() => {
     function rect(selector) {
@@ -542,6 +550,20 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   const performanceChecked = await runPerformanceControls(page, viewport, screenshotDir);
   await page.click('.settings-tab[data-tab="local"]');
   const tutorialToggle = page.locator('[data-host-key="tutorialsAutoOpen"]');
+  const casToggle = page.locator('[data-host-key="casEnabled"]');
+  const feedbackToggle = page.locator('[data-host-key="motionFeedbackEnabled"]');
+  assert.strictEqual(await casToggle.isChecked(), true);
+  assert.strictEqual(await feedbackToggle.isChecked(), false);
+  await casToggle.click();
+  await page.waitForFunction(() => window.__settingsHarness.model.hostPrefs.casEnabled === false);
+  assert.strictEqual(await feedbackToggle.isChecked(), false);
+  await feedbackToggle.click();
+  await page.waitForFunction(() => window.__settingsHarness.model.hostPrefs.motionFeedbackEnabled === true);
+  assert.strictEqual(await casToggle.isChecked(), false);
+  await page.click('.settings-tab[data-tab="game"]');
+  await page.click('.settings-tab[data-tab="local"]');
+  assert.strictEqual(await casToggle.isChecked(), false);
+  assert.strictEqual(await feedbackToggle.isChecked(), true);
   assert.strictEqual(await tutorialToggle.isChecked(), true);
   const beforeTutorial = await page.evaluate(() => window.__settingsHarness.sent.length);
   await tutorialToggle.click();

@@ -31,8 +31,14 @@ class org.flashNight.arki.ui.PanelRequestEnvelope {
         for (var i:Number = 0; i < fields.length; i++) {
             if (i > 0) result += ",";
             var field:Object = fields[i];
-            result += '"' + escapeString(String(field.name)) + '":"'
-                + escapeString(String(field.value)) + '"';
+            // raw=true：value 是已由 stringifySafe 标准转义好的 JSON 文本（对象/数组投影），
+            // 原样内联，不再做二次转义；仅字符串形状的 initData 字段维持既有转义路径。
+            if (field.raw == true) {
+                result += '"' + escapeString(String(field.name)) + '":' + String(field.value);
+            } else {
+                result += '"' + escapeString(String(field.name)) + '":"'
+                    + escapeString(String(field.value)) + '"';
+            }
         }
         return result;
     }

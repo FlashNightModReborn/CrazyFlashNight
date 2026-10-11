@@ -7,7 +7,9 @@
     "source": "agent_console",
     "payload": "initData",
     "fields": [
-      "savePath"
+      "savePath",
+      "character",
+      "progress"
     ],
     "acknowledgement": "none; fire-and-forget (Host returns null to AS2; failures arrive as gameCommand ragChatUnavailable)",
     "bound": false
@@ -22,6 +24,27 @@
       "savePath"
     ],
     "frontendOrigin": "http://127.0.0.1:7077"
+  },
+  "binding": {
+    "endpoint": "POST http://127.0.0.1:7077/api/integration/bind",
+    "payload": "{slot_key, character?: {name: string, ...}, progress?: {tasks_finished: number[], task_chains_progress: object}}",
+    "semantics": "idempotent; same slot_key = projection refresh; absent section clears it (replace, not merge) — refresh senders must carry every projection section they know",
+    "transaction": true,
+    "writeState": "exe memory only (never the game save)",
+    "businessDecisionOwner": "Host (exe memory state follows Host lifecycle)",
+    "unbind": "POST /api/integration/unbind on client disconnect (best-effort)"
+  },
+  "projectionRefresh": {
+    "task": "rag_bind_refresh",
+    "transport": "json_sync, AS2->C#, httpCallable=false, fire-and-forget",
+    "payload": "{savePath, character?, progress?} — same whitelist as open initData",
+    "points": [
+      "boot handshake savePath commit (bind refresh only; boot loaders read the slot overlay directly)",
+      "SaveManager.replacePlayerContext slot switch (bind refresh + _root.重新加载任务数据)",
+      "SaveManager flush ok (local SharedObject commit point)",
+      "_root.提交任务完成状态 (real task completions; UpdateTaskProgress without id does not fire it)"
+    ],
+    "semantics": "best-effort and idempotent; single POST, never launches the exe, exe offline silently skipped, failures log-only and never toast back to AS2"
   },
   "webCommands": {},
   "hostClose": {

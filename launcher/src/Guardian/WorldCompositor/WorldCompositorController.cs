@@ -140,6 +140,20 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal Func<Size> ReadFlashSourceSize;
         private float _targetSharpness;
         private float _appliedSharpness=float.NaN;
+        private bool _casEnabled=true,_motionFeedbackEnabled;
+        private string _imageQuality="MEDIUM";
+        private (bool Cas,bool Feedback,string Quality,int Stage)? _appliedImageOptions;
+        internal void ConfigurePostprocessing(bool cas,bool feedback) {
+            _casEnabled=cas;_motionFeedbackEnabled=feedback;
+        }
+        private void ApplyImageOptions() {
+            var options=(Cas:_casEnabled,Feedback:_motionFeedbackEnabled,Quality:_imageQuality,Stage:WorldPostprocessPolicy.CasStage(_imageQuality));
+            if(_native==null || _appliedImageOptions==options)return;
+            _native.Postprocess(options.Cas,WorldPostprocessPolicy.CasStrength(options.Quality),options.Feedback,options.Stage);
+            _appliedImageOptions=options;
+            LogManager.Log("event=world_postprocess_configured cas="+_casEnabled
+                +" feedback="+_motionFeedbackEnabled+" quality="+_imageQuality+" casStage="+options.Stage);
+        }
         private bool _viewportHeld;
         private double _paintFenceMs;
         // A0 观测：「曾经 ready」与「当前推进」分离。_everReady 闩锁首次有效帧；
@@ -158,7 +172,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _targetHeight=selection.Height;
             _effectLevel=selection.EffectLevel;
             _renderCompletion=completed==null ? null : new RenderPresentationRequest(selection,completed);
-            _targetSharpness=selection.Quality=="LOW" ? sharpness : 0;
+            _targetSharpness=0; // Production uses CAS; legacy diagnostic setter stays available.
+            _imageQuality=selection.Quality;
             _schedulingAllowed=false;
         }
         private bool RecordRenderPaint(RenderPresentationRequest request,double painted)
@@ -392,6 +407,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (_disposed || !_lighting.Adopt(frame,NowMs())) return;
             if (!frame.Ready || frame.Scene!=previousScene)
                 _surface?.CancelPointer();
+            if(frame.Scene!=previousScene)_native?.ResetFeedback();
             _frame=frame;
             QueueSceneLights(frame);
             if (!frame.Ready || frame.Scene!=previousScene) InvalidateWeather();
@@ -457,7 +473,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     _compositionScene=CompositionSceneHost.Create(_surface.Handle,module);
                     _compositionSceneCommitted=false;
                     IntPtr worldVisual=_compositionScene.AcquireVisual(0);
-                    try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); }
+                    try { _native=new NativeCompositorSession(module,_owner.Handle,(uint)Environment.ProcessId,_surface.Handle,0,_borderless,worldVisual); _appliedImageOptions=null;ApplyImageOptions(); }
                     finally { Marshal.Release(worldVisual); }
                     StartHudCostProfile();
                     _damageRasterScene=_opaqueHudEnabled ? new OpaqueHudRasterScene(_native,0) : _compositionScene;
@@ -528,6 +544,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     bool budgetBeforePaint=resizeRequest!=null && _frame?.Ready==true
                         && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene;
                     if(budgetBeforePaint) {
+                        ApplyImageOptions();
                         _native.Sharpness(_targetSharpness); _appliedSharpness=_targetSharpness;
                         ApplyWeatherCamera(true); ApplyWeather(true);
                     }
@@ -568,6 +585,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // Observe healthy FPS during a gesture; only the actual resize waits
                 // for release. Frequent clicks must not reset the recovery timer.
                 _schedulingAllowed=!_inputClosed && !_surface.InputRenewing && ready && _frame?.Ready==true && _targetHeight==_appliedHeight && _renderCompletion==null;
+                if (ready)ApplyImageOptions();
                 if (ready && _appliedSharpness!=_targetSharpness) { _native.Sharpness(_targetSharpness); _appliedSharpness=_targetSharpness; }
                 // Read() reports a captured frame after its Present submission. This is a
                 // timestamp freshness fence, not proof of the pixels' semantic scene identity.
@@ -685,9 +703,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
                             freshAgeP95Ms=sample.FreshAgeP95Ms,physicalScanoutVerified=false,
                             rasterUploads=DamagePresentation.Uploads,rasterUploadedBytes=DamagePresentation.UploadedBytes });
                     }
+                    var postprocess=_native.ReadPostprocess();var casStage=_native.ReadCasStage();
                     LogManager.Log(string.Format(CultureInfo.InvariantCulture,
-                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} sourceHeight={10} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17}",
-                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedHeight,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message));
+                        "event=world_compositor_frame received={0} presented={1} size={2}x{3} ageMs={4:F1} submitMs={5:F3} presentMs={6:F3} cpuReadbacks={7} adapter={8} light={9:F3} sourceHeight={10} output={11}x{12} everReady={13} advancing={14} nativeState={15} captureGeneration={16} nativeStage={17} casApplied={18} casStage={19} casSharpness={20:F3} casScale={21:F3}",
+                        stats.Received,stats.Presented,stats.Width,stats.Height,stats.LastFrameQpcMs==0 ? -1 : NowMs()-stats.LastFrameQpcMs,stats.SubmitMs,stats.PresentMs,stats.CpuReadbacks,stats.Adapter,_lighting.LastReadyLight,_appliedHeight,_surface.ClientSize.Width,_surface.ClientSize.Height,_everReady,_frameAdvancing,stats.State,_native.CaptureGeneration,stats.Message,
+                        postprocess.CasEnabled,casStage.AppliedStage,postprocess.AppliedSharpness,postprocess.InputScale));
                 }
             } catch (Exception error) {
                 EnterRenderFault("tick", error);

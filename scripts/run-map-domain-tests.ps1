@@ -15,12 +15,12 @@ $mapFocusedRun = @{
         'scripts/类定义/org/flashNight/arki/task/TaskUtil.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^MapDomainBridgeTest Tests Passed: 75\r?$'
+        '(?m)^MapDomainBridgeTest Tests Passed: 77\r?$'
         '(?m)^MapDomainBridgeTest Tests Failed: 0\r?$'
         '(?m)^MapSceneObservationTest Tests Passed: [1-9][0-9]*\r?$'
         '(?m)^MapSceneObservationTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'MapDomainBridgeTest 75/75 plus normalized scene observation, freshness and A/B'
+    SuccessSummary = 'MapDomainBridgeTest 77/77 plus normalized scene observation, freshness and A/B'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }
