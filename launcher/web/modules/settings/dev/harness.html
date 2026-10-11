@@ -76,7 +76,7 @@
       jukeboxTrueRandom:false,jukeboxPlayMode:'albumLoop'
     },
     keys:ids.map(function(id,index){return{id:id,label:index===0?'undefined':id,keyCode:codes[index],keyName:keyNames[codes[index]]||String(codes[index])}}),
-    hostPrefs:{introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24,
+    hostPrefs:{casEnabled:true,motionFeedbackEnabled:false,introEnabled:true,sfxEnabled:true,ambientEnabled:true,tutorialsAutoOpen:true,uiFontScale:1,mapDisplayPreference:'auto',hitNumberMode:'balanced',hitNumberWorldRowLimit:24,
       performance:{v:1,current:{preset:'balanced',mode:'auto',maxRenderHeight:0},previous:null}}
   };
   function clone(value){return JSON.parse(JSON.stringify(value))}

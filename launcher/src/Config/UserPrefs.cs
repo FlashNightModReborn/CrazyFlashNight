@@ -45,6 +45,8 @@ namespace CF7Launcher.Config
         public string HitNumberMode { get; set; }
         public int HitNumberWorldRowLimit { get; set; }
         public bool ReducedPresentation { get; set; }
+        public bool CasEnabled { get; set; } = true;
+        public bool MotionFeedbackEnabled { get; set; }
         public PerformancePolicy Performance { get; set; } = PerformancePolicy.Default;
         public PerformancePolicy PreviousPerformance { get; set; }
 
@@ -149,6 +151,10 @@ namespace CF7Launcher.Config
                     HitNumberWorldRowLimit = NormalizeHitNumberWorldRowLimit(hitNumberLimit.Value);
                 if (obj["reducedPresentation"]?.Type == JTokenType.Boolean)
                     ReducedPresentation = obj.Value<bool>("reducedPresentation");
+                if (obj["casEnabled"]?.Type == JTokenType.Boolean)
+                    CasEnabled = obj.Value<bool>("casEnabled");
+                if (obj["motionFeedbackEnabled"]?.Type == JTokenType.Boolean)
+                    MotionFeedbackEnabled = obj.Value<bool>("motionFeedbackEnabled");
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -169,6 +175,8 @@ namespace CF7Launcher.Config
                 HitNumberMode = HitNumberModeDefault;
                 HitNumberWorldRowLimit = HitNumberWorldRowLimitDefault;
                 ReducedPresentation = false;
+                CasEnabled = true;
+                MotionFeedbackEnabled = false;
                 Performance = PerformancePolicy.Default;
                 PreviousPerformance = null;
             }
@@ -194,6 +202,8 @@ namespace CF7Launcher.Config
                 obj["hitNumberWorldRowLimit"] =
                     NormalizeHitNumberWorldRowLimit(HitNumberWorldRowLimit);
                 obj["reducedPresentation"] = ReducedPresentation;
+                obj["casEnabled"] = CasEnabled;
+                obj["motionFeedbackEnabled"] = MotionFeedbackEnabled;
                 obj["performance"] = Performance.ToJson();
                 obj["previousPerformance"] = PreviousPerformance?.ToJson();
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))

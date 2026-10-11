@@ -41,6 +41,21 @@ struct ProbeWorkStats {
     uint32_t size, reserved;
     uint64_t compositions, lightDraws, lightCacheHits, fxUploads;
 };
+// postprocess-v1: additive extension; existing ABI 12 layouts stay intact.
+struct ProbePostprocessStats {
+    uint32_t size,casEnabled,feedbackEnabled,historyValid;
+    float appliedSharpness,inputScale,historyWeight,reserved;
+    uint64_t historyUpdates,historyResets,historyBytes,passes;
+};
+static_assert(sizeof(ProbePostprocessStats)==64,"Postprocess diagnostic layout");
+// postprocess-v2: requested 0 is legacy output CAS, 1 is adaptive L CAS.
+// Applied 1: source CAS then resize (>=1.5x); 2: source-neighborhood output CAS.
+// Existing v1 export/layout and main ABI remain available.
+struct ProbeCasStageStats {
+    uint32_t size,requestedStage,appliedStage,reserved;
+    uint64_t draws,cacheHits,textureBytes;
+};
+static_assert(sizeof(ProbeCasStageStats)==40,"CAS source-stage diagnostic layout");
 // Last 256 successful submissions. Intervals exclude deliberate idle/hold;
 // submission timestamps are not physical scanout or a measurement of DWM/MPO.
 struct ProbeTimingStats {
@@ -76,6 +91,11 @@ static_assert(sizeof(ProbeSceneLightStats)==40,"Scene light diagnostic layout");
 static_assert(sizeof(ProbeWorkStats)==40, "Diagnostic work layout");
 static_assert(sizeof(ProbeContentStats)==40, "Diagnostic content layout");
 extern "C" {
+__declspec(dllexport) int __cdecl ProbeSetPostprocess(void* handle,int casEnabled,float sharpness,int feedbackEnabled);
+__declspec(dllexport) int __cdecl ProbeSetPostprocessV2(void* handle,int casEnabled,float sharpness,int feedbackEnabled,int casStage);
+__declspec(dllexport) int __cdecl ProbeGetCasStageStats(void* handle,ProbeCasStageStats* stats);
+__declspec(dllexport) int __cdecl ProbeResetFeedback(void* handle);
+__declspec(dllexport) int __cdecl ProbeGetPostprocessStats(void* handle,ProbePostprocessStats* stats);
 __declspec(dllexport) int __cdecl ProbeSetHudRaster(void* handle, int layer, const void* pixels,
     int width, int height, int stride, int x, int y);
 __declspec(dllexport) int __cdecl ProbeGetHudRasterStats(void* handle, ProbeHudRasterStats* stats);

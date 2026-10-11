@@ -25,6 +25,8 @@
 #include <tuple>
 #include <memory>
 #include <string>
+#include "FeedbackHistory.h"
+#include "CasSourceStage.h"
 
 using namespace winrt;
 using namespace winrt::Windows::Graphics::Capture;
@@ -305,24 +307,38 @@ public:
         worker_ = std::thread([this] { Run(); });
     }
     ~Capture() { stop_ = true; Signal(); if (worker_.joinable()) worker_.join(); }
-    void Mode(int mode) { mode_ = std::clamp(mode, 0, 2); Signal(); }
-    void Active(bool active) { active_ = active; Signal(); }
+    void Mode(int mode) { if(mode_!=std::clamp(mode,0,2))++historyEpoch_; mode_ = std::clamp(mode, 0, 2); Signal(); }
+    void Active(bool active) { if(active_!=active)++historyEpoch_; active_ = active; Signal(); }
+    bool Postprocess(int cas,float sharp,int feedback,int stage=0) {
+        if((cas!=0 && cas!=1) || (feedback!=0 && feedback!=1)
+                || (stage!=0 && stage!=1) || !std::isfinite(sharp) || sharp<0 || sharp>1)return false;
+        {std::lock_guard guard(mutex_);
+            if(casEnabled_!=(cas!=0) || casSharpness_!=sharp || feedbackEnabled_!=(feedback!=0) || casStage_!=stage) {
+                casEnabled_=cas!=0;casSharpness_=sharp;feedbackEnabled_=feedback!=0;casStage_=stage;
+                ++postprocessVersion_;++historyEpoch_;
+            }
+        }
+        Signal();return true;
+    }
+    void ResetFeedback() {++historyEpoch_;Signal();}
+    void PostprocessStats(ProbePostprocessStats& result) {std::lock_guard guard(mutex_);result=postprocessStats_;}
+    void CasStageStats(ProbeCasStageStats& result) {std::lock_guard guard(mutex_);result=casStageStats_;}
     bool Matrix(const float* values) {
         if (!values) return false;
         for (int i=0;i<16;i++) if (!std::isfinite(values[i]) || std::abs(values[i])>32) return false;
         if (values[15]<0.25f || values[15]>4.f) return false;
-        { std::lock_guard guard(mutex_); std::memcpy(&customSettings_,values,sizeof(Settings)); ++settingsVersion_; custom_=true; }
+        { std::lock_guard guard(mutex_); std::memcpy(&customSettings_,values,sizeof(Settings)); ++settingsVersion_; custom_=true; ++historyEpoch_; }
         Signal(); return true;
     }
     // lut-set-v1：整块 32^3 RGBA8 拷贝入库（调用方拥有输入缓冲）；上传即启用 LUT 分支，
     // 工作线程按 lutVersion_ 惰性建/更 Texture3D。ClearLut 关断 LUT 分支（矩阵路径回退），缓冲保留。
     bool SetLut(const uint8_t* rgba) {
         if (!rgba) return false;
-        { std::lock_guard guard(mutex_); std::memcpy(lutData_, rgba, LutBytes); ++lutVersion_; lutEnabled_ = true; }
+        { std::lock_guard guard(mutex_); std::memcpy(lutData_, rgba, LutBytes); ++lutVersion_; lutEnabled_ = true; ++historyEpoch_; }
         Signal(); return true;
     }
     void ClearLut() {
-        { std::lock_guard guard(mutex_); lutEnabled_ = false; ++lutVersion_; }
+        { std::lock_guard guard(mutex_); lutEnabled_ = false; ++lutVersion_; ++historyEpoch_; }
         Signal();
     }
     void RequestProof() { proofRequested_ = true; }
@@ -485,7 +501,7 @@ public:
         // Return only after any in-flight copy/Present has finished. The caller
         // can now resize its source without an old crop observing new geometry.
         std::lock_guard presentation(presentationMutex_);
-        viewportHeld_=true; Signal();
+        viewportHeld_=true; ++historyEpoch_; Signal();
     }
     bool Sharpness(float value) {
         if (!std::isfinite(value) || value<0 || value>.4f) return false;
@@ -520,7 +536,11 @@ public:
             || !std::isfinite(groundMin) || !std::isfinite(groundMax)
             || scale<=0.f || scale>20.f || std::abs(x)>1000000.f || std::abs(y)>1000000.f
             || std::abs(groundMin)>1000000.f || std::abs(groundMax)>1000000.f || groundMax<=groundMin) return false;
-        { std::lock_guard guard(mutex_); weatherCamera_={x,y,scale,groundMin,groundMax}; ++weatherVersion_; }
+        { std::lock_guard guard(mutex_);
+            if(std::abs(x-weatherCamera_.x)>128.f || std::abs(y-weatherCamera_.y)>128.f
+                || std::abs(scale-weatherCamera_.scale)>weatherCamera_.scale*.15f)++historyEpoch_;
+            weatherCamera_={x,y,scale,groundMin,groundMax}; ++weatherVersion_;
+        }
         Signal(); return true;
     }
     bool Atmosphere(int preset,const float* params) {
@@ -807,7 +827,7 @@ private:
         D3D11_BUFFER_DESC cb{}; cb.ByteWidth = sizeof(Settings); cb.Usage = D3D11_USAGE_DEFAULT; cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         check_hresult(device->CreateBuffer(&cb, nullptr, constants.put()));
         com_ptr<ID3D11Buffer> samplingConstants;
-        cb.ByteWidth=16; check_hresult(device->CreateBuffer(&cb,nullptr,samplingConstants.put()));
+        cb.ByteWidth=32; check_hresult(device->CreateBuffer(&cb,nullptr,samplingConstants.put()));
         com_ptr<ID3D11Buffer> atmosphereConstants;
         cb.ByteWidth=64; check_hresult(device->CreateBuffer(&cb,nullptr,atmosphereConstants.put()));
         com_ptr<ID3D11Buffer> atmosphereStyleConstants;
@@ -945,10 +965,17 @@ private:
         int cachedLightCount=0;
         uint64_t cachedLightGeneration=0;
         float cachedLightParams[16]{},cachedLights[PointLightCap*16]{};
+        FeedbackHistory feedbackHistory;
+        CasSourceStage casSource;
+        ProbeCasStageStats casStageWork{sizeof(ProbeCasStageStats)};
+        uint64_t appliedPostprocess=0;
+        ProbePostprocessStats postprocessWork{sizeof(ProbePostprocessStats)};
         State(1, S_OK, L"GPU display path; optional diagnostic readback");
         while (!stop_) {
             if(hudCostSampler.Started())hudCostSampler.Poll(context.get(),recordHudGpuCost);
             if (!active_) {
+                feedbackHistory.Reset(postprocessWork,true);
+                casSource.Reset(casStageWork);
                 previousTimingPresent=0;
                 lightCacheValid=false;
                 if (session) { session.Close(); session=nullptr; }
@@ -964,6 +991,9 @@ private:
                 startSession();
             }
             uint64_t observedWake=wakeVersion_.load();
+            bool casOn,feedbackOn;float casStrength;int casStage;uint64_t postprocessVersion;
+            {std::lock_guard guard(mutex_);casOn=casEnabled_;feedbackOn=feedbackEnabled_;
+                casStrength=casSharpness_;casStage=casStage_;postprocessVersion=postprocessVersion_;}
             uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
             uint64_t lutVersion; bool lutEnabled;
             AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
@@ -1032,7 +1062,8 @@ private:
             auto frame = pool.TryGetNextFrame();
             RECT client{}; GetClientRect(output_, &client);
             bool fresh = static_cast<bool>(frame);
-            if (!frame && (!texture || (appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
+            if (!frame && (!texture || (appliedPostprocess==postprocessVersion && !feedbackHistory.Pending()
+                    && appliedMode == mode_.load() && !proofRequested_ && !grabRequested_
                     && outputW == client.right && outputH == client.bottom && appliedSettings==settingsVersion
                     && appliedSharpness==sharpness_.load() && appliedLut==lutVersion
                     && appliedWeather==weatherVersion && !weatherOn
@@ -1264,19 +1295,34 @@ private:
             }
             else if(lightsOn) lightCacheHit=true;
             else lightCacheValid=false;
+            float imageScale=std::max(viewport.Width/textureW,viewport.Height/textureH);
+            float adjustedCas=std::clamp(casStrength+.08f*std::clamp(imageScale-1.f,0.f,1.f),0.f,1.f);
+            postprocessWork.casEnabled=casOn && !proof?1u:0u;
+            postprocessWork.appliedSharpness=postprocessWork.casEnabled?adjustedCas:0;
+            postprocessWork.inputScale=imageScale;
+            casStageWork.requestedStage=static_cast<uint32_t>(casStage);
+            // Larger magnification amortizes a source pass. Near 1:1, use a
+            // source-pixel CAS neighborhood in the existing world pass instead.
+            bool sourceNeighborhood=postprocessWork.casEnabled && casStage==1
+                && imageScale>=1.f && imageScale<1.5f;
+            auto resource=casSource.Apply(device.get(),context.get(),vs.get(),srv.get(),textureW,textureH,
+                postprocessWork.casEnabled && casStage==1 && imageScale>=1.5f,fresh,adjustedCas,casStageWork);
+            if(sourceNeighborhood)casStageWork.appliedStage=2;
             auto target=rtv.get();context->OMSetRenderTargets(1,&target,nullptr);
             const float black[]{0,0,0,1};context->ClearRenderTargetView(target,black);
             context->RSSetViewports(1,&viewport);
             auto field=lightsOn?lightResource.get():nullptr;auto fieldSampler=fxSampler.get();
             context->PSSetShaderResources(3,1,&field);context->PSSetSamplers(3,1,&fieldSampler);
             context->VSSetShader(vs.get(), nullptr, 0); context->PSSetShader(ps.get(), nullptr, 0);
-            auto resource = srv.get(); auto sampling = sampler.get(); auto buffer = constants.get();
+            auto sampling = sampler.get(); auto buffer = constants.get();
             context->PSSetShaderResources(0,1,&resource); context->PSSetSamplers(0,1,&sampling); context->PSSetConstantBuffers(0,1,&buffer);
             ID3D11ShaderResourceView* lutResource = lutActive ? lutSrv.get() : nullptr;
             context->PSSetShaderResources(1,1,&lutResource);
             auto lutSamp = lutSampler.get(); context->PSSetSamplers(1,1,&lutSamp);
             appliedSharpness=sharpness_.load();
-            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f};
+            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f,
+                sourceNeighborhood?1.f/textureW:1.f/viewport.Width,sourceNeighborhood?1.f/textureH:1.f/viewport.Height,
+                casStageWork.appliedStage==1?0.f:static_cast<float>(postprocessWork.casEnabled),adjustedCas};
             context->UpdateSubresource(samplingConstants.get(),0,nullptr,samplingValues,0,0);
             auto samplingBuffer=samplingConstants.get(); context->PSSetConstantBuffers(1,1,&samplingBuffer);
             if (atmosphereOn && !proof) {
@@ -1301,6 +1347,13 @@ private:
             auto lookBuffer=atmosphereStyleConstants.get(); context->PSSetConstantBuffers(3,1,&lookBuffer);
             context->Draw(3,0);
             ID3D11ShaderResourceView* empty = nullptr; context->PSSetShaderResources(0,1,&empty);
+            feedbackHistory.Apply(device.get(),context.get(),swap.get(),target,viewport,
+                feedbackOn && !proof,fresh,frameQpcMs,QpcMs(),historyEpoch_.load(),postprocessWork);
+            // Feedback used b0/t1; restore grade/LUT for the independent native FX.
+            context->PSSetConstantBuffers(0,1,&buffer);
+            context->PSSetShaderResources(1,1,&lutResource);
+            context->PSSetSamplers(1,1,&lutSamp);
+            appliedPostprocess=postprocessVersion;
             // Weather overlays the graded world inside the same content viewport,
             // blended after the source pass (not pre-grade composited). The base
             // grade cbuffer and LUT resource stay bound for the weather grade.
@@ -1465,6 +1518,8 @@ private:
                 stats_.submitMs = submit - start; stats_.presentMs = end - presentStart;
                 stats_.lastFrameQpcMs = frameQpcMs;
                 ++workStats_.compositions;
+                postprocessStats_=postprocessWork;
+                casStageStats_=casStageWork;
                 workStats_.lightDraws+=lightDrawn?1:0;
                 workStats_.lightCacheHits+=lightCacheHit?1:0;
                 workStats_.fxUploads+=fxUploads;
@@ -1620,6 +1675,13 @@ private:
     int32_t presentedOutputW_=0,presentedOutputH_=0;
     uint64_t captureGeneration_=0;
     std::thread worker_; std::mutex mutex_; ProbeStats stats_{};
+    bool casEnabled_=false,feedbackEnabled_=false;
+    float casSharpness_=0;
+    int casStage_=0;
+    uint64_t postprocessVersion_=0;
+    std::atomic<uint64_t> historyEpoch_{0};
+    ProbePostprocessStats postprocessStats_{sizeof(ProbePostprocessStats)};
+    ProbeCasStageStats casStageStats_{sizeof(ProbeCasStageStats)};
     ProbeWorkStats workStats_{sizeof(ProbeWorkStats)};
     std::array<HudRasterFrame,HudRasterLayerCount> hudFrames_;
     HudPixelCache hudPixelCache_;
@@ -1694,6 +1756,24 @@ int __cdecl ProbeSetViewport(void* handle, int x, int y, int width, int height, 
 void __cdecl ProbeHoldViewport(void* handle) { if (handle) static_cast<Capture*>(handle)->HoldViewport(); }
 int __cdecl ProbeSetSharpness(void* handle, float value) {
     return handle && static_cast<Capture*>(handle)->Sharpness(value) ? 1 : 0;
+}
+int __cdecl ProbeSetPostprocess(void* handle,int cas,float sharp,int feedback) {
+    return handle && static_cast<Capture*>(handle)->Postprocess(cas,sharp,feedback)?1:0;
+}
+int __cdecl ProbeSetPostprocessV2(void* handle,int cas,float sharp,int feedback,int stage) {
+    return handle && static_cast<Capture*>(handle)->Postprocess(cas,sharp,feedback,stage)?1:0;
+}
+int __cdecl ProbeGetCasStageStats(void* handle,ProbeCasStageStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbeCasStageStats))return 0;
+    static_cast<Capture*>(handle)->CasStageStats(*stats);return 1;
+}
+int __cdecl ProbeResetFeedback(void* handle) {
+    if(!handle)return 0;static_cast<Capture*>(handle)->ResetFeedback();return 1;
+}
+extern "C" __declspec(dllexport) const char* __cdecl ProbeGetCasLicense() {return CompositorShaders::CasLicense;}
+int __cdecl ProbeGetPostprocessStats(void* handle,ProbePostprocessStats* stats) {
+    if(!handle || !stats || stats->size!=sizeof(ProbePostprocessStats))return 0;
+    static_cast<Capture*>(handle)->PostprocessStats(*stats);return 1;
 }
 void __cdecl ProbeSetMode(void* handle, int mode) { if (handle) static_cast<Capture*>(handle)->Mode(mode); }
 void __cdecl ProbeRequestProof(void* handle) { if (handle) static_cast<Capture*>(handle)->RequestProof(); }

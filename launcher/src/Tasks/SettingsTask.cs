@@ -348,6 +348,8 @@ namespace CF7Launcher.Tasks
             bool oldAmbient = _userPrefs.AmbientEnabled;
             bool oldTutorials = _userPrefs.TutorialsAutoOpen;
             bool oldReducedPresentation = _userPrefs.ReducedPresentation;
+            bool oldCas = _userPrefs.CasEnabled;
+            bool oldMotionFeedback = _userPrefs.MotionFeedbackEnabled;
             double oldScale = _userPrefs.UiFontScale;
             string oldMap = _userPrefs.MapDisplayPreference;
             string oldHitNumberMode = _userPrefs.HitNumberMode;
@@ -368,6 +370,8 @@ namespace CF7Launcher.Tasks
                 _userPrefs.AmbientEnabled = oldAmbient;
                 _userPrefs.TutorialsAutoOpen = oldTutorials;
                 _userPrefs.ReducedPresentation = oldReducedPresentation;
+                _userPrefs.CasEnabled = oldCas;
+                _userPrefs.MotionFeedbackEnabled = oldMotionFeedback;
                 _userPrefs.UiFontScale = oldScale;
                 _userPrefs.MapDisplayPreference = oldMap;
                 _userPrefs.HitNumberMode = oldHitNumberMode;
@@ -464,6 +468,16 @@ namespace CF7Launcher.Tasks
             normalized = null;
             switch (key)
             {
+                case "casEnabled":
+                    if (value?.Type != JTokenType.Boolean) return false;
+                    _userPrefs.CasEnabled = value.Value<bool>();
+                    normalized = new JValue(_userPrefs.CasEnabled);
+                    return true;
+                case "motionFeedbackEnabled":
+                    if (value?.Type != JTokenType.Boolean) return false;
+                    _userPrefs.MotionFeedbackEnabled = value.Value<bool>();
+                    normalized = new JValue(_userPrefs.MotionFeedbackEnabled);
+                    return true;
                 case "performance":
                     if (!PerformancePolicy.TryParse(value, out var policy)) return false;
                     if (policy != _userPrefs.Performance) {
@@ -559,6 +573,8 @@ namespace CF7Launcher.Tasks
                 ["ambientEnabled"] = _userPrefs.AmbientEnabled,
                 ["tutorialsAutoOpen"] = _userPrefs.TutorialsAutoOpen,
                 ["reducedPresentation"] = _userPrefs.ReducedPresentation,
+                ["casEnabled"] = _userPrefs.CasEnabled,
+                ["motionFeedbackEnabled"] = _userPrefs.MotionFeedbackEnabled,
                 ["uiFontScale"] = _userPrefs.UiFontScale,
                 ["mapDisplayPreference"] =
                     UserPrefs.NormalizeMapDisplayPreference(_userPrefs.MapDisplayPreference),

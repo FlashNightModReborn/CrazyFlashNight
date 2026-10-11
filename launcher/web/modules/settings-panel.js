@@ -616,6 +616,15 @@
 
     function renderLocal() {
         renderPerformance();
+        if (_snapshot.hostPrefs.imageEnhancementAvailable) {
+        var image = section('画面增强', '修改后自动保存，切换性能方案时保留你的选择。');
+        var imageGrid = node('div', 'settings-grid two');
+        imageGrid.appendChild(annotate(hostBoolean('casEnabled', '清晰度增强'),
+            '默认开启。根据当前画质和放大倍率温和增强世界画面，界面文字保持原样。'));
+        imageGrid.appendChild(annotate(hostBoolean('motionFeedbackEnabled', '动态模糊'),
+            '默认关闭。开启后加入短时运动残影；可能降低运动中的辨识度，可随时关闭。'));
+        image.appendChild(imageGrid); _content.appendChild(image);
+        }
         var host = section('Launcher 本机偏好', '每一项在修改后立即由 Host 落盘；失败会回滚到权威值。');
         var hgrid = node('div', 'settings-grid two');
         hgrid.appendChild(hostBoolean('introEnabled', '下次启动播放片头动画'));

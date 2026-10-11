@@ -25,6 +25,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly ActiveDelegate _active;
         private readonly ViewportDelegate _viewport;
         private readonly SharpnessDelegate _sharpness;
+        private readonly PostprocessDelegate _postprocess;
+        private readonly FeedbackResetDelegate _resetFeedback;
+        private readonly PostprocessReadDelegate _readPostprocess;
+        private readonly CasStageReadDelegate _readCasStage;
         private readonly StopDelegate _holdViewport;
         // Dev-only LUT lab export; absent on older companion builds (grab reports unavailable).
         private readonly GrabDelegate _grab,_grabComposite;
@@ -67,6 +71,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _crop = Export<CropDelegate>("ProbeSetCrop"); _mode = Export<ModeDelegate>("ProbeSetMode");
                 _matrix=Export<MatrixDelegate>("ProbeSetMatrix"); _active=Export<ActiveDelegate>("ProbeSetActive");
                 _viewport=Export<ViewportDelegate>("ProbeSetViewport"); _sharpness=Export<SharpnessDelegate>("ProbeSetSharpness");
+                _postprocess=Export<PostprocessDelegate>("ProbeSetPostprocessV2");
+                _resetFeedback=Export<FeedbackResetDelegate>("ProbeResetFeedback");
+                _readPostprocess=Export<PostprocessReadDelegate>("ProbeGetPostprocessStats");
+                _readCasStage=Export<CasStageReadDelegate>("ProbeGetCasStageStats");
                 _holdViewport=Export<StopDelegate>("ProbeHoldViewport");
                 _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
                 _grabComposite=TryExport<GrabDelegate>("ProbeGrabCompositeFrame");
@@ -192,6 +200,42 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         internal void HoldViewport() { _holdViewport(_session); }
         internal void Sharpness(float value) { if (_sharpness(_session,value)!=1) throw new InvalidOperationException("Invalid sharpness"); }
+        internal void Postprocess(bool cas,float strength,bool feedback,int stage=0) {
+            if(_postprocess(_session,cas?1:0,strength,feedback?1:0,stage)!=1)
+                throw new InvalidOperationException("Postprocess options rejected");
+        }
+        internal void ResetFeedback() {
+            if(_resetFeedback(_session)!=1)throw new InvalidOperationException("Feedback reset rejected");
+        }
+        internal PostprocessStats ReadPostprocess() {
+            var value=new PostprocessStats {Size=(uint)Marshal.SizeOf<PostprocessStats>()};
+            if(_readPostprocess(_session,ref value)!=1)throw new InvalidOperationException("Postprocess statistics unavailable");
+            return value;
+        }
+        internal CasStageStats ReadCasStage() {
+            var value=new CasStageStats {Size=(uint)Marshal.SizeOf<CasStageStats>()};
+            if(_readCasStage(_session,ref value)!=1)throw new InvalidOperationException("CAS stage statistics unavailable");
+            return value;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct CasStageStats {
+            public uint Size,RequestedStage,AppliedStage,Reserved;
+            public ulong Draws,CacheHits,TextureBytes;
+        }
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct PostprocessStats {
+            public uint Size,CasEnabled,FeedbackEnabled,HistoryValid;
+            public float AppliedSharpness,InputScale,HistoryWeight,Reserved;
+            public ulong HistoryUpdates,HistoryResets,HistoryBytes,Passes;
+        }
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int PostprocessDelegate(IntPtr session,int cas,float strength,int feedback,int stage);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int CasStageReadDelegate(IntPtr session,ref CasStageStats stats);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int FeedbackResetDelegate(IntPtr session);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+        private delegate int PostprocessReadDelegate(IntPtr session,ref PostprocessStats stats);
         internal void Matrix(float[] values) { if (_matrix(_session,values)!=1) throw new InvalidOperationException("Invalid lighting matrix"); }
         // lut-set-v1：整块 32^3 RGBA8（131072 字节）上传并启用 LUT 路径；变更时才调用（勿逐帧）。
         // 严格导出：未配套 ABI 5 DLL 在建会话时即拒绝。

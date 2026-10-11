@@ -274,6 +274,27 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(h.Prefs.TutorialsAutoOpen);Assert.Equal(1,notifications);Assert.Empty(h.Flash);
         }
 
+        [Theory]
+        [InlineData("casEnabled",false,true)]
+        [InlineData("motionFeedbackEnabled",true,false)]
+        public void ImageOptionsRejectBadTypesAndRollbackFailedWrites(string key,bool value,bool original)
+        {
+            using var h=new Harness();int notices=0;
+            h.Task.SetHostPreferenceApplied((k,v)=> {Assert.Equal(key,k);Assert.Equal(value,v.Value<bool>());notices++;});
+            h.Send("host_set",new JObject {["v"]=1,["key"]=key,["value"]="true"},"image.bad");
+            Assert.Equal("bad_value",h.Web[0].Value<string>("error"));
+            h.Send("host_set",new JObject {["v"]=1,["key"]=key,["value"]=value},"image.good");
+            Assert.Equal(value,h.Web[1].Value<bool>("currentValue"));Assert.Equal(1,notices);
+            Assert.Equal(key=="casEnabled"?value:true,h.Prefs.CasEnabled);
+            Assert.Equal(key=="motionFeedbackEnabled"?value:false,h.Prefs.MotionFeedbackEnabled);
+            h.SaveResult=false;
+            h.Send("host_set",new JObject {["v"]=1,["key"]=key,["value"]=original},"image.failed");
+            Assert.Equal("save_failed",h.Web[2].Value<string>("error"));
+            Assert.Equal(value,h.Web[2].Value<bool>("currentValue"));Assert.Equal(1,notices);Assert.Empty(h.Flash);
+            Assert.Equal(key=="casEnabled"?value:true,h.Prefs.CasEnabled);
+            Assert.Equal(key=="motionFeedbackEnabled"?value:false,h.Prefs.MotionFeedbackEnabled);
+        }
+
         [Fact]
         public void ReducedPresentation_IsStrictBooleanObservedAndRolledBackOnSaveFailure()
         {
