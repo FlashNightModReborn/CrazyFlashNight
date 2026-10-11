@@ -466,6 +466,7 @@ namespace CF7Launcher.Guardian
             ItemUse,
             Loadout,
             Skills,
+            Tablet,
             Unsupported
         }
 
@@ -490,6 +491,7 @@ namespace CF7Launcher.Guardian
             if (domain == "item_use") return PanelDomainRoute.ItemUse;
             if (domain == "loadout") return PanelDomainRoute.Loadout;
             if (domain == "skills") return PanelDomainRoute.Skills;
+            if (domain == "tablet") return PanelDomainRoute.Tablet;
             return PanelDomainRoute.Unsupported;
         }
 
@@ -1357,6 +1359,7 @@ namespace CF7Launcher.Guardian
         private LootTask _lootTask;
         private LootPanelCoordinator _lootPanelCoordinator;
         private NpcShopTask _npcShopTask;
+        private TabletTask _tabletTask;
         private CraftingTask _craftingTask;
         private MaterialShopNavigationCoordinator
             _materialShopNavigationCoordinator;
@@ -4891,6 +4894,16 @@ namespace CF7Launcher.Guardian
             BindCurrentMaterialShopNavigationOwners();
         }
 
+        public void SetTabletTask(TabletTask task)
+        {
+            _tabletTask = task;
+            if (task == null) return;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+            task.SetActivePanelProvider(
+                () => _panelHost != null ? _panelHost.ActivePanelName : null);
+        }
+
         public void SetCraftingTask(CraftingTask task)
         {
             _craftingTask = task;
@@ -7592,6 +7605,20 @@ namespace CF7Launcher.Guardian
                     + " to NpcShopTask, _npcShopTask=" + (_npcShopTask != null ? "ok" : "NULL"));
                 if (_npcShopTask != null) _npcShopTask.HandleWebRequest(cmd, parsed);
                 else RespondPanelDomainError(parsed, "npcshop_unavailable");
+                return;
+            }
+            if (domainRoute == PanelDomainRoute.Tablet)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "tablet"))
+                {
+                    LogManager.Log(
+                        "[TabletTask] rejected expired/foreign owner envelope");
+                    RespondPanelDomainError(
+                        parsed, "panel_instance_expired");
+                    return;
+                }
+                if (_tabletTask != null) _tabletTask.HandleWebRequest(parsed);
+                else RespondPanelDomainError(parsed, "tablet_unavailable");
                 return;
             }
             if (domainRoute == PanelDomainRoute.Crafting)

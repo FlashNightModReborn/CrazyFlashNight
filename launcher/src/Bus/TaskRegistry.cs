@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -492,8 +492,12 @@ namespace CF7Launcher.Bus
             LutLabTask lutLabTask = null,
             NativeGuidanceTask nativeGuidanceTask = null,
             SceneTransitionTask sceneTransitionTask = null,
-            BookComicTask bookComicTask = null)
+            BookComicTask bookComicTask = null,
+            TabletTask tabletTask = null)
         {
+            // 平板面板 domain 回包路由（tabletInfraSync/Upgrade、tabletOpenNpcShop、
+            // openRagTerminal 均经 socket task "tablet_response" + callId 回执）
+            if (tabletTask != null) router.RegisterAsync("tablet_response", tabletTask.HandleFlashResponse);
             if (bookComicTask != null) router.RegisterAsync("book_comic_response", bookComicTask.HandleFlashResponse);
             // JSON 路由 task（经 MessageRouter 分发）
             router.RegisterAsync("gomoku_eval", gomoku.HandleAsync);

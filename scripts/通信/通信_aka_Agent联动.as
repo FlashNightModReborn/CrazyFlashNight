@@ -235,4 +235,16 @@ _root.gameCommands["ragChatUnavailable"] = function(params:Object):Void {
     _root.最上层发布文字提示(message);
 };
 
+// 平板 Web 面板的「终端通信」按钮经 Host tablet 域回环到本命令；
+// 实际打开仍走 启动外部RAG工具 → panel_request（savePath 由 AS2 侧取 _root.savePath）。
+// callId 回执经 tablet_response 由 Host TabletTask 关联储备后回包 tablet 面板。
+_root.gameCommands["openRagTerminal"] = function(params:Object):Void {
+    if (typeof _root.agent.启动外部RAG工具 == "function") {
+        _root.agent.启动外部RAG工具();
+    }
+    if (_root.平板回执 != undefined) {
+        _root.平板回执(params, {task:"tablet_response", ok:true});
+    }
+};
+
 _root.agent.检测npc状态库文件();

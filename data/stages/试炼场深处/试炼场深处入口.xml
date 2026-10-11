@@ -19,40 +19,163 @@
     </Rewards>
     <SubStage id="0">
         <BasicInformation>
-            <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
+            <Background>flashswf/backgrounds/试炼场深处钻头入口_BG.swf</Background>
+            <PlayerX>150</PlayerX>
+            <PlayerY>500</PlayerY>
+            <BGM>
+                <Command>play</Command>
+                <Title>Belgradian Symphony</Title>
+                <Loop>true</Loop>
+            </BGM>
         </BasicInformation>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
-                <Name>重置组</Name>
-                <Title/>
-                <Char>无头像</Char>
-                <Text>关卡仍在内部测试中，敬请期待</Text>
+                <Name>黑铁死士</Name>
+                <Title>黑铁会盗贼</Title>
+                <Char>堕落城盗贼#黑铁死士</Char>
+                <Text>你这厮就是打伤我们兄弟的那个···罢了，今天不跟你算账</Text>
             </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>看来你们有的打了</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitEmergency</EventName>
+            <Parameter>紫色方舟武士</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>你们两个！等等，好像不是来杀我的。</Text>
+            </Dialogue>
+            <Enemy id="0">
+                <Type>兵种378</Type>
+                <InstanceName>浮士德兄弟</InstanceName>
+                <Quantity>1</Quantity>
+                <Level>30</Level>
+                <x>220</x>
+                <y>470</y>
+                <IsHostile>false</IsHostile>
+                <Parameters>
+                    <publishStageEvent>true</publishStageEvent>
+                </Parameters>
+            </Enemy>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>紫色方舟武士</Parameter>
+            <Dialogue id="0">
+                <Name>黑铁死士</Name>
+                <Title>黑铁会盗贼</Title>
+                <Char>堕落城盗贼#黑铁死士</Char>
+                <Text>今日真是损失惨重，不跟你一般较量了，把兄弟们带走！</Text>
+            </Dialogue>
+            <Enemy id="0">
+                <Type>兵种90</Type>
+                <Quantity>1</Quantity>
+                <Level>30</Level>
+                <x>250</x>
+                <y>450</y>
+                <IsHostile>false</IsHostile>
+            </Enemy>
+            <Enemy id="1">
+                <Type>兵种90</Type>
+                <Quantity>1</Quantity>
+                <Level>30</Level>
+                <x>300</x>
+                <y>520</y>
+                <IsHostile>false</IsHostile>
+            </Enemy>
+            <FollowingEvent>
+                <EventName>剧情收尾</EventName>
+            </FollowingEvent>
+        </Event>
+        <Event>
+            <EventName>剧情收尾</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>等等···脑子有点疼，这是定式电信号，近距干扰？你们两个叫我之后去电子战接入设备间？</Text>
+            </Dialogue>
+            <StageProgress>Finish</StageProgress>
         </Event>
         <Wave>
             <SubWave id="0">
                 <WaveInformation>
                     <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
                 </WaveInformation>
                 <EnemyGroup>
-                    <Enemy>
+                    <Enemy id="0">
                         <Type>兵种90</Type>
-                        <Interval>100</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>660</x>
+                        <y>430</y>
+                        <IsHostile>false</IsHostile>
                     </Enemy>
-                    <Enemy>
-                        <Type>兵种101</Type>
-                        <Interval>100</Interval>
-                        <Quantity>2</Quantity>
-                        <Level>35</Level>
+                    <Enemy id="1">
+                        <Type>兵种90</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>660</x>
+                        <y>545</y>
+                        <IsHostile>false</IsHostile>
                     </Enemy>
-                    <Enemy>
-                        <Type>兵种10</Type>
-                        <Interval>500</Interval>
-                        <Quantity>10</Quantity>
-                        <Level>35</Level>
+                    <Enemy id="2">
+                        <Type>兵种377</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>940</x>
+                        <y>430</y>
+                        <IsHostile>false</IsHostile>
+                    </Enemy>
+                    <Enemy id="3">
+                        <Type>兵种377</Type>
+                        <Interval>300</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>940</x>
+                        <y>545</y>
+                        <IsHostile>false</IsHostile>
+                    </Enemy>
+                    <Enemy id="4">
+                        <Type>兵种12</Type>
+                        <InstanceName>紫色方舟武士</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>800</x>
+                        <y>490</y>
+                        <Parameters>
+                            <名字>方舟武士</名字>
+                            <狂暴>true</狂暴>
+                            <hpEmergency>0.5</hpEmergency>
+                            <extra>
+                                <muti>
+                                    <防御力>3</防御力>
+                                    <空手攻击力>2</空手攻击力>
+                                </muti>
+                                <add>
+                                    <hp>15000</hp>
+                                    <hp满血值>15000</hp满血值>
+                                </add>
+                            </extra>
+                        </Parameters>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

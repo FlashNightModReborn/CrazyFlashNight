@@ -1,5 +1,12 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <GameStage>
+    <StageInfo>
+        <Type>无限过图</Type>
+        <Name>电子战接入设备间</Name>
+        <FadeTransitionFrame>wuxianguotu_1</FadeTransitionFrame>
+        <UnlockCondition>97</UnlockCondition>
+        <Description>接入电子战的区域</Description>
+    </StageInfo>
     <Rewards>
         <Reward>
             <Name>加强抗生素药剂</Name>
@@ -21,14 +28,99 @@
         <BasicInformation>
             <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
         </BasicInformation>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1100</x>
+                <y>350</y>
+                <QuantityMax>2</QuantityMax>
+                <BiasX>120</BiasX>
+                <BiasY>80</BiasY>
+            </Point>
+            <Point id="1">
+                <x>1350</x>
+                <y>500</y>
+                <QuantityMax>2</QuantityMax>
+                <BiasX>120</BiasX>
+                <BiasY>80</BiasY>
+            </Point>
+            <Point id="2">
+                <x>1600</x>
+                <y>400</y>
+                <QuantityMax>2</QuantityMax>
+                <BiasX>120</BiasX>
+                <BiasY>80</BiasY>
+            </Point>
+        </SpawnPoint>
         <Event>
             <EventName>Start</EventName>
             <Dialogue id="0">
-                <Name>重置组</Name>
-                <Title/>
-                <Char>无头像</Char>
-                <Text>关卡仍在内部测试中，敬请期待</Text>
+                <Name>牛仔</Name>
+                <Title>?</Title>
+                <Char>牛仔</Char>
+                <Text>别来无恙？</Text>
             </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>牛仔！你怎么在这？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>牛仔</Name>
+                <Title>?</Title>
+                <Char>牛仔</Char>
+                <Text>先处理一下多余的东西。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>浮士德兄弟？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title>?</Title>
+                <Char>牛仔</Char>
+                <Text>别担心，是来帮我们的。不过，还是别指望能和他们正常交流了。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>你们为什么在这？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title>?</Title>
+                <Char>牛仔</Char>
+                <Text>为了搞清楚电子战和诺亚···边走边说吧。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>好！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
         </Event>
         <Wave>
             <SubWave id="0">
@@ -38,6 +130,7 @@
                 <EnemyGroup>
                     <Enemy>
                         <Type>兵种228</Type>
+                        <InstanceName>牛仔</InstanceName>
                         <Interval>100</Interval>
                         <Quantity>1</Quantity>
                         <Level>50</Level>
@@ -48,18 +141,1019 @@
                         <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>45</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种163</Type>
                         <Interval>1000</Interval>
                         <Quantity>6</Quantity>
                         <Level>45</Level>
+                        <SpawnIndex>1</SpawnIndex>
                     </Enemy>
                     <Enemy>
                         <Type>兵种164</Type>
                         <Interval>1000</Interval>
                         <Quantity>3</Quantity>
                         <Level>45</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种378</Type>
+                        <InstanceName>浮士德兄弟</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种167</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>0</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种168</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>45</Level>
+                        <SpawnIndex>1</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种166</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>2</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="1">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/Survival_mode_BG.swf</Background>
+        </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>Lee？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Lee</Name>
+                <Title>？</Title>
+                <Char>Lee</Char>
+                <Text>有强敌到来了！</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>看来是等候我们多时了。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>过了前面的门，我们就会进入电子战了。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>考虑到这里有人是第一次进入电子空间，我请来了一名向导。你们很快就会见到了。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>向导？</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>防止我们在电子空间走丢。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>浮士德兄弟</Parameter>
+            <Message>浮士德兄弟阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种228</Type>
+                        <InstanceName>牛仔</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种378</Type>
+                        <InstanceName>浮士德兄弟</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种175</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种176</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>40</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种177</Type>
+                        <Interval>500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种257</Type>
+                        <InstanceName>Lee</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种362</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种363</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="2">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/电子战_BG.swf</Background>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>这里是？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>这位就是我们的向导了。浮士德兄弟没连进来吗？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>他俩的精神状态不太容许他们在电子空间长期停留。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>你想想办法把他们拉进来，我们去会一会诺亚的部队。</Text>
+            </Dialogue>
+            <Dialogue id="4">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>是。</Text>
+            </Dialogue>
+            <Dialogue id="5">
+                <Name>Lee</Name>
+                <Title>？</Title>
+                <Char>Lee</Char>
+                <Text>上吧！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>真糟糕，敌人越来越多了！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Lee</Name>
+                <Title>？</Title>
+                <Char>Lee</Char>
+                <Text>痛感、杀戮感与现实无异···</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>打起精神！</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>1</Parameter>
+            <Dialogue id="0">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>这里的承载力似乎快到上限了，再坚持一会。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>2</Parameter>
+            <Dialogue id="0">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>坏消息，天网启动防御机制了。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>打的有点过火了，天网的信息安全部队被触发了。我们打完这波就立刻撤退。</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种228</Type>
+                        <InstanceName>牛仔</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种257</Type>
+                        <InstanceName>Lee</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <x>500</x>
+                        <y>450</y>
+                        <Parameters>
+                            <方向>左</方向>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>100</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>back</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>2000</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>50</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种74</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种70</Type>
+                        <Interval>500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>55</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+            <SubWave id="2">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种80</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种83</Type>
+                        <Interval>500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+            <SubWave id="3">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>2</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种363</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种364</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>60</Level>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="3">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_3_BG.swf</Background>
+            <Animation>
+                <Path>flashswf/movies/FakeStageClear.swf</Path>
+                <Pause>1</Pause>
+                <Load>1</Load>
+            </Animation>
+            <PlayerX>360</PlayerX>
+            <PlayerY>350</PlayerY>
+            <Environment>
+                <Xmin>200</Xmin>
+                <Xmax>1500</Xmax>
+                <Ymin>270</Ymin>
+                <Ymax>530</Ymax>
+                <Width>1700</Width>
+                <Height>530</Height>
+                <DoorDirection>左</DoorDirection>
+            </Environment>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#微笑</Char>
+                <Text>我回到现实了吗……Andy大哥！</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law</Char>
+                <Text>说出来简直让我自己都难以置信，我曾经竟然登上过迈向宇宙的飞船，在那航行于太空的巨物之中厮杀。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law#微笑</Char>
+                <Text>而那段旅途的最后，我伫立于一地的血水和尸块还有碎裂的钢铁之间拯救了世界，真是场如梦般的经历。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>……（该不会就是梦吧……？而且这对话是不是在哪听到过……）</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>呼……我没来晚吧？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#愤怒</Char>
+                <Text>这是怎么回事……</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>天网的防御机制。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>把我们和诺亚部队的意识一起困在一个迴圈里面……简单说就是走丢了。现在没时间解释那么多，我们得赶紧找到出口。</Text>
+            </Dialogue>
+            <Dialogue id="4">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>好吧……如果在电子空间死亡，或者一直被困在这里会怎么样？</Text>
+            </Dialogue>
+            <Dialogue id="5">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>嗯……你看过《盗梦空间》吗？比那糟糕一点。</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>20</Level>
+                        <x>700</x>
+                        <y>320</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>185</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon></PrimaryWeapon>
+                        <SecondaryWeapon></SecondaryWeapon>
+                        <SecondaryWeapon2></SecondaryWeapon2>
+                        <MeleeWeapon>绝地武士佩剑</MeleeWeapon>
+                        <Grenade></Grenade>
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>Andy装手套-NPC</HandGear>
+                        <FootGear>Andy装鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                        <Parameters>
+                            <方向>左</方向>
+                            <不掉装备>true</不掉装备>
+                        </Parameters>
+                        <InstanceName>FakeAndyLaw</InstanceName>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>12000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/avp1_1_BG.swf</Background>
+        </BasicInformation>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>有点恶心……</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>我可以问一下，刚才突然攻击我的Andy大哥是什么情况吗？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>是覆面。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>在虚拟空间中，伪装自己的外在并不是难事。你碰见的Andy Law很可能是诺亚士兵伪装的。</Text>
+            </Dialogue>
+            <Dialogue id="4">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>可是为什么，诺亚的伪装者会知道我和Andy哥曾经的对话呢？</Text>
+            </Dialogue>
+            <Dialogue id="5">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>……</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种76</Type>
+                        <Interval>500</Interval>
+                        <Quantity>12</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种372</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种373</Type>
+                        <Interval>1500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>30</Level>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="5">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk15_1_BG.swf</Background>
+            <PlayerX>150</PlayerX>
+            <PlayerY>480</PlayerY>
+        </BasicInformation>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>你们尽早摆脱黑铁会吧，别替他们……咦？</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>这都什么跟什么啊……向导小姐？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>啊……我明白了。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>每个处于电子空间的智能体，都在给这个空间贡献数据……也许诺亚有某种手段利用虚拟迴圈制造你熟悉的情境，让你的大脑替他们完成伪装的最后一环。还挺有意思的……</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>说到这个，她们的战斗方式和现实中有点不一样。看来比起外形，作战习惯没那么容易伪装吗……</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种50</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <x>650</x>
+                        <y>380</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种51</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <x>600</x>
+                        <y>450</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种52</Type>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <x>530</x>
+                        <y>400</y>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种259</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种260</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种354</Type>
+                        <Interval>2500</Interval>
+                        <Quantity>3</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="6">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/gk20_3_BG.swf</Background>
+            <PlayerX>360</PlayerX>
+            <PlayerY>350</PlayerY>
+            <Animation>
+                <Path>flashswf/movies/故障转场.swf</Path>
+                <Pause>0</Pause>
+                <Load>0</Load>
+            </Animation>
+            <Environment>
+                <Xmin>200</Xmin>
+                <Xmax>1500</Xmax>
+                <Ymin>270</Ymin>
+                <Ymax>530</Ymax>
+                <Width>1700</Width>
+                <Height>530</Height>
+            </Environment>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>100</x>
+                <y>-100</y>
+                <Identifier>临时演出-电子战1</Identifier>
+            </Instance>
+        </Instances>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>又回到原点了……</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law</Char>
+                <Text>我曾经救过一个卧底暴露的女特攻，作为卧底来说，她穿的紫色紧身皮衣和粉色短发实在太过标志性，被注意到也是理所当然。</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law#微笑</Char>
+                <Text>后来我们开着搭载机枪的黑色超跑在异国的跨海大桥上兜风追杀敌人。那真是段无比畅快的体验。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>这也是……曾经发生过的对话吗？</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>WaveFinished</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>果然在梦里才能离真相更进一步——找到你们了。</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR</Char>
+                <Text>你们也见到了伪装成自己人的诺亚士兵吗？</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>对于他们这种见人就杀的魔头，伪装应该没什么用……</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>没时间说闲话了，我们还有一场硬仗要打。</Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>40</Level>
+                        <x>700</x>
+                        <y>320</y>
+                        <spritename>主角-男</spritename>
+                        <Name>Andy</Name>
+                        <IsHostile>true</IsHostile>
+                        <Height>185</Height>
+                        <NPC>false</NPC>
+                        <PrimaryWeapon>M4A1改</PrimaryWeapon>
+                        <SecondaryWeapon></SecondaryWeapon>
+                        <SecondaryWeapon2></SecondaryWeapon2>
+                        <MeleeWeapon></MeleeWeapon>
+                        <Grenade></Grenade>
+                        <FaceType>男变装-基本脸型</FaceType>
+                        <HairStyle></HairStyle>
+                        <HeadEquipment>Andy领子-NPC</HeadEquipment>
+                        <BodyArmor>Andy上装-NPC</BodyArmor>
+                        <LegArmor>Andy下装-NPC</LegArmor>
+                        <HandGear>Andy装手套-NPC</HandGear>
+                        <FootGear>Andy装鞋</FootGear>
+                        <NeckGear>东区最强战士项链</NeckGear>
+                        <Gender>男</Gender>
+                        <Parameters>
+                            <方向>左</方向>
+                            <不掉装备>true</不掉装备>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>30</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                </EnemyGroup>
+
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="7">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/电子战_BG.swf</Background>
+            <Animation>
+                <Path>flashswf/movies/故障转场.swf</Path>
+                <Pause>0</Pause>
+                <Load>0</Load>
+            </Animation>
+            <Environment>
+                <Xmax>1460</Xmax>
+                <Ymax>710</Ymax>
+                <Width>1460</Width>
+                <Height>710</Height>
+            </Environment>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>100</x>
+                <y>-100</y>
+                <Identifier>临时演出-电子战2</Identifier>
+            </Instance>
+        </Instances>
+        <Event>
+            <EventName>Start</EventName>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>果然是硬仗···那么，你们为什么在这，还有那个向导是谁？</Text>
+            </Dialogue>
+            <Dialogue id="1">
+                <Name>虚拟向导</Name>
+                <Title></Title>
+                <Char>虚拟向导</Char>
+                <Text>···</Text>
+            </Dialogue>
+            <Dialogue id="2">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>她是谁你早晚会知道，比起这个，电子战看来又是诺亚的一个入侵方向，好在暂时打退他们了。</Text>
+            </Dialogue>
+            <Dialogue id="3">
+                <Name>牛仔</Name>
+                <Title>？</Title>
+                <Char>牛仔</Char>
+                <Text>听说你最近在调查浮士德兄弟？那你早晚会了解到通缉令的真相吧。</Text>
+            </Dialogue>
+            <Dialogue id="4">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text>···</Text>
+            </Dialogue>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>牛仔</Parameter>
+            <Message>牛仔阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Event>
+            <EventName>UnitDeath</EventName>
+            <Parameter>Lee</Parameter>
+            <Message>Lee阵亡，任务失败</Message>
+            <StageProgress>Fail</StageProgress>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy>
+                        <Type>兵种228</Type>
+                        <InstanceName>牛仔</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种257</Type>
+                        <InstanceName>Lee</InstanceName>
+                        <Interval>100</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种381</Type>
+                        <Interval>1000</Interval>
+                        <Quantity>1</Quantity>
+                        <Level>55</Level>
+                        <x>300</x>
+                        <y>400</y>
+                        <InstanceName>虚拟向导</InstanceName>
+                        <Parameters>
+                            <变身>true</变身>
+                        </Parameters>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种362</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种363</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>front</SpawnIndex>
+                    </Enemy>
+                    <Enemy>
+                        <Type>兵种364</Type>
+                        <Interval>100</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>60</Level>
+                        <SpawnIndex>front</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

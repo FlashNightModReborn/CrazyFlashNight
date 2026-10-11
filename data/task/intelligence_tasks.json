@@ -188,7 +188,8 @@
             "get_conversation": "$SIDE_GET_90009",
             "get_npc": "researcher",
 
-            "finish_requirements": [
+            "finish_requirements": [],
+            "finish_contain_items": [
                 "摇滚公园乐器研究报告#1"
             ],
             "finish_conversation": "$SIDE_FINISH_90009",
@@ -243,6 +244,182 @@
             ],
             
             "chain":"情报#11"
+        },
+        {
+            "id": 90012,
+            "title": "$SIDE_TITLE_90012",
+            "description": "$SIDE_DESCRIPTION_90012",
+
+            "get_requirements": [90011],
+            "get_conversation": "$SIDE_GET_90012",
+            "get_npc": "小F",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90012",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+
+            "chain":"情报#12"
+        },
+        {
+            "id": 90013,
+            "title": "$SIDE_TITLE_90013",
+            "description": "$SIDE_DESCRIPTION_90013",
+
+            "get_requirements": [90012],
+            "get_conversation": "$SIDE_GET_90013",
+            "get_npc": "酒保",
+
+            "finish_requirements": ["据点M#简单"],
+            "finish_conversation": "$SIDE_FINISH_90013",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#20000",
+                "经验值#5000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#3"
+            ],
+
+            "chain":"情报#13"
+        },
+        {
+            "id": 90014,
+            "title": "$SIDE_TITLE_90014",
+            "description": "$SIDE_DESCRIPTION_90014",
+
+            "get_requirements": [90013],
+            "get_conversation": "$SIDE_GET_90014",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_contain_items": [
+                "关于通缉令1#1"
+            ],
+            "finish_conversation": "$SIDE_FINISH_90014",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#10000",
+                "经验值#2000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+
+            "chain":"情报#14"
+        },
+        {
+            "id": 90015,
+            "title": "$SIDE_TITLE_90015",
+            "description": "$SIDE_DESCRIPTION_90015",
+
+            "get_requirements": [90014],
+            "get_conversation": "$SIDE_GET_90015",
+            "get_npc": "酒保",
+
+            "finish_requirements": ["试炼场深处入口#简单"],
+            "finish_conversation": "$SIDE_FINISH_90015",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#20000",
+                "经验值#5000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#3"
+            ],
+
+            "chain":"情报#15"
+        },
+        {
+            "id": 90016,
+            "title": "$SIDE_TITLE_90016",
+            "description": "$SIDE_DESCRIPTION_90016",
+
+            "get_requirements": [90015],
+            "get_conversation": "$SIDE_GET_90016",
+            "get_npc": "酒保",
+
+            "finish_requirements": ["电子战接入设备间#简单"],
+            "finish_conversation": "$SIDE_FINISH_90016",
+            "finish_npc": "酒保",
+            "rewards": [
+                "金币#20000",
+                "经验值#5000",
+                "加强抗生素药剂#5",
+                "加强mp药剂#5",
+                "复活币#3"
+            ],
+
+            "chain":"情报#16"
+        },
+        {
+            "id": 90017,
+            "title": "$SIDE_TITLE_90017",
+            "description": "$SIDE_DESCRIPTION_90017",
+
+            "get_requirements": [90016],
+            "get_conversation": "$SIDE_GET_90017",
+            "get_npc": "酒保",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90017",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5"
+            ],
+
+            "chain":"情报#17"
+        },
+        {
+            "id": 90018,
+            "title": "$SIDE_TITLE_90018",
+            "description": "$SIDE_DESCRIPTION_90018",
+
+            "get_requirements": [90017],
+            "get_conversation": "$SIDE_GET_90018",
+            "get_npc": "Shop Girl",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90018",
+            "finish_npc": "假肢仙人",
+            "rewards": [
+                "金币#5000",
+                "经验值#1000",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "机密档案：幻影套装（Phantom Suit）研发日志残卷#1"
+            ],
+
+            "chain":"情报#18"
+        },
+        {
+            "id": 90019,
+            "title": "$SIDE_TITLE_90019",
+            "description": "$SIDE_DESCRIPTION_90019",
+
+            "get_requirements": [90018],
+            "get_conversation": "$SIDE_GET_90019",
+            "get_npc": "假肢仙人",
+
+            "finish_requirements": [],
+            "finish_conversation": "$SIDE_FINISH_90019",
+            "finish_npc": "Shop Girl",
+            "rewards": [
+                "金币#10000",
+                "经验值#3000",
+                "普通hp药剂#5",
+                "普通mp药剂#5",
+                "关于通缉令的汇总解释#1"
+            ],
+
+            "chain":"情报#19"
         }
     ]
 }
