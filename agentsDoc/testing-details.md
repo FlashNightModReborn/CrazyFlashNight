@@ -563,7 +563,12 @@ Team/Pet/Merc 的 exact 身份与迟到回包合同见 [持久写与恢复](#sav
 三车验证价格/驾驶资格、余额与拥有状态的提交时复验、取消、一次扣费、待保存重试、原 token 查询、场景/槽位变化和车辆权益。生产 SWF 分别核 asLoader 根桥、基地三处调用和 main 无旧确认 placement；真实保存重启与权益刷新须用隔离槽另验，Mock-browser 不代签。
 权益说明来自真实 XML 的 Level 1，报价/驾驶门槛保留 Level 0；focused runner 覆盖二者分离与展示回退。浏览器门使用真实 XML 和正式三车 WebP，覆盖最低 1024×576、常用尺寸、4:3 与超宽预览的等比居中、图片读取失败和中文长文案局部滚动。图片变更必跑 `python -X utf8 -B tools/bake-garage-vehicles.py --check`，实际再生核对 manifest 与派生字节。
 
-<a id="suite-hairdresser"></a>
+<a id="suite-stage-doors"></a>
+### 地铁与彩蛋选关（U7）
+
+两个面板共用同一套进关链：AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 在 `_root.加载外部UI` 顶部按 URL 转接 `flashswf/UI/地铁线路.swf` 与 `flashswf/UI/彩蛋地图关卡界面.swf`；目的地表、难度与门槛权威留在 AS2，enter 复用旧 `配置关卡属性` + `选关界面进入关卡`（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），不写存档。必跑 `scripts/run-subway-select-tests.ps1`、`scripts/run-egg-select-tests.ps1`（focused TestLoader 钉死门槛拒绝/进关/关闭语义）、`SubwaySelectTaskTests`、`EggStageSelectTaskTests`、`node tools/test-subway-select-runtime.js`、`node tools/test-egg-stage-select-runtime.js`，以及 `validate-panel-contracts`、`test-panel-contracts`、`check-workbench-css-bundle` 与 Launcher 全量门。真机人验（隧道据点按钮、彩蛋电脑、进关转场与返回）另记；两个旧 SWF/FLA 保留不删，通用 UI 宿主不退役。
+
+
 ### 理发与整形
 
 必跑：`node tools/validate-panel-contracts.js` + `node tools/test-panel-contracts.js` + `node tools/test-panel-runtime.js`；`node tools/run-hairdresser-harness.js`（低负载源码检查可用 `node tools/run-hairdresser-harness.js --static-only` / `node tools/run-plastic-surgery-harness.js --static-only`；

@@ -388,6 +388,8 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
+| `subway` | U7 地铁线路选关（隧道据点入口）；门槛与进关权威在 AS2 | `modules/subway-select.js` |
+| `egg-stage-select` | U7 彩蛋地图选关（彩蛋地图电脑入口）；彩蛋进度门权威在 AS2 | `modules/egg-stage-select.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
 | `bookshelf` | [书架、角色档案与书中历险](../docs/bookshelf-player-context.md)；[系列章节与合集原版接入](../docs/bookshelf-series-integration.md)已正式 promotion 并通过远端部署 Audit，专项验证不代签完整旅程与人验 | `modules/bookshelf-panel.js` |
 | `book-comic` | [修理大学重制版漫画](../docs/bookshelf-series-integration.md#修理大学重制版漫画)；固定比例全屏演出与整页阅读 | `modules/book-comic-panel.js` |

@@ -467,6 +467,8 @@ namespace CF7Launcher.Guardian
             Loadout,
             Skills,
             Tablet,
+            Subway,
+            EggStageSelect,
             Unsupported
         }
 
@@ -492,6 +494,8 @@ namespace CF7Launcher.Guardian
             if (domain == "loadout") return PanelDomainRoute.Loadout;
             if (domain == "skills") return PanelDomainRoute.Skills;
             if (domain == "tablet") return PanelDomainRoute.Tablet;
+            if (domain == "subway") return PanelDomainRoute.Subway;
+            if (domain == "egg_stage_select") return PanelDomainRoute.EggStageSelect;
             return PanelDomainRoute.Unsupported;
         }
 
@@ -1367,6 +1371,8 @@ namespace CF7Launcher.Guardian
         private PlasticSurgeryTask _plasticSurgeryTask;
         private GaragePurchaseTask _garagePurchaseTask;
         private SleepTask _sleepTask;
+        private SubwaySelectTask _subwaySelectTask;
+        private EggStageSelectTask _eggStageSelectTask;
         private BookComicTask _bookComicTask;
         public void SetBookComicTask(BookComicTask task)
         {
@@ -4990,6 +4996,20 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetSubwaySelectTask(SubwaySelectTask task)
+        {
+            _subwaySelectTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
+        public void SetEggStageSelectTask(EggStageSelectTask task)
+        {
+            _eggStageSelectTask = task;
+            task.SetPostToWeb(PostToWeb);
+            task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
+        }
+
         public void SetHairdresserTask(HairdresserTask task)
         {
             _hairdresserTask = task;
@@ -7689,6 +7709,20 @@ namespace CF7Launcher.Guardian
                 else RespondPanelDomainError(parsed, "garage_unavailable");
                 return;
             }
+            if (domainRoute == PanelDomainRoute.Subway)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "subway")) { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
+                if (_subwaySelectTask != null) _subwaySelectTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "subway_unavailable");
+                return;
+            }
+            if (domainRoute == PanelDomainRoute.EggStageSelect)
+            {
+                if (!HasExactActivePanelOwnerBinding(parsed, "egg-stage-select")) { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
+                if (_eggStageSelectTask != null) _eggStageSelectTask.HandleWebRequest(cmd, parsed);
+                else RespondPanelDomainError(parsed, "egg_stage_select_unavailable");
+                return;
+            }
             if (domainRoute == PanelDomainRoute.PlasticSurgery)
             {
                 if (!HasExactActivePanelOwnerBinding(parsed, "surgery"))
@@ -9579,6 +9613,8 @@ namespace CF7Launcher.Guardian
             if (_plasticSurgeryTask != null) _plasticSurgeryTask.ClearPending();
             if (_garagePurchaseTask != null) _garagePurchaseTask.ClearPending();
             if (_sleepTask != null) _sleepTask.ClearPending();
+            if (_subwaySelectTask != null) _subwaySelectTask.ClearPending();
+            if (_eggStageSelectTask != null) _eggStageSelectTask.ClearPending();
             _bookComicTask?.OnDisconnected();
             if (_bookshelfTask != null) _bookshelfTask.ClearPending();
             if (_gymTrainingTask != null) _gymTrainingTask.OnSocketDisconnected();

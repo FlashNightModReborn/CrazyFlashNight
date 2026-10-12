@@ -293,6 +293,42 @@
       "sourceChecks": []
     },
     {
+      "id": "subway",
+      "wireDomain": "subway",
+      "hostTask": "launcher/src/Tasks/SubwaySelectTask.cs",
+      "flashResponseTask": "subway_select_response",
+      "hostResponseHandler": "subwaySelectTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.SubwaySelectPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/SubwaySelectPanelService.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "subwaySelectSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "enter", "action": "subwaySelectEnter", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
+      "id": "egg-stage-select",
+      "wireDomain": "egg_stage_select",
+      "hostTask": "launcher/src/Tasks/EggStageSelectTask.cs",
+      "flashResponseTask": "egg_select_response",
+      "hostResponseHandler": "eggStageSelectTask.HandleFlashResponse",
+      "hostPayloadMode": "normalized",
+      "flashCommandHandler": "org.flashNight.arki.ui.EggSelectPanelService",
+      "flashSources": [
+        "scripts/类定义/org/flashNight/arki/ui/EggSelectPanelService.as"
+      ],
+      "commands": [
+        { "cmd": "snapshot", "action": "eggSelectSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "enter", "action": "eggSelectEnter", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" }
+      ],
+      "numericFields": [],
+      "sourceChecks": []
+    },
+    {
       "id": "hairdresser",
       "wireDomain": "hairdresser",
       "hostTask": "launcher/src/Tasks/HairdresserTask.cs",

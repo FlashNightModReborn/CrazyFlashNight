@@ -544,6 +544,20 @@ NativeHud 的 × 始终保留安全退出路由，仅在既有按钮内部投影
 验证入口：`scripts/run-garage-purchase-tests.ps1`、`GaragePurchaseTaskTests`、`tools/run-garage-purchase-harness.js`，以及现有 panel-contract、存盘调用点与受影响 Host/SaveManager 门。
 验证结果、身份、闭包、产物与修复边界见 [本地候选证据](../docs/evidence/u13-garage-local-2026-09-30.json) 与 [正式发布回执](../docs/evidence/u13-garage-release-2026-10-01.json)。2026-10-01 已 promoted：新冻结树的双独立构建一致，production policy 43/43、原子部署、安装完整性校验及远端审计通过。此前候选的三车单次扣费、保存确认和界面认可单独保留；保存重启读回、完整权益专项与新产物的正式入口业务复验仍待验证。共享服务和情报名词注记配色已归入唯一色板，普通/发布树 strict 样式门均为 0 error / 0 warning，颜色与透明度保持一致。
 
+<a id="u7-stage-doors"></a>
+### U7 地铁与彩蛋选关（2026-10-12 本地施工，候选未定版）
+
+隧道据点 `DefineButton2_64` 与彩蛋地图电脑分别调 `_root.加载外部UI("flashswf/UI/地铁线路.swf")` / `("flashswf/UI/彩蛋地图关卡界面.swf")`；两个 URL 在 UI 管理脚本顶部转接新 Web 面板 `subway` / `egg-stage-select`，发送失败可见报错且不回流旧 SWF。旧 SWF/FLA 保留不删，通用 UI 宿主不退役。AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 保留门槛、目的地与固定难度权威（Web 只投影 snapshot）；`enter` 在 holder 上复用旧 `配置关卡属性` + `选关界面进入关卡` 链（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），进入成功回 `closePanel:true` 后 Web 普通关闭。不写存档，无 token/对账；`enter` 单飞，超时/断线回 `enterUnknown` 提示观察游戏状态，绝不自动重放。
+
+| Web cmd | C# action | AS2 handler | AS2 response task | C# panel_resp | JS handler | 写状态 |
+|---------|-----------|-------------|-------------------|---------------|------------|--------|
+| `snapshot` | `subwaySelectSnapshot` / `eggSelectSnapshot` | 对应服务 `handle("snapshot")` | `subway_select_response` / `egg_select_response` | `panel_resp domain=subway / egg_stage_select cmd=snapshot` | 对应 `RequestMux` callback | 读 |
+| `enter` | `subwaySelectEnter` / `eggSelectEnter` | 对应服务 `handle("enter")` | 同上 | `panel_resp … cmd=enter` | 进入确认 callback | 关卡会话进入（不直接改存档） |
+
+地铁面板投影四站帧状态（新市场站未达 彩蛋≥4 且 主线≥67 保持锁定帧）与四条目：清理总备处（主线≥45 可见）、突袭新市场（彩蛋≥4 可见）、自由广场防守（主线≥20 可见、仅展示）、环线东北站探索（恒可见）；彩蛋面板投影 密林深处（简单，无进关门）/ 机器游荡区（简单，彩蛋≥4 且 主线≥67）/ 密林中央（冒险，彩蛋≥11），未达门槛显示"尚未解锁"原因。关闭不通知 Flash（无已加载旧 UI 需清理），pause 随普通 Panel 生命周期释放。
+
+验证入口：`scripts/run-subway-select-tests.ps1`、`scripts/run-egg-select-tests.ps1`、`SubwaySelectTaskTests`、`EggStageSelectTaskTests`、`node tools/test-subway-select-runtime.js`、`node tools/test-egg-stage-select-runtime.js`，另有 panel-contract 与 CSS bundle 门；明细见 [testing-details](testing-details.md#suite-stage-doors)。真机人验（入口、进关转场、返回）待验收窗口。
+
 ## 3. C# 接入清单
 
 地图内容工作台的 `map-workbench / map_workbench` 是 Host 本地 authoring 域；定义／人物／驻点／规则与素材由同一 C# 内核维护，任务端点只补丁写原任务 JSON。生产地图在页面创建前注入 C# 校验后的定义，运行时 snapshot v4、HUD outline、当前地点、任务与 NPC 投影由同一 C# 地图域基于有限 AS2 事实计算。`map_domain` 仅 XMLSocket，Web/HTTP 不能上传实时事实；AS2 执行导航前再检查会话／内容／事实 revision／scene epoch 与生命周期，不保留旧解锁 switch、别名或选址 fallback。结算后前往只记录意图，终态、exact close、pause lease 释放后才 fresh resolve。作者预览在隔离子文档复用生产 MapPanel，消息受 exact Window／同源／本轮 session 限制，直接使用 C# 原因树和方案 A/B；没有全解锁伪状态，也不执行游戏写入。应用／撤回是有摘要与恢复记录的多文件批次，重启生效，不是多文件系统原子事务。见[地图内容工作台](../tools/map-workbench/README.md)。

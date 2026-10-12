@@ -3365,6 +3365,20 @@ namespace CF7Launcher.Guardian
                 else LogManager.Log("[Router] surgery rejected invalid source");
                 return;
             }
+            if (string.Equals(panelName, "subway", StringComparison.Ordinal))
+            {
+                if (safeSource == "world_subway")
+                    OpenPanel("subway", new JObject { ["source"] = safeSource, ["mode"] = "runtime" }.ToString(Formatting.None));
+                else LogManager.Log("[Router] subway rejected invalid source");
+                return;
+            }
+            if (string.Equals(panelName, "egg-stage-select", StringComparison.Ordinal))
+            {
+                if (safeSource == "world_egg_computer")
+                    OpenPanel("egg-stage-select", new JObject { ["source"] = safeSource, ["mode"] = "runtime" }.ToString(Formatting.None));
+                else LogManager.Log("[Router] egg-stage-select rejected invalid source");
+                return;
+            }
             if (string.Equals(panelName, "hairdresser", StringComparison.OrdinalIgnoreCase))
             {
                 OpenHairdresserPanel(safeSource);
