@@ -88,26 +88,28 @@
 .tablet-intro-wrap { position: absolute; inset: 0; z-index: 6; pointer-events: auto; }
 .tablet-intro-el { position: absolute; user-select: none; }
 /* 二阶段红字提示（原版"轻按屏幕唤起按键"文案位）；
-   ChillGSans = 寒蝉高黑体（工业窄黑，偏机械感），face weight 500 */
-.tablet-intro-wake { color: #ff2a2a; font-size: 1.5em; font-weight: 500;
+   ChillGSans = 寒蝉高黑体（工业窄黑，偏机械感），face weight 500；
+   警示红消费语义 token（ratchet：触线不留裸色值） */
+.tablet-intro-wake { color: var(--wb-semantic-danger); font-size: 1.5em; font-weight: 500;
   font-family: 'ChillGSans', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
   letter-spacing: .08em;
-  text-align: center; line-height: 1.2; text-shadow: 0 0 6px rgba(255,42,42,.55); }
+  text-align: center; line-height: 1.2; text-shadow: 0 0 6px color-mix(in srgb, var(--wb-semantic-danger) 55%, transparent); }
 
 /* 转场期间禁点（原 XFL 按钮占用）与新视图 DOM 内容淡入/淡出：
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
    新 DOM 由 entered 动画淡入 */
 .tablet-stage.switching .tablet-overlay { pointer-events: none; }
-/* 转场只作用于内容层：旧内容先全淡出（前 190ms），新内容 bgAlt 延迟 170ms
-   再淡入（后 210ms）——共享背景帧常驻不参与，杜绝整幅互叠的泛浅/提亮。
+/* 转场只作用于内容层：旧内容先全淡出，新内容 bgAlt 延迟一档（--wb-motion-standard）
+   再淡入——共享背景帧常驻不参与，杜绝整幅互叠的泛浅/提亮。时长取 --wb-motion-*
+   最近语义档（ratchet WB125/126：触线不得留裸时长/裸缓动）。
    transition 只在 switching 期间挂——摘除瞬间内容层已换为新图，瞬回 opacity 1
    而不是再淡入一遍 */
 .tablet-stage.switching .tablet-view:not(.tablet-view-alt) {
   opacity: 0;
-  transition: opacity .19s ease;
+  transition: opacity var(--wb-motion-structural) var(--wb-ease-standard);
 }
 .tablet-stage.switching .tablet-view-alt.on {
-  transition: opacity .21s ease .17s;
+  transition: opacity var(--wb-motion-structural) var(--wb-ease-standard) var(--wb-motion-standard);
 }
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-ambient { transition: var(--wb-tablet-content-transition); }
