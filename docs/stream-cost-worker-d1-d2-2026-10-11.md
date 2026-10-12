@@ -8,11 +8,17 @@
 
 已将封存源码树 `890508f38af78e1d439176e4a261b23f69353532` 的 80 个施工文件整合到最新 main `d305afb9d159002311eca66f635b57824e087a9a`；逐路径核对无交叉修改，保留全部上游变更和真实存档。用户在普通 full 模式试玩隔离候选07后授权正式发布；日志确认该次 Ready 生命周期及 Flash code 0 退出，不补签逐项视听、弱机或完整业务验收。
 
-本列车将为合并后的最终源码使用新标签 `runtime-build-v2/20261012-stream-cost-worker-v1` 和 immutable request，重新执行注册本地 X509／GitHub hosted OIDC 独立构建、当前 strict policy、唯一 writer 原子 promotion、部署提交及远端 Audit、无候选选择器的正式入口复验。目前状态为源码整合／验证中，尚未正式推广。施工包的旧 request、旧策略票与人工试玩身份不会替代新列车证明。
+本列车当前使用新标签 `runtime-build-v2/20261012-stream-cost-worker-v2` 和新 immutable request，执行注册本地 X509／GitHub hosted OIDC 独立构建、当前 strict policy、唯一 writer 原子 promotion、部署提交及远端 Audit、无候选选择器的正式入口复验。目前尚未正式推广。施工包的旧 request、旧策略票与人工试玩身份不会替代新列车证明。
 
 合并后的真实 CS6 首次 publish 发现上游 `通信_aka_Agent联动.as` 新函数使用 `lt`、`gt` 两个 AS2 保留字作变量，Compiler 报7错／0警告。按原业务语义仅重命名为 `tagStart`／`tagEnd`，保留 BOM 并重编；失败日志及无效1253字节 SWF 保留在本机发布目录，未部署。新 RAG 五键投影保持上游合同。
 
 修正后的真实 CS6 publish 于 `2026-10-12T03:57:08Z` 取得 Compiler 0错／0警告，SWF 6,057,009字节、SHA-256 `299971B75B226B53BAB3514DBA9BDC05F191FCCEAC7AE23B08F75F0F58BD278F`。合并后的 canonical Host 全量7,089通过／27专项跳过，Node85和Worker projection48通过；22项派生资源与文档治理通过。发布前保护快照137个既有记录差异为0；原施工索引未知写锁和原索引字节均保留。
+
+v1 源码 `58bfa60b31d070379d3713c6070ae69969f5aeb7` 已推送，远端 Audit `38202039408` 成功回报 `source-ahead / deploymentChanged=false`。本地 X509 已对 identity `CBE39D146A1F508DE1A2A0F8577B60BB59DA376523798A5372B86F03AD73D8D8`、closure `0E2AFB5211CC9F88E79422B6AFA82775F44A87F4F878729B7C2D6B9C8477602A` 出具真实生产票；严格策略为44/47，因上游新商店 CSS 导入未进入闭包检查器、9个未登记的优先覆盖与颜色／平板动效债务越限停止，未触发云构建或推广。v1 标签与原失败票不移动、不删除。
+
+v2 只修复政策与 Web 归属：补齐商店 CSS 闭包，既有缺省色及平板转场参数移入共享 token，去掉9个优先覆盖并用明确选择器保持原效果；skins 账本10→1，rawColor2044→2013、rawDuration107→105、rawEasing93→91，债务上限同步下降。商店 harness 为新胸像解析器声明真实资源根，并按生成的阵营主题验证数量控件，不改交易权威。真实 Edge 商店133/133、材料导航23/23、减少动效2/2，Node runtime10/10、secondary14/14、棘轮68/68与严格CSS审计0错误／0警告通过。两次真实浏览器前后对照覆盖帮助／结算共755个节点、每节点27项属性，颜色、几何、字体与转场参数差异为0；属于受控前端夹具，不称玩家实机业务验收。首次素材路径和旧金色断言失败日志保留。
+
+v2 不修改 C#／native／AS2／SWF 输入；只有新 request 对前三域及 build identity 核对仍一致时，才按发布协议复用 v1 的真实本地 signed CAS。云端必须从 v2 标签重新独立生产并签名，最终完整策略票重新绑定 v2，不沿用44/47失败票。
 
 发布证据保存在 primary 的 `tmp/runtime-release/stream-cost-worker-20261012/`；施工原始证据和试玩存档继续保存在原 worktree。下节性能与测试数字属于已交付候选07，合并后的正式 runtime 单独记录实际身份和验证范围。
 

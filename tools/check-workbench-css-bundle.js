@@ -34,6 +34,7 @@ const IMPORTS = [
     './panels/bartending.css',
     './panels/armory.css',
     './panels/ironspear.css',
+    './panels/npcshop.css',
     './workbench/equipment-inspector.css',
     './workbench/skills.css',
     './workbench/equipment-tuning.css',

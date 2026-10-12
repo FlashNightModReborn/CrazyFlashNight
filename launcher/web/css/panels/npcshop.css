@@ -10,9 +10,9 @@
 
 /* NPC 金币商店：主页面选择意图，二级页面以 AS2 权威预览执行整单原子结算。 */
 .npcshop-panel {
-    --wb-accent:var(--npcshop-accent,#e5a64d);
-    --wb-scrollbar-track:color-mix(in srgb,var(--npcshop-dark,#14161a) 80%,#000);
-    --wb-scrollbar-thumb:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 55%,#1a1208);
+    --wb-accent:var(--npcshop-accent,var(--wb-semantic-warning));
+    --wb-scrollbar-track:color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 80%,#000);
+    --wb-scrollbar-thumb:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 55%,#1a1208);
     --wb-scrollbar-thumb-border:var(--npcshop-accent,#a47d43);
     --wb-scrollbar-thumb-hover:var(--npcshop-light,#967338);
 }
@@ -24,31 +24,31 @@
     height:576px;
     overflow:hidden;
     background:
-        linear-gradient(155deg,color-mix(in srgb,var(--npcshop-light,#e8cfa5) 7%,transparent) 0%,transparent 46%),
-        linear-gradient(180deg,color-mix(in srgb,var(--npcshop-dark,#14161a) 82%,#000) 0%,var(--npcshop-dark,#14161a) 100%);
+        linear-gradient(155deg,color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 7%,transparent) 0%,transparent 46%),
+        linear-gradient(180deg,color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 82%,#000) 0%,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 100%);
 }
 .npcshop-frame .workbench-shell {
     background:transparent;
-    border-color:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 34%,transparent);
+    border-color:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 34%,transparent);
 }
 .npcshop-frame .workbench-header {
     background:linear-gradient(90deg,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 68%,#000) 0%,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 88%,#000) 64%,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 94%,#000) 100%);
-    border-bottom-color:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 26%,transparent);
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 68%,#000) 0%,
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 88%,#000) 64%,
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 94%,#000) 100%);
+    border-bottom-color:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 26%,transparent);
 }
 .npcshop-frame .workbench-header::before {
     width:236px;
-    background:var(--npcshop-accent,#e5a64d);
+    background:var(--npcshop-accent,var(--wb-semantic-warning));
 }
 .npcshop-frame .workbench-slot {
-    border-color:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 30%,transparent);
-    background:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 7%,#0c0f13);
+    border-color:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 30%,transparent);
+    background:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 7%,#0c0f13);
 }
 /* 商品目录槽透明化让立绘底板透出；背包槽保持实面 */
 .npcshop-frame .workbench-slot[data-slot="L"] { background:transparent; }
-.npcshop-frame .workbench-flow-rail { color:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 62%,transparent); }
+.npcshop-frame .workbench-flow-rail { color:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 62%,transparent); }
 
 /* ── 店主立绘底板：压在商品目录槽下，阵营深色滤镜 + cover 放大裁切 ────── */
 .npcshop-backdrop {
@@ -58,8 +58,8 @@
     overflow:hidden;
     pointer-events:none;
     background:linear-gradient(180deg,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 80%,#000) 0%,
-        var(--npcshop-dark,#14161a) 100%);
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 80%,#000) 0%,
+        var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 100%);
 }
 .npcshop-backdrop-portrait {
     position:absolute;
@@ -74,16 +74,16 @@
     position:absolute;
     inset:0;
     background:linear-gradient(180deg,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 66%,transparent) 0%,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 40%,transparent) 46%,
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 82%,transparent) 100%);
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 66%,transparent) 0%,
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 40%,transparent) 46%,
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 82%,transparent) 100%);
 }
 .npcshop-backdrop-placeholder {
     position:absolute;
     inset:0;
     display:grid;
     place-items:center;
-    color:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 24%,transparent);
+    color:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 24%,transparent);
     font:700 120px/1 "Microsoft YaHei",sans-serif;
 }
 /* 目录槽内容浮于底板之上 */
@@ -91,7 +91,7 @@
 .npcshop-frame .workbench-slot[data-slot="L"] > .workbench-view-host { position:relative; z-index:1; }
 /* 目录卡片略透光，与底板形成材质层次 */
 .npcshop-frame .npcshop-catalog-card { background:rgba(10,12,16,.86); }
-.npcshop-frame .npcshop-catalog-card:hover { background:color-mix(in srgb,var(--npcshop-light,#e8cfa5) 12%,rgba(16,19,24,.92)); }
+.npcshop-frame .npcshop-catalog-card:hover { background:color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 12%,rgba(16,19,24,.92)); }
 
 /* ── 主页面：目录 / 背包同级 View ─────────────────────────────────────── */
 .npcshop-catalog-view,.npcshop-owned-view { display:flex; min-height:0; flex-direction:column; overflow:hidden; }
@@ -104,7 +104,7 @@
     font:10px/1.2 "Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-collection-tabs button:hover,.npcshop-collection-tabs button.active {
-    color:#17191c; border-color:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 72%,#fff); background:var(--npcshop-accent,#e5a64d);
+    color:var(--wb-semantic-npcshop-action-ink); border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 72%,var(--appearance-strong-text)); background:var(--npcshop-accent,var(--wb-semantic-warning));
 }
 .npcshop-catalog-grid {
     flex:1 1 auto; min-height:0; padding:7px; overflow-y:auto; overflow-x:hidden;
@@ -121,9 +121,9 @@
 }
 .npcshop-catalog-card:hover { border-color:#626a74; background:#171b20; }
 .npcshop-catalog-card.selected,.npcshop-owned-card.selected {
-    border-color:var(--npcshop-accent,#e5a64d);
-    background:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 11%,transparent);
-    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--npcshop-accent,#e5a64d) 20%,transparent);
+    border-color:var(--npcshop-accent,var(--wb-semantic-warning));
+    background:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 11%,transparent);
+    box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 20%,transparent);
 }
 .npcshop-catalog-card.npcshop-navigation-focus {
     border-color:var(--wb-role-focus);
@@ -196,16 +196,16 @@
 .npcshop-bag-toolbar .inventory-filter-control { display:block; grid-area:auto; min-width:0; width:100%; }
 .npcshop-bag-toolbar .inventory-filter-navigator { width:100%; min-height:23px; max-height:52px; overflow-y:auto; scrollbar-width:thin; }
 
-.npcshop-checkout-btn:not(:disabled) {
-    color:#17191c !important;
-    border-color:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 70%,#fff) !important;
-    background:var(--npcshop-accent,#e5a64d) !important;
+.npcshop-frame .npcshop-checkout-btn:not(:disabled) {
+    color:var(--wb-semantic-npcshop-action-ink);
+    border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 70%,var(--appearance-strong-text));
+    background:var(--npcshop-accent,var(--wb-semantic-warning));
 }
-.npcshop-help-btn { min-width:28px !important; padding:2px 7px !important; font:700 13px/1 Consolas,monospace !important; }
+.npcshop-frame .npcshop-help-btn { min-width:28px; padding:2px 7px; font:700 13px/1 Consolas,monospace; }
 .npcshop-helping .npcshop-help-btn {
-    color:#17191c !important;
-    border-color:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 70%,#fff) !important;
-    background:var(--npcshop-accent,#e5a64d) !important;
+    color:var(--wb-semantic-npcshop-action-ink);
+    border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 70%,var(--appearance-strong-text));
+    background:var(--npcshop-accent,var(--wb-semantic-warning));
 }
 
 /* ── 二级页面：结算 / 整理空间 / 帮助（沿用阵营变量染色） ─────────────── */
@@ -215,15 +215,15 @@
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee;
     background:linear-gradient(135deg,
-        color-mix(in srgb,var(--npcshop-light,#e8cfa5) 6%,#0d1014),
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 55%,#090b0e) 70%);
-    border-top:1px solid color-mix(in srgb,var(--npcshop-light,#e8cfa5) 22%,#292e35);
+        color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 6%,#0d1014),
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 55%,#090b0e) 70%);
+    border-top:1px solid color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 22%,#292e35);
 }
 .npcshop-settlement-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
 .npcshop-settlement-header button,.npcshop-settlement-summary > button,.npcshop-stepper > button {
     color:var(--npcshop-light,#e9b96d);
-    border:1px solid color-mix(in srgb,var(--npcshop-accent,#e5a64d) 42%,#14100a);
-    background:color-mix(in srgb,var(--npcshop-dark,#14161a) 72%,#100c06);
+    border:1px solid color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 42%,#14100a);
+    background:color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 72%,#100c06);
     font-family:"Microsoft YaHei",sans-serif; cursor:pointer;
 }
 .npcshop-settlement-header button { min-height:28px; padding:3px 10px; }
@@ -237,7 +237,7 @@
 .npcshop-settlement-line { display:grid; grid-template-columns:48px minmax(0,1fr) auto; align-items:center; gap:7px; min-height:58px; margin-bottom:5px; padding:5px; border:1px solid #272c33; background:#11151a; }
 .npcshop-settlement-copy { min-width:0; display:flex; flex-direction:column; gap:3px; }
 .npcshop-settlement-copy b { overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
-.npcshop-settlement-copy small { color:var(--npcshop-accent,#e5a64d); font:10px Consolas,monospace; }
+.npcshop-settlement-copy small { color:var(--npcshop-accent,var(--wb-semantic-warning)); font:10px Consolas,monospace; }
 .npcshop-stepper { display:flex; flex-wrap:wrap; justify-content:flex-end; align-items:center; gap:3px; max-width:252px; }
 .npcshop-stepper .workbench-quantity-control { flex:1 1 193px; width:193px; }
 .npcshop-stepper b { text-align:center; font:11px Consolas,monospace; }
@@ -245,9 +245,9 @@
 .npcshop-stepper > button.wide { width:auto; min-width:47px; padding:0 5px; font-size:11px; }
 .npcshop-settlement-copy em { color:#858d96; font:normal 10px/1.35 "Microsoft YaHei",sans-serif; }
 .npcshop-stepper > button:hover:not(:disabled),.npcshop-settlement-header button:hover,.npcshop-settlement-summary > button:hover:not(:disabled) {
-    color:#17191c;
-    background:var(--npcshop-accent,#e5a64d);
-    border-color:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 66%,#fff);
+    color:var(--wb-semantic-npcshop-action-ink);
+    background:var(--npcshop-accent,var(--wb-semantic-warning));
+    border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 66%,var(--appearance-strong-text));
 }
 .npcshop-stepper > button:disabled,.npcshop-settlement-summary > button:disabled { opacity:.35; cursor:not-allowed; }
 .npcshop-stepper > button.remove { color:#d77d7d; border-color:#663d3d; background:#211313; }
@@ -267,12 +267,12 @@
     position:absolute; z-index:4; inset:0; display:none; grid-template-rows:auto minmax(0,1fr);
     min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     background:linear-gradient(135deg,
-        color-mix(in srgb,var(--npcshop-light,#e8cfa5) 5%,#0d1014),
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 55%,#090b0e) 70%);
+        color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 5%,#0d1014),
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 55%,#090b0e) 70%);
 }
 .npcshop-space-page.active { display:grid; }
 .npcshop-space-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
-.npcshop-space-header button { min-height:28px; padding:3px 10px; color:var(--npcshop-light,#e9b96d); border:1px solid color-mix(in srgb,var(--npcshop-accent,#e5a64d) 42%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,#14161a) 72%,#100c06); cursor:pointer; }
+.npcshop-space-header button { min-height:28px; padding:3px 10px; color:var(--npcshop-light,#e9b96d); border:1px solid color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 42%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 72%,#100c06); cursor:pointer; }
 .npcshop-space-header h2 { margin:0; font-size:18px; }
 .npcshop-space-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-space-header [data-space-status] { margin-left:auto; color:var(--wb-accent); font-size:10px; }
@@ -293,8 +293,8 @@
 .npcshop-space-grid .inventory-owned-icon,.npcshop-space-grid .cfn-layered-icon { width:32px; height:32px; }
 .npcshop-space-grid .npcshop-space-transferable { cursor:pointer; }
 .npcshop-space-grid .npcshop-space-transferable:hover {
-    border-color:var(--npcshop-accent,#e5a64d);
-    background:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 11%,transparent);
+    border-color:var(--npcshop-accent,var(--wb-semantic-warning));
+    background:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 11%,transparent);
 }
 .npcshop-space-grid::-webkit-scrollbar { width:7px; }
 .npcshop-space-grid::-webkit-scrollbar-track { background:#111419; }
@@ -304,13 +304,13 @@
     grid-template-rows:auto minmax(0,1fr) auto; min-height:0; padding:10px 14px 12px; box-sizing:border-box;
     color:#e8ebee;
     background:linear-gradient(135deg,
-        color-mix(in srgb,var(--npcshop-light,#e8cfa5) 5%,#101318),
-        color-mix(in srgb,var(--npcshop-dark,#14161a) 55%,#090b0e) 72%);
-    border-top:1px solid color-mix(in srgb,var(--npcshop-light,#e8cfa5) 22%,#292e35);
+        color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 5%,#101318),
+        color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 55%,#090b0e) 72%);
+    border-top:1px solid color-mix(in srgb,var(--npcshop-light,var(--wb-semantic-npcshop-default-light)) 22%,#292e35);
 }
 .npcshop-help-header { display:flex; align-items:center; gap:14px; min-height:48px; padding-bottom:8px; border-bottom:1px solid #2d3239; }
-.npcshop-help-header button { min-height:28px; padding:3px 10px; color:var(--npcshop-light,#e9b96d); border:1px solid color-mix(in srgb,var(--npcshop-accent,#e5a64d) 42%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,#14161a) 72%,#100c06); cursor:pointer; }
-.npcshop-help-header button:hover { color:#17191c; border-color:color-mix(in srgb,var(--npcshop-accent,#e5a64d) 66%,#fff); background:var(--npcshop-accent,#e5a64d); }
+.npcshop-help-header button { min-height:28px; padding:3px 10px; color:var(--npcshop-light,#e9b96d); border:1px solid color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 42%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 72%,#100c06); cursor:pointer; }
+.npcshop-help-header button:hover { color:var(--wb-semantic-npcshop-action-ink); border-color:color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 66%,var(--appearance-strong-text)); background:var(--npcshop-accent,var(--wb-semantic-warning)); }
 .npcshop-help-header h2 { margin:0; font-size:18px; }
 .npcshop-help-header p { margin:2px 0 0; color:var(--wb-muted); font-size:10px; }
 .npcshop-help-grid {
@@ -322,14 +322,14 @@
     padding:10px; box-sizing:border-box; overflow:hidden; border:1px solid #2b3037; background:#0d1014;
     box-shadow:inset 0 0 0 1px rgba(255,255,255,.015);
 }
-.npcshop-help-index { color:var(--npcshop-accent,#e5a64d); font:700 21px/1 Consolas,monospace; opacity:.9; }
+.npcshop-help-index { color:var(--npcshop-accent,var(--wb-semantic-warning)); font:700 21px/1 Consolas,monospace; opacity:.9; }
 .npcshop-help-card h3 { margin:0 0 5px; color:#edf0f2; font-size:12px; }
 .npcshop-help-card p { margin:0; color:var(--wb-text); font-size:10px; line-height:1.55; }
 .npcshop-help-card small { display:block; margin-top:4px; color:#727a83; font-size:10px; line-height:1.45; }
 .npcshop-help-flow { display:flex; align-items:center; gap:7px; margin-top:8px; }
-.npcshop-help-flow i { padding:3px 7px; color:var(--npcshop-light,#e6b66b); border:1px solid color-mix(in srgb,var(--npcshop-accent,#e5a64d) 38%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,#14161a) 70%,#0f0c07); font:normal 10px "Microsoft YaHei",sans-serif; }
+.npcshop-help-flow i { padding:3px 7px; color:var(--npcshop-light,#e6b66b); border:1px solid color-mix(in srgb,var(--npcshop-accent,var(--wb-semantic-warning)) 38%,#14100a); background:color-mix(in srgb,var(--npcshop-dark,var(--wb-semantic-npcshop-default-dark)) 70%,#0f0c07); font:normal 10px "Microsoft YaHei",sans-serif; }
 .npcshop-help-flow b { color:#6f7780; font:10px Consolas,monospace; }
 .npcshop-help-rules { display:flex; align-items:center; gap:10px; min-height:42px; padding-top:8px; border-top:1px solid #2d3239; }
-.npcshop-help-rules > b { color:var(--npcshop-accent,#e5a64d); font-size:10px; }
+.npcshop-help-rules > b { color:var(--npcshop-accent,var(--wb-semantic-warning)); font-size:10px; }
 .npcshop-help-rules > span { padding:3px 7px; color:#aeb4bb; border:1px solid #30353c; background:#11151a; font-size:10px; }
 .npcshop-help-rules > small { margin-left:auto; max-width:235px; color:#68717a; font-size:10px; line-height:1.4; text-align:right; }

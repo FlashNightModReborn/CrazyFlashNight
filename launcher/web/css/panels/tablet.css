@@ -104,10 +104,10 @@
    而不是再淡入一遍 */
 .tablet-stage.switching .tablet-view:not(.tablet-view-alt) {
   opacity: 0;
-  transition: opacity .19s ease;
+  transition: var(--wb-tablet-content-out-transition);
 }
 .tablet-stage.switching .tablet-view-alt.on {
-  transition: opacity .21s ease .17s;
+  transition: var(--wb-tablet-content-in-transition);
 }
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-ambient { transition: var(--wb-tablet-content-transition); }

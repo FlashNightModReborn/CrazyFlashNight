@@ -128,6 +128,10 @@
 
 ---
 
+### 6.3 NPC 商店缺省材质
+
+商店阵营主题仍由 `NpcShopThemes` 设置 `--npcshop-accent/dark/light`。主题缺失时的既有深底、浅色和操作墨色统一归入 `tokens.css` 的 `--wb-semantic-npcshop-default-dark/default-light/action-ink`；商业金和白色复用既有同值共享 token。迁入保持原色值及透明度，不改变店主主题、布局或交易状态语义。
+
 ## 7. 面板 → 强调色映射（canonical）
 
 | 面板 | 主强调色 token | 当前 CSS 值 | 备注 |

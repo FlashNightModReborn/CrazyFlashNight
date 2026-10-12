@@ -33,7 +33,7 @@
     },
     {
       "file": "launcher/web/css/workbench/skins.css",
-      "ceiling": 10,
+      "ceiling": 1,
       "classification": "migration-debt",
       "reason": "Legacy skin rules still override structural declarations in the unlayered bundle.",
       "exitCondition": "Delete each override when the corresponding skin becomes token-only and computed-style fixtures stay unchanged."
