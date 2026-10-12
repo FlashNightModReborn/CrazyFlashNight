@@ -758,6 +758,76 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Theory]
+        [InlineData("valid")]
+        [InlineData("missing")]
+        [InlineData("contract")]
+        [InlineData("receipt")]
+        [InlineData("consumer")]
+        public void WorkerRealResultMustEchoTheCapturedInstalledContract(string change)
+        {
+            string root = CreateProjectRoot();
+            WriteManifest(root, "projection-result", 1);
+            var consumers = new JObject();
+            foreach (string name in WorkerProjectionPolicy.ConsumerNames)
+                consumers[name] = name == "sceneLighting" || name == "equipmentLighting" ? "full" : "none";
+            var config = new JObject { ["schema"] = "arena-worker.launch.v2", ["workerId"] = "w01", ["sessionEpoch"] = "s01",
+                ["projectRoot"] = root, ["stateRoot"] = Path.Combine(root, "tmp", "arena-worker", "s01"),
+                ["saveRoot"] = Path.Combine(root, "saves"), ["outputRoot"] = Path.Combine(root, "tmp", "arena-calibration"),
+                ["swfOrigin"] = Path.Combine(root, "CRAZYFLASHER7MercenaryEmpire.swf"), ["slot"] = "cf7_agent_fixture",
+                ["presentationPolicy"] = "full", ["projectionConsumers"] = consumers, ["controlFrameFormat"] = "f-visual-v1",
+                ["visualSeedRevision"] = WorkerProjectionPolicy.VisualRevision,
+                ["simulationRngConsumptionRevision"] = WorkerProjectionPolicy.SimulationRevision, ["sessionVisualSeed"] = 42 };
+            var bindings = new JObject();
+            foreach (string name in WorkerProjectionPolicy.CatalogNames) bindings[name] = "sha256:" + new string('a', 64);
+            JObject offer = null;
+            var policy = ArenaWorkerPolicy.FromConfiguration(config, root);
+            using var projection = new WorkerProjectionNegotiator(policy, bindings,
+                (wire, generation) => { offer = JObject.Parse(wire.TrimEnd('\0')); return true; },
+                (reason, generation) => { }, startTimer: false);
+            projection.Ready(1);
+            JObject prepared = (JObject)offer.DeepClone();
+            prepared["task"] = "worker_projection_prepared"; prepared["accepted"] = true; prepared["clean"] = true;
+            JObject installed = JObject.Parse(projection.Prepared(prepared, 1));
+            installed["task"] = "worker_projection_committed"; installed["installClockKind"] = "flashRootEnterFrame";
+            installed["installEpoch"] = 1; installed["installTick"] = 2;
+            projection.Committed(installed, 1);
+            Assert.True(projection.IsReady);
+            ArenaCalibrationTask task = null;
+            task = new ArenaCalibrationTask(root, () => true, payload => {
+                JObject command = JObject.Parse(payload.TrimEnd('\0'));
+                JObject response = ExactResponse(command);
+                response["presentationPolicy"] = "full"; response["projectionConsumers"] = consumers.DeepClone();
+                response["presentationContractVersion"] = 1; response["presentationContractId"] = installed["contractId"].DeepClone();
+                response["projectionInstallReceipt"] = installed.DeepClone(); response["readinessKind"] = "arena.presented.v1";
+                response["visualSeedRevision"] = WorkerProjectionPolicy.VisualRevision;
+                response["simulationRngConsumptionRevision"] = WorkerProjectionPolicy.SimulationRevision;
+                if (change == "missing") response.Remove("projectionInstallReceipt");
+                if (change == "contract") response["presentationContractId"] = new string('b', 32);
+                if (change == "receipt") response["projectionInstallReceipt"]["installTick"] = 3;
+                if (change == "consumer") response["projectionConsumers"]["ray"] = "full";
+                task.HandleFlashResponse(response, _ => { });
+            }, _ => 3000, "w01", "s01", allowOwnedFlashRebind: false);
+            task.SetWorkerProjection(projection);
+            task.HandleControl(new JObject { ["action"] = "startBatch",
+                ["manifestPath"] = "tmp/arena-calibration/batches/projection-result/case_manifest.json" });
+            JObject terminal = WaitForState(task, change == "valid" ? "completed" : "failed");
+            JObject row = JObject.Parse(File.ReadAllLines(Path.Combine(root, (string)terminal["resultPath"]))[0]);
+            if (change == "valid")
+            {
+                Assert.Equal("finished", (string)row["status"]);
+                Assert.True(JToken.DeepEquals(installed, row["projectionInstallReceipt"]));
+                Assert.True(JToken.DeepEquals(consumers, row["projectionConsumers"]));
+                Assert.Equal((string)installed["contractId"], (string)row["presentationContractId"]);
+            }
+            else
+            {
+                Assert.True(terminal.Value<bool>("transportPoisoned"));
+                Assert.Equal("bridge_lost", (string)row["status"]);
+                Assert.Contains("projection_result_contract_mismatch", (string)row["errors"][0]["message"]);
+            }
+        }
+
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void TransportPoison_RebindRequiresNewOwnedFlash_AndIsNeverAllowedForWorker(bool allowRebind)

@@ -200,11 +200,13 @@ class org.flashNight.arki.render.RayVfxManager {
     public static function spawnForBullet(bullet:Object, startX:Number, startY:Number,
                                           endX:Number, endY:Number,
                                           config:TeslaRayConfig, meta:Object):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         spawn(startX, startY, endX, endY, config, RayVisualBridge.channelMeta(bullet, meta));
     }
     public static function spawn(startX:Number, startY:Number,
                                   endX:Number, endY:Number,
                                   config:TeslaRayConfig, meta:Object):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         if (!isFiniteNumber(startX) || !isFiniteNumber(startY) ||
             !isFiniteNumber(endX) || !isFiniteNumber(endY)) {
             return;

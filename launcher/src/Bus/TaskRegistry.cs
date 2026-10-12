@@ -886,10 +886,24 @@ namespace CF7Launcher.Bus
         /// 全量 task 清单（含元数据）。httpCallable 标记在此声明，同时驱动
         /// _httpCallable 集合和 /status JSON 输出，消除双写不一致风险。
         /// </summary>
+        internal static void RegisterVisualWire(MessageRouter router, VisualWireNegotiator wire)
+            => router.RegisterSyncForGeneration("visual_wire_select", wire.Select);
+
+        internal static void RegisterWorkerProjection(MessageRouter router, CF7Launcher.ArenaWorker.WorkerProjectionNegotiator projection)
+        {
+            router.RegisterSyncForGeneration("worker_projection_prepared", projection.Prepared);
+            router.RegisterSyncForGeneration("worker_projection_committed", projection.Committed);
+            router.RegisterSyncForGeneration("worker_projection_rejected", projection.Rejected);
+        }
+
         private static void BuildTaskList(StringBuilder sb)
         {
             bool first = true;
             first = AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false, first);
+            first = AppendTask(sb, "visual_wire_select", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_prepared", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_committed", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_rejected", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "toast",          "json_sync", "AS2->C#", true,  first);
             first = AppendTask(sb, "warlord_stage_start", "json_sync", "AS2->C#", false, first);

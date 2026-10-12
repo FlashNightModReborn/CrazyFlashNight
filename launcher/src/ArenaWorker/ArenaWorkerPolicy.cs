@@ -26,6 +26,7 @@ namespace CF7Launcher.ArenaWorker
         internal static PerformancePolicy DefaultPerformance { get; } = new("performance", "fixed", 180);
         internal PerformancePolicy Performance { get; private set; } = DefaultPerformance;
         internal bool AllowFaultInjection { get; private set; }
+        internal WorkerProjectionPolicy Projection { get; private set; }
         internal JObject RuntimeIdentity { get; private set; }
         internal string MutexName => "Local\\CF7ME_ArenaWorker_" + LegacyHttpAccessPolicy.ComputeProjectRootHash(ProjectRoot);
         private FileStream _claim;
@@ -64,7 +65,7 @@ namespace CF7Launcher.ArenaWorker
             if (!File.Exists(configPath) || new FileInfo(configPath).Length > 32768)
                 throw new InvalidOperationException("Worker launch configuration is missing or too large.");
             JObject config = JObject.Parse(File.ReadAllText(configPath, Encoding.UTF8));
-            if (config.Value<string>("schema") != "arena-worker.launch.v1")
+            if (config.Value<string>("schema") != "arena-worker.launch.v1" && config.Value<string>("schema") != "arena-worker.launch.v2")
                 throw new InvalidOperationException("Unsupported Worker launch schema.");
             var result = FromConfiguration(config, explicitRoot);
             if (!SteamOwnershipCheck.IsDevRepository(result.ProjectRoot))
@@ -119,6 +120,7 @@ namespace CF7Launcher.ArenaWorker
                 SwfOrigin = CanonicalPath(config.Value<string>("swfOrigin")),
                 Slot = ArenaRunIdentity.ReadId(config, "slot")
             };
+            result.Projection = WorkerProjectionPolicy.FromConfiguration(config);
             if (config["performance"] != null)
             {
                 if (!TryParseWorkerPerformance(config["performance"], out PerformancePolicy performance))
@@ -184,7 +186,8 @@ namespace CF7Launcher.ArenaWorker
             start.WorkingDirectory = ProjectRoot;
             string origin = new Uri(SwfOrigin).AbsoluteUri;
             start.Arguments = "\"" + origin + "?cf7ArenaWorker=1&cf7ArenaWorkerId=" + Uri.EscapeDataString(WorkerId)
-                + "&cf7ArenaSessionEpoch=" + Uri.EscapeDataString(SessionEpoch) + "\"";
+                + "&cf7ArenaSessionEpoch=" + Uri.EscapeDataString(SessionEpoch)
+                + (Projection == null ? "" : "&cf7WorkerProjectionVersion=1") + "\"";
             FlashStorageEnvironment.PrepareWorker(start, Path.Combine(StateRoot, "flash-temp"));
         }
 
@@ -208,6 +211,7 @@ namespace CF7Launcher.ArenaWorker
                 ["projectRoot"] = ProjectRoot, ["stateRoot"] = StateRoot,
                 ["saveRoot"] = SaveRoot, ["outputRoot"] = OutputRoot, ["swfOrigin"] = SwfOrigin,
                 ["slot"] = Slot, ["performance"] = Performance.ToJson(), ["allowFaultInjection"] = AllowFaultInjection,
+                ["projectionConsumers"] = Projection?.Consumers,
                 ["hostPid"] = Environment.ProcessId,
                 ["processStartUtcTicks"] = start.Ticks.ToString(CultureInfo.InvariantCulture),
                 ["startTimeUtc"] = start.ToString("o"), ["processPath"] = Environment.ProcessPath,

@@ -21,6 +21,12 @@ class org.flashNight.arki.render.CombatFxBridge {
     private static var impacts:Array = [];
     private static var impactDropped:Number = 0;
     private static var dropped:Number = 0;
+    public static function installedCatalogDigest(expectedGeneration:Number):String {
+        return enabled && generation == expectedGeneration ? org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(digest) : "";
+    }
+    public static function isDecorationClean():Boolean {
+        return spawns.length == 0 && impacts.length == 0 && acks.length == 0 && DecalStampQueue.getStats().pending == 0;
+    }
 
     public static function configure(caps:Object):Void {
         if (caps == null || caps.version !== 1 || typeof caps.generation != "number"
@@ -85,6 +91,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         var seed:Number = VisualRandom.eventSeed(2);
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "casing") return false;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return true;
         // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
         if (!enabled) return true;
         if (_root.暂停 || !visible(x, y)) return true;
@@ -100,6 +107,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         var seed:Number = VisualRandom.eventSeed(1);
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "muzzle") return false;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return true;
         // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
         if (!enabled) return true;
         if (_root.暂停 || !_root.是否视觉元素 || !visible(x, y)) return true;
@@ -118,6 +126,7 @@ class org.flashNight.arki.render.CombatFxBridge {
         var seed:Number = VisualRandom.eventSeed(3);
         var style:Object = byName[linkage];
         if (style == undefined || style.kind != "impact") return false;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return true;
         // 已接管的纯装饰在暂停/断连时丢弃，不重新分配 AS2 MC。
         if (!enabled) return true;
         if (_root.暂停 || (!_root.是否视觉元素 && !forceTrigger) || !visible(x, y)) return true;
@@ -129,6 +138,7 @@ class org.flashNight.arki.render.CombatFxBridge {
     }
 
     public static function receiveEvents(data:Object):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return;
         if (!enabled || data.version !== 1 || data.generation !== generation || data.epoch !== epoch
             || typeof data.sequence != "number" || !isFinite(data.sequence) || data.sequence <= lastEvent
             || !(data.settled instanceof Array) || data.settled.length > 8) return;
@@ -160,8 +170,10 @@ class org.flashNight.arki.render.CombatFxBridge {
         var paused:Boolean = _root.暂停 ? true : false;
         if (!paused) {
             gameTick++;
-            var drawn:Array = DecalStampQueue.flush();
-            for (var i:Number = 0; i < drawn.length && acks.length < 64; i++) acks[acks.length] = drawn[i];
+            if (!org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) {
+                var drawn:Array = DecalStampQueue.flush();
+                for (var i:Number = 0; i < drawn.length && acks.length < 64; i++) acks[acks.length] = drawn[i];
+            }
         }
         sequence++;
         var payload:String = epoch + "|" + sequence + "|" + gameTick + "|" + (paused ? 1 : 0);
@@ -177,5 +189,11 @@ class org.flashNight.arki.render.CombatFxBridge {
 
     public static function getStats():Object {
         return {enabled:enabled, epoch:epoch, queued:spawns.length, queuedImpacts:impacts.length, dropped:dropped, impactDropped:impactDropped, stamp:DecalStampQueue.getStats()};
+    }
+    /** Source callers may avoid even coordinates for an audited casing. Unknown styles keep their old route. */
+    public static function consumeShellWithoutProjection(linkage:String):Boolean {
+        if (!org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return false;
+        var style:Object=byName[linkage];if(style==undefined || style.kind!="casing")return false;
+        VisualRandom.eventSeed(2);return true;
     }
 }

@@ -12,6 +12,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
     internal sealed class BulletVisualFrame
     {
         internal readonly int Epoch, Frame, NormalCount, ChainCount, Overflow;
+        internal readonly int SnapshotSequence, OfferId;
+        internal readonly bool IsQ1;
         internal readonly bool NativeOwned;
         private BulletVisualInstance[] _instances;
         private readonly BulletVisualInstance[] _ordinary, _chains;
@@ -60,19 +62,26 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             var items = ordinary.NativeOwned ? ordinary.Instances : Array.Empty<BulletVisualInstance>();
             if (items.Length + chains.Length > TotalLimit) throw new ArgumentOutOfRangeException(nameof(chains));
-            return new BulletVisualFrame(ordinary.Epoch, ordinary.Frame, items, chains);
+            return new BulletVisualFrame(ordinary.Epoch, ordinary.Frame, items, chains,
+                ordinary.SnapshotSequence, ordinary.OfferId, ordinary.IsQ1);
         }
-        private BulletVisualFrame(int epoch, int frame, BulletVisualInstance[] ordinary, BulletVisualInstance[] chains)
+        private BulletVisualFrame(int epoch, int frame, BulletVisualInstance[] ordinary, BulletVisualInstance[] chains,
+            int sequence = -1, int offerId = 0, bool q1 = false)
         {
             Epoch = epoch; Frame = frame; NormalCount = ordinary.Length; ChainCount = chains.Length;
             Overflow = 0; NativeOwned = true; _ordinary = ordinary; _chains = chains;
+            SnapshotSequence = sequence < 0 ? frame : sequence; OfferId = offerId; IsQ1 = q1;
         }
         private BulletVisualFrame(int epoch, int frame, int normal, int chain, int overflow, bool nativeOwned,
-            BulletVisualInstance[] instances)
+            BulletVisualInstance[] instances, int sequence = -1, int offerId = 0, bool q1 = false)
         {
             Epoch = epoch; Frame = frame; NormalCount = normal; ChainCount = chain;
             Overflow = overflow; NativeOwned = nativeOwned; _instances = instances;
+            SnapshotSequence = sequence < 0 ? frame : sequence; OfferId = offerId; IsQ1 = q1;
         }
+
+        internal static BulletVisualFrame CreateQ1(int offerId, int epoch, int sequence, int sourceFrame,
+            BulletVisualInstance[] instances) => new(epoch, sourceFrame, instances.Length, 0, 0, true, instances, sequence, offerId, true);
 
         internal static bool TryParse(string payload, int styleCount, out BulletVisualFrame result)
         {
@@ -205,20 +214,25 @@ namespace CF7Launcher.Guardian.WorldCompositor
         {
             long started = Stopwatch.GetTimestamp();
             bool valid = BulletVisualFrame.TryParse(payload, _styleCount, out BulletVisualFrame frame);
+            return ObserveParsed(valid ? frame : null, generation, payload.Length, started);
+        }
+
+        internal BulletVisualFrame ObserveParsed(BulletVisualFrame frame, int generation, int payloadLength, long started)
+        {
             lock (_sync)
             {
                 if (generation < _generation) return null;
                 if (generation > _generation) { _generation = generation; ResetCounters(); }
-                if (!valid || frame.Epoch < _epoch
-                    || (frame.Epoch == _epoch && frame.Frame <= _lastFrame))
+                if (frame == null || frame.Epoch < _epoch
+                    || (frame.Epoch == _epoch && frame.SnapshotSequence <= _lastFrame))
                 {
                     if (++_invalid <= 8) LogManager.Log("event=bullet_visual_shadow_rejected");
                     return null;
                 }
                 if (frame.Epoch != _epoch) { _epoch = frame.Epoch; _lastFrame = -1; }
-                _lastFrame = frame.Frame;
+                _lastFrame = frame.SnapshotSequence;
                 _packets++;
-                _bytes += payload.Length;
+                _bytes += payloadLength;
                 _maxCount = Math.Max(_maxCount, frame.Instances.Length);
                 _overflow += frame.Overflow;
                 Array.Clear(_currentNormal); Array.Clear(_currentChain);

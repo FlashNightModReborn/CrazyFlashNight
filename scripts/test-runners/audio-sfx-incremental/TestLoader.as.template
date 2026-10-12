@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId audio-sfx-incremental Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.audio.test.AudioBridgeSfxIncrementalTest.runAllTests();
+trace("FocusedTestRunId audio-sfx-incremental Complete: __FOCUSED_RUN_ID__");

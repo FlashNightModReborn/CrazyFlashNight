@@ -192,9 +192,13 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void HandleRaw(string cam, string hn, string fps, string inputPayload,
             string bulletVisualPayload = null, int connectionGeneration = 0,string combatFxPayload=null,
-            string rayVisualPayload=null,string chainVisualPayload=null,string sceneLightPayload=null)
+            string rayVisualPayload=null,string chainVisualPayload=null,string sceneLightPayload=null, bool workerAdmissionChecked=false)
         {
             if (_stopped) return;
+            if (!workerAdmissionChecked && _workerProjection != null && (_workerProjection.ObserveForbidden("ordinaryBullet", bulletVisualPayload, connectionGeneration)
+                || _workerProjection.ObserveForbidden("ray", rayVisualPayload, connectionGeneration)
+                || _workerProjection.ObserveForbidden("chain", chainVisualPayload, connectionGeneration)
+                || _workerProjection.ObserveCombatDecorations(combatFxPayload, connectionGeneration))) return;
             try
             {
                 HitNumberRuntimeSnapshot hitSnapshot;
@@ -279,6 +283,14 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[Frame] HandleRaw error: " + ex.Message);
             }
         }
+
+        private CF7Launcher.ArenaWorker.WorkerProjectionNegotiator _workerProjection;
+        internal void SetWorkerProjection(CF7Launcher.ArenaWorker.WorkerProjectionNegotiator projection) => _workerProjection = projection;
+        internal bool AcceptWorkerFrame(CF7Launcher.Bus.FrameSections frame, int generation) => _workerProjection == null
+            || !(_workerProjection.ObserveForbidden("ordinaryBullet", frame.Bullets, generation)
+                || _workerProjection.ObserveForbidden("ray", frame.Rays, generation)
+                || _workerProjection.ObserveForbidden("chain", frame.Chains, generation)
+                || _workerProjection.ObserveCombatDecorations(frame.Combat, generation));
 
         /// <summary>
         /// 快车道入口：hn_reset，由前缀 "R" 触发。
