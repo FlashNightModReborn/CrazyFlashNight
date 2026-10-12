@@ -150,6 +150,16 @@ equal(Model.errorMessage('level_locked'), '调制后的装备需要更高角色�
     'loadout post-state level rejection has a specific player-facing message');
 equal(Model.errorMessage('insufficient_material', {materialShortage:{itemName:'强化石',required:13,owned:5,missing:8}}),
     '强化石不足：本次需要 13，持有 5，还差 8。', 'unaffordable enhancement reports cost and exact deficit');
+equal(Model.errorMessage('insufficient_material', {materialShortage:{itemName:'强化石',required:10000000875,owned:10000000874,missing:1}}),
+    '强化石不足：本次需要 10,000,000,875，持有 10,000,000,874，还差 1。',
+    'shortage message keeps exact digits beyond Int32');
+equal(Model.exactQuantity(9007199254740991), '9,007,199,254,740,991',
+    'exact quantity prints the 2^53-1 boundary without rounding');
+equal(Model.exactQuantity(2147483648), '2,147,483,648',
+    'exact quantity prints Int32+1 exactly');
+equal(Model.errorMessage('material_quantity_quarantined'),
+    '材料数量超出可表示范围，已在存档中隔离保留原值；请备份存档并联系维护者修复。',
+    'quarantined quantity has a specific player-facing message instead of a retry hint');
 
 equal(Model.quickCommitEligible({
     materials:[{itemName:'导轨',delta:-1}],removedMods:[]
@@ -178,6 +188,8 @@ equal(Model.nextEnhancementLevel({equipment:{level:13},enhance:{currentLevel:13,
     13, 'hard cap has no phantom next level');
 equal(Model.materialCount([{itemName:'强化石',count:208589}], '强化石'), 208589,
     'material array count');
+equal(Model.materialCount([{itemName:'强化石',count:9007199254740991}], '强化石'), 9007199254740991,
+    'material array count keeps the 2^53-1 boundary');
 equal(Model.materialDeltaFor([{itemName:'强化石',delta:-3}], '强化石'),
     {itemName:'强化石',delta:-3}, 'material delta lookup');
 equal(Model.compactQuantity(12500), '1.2万', 'compact quantity floors one decimal');

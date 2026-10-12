@@ -131,6 +131,13 @@ namespace CF7Launcher.Tasks
         private static readonly HashSet<string> StatRowKeys = Set(
             "key", "label", "value");
 
+        /// <summary>
+        /// 数量字段（materials count/owned/before/delta/after 与 materialShortage
+        /// required/owned/missing）的统一上限 2^53-1：AS2 Number 与 Web 安全整数的
+        /// 共同精确边界。等级/索引/revision/slot/epoch 不受此约束，仍为 int。
+        /// </summary>
+        private const long MaxQuantity = 9007199254740991L;
+
         private readonly Func<bool> _isClientReady;
         private readonly Func<string, bool> _trySend;
         private readonly int _timeoutMs;
@@ -1525,11 +1532,11 @@ namespace CF7Launcher.Tasks
 
         private static bool IsMaterialShortage(JObject value)
         {
-            int required, owned, missing;
+            long required, owned, missing;
             return value != null && value.Count == 4 && ReadString(value["itemName"]) == "强化石"
-                && TryReadInteger(value["required"], 1, int.MaxValue, out required)
-                && TryReadInteger(value["owned"], 0, int.MaxValue, out owned)
-                && TryReadInteger(value["missing"], 1, int.MaxValue, out missing)
+                && TryReadQuantity(value["required"], 1, MaxQuantity, out required)
+                && TryReadQuantity(value["owned"], 0, MaxQuantity, out owned)
+                && TryReadQuantity(value["missing"], 1, MaxQuantity, out missing)
                 && required > owned && missing == required - owned;
         }
 
@@ -1667,7 +1674,7 @@ namespace CF7Launcher.Tasks
             foreach (JToken token in input)
             {
                 JObject row = token as JObject;
-                int count;
+                long count;
                 string itemName = ReadString(
                     row != null ? row["itemName"] : null);
                 if (!IsExactObject(row, SnapshotMaterialKeys)
@@ -1675,8 +1682,8 @@ namespace CF7Launcher.Tasks
                     || !IsIdentityTextToken(row["displayName"], 256)
                     || !IsIdentityTextToken(row["icon"], 256)
                     || !names.Add(itemName)
-                    || !TryReadInteger(
-                        row["count"], 0, int.MaxValue,
+                    || !TryReadQuantity(
+                        row["count"], 0, MaxQuantity,
                         out count))
                 {
                     return false;
@@ -1767,12 +1774,12 @@ namespace CF7Launcher.Tasks
             string itemName = ReadString(input["itemName"]);
             string displayName = ReadString(input["displayName"]);
             string icon = ReadString(input["icon"]);
-            int owned;
+            long owned;
             if (!IsOpaque(candidateKey)
                 || !IsIdentityText(itemName, 256)
                 || !IsIdentityText(displayName, 256)
                 || !IsIdentityText(icon, 256)
-                || !TryReadInteger(input["owned"], 0, int.MaxValue, out owned)
+                || !TryReadQuantity(input["owned"], 0, MaxQuantity, out owned)
                 || input["available"] == null
                 || input["available"].Type != JTokenType.Boolean
                 || !IsTextToken(input["reason"], 0, 256))
@@ -2124,25 +2131,25 @@ namespace CF7Launcher.Tasks
                 JObject row = token as JObject;
                 string itemName = ReadString(
                     row != null ? row["itemName"] : null);
-                int before;
-                int delta;
-                int after;
+                long before;
+                long delta;
+                long after;
                 if (!IsExactObject(row, MaterialPlanKeys)
                     || !IsIdentityText(itemName, 256)
                     || !IsIdentityTextToken(row["displayName"], 256)
                     || !IsIdentityTextToken(row["icon"], 256)
                     || !names.Add(itemName)
-                    || !TryReadInteger(
-                        row["before"], 0, int.MaxValue,
+                    || !TryReadQuantity(
+                        row["before"], 0, MaxQuantity,
                         out before)
-                    || !TryReadInteger(
-                        row["delta"], int.MinValue, int.MaxValue,
+                    || !TryReadQuantity(
+                        row["delta"], -MaxQuantity, MaxQuantity,
                         out delta)
                     || delta == 0
-                    || !TryReadInteger(
-                        row["after"], 0, int.MaxValue,
+                    || !TryReadQuantity(
+                        row["after"], 0, MaxQuantity,
                         out after)
-                    || (long)before + delta != after)
+                    || before + delta != after)
                 {
                     return false;
                 }
@@ -2245,7 +2252,7 @@ namespace CF7Launcher.Tasks
             if (operation == "install_tier")
             {
                 return candidate.Value<bool?>("available") == true
-                    && candidate.Value<int>("owned") > 0
+                    && candidate.Value<long>("owned") > 0
                     && ReadString(candidate["tierName"])
                         == ReadString(afterEquipment["tier"])
                     && MaterialMatchesCandidate(
@@ -2257,7 +2264,7 @@ namespace CF7Launcher.Tasks
             {
                 return candidate.Value<bool?>("installed") == false
                     && candidate.Value<bool?>("available") == true
-                    && candidate.Value<int>("owned") > 0
+                    && candidate.Value<long>("owned") > 0
                     && ContainsString(afterMods, candidateName)
                     && MaterialMatchesCandidate(
                         materials,
@@ -2278,7 +2285,7 @@ namespace CF7Launcher.Tasks
                     && ReadString(replaced["candidateKey"])
                         == replaceCandidateKey
                     && candidate.Value<bool?>("installed") == false
-                    && candidate.Value<int>("owned") > 0
+                    && candidate.Value<long>("owned") > 0
                     && replaced.Value<bool?>("installed") == true
                     && ContainsString(
                         replaceableFrom,
@@ -2324,8 +2331,8 @@ namespace CF7Launcher.Tasks
                     || !JToken.DeepEquals(
                         material["icon"],
                         snapshotMaterial["icon"])
-                    || material.Value<int>("before")
-                        != snapshotMaterial.Value<int>("count"))
+                    || material.Value<long>("before")
+                        != snapshotMaterial.Value<long>("count"))
                 {
                     return false;
                 }
@@ -2336,7 +2343,7 @@ namespace CF7Launcher.Tasks
         private static bool MaterialMatchesCandidate(
             JArray materials,
             JObject candidate,
-            int expectedDelta)
+            long expectedDelta)
         {
             if (materials == null || candidate == null) return false;
             string itemName = ReadString(candidate["itemName"]);
@@ -2347,16 +2354,16 @@ namespace CF7Launcher.Tasks
                         material != null
                             ? material["itemName"] : null)
                         != itemName) continue;
-                int owned = candidate.Value<int>("owned");
+                long owned = candidate.Value<long>("owned");
                 return JToken.DeepEquals(
                         material["displayName"],
                         candidate["displayName"])
                     && JToken.DeepEquals(
                         material["icon"],
                         candidate["icon"])
-                    && material.Value<int>("before") == owned
-                    && material.Value<int>("delta") == expectedDelta
-                    && material.Value<int>("after")
+                    && material.Value<long>("before") == owned
+                    && material.Value<long>("delta") == expectedDelta
+                    && material.Value<long>("after")
                         == owned + expectedDelta;
             }
             return false;
@@ -2423,7 +2430,7 @@ namespace CF7Launcher.Tasks
                     && removedMods.Count == 0
                     && materials.Count == 1
                     && ReadString(materials[0]["itemName"]) == "强化石"
-                    && materials[0].Value<int>("delta") < 0;
+                    && materials[0].Value<long>("delta") < 0;
             }
             if (beforeLevel != afterLevel) return false;
             if (operation == "install_tier")
@@ -2433,7 +2440,7 @@ namespace CF7Launcher.Tasks
                     && JToken.DeepEquals(beforeMods, afterMods)
                     && removedMods.Count == 0
                     && materials.Count == 1
-                    && materials[0].Value<int>("delta") == -1;
+                    && materials[0].Value<long>("delta") == -1;
             }
             if (beforeTier != afterTier) return false;
             return ValidateModTransition(
@@ -2496,7 +2503,7 @@ namespace CF7Launcher.Tasks
                     if (!JToken.DeepEquals(beforeMods[i], afterMods[i])) return false;
                 string installed = ReadString(afterMods[afterMods.Count - 1]);
                 return ReadString(materials[0]["itemName"]) == installed
-                    && materials[0].Value<int>("delta") == -1;
+                    && materials[0].Value<long>("delta") == -1;
             }
 
             JArray remaining;
@@ -2577,14 +2584,14 @@ namespace CF7Launcher.Tasks
         private static bool MaterialDeltaEquals(
             JArray materials,
             string itemName,
-            int delta)
+            long delta)
         {
             foreach (JToken token in materials)
             {
                 JObject row = token as JObject;
                 if (ReadString(row != null ? row["itemName"] : null)
                         == itemName)
-                    return row.Value<int>("delta") == delta;
+                    return row.Value<long>("delta") == delta;
             }
             return false;
         }
@@ -2790,8 +2797,8 @@ namespace CF7Launcher.Tasks
                             && JToken.DeepEquals(
                                 current["icon"],
                                 committed["icon"])
-                            && current.Value<int>("count")
-                                == committed.Value<int>("after");
+                            && current.Value<long>("count")
+                                == committed.Value<long>("after");
                         break;
                     }
                 }
@@ -3415,6 +3422,17 @@ namespace CF7Launcher.Tasks
             if (candidate < min || candidate > max) return false;
             value = (int)candidate;
             return true;
+        }
+
+        // 数量字段合同：材料持有/计划/差额一律走 64 位整数，上限 2^53-1
+        // （AS2 Number 与 Web 安全整数的共同精确上限）；等级/索引/revision 仍用 int。
+        private static bool TryReadQuantity(JToken token, long min, long max, out long value)
+        {
+            value = 0;
+            if (token == null || token.Type != JTokenType.Integer) return false;
+            try { value = token.Value<long>(); }
+            catch { return false; }
+            return value >= min && value <= max;
         }
 
         private static bool TryReadFiniteNumber(
