@@ -9291,9 +9291,15 @@ namespace CF7Launcher.Tests.Guardian
             r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"character\":{}}");
             r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"progress\":{\"tasks_finished\":[\"21\"]}}");
             r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"progress\":{\"task_chains_progress\":[]}}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"progress\":{\"tasks_active\":[\"21\"]}}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"scene\":[]}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"scene\":{\"inCombat\":\"yes\"}}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"player\":[]}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"player\":{\"level\":\"5\"}}");
+            r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null, "{\"savePath\":\"save1\",\"player\":{\"skills\":{}}}");
 
             Assert.False(harnessR.Host.IsPanelOpen);
-            Assert.Equal(8, commands.Count);
+            Assert.Equal(14, commands.Count);
             Assert.All(commands, cmd =>
             {
                 Assert.Equal("ragChatUnavailable", cmd.Value<string>("action"));
@@ -9315,14 +9321,18 @@ namespace CF7Launcher.Tests.Guardian
 
             r.RequestOpenPanel("ragchat", "agent_console", null, null, null, null, null,
                 "{\"savePath\":\"save1\",\"character\":{\"name\":\"张三\"},"
-                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}");
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}},"
+                + "\"scene\":{\"stageFlag\":\"废城\",\"stageName\":\"\",\"entrance\":\"正门\",\"inCombat\":false},"
+                + "\"player\":{\"gender\":\"男\",\"level\":12,\"title\":{\"final\":\"契约者\"},\"skills\":[{\"name\":\"剑术\",\"level\":3}]}}");
 
             Assert.True(harnessR.Host.IsPanelOpen);
             JObject initData = (JObject)harnessR.LastOpenPayload["initData"];
             Assert.Equal("save1", initData.Value<string>("savePath"));
             Assert.Equal(
                 "{\"slot_key\":\"save1\",\"character\":{\"name\":\"张三\"},"
-                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}",
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}},"
+                + "\"scene\":{\"stageFlag\":\"废城\",\"stageName\":\"\",\"entrance\":\"正门\",\"inCombat\":false},"
+                + "\"player\":{\"gender\":\"男\",\"level\":12,\"title\":{\"final\":\"契约者\"},\"skills\":[{\"name\":\"剑术\",\"level\":3}]}}",
                 handler.Bodies[1]);
         }
 
@@ -9341,14 +9351,18 @@ namespace CF7Launcher.Tests.Guardian
 
             r.HandleRagBindRefresh(JObject.Parse(
                 "{\"savePath\":\"save1\",\"character\":{\"name\":\"张三\"},"
-                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}"));
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}},"
+                + "\"scene\":{\"stageFlag\":\"废城\",\"inCombat\":true},"
+                + "\"player\":{\"level\":12}}"));
 
             Assert.True(SpinWait.SpinUntil(() => handler.Requests.Count >= 2, TimeSpan.FromSeconds(5)));
             Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
             Assert.Equal("/api/integration/bind", handler.Requests[1].RequestUri.AbsolutePath);
             Assert.Equal(
                 "{\"slot_key\":\"save1\",\"character\":{\"name\":\"张三\"},"
-                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}",
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}},"
+                + "\"scene\":{\"stageFlag\":\"废城\",\"inCombat\":true},"
+                + "\"player\":{\"level\":12}}",
                 handler.Bodies[1]);
             Assert.False(harnessR.Host.IsPanelOpen);
             Assert.Empty(commands);

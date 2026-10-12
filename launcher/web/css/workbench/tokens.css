@@ -32,6 +32,10 @@
     --wb-semantic-danger: #df665b;
     --wb-semantic-info: var(--theta-kinetic);
     --wb-semantic-disabled: #646e75;
+    /* NPC 商店既有阵营缺省材质与操作墨色；原值迁入，不改变店主主题。 */
+    --wb-semantic-npcshop-default-dark: #14161a;
+    --wb-semantic-npcshop-default-light: #e8cfa5;
+    --wb-semantic-npcshop-action-ink: #17191c;
 
     /* 档级序数色静态别名层。权威词典是 data/items/equipment_mods/ui_presentation.xml，
        运行态实例色由 JS 写 inline --mod-grade-color（grade-presentation.js 守护副本）；
@@ -1226,6 +1230,8 @@
     --wb-semantic-tablet-muted-text: #7ba9c8;
     --wb-tablet-icons-transition: left .38s ease, top .38s ease, width .38s ease, height .38s ease, opacity .28s ease;
     --wb-tablet-background-transition: opacity .38s ease;
+    --wb-tablet-content-out-transition: opacity .19s ease;
+    --wb-tablet-content-in-transition: opacity .21s ease .17s;
     --wb-tablet-description-transition: clip-path .26s ease-out, opacity .14s ease;
     --wb-tablet-stage-transition: scale .35s cubic-bezier(.18,.9,.3,1.15), rotate .35s ease, opacity .26s ease;
     --wb-tablet-content-transition: opacity .14s ease-out;

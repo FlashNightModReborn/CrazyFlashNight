@@ -287,6 +287,42 @@ class org.flashNight.arki.achievement.AchievementService {
     }
 
     // ═══════════════════════════════════════════════════════════
+    // buildAgentProjection — AI 终端只读投影。
+    //   未解锁 hidden 条目整体剔除（防探测，与 buildStateOverlay 门控同口径）；
+    //   已解锁 hidden 条目进 items 但不进可见计数（unlockedCount/total 只统计非隐藏）。
+    //   目录未就绪/状态容器未建时返回 null，由调用方降级为空段；本函数不触发
+    //   ensureInit 的补缺写，不依赖任何面板上下文。
+    // ═══════════════════════════════════════════════════════════
+    public static function buildAgentProjection():Object {
+        if (!_dataReady) return null;
+        if (_root._saveExt == undefined || _root._saveExt == null) return null;
+        var a:Object = _root._saveExt.成就;
+        if (a == undefined || a == null || a.base == undefined || a.unl == undefined) return null;
+        var items:Array = [];
+        var unlockedCount:Number = 0;
+        var total:Number = 0;
+        for (var i:Number = 0; i < defIds.length; i++) {
+            var idStr:String = defIds[i];
+            var def:Object = defs[idStr];
+            var unl:Boolean = isUnlocked(def);
+            if (def.hidden == true && !unl) continue;
+            if (def.hidden != true) {
+                total++;
+                if (unl) unlockedCount++;
+            }
+            var pr:Object = progressOf(def);
+            items.push({
+                id: Number(def.id),
+                title: String(def.title),
+                unlocked: unl,
+                cur: pr.cur,
+                target: pr.target
+            });
+        }
+        return {items: items, unlockedCount: unlockedCount, total: total};
+    }
+
+    // ═══════════════════════════════════════════════════════════
     // handleState — 只读状态叠加（开面板/写后刷新；静态文案/goal 由 web 读 catalog，不经桥）
     // ═══════════════════════════════════════════════════════════
     public static function handleState(params:Object):Void {

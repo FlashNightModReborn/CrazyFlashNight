@@ -133,6 +133,7 @@ class org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem {
         #include "../macros/FLAG_VERTICAL.as"
         var nativeInfo:Object = shellMap[子弹类型];
         if (nativeInfo != undefined) {
+            if (org.flashNight.arki.render.CombatFxBridge.consumeShellWithoutProjection(nativeInfo.弹壳)) return;
             var nativeScale:Number = xscale * 0.01;
             var nativeX:Number = myX - nativeScale * nativeInfo.myX;
             var nativeY:Number = myY + Math.abs(nativeScale) * nativeInfo.myY;

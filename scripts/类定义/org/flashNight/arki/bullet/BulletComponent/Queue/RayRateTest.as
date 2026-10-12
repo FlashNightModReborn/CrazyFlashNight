@@ -48,6 +48,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
     private static var rayFactory:RayColliderFactory;
     private static var suiteStarted:Number;
     private static var scanCompare:Boolean;
+    private static var workerCompare:Boolean;
     private static var baselineSummary:Object;
 
     private static function check(ok:Boolean, label:String):Void {
@@ -61,6 +62,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
         passed=0; failed=0; caseIndex=0; reuse=false; completed=false;
         sourceAttempt=0; suiteStarted=getTimer();
         scanCompare=_root.__rayRateScanCompare===true;baselineSummary=null;
+        workerCompare=_root.__rayRateWorkerProjectionCompare===true;
         completeLine="FocusedTestRunId ray-rate Complete: " + _root.__rayRateRunId;
         bqp=BulletQueueProcessor; bridge=RayVisualBridge;
         cacheApi=TargetCacheManager; damageApi=DamageCalculator; effects=EffectSystem;
@@ -177,7 +179,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
             }
             buildCases();
             startCase();
-            pumpClip.onEnterFrame=function():Void { RayRateTest.pump(); };
+            if(!workerCompare)pumpClip.onEnterFrame=function():Void { RayRateTest.pump(); };
         } catch(error) {abort("XML/setup: "+error);}
     }
     private static function buildCases():Void {
@@ -216,6 +218,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
     }
 
     private static function startCase():Void {
+        if(workerCompare)delete pumpClip.onEnterFrame;
         var spec:Object=cases[caseIndex];
         if(scanCompare) {
             bqp.rejectRayCandidateY=reuse?saved.rejectCandidateY:noYRejection;
@@ -229,14 +232,14 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
         var ownerHost:MovieClip=world.createEmptyMovieClip("owners",101);
         var source:Object=entries[spec.bullet];
         current={spec:spec,key:spec.mode+"-"+spec.rate+"rps-"+spec.owners+"shooters-"+spec.muzzles+"muzzles"
-                +(spec.death?"-deaths":"")+(scanCompare?(reuse?"-scan-y-filter":"-scan-original-check")
+                +(spec.death?"-deaths":"")+(workerCompare?(((caseIndex%2==0)?reuse:!reuse)?"-worker-none":"-worker-full"):scanCompare?(reuse?"-scan-y-filter":"-scan-original-check")
                     :(reuse?"-reuse":"-independent")),tick:0,shots:[],
             targets:[],owners:[],lanes:[],hits:[],retired:[],critRolls:[],ticks:[],processTicks:[],wireTicks:[],
             collisionCalls:0,cacheAcquires:0,settlements:0,events:0,kills:0,effectCalls:0,redCalls:0,
             displayCalls:0,legacyHooks:0,identityCount:0,sourceCount:0,sources:{},pinkCalls:0,uniformCalls:0,chanceCalls:0,mathCalls:0,critCalls:0,
             activeMax:0,visualMax:0,fallbackMax:0,wireBytes:0,wireMax:0,replays:[],
             config:TeslaRayConfig.fromXML(source.raw),budget:source.budget};
-        current.replay=!scanCompare && !spec.death && spec.owners==1 && ((spec.mode=="single" && (spec.rate==10||spec.rate==30))
+        current.replay=!workerCompare && !scanCompare && !spec.death && spec.owners==1 && ((spec.mode=="single" && (spec.rate==10||spec.rate==30))
             || (spec.mode=="chain" && (spec.rate==10||spec.rate==30))
             || (spec.rate==30 && (spec.mode=="pierce"||spec.mode=="flame")));
         bqp._rayBullets=[];bqp._raySurvivors=[];bqp._flameVfxSerialCounter=0;
@@ -251,6 +254,12 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
             style:current.config.vfxStyle,ratePerMuzzle:spec.rate,owners:spec.owners,muzzlesPerOwner:spec.muzzles,
             targets:current.targets.length,pierceLimit:current.budget,fireTicks:spec.fireTicks,tailTicks:spec.tailTicks,
             width:current.config.thickness,rayLength:current.config.rayLength,replay:current.replay,channelVersion:1,channelReuse:scanCompare||reuse}));
+        if(workerCompare) {
+            WorkerProjectionTestHost.install((caseIndex%2==0)?reuse:!reuse,function():Void {
+                check(WorkerProjectionPolicy.isCommitted(),"real root frame installed Worker consumers");
+                pumpClip.onEnterFrame=function():Void { RayRateTest.pump(); };
+            });
+        }
     }
     private static function makeTargets(host:MovieClip,death:Boolean):Void {
         for(var row:Number=0;row<8;row++) for(var col:Number=0;col<12;col++) {
@@ -302,9 +311,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
         var props:Object={rayConfig:cfg,flags:264,子弹种类:current.spec.bullet,发射者名:lane.name,霰弹值:1};
         // Independent events remain a valid current-protocol input. Compare them
         // without pretending that the paired Host lacks channelVersion support.
-        if (scanCompare || reuse) bridge.captureShot(lane.owner,lane.slot,lane.muzzle,props,lane.weapon);
+        if (workerCompare || scanCompare || reuse) bridge.captureShot(lane.owner,lane.slot,lane.muzzle,props,lane.weapon);
         var b:Object={};for(var key:String in props) b[key]=props[key];
         b._rateId=current.shots.length+1;b._rateBorn=current.tick;b._rateRetired=false;
+        if(workerCompare)b._workerVisualSeed=VisualRandom.eventSeed(4);
         b._x=lane.muzzle._x;b._y=lane.muzzle._y;b._rotation=0;b.stateFlags=4;
         b.Z轴坐标=0;b.Z轴攻击范围=50;b.pierceLimit=current.budget;
         b.伤害类型="普通";b.魔法伤害属性="热";b.命中率=80;b.子弹威力=35;b.子弹速度=35;
@@ -482,7 +492,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
             check(finite(t.hp),"finite target HP "+i+" "+current.key);
         }
         check(healthChanged,"production DamageCalculator changed HP: "+current.key);
-        if(reuse||scanCompare) {
+        if(workerCompare && WorkerProjectionPolicy.isNone("ray")) {
+            check(current.identityCount==0 && current.sourceCount==0,"none does not create ray channel identity DTOs");
+            check(current.visualMax==0 && current.wireBytes==0 && current.fallbackMax==0,"none records, wire and fallback stay zero");
+        } else if(workerCompare||reuse||scanCompare) {
             check(current.identityCount==current.shots.length,"real source identity captured for every shot: "+current.key);
             check(current.sourceCount==current.lanes.length,"independent shooter/muzzle source identities: "+current.key);
         }
@@ -495,7 +508,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
             trace("[RAY_RATE_PAIR] "+json(comparison));
         } else {baseline=truth;baselineSummary=summary;}
         trace("[RAY_RATE_RESULT] "+json({key:current.key,ratePerMuzzle:current.spec.rate,
-            comparisonKind:scanCompare?"scan-prefilter":"visual-channel",gameplaySummary:summary,comparison:comparison,
+            comparisonKind:workerCompare?"worker-projection":scanCompare?"scan-prefilter":"visual-channel",gameplaySummary:summary,comparison:comparison,
             shots:current.shots.length,settlements:current.settlements,retired:current.retired.length,
             activeMax:current.activeMax,visualMax:current.visualMax,flashFallbackMax:current.fallbackMax,
             collisionChecks:current.collisionCalls,cacheAcquires:current.cacheAcquires,events:current.events,kills:current.kills,
@@ -510,6 +523,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
             for(var frame:Number=0;frame<current.replays.length;frame++) trace("[RAY_RATE_WIRE] "+current.replays[frame]);
         }
         if(reuse) {caseIndex++;reuse=false;baseline=null;baselineSummary=null;}else reuse=true;
+        if(workerCompare)WorkerProjectionTestHost.restore();
         if(caseIndex<cases.length) startCase();else finish();
     }
 
@@ -520,6 +534,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.RayRateTest {
         if(completed) return;completed=true;
         delete pumpClip.onEnterFrame;
         try {
+            if(workerCompare)WorkerProjectionTestHost.restore();
             if(scanCompare) bqp.rejectRayCandidateY=saved.rejectCandidateY;
             RayVisualBridge.resetScene();RayVisualBridge.disconnect();RayVfxManager.reset();
             bqp._rayBullets=saved.rays;bqp._raySurvivors=saved.survivors;

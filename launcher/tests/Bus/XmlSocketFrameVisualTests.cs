@@ -1,10 +1,44 @@
 using CF7Launcher.Bus;
+using System;
+using System.Text;
 using Xunit;
 
 namespace CF7Launcher.Tests.Bus
 {
     public sealed class XmlSocketFrameVisualTests
     {
+        [Fact]
+        public void DirectSlicesMatchLegacyForEveryProductionSectionSubset()
+        {
+            for (int mask = 0; mask < 512; mask++)
+            {
+                var wire = new StringBuilder("F10|20|1");
+                for (int section = 1; section <= 9; section++)
+                    if ((mask & (1 << (section - 1))) != 0)
+                    {
+                        wire.Append((char)section);
+                        if (section % 2 == 0) wire.Append("payload|中文");
+                    }
+                Assert.Equal(FrameSections.Legacy(wire.ToString()), FrameSections.Parse(wire.ToString()));
+            }
+        }
+
+        [Fact]
+        public void DuplicateAndUnorderedBoundariesKeepLegacyDispatchDecisions()
+        {
+            var random = new Random(731);
+            for (int test = 0; test < 5000; test++)
+            {
+                var wire = new StringBuilder(test % 3 == 0 ? "F" : "F1|2|1");
+                for (int i = 0, n = random.Next(15); i < n; i++)
+                {
+                    wire.Append((char)random.Next(1, 10));
+                    if (random.Next(2) == 0) wire.Append("x|y");
+                }
+                Assert.Equal(FrameSections.Legacy(wire.ToString()), FrameSections.Parse(wire.ToString()));
+            }
+        }
+
         [Fact]
         public void CombatEventsDoNotLeakIntoBulletOrInputPayloads()
         {

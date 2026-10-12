@@ -100,11 +100,17 @@ internal sealed class PlayerHudState
                 : new Dictionary<string, JToken>(_groups, StringComparer.Ordinal);
             foreach (var property in incoming.Properties()) candidate[property.Name] = property.Value;
             if (new[] { "vitals", "combat", "loadout", "cooldowns", "buffs" }.Any(key => !candidate.ContainsKey(key))) throw new FormatException("incomplete_full_state");
-            // Parse every group before changing any current field.
+            // Missing groups retain their already validated typed projection. Parse all
+            // incoming groups before committing any field, including on a full packet.
+            var previous = full ? null : Snapshot;
             var next = new PlayerHudSnapshot(epoch, sequence,
-                ReadVitals(candidate["vitals"]), ReadCombat(candidate["combat"]), ReadLoadout(candidate["loadout"]),
-                ReadCooldowns(candidate["cooldowns"]), ReadBuffs(candidate["buffs"]),
-                candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null);
+                previous != null && incoming["vitals"] == null ? previous.Vitals : ReadVitals(candidate["vitals"]),
+                previous != null && incoming["combat"] == null ? previous.Combat : ReadCombat(candidate["combat"]),
+                previous != null && incoming["loadout"] == null ? previous.Loadout : ReadLoadout(candidate["loadout"]),
+                previous != null && incoming["cooldowns"] == null ? previous.Cooldowns : ReadCooldowns(candidate["cooldowns"]),
+                previous != null && incoming["buffs"] == null ? previous.Buffs : ReadBuffs(candidate["buffs"]),
+                previous != null && incoming["resources"] == null ? previous.Resources
+                    : candidate.TryGetValue("resources", out var resources) ? ReadResources(resources) : null);
             var dirty = epoch != _epoch || Snapshot == null || candidate.Any(p => !_groups.TryGetValue(p.Key, out var old) || !JToken.DeepEquals(old, p.Value));
             _groups.Clear(); foreach (var pair in candidate) _groups.Add(pair.Key, pair.Value);
             Snapshot = next; _epoch = epoch; _sequence = sequence;

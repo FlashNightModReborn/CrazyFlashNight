@@ -20,6 +20,10 @@ class org.flashNight.arki.audio.AudioBridge {
 
     private static var _sfxBuf:Array = [];
     private static var _sfxBatchSequence:String = "0";
+    private static var _sfxNextSequence:String = null;
+    private static var _sfxHeader:String = null;
+    private static var _sfxHeaderBytes:Number = 0;
+    private static var _sfxPayloadBytes:Number = 0;
     private static var _sequenceSessionId:String = null;
     private static var _sequenceReadyGeneration:String = null;
     private static var _hasEnteredReady:Boolean = false;
@@ -121,7 +125,7 @@ class org.flashNight.arki.audio.AudioBridge {
 
         if (!sameTuple) {
             _sfxStaleGenerationDrops += _sfxBuf.length;
-            _sfxBuf = [];
+            clearSfxBuffer();
             clearPendingBgm();
             notifyAvailabilityReset("ready_reset");
         }
@@ -164,7 +168,7 @@ class org.flashNight.arki.audio.AudioBridge {
         _audioSessionId = message.audioSessionId;
         _audioReadyGeneration = message.audioReadyGeneration;
         _deviceGeneration = message.deviceGeneration;
-        _sfxBuf = [];
+        clearSfxBuffer();
         clearPendingBgm();
         notifyAvailabilityReset("audio_unavailable");
         return true;
@@ -199,7 +203,8 @@ class org.flashNight.arki.audio.AudioBridge {
             _sfxThrottledCount++;
             return;
         }
-        if (!isValidLinkageId(id)) {
+        var idBytes:Number = linkageUtf8Length(id);
+        if (idBytes < 0) {
             _sfxUnknownIdCount++;
             return;
         }
@@ -208,23 +213,23 @@ class org.flashNight.arki.audio.AudioBridge {
             return;
         }
 
-        var nextSequence:String = incrementDecimal(_sfxBatchSequence);
-        if (nextSequence == null) {
-            countUnavailableSfxDrops(1);
-            resetAvailability("unavailable", true);
-            return;
+        if (_sfxNextSequence == null) {
+            _sfxNextSequence = incrementDecimal(_sfxBatchSequence);
+            if (_sfxNextSequence == null) {
+                countUnavailableSfxDrops(1);
+                resetAvailability("unavailable", true);
+                return;
+            }
+            _sfxHeader = "S2|" + _audioSessionId + "|" + _audioReadyGeneration
+                + "|" + _sfxNextSequence;
+            // The admitted UUID and canonical decimal fields are ASCII.
+            _sfxHeaderBytes = length(_sfxHeader);
         }
-        var projected:String = buildSfxMessage(
-            _audioSessionId,
-            _audioReadyGeneration,
-            nextSequence,
-            _sfxBuf,
-            id);
-        if (projected == null
-                || utf8Length(projected) > MAX_SFX_MESSAGE_BYTES) {
+        if (_sfxHeaderBytes + _sfxPayloadBytes + 1 + idBytes > MAX_SFX_MESSAGE_BYTES) {
             _sfxThrottledCount++;
             return;
         }
+        _sfxPayloadBytes += 1 + idBytes;
         _sfxBuf.push(id);
     }
 
@@ -261,7 +266,7 @@ class org.flashNight.arki.audio.AudioBridge {
             playSound(ids[j]);
         }
         if (_sfxBuf.length != ids.length) {
-            _sfxBuf = [];
+            clearSfxBuffer();
             return false;
         }
         return flushReadySfxBuffer();
@@ -270,26 +275,24 @@ class org.flashNight.arki.audio.AudioBridge {
     private static function flushReadySfxBuffer():Boolean {
         if (_sfxBuf.length == 0) return false;
         var ids:Array = _sfxBuf;
-        _sfxBuf = [];
+        var nextSequence:String = _sfxNextSequence;
+        var header:String = _sfxHeader;
+        var messageBytes:Number = _sfxHeaderBytes + _sfxPayloadBytes;
+        clearSfxBuffer();
 
         if (!isReady()) {
             countUnavailableSfxDrops(ids.length);
             return false;
         }
-        var nextSequence:String = incrementDecimal(_sfxBatchSequence);
         if (nextSequence == null) {
             countUnavailableSfxDrops(ids.length);
             resetAvailability("unavailable", true);
             return false;
         }
 
-        var message:String = buildSfxMessage(
-            _audioSessionId,
-            _audioReadyGeneration,
-            nextSequence,
-            ids,
-            null);
-        if (message == null || utf8Length(message) > MAX_SFX_MESSAGE_BYTES) {
+        var message:String = header;
+        for (var i:Number = 0; i < ids.length; i++) message += "|" + ids[i];
+        if (message == null || messageBytes > MAX_SFX_MESSAGE_BYTES) {
             _sfxThrottledCount += ids.length;
             return false;
         }
@@ -335,7 +338,7 @@ class org.flashNight.arki.audio.AudioBridge {
 
     /** 场景切换只清本帧 SFX；不得重置 audio tuple 或 request sequence。 */
     public static function reset():Void {
-        _sfxBuf = [];
+        clearSfxBuffer();
     }
 
     public static function playBGM(
@@ -486,7 +489,7 @@ class org.flashNight.arki.audio.AudioBridge {
         _audioSessionId = null;
         _audioReadyGeneration = null;
         _deviceGeneration = null;
-        _sfxBuf = [];
+        clearSfxBuffer();
         clearPendingBgm();
         if (notify) notifyAvailabilityReset(status);
     }
@@ -676,17 +679,38 @@ class org.flashNight.arki.audio.AudioBridge {
             && utf8Length(value) >= 0;
     }
 
+    private static function clearSfxBuffer():Void {
+        _sfxBuf = [];
+        _sfxNextSequence = null;
+        _sfxHeader = null;
+        _sfxHeaderBytes = 0;
+        _sfxPayloadBytes = 0;
+    }
+
     private static function isValidLinkageId(value):Boolean {
-        return typeof value == "string" && value.length > 0
-            && value.length <= MAX_SFX_ID_CHARS
-            && value != "." && value != ".."
-            && value.indexOf("|") < 0
-            && !containsNul(value)
-            && value.indexOf("\r") < 0
-            && value.indexOf("\n") < 0
-            && value.indexOf("/") < 0
-            && value.indexOf("\\") < 0
-            && utf8Length(value) >= 0;
+        return linkageUtf8Length(value) >= 0;
+    }
+
+    /** Validate the original ID grammar and count UTF-8 in one pass. */
+    private static function linkageUtf8Length(value):Number {
+        if (typeof value != "string" || length(value) == 0
+                || length(value) > MAX_SFX_ID_CHARS || value == "." || value == "..") return -1;
+        var bytes:Number = 0;
+        var count:Number = length(value);
+        for (var i:Number = 0; i < count; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (code == 0 || code == 10 || code == 13 || code == 124 || code == 47 || code == 92) return -1;
+            if (code <= 127) bytes++;
+            else if (code <= 2047) bytes += 2;
+            else if (code >= 55296 && code <= 56319) {
+                if (i + 1 >= count) return -1;
+                var low:Number = value.charCodeAt(i + 1);
+                if (low < 56320 || low > 57343) return -1;
+                bytes += 4; i++;
+            } else if (code >= 56320 && code <= 57343) return -1;
+            else bytes += 3;
+        }
+        return bytes;
     }
 
     private static function isBoundedNumber(value, minimum:Number, maximum:Number):Boolean {
@@ -770,7 +794,7 @@ class org.flashNight.arki.audio.AudioBridge {
         _audioSessionId = null;
         _audioReadyGeneration = null;
         _deviceGeneration = null;
-        _sfxBuf = [];
+        clearSfxBuffer();
         _sfxBatchSequence = "0";
         _sequenceSessionId = null;
         _sequenceReadyGeneration = null;

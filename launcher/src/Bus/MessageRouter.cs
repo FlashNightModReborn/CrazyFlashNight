@@ -16,6 +16,7 @@ namespace CF7Launcher.Bus
     public class MessageRouter
     {
         public delegate string TaskHandler(JObject message);
+        public delegate string GenerationTaskHandler(JObject message, int connectionGeneration);
         public delegate void AsyncTaskHandler(JObject message, Action<string> respond);
 
         private static readonly JsonLoadSettings StrictJsonSettings =
@@ -27,6 +28,7 @@ namespace CF7Launcher.Bus
 
         private readonly Dictionary<string, TaskHandler> _syncHandlers;
         private readonly Dictionary<string, AsyncTaskHandler> _asyncHandlers;
+        private readonly Dictionary<string, GenerationTaskHandler> _generationHandlers = new();
 
         public event Action<string> OnConsoleResult;
 
@@ -46,11 +48,19 @@ namespace CF7Launcher.Bus
             _asyncHandlers[taskType] = handler;
         }
 
+        public void RegisterSyncForGeneration(string taskType, GenerationTaskHandler handler)
+        {
+            _generationHandlers[taskType] = handler;
+        }
+
         /// <summary>
         /// 处理一条 JSON 消息，返回同步响应字符串。
         /// 异步任务通过 respond 回调返回。
         /// </summary>
         public string ProcessMessage(string json, Action<string> asyncRespond)
+            => ProcessMessage(json, 0, asyncRespond);
+
+        public string ProcessMessage(string json, int connectionGeneration, Action<string> asyncRespond)
         {
             JObject msg;
             try
@@ -76,6 +86,9 @@ namespace CF7Launcher.Bus
             }
 
             JToken callIdToken = msg["callId"];
+
+            if (_generationHandlers.TryGetValue(taskType, out var generationHandler))
+                return WrapResponse(generationHandler(msg, connectionGeneration), callIdToken);
 
             // 同步任务
             TaskHandler syncHandler;

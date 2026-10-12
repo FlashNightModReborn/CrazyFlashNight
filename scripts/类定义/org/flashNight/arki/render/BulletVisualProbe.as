@@ -13,10 +13,14 @@ class org.flashNight.arki.render.BulletVisualProbe {
     private static var ordinary:Object = {};
     private static var normalBullets:Array = [];
     private static var sceneEpoch:Number = 0;
+    private static var q1Sequence:Number = 0;
+    private static var catalogDigest:String = "";
+    public static function installedCatalogDigest():String { return enabled && nativeEnabled ? catalogDigest : ""; }
+    public static function trackedCount():Number { return normalBullets.length; }
 
     public static function configure(caps:Object):Void {
         // 任何能力载荷变化都推进呈现 epoch；宿主侧按新 epoch 重同步。
-        sceneEpoch++;
+        sceneEpoch++; q1Sequence = 0;
         var valid:Boolean = caps != null && caps.version === 1
             && (caps.mode === "shadow" || caps.mode === "native")
             && (caps.styles instanceof Array) && (caps.gunChainPrefixes instanceof Array)
@@ -57,6 +61,7 @@ class org.flashNight.arki.render.BulletVisualProbe {
             }
         }
         enabled = true;
+        catalogDigest = org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(caps.digest);
         // shadow 是配对内的暂停呈现：不归还所有权、不清存活记录，仅停止发包；
         // 恢复 native 时 F5 全量快照天然完成重同步。
         nativeEnabled = caps.mode === "native";
@@ -68,12 +73,17 @@ class org.flashNight.arki.render.BulletVisualProbe {
         // 子弹仍标记原生所有权（隐藏），绝不回交 AS2 画法。
         nativeEnabled = false;
         faultReported = false;
-        sceneEpoch++;
+        sceneEpoch++; q1Sequence = 0;
     }
 
     public static function resetScene():Void {
         releaseAll();
-        sceneEpoch++;
+        sceneEpoch++; q1Sequence = 0;
+    }
+
+    public static function activateQ1():Void {
+        sceneEpoch++; q1Sequence = 0;
+        org.flashNight.arki.render.FrameBroadcaster.setBulletVisualPayload(null);
     }
 
     public static function registerNormal(bullet):Void {
@@ -85,6 +95,7 @@ class org.flashNight.arki.render.BulletVisualProbe {
             bullet.__nativeVisualOwned = true;
             bullet.__nativeVisualAlpha = bullet._alpha;
             bullet._alpha = 0;
+            if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ordinaryBullet")) return;
             normalBullets[normalBullets.length] = bullet;
             return;
         }
@@ -112,9 +123,11 @@ class org.flashNight.arki.render.BulletVisualProbe {
     }
 
     public static function flush():Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ordinaryBullet")) return;
         if (!enabled || !nativeEnabled) return;
         var entries:Array = [];
         var normalCount:Number = 0;
+        var offer:Number = org.flashNight.arki.render.VisualWireService.f5OfferId();
         var list:Array = normalBullets;
         var n:Number = list.length;
         for (var i:Number = 0; i < n;) {
@@ -134,7 +147,17 @@ class org.flashNight.arki.render.BulletVisualProbe {
                 + bullet._xscale + bullet._yscale + alpha)) {
                 continue;
             }
-            entries[entries.length] = style + "," + bullet._x + "," + bullet._y + ","
+            if (offer > 0) {
+                var rotation:Number = bullet._rotation, sx:Number = bullet._xscale, sy:Number = bullet._yscale;
+                var mask:Number = (rotation != 0 ? 1 : 0) + (sx != 100 ? 2 : 0)
+                    + (sy != 100 ? 4 : 0) + (alpha != 100 ? 8 : 0);
+                var row:String = (style + 16 * mask) + "," + bullet._x + "," + bullet._y;
+                if ((mask & 1) != 0) row += "," + rotation;
+                if ((mask & 2) != 0) row += "," + sx;
+                if ((mask & 4) != 0) row += "," + sy;
+                if ((mask & 8) != 0) row += "," + alpha;
+                entries[entries.length] = row;
+            } else entries[entries.length] = style + "," + bullet._x + "," + bullet._y + ","
                 + bullet._rotation + "," + bullet._xscale + "," + bullet._yscale + "," + alpha;
             normalCount++;
             bullet._alpha = 0;
@@ -143,7 +166,13 @@ class org.flashNight.arki.render.BulletVisualProbe {
         var overflow:Number = normalCount > ORDINARY_LIMIT ? normalCount - ORDINARY_LIMIT : 0;
         if (overflow > 0) reportFault("ordinary_overflow:" + normalCount);
         // F5 只携带普通弹快照；六枪式联弹唯一使用 F8 组协议。
-        var payload:String = sceneEpoch + "|" + _root.帧计时器.当前帧数
+        var payload:String;
+        if (offer > 0) {
+            if (q1Sequence >= 2147483647) { sceneEpoch++; q1Sequence=0; }
+            if (sceneEpoch > 2147483647) { reportFault("epoch_exhausted"); return; }
+            payload = "Q1|" + offer + "|" + sceneEpoch + "|" + (++q1Sequence) + "|"
+                + _root.帧计时器.当前帧数 + "|" + normalCount + "|" + overflow + "|R";
+        } else payload = sceneEpoch + "|" + _root.帧计时器.当前帧数
             + "|" + normalCount + "|0|" + overflow + "|1";
         if (entries.length > 0) payload += ";" + entries.join(";");
         org.flashNight.arki.render.FrameBroadcaster.setBulletVisualPayload(payload);

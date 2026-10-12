@@ -353,15 +353,30 @@ namespace CF7Launcher.Tests.RagTerminal
             var progress = new JObject
             {
                 ["tasks_finished"] = new JArray(21),
-                ["task_chains_progress"] = new JObject { ["主线"] = 77 }
+                ["task_chains_progress"] = new JObject { ["主线"] = 77 },
+                ["tasks_active"] = new JArray(88)
+            };
+            var scene = new JObject
+            {
+                ["stageFlag"] = "废城",
+                ["stageName"] = "",
+                ["entrance"] = "正门",
+                ["inCombat"] = false
+            };
+            var player = new JObject
+            {
+                ["gender"] = "男",
+                ["level"] = 12
             };
 
-            RagTerminalPrepareResult result = await service.BindAsync("save1", character, progress);
+            RagTerminalPrepareResult result = await service.BindAsync("save1", character, progress, scene, player);
 
             Assert.True(result.Success);
             Assert.Equal(
                 "{\"slot_key\":\"save1\",\"character\":{\"name\":\"张三\"},"
-                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77}}}",
+                + "\"progress\":{\"tasks_finished\":[21],\"task_chains_progress\":{\"主线\":77},\"tasks_active\":[88]},"
+                + "\"scene\":{\"stageFlag\":\"废城\",\"stageName\":\"\",\"entrance\":\"正门\",\"inCombat\":false},"
+                + "\"player\":{\"gender\":\"男\",\"level\":12}}",
                 handler.Bodies[0]);
         }
 

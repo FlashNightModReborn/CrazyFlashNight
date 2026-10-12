@@ -99,17 +99,16 @@
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
    新 DOM 由 entered 动画淡入 */
 .tablet-stage.switching .tablet-overlay { pointer-events: none; }
-/* 转场只作用于内容层：旧内容先全淡出，新内容 bgAlt 延迟一档（--wb-motion-standard）
-   再淡入——共享背景帧常驻不参与，杜绝整幅互叠的泛浅/提亮。时长取 --wb-motion-*
-   最近语义档（ratchet WB125/126：触线不得留裸时长/裸缓动）。
+/* 转场只作用于内容层：旧内容先全淡出（前 190ms），新内容 bgAlt 延迟 170ms
+   再淡入（后 210ms）——共享背景帧常驻不参与，杜绝整幅互叠的泛浅/提亮。
    transition 只在 switching 期间挂——摘除瞬间内容层已换为新图，瞬回 opacity 1
    而不是再淡入一遍 */
 .tablet-stage.switching .tablet-view:not(.tablet-view-alt) {
   opacity: 0;
-  transition: opacity var(--wb-motion-structural) var(--wb-ease-standard);
+  transition: var(--wb-tablet-content-out-transition);
 }
 .tablet-stage.switching .tablet-view-alt.on {
-  transition: opacity var(--wb-motion-structural) var(--wb-ease-standard) var(--wb-motion-standard);
+  transition: var(--wb-tablet-content-in-transition);
 }
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-ambient { transition: var(--wb-tablet-content-transition); }

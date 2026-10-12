@@ -63,7 +63,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!fresh && (frame.Epoch<_epoch || frame.Sequence<=_sequence || frame.GameTick<_tick)) return false;
             // Validate references and capacity before mutating an accepted stream. A rejected
             // frame must be eligible for ownership revocation, not leave a partial visual frame.
-            var available=fresh?new Dictionary<int,RayVisualConfig>():new Dictionary<int,RayVisualConfig>(_configs);
+            // An empty delta can validate against the owned table without copying it.
+            // Fresh streams must still validate against an empty table; nonempty deltas
+            // use a copy so rejection cannot install a partial configuration change.
+            var available=fresh?new Dictionary<int,RayVisualConfig>()
+                :frame.Configs.Length==0?_configs:new Dictionary<int,RayVisualConfig>(_configs);
             foreach (RayVisualConfig cfg in frame.Configs)
             {
                 if (available.TryGetValue(cfg.Id,out var old) && !SameConfig(old,cfg)) { Rejected++;return false; }

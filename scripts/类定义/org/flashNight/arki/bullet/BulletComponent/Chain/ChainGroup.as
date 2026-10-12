@@ -28,6 +28,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     // 首批枪式联弹单元体在生成时选定的显示端；碰撞/衰减仍由本组维护。
     // 新组协议只在出生时选定；与旧逐 MC 采样所有权分开。
     public var nativeGroupOwned:Boolean;
+    // none retains exactly the live simulation ledger; full keeps legacy event order.
+    public var nativeProjectionNone:Boolean;
+    public var nativeDenseIndex:Number;
     public var nativeStarved:Boolean;
     public var nativeGroupId:Number;
     public var nativeStyle:Number;

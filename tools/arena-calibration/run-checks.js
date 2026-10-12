@@ -28,6 +28,7 @@ const scripts = [
   "test-unattended-safety.js",
   "test-worker-p0-metrics.js",
   "test-worker-context.js",
+  "test-worker-projection.js",
   "test-worker-dotnet.js",
   "test-worker-evidence.js",
   "test-worker-experiment.js",

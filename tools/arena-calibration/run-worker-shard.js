@@ -72,6 +72,47 @@ function validateRawRows(bytes, manifest, identity, requireComplete) {
   return rows;
 }
 
+function validateProjectionProof(status, launch) {
+  const same = require("util").isDeepStrictEqual;
+  const hash = (value) => typeof value === "string" && /^sha256:[0-9a-f]{64}$/.test(value);
+  const policy = status && status.policy, receipt = status && status.installReceipt;
+  if (!status || status.state !== "committed" || status.committed !== true || status.failure
+      || !Number.isSafeInteger(status.connectionGeneration) || status.connectionGeneration < 1
+      || !/^[0-9a-f]{32}$/.test(status.contractId || "") || !policy || !receipt) throw new Error("Worker projection installation is unproven");
+  const names = ["bulletStyles", "combatFxStyles", "rayStyles", "sceneLights"];
+  const bindings = policy.catalogBindings;
+  if (!bindings || Object.keys(bindings).length !== names.length || names.some((name) => !hash(bindings[name])))
+    throw new Error("Worker projection catalog binding is invalid");
+  const canonical = { presentation: launch.presentationPolicy, readinessKind: "arena.presented.v1",
+    projectionConsumers: Object.fromEntries(require("./lib/arena-worker-client").PROJECTION_CONSUMERS.map((name) => [name, launch.projectionConsumers[name]])),
+    controlFrameFormat: launch.controlFrameFormat, ownership: "as2-gameplay-native-model-v1",
+    catalogBindings: Object.fromEntries(names.map((name) => [name, bindings[name]])), visualSeedRevision: launch.visualSeedRevision,
+    simulationRngConsumptionRevision: launch.simulationRngConsumptionRevision, sessionVisualSeed: launch.sessionVisualSeed };
+  if (!same(policy, canonical)) throw new Error("Worker installed policy differs from launch");
+  for (const [name, value] of Object.entries(canonical))
+    if (!same(receipt[name], value)) throw new Error(`Worker installed receipt mismatch: ${name}`);
+  if (receipt.task !== "worker_projection_committed" || receipt.version !== 1 || receipt.sequence !== 2
+      || receipt.workerId !== launch.workerId || receipt.sessionEpoch !== launch.sessionEpoch
+      || receipt.contractId !== status.contractId || receipt.connectionGeneration !== status.connectionGeneration
+      || receipt.installClockKind !== "flashRootEnterFrame" || !Number.isSafeInteger(receipt.installEpoch) || receipt.installEpoch < 1
+      || !Number.isSafeInteger(receipt.installTick) || receipt.installTick < 1
+      || receipt.policyDigest !== sha256Bytes(Buffer.from(JSON.stringify(canonical), "utf8")))
+    throw new Error("Worker actual root-frame receipt is invalid");
+  return status;
+}
+
+function validateProjectionRows(rows, launch, proof) {
+  validateProjectionProof(proof, launch);
+  for (const row of rows)
+    if (row.presentationPolicy !== "full" || row.presentationContractVersion !== 1
+        || row.presentationContractId !== proof.contractId || row.readinessKind !== "arena.presented.v1"
+        || row.visualSeedRevision !== launch.visualSeedRevision || row.simulationRngConsumptionRevision !== launch.simulationRngConsumptionRevision
+        || !require("util").isDeepStrictEqual(row.projectionConsumers, launch.projectionConsumers)
+        || !require("util").isDeepStrictEqual(row.projectionInstallReceipt, proof.installReceipt))
+      throw new Error("Worker raw result lacks the exact installed projection contract");
+  return rows;
+}
+
 function normalizeExperiment(value = {}) {
   if (!value.groupId || !value.condition) throw new Error("experiment groupId and condition are required");
   safeId(value.groupId, "experiment.groupId");
@@ -148,7 +189,7 @@ async function runWorkerShard(options, dependencies = {}) {
     swfOrigin: launch.swfOrigin, startedAt, preflightCompletedAt: null, hostStartedAt: null, gameReadyAt: null,
     batchStartedAt: null, completedAt: null, finalizedAt: null, lifecycleCompletedAt: null, wallDurationMs: null,
     manifestSnapshotPath: manifestPath, manifestSha256: sha256Bytes(manifestBytes), resultPath: null, resultSha256: null,
-    launchSnapshotPath, launchSha256: boundLaunch.sha256, windowObservations: [], performanceObservations: [],
+    launchSnapshotPath, launchSha256: boundLaunch.sha256, windowObservations: [], performanceObservations: [], projectionObservations: [],
     hostProcessObservations: [], flashProcessObservations: [],
     evidenceSampling: { before: before.sampling, after: null },
     runtimeIdentity: { ...expectedRuntime, verified: false }, runtimeUnchanged: null,
@@ -176,6 +217,8 @@ async function runWorkerShard(options, dependencies = {}) {
     if (response && response.performanceObservation && typeof response.performanceObservation === "object") {
       receipt.performanceObservations.push({ ...JSON.parse(JSON.stringify(response.performanceObservation)), phase, receivedAtUtc });
     }
+    if (response && response.projectionStatus && typeof response.projectionStatus === "object")
+      receipt.projectionObservations.push({ ...JSON.parse(JSON.stringify(response.projectionStatus)), phase, receivedAtUtc });
     for (const [field, destination] of [["hostProcessObservation", "hostProcessObservations"], ["flashProcessObservation", "flashProcessObservations"]]) {
       if (response && response[field] && typeof response[field] === "object") {
         receipt[destination].push({ ...JSON.parse(JSON.stringify(response[field])), phase, receivedAtUtc });
@@ -225,6 +268,13 @@ async function runWorkerShard(options, dependencies = {}) {
       if (status.flashProcess) flashProcess = status.flashProcess;
       const agent = status.agentStatus;
       if (agent && agent.readyForRuntimeAutomation === true) {
+        if (launch.schema === "arena-worker.launch.v2") {
+          const projection = status.projectionStatus;
+          if (projection && projection.failure) throw new Error(`Worker projection failed: ${projection.failure}`);
+          if (!projection || projection.committed !== true) return false;
+          validateProjectionProof(projection, launch);
+          receipt.projectionEntryProof = JSON.parse(JSON.stringify(projection));
+        }
         if (!agent.save || agent.save.slot !== launch.slot) throw new Error("Worker ready state has the wrong save slot");
         assertRuntimeReadyStatus(agent, launch.slot, agent.save.attemptId);
         receipt.agentEntryProof = { attemptId: agent.save.attemptId, gameEnteredAttemptId: agent.gameEnteredAttemptId,
@@ -354,6 +404,8 @@ async function runWorkerShard(options, dependencies = {}) {
         receipt.resultPath = raw.filePath;
         receipt.resultSha256 = raw.sha256;
         const rows = validateRawRows(bytes, manifest, identity, receipt.status === "completed");
+        if (launch.schema === "arena-worker.launch.v2" && receipt.status === "completed")
+          validateProjectionRows(rows, launch, receipt.projectionEntryProof);
         receipt.rows = rows.length;
         const applied = new Set(rows.map((row) => row.presentationAudit && row.presentationAudit.qualityApplied || "unknown"));
         receipt.experiment.qualityApplied = applied.size === 1 ? [...applied][0] : "mixed";
@@ -431,4 +483,4 @@ if (require.main === module) {
 }
 
 module.exports = { assertArenaStatus, captureResourceClosure, childHasExited, exactAttemptResultPath, isSameProcessAlive, normalizeExperiment,
-  parseArgs, readBoundLaunch, runWorkerShard, validateRawRows, workerAttemptDirectory, workloadHash };
+  parseArgs, readBoundLaunch, runWorkerShard, validateRawRows, validateProjectionProof, validateProjectionRows, workerAttemptDirectory, workloadHash };

@@ -1539,6 +1539,13 @@ class Program
         }
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
+        int workerProjectionCatalogsReady = 0;
+        void ObserveWorkerCatalogReady(int bit, bool available, bool sent)
+        {
+            if (available && sent) Interlocked.Or(ref workerProjectionCatalogsReady, bit);
+            else Interlocked.And(ref workerProjectionCatalogsReady, ~bit);
+        }
+        socketServer.OnClientDisconnectedForGeneration += _ => Interlocked.Exchange(ref workerProjectionCatalogsReady, 0);
         // Source-derived geometry/sprite registry. Stale or missing resources keep
         // display ownership in Flash until the paired native resources are ready.
         CF7Launcher.Guardian.WorldCompositor.BulletVisualCatalog bulletVisualCatalog = null;
@@ -1590,6 +1597,15 @@ class Program
             return 1;
         }
         frameTask.ConfigureRayLighting(rayLightingCatalog);
+        string workerSceneLightDigest = workerPolicy?.Projection == null ? null
+            : CF7Launcher.Guardian.WorldCompositor.SceneLightCatalog.Load(projectRoot).Sha256;
+        string rayCatalogBinding = CF7Launcher.ArenaWorker.WorkerProjectionPolicy.Digest(new Newtonsoft.Json.Linq.JObject {
+            ["styles"] = new Newtonsoft.Json.Linq.JArray(CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.Styles),
+            ["lighting"] = rayLightingCatalog.Sha256,
+            ["maxArcs"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ArcLimit,
+            ["drawLimit"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.DrawLimit,
+            ["configLimit"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ConfigLimit,
+            ["channelVersion"] = 1, ["lightingVersion"] = 1 });
         socketServer.OnClientDisconnectedForGeneration += frameTask.ResetBulletVisualShadowForGeneration;
         Func<bool,bool> publishBulletCapability = null;
         CF7Launcher.Guardian.WorldCompositor.BulletCapabilityPublisher bulletCapabilityPublisher = null;
@@ -1621,10 +1637,20 @@ class Program
                     LogManager.Log("event=bullet_visual_caps_send_failed generation=" + generation);
             };
             socketServer.OnClientReadyForGeneration += publishBulletCaps;
-            publishBulletCapability = bulletCapabilityPublisher.Publish;
+            publishBulletCapability = available => {
+                bool sent = bulletCapabilityPublisher.Publish(available);
+                ObserveWorkerCatalogReady(1, available, sent); return sent;
+            };
             if (socketServer.TryGetReadyGeneration(out int readyBulletGeneration))
                 publishBulletCaps(readyBulletGeneration);
         }
+
+        var visualWire = new VisualWireNegotiator(bulletVisualCatalog != null, socketServer.TrySendIfGen);
+        frameTask.SetVisualWire(visualWire);
+        TaskRegistry.RegisterVisualWire(router, visualWire);
+        socketServer.OnClientReadyForGeneration += visualWire.Ready;
+        socketServer.OnClientDisconnectedForGeneration += visualWire.Disconnected;
+        if (socketServer.TryGetReadyGeneration(out int readyWireGeneration)) visualWire.Ready(readyWireGeneration);
 
         // 性能决策引擎（主控模式：发送 P 指令到 AS2，AS2 端只采样+执行）
         var perfEngine = new PerfDecisionEngine(frameTask.FpsBuffer, socketServer);
@@ -2194,7 +2220,8 @@ class Program
             drawLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.DrawLimit,
             configLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ConfigLimit,
             channelVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ChannelVersion,
-            lightingVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.LightingVersion
+            lightingVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.LightingVersion,
+            digest=rayCatalogBinding.Substring(7)
         })+"\0",generation);
         Action<int> readyRay=generation=> { Volatile.Write(ref rayCapsGeneration,generation);PublishRayCaps(false,generation); };
         socketServer.OnClientReadyForGeneration+=readyRay;
@@ -2202,7 +2229,8 @@ class Program
             if(Interlocked.CompareExchange(ref rayCapsGeneration,0,generation)==generation) worldCompositor.RayConnectionLost();
         };
         worldCompositor.RayCapabilityChanged=available=> {
-            int generation=Volatile.Read(ref rayCapsGeneration);return generation>0 && PublishRayCaps(available,generation);
+            int generation=Volatile.Read(ref rayCapsGeneration);bool sent=generation>0 && PublishRayCaps(available,generation);
+            ObserveWorkerCatalogReady(2, available, sent);return sent;
         };
         if(socketServer.TryGetReadyGeneration(out int readyRayGeneration)) readyRay(readyRayGeneration);
         frameTask.CombatFxObserved=worldCompositor.ObserveCombatFx;
@@ -2215,7 +2243,7 @@ class Program
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsImpact?"impact":"muzzle"),skipOriginYZero=style.SkipOriginYZero });
             bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,styles=fxStyles
+                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);
@@ -2229,7 +2257,8 @@ class Program
             };
             worldCompositor.CombatFxCapabilityChanged=available => {
                 int generation=Volatile.Read(ref fxCapsGeneration);
-                return generation>0 && PublishFxCaps(available,generation);
+                bool sent=generation>0 && PublishFxCaps(available,generation);
+                ObserveWorkerCatalogReady(4, available, sent);return sent;
             };
             frameTask.CombatFxEventsReady=(events,generation) => {
                 var poses=new List<object>();
@@ -2591,6 +2620,22 @@ class Program
             allowOwnedFlashRebind: workerPolicy == null,
             allowFaultInjection: workerPolicy?.AllowFaultInjection == true);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
+        WorkerProjectionNegotiator workerProjection = null;
+        if (workerPolicy?.Projection != null)
+        {
+            var bindings = WorkerProjectionPolicy.BindCatalogs(bulletVisualCatalog?.Sha256, combatFxCatalog?.Sha256,
+                rayCatalogBinding, workerSceneLightDigest);
+            workerProjection = new WorkerProjectionNegotiator(workerPolicy, bindings, socketServer.TrySendIfGen,
+                arenaCalibrationTask.RejectProjectionContract, clean: frameTask.HasCleanWorkerProjections,
+                startupReady: () => Volatile.Read(ref workerProjectionCatalogsReady) == 7);
+            arenaCalibrationTask.SetWorkerProjection(workerProjection);
+            frameTask.SetWorkerProjection(workerProjection);
+            TaskRegistry.RegisterWorkerProjection(router, workerProjection);
+            socketServer.OnClientReadyForGeneration += workerProjection.Ready;
+            socketServer.OnClientDisconnectedForGeneration += workerProjection.Disconnected;
+            if (socketServer.TryGetReadyGeneration(out int readyProjectionGeneration)) workerProjection.Ready(readyProjectionGeneration);
+            form.FormClosed += delegate { workerProjection.Dispose(); };
+        }
         WarlordBattleTask warlordBattleTask = new WarlordBattleTask(
             socketServer,
             projectRoot);
@@ -3292,7 +3337,8 @@ class Program
                 () => frameTask.FpsBuffer.Performance);
             var controller = new ArenaWorkerController(workerPolicy, agentControlTask, arenaCalibrationTask,
                 () => processManager.FlashProcess, () => form.ForceExit(),
-                windowObservation: windowObserver.Capture, performanceObservation: windowObserver.CapturePerformance);
+                windowObservation: windowObserver.Capture, performanceObservation: windowObserver.CapturePerformance,
+                projection: workerProjection);
             httpServer.SetArenaWorkerControl(controller.Handle, controller.ResponseWritten);
         }
 
