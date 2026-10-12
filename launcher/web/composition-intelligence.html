@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>CF7:ME Intelligence</title>
+<!-- 只读 Intelligence 组合页：复用生产 panel 体系，不引 bootstrap-main / 全量 lazy 注册表。 -->
+<!-- intelligence 样式在 panels.css 的 panels/features.css 内；字体包条幅（写业务）不装入本页。 -->
+<link rel="stylesheet" href="css/game-ui-behavior.css">
+<link rel="stylesheet" href="css/overlay.css">
+<link rel="stylesheet" href="css/panels.css">
+</head>
+<body>
+
+<!-- Panel system（与 overlay.html / composition-help.html 同结构，Panels.init 依赖这三个 id） -->
+<div id="panel-container" style="display:none">
+  <div id="panel-backdrop"></div>
+  <div id="panel-content"></div>
+</div>
+<div id="panel-tooltip"></div>
+
+<!-- 加载顺序有约束：
+     1. bridge.js 提供 Bridge；
+     2. composition-intelligence.js 必须在 panels.js 之前执行——它要先注册 panel_cmd 监听
+        （记录 open 的 initData.panelInstanceId）并装好出站过滤，再让 Panels 绑自己的 handler；
+     3. intelligence-panel.js 在加载时直接 Panels.register('intelligence')，不走 LazyLoader/registry；
+     4. font-pack-banner.js 故意不加载：其字体包下载是写业务，只读端点结构性排除。 -->
+<script src="generated/font-catalog.js"></script>
+<script src="modules/bridge.js"></script>
+<script src="modules/composition-intelligence.js"></script>
+<script src="modules/panels.js"></script>
+<script src="modules/panel-scale.js"></script>
+<script src="modules/toast.js"></script>
+<script src="modules/tooltip.js"></script>
+<script src="modules/intelligence-components.js"></script>
+<script src="modules/intelligence-panel.js"></script>
+</body>
+</html>

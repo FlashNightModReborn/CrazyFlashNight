@@ -1919,6 +1919,21 @@ class Program
                         form.BeginInvoke(new Action(panelHost.PrewarmCompositionHelp));
                 };
             panelHost.ConfigureHelpTutorialPreference(new HelpTutorialPreferenceCommand(userPrefs, userPrefs.Save));
+            // 第二个只读消费者：intelligence（情报档案）。独立 WebView2 profile 目录
+            // （同一 user data folder 不能被两个并存 environment 共享）；查询转发与
+            // 关闭裁决仍归 WebOverlayForm 既有权威，本段只接线不复制业务。
+            panelHost.ConfigureCompositionIntelligence(webDir,
+                Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-intelligence"),
+                json => webOverlay.HandleCompositionIntelligenceMessage(json),
+                post => webOverlay.AcquireIntelligenceResponseChannel(post),
+                () => webOverlay.RestoreIntelligenceResponseChannel(),
+                deferPrewarm: form.BootstrapPanel != null);
+            if (form.BootstrapPanel != null)
+                form.BootstrapPanel.InitialNavigationCompleted += () =>
+                {
+                    if (!form.IsDisposed)
+                        form.BeginInvoke(new Action(panelHost.PrewarmCompositionIntelligence));
+                };
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
