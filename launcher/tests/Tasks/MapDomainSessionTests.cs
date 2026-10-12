@@ -95,6 +95,8 @@ namespace CF7Launcher.Tests.Tasks
             var sync = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotA'}"), 1, () => true);
             Assert.True(sync.Value<bool>("success"));
             Assert.True(sync["result"].Value<bool>("changed"));
+            // task_sync 已经算出槽位：同批记进进程级上下文，NPC 对话覆盖层据此按存档定位。
+            Assert.Equal("slotA", CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey);
             Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
                 ((JArray)sync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
             Assert.Contains("200001", ((JArray)sync["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
@@ -111,6 +113,7 @@ namespace CF7Launcher.Tests.Tasks
             // 换到没有覆盖层的槽：上一槽的增量退出内容，仍按变化清单收敛。
             var switched = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotB'}"), 1, () => true);
             Assert.True(switched["result"].Value<bool>("changed"));
+            Assert.Equal("slotB", CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey);
             Assert.DoesNotContain("200001", ((JArray)switched["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
             Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
                 ((JArray)switched["result"]["changedFiles"]).Select(x => (string)x).ToArray());
@@ -126,10 +129,13 @@ namespace CF7Launcher.Tests.Tasks
             var stray = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'../slotA'}"), 1, () => true);
             Assert.True(stray.Value<bool>("success"));
             Assert.False(stray["result"].Value<bool>("changed"));
+            // 非法形态不成为「当前槽位」：对话覆盖层同样按无绑定处理。
+            Assert.Null(CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey);
             // 缺失 savePath＝未绑定/无覆盖层。
             var absent = domain.Process(JObject.Parse("{version:2,op:'task_sync'}"), 1, () => true);
             Assert.True(absent.Value<bool>("success"));
             Assert.False(absent["result"].Value<bool>("changed"));
+            Assert.Null(CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey);
             // 类型错误的载荷按协议错误拒绝。
             Assert.False(domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:5}"), 1, () => true).Value<bool>("success"));
         }
@@ -318,6 +324,12 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Null(response["result"]["admission"]["frame"]);
             }
         }
-        public void Dispose() { Directory.Delete(root, true); }
+        public void Dispose()
+        {
+            // task_sync 会写进程级槽位上下文（对话覆盖层据此定位）：清掉，不外溢到其他用例。
+            CF7Launcher.RagTerminal.AgentSaveContext.Clear();
+            CF7Launcher.Data.AgentDialogueOverrides.Invalidate();
+            Directory.Delete(root, true);
+        }
     }
 }

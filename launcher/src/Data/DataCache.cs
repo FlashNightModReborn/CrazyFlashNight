@@ -33,6 +33,12 @@ namespace CF7Launcher.Data
         }
 
         /// <summary>
+        /// 装配时注入的项目根。按存档的 Agent 对话覆盖层（AgentDialogueOverrides）用同一路径拼法读自己的小文件，
+        /// 与本类的 base 缓存完全隔离——base 索引一旦加载永不失效，覆盖层单独按文件指纹缓存。
+        /// </summary>
+        internal string ProjectRoot { get { return _projectRoot; } }
+
+        /// <summary>
         /// 获取 NPC 对话索引。首次调用同步解析所有 XML 并缓存。
         /// 加载失败时返回 null，错误信息通过 GetNpcError() 获取。
         /// 失败后不重试（缓存失败状态），Flash 端走 legacy fallback。

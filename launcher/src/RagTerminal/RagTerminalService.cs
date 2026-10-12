@@ -123,11 +123,16 @@ namespace CF7Launcher.RagTerminal
             if (!IsValidSlotKey(slotKey))
                 return RagTerminalPrepareResult.Fail("rag_slot_invalid", "当前存档信息无效，无法打开通讯终端。");
 
+            // 载荷里的 slot_key 就是当前存档：记进进程级上下文，NPC 日常对话覆盖层按它定位
+            // data/rag/agent_saves/<slotKey>/dialogue_overrides.json，换槽位同时失效覆盖层缓存。
+            JObject payload = BuildBindPayload(slotKey, character, progress, scene, player);
+            AgentSaveContext.Set(payload.Value<string>("slot_key"));
+
             for (int attempt = 0; attempt < 2; attempt++)
             {
                 JObject response = await PostJsonAsync(
                     "/api/integration/bind",
-                    BuildBindPayload(slotKey, character, progress, scene, player).ToString(Formatting.None)).ConfigureAwait(false);
+                    payload.ToString(Formatting.None)).ConfigureAwait(false);
                 if (response != null && response.Value<bool?>("ok") == true)
                 {
                     string frontendUrl = response.Value<string>("frontend_url");
@@ -186,6 +191,9 @@ namespace CF7Launcher.RagTerminal
                 LogManager.Log("[RagTerminal] refresh skipped: invalid slot");
                 return;
             }
+            // 刷新同样带 slot_key，且在健康探测之前记录：覆盖层是本地文件，exe 不在线也要让宿主知道当前存档。
+            JObject payload = BuildBindPayload(slotKey, character, progress, scene, player);
+            AgentSaveContext.Set(payload.Value<string>("slot_key"));
             JObject health = await ProbeHealthAsync().ConfigureAwait(false);
             if (health == null)
             {
@@ -194,7 +202,7 @@ namespace CF7Launcher.RagTerminal
             }
             JObject response = await PostJsonAsync(
                 "/api/integration/bind",
-                BuildBindPayload(slotKey, character, progress, scene, player).ToString(Formatting.None)).ConfigureAwait(false);
+                payload.ToString(Formatting.None)).ConfigureAwait(false);
             if (response == null || response.Value<bool?>("ok") != true)
                 LogManager.Log("[RagTerminal] refresh bind failed (ignored) slot=" + slotKey);
         }
