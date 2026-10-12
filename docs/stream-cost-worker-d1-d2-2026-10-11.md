@@ -1,4 +1,4 @@
-# 流式成本与 Worker D1/D2 隔离候选
+# 流式成本与 Worker D1/D2：施工与正式发布
 
 **文档角色**：本轮协议、裁决、候选验证与发布入口。隔离施工起点为 `38f24d4bc9d6d7a63941425639409cd4a3643df2`；2026-10-12 用户试玩后明确授权「可行，那就走完整的发布列车」。
 
@@ -8,7 +8,29 @@
 
 已将封存源码树 `890508f38af78e1d439176e4a261b23f69353532` 的 80 个施工文件整合到最新 main `d305afb9d159002311eca66f635b57824e087a9a`；逐路径核对无交叉修改，保留全部上游变更和真实存档。用户在普通 full 模式试玩隔离候选07后授权正式发布；日志确认该次 Ready 生命周期及 Flash code 0 退出，不补签逐项视听、弱机或完整业务验收。
 
-本列车当前使用新标签 `runtime-build-v2/20261012-stream-cost-worker-v2` 和新 immutable request，执行注册本地 X509／GitHub hosted OIDC 独立构建、当前 strict policy、唯一 writer 原子 promotion、部署提交及远端 Audit、无候选选择器的正式入口复验。目前尚未正式推广。施工包的旧 request、旧策略票与人工试玩身份不会替代新列车证明。
+本列车已使用新标签 `runtime-build-v2/20261012-stream-cost-worker-v2` 和新 immutable request 完成注册本地 X509／GitHub hosted OIDC 独立构建、当前 strict policy、唯一 writer 原子 promotion、部署提交及远端 Audit、无候选选择器的正式入口复验。正式入口证明范围为首页、预热生命周期与正常退出；完整玩家战斗、弱机、视听和持久写重启读回仍保留对应人类／专项验收边界。
+
+### 正式交付回执
+
+| 项 | 本轮实际证据 |
+|---|---|
+| 冻结源 | `34784c8ec5a17edc5d6e81ca8a23fb5625ebcb29`；tree `8c22157012b74aff97a4dc608f61927f675eb8cd` |
+| request | `13837A8C351F73346FB8271E99411F5DF6441B5370C4A10D61327BF1B1120C73` |
+| identity | `CBE39D146A1F508DE1A2A0F8577B60BB59DA376523798A5372B86F03AD73D8D8` |
+| closure | `0E2AFB5211CC9F88E79422B6AFA82775F44A87F4F878729B7C2D6B9C8477602A`；43项实际载荷通过逐文件验证 |
+| Core DLL | `430004198E88942CE3C985D707CB0A4CCB44124FD817ED05EEDFEEC95AB49341` |
+| production policy | 47/47；policyHash `5B5D696170361B258BAE3241399533F504CB7F714FC14FE8131E4C15C9AA4B55`；receipt SHA-256 `E3244E3E5AA4D9BB998CAEC171C9BA751B5876905F5E6060958B3BFC40CE3421` |
+| 独立生产 | `builder-local-c / physical-host-c` 的注册X509原票，加 [GitHub hosted OIDC/Sigstore 38206479663](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38206479663)；两者实际identity/closure一致 |
+| promotion | `2026-10-12T05:19:26.7303795Z` 原子推广、双signer／双faultDomain重验及 full-install bootstrap verify-only 成功；previous回退闭包保留 |
+| 部署提交 | `1d1ab3c268dd8482a1ad75235f695287fd74cab7` 已推送main |
+| 事后Audit | [38207641693](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38207641693) 成功；独立重放 `state=promoted / deploymentChanged=true` 与双signer／双faultDomain |
+| 正式入口 | 05:25 UTC，无candidate selector的实际 `runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe`；精确Core／identity／closure、首页导航、预热返回Idle、正常关窗code0通过，无强制清理；`businessJourneyExecuted=false` |
+
+签名CAS只包含部署载荷，开发入口限定仓内候选并要求标准producer元数据。两次只读拒绝（队列路径、元数据缺失）均未启动Host，原日志保留；随后用标准producer生成 `stream-release-v2-run03`，全部CAS文件逐字节相同，真实普通启动／单例／退出通过。该同机运行候选不计作第二独立builder；正式推广仍选择原 signed CAS。
+
+最终全局保护快照核对136个既有记录，差异与意外新增均为0；另单列main私有 `.launcher-version-marker.json` 的正常启动更新，不把它称为玩家槽或恢复旧值。真实存档、试玩副本、launcher偏好、config及CS6原指针均保留。05:29 UTC确认无owned Host／Flash／headless浏览器，无新增临时显示请求，CompileTriggerTask Ready且事务marker为0。原施工索引SHA与未知写锁继续保留，两个施工worktree保留原始证据与试玩进度。
+
+发布交付证据位于 `tmp/runtime-release/stream-cost-worker-20261012/attempt-v2/`：`source-freeze.json`、`production-policy.v2.json`、`cloud-result.json`、`promotion.log`、`deployment-audit.log`、`execution-producer-binding.json`、`formal-entry-result.json`、`final-save-safety.json` 和 `resource-release-ready.json`。跨会话资源释放通知因应用 `AbsolutePathBuf deserialized without a base path` 未能唤醒等待的复验会话；本机资源已清理，但未把失败通知当成协调成功。
 
 合并后的真实 CS6 首次 publish 发现上游 `通信_aka_Agent联动.as` 新函数使用 `lt`、`gt` 两个 AS2 保留字作变量，Compiler 报7错／0警告。按原业务语义仅重命名为 `tagStart`／`tagEnd`，保留 BOM 并重编；失败日志及无效1253字节 SWF 保留在本机发布目录，未部署。新 RAG 五键投影保持上游合同。
 
@@ -18,7 +40,7 @@ v1 源码 `58bfa60b31d070379d3713c6070ae69969f5aeb7` 已推送，远端 Audit `3
 
 v2 只修复政策与 Web 归属：补齐商店 CSS 闭包，既有缺省色及平板转场参数移入共享 token，去掉9个优先覆盖并用明确选择器保持原效果；skins 账本10→1，rawColor2044→2013、rawDuration107→105、rawEasing93→91，债务上限同步下降。商店 harness 为新胸像解析器声明真实资源根，并按生成的阵营主题验证数量控件，不改交易权威。真实 Edge 商店133/133、材料导航23/23、减少动效2/2，Node runtime10/10、secondary14/14、棘轮68/68与严格CSS审计0错误／0警告通过。两次真实浏览器前后对照覆盖帮助／结算共755个节点、每节点27项属性，颜色、几何、字体与转场参数差异为0；属于受控前端夹具，不称玩家实机业务验收。首次素材路径和旧金色断言失败日志保留。
 
-v2 不修改 C#／native／AS2／SWF 输入；只有新 request 对前三域及 build identity 核对仍一致时，才按发布协议复用 v1 的真实本地 signed CAS。云端必须从 v2 标签重新独立生产并签名，最终完整策略票重新绑定 v2，不沿用44/47失败票。
+v2 未修改 C#／native／AS2／SWF 输入；新 request 已核对前三域及 build identity 全等，按发布协议复用 v1 的真实本地 signed CAS。云端从 v2 标签重新独立生产并签名，最终47/47策略票重新绑定 v2，未沿用44/47失败票。
 
 发布证据保存在 primary 的 `tmp/runtime-release/stream-cost-worker-20261012/`；施工原始证据和试玩存档继续保存在原 worktree。下节性能与测试数字属于已交付候选07，合并后的正式 runtime 单独记录实际身份和验证范围。
 
