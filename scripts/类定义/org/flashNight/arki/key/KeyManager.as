@@ -138,10 +138,6 @@ class org.flashNight.arki.key.KeyManager {
      */
     private static var frameCount:Number = 0;
 
-    /**
-     * frameTimer: 可选的帧定时器引用，目前未使用，预留扩展接口。
-     */
-    private static var frameTimer:FrameTimer;
 
     //============================
     // 事件总线实例

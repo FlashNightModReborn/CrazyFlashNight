@@ -49,7 +49,15 @@ function runHarness(options = {}) {
     [canonicalTargetURI, "PROXY-CS5"],
   ]);
   if (options.quitAfterPublish) files.set(quitCfg, "quit");
+  const controlCfg = `${projectURI}/scripts/testplayer_control.cfg`;
+  const controlReceipt = `${projectURI}/scripts/testplayer_control.receipt`;
+  if (options.controlRequest) files.set(controlCfg, options.controlRequest);
+  files.set(outputLog, "preserved prior diagnostics");
+  files.set(compilerErrorsLog, "preserved prior compiler");
+  if (options.preowned) files.set(`${projectURI}/scripts/testhost_ownership.marker`, `${"f".repeat(32)}\nexclusive=true`);
+  if (options.tainted) files.set(`${projectURI}/scripts/testhost_foreign_document.marker`, "foreign");
   const traces = [];
+  let outputClears = 0;
   const opened = [];
   const closed = [];
   const outputSaves = [];
@@ -57,6 +65,7 @@ function runHarness(options = {}) {
   const tested = [];
   const playerEvents = [];
   const quitCalls = [];
+  const eventListeners = new Map();
 
   const document = {
     name: "asLoader.xfl",
@@ -69,6 +78,10 @@ function runHarness(options = {}) {
       tested.push(this.name);
     },
   };
+  if (options.testHostDocument) {
+    document.name = "TestLoader.xfl";
+    document.pathURI = `${projectURI}/scripts/TestLoader/TestLoader.xfl`;
+  }
 
   const foreignDocument = {
     name: "素材库-物品技能图标.xfl*",
@@ -81,8 +94,9 @@ function runHarness(options = {}) {
   const fl = {
     configURI: "file:///flash-config/",
     documents: initialDocuments,
+    addEventListener(event, callback) { eventListeners.set(event, callback); },
     outputPanel: {
-      clear() {},
+      clear() { outputClears++; },
       save(uri) {
         outputSaves.push(uri);
         files.set(uri, traces.join("\n"));
@@ -99,7 +113,8 @@ function runHarness(options = {}) {
     },
     closeAllPlayerDocuments() {
       playerEvents.push("close-players");
-      return true;
+      if (options.throwOnPlayerClose) throw new Error("simulated player close failure");
+      return options.hadPlayers !== false;
     },
     closeDocument(doc) {
       closed.push(doc.pathURI);
@@ -163,6 +178,14 @@ function runHarness(options = {}) {
     reopenMarker,
     outputLog,
     compilerErrorsLog,
+    controlCfg,
+    controlReceipt,
+    targetCfg,
+    fl,
+    eventListeners,
+    outputClears,
+    ownershipMarker: `${projectURI}/scripts/testhost_ownership.marker`,
+    taintMarker: `${projectURI}/scripts/testhost_foreign_document.marker`,
   };
 }
 
@@ -241,4 +264,83 @@ testExplicitQuitRunsAfterSuccessfulPublish();
 testMovieKeepsDebugTargetOpen();
 testOpenFailureTerminatesImmediately();
 testPowerShellHandshakeIsBounded();
-console.log("[flash-compile-jsfl] ok 5/5");
+function testPlayerControlDoesNotCompileOrTouchSources() {
+  const nonce = "a".repeat(32);
+  const result = runHarness({ controlRequest: `stop_test_players\n${nonce}`, includeForeignDocument: true });
+  assert.match(result.files.get(result.controlReceipt), new RegExp(`^${nonce}\nclosed=true\ndocuments=2\n`));
+  assert.equal(result.files.has(result.controlCfg), false);
+  assert.deepEqual(result.closed, []);
+  assert.deepEqual(result.published, []);
+  assert.deepEqual(result.tested, []);
+  assert.deepEqual(result.quitCalls, []);
+  assert.equal(result.files.has(result.targetCfg), true);
+  assert.equal(result.files.get(result.outputLog), "preserved prior diagnostics");
+  assert.equal(result.files.get(result.compilerErrorsLog), "preserved prior compiler");
+  assert.equal(result.files.has(result.doneMarker), false);
+}
+function testNoPlayersAndPlayerCloseErrorReceipts() {
+  const nonce = "b".repeat(32);
+  const empty = runHarness({ controlRequest: `stop_test_players\n${nonce}`, hadPlayers: false });
+  assert.match(empty.files.get(empty.controlReceipt), /^b{32}\nclosed=false\ndocuments=1/);
+  const failed = runHarness({ controlRequest: `stop_test_players\n${nonce}`, throwOnPlayerClose: true });
+  assert.match(failed.files.get(failed.controlReceipt), /^b{32}\nERROR\nError \| simulated player close failure/);
+  assert.equal(failed.files.has(failed.doneMarker), false);
+  assert.equal(failed.files.get(failed.compilerErrorsLog), "preserved prior compiler");
+}
+testPlayerControlDoesNotCompileOrTouchSources();
+testNoPlayersAndPlayerCloseErrorReceipts();
+function testOwnedHostControlProtectsForeignDocuments() {
+  const nonce = "c".repeat(32);
+  for (const operation of ["inspect_owned_test_host", "quit_owned_test_host"]) {
+    const foreign = runHarness({ controlRequest: `${operation}\n${nonce}`, includeForeignDocument: true });
+    assert.match(foreign.files.get(foreign.controlReceipt), /Foreign or unsaved document blocks/);
+    assert.deepEqual(foreign.quitCalls, []);
+    assert.deepEqual(foreign.closed, []);
+    assert.deepEqual(foreign.playerEvents, []);
+    const empty = runHarness({ controlRequest: `${operation}\n${nonce}`, initialDocuments: false });
+    assert.match(empty.files.get(empty.controlReceipt), /\nowned=true(?:\n|$)/);
+    assert.deepEqual(empty.quitCalls, operation === "quit_owned_test_host" ? [false] : []);
+    assert.deepEqual(empty.published, []);
+    assert.deepEqual(empty.tested, []);
+  }
+}
+testOwnedHostControlProtectsForeignDocuments();
+function testOwnedHostExitClosesDocumentsInSeparateInvocation() {
+  const nonce = "d".repeat(32);
+  const close = runHarness({controlRequest:`quit_owned_test_host\n${nonce}`,testHostDocument:true});
+  assert.equal(close.closed.length,1);
+  assert.deepEqual(close.quitCalls,[]);
+  assert.match(close.files.get(close.controlReceipt),/\nexit_requested=false$/);
+  const exit = runHarness({controlRequest:`quit_owned_test_host\n${nonce}`,initialDocuments:false,hadPlayers:false});
+  assert.deepEqual(exit.quitCalls,[false]);
+  assert.match(exit.files.get(exit.controlReceipt),/\nexit_requested=true$/);
+}
+testOwnedHostExitClosesDocumentsInSeparateInvocation();
+function testForeignDocumentTaintsOwnedHostLease() {
+  const nonce = "e".repeat(32);
+  const result = runHarness({controlRequest:`inspect_owned_test_host\n${nonce}`,initialDocuments:false});
+  assert.equal(result.files.get(result.ownershipMarker),`${nonce}\nexclusive=true`);
+  for (const event of ["documentOpened","documentNew","documentChanged"]) assert.equal(typeof result.eventListeners.get(event),"function");
+  result.fl.documents.push({name:"unsaved",pathURI:""});
+  result.eventListeners.get("documentNew")();
+  assert.equal(result.files.get(result.ownershipMarker),`${nonce}\nexclusive=false`);
+  assert.match(result.files.get(result.taintMarker),/^e{32}\nforeign=/);
+}
+testForeignDocumentTaintsOwnedHostLease();
+function testOwnedOutputClearPreservesEvidenceAndPlayer() {
+  const request=`clear_owned_test_output\n${"f".repeat(32)}`;
+  const good=runHarness({controlRequest:request,testHostDocument:true,preowned:true});
+  assert.equal(good.outputClears,1);
+  assert.match(good.files.get(good.controlReceipt),/closed=false[\s\S]*owned=true\noutput_cleared=true$/);
+  assert.deepEqual(good.playerEvents,[]);
+  assert.deepEqual(good.published,[]);
+  assert.equal(good.files.get(good.outputLog),"preserved prior diagnostics");
+  assert.equal(good.files.get(good.compilerErrorsLog),"preserved prior compiler");
+  for (const extra of [{preowned:false},{tainted:true},{includeForeignDocument:true}]) {
+    const refused=runHarness({controlRequest:request,testHostDocument:true,preowned:true,...extra});
+    assert.equal(refused.outputClears,0);
+    assert.match(refused.files.get(refused.controlReceipt),/\nERROR\n/);
+  }
+}
+testOwnedOutputClearPreservesEvidenceAndPlayer();
+console.log("[flash-compile-jsfl] ok 11/11");

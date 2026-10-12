@@ -21,7 +21,11 @@ param(
     [switch]$PublishOnly,
     # Flash CS6 为 32 位进程；批量发布大型 XFL 时可在本轮 publish 的 SWF/诊断/terminal marker
     # 全部落盘后优雅退出 IDE，下一轮再由 FlashCS6Task 启动干净实例。testMovie 模式禁止使用。
-    [switch]$QuitFlashAfterPublish
+    [switch]$QuitFlashAfterPublish,
+    # 有界播放器控制，复用本事务/JSFL，仅关闭 Test Movie；不编译、不退出编辑器、不清未知闸。
+    [switch]$StopTestPlayers,
+    [switch]$QuitOwnedTestHost,
+    [switch]$ClearOwnedTestOutput
 )
 
 $ErrorActionPreference = 'Stop'
@@ -36,6 +40,7 @@ $ErrorMarker = Join-Path $ScriptDir 'publish_error.marker'
 $UncertainMarker = Join-Path $ScriptDir 'compile_state_uncertain.marker'
 $ReopenMarker = Join-Path $ScriptDir 'compile_reopen.marker'
 $ScratchMarker = Join-Path $ScriptDir 'testloader_scratch_inflight.marker'
+$QuitCfg = Join-Path $ScriptDir 'compile_quit_after_publish.cfg'
 $CompileOutput = Join-Path $ScriptDir 'compile_output.txt'
 $CompilerErrors = Join-Path $ScriptDir 'compiler_errors.txt'
 $FlashLog = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
@@ -310,6 +315,26 @@ try {
     } catch {
         Write-Host ('[ERROR] {0}' -f $_.Exception.Message)
         exit 1
+    }
+    if ($StopTestPlayers -or $QuitOwnedTestHost -or $ClearOwnedTestOutput) {
+        if ($Target -or $VerifySwf -or $PublishOnly -or $QuitFlashAfterPublish) {
+            throw 'StopTestPlayers cannot be combined with compilation or editor-exit options.'
+        }
+        . (Join-Path $ScriptDir 'test-runners/testplayer-control.ps1')
+        if (([int]$StopTestPlayers.IsPresent + [int]$QuitOwnedTestHost.IsPresent + [int]$ClearOwnedTestOutput.IsPresent) -ne 1) { throw 'Select exactly one player control operation.' }
+        $controlOperation = if ($QuitOwnedTestHost) {'quit_owned_test_host'} elseif ($ClearOwnedTestOutput) {'clear_owned_test_output'} else {'stop_test_players'}
+        if ($ClearOwnedTestOutput -and [string]::IsNullOrWhiteSpace($compileLease)) { throw 'Output clear requires the active focused scratch lease.' }
+        $controlTimeout = if ($ClearOwnedTestOutput) {30} else {10}
+        $stopResult = Invoke-Cf7StopTestPlayers -ScriptsDirectory $ScriptDir -Operation $controlOperation -ControlTimeoutSeconds $controlTimeout
+        Write-Host ('[OK] CS6 控制已实际核对，operation={0}；证据：{1}' -f $controlOperation,$stopResult.receipts)
+        return
+    }
+    if (Test-Path -LiteralPath (Join-Path $ScriptDir 'testplayer_control.cfg')) {
+        throw 'Unacknowledged test player control blocks compilation; inspect its receipt before recovery.'
+    }
+    if ([string]::IsNullOrWhiteSpace($compileLease) -and
+        (Test-Path -LiteralPath (Join-Path $ScriptDir 'testhost_ownership.marker'))) {
+        throw 'An unrecovered owned test host lease blocks ordinary compilation; preserve its documents and inspect its receipts.'
     }
     if (Test-Path -LiteralPath $UncertainMarker) {
         Write-Host '[ERROR] 检测到 scripts/compile_state_uncertain.marker；上一轮可能仍有迟到的 Flash/JSFL 写入。'
@@ -632,7 +657,20 @@ for ($i = 1; $i -le $TimeoutSeconds; $i++) {
             }
         }
 
-        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure) {
+        $hasOwnershipFailure = $false
+        if (-not $isTestLoaderTarget -and $VerifySwfPath -and
+            $VerifySwfPath.StartsWith($ProjectDir + [System.IO.Path]::DirectorySeparatorChar, [StringComparison]::OrdinalIgnoreCase) -and
+            -not ($hasCompileError -or $hasTraceFailure -or $hasSwfStale)) {
+            $ownershipRelative = $VerifySwfPath.Substring($ProjectDir.Length + 1).Replace('\', '/')
+            if ($ownershipRelative -eq 'scripts/asLoader.swf' -or
+                $ownershipRelative -eq 'CRAZYFLASHER7MercenaryEmpire.swf' -or
+                $ownershipRelative.StartsWith('flashswf/')) {
+                & node (Join-Path $ProjectDir 'tools/audit-as2-class-embedding.js') --swf $ownershipRelative
+                if ($LASTEXITCODE -ne 0) { $hasOwnershipFailure = $true }
+            }
+        }
+
+        if ($hasCompileError -or $hasTraceFailure -or $hasSwfStale -or $hasFunctionSizeFailure -or $hasOwnershipFailure) {
             Remove-Item -Path $TargetCfg, $ModeCfg, $QuitCfg, $ReopenMarker -ErrorAction SilentlyContinue
             exit 1
         }
@@ -710,7 +748,7 @@ Write-Host '  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds �
 $nonTerminalUncertainWritten = $true
 exit 1
 } finally {
-    Remove-Item -LiteralPath $QuitCfg -ErrorAction SilentlyContinue
+    if (-not $StopTestPlayers -and -not $QuitOwnedTestHost) { Remove-Item -LiteralPath $QuitCfg -ErrorAction SilentlyContinue }
     if ($compileTriggered -and -not $compileTerminalObserved -and
         -not $nonTerminalUncertainWritten) {
         [void](Write-CompileUncertain ('compile_test exited before a terminal marker; target={0}' -f $Target))

@@ -1,7 +1,7 @@
 ﻿import org.flashNight.arki.item.itemCollection.*;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.gesh.object.ObjectUtil;
-import org.flashNight.naki.DataStructures.TreeSet;
+import org.flashNight.naki.DataStructures.*;
 
 /**
  * Inventory及其附属类的测试类
@@ -17,6 +17,9 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         testPassed = 0;
         testFailed = 0;
     }
+
+    public function getPassedCount():Number { return testPassed; }
+    public function getFailedCount():Number { return testFailed; }
 
     /**
      * 简单的断言函数
@@ -171,7 +174,7 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
         inventory.add(3, { name:"D", value:1 });
 
         // 人为制造“索引树缺项”场景：items 中有 index=3，但 indexes 只有 0,1,2
-        inventory.setIndexes(TreeSet.buildFromArray([0, 1, 2], null, TreeSet.TYPE_AVL));
+        inventory.setIndexes(TreeSetTestFactory.buildFromArray([0, 1, 2], null, TreeSet.TYPE_AVL));
 
         var firstVacancy:Number = inventory.getFirstVacancy();
         assert(firstVacancy == 4,
@@ -185,6 +188,10 @@ class org.flashNight.arki.item.itemCollection.InventoryTest {
     private function testRequirement():Void {
         trace("\n===> 测试 testRequirement (acquire/submit) ...");
 
+        // 隔离的内存存档 owner：现役资产首写必须能读回 dirtyMark。
+        _root.存档系统 = {dirtyMark:false};
+        _root.金钱 = 0;
+        _root.虚拟币 = 0;
         // 初始化全局 _root 模拟物品栏与收集品栏
         _root.物品栏 = { 背包: new ArrayInventory(null, 5), 药剂栏: new ArrayInventory(null, 5) };
         _root.收集品栏 = { 

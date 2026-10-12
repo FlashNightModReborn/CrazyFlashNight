@@ -1,0 +1,7 @@
+﻿trace("FocusedTestRunId scheduler-boundary Start: __FOCUSED_RUN_ID__");
+try {
+    org.flashNight.dev.SchedulerBoundaryTest.runAllTests();
+} catch (error) {
+    trace("[FAIL] SchedulerBoundaryTest unexpected exception: " + error);
+}
+trace("FocusedTestRunId scheduler-boundary Complete: __FOCUSED_RUN_ID__");

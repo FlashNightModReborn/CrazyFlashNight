@@ -102,9 +102,9 @@
 
 **fresh TestLoader SWF 函数尺寸门**：每个 fresh 产物还须跑 `node tools/swf-function-sizes.js scripts/TestLoader.swf --max 60000 --top 15`，并将 `codeSize` 与 canonical 源端单函数闭包度量、fresh 行为证据合用；源字节提示线只作调查，不是 hard gate。
 
-**主 SWF / asLoader class 边界审计**：改 `scripts/类定义/org/flashNight/neur/Server/*` 或部署前追加 `node tools/audit-as2-class-embedding.js --policy child-only`；临时双 SWF 重打兜底用 `--policy dual-build --marker _repairPending --marker applyRepairResolved`。
-若主 SWF 仍嵌入 `__Packages.org.flashNight.neur.Server.SaveManager` / `ServerManager`，asLoader 新 class 不会覆盖。**全局单一归属门（asLoader 重构 P1）**：`--policy single-ownership` 断言「主 SWF 嵌入 `org.flashNight.*` 类 = 0 且无 class 同时嵌入两 SWF」——比 child-only 更强，守「主时间轴误直引用游戏 class 致其嵌进主 SWF → 首注册胜出 shadow 掉 asLoader 重编版本」。
-改主 FLA 帧脚本 / 新增主时间轴 class 引用、或部署前跑。（文本曾记录基线 main=0 / loader=599 或 625 / intersection=0，待核：阈值来源为历史文本，未找到当前机器真源；门本身按断言语义执行。）
+**生产 SWF 类归属门**：`node tools/audit-as2-class-embedding.js`（`single-ownership` 为同义入口）按打包配置选取全部生产 SWF，以 ExportAssets 对应 sprite/DoInitAction 识别真实类定义。asLoader 之外的 `org.flashNight.*` 及与 loader 同名的默认包类均失败，字节相同也不放行；完整模式同时核对 RSL 依赖存在且唯一。历史副本和测试工程按实际打包配置排除，不能因扩展名为 SWF 就把非运行工程混入生产证明。
+单件编译后使用 `--swf <产物相对路径>`，只验证该产物与 main/asLoader 的类边界，报告明确标 `closureChecked=false`；最终打包消费实际复制文件清单，CI 对随仓发行闭包独立检查。`swf-metadata.js` 与函数尺寸门复用按内容哈希和解析版本缓存的元数据，缓存校验失败自动回读产物；缓存不存 verdict、不代替 fresh 编译或行为。首次建缓存/规则升级需完整解析，日常迭代不重复全仓解析。
+`--policy core-ownership` 仅作两件核心文件诊断；`child-only` / `dual-build` 是历史兼容诊断，不可代替生产归属验收。解析器/缓存/归属负例为 `node tools/test-swf-metadata.js`。原有 AVM1 64KB 能力边界继续成立。
 
 **对外表述边界**：可以说「已完成 Flash CS6 自动化 smoke 验证」/「已触发编译并拿到新鲜 trace」（TestLoader）/「asLoader 发布编译 0 错误、SWF 已重生成」（publish 模式）。缺少新鲜 trace、编译器错误面板或 IDE 复核时不得说「已编译通过」；但 asLoader publish 本就无 trace，以 `0 个错误` + SWF 刷新为准。若 AS2 逻辑改动选择 `main`，必须说明触及主 FLA / 资产 / linkage / 主时间轴，否则应使用 asLoader / TestLoader。
 
@@ -127,6 +127,9 @@
 **异常与崩溃恢复**：`compile_test.ps1` 在触发计划任务前先写 in-flight `compile_state_uncertain.marker`，故 child host 被硬杀时：已触发则闸仍在，写闸前被杀则尚未触发 Flash；无需由每个父 runner 再把普通编译失败一律升级为人工清闸。父 runner 自身崩溃由 scratch marker 阻断普通编译；
 编译 `[TIMEOUT]`，或 focused / Gobang / 协议在 child exit 0 后仍未观察到唯一 runId 终态时，则由 `compile_state_uncertain.marker` 阻断可能迟到的 JSFL/player。marker 带本轮唯一 token，terminal 只清除内容仍 exact-match 的本轮 in-flight body，不能擦掉其他故障的新 marker。必须先确认 Flash、计划任务和旧 test player 均已静止并核对迟到 marker/SWF/diagnostics。
 若 `testloader_scratch_inflight.marker` 存在，先读取其中 `runner_path/backup_path/original_sha256/had_runner`，验证 backup SHA-256 并按哈希恢复或确认原本不存在，再删除 marker 与 recovery sidecar；不得只删闸或把残留 scratch 当原件。完成这些人工复核后才可显式删除 `compile_state_uncertain.marker` 并调大 timeout 重试。
+
+**已审阅只读夹具的自动停止例外**：`run-focused-testloader.ps1 -AutoStopReadOnlyPlayer` 仅接受源码内封闭的 debt/probe domain、template 与 suite 集合；有真实存档、交易、奖励或 DeliveryUnknown 的测试不在其中。其失败仍失败。父事务持 mutex，保留本轮原始 trace/Compiler/SWF/失败 marker，经同一编译入口的 nonce 控制调用关闭 Test Movie，再由第二次 JSFL 调用确认无播放器；核对迟到产物并 byte-exact 恢复 scratch 后，才可清自己 exact-owned 的行为未知 marker。
+需要防御编辑器无响应时显式选 `-OwnedReadOnlyHost`：要求没有既有 Flash，使用既有不限时生命周期任务启动新编辑器，JSFL 检查并监视仅有可丢弃 TestLoader 文档。其他/未保存文档打开即 taint，拒绝自动结束。只可停止本轮 PID/创建时刻/任务程序/文档 lease 全部一致的宿主，确认进程消失、两任务空闲、产物静止并恢复原件后恢复本轮闸；不重放测试、不扩大到业务未知写。`student-repair` 默认使用该路径，完整图像导出是按需诊断，见 [70例专项](../scripts/test-runners/student-repair/README.md)。具体命令和失败保留以 [CS6 说明](../scripts/FlashCS6自动化编译.md#read-only-player-recovery) 为准。
 
 **import 规则**：以 [AS2 防幻觉规范](as2-anti-hallucination.md) 为准：`import pkg.*` 已覆盖该包时禁止再叠加具体类 import，同包 class 不要求重复 import；跨包且没有 wildcard 覆盖时才用具体 import。asLoader 的 `Action.Skill` 是已登记的常驻 CS6 L42 特例：该包 wildcard 被整体排除，只允许组装器白名单中的具体 imports；不得扩成全项目通则。非 class TestLoader template 继续只用包通配或 FQN，禁止具体类 import。
 

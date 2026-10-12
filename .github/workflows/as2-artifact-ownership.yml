@@ -1,0 +1,45 @@
+name: AS2 artifact ownership
+on:
+  pull_request:
+    paths:
+      - '**/*.swf'
+      - 'tools/swf-metadata.js'
+      - 'tools/audit-as2-class-embedding.js'
+      - 'tools/swf-function-sizes.js'
+      - 'tools/test-swf-metadata.js'
+      - 'tools/cf7-packer/pack.config.yaml'
+      - '.github/workflows/as2-artifact-ownership.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.swf'
+      - 'tools/swf-metadata.js'
+      - 'tools/audit-as2-class-embedding.js'
+      - 'tools/swf-function-sizes.js'
+      - 'tools/test-swf-metadata.js'
+      - 'tools/cf7-packer/pack.config.yaml'
+      - '.github/workflows/as2-artifact-ownership.yml'
+permissions:
+  contents: read
+jobs:
+  ownership:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: actions/cache@v4
+        with:
+          path: tmp/swf-metadata-cache
+          key: as2-metadata-v1-${{ github.run_id }}
+          restore-keys: as2-metadata-v1-
+      - name: Install two config readers without packer UI dependencies
+        run: |
+          mkdir -p tools/cf7-packer/node_modules
+          npm install --prefix tmp/as2-config-readers --no-save --ignore-scripts --package-lock=false yaml@2.8.2 picomatch@4.0.3
+          ln -s ../../../tmp/as2-config-readers/node_modules/yaml tools/cf7-packer/node_modules/yaml
+          ln -s ../../../tmp/as2-config-readers/node_modules/picomatch tools/cf7-packer/node_modules/picomatch
+      - run: node tools/test-swf-metadata.js
+      - run: node tools/audit-as2-class-embedding.js --json
+      - run: node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3

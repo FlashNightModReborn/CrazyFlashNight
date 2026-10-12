@@ -2,6 +2,8 @@ import { describe, it, expect, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
+import { createRequire } from "node:module";
+import { filterFiles } from "../src/filter.js";
 import { execFileSync } from "node:child_process";
 import { pack, validateOutputDir } from "../src/packer.js";
 import { OutputDirNotOwnedError } from "../src/types.js";
@@ -64,9 +66,79 @@ describe("packer", () => {
 
   afterEach(() => {
     for (const dir of tempDirs) {
+      expect(path.dirname(path.resolve(dir))).toBe(path.resolve(os.tmpdir()));
+      expect(path.basename(dir)).toMatch(/^cf7-packer-test-/);
       fs.rmSync(dir, { recursive: true, force: true });
     }
     tempDirs.length = 0;
+  });
+
+  function ownershipFixture(): { repoRoot: string; paths: string[] } {
+    const repoRoot = path.join(getTempDir(), "repo");
+    const word = (n: number) => { const b = Buffer.alloc(2); b.writeUInt16LE(n); return b; };
+    const tag = (code: number, body: Buffer) => {
+      if (body.length < 63) return Buffer.concat([word((code << 6) | body.length), body]);
+      const size = Buffer.alloc(4); size.writeUInt32LE(body.length);
+      return Buffer.concat([word((code << 6) | 63), size, body]);
+    };
+    const swf = (className?: string, imported?: string) => {
+      const tags: Buffer[] = [];
+      if (className) tags.push(tag(39, Buffer.concat([word(1), word(1), word(0)])),
+        tag(56, Buffer.concat([word(1), word(1), Buffer.from("__Packages." + className + "\0")])),
+        tag(59, Buffer.concat([word(1), Buffer.from([0])])));
+      if (imported) tags.push(tag(71, Buffer.concat([Buffer.from(imported + "\0"), Buffer.from([1, 0]), word(0)])));
+      const body = Buffer.concat([Buffer.from([8, 0, 0, 30, 1, 0]), ...tags, word(0)]);
+      const header = Buffer.alloc(8); header.write("FWS"); header[3] = 8; header.writeUInt32LE(body.length + 8, 4);
+      return Buffer.concat([header, body]);
+    };
+    const paths = ["CRAZYFLASHER7MercenaryEmpire.swf", "scripts/asLoader.swf", "flashswf/asset.swf"];
+    const bodies = [swf(undefined, paths[2]), swf("org.flashNight.Authority"), swf()];
+    paths.forEach((rel, i) => { const file = path.join(repoRoot, rel); fs.mkdirSync(path.dirname(file), { recursive: true }); fs.writeFileSync(file, bodies[i]); });
+    fs.mkdirSync(path.join(repoRoot, "tools"), { recursive: true });
+    for (const name of ["swf-metadata.js", "audit-as2-class-embedding.js"]) {
+      fs.copyFileSync(path.resolve(REPO_ROOT, "..", name), path.join(repoRoot, "tools", name));
+    }
+    return { repoRoot, paths };
+  }
+
+  it("game delivery gate accepts the complete copied classless resource closure", async () => {
+    const { repoRoot, paths } = ownershipFixture();
+    const outputDir = path.join(getTempDir(), "output");
+    const result = await pack(makeFilterResult(paths), { ...makeConfig(), source: { mode: "worktree", repoRoot } },
+      { dryRun: false, outputDir, clean: true });
+    expect(result.errors).toEqual([]);
+    expect(result.copiedFiles).toBe(3);
+  });
+
+  it("game delivery gate reads final copied bytes and rejects an embedded authority class", async () => {
+    const { repoRoot, paths } = ownershipFixture();
+    const outputDir = path.join(getTempDir(), "output");
+    const result = await pack(makeFilterResult(paths), { ...makeConfig(), source: { mode: "worktree", repoRoot } },
+      { dryRun: false, outputDir, clean: true, onProgress(progress) {
+        if (progress.phase === "pack" && progress.current === 3) {
+          fs.copyFileSync(path.join(repoRoot, paths[1]), path.join(outputDir, paths[2]));
+        }
+      } });
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].error).toContain("duplicates asLoader authority");
+  });
+
+  it("game delivery gate rejects an RSL missing from the final file list", async () => {
+    const { repoRoot, paths } = ownershipFixture();
+    const result = await pack(makeFilterResult(paths.slice(0, 2)), { ...makeConfig(), source: { mode: "worktree", repoRoot } },
+      { dryRun: false, outputDir: path.join(getTempDir(), "output"), clean: true });
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0].error).toContain("missing/ambiguous RSL");
+  });
+
+  it("ownership discovery uses the same first matching layer and exclusions as packer", () => {
+    const config = { ...makeConfig(), layers: [
+      { name: "assets", source: "flashswf", include: ["**/*.swf"], exclude: ["private/**"] },
+      { name: "root", source: ".", include: ["**/*.swf"], exclude: [] }
+    ], globalExclude: ["**/ignored.swf"] };
+    const files = ["flashswf/private/no.swf", "flashswf/yes.swf", "root.swf", "flashswf/ignored.swf"];
+    const audit = createRequire(import.meta.url)(path.resolve(REPO_ROOT, "..", "audit-as2-class-embedding.js"));
+    expect(audit.filterProductionFiles(files, config)).toEqual(filterFiles(files, config).included.map(entry => entry.path));
   });
 
   it("dry-run mode: counts files without copying", async () => {

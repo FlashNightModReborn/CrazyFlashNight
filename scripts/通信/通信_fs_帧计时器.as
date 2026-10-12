@@ -98,8 +98,8 @@ _root.帧计时器.初始化任务栈 = function():Void {
     // --------------------------
     // 注册帧更新事件：每次帧更新时调用 TaskManager.updateFrame() 来处理任务
     // --------------------------
-    this.eventBus.subscribe("frameUpdate", function():Void {
-        _root.帧计时器.taskManager.updateFrame();
+    this.eventBus.subscribe("frameUpdate", function(frameToken:Number):Void {
+        _root.帧计时器.taskManager.updateFrame(frameToken);
         _root.帧计时器.unitUpdateWheel.tick(); // 单位的 update 事件发布后于调度器执行
         SceneManager.instance.update(); // 场景管理器 update 函数
         WaveSpawner.instance.tick(); // 暂时把刷怪挂在这边
@@ -164,9 +164,6 @@ _root.帧计时器.构建搓招模组 = function():Void {
         registry: heavyReg,
         dfa: heavyReg.getDFA()
     };
-
-    // 输入采样器（共用，保留用于本地调试/兜底）
-    this.inputSampler = new InputSampler();
 
     // 标记 DFA 已构建，D 前缀待发送
     this.dfaBuilt = true;
@@ -518,9 +515,6 @@ _root.帧计时器.eventBus.subscribe("frameUpdate", function() {
     // _root.发布消息(System.IME.getEnabled())
 }, _root.帧计时器);
 
-_root.帧计时器.eventBus.subscribe("frameUpdate", function() {
-    _root.显示列表.播放列表();
-}, _root.帧计时器);
 
 
 // ---------------------------------------------------

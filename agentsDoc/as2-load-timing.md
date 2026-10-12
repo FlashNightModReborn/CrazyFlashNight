@@ -7,6 +7,8 @@
 
 ## Quick Sheet（速查）
 
+- **跨 SWF 类归属**：工程类由 asLoader 单一提供，资源/main 不重复嵌入；相同字节副本也不能以加载顺序证明权威。依赖这些类的初始化仍等待逻辑就绪。编译后增量、最终生产闭包/RSL 门及本轮两种加载顺序证据见 [AS2 类归属施工](../docs/AS2基础设施减法施工-2026-10-12.md)；此规则不把下列 attachMovie/load flush 的历史实测自动升级为当前业务验收。
+
 - `MovieClip.onLoad = fn` 属性赋值对 attachMovie 的 clip **不触发**（Adobe 文档骗人）
 - 但 `Object.registerClass` 类方法 `onLoad` **触发** ✅ —— 与属性赋值是两条派发路径
 - `onClipEvent(load)`（资产侧 IDE 内嵌）对 attachMovie **触发**，递归后序遍历

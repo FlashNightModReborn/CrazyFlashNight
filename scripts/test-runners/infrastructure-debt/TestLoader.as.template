@@ -1,0 +1,9 @@
+﻿trace("FocusedTestRunId infrastructure-debt Start: __FOCUSED_RUN_ID__");
+try {
+    org.flashNight.dev.InfrastructureDebtTest.runAllTests();
+    org.flashNight.dev.InventorySortDebtTest.runAllTests();
+    org.flashNight.dev.ProductionDomainDebtTest.runAllTests();
+} catch (error) {
+    trace("[FAIL] InfrastructureDebtTest unexpected exception: " + error);
+}
+trace("FocusedTestRunId infrastructure-debt Complete: __FOCUSED_RUN_ID__");

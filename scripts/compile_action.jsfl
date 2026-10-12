@@ -1,4 +1,4 @@
-// compile_action.jsfl - 实际编译逻辑
+﻿// compile_action.jsfl - 实际编译逻辑
 // 可通过 fl.runScript(path, "main") 或 eval() 调用
 
 function normalizeDocumentURI(uri) {
@@ -97,6 +97,77 @@ function main() {
 	var projectURI = FLfile.read(cfgPath);
 	projectURI = projectURI.replace(/[\r\n]+$/, "");
 	compileRuntimeState.projectURI = projectURI;
+	// 同一事务入口的播放器控制分支，不碰编译 cfg、面板或源文档。
+	var playerControlCfg = projectURI + "/scripts/testplayer_control.cfg";
+	if (FLfile.exists(playerControlCfg)) {
+		var control = String(FLfile.read(playerControlCfg) || "");
+		FLfile.remove(playerControlCfg);
+		var request = /^(stop_test_players|inspect_owned_test_host|quit_owned_test_host|clear_owned_test_output)\n([0-9a-f]{32})$/.exec(control);
+		if (!request) throw "Invalid test player control request";
+		var receiptURI = projectURI + "/scripts/testplayer_control.receipt";
+		try {
+			var ownedOperation = request[1] != "stop_test_players";
+			if (ownedOperation) {
+				var ownedTargetKey = normalizeDocumentURI(projectURI + "/scripts/TestLoader/TestLoader.xfl");
+				for (var ownedIndex = 0; ownedIndex < fl.documents.length; ownedIndex++) {
+					if (normalizeDocumentURI(fl.documents[ownedIndex].pathURI) != ownedTargetKey) {
+						throw "Foreign or unsaved document blocks owned test host operation";
+					}
+				}
+			}
+			if (request[1] == "inspect_owned_test_host") {
+				var ownershipURI = projectURI + "/scripts/testhost_ownership.marker";
+				var taintURI = projectURI + "/scripts/testhost_foreign_document.marker";
+				if (FLfile.exists(ownershipURI) || FLfile.exists(taintURI)) throw "An earlier owned host lease has not been recovered";
+				var ownerNonce = request[2];
+				var ownedGuard = function() {
+					for (var guardIndex = 0; guardIndex < fl.documents.length; guardIndex++) {
+						var guardDocumentURI = String(fl.documents[guardIndex].pathURI || "");
+						if (normalizeDocumentURI(guardDocumentURI) != ownedTargetKey) {
+							FLfile.write(ownershipURI, ownerNonce + "\nexclusive=false");
+							FLfile.write(taintURI, ownerNonce + "\nforeign=" + guardDocumentURI);
+							return;
+						}
+					}
+				};
+				fl.addEventListener("documentOpened", ownedGuard);
+				fl.addEventListener("documentNew", ownedGuard);
+				fl.addEventListener("documentChanged", ownedGuard);
+				if (!FLfile.write(ownershipURI, ownerNonce + "\nexclusive=true")) throw "Owned host lease could not be persisted";
+			}
+			if (request[1] == "clear_owned_test_output") {
+				if (fl.documents.length != 1) throw "Output clear requires its single TestLoader document";
+				var clearOwnerURI = projectURI + "/scripts/testhost_ownership.marker";
+				if (!FLfile.exists(clearOwnerURI) || !/^[0-9a-f]{32}\nexclusive=true$/.test(String(FLfile.read(clearOwnerURI))) ||
+					FLfile.exists(projectURI + "/scripts/testhost_foreign_document.marker")) throw "Output clear requires an untainted owned test host";
+				fl.outputPanel.clear();
+			}
+			var closedPlayers = request[1] == "inspect_owned_test_host" || request[1] == "clear_owned_test_output" ? false : fl.closeAllPlayerDocuments();
+			var exitRequested = false;
+			if (request[1] == "quit_owned_test_host") {
+				// 与目标重开相同：CS6 的 active document close 必须先返回宿主。
+				// 第一轮只关本轮拥有的测试文档；第二轮空编辑器才请求退出。
+				exitRequested = fl.documents.length == 0;
+				if (!exitRequested) {
+					for (var closeOwnedIndex = fl.documents.length - 1; closeOwnedIndex >= 0; closeOwnedIndex--) {
+						fl.closeDocument(fl.documents[closeOwnedIndex], false);
+					}
+				}
+			}
+			var receipt = request[2] + "\nclosed=" + String(closedPlayers) + "\ndocuments=" + fl.documents.length;
+			for (var controlDocIndex = 0; controlDocIndex < fl.documents.length; controlDocIndex++) {
+				receipt += "\n" + canonicalizeDocumentURI(fl.documents[controlDocIndex].pathURI);
+			}
+			if (ownedOperation) receipt += "\nowned=true";
+			if (request[1] == "clear_owned_test_output") receipt += "\noutput_cleared=true";
+			if (request[1] == "quit_owned_test_host") receipt += "\nexit_requested=" + String(exitRequested);
+			FLfile.write(receiptURI, receipt);
+			if (exitRequested) fl.quit(false);
+		} catch (controlError) {
+			FLfile.write(receiptURI, request[2] + "\nERROR\n" + describeJsflError(controlError));
+		}
+		return;
+	}
 	var doneMarker = projectURI + "/scripts/publish_done.marker";
 	var errorMarker = projectURI + "/scripts/publish_error.marker";
 	var reopenMarker = projectURI + "/scripts/compile_reopen.marker";

@@ -74,6 +74,10 @@ scripts/publish_error.marker
 scripts/compile_trigger
 scripts/compile_target.cfg
 scripts/compile_mode.cfg
+scripts/testplayer_control.cfg
+scripts/testplayer_control.receipt
+scripts/testhost_ownership.marker
+scripts/testhost_foreign_document.marker
 scripts/screenshot.png
 # doc.publish() 按发布设置附带产出的 HTML 包装（运行时不用，弃）
 CRAZYFLASHER7MercenaryEmpire.html

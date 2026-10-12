@@ -6,7 +6,7 @@
 
 ## 0. TL;DR（先读这段）
 
-asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全部 `org.flashNight.*` 类字节码 + 跑启动序列**。2026-06 把它从 **82 帧时间轴塌缩成单帧**，异步逻辑搬进 `BootSequencer` 状态机类。
+asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承载生产 `org.flashNight.*` 类字节码 + 跑启动序列**。2026-06 把它从 **82 帧时间轴塌缩成单帧**，异步逻辑搬进 `BootSequencer` 状态机类。
 
 ⚠ **反直觉点（看到别"修"，都是有意为之）**：
 1. **整个 boot 是一帧**。唯一 `BOOT_SOURCES` 表机械派生 `_root.__boot.fN = function(){…}` 与 6 个纯装配 stage，最后 `BootSequencer.run(this)`。没有多帧时间轴。
@@ -79,3 +79,5 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**承载全�
 
 ---
 **新接手测试者**：读完 §0 + §5 即可开测；要改 boot 结构再读 §1-§4 + 两个深层 doc。**改 `.as` 必带 UTF-8 BOM**（见 [as2-anti-hallucination.md](../agentsDoc/as2-anti-hallucination.md)）。
+
+资源 SWF 不得重复定义工程类；发布后增量检查与最终生产闭包门见 [类归属验证](../agentsDoc/testing-details.md#flash-core)。

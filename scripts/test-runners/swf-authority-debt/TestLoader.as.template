@@ -1,0 +1,5 @@
+﻿_root.swfAuthorityDebtComplete=function():Void {
+    trace("FocusedTestRunId swf-authority-debt Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId swf-authority-debt Start: __FOCUSED_RUN_ID__");
+org.flashNight.dev.SWFAuthorityDebtTest.runAllTests();

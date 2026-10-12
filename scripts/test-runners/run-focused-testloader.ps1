@@ -22,7 +22,10 @@ param(
     # It still includes the same transactional scripts/TestLoader.as entry.
     [string]$CompileTargetRelativePath = '',
     [string]$CompileSwfRelativePath = '',
-    [switch]$SkipCompile
+    [switch]$SkipCompile,
+    [switch]$AutoStopReadOnlyPlayer,
+    [switch]$OwnedReadOnlyHost,
+    [switch]$ExportAssetBitmaps
 )
 
 $ErrorActionPreference = 'Stop'
@@ -67,6 +70,18 @@ function Write-FocusedBehaviorUncertain {
     }
     [System.IO.File]::WriteAllText(
         $uncertainMarker, $body, [System.Text.UTF8Encoding]::new($false))
+}
+
+function Export-FocusedRawTrace([string]$Directory, [string]$Name) {
+    $rawPath = Join-Path $env:APPDATA 'Macromedia/Flash Player/Logs/flashlog.txt'
+    if (-not (Test-Path -LiteralPath $rawPath)) { return }
+    $rawStream = [IO.File]::Open($rawPath,[IO.FileMode]::Open,[IO.FileAccess]::Read,[IO.FileShare]::ReadWrite)
+    $rawReader = [IO.StreamReader]::new($rawStream,[Text.Encoding]::UTF8)
+    try { $raw = $rawReader.ReadToEnd() } finally { $rawReader.Dispose() }
+    $first = [regex]::Match($raw, '(?m)^FocusedTestRunId ' + [regex]::Escape($DomainId) + ' Start: ' + [regex]::Escape($runId) + '\r?$')
+    if ($first.Success) {
+        [IO.File]::WriteAllText((Join-Path $Directory $Name),$raw.Substring($first.Index),[Text.UTF8Encoding]::new($false))
+    }
 }
 
 if ($SuiteRelativePaths.Count -ne $SuiteFqns.Count) {
@@ -137,7 +152,37 @@ $runId = [System.Guid]::NewGuid().ToString('N')
 $installedHash = $null
 $scratchTransaction = $null
 $childCompileSucceeded = $false
+$childInvocationReturned = $false
 $behaviorTerminalObserved = $false
+$ownedBehaviorUncertain = $null
+$ownedHostIdentity = $null
+. (Join-Path $PSScriptRoot 'testplayer-control.ps1')
+
+if ($ExportAssetBitmaps -and $DomainId -cne 'student-repair') {
+    throw 'Bitmap export is restricted to the reviewed student-repair fixture.'
+}
+
+if ($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost) {
+    # This closed list is reviewed as in-memory/read-only fixture code. It never
+    # covers real save, purchase, reward, or other DeliveryUnknown recovery.
+    $readOnlySuites = @{
+        'infrastructure-debt' = 'org.flashNight.dev.InfrastructureDebtTest,org.flashNight.dev.InventorySortDebtTest,org.flashNight.dev.ProductionDomainDebtTest'
+        'scheduler-debt' = 'org.flashNight.dev.SchedulerDebtTest'
+        'scheduler-boundary' = 'org.flashNight.dev.SchedulerBoundaryTest'
+        'swf-authority-debt' = 'org.flashNight.dev.SWFAuthorityDebtTest'
+        'student-load-probe' = 'org.flashNight.dev.StudentLoadProbeTest'
+        'student-repair' = 'org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest'
+    }
+    if ($OwnedReadOnlyHost -and @(Get-Process -Name Flash -ErrorAction SilentlyContinue).Count -gt 0) {
+        throw 'OwnedReadOnlyHost requires a fresh host; an existing editor is preserved.'
+    }
+    if (-not $readOnlySuites.ContainsKey($DomainId) -or
+        ($SuiteFqns -join ',') -cne $readOnlySuites[$DomainId] -or
+        $TemplateRelativePath -cne "scripts/test-runners/$DomainId/TestLoader.as.template" -or
+        $CompileTargetRelativePath -or $AdditionalAsRelativePaths.Count -gt 0) {
+        throw 'Automatic player cleanup is restricted to the reviewed read-only debt fixtures.'
+    }
+}
 
 try {
     try {
@@ -154,6 +199,9 @@ try {
     if (Test-Path -LiteralPath $uncertainMarker) {
         throw 'Compile state is uncertain. Confirm Flash/JSFL stopped, inspect late evidence, then remove scripts/compile_state_uncertain.marker.'
     }
+    if (Test-Path -LiteralPath (Join-Path $scriptsDir 'testhost_ownership.marker')) {
+        throw 'An earlier owned test host lease remains; inspect its failed cleanup before installing another runner.'
+    }
     $compileLease = 'v1:{0}:{1}:{2}' -f $repoHash, $PID,
         [System.Guid]::NewGuid().ToString('N')
 
@@ -169,7 +217,7 @@ try {
         $runnerPath, [System.Text.Encoding]::UTF8)
     [System.IO.File]::WriteAllText(
         $runnerPath,
-        $runnerText.Replace('__FOCUSED_RUN_ID__', $runId),
+        $runnerText.Replace('__FOCUSED_RUN_ID__', $runId).Replace('__STUDENT_EXPORT_BITMAPS__', $ExportAssetBitmaps.IsPresent.ToString().ToLowerInvariant()),
         [System.Text.UTF8Encoding]::new($true))
     $installedHash = (Get-FileHash -LiteralPath $runnerPath -Algorithm SHA256).Hash
 
@@ -177,6 +225,15 @@ try {
         Write-Host ("[OK] {0} tracked runner static validation passed; compile skipped." -f
             $DomainId)
     } else {
+        if ($OwnedReadOnlyHost) {
+            $ownedHostIdentity = Start-Cf7OwnedReadOnlyTestHost -ScriptsDirectory $scriptsDir
+            $ownedSourceDirectory = Join-Path $projectDir ('tmp/focused-testloader-recovery/' + $runId + '/owned-source')
+            [void](New-Item -ItemType Directory -Path $ownedSourceDirectory -Force)
+            foreach ($ownedFile in @('TestLoader.xfl','DOMDocument.xml','PublishSettings.xml')) {
+                Copy-Item -LiteralPath (Join-Path $scriptsDir ('TestLoader/' + $ownedFile)) -Destination $ownedSourceDirectory
+            }
+            [IO.File]::WriteAllText((Join-Path (Split-Path -Parent $ownedSourceDirectory) 'owned-host.json'),($ownedHostIdentity | ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+        }
         $evidencePaths = @($tracePath, $outputPath, $errorsPath)
         $beforeIdentity = @{}
         foreach ($path in $evidencePaths) {
@@ -200,6 +257,7 @@ try {
                 $env:CF7_FLASH_COMPILE_LEASE = $previousCompileLease
             }
         }
+        $childInvocationReturned = $true
         if ($LASTEXITCODE -ne 0) {
             throw "$DomainId TestLoader exited $LASTEXITCODE."
         }
@@ -237,9 +295,17 @@ try {
         if (-not [regex]::IsMatch($trace, $completePattern)) {
             $rawTracePath = Join-Path $env:APPDATA 'Macromedia\Flash Player\Logs\flashlog.txt'
             $markerPattern = "(?m)^FocusedTestRunId $escapedDomain (?:Start|Complete): $escapedRunId\r?$"
-            $traceDeadline = [DateTime]::UtcNow.AddSeconds([Math]::Min($AsyncBehaviorTimeoutSeconds, $TimeoutSeconds))
+            $traceDeadline = [DateTime]::UtcNow.AddSeconds($AsyncBehaviorTimeoutSeconds)
+            $tracePollMilliseconds = if ($ExportAssetBitmaps) { 1000 } else { 100 }
             Write-Host '[INFO] Waiting for this focused run to finish its asynchronous checks.'
+            $lastOutputClear = [DateTime]::MinValue
             do {
+                if ($ExportAssetBitmaps -and $OwnedReadOnlyHost -and
+                    ([DateTime]::UtcNow - $lastOutputClear).TotalSeconds -ge 1) {
+                    $outputClear = Invoke-Cf7StopTestPlayers -ScriptsDirectory $scriptsDir -Operation clear_owned_test_output -ControlTimeoutSeconds 30
+                    if (-not $outputClear.output_cleared) { throw 'Owned test output drain was not acknowledged.' }
+                    $lastOutputClear = [DateTime]::UtcNow
+                }
                 if (Test-Path -LiteralPath $rawTracePath) {
                     $rawTraceStream = [IO.File]::Open($rawTracePath,
                         [IO.FileMode]::Open, [IO.FileAccess]::Read, [IO.FileShare]::ReadWrite)
@@ -256,7 +322,7 @@ try {
                         }
                     }
                 }
-                Start-Sleep -Milliseconds 100
+                Start-Sleep -Milliseconds $tracePollMilliseconds
             } while ([DateTime]::UtcNow -lt $traceDeadline)
         }
         $startCount = [regex]::Matches($trace, $startPattern).Count
@@ -304,16 +370,100 @@ try {
             Write-FocusedBehaviorUncertain (
                 "child compile succeeded but exact behavior closure was not observed; " +
                 "domain=$DomainId; runId=$runId; the old test player may still append late evidence")
+            $ownedBehaviorUncertain = [IO.File]::ReadAllText($uncertainMarker, [Text.Encoding]::UTF8)
         }
     } finally {
         try {
-            # Transaction creation precedes runner installation. If readiness,
-            # copy, rewrite, or hashing fails, the installed identity is not
-            # proven; keep the marker/backup for fail-closed manual recovery
-            # instead of masking the original error with an empty hash bind.
-            if ($scratchTransaction -and $installedHash) {
-                Restore-Cf7TestLoaderScratchTransaction `
-                    -Transaction $scratchTransaction -InstalledHash $installedHash
+            $cleanupReceipt = $null
+            $cleanupAttempted = $false
+            try {
+            if ($ownedHostIdentity) {
+                $cleanupAttempted = $true
+                $archiveDirectory = Join-Path $projectDir ('tmp/focused-testloader-recovery/' + $runId)
+                [void](New-Item -ItemType Directory -Path $archiveDirectory -Force)
+                if (Test-Path -LiteralPath $uncertainMarker) { $ownedBehaviorUncertain = [IO.File]::ReadAllText($uncertainMarker,[Text.Encoding]::UTF8) }
+                foreach ($artifact in @($tracePath,$outputPath,$errorsPath,(Join-Path $scriptsDir 'TestLoader.swf'),$uncertainMarker)) {
+                    if (Test-Path -LiteralPath $artifact) { Copy-Item -LiteralPath $artifact -Destination $archiveDirectory -Force }
+                }
+                Export-FocusedRawTrace $archiveDirectory 'raw-trace-before-stop.txt'
+                $ownedHostStop = Stop-Cf7OwnedReadOnlyTestHost -Identity $ownedHostIdentity
+                Copy-Item -LiteralPath $ownedHostIdentity.ownership_marker -Destination $archiveDirectory -Force
+                if ([IO.File]::ReadAllText($ownedHostIdentity.ownership_marker) -cne $ownedHostIdentity.ownership_body) { throw 'Owned host lease changed after exit; refusing cleanup.' }
+                Remove-Item -LiteralPath $ownedHostIdentity.ownership_marker
+                Export-FocusedRawTrace $archiveDirectory 'raw-trace-after-stop.txt'
+                $instructionBodies = @{}
+                foreach ($instruction in @('compile_target.cfg','compile_mode.cfg','compile_reopen.marker','testplayer_control.cfg','compile_quit_after_publish.cfg')) {
+                    $instructionPath = Join-Path $scriptsDir $instruction
+                    if (Test-Path -LiteralPath $instructionPath) {
+                        $instructionBodies[$instructionPath] = [IO.File]::ReadAllText($instructionPath,[Text.Encoding]::UTF8)
+                        Copy-Item -LiteralPath $instructionPath -Destination $archiveDirectory -Force
+                    }
+                }
+                $stoppedEvidence = @{}
+                foreach ($artifact in @($tracePath,$outputPath,$errorsPath,(Join-Path $scriptsDir 'TestLoader.swf'))) { $stoppedEvidence[$artifact] = Get-EvidenceIdentity $artifact }
+                Start-Sleep -Milliseconds 250
+                foreach ($artifact in $stoppedEvidence.Keys) {
+                    if ((Get-EvidenceIdentity $artifact) -cne $stoppedEvidence[$artifact]) { throw 'Late owned-host evidence changed after process exit; recovery remains blocked.' }
+                }
+                foreach ($instructionPath in $instructionBodies.Keys) {
+                    if ([IO.File]::ReadAllText($instructionPath,[Text.Encoding]::UTF8) -cne $instructionBodies[$instructionPath]) { throw 'Owned instruction changed during recovery; refusing removal.' }
+                    Remove-Item -LiteralPath $instructionPath
+                }
+                $cleanupReceipt = @{domain=$DomainId;run_id=$runId;player_stopped=$true;scratch_restored=$true;behavior_terminal=$behaviorTerminalObserved;test_pass_not_inferred=$true;owned_host=$ownedHostStop;utc=[DateTime]::UtcNow.ToString('o')}
+            } elseif ($AutoStopReadOnlyPlayer -and $childInvocationReturned -and
+                (-not (Test-Path -LiteralPath $uncertainMarker) -or $ownedBehaviorUncertain)) {
+                $cleanupAttempted = $true
+                $archiveDirectory = Join-Path $projectDir ('tmp/focused-testloader-recovery/' + $runId)
+                [void](New-Item -ItemType Directory -Path $archiveDirectory -Force)
+                foreach ($artifact in @($tracePath,$outputPath,$errorsPath,(Join-Path $scriptsDir 'TestLoader.swf'),$uncertainMarker)) {
+                    if (Test-Path -LiteralPath $artifact) { Copy-Item -LiteralPath $artifact -Destination $archiveDirectory -Force }
+                }
+                Export-FocusedRawTrace $archiveDirectory 'raw-trace-before-stop.txt'
+                $swfBeforeStop = Get-EvidenceIdentity (Join-Path $scriptsDir 'TestLoader.swf')
+                $previousStopLease = $env:CF7_FLASH_COMPILE_LEASE
+                try {
+                    $env:CF7_FLASH_COMPILE_LEASE = $compileLease
+                    & powershell -NoProfile -ExecutionPolicy Bypass -File $compilePath -StopTestPlayers
+                    if ($LASTEXITCODE -ne 0) { throw 'CS6 player stop was not acknowledged; unknown-state recovery remains blocked.' }
+                } finally {
+                    if ($null -eq $previousStopLease) { Remove-Item Env:CF7_FLASH_COMPILE_LEASE -ErrorAction SilentlyContinue }
+                    else { $env:CF7_FLASH_COMPILE_LEASE = $previousStopLease }
+                }
+                Export-FocusedRawTrace $archiveDirectory 'raw-trace-after-stop.txt'
+                if ((Get-EvidenceIdentity (Join-Path $scriptsDir 'TestLoader.swf')) -cne $swfBeforeStop) {
+                    throw 'A late compile changed the SWF during player stop; recovery remains blocked.'
+                }
+                $stoppedEvidence = @{}
+                foreach ($artifact in @($tracePath,$outputPath,$errorsPath)) { $stoppedEvidence[$artifact] = Get-EvidenceIdentity $artifact }
+                Start-Sleep -Milliseconds 250
+                foreach ($artifact in @($tracePath,$outputPath,$errorsPath)) {
+                    if ((Get-EvidenceIdentity $artifact) -cne $stoppedEvidence[$artifact]) { throw 'Late diagnostics changed after player stop; recovery remains blocked.' }
+                }
+                $cleanupReceipt = @{domain=$DomainId;run_id=$runId;player_stopped=$true;scratch_restored=$true;behavior_terminal=$behaviorTerminalObserved;test_pass_not_inferred=$true;utc=[DateTime]::UtcNow.ToString('o')}
+            }
+            } catch {
+                if ($cleanupAttempted -and -not (Test-Path -LiteralPath $uncertainMarker)) {
+                    Write-FocusedBehaviorUncertain "player cleanup was not verified; domain=$DomainId; runId=$runId"
+                }
+                throw
+            } finally {
+                # Restore bytes even if player control fails, preserving the
+                # unknown-state gate and its original failed test evidence.
+                if ($scratchTransaction -and $installedHash) {
+                    Restore-Cf7TestLoaderScratchTransaction `
+                        -Transaction $scratchTransaction -InstalledHash $installedHash
+                }
+            }
+            if ($cleanupReceipt) {
+                if ($ownedBehaviorUncertain) {
+                    if (-not (Test-Path -LiteralPath $uncertainMarker) -or
+                        [IO.File]::ReadAllText($uncertainMarker,[Text.Encoding]::UTF8) -cne $ownedBehaviorUncertain) {
+                        throw 'Unknown-state marker changed; refusing to clear another fault.'
+                    }
+                    Remove-Item -LiteralPath $uncertainMarker
+                    Write-Host '[RECOVERED] Read-only player stopped, scratch restored and late evidence inspected; this test still failed.'
+                }
+                [IO.File]::WriteAllText((Join-Path $archiveDirectory 'cleanup.json'),($cleanupReceipt | ConvertTo-Json),[Text.UTF8Encoding]::new($false))
             }
         } finally {
             if ($compileMutexAcquired) { $compileMutex.ReleaseMutex() }

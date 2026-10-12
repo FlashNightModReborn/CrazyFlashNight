@@ -60,7 +60,7 @@ publish 本就无 trace，不因日志未刷新判失败。逻辑通过不等于
 异常 marker/未静默进程必须按恢复协议处理，不能删 marker 试运气。
 fresh TestLoader SWF 还运行 `node tools/swf-function-sizes.js scripts/TestLoader.swf --max 60000 --top 15`；源码大小只是提示。
 **归属条件：** 装备函数/帧汇编/BOOT_SOURCES 改动追加 assemble→check→BOM→coverage；
-main/asLoader 类所有权改动执行 strict single-ownership，不以 child-only 检查替代。
+SWF 编译后执行增量类归属，最终打包/CI 核对生产闭包；strict single-ownership 不以 child-only 检查替代。
 **热点条件：** HUD 分组／技能显示缓存、Buff 调度、冷却、资源提示、AI 诊断、地图观察或判空清理命中时，追加 [只读热点 runner](testing-details.md#as2-hotpath-suites)。
 **正文：** [Flash 核心](testing-details.md#flash-core)、[focused runner 与恢复](testing-details.md#flash-recovery)、
 [业务 suite](testing-details.md#domain-suites)。本页没有授权启动编译或覆盖未保存的 CS6 文档。

@@ -17,6 +17,8 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
     private static var _pass:Number = 0;
     private static var _fail:Number = 0;
 
+    public static function getFailedCount():Number { return _fail; }
+
     // ========== 断言工具 ==========
 
     private static function assertEq(expected, actual, msg:String):Void {
@@ -75,7 +77,7 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
 
     // ========== 测试入口 ==========
 
-    public static function runTests():Void {
+    public static function runTests(skipBenchmarks:Boolean):Void {
         trace("===== DamageHandlers 测试套件 =====");
         _total = 0; _pass = 0; _fail = 0;
 
@@ -115,7 +117,7 @@ class org.flashNight.arki.component.Damage.DamageHandlersTest {
         test_createBasic_零值可选处理器不入管线();
         test_createBasic_正值可选处理器入管线();
 
-        runOptimizationBenchmarks();
+        if (skipBenchmarks !== true) runOptimizationBenchmarks();
 
         trace("===== DamageHandlers 汇总: run=" + _total + " pass=" + _pass + " fail=" + _fail + " =====");
     }

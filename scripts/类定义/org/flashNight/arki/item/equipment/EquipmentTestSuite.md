@@ -1,4 +1,4 @@
-﻿org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
+org.flashNight.arki.item.equipment.EquipmentTestSuite.runAllTests();
 
 
 

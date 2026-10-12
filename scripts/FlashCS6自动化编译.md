@@ -112,6 +112,21 @@ bash scripts/compile_test.sh -TimeoutSeconds 120
 
 仓库内唯一受支持的人工编译入口是 `compile_test.ps1` / `compile_test.sh`；`cf7_compile_loader.jsfl` 与 `compile_action.jsfl` 只是该事务内部组件，不应单独打开或执行。旧诊断入口 `test_publish.jsfl`、`test_trace.jsfl` 以及绕过事务的 `train_cycle.sh` 已删除；Gobang 长耗时回归改走持同一仓库 mutex 的 `gobang_trainer_cycle.ps1`。
 
+<a id="read-only-player-recovery"></a>
+### 只读测试的自动停止与独占宿主
+
+可响应的旧 Test Movie 使用 `powershell -File scripts/compile_test.ps1 -StopTestPlayers`。控制仍持仓库 mutex、验证任务和 scratch admission；独立 nonce 回执确认关闭，再由下一次宿主调用确认 `closed=false`。该操作不编译、清面板、退出编辑器或自行清未知闸，控制回执存入 `tmp/flash-testplayer-control/`。迟到/错误 nonce、重复出现的播放器、未消费 cfg、宿主漂移或超时均拒绝恢复。Windows `Responding` 仅是采样提示，不能代替新鲜 JSFL 回执；CS6 冷初始化时可能短时为 false。
+
+`run-focused-testloader.ps1 -AutoStopReadOnlyPlayer` 的封闭白名单由 runner 源码裁决，限本轮已审阅的内存/只读 debt/probe；四个 debt runner 默认选用它。保留原失败及本轮原始 trace、Compiler、SWF，核对停止和迟到产物、SHA-256 恢复 scratch 后，才 exact-match 清本轮行为未知 marker。无 Complete、断言失败或异常仍返回失败；自动停止不是通过证据。持久写、真实槽位、交易/奖励及 DeliveryUnknown 不使用此例外。
+
+可能卡死的只读测试可显式加 `-OwnedReadOnlyHost`。前置是无既有 Flash；用既有 `FlashCS6Task` 创建新宿主，绑定 PID/创建时刻/任务 executable，并由新鲜 JSFL 回执证明文档仅为可丢弃的 TestLoader。文档 open/new/切换监视器发现其他或未保存文档即写 taint，拒绝自动结束宿主。该宿主运行期间不要用于其他编辑工作。正常/失败收尾均只停止这次任务拥有的宿主；必须确认实际进程消失、trigger 与 lifecycle 任务空闲、迟到产物稳定、原件恢复及 marker exact-match，才能清本轮闸。不会盲重放，也不结束原先用户编辑器。
+
+确需给独占测试腾出宿主时，`-QuitOwnedTestHost` 仅接受空编辑器或本轮可丢弃 TestLoader；其他文档一律拒绝。先保全 TestLoader 磁盘源及 scratch 原件。第一轮仅关闭目标，下一轮空编辑器才退出，另核实际进程退出；不能把退出请求回执当作退出。普通发布不带这些选项。
+
+协议回归：`node tools/test-flash-compile-jsfl.js`、`powershell -File tools/test-testplayer-control.ps1`、`powershell -File tools/test-focused-testloader-trace.ps1`。独占路径的真实新宿主/文档事件/进程退出仍由 focused 运行证明；只读例外不改变上文一般未知写与人工恢复合同。
+
+`run-student-repair-asset-tests.ps1` 默认使用独占宿主，验证全部70例时间轴及必要的位图断言。完整图像导出按需传 `-ExportBitmaps`，其成本与日常行为门分开；用例范围、无损行输出和入口见 [专项 README](test-runners/student-repair/README.md)。完整图像模式使用持同一mutex的 `clear_owned_test_output` 控制定期清空本轮已绑定、无taint的 Output Panel；仅清屏幕缓冲，原始 Flash Player 日志、Compiler 和既有输出文件保持。CLI `-ClearOwnedTestOutput` 还要求本轮 active scratch lease；独立nonce回执必须包含 `owned=true/output_cleared=true`，不关闭播放器、不改变宿主ownership nonce。迟到回执不放行，下次编译仍防御未消费控制cfg。focused 的 `TimeoutSeconds` 约束编译，`AsyncBehaviorTimeoutSeconds` 独立约束异步行为，不以编译预算截短行为等待。
+
 ## 4. 当前链路
 
 ```
