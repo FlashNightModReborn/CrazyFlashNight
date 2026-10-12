@@ -563,7 +563,12 @@ Team/Pet/Merc 的 exact 身份与迟到回包合同见 [持久写与恢复](#sav
 三车验证价格/驾驶资格、余额与拥有状态的提交时复验、取消、一次扣费、待保存重试、原 token 查询、场景/槽位变化和车辆权益。生产 SWF 分别核 asLoader 根桥、基地三处调用和 main 无旧确认 placement；真实保存重启与权益刷新须用隔离槽另验，Mock-browser 不代签。
 权益说明来自真实 XML 的 Level 1，报价/驾驶门槛保留 Level 0；focused runner 覆盖二者分离与展示回退。浏览器门使用真实 XML 和正式三车 WebP，覆盖最低 1024×576、常用尺寸、4:3 与超宽预览的等比居中、图片读取失败和中文长文案局部滚动。图片变更必跑 `python -X utf8 -B tools/bake-garage-vehicles.py --check`，实际再生核对 manifest 与派生字节。
 
-<a id="suite-hairdresser"></a>
+<a id="suite-stage-doors"></a>
+### 地铁与彩蛋选关（U7）
+
+两个面板共用同一套进关链：AS2 `SubwaySelectPanelService` / `EggSelectPanelService` 在 `_root.加载外部UI` 顶部按 URL 转接 `flashswf/UI/地铁线路.swf` 与 `flashswf/UI/彩蛋地图关卡界面.swf`；目的地表、难度与门槛权威留在 AS2，enter 复用旧 `配置关卡属性` + `选关界面进入关卡`（内建 `StageRunSession.reserveStageStart` 奖励未领拒绝），不写存档。必跑 `scripts/run-subway-select-tests.ps1`、`scripts/run-egg-select-tests.ps1`（focused TestLoader 钉死门槛拒绝/进关/关闭语义）、`SubwaySelectTaskTests`、`EggStageSelectTaskTests`、`node tools/test-subway-select-runtime.js`、`node tools/test-egg-stage-select-runtime.js`，以及 `validate-panel-contracts`、`test-panel-contracts`、`check-workbench-css-bundle` 与 Launcher 全量门。真机人验（隧道据点按钮、彩蛋电脑、进关转场与返回）另记；两个旧 SWF/FLA 保留不删，通用 UI 宿主不退役。
+
+
 ### 理发与整形
 
 必跑：`node tools/validate-panel-contracts.js` + `node tools/test-panel-contracts.js` + `node tools/test-panel-runtime.js`；`node tools/run-hairdresser-harness.js`（低负载源码检查可用 `node tools/run-hairdresser-harness.js --static-only` / `node tools/run-plastic-surgery-harness.js --static-only`；
@@ -1275,6 +1280,10 @@ JSONL call 30 秒，MCP active call 从 handler 到 buffered response copy/flush
 ### 竞技场斗兽标定（campaign 门）
 
 **独立 Worker 的 P0–P1 候选实验**：另跑 `test-worker-context.js`、`test-worker-experiment.js`、`test-worker-evidence.js`、`test-worker-isolation-probe.js` 与 `test-worker-p0-metrics.js`（均由下述 `run-checks.js` 汇总）。AS2 追加 `scripts/run-arena-worker-protocol-tests.ps1` 与 `scripts/run-arena-skill-cache-tests.ps1`，分别覆盖真实身份回声/迟到回包/派生单位登记及真实人物模板冷暖缓存。双开必须绑定独立 Host/Flash、端口、完整 SWF 来源和专用槽，并在全部回收后核对全局非目标存档；资格与准确命令见 [Worker P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。该候选实验不接入 Gate F 生产 journal，也不代签星期级资格或正式 runtime。
+
+Worker D1/D2 与流式成本增量按 `38f24d4bc9d6d7a63941425639409cd4a3643df2` 加未提交施工核对：追加 `test-worker-projection.js`、Q1/Worker Host 定向回归、`scripts/run-visual-wire-q1-tests.ps1`、`scripts/run-worker-projection-tests.ps1`、`scripts/run-worker-trail-geometry-tests.ps1` 与 `scripts/run-ray-rate-tests.ps1 -WorkerProjectionCompare`。真实 root EF 安装、旧投影自然清空、full/none 权威与 RNG 记录、none 队列上界、灯光保留和协议违约是不同断言；定向模型通过不免除 canonical 全量、publish 与隔离候选实际联调。合同和受控替代范围见[流式成本与 Worker D1/D2](../docs/stream-cost-worker-d1-d2-2026-10-11.md)。
+
+专用 Worker 存档保护须同时核对 `.json` 与真实 SOL；声明目标槽同目录的精确 `.json.previous-32hex` / `.json.tmp-32hex` 独立记录为 `targetArtifacts`，不等于提交确认或未知写锁解除。其他槽、其他 root 和未知后缀仍受保护；失败/未知写不重放，恢复副本不擅自删除。私有源码索引验证时，临时 Git fixture 必须隔离调用者的 Git 路径环境并 finally 恢复，原索引前后摘要保持相同。具体本轮回执与收益边界仍读上述唯一施工文档。
 
 后台 Worker 还须验证实际场景过场：只有进程入口选择的无报告 v1 后台呈现策略可放行；盖幕必须由真实 Web 绘制回报，揭幕继续等待原生场景围栏。无玩家标定专用通知必须绑定当前执行、世界普通对象身份和过场代际；首局单位与计时须等待严格 released，旧世界、旧代际、取消和十字段不符的回调均拒绝。同世界 warm 运行也要核对已呈现的代际。AS2 运行 `scripts/run-scene-transition-tests.ps1`、Worker protocol 与 Map/Loot suite，覆盖真实 StageManager 令牌传递、Start 前身份捕获及普通到达事件隔离。Host focused 应覆盖普通入口不受影响、断线/隐藏/最小化/奖励/书架拒绝后台资格，以及实际窗口首显与调序不激活、不越过其他可见应用窗口。纯策略断言、遮罩下的战斗结果和等待期间的 render sample 都不能代替完整揭幕后的战斗帧时钟与最终原始结果。
 

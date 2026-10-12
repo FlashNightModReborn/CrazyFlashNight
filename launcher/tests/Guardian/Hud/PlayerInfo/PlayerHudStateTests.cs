@@ -88,6 +88,50 @@ public sealed class PlayerHudStateTests
     }
 
     [Fact]
+    public void CooldownDeltaReusesMissingTypedGroupsAndOwnsItsChangedArray()
+    {
+        var state = new PlayerHudState();
+        Assert.True(state.Receive(Encode(Full()), 1));
+        var before = state.Snapshot;
+        var delta = Full(1, 2); delta["full"] = false;
+        var groups = (JObject)delta["groups"];
+        foreach (var property in groups.Properties().Where(p => p.Name != "cooldowns").ToArray()) property.Remove();
+        groups["cooldowns"][0] = new JArray(0, 1, 30);
+        Assert.True(state.Receive(Encode(delta), 2));
+        var after = state.Snapshot;
+        Assert.Same(before.Vitals, after.Vitals);
+        Assert.Same(before.Combat, after.Combat);
+        Assert.Same(before.Loadout, after.Loadout);
+        Assert.Same(before.Buffs, after.Buffs);
+        Assert.NotSame(before.Cooldowns, after.Cooldowns);
+        Assert.Equal(0, before.Cooldowns[0].Step);
+        Assert.Equal(1, after.Cooldowns[0].Step);
+        Assert.Equal(2, after.Sequence);
+    }
+
+    [Fact]
+    public void InvalidIncomingGroupCannotCommitOtherChangesOrReplaceCachedGroups()
+    {
+        var state = new PlayerHudState();
+        Assert.True(state.Receive(Encode(Full()), 1));
+        var before = state.Snapshot;
+        var delta = Full(1, 2); delta["full"] = false;
+        var groups = (JObject)delta["groups"];
+        foreach (var property in groups.Properties().Where(p => p.Name is not ("cooldowns" or "combat")).ToArray()) property.Remove();
+        groups["cooldowns"][0] = new JArray(0, 1, 30);
+        groups["combat"]["mode"] = "invalid";
+        Assert.False(state.Receive(Encode(delta), 2));
+        Assert.Same(before, state.Snapshot);
+        groups.Remove("combat");
+        Assert.True(state.Receive(Encode(delta), 3));
+        Assert.Same(before.Combat, state.Snapshot.Combat);
+        Assert.Equal(1, state.Snapshot.Cooldowns[0].Step);
+        Assert.True(state.Receive(Encode(Full(1, 3)), 4));
+        Assert.NotSame(before.Vitals, state.Snapshot.Vitals);
+        Assert.NotSame(before.Loadout, state.Snapshot.Loadout);
+    }
+
+    [Fact]
     public void ProductionGaugeKeepsOverflowAndNegativeReadoutsWhileGeometryClamps()
     {
         var state = new PlayerHudState(); state.Receive(Encode(Full()), 1);

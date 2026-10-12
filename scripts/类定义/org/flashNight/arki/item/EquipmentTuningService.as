@@ -31,6 +31,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static var _tokenTransactions:Object = {};
     private static var _tokenTransactionOrder:Array = [];
     private static var _writeEpoch:Number = 0;
+    private static var _snapshotQuantityQuarantined:Boolean = false;
     private static var _processedCalls:Object = {};
     private static var _processedCallOrder:Array = [];
     private static var _testFailNext:Boolean = false;
@@ -107,7 +108,13 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var source:Object = resolveWebSlot(params.source);
         if (!source.success) return source;
         var snapshot:Object = buildTuningSnapshot(source, safeSourceRef(source));
-        if (snapshot == null) return fail("snapshot_failed");
+        if (snapshot == null) {
+            // 隔离/非法数量不得静默投影成 0：快照 fail-closed 并给出可定位错误。
+            if (_snapshotQuantityQuarantined) {
+                return fail("material_quantity_quarantined");
+            }
+            return fail("snapshot_failed");
+        }
         var response:Object = {success:true, snapshot:snapshot};
         if (params.reconcileAfterCallId != undefined) {
             var targetCallId:String = String(params.reconcileAfterCallId);
@@ -1089,9 +1096,21 @@ class org.flashNight.arki.item.EquipmentTuningService {
             if (operation == "enhance" && materialProjection.error == "insufficient_material") {
                 var requiredStones:Number = -Number(materialDeltas["强化石"]);
                 var ownedStones:Number = materials.getValue("强化石");
-                if (requiredStones > ownedStones) materialProjection.materialShortage = {
-                    itemName:"强化石", required:requiredStones, owned:ownedStones, missing:requiredStones - ownedStones
-                };
+                if (requiredStones > ownedStones) {
+                    // 隔离/非法旧值不得投影成“持有 0”的短缺报价：
+                    // 给字段可定位诊断并 fail-closed，原值由隔离机制保留。
+                    var rawStones = typeof materials.toObject == "function"
+                        ? materials.toObject()["强化石"] : undefined;
+                    if (rawStones != undefined && !isUsableQuantity(rawStones)) {
+                        trace("[EquipmentTuningService] quarantined material quantity: "
+                            + "preview.materialShortage.owned itemName=强化石 rawType="
+                            + typeof rawStones);
+                        return fail("material_quantity_quarantined");
+                    }
+                    materialProjection.materialShortage = {
+                        itemName:"强化石", required:requiredStones, owned:ownedStones, missing:requiredStones - ownedStones
+                    };
+                }
             }
             return materialProjection;
         }
@@ -1204,6 +1223,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
     private static function buildTuningSnapshot(
             source:Object, sourceRef:Object,
             requiredMaterials:Array):Object {
+        _snapshotQuantityQuarantined = false;
         if (source == null || source.item == null) return null;
         var materials:Object = getMaterialCollection();
         if (materials == null) return null;
@@ -1301,6 +1321,27 @@ class org.flashNight.arki.item.EquipmentTuningService {
         var names:Array = [];
         for (var materialName:String in materialNames) names.push(materialName);
         names.sort();
+        // 数量合同：业务投影只接受 0 < v ≤ 2^53-1 的精确整数。被 DictCollection
+        // 隔离的非法旧值（超限/小数/NaN/Infinity/字符串）不得经 getValue 静默
+        // 投影成 0——逐个输出字段可定位诊断并让快照 fail-closed；原值仍由
+        // 隔离机制原样保留，不截断、不取整、不删除。
+        var rawQuantities:Object = typeof materials.toObject == "function"
+            ? materials.toObject() : {};
+        var quarantinedSeen:Boolean = false;
+        for (i = 0; i < names.length; i++) {
+            var referencedName:String = String(names[i]);
+            var rawQuantity = rawQuantities[referencedName];
+            if (rawQuantity != undefined && !isUsableQuantity(rawQuantity)) {
+                trace("[EquipmentTuningService] quarantined material quantity: "
+                    + "snapshot.materials[].count/candidates[].owned itemName="
+                    + referencedName + " rawType=" + typeof rawQuantity);
+                quarantinedSeen = true;
+            }
+        }
+        if (quarantinedSeen) {
+            _snapshotQuantityQuarantined = true;
+            return null;
+        }
         var materialSnapshot:Array = [];
         for (i = 0; i < names.length; i++) {
             var materialPresentation:Object = itemPresentation(String(names[i]));
@@ -1923,6 +1964,17 @@ class org.flashNight.arki.item.EquipmentTuningService {
         return typeof value == "number" && !isNaN(value) && Math.floor(value) == value;
     }
 
+    // 与 DictCollection 安全整数合同一致的业务可用数量判定：
+    // 精确整数且 0 < v ≤ 2^53-1。NaN/Infinity/小数/字符串/超限值一律不可用。
+    // 先 isNaN 排除 NaN——AVM1 中 NaN == NaN 为 true，不能靠 floor 比较兜底。
+    private static function isUsableQuantity(value):Boolean {
+        if (typeof value != "number") return false;
+        var numeric:Number = Number(value);
+        if (isNaN(numeric) || !isFinite(numeric)) return false;
+        if (Math.floor(numeric) != numeric) return false;
+        return numeric > 0 && numeric <= 9007199254740991;
+    }
+
     private static function markDirty():Void {
         if (_root.存档系统 != undefined) _root.存档系统.dirtyMark = true;
     }
@@ -1961,6 +2013,7 @@ class org.flashNight.arki.item.EquipmentTuningService {
         _candidateNames = {};
         _plan = null;
         _writeEpoch = 0;
+        _snapshotQuantityQuarantined = false;
         _processedCalls = {};
         _processedCallOrder = [];
         _tokenTransactions = {};

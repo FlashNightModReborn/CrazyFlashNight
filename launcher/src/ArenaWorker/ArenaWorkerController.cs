@@ -20,6 +20,7 @@ namespace CF7Launcher.ArenaWorker
         private readonly Action<Action> _queueShutdown;
         private readonly Func<JObject> _windowObservation;
         private readonly Func<JObject> _performanceObservation;
+        private readonly WorkerProjectionNegotiator _projection;
         private readonly object _gate = new object();
         private bool _startRequested;
         private bool _shutdownRequested;
@@ -31,7 +32,8 @@ namespace CF7Launcher.ArenaWorker
             ArenaCalibrationTask arena, Func<Process> flash, Action shutdown,
             Func<JObject, JObject> arenaControl = null, Func<JObject> windowObservation = null,
             Func<JObject> performanceObservation = null, Action<Action> queueShutdown = null,
-            Func<CF7Launcher.Bus.XmlSocketPeerProcessIdentity, IArenaWorkerFaultProcess> faultProcess = null)
+            Func<CF7Launcher.Bus.XmlSocketPeerProcessIdentity, IArenaWorkerFaultProcess> faultProcess = null,
+            WorkerProjectionNegotiator projection = null)
         {
             _policy = policy; _agent = agent; _flash = flash; _shutdown = shutdown;
             _arena = arena;
@@ -39,6 +41,7 @@ namespace CF7Launcher.ArenaWorker
             _arenaControl = arenaControl ?? (request => JObject.Parse(arena.HandleControl(request)));
             _windowObservation = windowObservation;
             _performanceObservation = performanceObservation;
+            _projection = projection;
             _queueShutdown = queueShutdown ?? (work => { ThreadPool.QueueUserWorkItem(_ => work()); });
         }
 
@@ -86,6 +89,8 @@ namespace CF7Launcher.ArenaWorker
                             }));
                             return Wrap(started.Value<bool?>("success") == true, started, ArenaStatus());
                         case "startBatch":
+                            if (_policy.Projection != null && _projection?.IsReady != true)
+                                return Error("worker_projection_not_committed");
                             JObject agent = AgentStatus();
                             if (agent.Value<bool?>("readyForRuntimeAutomation") != true
                                 || agent.SelectToken("save.slot")?.Value<string>() != _policy.Slot
@@ -176,6 +181,7 @@ namespace CF7Launcher.ArenaWorker
                 ["hostProcessObservation"] = ArenaWorkerPolicy.DescribeProcess(host),
                 ["shutdownRequested"] = _shutdownRequested
             };
+            result["projectionStatus"] = _projection?.Status() ?? new JObject { ["state"] = "legacy_full", ["committed"] = false };
             result["faultReceipt"] = arena?["faultReceipt"]?.DeepClone() ?? JValue.CreateNull();
             result["windowObservation"] = _windowObservation?.Invoke()
                 ?? new JObject { ["observed"] = false, ["reason"] = "window_probe_not_configured" };

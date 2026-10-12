@@ -10,16 +10,56 @@ using CF7Launcher.Guardian.WorldCompositor;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
-// 真实游戏 help 面板的局部 composition 端点（游戏内容只读）。
+// 真实游戏只读面板的局部 composition 端点（游戏内容只读）。
 // 复用 WorldCompositor.CompositionSceneHost 与
 // CoreWebView2CompositionController；不使用 WinForms WebView2、CDP 或私有反射。
 // 本类不是 C1 虚拟世界宿主，不持有游戏存档/业务通道。
+// help 之外的第二个消费者（intelligence）经 CompositionPanelProfile 参数化接入；
+// transition（过场+loot 结算）是同一类型的独立固定投影端点，有自己的面板边界。
 namespace CF7Launcher.Guardian
 {
+    // 只读面板端点身份：面板名、虚拟主机、页面、ready 消息与日志标签。
+    // DelegateCloseToAuthority=true 的面板（intelligence）把页面 close 信封
+    // 经 CloseEnvelopeDelegated 交给既有 Web 关闭权威（返回装备/普通关闭），
+    // surface 本身不直接驱动 Host close；=false（help）沿用 CloseRequested 自闭。
+    internal sealed class CompositionPanelProfile
+    {
+        internal string PanelName;
+        internal string HostName;
+        internal string PageUrl;
+        internal string ReadyMessageType;
+        internal string WindowTitle;
+        internal string LogTag;
+        internal bool AllowTutorialPreference;
+        internal bool AcceptsPanelResponses;
+        internal bool DelegateCloseToAuthority;
+
+        internal static readonly CompositionPanelProfile Help = new CompositionPanelProfile
+        {
+            PanelName = "help",
+            HostName = "cf7-help.local",
+            PageUrl = "https://cf7-help.local/composition-help.html",
+            ReadyMessageType = "composition_help_ready",
+            WindowTitle = "CF7 Help",
+            LogTag = "[HelpSurface]",
+            AllowTutorialPreference = true
+        };
+
+        internal static readonly CompositionPanelProfile Intelligence = new CompositionPanelProfile
+        {
+            PanelName = "intelligence",
+            HostName = "cf7-intelligence.local",
+            PageUrl = "https://cf7-intelligence.local/composition-intelligence.html",
+            ReadyMessageType = "composition_intelligence_ready",
+            WindowTitle = "CF7 Intelligence",
+            LogTag = "[IntelligenceSurface]",
+            AcceptsPanelResponses = true,
+            DelegateCloseToAuthority = true
+        };
+    }
+
     internal sealed class CompositionHelpSurface : Form
     {
-        internal const string HostName = "cf7-help.local";
-        internal const string PageUrl = "https://cf7-help.local/composition-help.html";
         private const int WmMouseActivate = 0x0021;
         private const int WmMouseMove = 0x0200;
         private const int WmLButtonDown = 0x0201;
@@ -40,6 +80,7 @@ namespace CF7Launcher.Guardian
         private readonly bool _transition;
         private readonly SceneTransitionPresentationPolicy _presentationPolicy = SceneTransitionPresentationPolicy.Interactive;
         private bool _backgroundTransition;
+        private readonly CompositionPanelProfile _profile;
         private readonly string _hostName, _pageUrl;
         private CoreWebView2Environment? _environment;
         private CompositionSceneHost? _scene;
@@ -53,15 +94,23 @@ namespace CF7Launcher.Guardian
         private int _postedViewportGeneration = -1;
         private string _panelInstance = "";
         private string _closeReason = "page_close";
+        private JObject? _closeEnvelope;
         private int _pressedButtons;
         private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
+        internal string PanelName => _profile.PanelName;
         internal event Action<string>? CloseRequested;
+        // DelegateCloseToAuthority 面板：物理按键释放后才上抛页面/Host 关闭信封，
+        // 由既有 Web 关闭权威（含返回装备 capability）裁决；surface 不自闭。
+        internal event Action<JObject>? CloseEnvelopeDelegated;
+        // DelegateCloseToAuthority 面板的非 close 入站消息（只读查询、panel-toast）。
+        internal event Action<JObject>? InboundPanelMessage;
         internal event Action<JObject>? TransitionMessage;
         internal event Action? TransitionFailed;
         internal Func<JObject, string, JObject?>? TutorialPreferenceRequested;
 
-        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot, bool transition = false,
+        internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot,
+            CompositionPanelProfile? profile = null, bool transition = false,
             SceneTransitionPresentationPolicy? presentationPolicy = null)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
@@ -70,9 +119,10 @@ namespace CF7Launcher.Guardian
             _transition = transition;
             _presentationPolicy = transition ? presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive
                 : SceneTransitionPresentationPolicy.Interactive;
-            _hostName = transition ? "cf7-transition.local" : HostName;
-            _pageUrl = transition ? "https://cf7-transition.local/scene-transition.html" : PageUrl;
-            Text = transition ? "CF7 Scene Transition" : "CF7 Help";
+            _profile = profile ?? CompositionPanelProfile.Help;
+            _hostName = transition ? "cf7-transition.local" : _profile.HostName;
+            _pageUrl = transition ? "https://cf7-transition.local/scene-transition.html" : _profile.PageUrl;
+            Text = transition ? "CF7 Scene Transition" : _profile.WindowTitle;
             FormBorderStyle = FormBorderStyle.None;
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
@@ -99,6 +149,8 @@ namespace CF7Launcher.Guardian
         internal bool Ready { get { return _ready && !_disposed; } }
         internal bool Active { get { return _active && Ready; } }
         internal int SessionGeneration { get; private set; }
+        // transition 端点保留既有 [HelpSurface] 日志标签，不随面板 profile 漂移。
+        private string LogTag => _transition ? "[HelpSurface]" : _profile.LogTag;
 
         private bool Stale(int version) => _disposed || version != _prepareVersion || IsDisposed;
 
@@ -148,14 +200,16 @@ namespace CF7Launcher.Guardian
                 var ready = _readyTcs.Task;
                 var timeout = Task.Delay(15000);
                 if (await Task.WhenAny(ready, timeout) != ready)
-                    throw new TimeoutException("composition_help_ready not received within 15s");
+                    throw new TimeoutException(
+                        (_transition ? "scene_transition_ready" : _profile.ReadyMessageType)
+                        + " not received within 15s");
                 await ready;
                 if (Stale(version)) throw new ObjectDisposedException(nameof(CompositionHelpSurface));
                 _ready = true;
                 SyncViewport();
-                LogManager.Log("[HelpSurface] prepare ready gen=" + SessionGeneration);
+                LogManager.Log(LogTag + " prepare ready gen=" + SessionGeneration);
             } catch (Exception error) {
-                if (!Stale(version)) LogManager.Log("[HelpSurface] prepare failed: " + error);
+                if (!Stale(version)) LogManager.Log(LogTag + " prepare failed: " + error);
                 throw;
             }
         }
@@ -176,7 +230,7 @@ namespace CF7Launcher.Guardian
                 Activate();
                 _web.MoveFocus(CoreWebView2MoveFocusReason.Programmatic);
             }
-            LogManager.Log("[HelpSurface] resume gen=" + SessionGeneration + " rect=" + rect);
+            LogManager.Log(LogTag + " resume gen=" + SessionGeneration + " rect=" + rect);
             return true;
         }
 
@@ -188,7 +242,7 @@ namespace CF7Launcher.Guardian
             string? type = message.Value<string>("type");
             if (type == "panel_cmd")
             {
-                if (message.Value<string>("panel") != "help") return false;
+                if (message.Value<string>("panel") != _profile.PanelName) return false;
                 if (message.Value<string>("cmd") == "open")
                 {
                     string? instance = message["initData"]?.Value<string>("panelInstanceId");
@@ -198,7 +252,16 @@ namespace CF7Launcher.Guardian
             }
             else if (type == "tutorial_preference_result")
             {
-                if (!HelpTutorialPreferenceCommand.IsResultFor(message, _panelInstance)) return false;
+                if (!_profile.AllowTutorialPreference
+                    || !HelpTutorialPreferenceCommand.IsResultFor(message, _panelInstance)) return false;
+            }
+            else if (type == "panel_resp")
+            {
+                // 只读查询回包：面板名匹配 + 当前会话活跃；回包不带 panelInstanceId，
+                // 会话边界由 AcceptsPanelResponses 面板的活跃窗口承担。
+                if (!_profile.AcceptsPanelResponses
+                    || message.Value<string>("panel") != _profile.PanelName
+                    || message["callId"]?.Type != JTokenType.String) return false;
             }
             else if (type != "panel_viewport_set" && type != "panel_esc") return false;
             _web.CoreWebView2.PostWebMessageAsJson(json);
@@ -226,7 +289,7 @@ namespace CF7Launcher.Guardian
         {
             _committed = Rectangle.Empty;
             if (!_disposed && _scene != null) SyncViewport();
-            LogManager.Log("[HelpSurface] geometry cleared: " + reason);
+            LogManager.Log(LogTag + " geometry cleared: " + reason);
         }
 
         internal bool Replay(Rectangle rect, int generation, string reason)
@@ -235,7 +298,7 @@ namespace CF7Launcher.Guardian
             Bounds = _committed;
             if (!Visible) Show();
             SyncViewport();
-            LogManager.Log("[HelpSurface] geometry replayed: " + reason);
+            LogManager.Log(LogTag + " geometry replayed: " + reason);
             return true;
         }
 
@@ -244,11 +307,11 @@ namespace CF7Launcher.Guardian
             if (_disposed) return;
             unchecked { _prepareVersion++; }
             _ready = false; _active = false; _closePending = false; _committed = Rectangle.Empty;
-            _closeTimer.Stop(); _panelInstance = ""; _pressedButtons = 0;
+            _closeTimer.Stop(); _panelInstance = ""; _pressedButtons = 0; _closeEnvelope = null;
             _capturedButton = false; Capture = false;
             TearDownEndpoint();
             if (Visible) Hide();
-            LogManager.Log("[HelpSurface] retired gen=" + SessionGeneration);
+            LogManager.Log(LogTag + " retired gen=" + SessionGeneration);
         }
 
         // The transition is a separate fixed projection endpoint; it never enters panel pause/snapshot.
@@ -335,7 +398,7 @@ namespace CF7Launcher.Guardian
                 if (_web.IsVisible != visible)
                 {
                     _web.IsVisible = visible;
-                    LogManager.Log("[HelpSurface] controller visible=" + visible
+                    LogManager.Log(LogTag + " controller visible=" + visible
                         + " gen=" + SessionGeneration);
                 }
             }
@@ -368,7 +431,7 @@ namespace CF7Launcher.Guardian
             if (_environment == null
                 || !args.Request.Uri.StartsWith("https://" + _hostName + "/", StringComparison.Ordinal)) {
                 args.Response = _environment?.CreateWebResourceResponse(
-                    Stream.Null, 403, "help origin only", "Content-Type: text/plain");
+                    Stream.Null, 403, "panel origin only", "Content-Type: text/plain");
                 return;
             }
         }
@@ -381,7 +444,7 @@ namespace CF7Launcher.Guardian
             try { message = JObject.Parse(args.WebMessageAsJson); }
             catch { return; }
             string? type = message.Value<string>("type");
-            if (type == (_transition ? "scene_transition_ready" : "composition_help_ready")) {
+            if (type == (_transition ? "scene_transition_ready" : _profile.ReadyMessageType)) {
                 _readyTcs?.TrySetResult(true);
                 return;
             }
@@ -394,18 +457,29 @@ namespace CF7Launcher.Guardian
                     SettlementMessage?.Invoke(message);
                 return;
             }
-            if (type == "tutorial_preference" && Active && _panelInstance.Length > 0) {
+            if (type == "tutorial_preference" && _profile.AllowTutorialPreference
+                && Active && _panelInstance.Length > 0) {
                 var result = TutorialPreferenceRequested?.Invoke(message, _panelInstance);
                 if (result != null) TryPost(result.ToString(Newtonsoft.Json.Formatting.None));
                 return;
             }
-            // 页面关闭请求：等物理鼠标键与 ESC 全部释放后才上抛 CloseRequested，
+            // 页面关闭请求：等物理鼠标键与 ESC 全部释放后才上抛关闭，
             // 避免在按下手势中途触发关闭重入。
             if (type == "panel" && message.Value<string>("cmd") == "close"
-                && message.Value<string>("panel") == "help"
+                && message.Value<string>("panel") == _profile.PanelName
                 && Active && _panelInstance.Length > 0
                 && message.Value<string>("panelInstanceId") == _panelInstance) {
-                RequestClose("page_close");
+                RequestClose("page_close", message);
+                return;
+            }
+            // 委托面板（intelligence）的其余入站消息：只读查询与 panel-toast，
+            // 绑定当前面板名与活跃会话后交给 controller 配置的既有 Web 权威。
+            if (_profile.DelegateCloseToAuthority && Active && _panelInstance.Length > 0) {
+                if (type == "panel" && message.Value<string>("panel") == _profile.PanelName)
+                    InboundPanelMessage?.Invoke(message);
+                else if (type == "panel-toast" && message["html"]?.Type == JTokenType.String
+                    && message.Value<string>("html").Length <= 4096)
+                    InboundPanelMessage?.Invoke(message);
             }
         }
 
@@ -449,7 +523,7 @@ namespace CF7Launcher.Guardian
         private void OnWebProcessFailed(object? sender, CoreWebView2ProcessFailedEventArgs args)
         {
             if (_web == null || !ReferenceEquals(sender, _web.CoreWebView2)) return;
-            LogManager.Log("[HelpSurface] web process failed: " + args.ProcessFailedKind);
+            LogManager.Log(LogTag + " web process failed: " + args.ProcessFailedKind);
             if (_transition) { _ready = false; TransitionFailed?.Invoke(); return; }
             RequestClose("process_failed:" + args.ProcessFailedKind);
         }
@@ -498,12 +572,13 @@ namespace CF7Launcher.Guardian
             return pid == Environment.ProcessId;
         }
 
-        private void RequestClose(string reason)
+        private void RequestClose(string reason, JObject? envelope = null)
         {
             if (_transition) return;
             if (_disposed || !_active || _closePending) return;
             _closePending = true;
             _closeReason = reason;
+            _closeEnvelope = envelope;
             _closeTimer.Start();
             // Never dispose a controller from inside its synchronous COM callback.
             BeginInvoke((Action)TryDeliverClose);
@@ -517,6 +592,23 @@ namespace CF7Launcher.Guardian
             if (held) return;
             _closeTimer.Stop();
             _closePending = false;
+            if (_profile.DelegateCloseToAuthority)
+            {
+                // 页面原信封（含 navigate_character_build reason）优先；
+                // Host 侧原因（esc/deactivated/capture_lost/process_failed）
+                // 合成普通 close 信封，复现旧路径 ESC→panel_esc→页面 close 的效果。
+                JObject envelope = _closeEnvelope ?? new JObject
+                {
+                    ["type"] = "panel",
+                    ["panel"] = _profile.PanelName,
+                    ["cmd"] = "close",
+                    ["panelInstanceId"] = _panelInstance
+                };
+                _closeEnvelope = null;
+                if (envelope.Value<string>("panelInstanceId")?.Length > 0)
+                    CloseEnvelopeDelegated?.Invoke(envelope);
+                return;
+            }
             CloseRequested?.Invoke(_closeReason);
         }
 

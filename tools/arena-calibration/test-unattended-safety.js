@@ -7,7 +7,7 @@ const os = require("os");
 const path = require("path");
 const { createPilotManifest, normalizeManifest } = require("./lib/arena-calibration-core");
 const { writeImmutableBytes } = require("./lib/immutable-evidence");
-const { captureProtectedSaveSnapshot, findSolFiles } = require("./lib/unattended-save-safety");
+const { captureProtectedSaveSnapshot, captureGlobalProtectionSnapshot, findSolFiles } = require("./lib/unattended-save-safety");
 const { compareProtectedSaveSnapshots, defaultOutputPaths, runBatch } = require("./run-unattended");
 
 function write(filePath, text) {
@@ -49,6 +49,25 @@ async function main() {
     write(path.join(root1, "saves", `${slot}.json`), "owned target");
     const before = captureProtectedSaveSnapshot(root1, slot, { appData });
     assert.strictEqual(before.files.length, 3, "custom JSON, backup and SOL-only slot must all be protected");
+    const suffix = "a".repeat(32);
+    write(path.join(root1, "saves", `${slot}.json.previous-${suffix}`), "owned previous retained");
+    write(path.join(root1, "saves", `${slot}.json.tmp-${suffix}`), "owned temporary retained");
+    let artifacts = captureProtectedSaveSnapshot(root1, slot, { appData });
+    assert.strictEqual(artifacts.files.length, 3, "known exact target durable companions are not another player's save");
+    assert.strictEqual(artifacts.targetArtifacts.length, 2, "target companions remain fingerprinted evidence");
+    write(path.join(root1, "saves", `${slot}.json.previous-not-a-guid`), "unknown suffix protected");
+    write(path.join(root1, "saves", `foreign.json.previous-${suffix}`), "foreign slot backup protected");
+    write(path.join(root2, "saves", `${slot}.json.previous-${suffix}`), "same slot another root protected");
+    const global = captureGlobalProtectionSnapshot({saveRoots:[path.join(root1,"saves"),path.join(root2,"saves")],
+      sharedObjectsRoot:path.join(appData,"Macromedia","Flash Player","#SharedObjects"),
+      allowedTargets:[{swfOrigin:path.join(root1,"CRAZYFLASHER7MercenaryEmpire.swf"),slot}]});
+    assert.strictEqual(global.targetArtifacts.length, 2);
+    assert(global.files.some(f=>f.path.includes("previous-not-a-guid")), "unknown target suffix remains protected");
+    assert(global.files.some(f=>f.path.includes("foreign.json.previous-")), "foreign slot backup remains protected");
+    assert(global.files.some(f=>f.path.includes(`${slot}.json.previous-`)), "another root with same slot remains protected");
+    // Restore fixture additions only; production evidence/sidecars are never deleted by this checker.
+    for(const file of [path.join(root1,"saves",`${slot}.json.previous-not-a-guid`),path.join(root1,"saves",`foreign.json.previous-${suffix}`),
+      path.join(root2,"saves",`${slot}.json.previous-${suffix}`)])fs.unlinkSync(file);
     write(protectedSol, "changed SOL-only bytes");
     const after = captureProtectedSaveSnapshot(root1, slot, { appData });
     assert.strictEqual(compareProtectedSaveSnapshots(before, after).length, 1);

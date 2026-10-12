@@ -1,11 +1,15 @@
 ﻿[CmdletBinding()]
-param([ValidateRange(1,3600)][int]$TimeoutSeconds=1800,[switch]$ScanCompare,[switch]$SkipCompile)
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=1800,[switch]$ScanCompare,[switch]$WorkerProjectionCompare,[switch]$SkipCompile)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null
 $sourceXml=Join-Path (Split-Path -Parent $PSScriptRoot) 'data/items/bullets_cases.xml'
 Write-Host ('[RAY_RATE_XML_SHA256] '+(Get-FileHash -LiteralPath $sourceXml -Algorithm SHA256).Hash)
 $expectedPairs=if($ScanCompare){4}else{54}
 $template=if($ScanCompare){'scripts/test-runners/ray-rate/ScanCompare.TestLoader.as.template'}else{'scripts/test-runners/ray-rate/TestLoader.as.template'}
+if($WorkerProjectionCompare) {
+ if($ScanCompare){throw 'Worker projection and scan comparison are separate experiments.'}
+ $template='scripts/test-runners/ray-rate/WorkerProjection.TestLoader.as.template'
+}
 $asyncWait=if($ScanCompare){900}else{1800}
 $run=@{
  DomainId='ray-rate'

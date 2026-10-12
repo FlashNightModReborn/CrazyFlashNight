@@ -2594,6 +2594,239 @@ namespace Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData(2147483647L, true)]
+        [InlineData(2147483648L, true)]
+        [InlineData(10000000875L, true)]
+        [InlineData(9007199254740991L, true)]
+        [InlineData(9007199254740992L, false)]
+        [InlineData(-1L, false)]
+        public void SnapshotMaterialCount_AcceptsUpToMaxSafeInteger(long count, bool accepted)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using var task = NewTask(
+                value => { sent.Add(ParseWire(value)); return true; }, web);
+            task.HandleWebRequest(
+                "snapshot",
+                Request("snapshot", "tune.qty.snapshot." + count));
+            JObject response = SnapshotResponse(Assert.Single(sent));
+            response["snapshot"]["materials"][0]["count"] = count;
+            task.HandleFlashResponse(response, null);
+            JObject reply = Assert.Single(web);
+            Assert.Equal(accepted, reply.Value<bool?>("success") == true);
+            if (!accepted)
+            {
+                Assert.Equal("malformed_response", (string)reply["error"]);
+                return;
+            }
+            Assert.Equal(
+                count,
+                reply["snapshot"]["materials"][0].Value<long>("count"));
+        }
+
+        [Fact]
+        public void SnapshotMaterialCount_RejectsFractionalNonFiniteAndTextQuantities()
+        {
+            foreach (JToken count in new JToken[]
+            {
+                new JValue(100.5),
+                new JValue(double.NaN),
+                new JValue(double.PositiveInfinity),
+                new JValue("100")
+            })
+            {
+                var sent = new List<JObject>();
+                var web = new List<JObject>();
+                using var task = NewTask(
+                    value => { sent.Add(ParseWire(value)); return true; }, web);
+                task.HandleWebRequest(
+                    "snapshot",
+                    Request("snapshot", "tune.qty.fractional." + count.Type));
+                JObject response = SnapshotResponse(Assert.Single(sent));
+                response["snapshot"]["materials"][0]["count"] = count;
+                task.HandleFlashResponse(response, null);
+                JObject reply = Assert.Single(web);
+                Assert.True(reply.Value<bool?>("success") != true);
+                Assert.Equal("malformed_response", (string)reply["error"]);
+            }
+        }
+
+        [Theory]
+        [InlineData(9007199254740991L, true)]
+        [InlineData(9007199254740992L, false)]
+        public void SnapshotCandidateOwned_AcceptsUpToMaxSafeInteger(long owned, bool accepted)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using var task = NewTask(
+                value => { sent.Add(ParseWire(value)); return true; }, web);
+            task.HandleWebRequest(
+                "snapshot",
+                Request("snapshot", "tune.qty.owned." + owned));
+            JObject response = SnapshotResponse(Assert.Single(sent));
+            response["snapshot"]["modCandidates"][0]["owned"] = owned;
+            task.HandleFlashResponse(response, null);
+            JObject reply = Assert.Single(web);
+            Assert.Equal(accepted, reply.Value<bool?>("success") == true);
+            if (!accepted)
+                Assert.Equal("malformed_response", (string)reply["error"]);
+        }
+
+        [Theory]
+        // 接近上限的累计中间值：before 取满上限，delta 小步扣减
+        [InlineData(9007199254740991L, 9007199254740991L, -3L, 9007199254740988L, true)]
+        // 全程 delta：before 满上限一路扣到 0
+        [InlineData(9007199254740991L, 9007199254740991L, -9007199254740991L, 0L, true)]
+        // after 越过 2^53-1
+        [InlineData(100L, 100L, -3L, 9007199254740992L, false)]
+        // delta 越过 2^53-1
+        [InlineData(100L, 100L, 9007199254740992L, 9007199254741092L, false)]
+        // before 越过 2^53-1
+        [InlineData(100L, 9007199254740992L, -3L, 9007199254740989L, false)]
+        // before + delta != after
+        [InlineData(100L, 100L, -3L, 96L, false)]
+        public void EnhancePreview_MaterialPlanQuantitiesFollowMaxSafeIntegerContract(
+            long snapshotCount,
+            long before,
+            long delta,
+            long after,
+            bool accepted)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using var task = NewTask(
+                value => { sent.Add(ParseWire(value)); return true; }, web);
+            task.HandleWebRequest(
+                "snapshot", Request("snapshot", "tune.qty.plan.snap"));
+            JObject snapshotResponse = SnapshotResponse(Assert.Single(sent));
+            snapshotResponse["snapshot"]["materials"][0]["count"] = snapshotCount;
+            task.HandleFlashResponse(snapshotResponse, null);
+            Assert.True(Assert.Single(web).Value<bool?>("success") == true);
+            sent.Clear();
+            web.Clear();
+
+            task.HandleWebRequest(
+                "preview",
+                Request("preview", "tune.qty.plan.preview", "enhance"));
+            JObject previewResponse = PreviewResponse(
+                Assert.Single(sent), "enhance", "tuning.token.qty");
+            previewResponse["materials"] = new JArray(
+                MaterialRow("强化石", before, delta, after));
+            task.HandleFlashResponse(previewResponse, null);
+            JObject reply = Assert.Single(web);
+            Assert.Equal(accepted, reply.Value<bool?>("success") == true);
+            if (!accepted)
+            {
+                Assert.Equal("malformed_response", (string)reply["error"]);
+                return;
+            }
+            JObject row = (JObject)reply["materials"][0];
+            Assert.Equal(before, row.Value<long>("before"));
+            Assert.Equal(delta, row.Value<long>("delta"));
+            Assert.Equal(after, row.Value<long>("after"));
+        }
+
+        [Fact]
+        public void EnhancePreviewAndCommit_AcceptMaterialQuantitiesBeyondInt32()
+        {
+            const long before = 9007199254740990L;
+            const long delta = -3L;
+            const long after = 9007199254740987L;
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using var task = NewTask(
+                value => { sent.Add(ParseWire(value)); return true; }, web);
+
+            task.HandleWebRequest(
+                "snapshot", Request("snapshot", "tune.qty.commit.snap"));
+            JObject snapshotResponse = SnapshotResponse(Assert.Single(sent));
+            snapshotResponse["snapshot"]["materials"][0]["count"] = before;
+            task.HandleFlashResponse(snapshotResponse, null);
+            Assert.True(Assert.Single(web).Value<bool?>("success") == true);
+            sent.Clear();
+            web.Clear();
+
+            task.HandleWebRequest(
+                "preview",
+                Request("preview", "tune.qty.commit.preview", "enhance"));
+            JObject previewResponse = PreviewResponse(
+                Assert.Single(sent), "enhance", "tuning.token.1");
+            previewResponse["materials"] = new JArray(
+                MaterialRow("强化石", before, delta, after));
+            task.HandleFlashResponse(previewResponse, null);
+            Assert.True(Assert.Single(web).Value<bool?>("success") == true);
+            sent.Clear();
+            web.Clear();
+
+            task.HandleWebRequest(
+                "commit", Request("commit", "tune.qty.commit"));
+            JObject commitResponse = CommitResponse(Assert.Single(sent));
+            commitResponse["materials"] = new JArray(
+                MaterialRow("强化石", before, delta, after));
+            commitResponse["snapshot"]["materials"][0]["count"] = after;
+            task.HandleFlashResponse(commitResponse, null);
+            JObject reply = Assert.Single(web);
+            Assert.True(
+                reply.Value<bool?>("success") == true,
+                "commit reply: " + reply.ToString(Newtonsoft.Json.Formatting.None));
+            Assert.Equal(
+                after,
+                reply["snapshot"]["materials"][0].Value<long>("count"));
+            Assert.Equal(
+                after,
+                reply["materials"][0].Value<long>("after"));
+        }
+
+        [Theory]
+        [InlineData(10000000875L, 10000000874L, 1L, true)]
+        [InlineData(9007199254740991L, 9007199254740980L, 11L, true)]
+        [InlineData(9007199254740992L, 1L, 9007199254740991L, false)]
+        [InlineData(10L, 3L, 8L, false)]
+        public void EnhancementShortage_QuantitiesFollowMaxSafeIntegerContract(
+            long required, long owned, long missing, bool accepted)
+        {
+            var sent = new List<JObject>();
+            var web = new List<JObject>();
+            using var task = NewTask(
+                value => { sent.Add(ParseWire(value)); return true; }, web);
+            PrimeSession(task, sent, null, "tuning.token.old");
+            sent.Clear();
+            web.Clear();
+            task.HandleWebRequest(
+                "preview",
+                Request("preview", "tune.qty.shortage", "enhance"));
+            JObject response = CommonResponse(
+                Assert.Single(sent), "preview", false);
+            response["error"] = "insufficient_material";
+            response["materialShortage"] = new JObject
+            {
+                ["itemName"] = "强化石",
+                ["required"] = required,
+                ["owned"] = owned,
+                ["missing"] = missing
+            };
+            task.HandleFlashResponse(response, null);
+            JObject reply = Assert.Single(web);
+            Assert.Equal(
+                accepted ? "insufficient_material" : "malformed_response",
+                (string)reply["error"]);
+            if (!accepted)
+            {
+                Assert.Null(reply["materialShortage"]);
+                return;
+            }
+            Assert.Equal(
+                required,
+                reply["materialShortage"].Value<long>("required"));
+            Assert.Equal(
+                owned,
+                reply["materialShortage"].Value<long>("owned"));
+            Assert.Equal(
+                missing,
+                reply["materialShortage"].Value<long>("missing"));
+        }
+
         [Fact]
         public void PreviewTimeout_DoesNotRestorePriorBinding()
         {
@@ -4391,9 +4624,9 @@ namespace Launcher.Tests.Tasks
 
         private static JObject MaterialRow(
             string itemName,
-            int before,
-            int delta,
-            int after)
+            long before,
+            long delta,
+            long after)
         {
             return new JObject
             {
@@ -4408,7 +4641,7 @@ namespace Launcher.Tests.Tasks
 
         private static JObject SnapshotMaterialRow(
             string itemName,
-            int count)
+            long count)
         {
             return new JObject
             {
@@ -4461,7 +4694,7 @@ namespace Launcher.Tests.Tasks
                     ["itemName"] = itemName,
                     ["displayName"] = row["displayName"].DeepClone(),
                     ["icon"] = row["icon"].DeepClone(),
-                    ["count"] = (int)row[
+                    ["count"] = (long)row[
                         after ? "after" : "before"]
                 });
             }
@@ -4559,7 +4792,7 @@ namespace Launcher.Tests.Tasks
             };
         }
 
-        private static int MaterialCount(
+        private static long MaterialCount(
             JArray materials,
             string itemName)
         {
@@ -4569,7 +4802,7 @@ namespace Launcher.Tests.Tasks
                 JObject row = token as JObject;
                 if ((string)(row != null ? row["itemName"] : null)
                         == itemName)
-                    return (int)row["count"];
+                    return (long)row["count"];
             }
             return 0;
         }
@@ -4578,7 +4811,7 @@ namespace Launcher.Tests.Tasks
             string candidateKey,
             string itemName,
             string tierName,
-            int owned,
+            long owned,
             bool available)
         {
             return new JObject
@@ -4597,7 +4830,7 @@ namespace Launcher.Tests.Tasks
         private static JObject ModCandidate(
             string candidateKey,
             string itemName,
-            int owned,
+            long owned,
             bool installed,
             bool available,
             JArray replaceableFrom)
@@ -4859,7 +5092,7 @@ namespace Launcher.Tests.Tasks
             JObject source = null,
             int level = 7,
             double lastUpdate = 1000,
-            int stoneCount = 100,
+            long stoneCount = 100,
             JArray mods = null,
             string operation = "enhance")
         {

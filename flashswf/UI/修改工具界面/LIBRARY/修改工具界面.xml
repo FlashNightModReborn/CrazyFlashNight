@@ -687,11 +687,30 @@ onClipEvent (unload) {
                     <script><![CDATA[on (release) {
 	if (_parent.获得物品名 != "")
 	{
-		if (_parent.获得物品个数 < 1)
+		// 数量合同：取精确整数，且 现有数量+新增量 不超过 2^53-1（材料写入上限），
+		// 否则写入会被材料集合静默拒绝、与拾取显示数量脱节。
+		var temp物品个数 = Math.floor(Number(_parent.获得物品个数));
+		if (isNaN(temp物品个数) || temp物品个数 < 1)
 		{
-			_parent.获得物品个数 = 1;
+			temp物品个数 = 1;
 		}
-		var temp物品个数 = isNaN(_parent.获得物品个数) ? 1 : _parent.获得物品个数;
+		var 现有数量 = 0;
+		if (_root.收集品栏 != undefined && _root.收集品栏.材料 != undefined
+			&& _root.收集品栏.材料.getValue != undefined)
+		{
+			现有数量 = _root.收集品栏.材料.getValue(_parent.获得物品名);
+		}
+		var 剩余可写 = 9007199254740991 - 现有数量;
+		if (temp物品个数 > 剩余可写)
+		{
+			temp物品个数 = 剩余可写;
+		}
+		if (temp物品个数 < 1)
+		{
+			_root.注释(150,"该材料数量已达上限，无法继续生产");
+			return;
+		}
+		_parent.获得物品个数 = temp物品个数;
 		_root.创建可拾取物(_parent.获得物品名,temp物品个数,_root.gameworld[_root.控制目标]._x,_root.gameworld[_root.控制目标]._y,true);
 	}
 }
@@ -1786,7 +1805,7 @@ onClipEvent (load) {
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="思源宋体Heavy*" fillColor="#FFCC00"/>
+                        <DOMTextAttrs alignment="center" aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="SourceHanSerifSC-Heavy" fillColor="#FFCC00"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>
@@ -1911,7 +1930,7 @@ onClipEvent (mouseUp) {
                     <DOMTextRun>
                       <characters></characters>
                       <textAttrs>
-                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="SourceHanSerifCN-Heavy" fillColor="#FFCC00"/>
+                        <DOMTextAttrs aliasText="false" autoKern="false" rotation="true" bitmapSize="240" face="SourceHanSerifSC-Heavy" fillColor="#FFCC00"/>
                       </textAttrs>
                     </DOMTextRun>
                   </textRuns>

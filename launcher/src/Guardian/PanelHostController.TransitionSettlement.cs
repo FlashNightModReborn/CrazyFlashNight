@@ -12,7 +12,9 @@ namespace CF7Launcher.Guardian
         internal bool UsesTransitionSettlement => _transitionSettlementSelected;
         internal SceneTransitionController SceneTransition => _sceneSettlement;
         private CompositionHelpSurface SelectedCompositionSurface => _transitionSettlementSelected
-            ? _sceneSettlement.SettlementSurface : _compositionHelpSelected ? _compositionHelp : null;
+            ? _sceneSettlement.SettlementSurface
+            : _compositionHelpSelected ? _compositionHelp
+            : _compositionIntelligenceSelected ? _compositionIntelligence : null;
 
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {

@@ -230,6 +230,16 @@ async function main() {
     const invalidPerformance = fixture(temp, "invalid-performance");
     invalidPerformance.plan.groups[0].performance = { preset: "performance", mode: "fixed", maxRenderHeight: 541 };
     assert.throws(() => prepareExperiment(invalidPerformance.plan, invalidPerformance.dependencies), /performance policy value/);
+    const projected = fixture(temp, "v2-projection-frozen");
+    projected.plan.groups[0].projection = {
+      presentationPolicy: "full", projectionConsumers: { playerHud: "none", ordinaryBullet: "none", ray: "none", chain: "none",
+        combatDecoration: "none", sceneLighting: "full", equipmentLighting: "full" },
+      controlFrameFormat: "f-visual-v1", visualSeedRevision: "visual-event-v1",
+      simulationRngConsumptionRevision: "legacy-global-consume-v1", sessionVisualSeed: 104729 };
+    const projectedFrozen = prepareExperiment(projected.plan, projected.dependencies);
+    assert.strictEqual(projectedFrozen.groups[0].jobs[0].launch.schema, "arena-worker.launch.v2");
+    assert.deepStrictEqual(projectedFrozen.groups[0].jobs[0].launch.projectionConsumers, projected.plan.groups[0].projection.projectionConsumers);
+    assert.strictEqual(projectedFrozen.groups[1].jobs[0].launch.schema, "arena-worker.launch.v1");
 
     const beforeGroup = fixture(temp, "source-changed-before-group");
     const beforeFrozen = prepareExperiment(beforeGroup.plan, beforeGroup.dependencies);

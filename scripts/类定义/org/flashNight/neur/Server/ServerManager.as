@@ -133,6 +133,8 @@ class org.flashNight.neur.Server.ServerManager {
                 _root.cf7ArenaWorkerId = readWorkerLaunchField("cf7ArenaWorkerId");
             if (_root.cf7ArenaSessionEpoch == undefined)
                 _root.cf7ArenaSessionEpoch = readWorkerLaunchField("cf7ArenaSessionEpoch");
+            if (_root.cf7WorkerProjectionVersion == undefined)
+                _root.cf7WorkerProjectionVersion = readWorkerLaunchField("cf7WorkerProjectionVersion");
         }
         _workerRetired = false;
         _workerOrigin = String(_root._url || "").split("?")[0];
@@ -710,8 +712,16 @@ class org.flashNight.neur.Server.ServerManager {
                 org.flashNight.arki.weather.WeatherSystem.getInstance(), true);
             return;
         }
+        if (response.task == "visual_wire_offer" || response.task == "visual_wire_commit") {
+            org.flashNight.arki.render.VisualWireService.handle(response);
+            return;
+        }
         if (response.task == "bullet_visual_caps") {
             org.flashNight.arki.render.BulletVisualProbe.configure(response);
+            return;
+        }
+        if (response.task == "worker_projection_offer" || response.task == "worker_projection_commit") {
+            org.flashNight.arki.render.WorkerProjectionPolicy.handle(response);
             return;
         }
         if (response.task == "ray_visual_caps") {
@@ -835,6 +845,8 @@ class org.flashNight.neur.Server.ServerManager {
         isSocketConnected = false;
         org.flashNight.arki.component.Effect.HitNumberBatchProcessor.setHostEnabled(false);
         org.flashNight.arki.render.WeatherParticleRenderer.setNativeEnabled(false);
+        org.flashNight.arki.render.VisualWireService.retire();
+        org.flashNight.arki.render.WorkerProjectionPolicy.retired();
         org.flashNight.arki.render.BulletVisualProbe.disconnect();
         org.flashNight.arki.render.RayVisualBridge.disconnect();
         org.flashNight.arki.render.ChainVisualBridge.disconnect();

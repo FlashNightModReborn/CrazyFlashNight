@@ -1,0 +1,3 @@
+﻿trace("FocusedTestRunId egg-select Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.EggSelectPanelServiceTest.runAllTests();
+trace("FocusedTestRunId egg-select Complete: __FOCUSED_RUN_ID__");

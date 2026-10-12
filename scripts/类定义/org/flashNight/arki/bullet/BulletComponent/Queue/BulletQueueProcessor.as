@@ -578,7 +578,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var finalResult:CollisionResult = ctx.result;
-        RayVisualBridge.noteTarget(bullet, hitTarget); // 仅视觉拓扑，先于可能卸载目标的命中事件。
+        if (ctx.projectRay) RayVisualBridge.noteTarget(bullet, hitTarget); // 仅视觉拓扑，先于可能卸载目标的命中事件。
 
         // 更新复用命中几何（射线 caller 责任：成形 collisionResult 后透传给 settleHit）
         finalResult.overlapCenter.x = hitX;
@@ -904,6 +904,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         // 遍历所有待处理射线子弹
         for (var i:Number = 0; i < count; i++) {
             var bullet:Object = rayList[i];
+            var projectRay:Boolean = !org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray");
             var shooter:MovieClip = gameWorld[bullet.发射者名];
             if (shooter == null) {
                 bullet.removeMovieClip();
@@ -971,6 +972,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // 初始化命中上下文（每发子弹不变的参数打包，settleRayHit 13→6 参数）
             var ctx:Object = _rayHitCtx;
             ctx.bullet = bullet;
+            ctx.projectRay = projectRay;
             ctx.shooter = shooter;
             ctx.result = finalResult;
             ctx.flags = flags;
@@ -1167,7 +1169,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     var pnFalloff:Number = config.damageFalloff;
                     var pnDmgMult:Number = 1.0;
-                    var pnHitPoints:Array = [];
+                    var pnHitPoints:Array = projectRay ? [] : null;
+                    var pnHitCount:Number = 0, pnLastHitX:Number = 0, pnLastHitY:Number = 0;
                     var pnChainRadius:Number = config.chainRadius;
                     var pnChainRadiusSq:Number = pnChainRadius * pnChainRadius;
                     var pnChainIdx:Number = 0; // chain 段全局编号
@@ -1189,7 +1192,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         if (!pnLegacyHookDone && ctx.actualHit) {
                             pnLegacyHookDone = true;
                         }
-                        pnHitPoints.push({x: nodeHit.hitX, y: nodeHit.hitY});
+                        pnHitCount++; pnLastHitX = nodeHit.hitX; pnLastHitY = nodeHit.hitY;
+                        if (projectRay) pnHitPoints.push({x: nodeHit.hitX, y: nodeHit.hitY});
                         pnDmgMult *= pnFalloff;
 
                         // ── chain 子阶段：从当前穿透节点开始连锁弹跳 ──
@@ -1243,16 +1247,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                     pnLegacyHookDone = true;
                                 }
 
-                                var ccMeta:Object = {
-                                    segmentKind: "chain",
-                                    hitIndex: pnChainIdx,
-                                    intensity: ccDmgMult,
-                                    isHit: true,
-                                    parentEndX: ccPrevX,
-                                    parentEndY: ccPrevY
-                                };
-                                RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
-                                    ccBestX, ccBestY, config, ccMeta);
+                                if (projectRay) {
+                                    var ccMeta:Object = {
+                                        segmentKind: "chain",
+                                        hitIndex: pnChainIdx,
+                                        intensity: ccDmgMult,
+                                        isHit: true,
+                                        parentEndX: ccPrevX,
+                                        parentEndY: ccPrevY
+                                    };
+                                    RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
+                                        ccBestX, ccBestY, config, ccMeta);
+                                }
                                 pnChainIdx++;
 
                                 ccPrevX = ccBestX;
@@ -1332,16 +1338,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                     pnLegacyHookDone = true;
                                 }
 
-                                var cfMeta:Object = {
-                                    segmentKind: "fork",
-                                    hitIndex: pnForkIdx,
-                                    intensity: pnDmgMult,
-                                    isHit: true,
-                                    parentEndX: nodeHit.hitX,
-                                    parentEndY: nodeHit.hitY
-                                };
-                                RayVfxManager.spawnForBullet(bullet, nodeHit.hitX, nodeHit.hitY,
-                                    cfh.centerX, cfh.centerY, config, cfMeta);
+                                if (projectRay) {
+                                    var cfMeta:Object = {
+                                        segmentKind: "fork",
+                                        hitIndex: pnForkIdx,
+                                        intensity: pnDmgMult,
+                                        isHit: true,
+                                        parentEndX: nodeHit.hitX,
+                                        parentEndY: nodeHit.hitY
+                                    };
+                                    RayVfxManager.spawnForBullet(bullet, nodeHit.hitX, nodeHit.hitY,
+                                        cfh.centerX, cfh.centerY, config, cfMeta);
+                                }
                                 pnForkIdx++;
 
                                 if (budget <= 0) break;
@@ -1357,21 +1365,22 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
                     // 预算耗尽时射线截止到最后一个穿透命中点
-                    if (budget <= 0 && pnHitPoints.length > 0) {
-                        var lastHP:Object = pnHitPoints[pnHitPoints.length - 1];
-                        rayEndX = lastHP.x;
-                        rayEndY = lastHP.y;
+                    if (budget <= 0 && pnHitCount > 0) {
+                        rayEndX = pnLastHitX;
+                        rayEndY = pnLastHitY;
                     }
 
-                    var pnPierceMeta:Object = {
-                        segmentKind: "pierce",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: pnHitPoints.length > 0,
-                        hitPoints: pnHitPoints.length > 0 ? pnHitPoints : null
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
-                        rayEndX, rayEndY, config, pnPierceMeta);
+                    if (projectRay) {
+                        var pnPierceMeta:Object = {
+                            segmentKind: "pierce",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: pnHitPoints.length > 0,
+                            hitPoints: pnHitPoints.length > 0 ? pnHitPoints : null
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
+                            rayEndX, rayEndY, config, pnPierceMeta);
+                    }
 
                     // 射线到达全长时播放地图命中效果
                     if (budget > 0) {
@@ -1387,15 +1396,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
-                    var pnMissMeta:Object = {
-                        segmentKind: "pierce",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: false,
-                        hitPoints: null
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
-                        rayEndX, rayEndY, config, pnMissMeta);
+                    if (projectRay) {
+                        var pnMissMeta:Object = {
+                            segmentKind: "pierce",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: false,
+                            hitPoints: null
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
+                            rayEndX, rayEndY, config, pnMissMeta);
+                    }
                 }
 
             } else {
@@ -1446,14 +1457,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         comboNearestHitX, comboNearestHitY, 1, comboNearestTEntry, true);
                     if (ctx.actualHit) comboLegacyHookDone = true;
 
-                    var comboMainMeta:Object = {
-                        segmentKind: "main",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: true
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
-                        comboNearestHitX, comboNearestHitY, config, comboMainMeta);
+                    if (projectRay) {
+                        var comboMainMeta:Object = {
+                            segmentKind: "main",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: true
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
+                            comboNearestHitX, comboNearestHitY, config, comboMainMeta);
+                    }
 
                     // ══════ chain 连锁（从 hit₁ 开始弹跳） ══════
                     if ((comboMask & MASK_C) != 0 && budget > 0) {
@@ -1509,16 +1522,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 comboLegacyHookDone = true;
                             }
 
-                            var ccMeta:Object = {
-                                segmentKind: "chain",
-                                hitIndex: cci + 1,
-                                intensity: ccDmgMult,
-                                isHit: true,
-                                parentEndX: ccPrevX,
-                                parentEndY: ccPrevY
-                            };
-                            RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
-                                ccBestX, ccBestY, config, ccMeta);
+                            if (projectRay) {
+                                var ccMeta:Object = {
+                                    segmentKind: "chain",
+                                    hitIndex: cci + 1,
+                                    intensity: ccDmgMult,
+                                    isHit: true,
+                                    parentEndX: ccPrevX,
+                                    parentEndY: ccPrevY
+                                };
+                                RayVfxManager.spawnForBullet(bullet, ccPrevX, ccPrevY,
+                                    ccBestX, ccBestY, config, ccMeta);
+                            }
 
                             ccPrevX = ccBestX;
                             ccPrevY = ccBestY;
@@ -1598,16 +1613,18 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 comboLegacyHookDone = true;
                             }
 
-                            var cfMeta:Object = {
-                                segmentKind: "fork",
-                                hitIndex: cfk,
-                                intensity: cfFalloff,
-                                isHit: true,
-                                parentEndX: comboNearestHitX,
-                                parentEndY: comboNearestHitY
-                            };
-                            RayVfxManager.spawnForBullet(bullet, comboNearestHitX, comboNearestHitY,
-                                cfh.centerX, cfh.centerY, config, cfMeta);
+                            if (projectRay) {
+                                var cfMeta:Object = {
+                                    segmentKind: "fork",
+                                    hitIndex: cfk,
+                                    intensity: cfFalloff,
+                                    isHit: true,
+                                    parentEndX: comboNearestHitX,
+                                    parentEndY: comboNearestHitY
+                                };
+                                RayVfxManager.spawnForBullet(bullet, comboNearestHitX, comboNearestHitY,
+                                    cfh.centerX, cfh.centerY, config, cfMeta);
+                            }
 
                             if (budget <= 0) break;
                         }
@@ -1622,14 +1639,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     var rayEndY:Number = rayOriginY + Math.sin(rayAngle) * rayLength;
 
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
-                    var comboMissMeta:Object = {
-                        segmentKind: "main",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: false
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
-                        rayEndX, rayEndY, config, comboMissMeta);
+                    if (projectRay) {
+                        var comboMissMeta:Object = {
+                            segmentKind: "main",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: false
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY,
+                            rayEndX, rayEndY, config, comboMissMeta);
+                    }
                 }
             } // end per-phase
 
@@ -1778,19 +1797,24 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     }
 
                     // 构建 SegmentMeta，包含所有命中点信息（用于 WaveRenderer 的命中点波纹）
-                    var pierceHitPoints:Array = [];
-                    for (var hpi:Number = 0; hpi < pLen; hpi++) {
-                        pierceHitPoints.push({x: pierceHits[hpi].hitX, y: pierceHits[hpi].hitY});
+                    var pierceHitPoints:Array = null;
+                    if (projectRay) {
+                        pierceHitPoints = [];
+                        for (var hpi:Number = 0; hpi < pLen; hpi++) {
+                            pierceHitPoints.push({x: pierceHits[hpi].hitX, y: pierceHits[hpi].hitY});
+                        }
                     }
-                    var pierceMeta:Object = {
-                        segmentKind: "pierce",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: true,
-                        hitPoints: pierceHitPoints
-                    };
+                    if (projectRay) {
+                        var pierceMeta:Object = {
+                            segmentKind: "pierce",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: true,
+                            hitPoints: pierceHitPoints
+                        };
 
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, pierceMeta);
+                    }
 
                 } else {
                     // 穿透射线未命中：电弧打到最远处
@@ -1802,14 +1826,16 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
 
                     // 未命中的 pierce 射线 meta
-                    var missedPierceMeta:Object = {
-                        segmentKind: "pierce",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: false,
-                        hitPoints: null
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
+                    if (projectRay) {
+                        var missedPierceMeta:Object = {
+                            segmentKind: "pierce",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: false,
+                            hitPoints: null
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missedPierceMeta);
+                    }
                 }
 
             // ================================================================
@@ -1865,13 +1891,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         rayNearestHitX, rayNearestHitY, lockonDmgMult, rayNearestTEntry, true);
                     if (ctx.actualHit) singleLegacyHookDone = true;
                     // 构建主命中 SegmentMeta
-                    var mainMeta:Object = {
-                        segmentKind: "main",
-                        hitIndex: 0,
-                        intensity: lockonDmgMult,
-                        isHit: true
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
+                    if (projectRay) {
+                        var mainMeta:Object = {
+                            segmentKind: "main",
+                            hitIndex: 0,
+                            intensity: lockonDmgMult,
+                            isHit: true
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayNearestHitX, rayNearestHitY, config, mainMeta);
+                    }
 
                     if (debugMode) {
                         unitArea = hitTarget.aabbCollider;
@@ -1957,15 +1985,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 singleLegacyHookDone = true;
                             }
                             // 构建 chain 弹跳 SegmentMeta (hitIndex 从 1 开始，0 是主命中)
-                            var chainMeta:Object = {
-                                segmentKind: "chain",
-                                hitIndex: ci + 1,
-                                intensity: chainDmgMult,
-                                isHit: true,
-                                parentEndX: prevChainX,
-                                parentEndY: prevChainY
-                            };
-                            RayVfxManager.spawnForBullet(bullet, prevChainX, prevChainY, chainBestX, chainBestY, config, chainMeta);
+                            if (projectRay) {
+                                var chainMeta:Object = {
+                                    segmentKind: "chain",
+                                    hitIndex: ci + 1,
+                                    intensity: chainDmgMult,
+                                    isHit: true,
+                                    parentEndX: prevChainX,
+                                    parentEndY: prevChainY
+                                };
+                                RayVfxManager.spawnForBullet(bullet, prevChainX, prevChainY, chainBestX, chainBestY, config, chainMeta);
+                            }
 
                             // 更新链式起点（含 Z 轴传递）
                             prevChainX = chainBestX;
@@ -2065,15 +2095,17 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 singleLegacyHookDone = true;
                             }
                             // 折射电弧：从主命中点定向射向折射目标
-                            var forkMeta:Object = {
-                                segmentKind: "fork",
-                                hitIndex: fk,
-                                intensity: forkFalloff,
-                                isHit: true,
-                                parentEndX: rayNearestHitX,
-                                parentEndY: rayNearestHitY
-                            };
-                            RayVfxManager.spawnForBullet(bullet, rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config, forkMeta);
+                            if (projectRay) {
+                                var forkMeta:Object = {
+                                    segmentKind: "fork",
+                                    hitIndex: fk,
+                                    intensity: forkFalloff,
+                                    isHit: true,
+                                    parentEndX: rayNearestHitX,
+                                    parentEndY: rayNearestHitY
+                                };
+                                RayVfxManager.spawnForBullet(bullet, rayNearestHitX, rayNearestHitY, fh.centerX, fh.centerY, config, forkMeta);
+                            }
                         }
                     }
                     // single 模式无额外处理
@@ -2088,13 +2120,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
                     // 未命中时无 HitUpdater 回调，直接播放击中地图效果
                     FX.Effect(bullet.击中地图效果, rayEndX, rayEndY, shooter._xscale, undefined, true);
-                    var missMeta:Object = {
-                        segmentKind: "main",
-                        hitIndex: 0,
-                        intensity: 1.0,
-                        isHit: false
-                    };
-                    RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missMeta);
+                    if (projectRay) {
+                        var missMeta:Object = {
+                            segmentKind: "main",
+                            hitIndex: 0,
+                            intensity: 1.0,
+                            isHit: false
+                        };
+                        RayVfxManager.spawnForBullet(bullet, rayOriginX, rayOriginY, rayEndX, rayEndY, config, missMeta);
+                    }
                 }
             }
 
@@ -2119,6 +2153,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * - 视觉 currentLength 可按 grow/retract 追随 targetLength；伤害长度始终 clamp 到 targetLength。
      */
     private static function processContinuousFlame(ctx:Object):Boolean {
+        var projectRay:Boolean = ctx.projectRay;
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
@@ -2166,8 +2201,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._flameBaseDamageType = bullet.伤害类型;
             bullet._flameBaseMagicType = bullet.魔法伤害属性;
             bullet._flameShotSeed = Math.random() * 6.283185307179586;
-            bullet._flameVfxKey = RayVisualBridge.flameKey(bullet);
-            bullet._flameVfxSerial = ++_flameVfxSerialCounter;
+            if (projectRay) {
+                bullet._flameVfxKey = RayVisualBridge.flameKey(bullet);
+                bullet._flameVfxSerial = ++_flameVfxSerialCounter;
+            }
             bullet._flameInited = true;
         }
 
@@ -2247,8 +2284,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var h:Object = hits[i];
             if (h.tEntry > damageLength + 0.001) break;
 
-            if (hitPoints == null) hitPoints = [];
-            hitPoints[hitPoints.length] = {x: h.hitX, y: h.hitY};
+            if (projectRay) {
+                if (hitPoints == null) hitPoints = [];
+                hitPoints[hitPoints.length] = {x: h.hitX, y: h.hitY};
+            }
 
             var lastTick = bullet._flameHitFrameByTarget[h.target._name];
             var targetHitCount:Number = Number(bullet._flameHitCountByTarget[h.target._name]);
@@ -2271,8 +2310,10 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     // 几何相交仍消耗喷火脉冲预算，但 MISS 不得进入 renderer 的
                     // 单位命中纹理点集。
                     if (flameActualHit || damageResult === DamageResult.NULL) {
-                        if (damageHitPoints == null) damageHitPoints = [];
-                        damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
+                        if (projectRay) {
+                            if (damageHitPoints == null) damageHitPoints = [];
+                            damageHitPoints[damageHitPoints.length] = {x: h.hitX, y: h.hitY};
+                        }
                     }
                     bullet._flameHitFrameByTarget[h.target._name] = age;
                     bullet._flameHitCountByTarget[h.target._name] = targetHitCount + 1;
@@ -2288,27 +2329,29 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet.魔法伤害属性 = baseMagicType;
         }
 
-        var endX:Number = ctx.rayOriginX + flameDirX * currentLength;
-        var endY:Number = ctx.rayOriginY + flameDirY * currentLength;
-        RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
-            {
-                segmentKind: "flame",
-                hitIndex: 0,
-                intensity: 1.0,
-                isHit: hitPoints != null,
-                hitPoints: hitPoints,
-                damageHitPoints: damageHitPoints,
-                isBlocked: blocked,
-                targetLength: targetLength,
-                damageLength: damageLength,
-                pulseIndex: pulseIndex,
-                pulseCount: pulseCount,
-                isHotPulse: isHotPulse,
-                isDamagePulse: isDamagePulse,
-                shotSeed: bullet._flameShotSeed,
-                flameVfxKey: bullet._flameVfxKey,
-                flameVfxSerial: bullet._flameVfxSerial
-            });
+        if (projectRay) {
+            var endX:Number = ctx.rayOriginX + flameDirX * currentLength;
+            var endY:Number = ctx.rayOriginY + flameDirY * currentLength;
+            RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, endX, endY, config,
+                {
+                    segmentKind: "flame",
+                    hitIndex: 0,
+                    intensity: 1.0,
+                    isHit: hitPoints != null,
+                    hitPoints: hitPoints,
+                    damageHitPoints: damageHitPoints,
+                    isBlocked: blocked,
+                    targetLength: targetLength,
+                    damageLength: damageLength,
+                    pulseIndex: pulseIndex,
+                    pulseCount: pulseCount,
+                    isHotPulse: isHotPulse,
+                    isDamagePulse: isDamagePulse,
+                    shotSeed: bullet._flameShotSeed,
+                    flameVfxKey: bullet._flameVfxKey,
+                    flameVfxSerial: bullet._flameVfxSerial
+                });
+        }
 
         bullet._flameAge = age + 1;
         return bullet._flameAge < lifetime;
@@ -2401,6 +2444,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * @return true=本帧后仍存活（caller 保留），false=已结束（caller removeMovieClip）
      */
     private static function processPersistentRay(ctx:Object):Boolean {
+        var projectRay:Boolean = ctx.projectRay;
         var bullet:Object = ctx.bullet;
         var shooter:MovieClip = ctx.shooter;
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
@@ -2427,12 +2471,11 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             bullet._rayCursorX = ctx.rayOriginX;
             bullet._rayCursorY = ctx.rayOriginY;
             bullet._rayCursorZ = bullet.Z轴坐标;
-            bullet._rayPrevVfxX = ctx.rayOriginX;
-            bullet._rayPrevVfxY = ctx.rayOriginY;
+            if (projectRay) { bullet._rayPrevVfxX = ctx.rayOriginX; bullet._rayPrevVfxY = ctx.rayOriginY; }
             var initAng:Number = bullet._rotation * (Math.PI / 180);
             bullet._rayEndX = ctx.rayOriginX + Math.cos(initAng) * rayLength;
             bullet._rayEndY = ctx.rayOriginY + Math.sin(initAng) * rayLength;
-            bullet._rayHitPoints = (rayMode == "pierce") ? [] : null;
+            bullet._rayHitPoints = (projectRay && rayMode == "pierce") ? [] : null;
             bullet.附加层伤害计算 = 0;
             // combo per-node 迭代游标（组件化为 RayComboCursor 类；首帧 new，跨帧 resume）
             bullet._rayCombo = new RayComboCursor();
@@ -2452,7 +2495,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     bullet._rayEndX = ctx.rayOriginX + (ldx / lockonDist) * rayLength;
                     bullet._rayEndY = ctx.rayOriginY + (ldy / lockonDist) * rayLength;
                     // 首发直伤 = 锁定目标；几何游标与 actual-only 旧钩子资格分开推进。
-                    RayVisualBridge.noteTarget(bullet, lockonTarget); // 纯显示身份快照。
+                    if (projectRay) RayVisualBridge.noteTarget(bullet, lockonTarget); // 纯显示身份快照。
                     injectHit(
                         bullet, shooter, lockonTarget, lhx, lhy, lockonDmgMult,
                         !bullet._rayFirstActualHookDone);
@@ -2460,7 +2503,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                         bullet._rayFirstActualHookDone = true;
                     }
                     spawnPersistentRaySeg(ctx, bullet, lhx, lhy, lockonDmgMult, false);
-                    if (rayMode == "pierce") {
+                    if (projectRay && rayMode == "pierce") {
                         bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: lhx, y: lhy};
                     }
                     bullet._rayFirstHitDone = true;
@@ -2505,15 +2548,15 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
 
             // combo：dmgMult 由迭代器按 phase 算好放在 next.dmgMult；pierce/chain：统一累乘 _rayDmgMult。
             var dm:Number = (isCombo ? next.dmgMult : bullet._rayDmgMult) * lockonDmgMult;
-            RayVisualBridge.noteTarget(bullet, next.target); // 不改变迭代器、预算或结算。
+            if (projectRay) RayVisualBridge.noteTarget(bullet, next.target); // 不改变迭代器、预算或结算。
             injectHit(
                 bullet, shooter, next.target, next.hitX, next.hitY, dm,
                 !bullet._rayFirstActualHookDone);
             if (!bullet._rayFirstActualHookDone && _injectCtx.actualHit) {
                 bullet._rayFirstActualHookDone = true;
             }
-            spawnPersistentRaySeg(ctx, bullet, next.hitX, next.hitY, dm, bullet._rayFirstHitDone);
-            if (rayMode == "pierce") {
+            if (projectRay) spawnPersistentRaySeg(ctx, bullet, next.hitX, next.hitY, dm, bullet._rayFirstHitDone);
+            if (projectRay && rayMode == "pierce") {
                 bullet._rayHitPoints[bullet._rayHitPoints.length] = {x: next.hitX, y: next.hitY};
             }
 
@@ -2536,7 +2579,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             var ex:Number = bullet._rayEndX;
             var ey:Number = bullet._rayEndY;
             ctx.FX.Effect(bullet.击中地图效果, ex, ey, shooter._xscale, undefined, true);
-            RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+            if (projectRay) RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
                 {segmentKind: "main", hitIndex: 0, intensity: 1.0, isHit: false});
         } else if (hits == 0 && rayMode == "pierce" && bullet._rayBudget > 0) {
             finishPersistentPierceTail(ctx, bullet);
@@ -2555,7 +2598,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var ex:Number = bullet._rayEndX;
         var ey:Number = bullet._rayEndY;
         ctx.FX.Effect(bullet.击中地图效果, ex, ey, ctx.shooter._xscale, undefined, true);
-        RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
+        if (ctx.projectRay) RayVfxManager.spawnForBullet(bullet, ctx.rayOriginX, ctx.rayOriginY, ex, ey, config,
             {segmentKind: "pierce", hitIndex: 0, intensity: 1.0, isHit: true, hitPoints: bullet._rayHitPoints});
     }
 
@@ -2718,6 +2761,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
      * isBounce=false → "main" 段（首命中/直线骨干）；true → "chain" 段（弹跳/续段）。
      */
     private static function spawnPersistentRaySeg(ctx:Object, bullet:Object, hitX:Number, hitY:Number, intensity:Number, isBounce:Boolean):Void {
+        if (!ctx.projectRay) return;
         var config:TeslaRayConfig = TeslaRayConfig(ctx.config);
         RayVfxManager.spawnForBullet(bullet, bullet._rayPrevVfxX, bullet._rayPrevVfxY, hitX, hitY, config,
             {segmentKind: (isBounce ? "chain" : "main"), hitIndex: 0, intensity: intensity, isHit: true});
