@@ -148,6 +148,10 @@
   transform-origin: 50% 45%;
   animation: var(--wb-tablet-drone-wiggle);
 }
+/* 帧率封顶时（核显档）：无限摆动改步进，重绘率不再跟随显示器刷新率 */
+.perf-frame-capped .tablet-ambient-drone-wiggle {
+  animation: var(--wb-tablet-drone-wiggle-capped);
+}
 @keyframes tablet-drone-wiggle {
   from { transform: rotate(-1.1deg) scaleY(0.985); }
   to { transform: rotate(1.1deg) scaleY(1.015); }

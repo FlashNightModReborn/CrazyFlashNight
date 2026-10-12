@@ -1238,4 +1238,7 @@
     --wb-tablet-content-enter: tablet-in .3s ease-out both;
     --wb-tablet-row-transition: background 0.1s ease;
     --wb-tablet-drone-wiggle: tablet-drone-wiggle 1.7s ease-in-out infinite alternate;
+    /* 帧率封顶模式（.perf-frame-capped）下常驻无限动画的步进档：
+       合成器只在步进边界重绘，压 iGPU 上的持续重绘率。 */
+    --wb-tablet-drone-wiggle-capped: tablet-drone-wiggle 1.7s steps(12, end) infinite alternate;
 }
