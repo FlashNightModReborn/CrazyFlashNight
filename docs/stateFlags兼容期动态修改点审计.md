@@ -298,9 +298,10 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
 - [x] HitEventComponent.as:30 改为位运算（`#include "../macros/STATE_REVERSE_KNOCKBACK.as"` + `(bullet.stateFlags & STATE_REVERSE_KNOCKBACK) != 0`）
 - [x] 战斗系统_fs_联弹管理.as 改为位运算（两处：联弹消失 `clip` 读 + 对象联弹消失 `bullet` 读，均 `#include` 宏）
 - [x] 所有子弹XML中的 `击中地图` 读取改为位运算（原版素材库-子弹 10 个 + 雾人整合特效 3 个，`(stateFlags & 32) != 0`；次级穿刺子弹已被重写为 `击中地图时触发函数` 回调，无裸读）
-- [ ] 所有技能脚本中的 `不硬直` 设置确认被框架正确处理
+- [x] 2026-10-12 点查补迁 5 处漏扫 XML（瓦巴杰克：伸手及月/新电球/电浆球 写 `stateFlags |= 32`，毒穿刺子弹 读；原体融合生物：高温自锐针弹 读）
+- [x] 所有技能脚本中的 `不硬直` 设置确认被框架正确处理（2026-10-12 全仓扫描：源码侧 585 处命中 / 60 文件（另本文档 15 处、`tmp/asloader_dump` FFDec 反编译导出 6 处非源）。形态分布：`子弹属性.不硬直 = true` ×491、`子弹参数.不硬直 = true` ×39、`子弹.不硬直 = true` ×8、参数传递/工厂默认值/`BulletInitializer` 烧录/宏与注释为其余；逐类抽查确认全部位于子弹创建期属性填充块（紧邻 `_root.子弹区域shoot传递` 之前）或 shoot 参数传递链，无任何运行期改写点；框架经 `BulletInitializer` 初始化烧录 + 兼容期访问器同步正确处理。`installStateFlagsAccessors` 本轮不移除）
 
-### 2026-10-10 补充迁移（原审计清单外，同一全仓扫描发现）
+### 2026-10-10 补充迁移（原审计清单外，2026-10-10 全仓扫描发现；该轮扫描漏扫 5 处 XML，见下节 2026-10-12 点查补登）
 
 | 位置 | 类型 | 迁移后 |
 |------|------|--------|
@@ -315,10 +316,22 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
 | 键盘镰刀.as:184（兵器跳浮空维持硬直触发） | `this.击中地图` 读 | `#include` + `(this.stateFlags & STATE_HIT_MAP) != 0` |
 | PierceBulletLifecycleTest.as:162 | 测试夹具 `target.击中地图 = true` | `target.stateFlags |= STATE_HIT_MAP` |
 
+### 2026-10-12 补充迁移（2026-10-10 扫描漏扫，本轮点查发现）
+
+| 位置 | 类型 | 迁移后 |
+|------|------|--------|
+| 瓦巴杰克/伸手及月.xml:53 | `this.击中地图 = true` 写 | `this.stateFlags |= 32;  // STATE_HIT_MAP` |
+| 瓦巴杰克/新电球.xml:90 | 同上写 | 同上 |
+| 瓦巴杰克/电浆球.xml:47 | 同上写 | 同上 |
+| 瓦巴杰克/毒穿刺子弹.xml:29 | `if(击中地图)` 读 | `if((stateFlags & 32) != 0){ // STATE_HIT_MAP` |
+| 原体融合生物/高温自锐针弹.xml:29 | 同上读 | 同上 |
+
+以上 5 处与 2026-10-10 迁移的震血/穿刺子弹帧脚本模式逐字一致（this 绑定为符号自身时间轴，CDATA 帧脚本）。补迁后全仓已无裸 `击中地图` 运行期读写（剩余命中仅 `击中地图时触发函数` 回调与 `子弹属性.击中地图效果` 字符串，非 stateFlags 位）。
+
 ### 验证状态
 
 - .as 改动（4 文件，含 BOM 保持）需 `scripts/asLoader` `-Target publish` 编译证据。
-- XFL 帧脚本改动（19 文件）需 瓦巴杰克.xfl / 原版素材库-子弹.xfl / 雾人整合特效.xfl publish + 对应 SWF 刷新 + ffdec 导出脚本核对标志串。
+- XFL 帧脚本改动（2026-10-10 共 19 文件 + 2026-10-12 补迁 5 文件）需 瓦巴杰克.xfl / 原版素材库-子弹.xfl / 雾人整合特效.xfl / 原体融合生物.xfl publish + 对应 SWF 刷新 + ffdec 导出脚本核对标志串。
 - 语义不变式：访问器 setter/getter 即同名位运算，迁移前后 `stateFlags` 读写等价；初始化期写入（核弹爆炸帧0、上帝之杖帧0、各 `不硬直` 初始化）仍走访问器，属兼容期设计。
 
 ---

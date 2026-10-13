@@ -88,6 +88,8 @@ namespace CF7Launcher.Tasks
                     MapRuleEvaluator.Need(payload["savePath"] == null || payload["savePath"].Type == JTokenType.Null || payload["savePath"].Type == JTokenType.String, "存档标识不正确。");
                     // 非槽位键形态＝该存档不可能有覆盖层（绑定与写盘两侧只接受同一形态），按无增量重载，不阻断任务热更新。
                     _ = CF7Launcher.Save.SaveSlotKey.TryValidateExisting(payload.Value<string>("savePath") ?? "", out string slotKey);
+                    // 这条路径已经算出了当前槽位：同批记进进程级上下文，NPC 日常对话覆盖层据此按存档定位（空值＝未绑定，清除）。
+                    CF7Launcher.RagTerminal.AgentSaveContext.Set(slotKey);
                     // 磁盘重读与校验在会话锁外完成；失败直接抛出，旧内容原样保留，不半应用。
                     MapRuntimeContent reloaded = snapshot.ReloadTasks(projectRoot, slotKey);
                     JObject sync = null;

@@ -10,7 +10,7 @@ const { resolveWorkerRuntimeIdentity } = require("./lib/arena-worker-evidence");
 const { verifyManifestIntegrity } = require("./lib/gate-f-campaign");
 const { sha256Bytes, writeImmutableJson, writeNewBytes } = require("./lib/immutable-evidence");
 const { captureGlobalProtectionSnapshot } = require("./lib/unattended-save-safety");
-const { assertNoReparse, assertTuple, normalizePerformance, readJson, resolveInside, safeId, samePath, verifyGitRoot } = require("./lib/arena-worker-client");
+const { assertNoReparse, assertTuple, normalizePerformance, normalizeProjection, readJson, resolveInside, safeId, samePath, verifyGitRoot } = require("./lib/arena-worker-client");
 const { compareProtectedSaveSnapshots, isValidSaveData } = require("./run-unattended");
 const { normalizeExperiment, runWorkerShard, workerAttemptDirectory } = require("./run-worker-shard");
 const { measurePlan } = require("./measure-worker-p0");
@@ -94,6 +94,7 @@ function prepareExperiment(plan, dependencies = {}) {
       qualityRequested: group.qualityRequested || "unknown" });
     const groupWorkers = new Set();
     const performance = normalizePerformance(group.performance);
+    const projection = normalizeProjection(group.projection);
     const jobs = group.jobs.map((job, index) => {
       const jobId = safeId(job.jobId || `${groupId}-${index + 1}`, "jobId");
       requireValue(!jobIds.has(jobId), "duplicate experiment job"); jobIds.add(jobId);
@@ -118,12 +119,13 @@ function prepareExperiment(plan, dependencies = {}) {
         saveRoot: worker.saveRoot, outputRoot: path.join(worker.projectRoot, "tmp", "arena-calibration"),
         swfOrigin: path.join(worker.projectRoot, "CRAZYFLASHER7MercenaryEmpire.swf"), slot: `cf7_agent_aw_${nonce}`, performance,
         allowFaultInjection: !!plan.faultIntent && worker.workerId === plan.faultIntent.faultWorkerId };
+      if (projection !== undefined) Object.assign(launch, { schema: "arena-worker.launch.v2" }, JSON.parse(JSON.stringify(projection)));
       return { jobId, ...identity, batchId: manifest.batchId, manifestHash: manifest.manifestHash,
         sourceManifestPath: manifestPath, manifestSha256: sha256Bytes(manifestBytes), expectedRuns, batchTimeoutMs,
         launch, launchPath: path.join(launch.stateRoot, "launch.json"),
         expectedReceiptPath: path.join(workerAttemptDirectory(launch, identity), "shard-receipt.json") };
     });
-    return { groupId, mode: group.mode, experiment, performance, jobs };
+    return { groupId, mode: group.mode, experiment, performance, projection, jobs };
   });
   requireValue(plan.comparisons === undefined || Array.isArray(plan.comparisons), "comparisons must be an array");
   for (const comparison of plan.comparisons || []) {

@@ -60,6 +60,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      * @return {Void}
      */
     public static function renderCorpse(target:MovieClip, layerIndex:Number):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return;
         //_root.发布消息(DeathEffectRenderer.isEnabled, DeathEffectRenderer.enableCulling)
 
         if (!DeathEffectRenderer.isEnabled) return;
@@ -135,6 +136,7 @@ class org.flashNight.arki.corpse.DeathEffectRenderer {
      * @param {Number} layerIndex - 渲染到的尸体图层索引
      */
     public static function renderRotatedCorpse(target:MovieClip, layerIndex:Number):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("combatDecoration")) return;
         if (!DeathEffectRenderer.isEnabled) return;
         var gameWorld:MovieClip = _root.gameworld;
         var retainOffscreenCorpse:Boolean = DeathEffectRenderer.shouldRetainOffscreenCorpse(target);

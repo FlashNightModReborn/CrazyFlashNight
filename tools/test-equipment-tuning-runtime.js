@@ -141,6 +141,102 @@ for (const patch of [{missing:2},{owned:-1},{required:3.5},{extra:true}]) {
 }
 assert.strictEqual(mux.handleResponse(shortageReply),true);
 assert.deepStrictEqual(shortageResponse.materialShortage,{itemName:'强化石',required:3,owned:2,missing:1});
+
+// 数量合同：统一上限 2^53-1（AS2 Number 与 JS 安全整数的共同精确边界）。
+const MAX_QUANTITY = 9007199254740991;
+{
+  let bigShortage = null;
+  const bigShortageCall = mux.request('preview',{operation:'enhance',targetLevel:3},value=>{ bigShortage=value; });
+  const bigShortageReply = Object.assign(tuple('preview',bigShortageCall),{success:false,
+    error:'insufficient_material',
+    materialShortage:{itemName:'强化石',required:MAX_QUANTITY,owned:MAX_QUANTITY-11,missing:11}});
+  assert.strictEqual(mux.handleResponse(bigShortageReply),true,'2^53-1 shortage accepted');
+  assert.deepStrictEqual(bigShortage.materialShortage,
+    {itemName:'强化石',required:MAX_QUANTITY,owned:MAX_QUANTITY-11,missing:11});
+
+  let overShortage = null;
+  const overShortageCall = mux.request('preview',{operation:'enhance',targetLevel:3},value=>{ overShortage=value; });
+  const overShortageReply = Object.assign(tuple('preview',overShortageCall),{success:false,
+    error:'insufficient_material',
+    materialShortage:{itemName:'强化石',required:MAX_QUANTITY+1,owned:1,missing:MAX_QUANTITY}});
+  assert.strictEqual(mux.handleResponse(overShortageReply),false,'2^53 shortage rejected');
+  assert.strictEqual(overShortage,null);
+  // 回收 pending：同一 callId 收到合法回包后解析
+  assert.strictEqual(mux.handleResponse(Object.assign(tuple('preview',overShortageCall),{success:false,
+    error:'insufficient_material',
+    materialShortage:{itemName:'强化石',required:3,owned:2,missing:1}})),true,'shortage recovery accepted');
+
+  let bigCount = null;
+  const bigCountCall = mux.request('snapshot',{source:source('lease.1')},value=>{ bigCount=value; });
+  const bigCountSnap = Object.assign(tuple('snapshot',bigCountCall),{snapshot:snapshot('lease.1',7,[],1000)});
+  bigCountSnap.snapshot.materials[0].count = MAX_QUANTITY;
+  assert.strictEqual(mux.handleResponse(bigCountSnap),true,'2^53-1 snapshot count accepted');
+  assert.strictEqual(bigCount.snapshot.materials[0].count,MAX_QUANTITY);
+
+  let overCount = null;
+  const overCountCall = mux.request('snapshot',{source:source('lease.1')},value=>{ overCount=value; });
+  const overCountSnap = Object.assign(tuple('snapshot',overCountCall),{snapshot:snapshot('lease.1',7,[],1000)});
+  overCountSnap.snapshot.materials[0].count = MAX_QUANTITY + 1;
+  assert.strictEqual(mux.handleResponse(overCountSnap),false,'2^53 snapshot count rejected');
+  assert.strictEqual(overCount,null);
+  assert.strictEqual(mux.handleResponse(Object.assign(tuple('snapshot',overCountCall),{
+    snapshot:snapshot('lease.1',7,[],1000)})),true,'snapshot recovery accepted');
+
+  let bigOwned = null;
+  const bigOwnedCall = mux.request('snapshot',{source:source('lease.1')},value=>{ bigOwned=value; });
+  const bigOwnedSnap = Object.assign(tuple('snapshot',bigOwnedCall),{snapshot:snapshot('lease.1',7,[],1000)});
+  bigOwnedSnap.snapshot.modCandidates.push(modCandidate());
+  bigOwnedSnap.snapshot.modCandidates[bigOwnedSnap.snapshot.modCandidates.length-1].owned = MAX_QUANTITY;
+  assert.strictEqual(mux.handleResponse(bigOwnedSnap),true,'2^53-1 candidate owned accepted');
+  assert.strictEqual(bigOwned.snapshot.modCandidates[bigOwned.snapshot.modCandidates.length-1].owned,MAX_QUANTITY);
+
+  let overOwned = null;
+  const overOwnedCall = mux.request('snapshot',{source:source('lease.1')},value=>{ overOwned=value; });
+  const overOwnedSnap = Object.assign(tuple('snapshot',overOwnedCall),{snapshot:snapshot('lease.1',7,[],1000)});
+  overOwnedSnap.snapshot.modCandidates.push(modCandidate());
+  overOwnedSnap.snapshot.modCandidates[overOwnedSnap.snapshot.modCandidates.length-1].owned = MAX_QUANTITY + 1;
+  assert.strictEqual(mux.handleResponse(overOwnedSnap),false,'2^53 candidate owned rejected');
+  assert.strictEqual(overOwned,null);
+  assert.strictEqual(mux.handleResponse(Object.assign(tuple('snapshot',overOwnedCall),{
+    snapshot:snapshot('lease.1',7,[],1000)})),true,'owned recovery accepted');
+
+  let bigPlan = null;
+  const bigPlanCall = mux.request('preview',{operation:'install_mod'},value=>{ bigPlan=value; });
+  const bigPlanPreview = previewResponse(bigPlanCall,'token.big.plan');
+  bigPlanPreview.materials = [{itemName:'测试插件A',displayName:'测试插件甲',icon:'测试插件图标甲',
+    before:MAX_QUANTITY-1,delta:-1,after:MAX_QUANTITY-2}];
+  assert.strictEqual(mux.handleResponse(bigPlanPreview),true,'2^53-1 material plan accepted');
+  assert.strictEqual(bigPlan.materials[0].before,MAX_QUANTITY-1);
+  assert.strictEqual(bigPlan.materials[0].after,MAX_QUANTITY-2);
+
+  let overPlan = null;
+  const overPlanCall = mux.request('preview',{operation:'install_mod'},value=>{ overPlan=value; });
+  const overPlanPreview = previewResponse(overPlanCall,'token.over.plan');
+  overPlanPreview.materials = [{itemName:'测试插件A',displayName:'测试插件甲',icon:'测试插件图标甲',
+    before:MAX_QUANTITY,delta:1,after:MAX_QUANTITY+1}];
+  assert.strictEqual(mux.handleResponse(overPlanPreview),false,'material plan after beyond 2^53-1 rejected');
+  assert.strictEqual(overPlan,null);
+  assert.strictEqual(mux.handleResponse(previewResponse(
+    overPlanCall,'token.over.plan')),true,'plan recovery accepted');
+
+  let overDelta = null;
+  const overDeltaCall = mux.request('preview',{operation:'install_mod'},value=>{ overDelta=value; });
+  const overDeltaPreview = previewResponse(overDeltaCall,'token.over.delta');
+  overDeltaPreview.materials = [{itemName:'测试插件A',displayName:'测试插件甲',icon:'测试插件图标甲',
+    before:0,delta:MAX_QUANTITY+1,after:MAX_QUANTITY+1}];
+  assert.strictEqual(mux.handleResponse(overDeltaPreview),false,'material plan delta beyond 2^53-1 rejected');
+  assert.strictEqual(overDelta,null);
+  assert.strictEqual(mux.handleResponse(previewResponse(
+    overDeltaCall,'token.over.delta')),true,'delta recovery accepted');
+
+  // 隔离/非法数量的 fail-closed 错误码作为合法失败回包透传。
+  let quarantined = null;
+  const quarantinedCall = mux.request('snapshot',{source:source('lease.1')},value=>{ quarantined=value; });
+  assert.strictEqual(mux.handleResponse(Object.assign(tuple('snapshot',quarantinedCall),{
+    success:false,error:'material_quantity_quarantined'})),true,'quarantined-quantity failure accepted');
+  assert.strictEqual(quarantined.error,'material_quantity_quarantined');
+  assert.strictEqual(mux.debugState().pendingCount,0);
+}
 const otherOperation = mux.request('preview',{operation:'install_mod'},()=>{});
 assert.strictEqual(mux.handleResponse(Object.assign({},shortageReply,{callId:otherOperation})),false);
 assert.strictEqual(mux.handleResponse(Object.assign(tuple('preview',otherOperation),{success:false,error:'insufficient_material'})),true);

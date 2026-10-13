@@ -25,88 +25,8 @@
  *   exit 1 当存在 codeSize >= --max 的函数；exit 2 当 --max 非数字（避免 NaN 比较静默放过）。
  */
 
-var fs = require("fs");
-var zlib = require("zlib");
-
-function readSwf(p) {
-  var raw = fs.readFileSync(p);
-  var sig = raw.toString("ascii", 0, 3);
-  var body;
-  if (sig === "FWS") body = raw.slice(8);
-  else if (sig === "CWS") body = zlib.inflateSync(raw.slice(8));
-  else if (sig === "ZWS") throw new Error("LZMA-compressed SWF (ZWS) 不支持");
-  else throw new Error("not a SWF (sig=" + sig + "): " + p);
-  return { sig: sig, body: body };
-}
-function tagAreaStart(body) {
-  var nbits = body[0] >> 3;
-  var rectBytes = Math.ceil((5 + nbits * 4) / 8);
-  return rectBytes + 2 + 2;
-}
-
-// 解析一段 AVM1 动作流，收集所有 DefineFunction(0x9B)/DefineFunction2(0x8E) 的 codeSize。
-// 递归进函数体（body 紧跟记录之后，长度 = codeSize）以抓嵌套函数。owner 仅用于报告归属。
-function scanActions(buf, owner, out) {
-  var off = 0;
-  while (off < buf.length) {
-    var code = buf[off]; off += 1;
-    if (code === 0) break;            // End of stream
-    if (code < 0x80) continue;        // 短动作无负载
-    if (off + 2 > buf.length) break;
-    var len = buf.readUInt16LE(off); off += 2;
-    var rec = buf.slice(off, off + len);
-    off += len;
-    var cs = -1, fname = "", type = "";
-    if (code === 0x8E) { type = "DefineFunction2"; var r = parseDF2(rec); cs = r.codeSize; fname = r.name; }
-    else if (code === 0x9B) { type = "DefineFunction"; var r2 = parseDF(rec); cs = r2.codeSize; fname = r2.name; }
-    if (cs >= 0) {
-      out.push({ owner: owner, type: type, name: fname || "(anon)", codeSize: cs });
-      var body = buf.slice(off, off + cs);   // 函数体跟在记录之后
-      off += cs;
-      scanActions(body, owner + " > " + (fname || "(anon)"), out);   // 递归嵌套函数
-    }
-  }
-}
-function readCStr(buf, off) { var s = off; while (off < buf.length && buf[off] !== 0) off++; return { str: buf.toString("utf8", s, off), next: off + 1 }; }
-function parseDF2(d) {
-  var o = 0; var nm = readCStr(d, o); o = nm.next;
-  var numParams = d.readUInt16LE(o); o += 2;
-  o += 1;                       // RegisterCount UI8
-  o += 2;                       // Flags UI16
-  for (var i = 0; i < numParams; i++) { o += 1; var p = readCStr(d, o); o = p.next; }   // UI8 reg + name
-  var codeSize = d.readUInt16LE(o);
-  return { name: nm.str, codeSize: codeSize };
-}
-function parseDF(d) {
-  var o = 0; var nm = readCStr(d, o); o = nm.next;
-  var numParams = d.readUInt16LE(o); o += 2;
-  for (var i = 0; i < numParams; i++) { var p = readCStr(d, o); o = p.next; }
-  var codeSize = d.readUInt16LE(o);
-  return { name: nm.str, codeSize: codeSize };
-}
-
-// 遍历 tag（递归 DefineSprite），对 DoAction(12)/DoInitAction(59) 扫描函数
-function walkTags(buf, startOff, sprite, funcs) {
-  var off = startOff, frame = 0;
-  while (off + 2 <= buf.length) {
-    var codeAndLen = buf.readUInt16LE(off); off += 2;
-    var code = codeAndLen >> 6, len = codeAndLen & 0x3f;
-    if (len === 0x3f) { len = buf.readUInt32LE(off); off += 4; }
-    var tagBody = buf.slice(off, off + len); off += len;
-    if (code === 39) {
-      var sid = tagBody.length >= 2 ? tagBody.readUInt16LE(0) : -1;
-      walkTags(tagBody, 4, sid, funcs);
-    } else if (code === 12) {
-      scanActions(tagBody, "DoAction[sprite=" + sprite + " frame=" + frame + "]", funcs);
-    } else if (code === 59) {
-      var cls = len >= 2 ? tagBody.readUInt16LE(0) : -1;
-      scanActions(tagBody.slice(2), "DoInitAction[class sprite=" + cls + "]", funcs);
-    }
-    if (code === 1) frame++;
-    if (code === 0) return off;
-  }
-  return off;
-}
+var path = require("path");
+var scanSwf = require("./swf-metadata").scanSwf;
 
 function main() {
   var argv = process.argv.slice(2);
@@ -127,9 +47,8 @@ function main() {
   if (isNaN(TOP)) TOP = 15;
   var asJson = argv.indexOf("--json") >= 0;
 
-  var swf = readSwf(swfPath);
-  var funcs = [];
-  walkTags(swf.body, tagAreaStart(swf.body), null, funcs);
+  var swf = scanSwf(swfPath, path.resolve(__dirname, "../tmp/swf-metadata-cache"));
+  var funcs = swf.functions.slice();
   funcs.sort(function (a, b) { return b.codeSize - a.codeSize; });
   var over = funcs.filter(function (f) { return f.codeSize >= MAX; });
 

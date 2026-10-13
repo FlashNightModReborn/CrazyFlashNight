@@ -57,6 +57,7 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         testPlannedEquipmentValidityGate();
         testWornRollbackAndUnknownReconcile();
         testPreviewStatRows();
+        testQuantityContractAndQuarantineDiagnostics();
         trace("EquipmentTuningServiceTest Tests Passed: " + _passed);
         trace("EquipmentTuningServiceTest Tests Failed: " + _failed);
         trace("=== EquipmentTuningServiceTest end ===");
@@ -838,6 +839,94 @@ class org.flashNight.arki.item.EquipmentTuningServiceTest {
         assertTrue(legacyTip.success && legacyTip.statsBefore == undefined
                 && legacyTip.statsAfter == undefined,
             "无 source 的旧形态 tooltip 不携带属性投影");
+    }
+
+    private static function testQuantityContractAndQuarantineDiagnostics():Void {
+        // 合法上限 2^53-1：快照精确投影，不截断。
+        resetFixture();
+        var item:BaseItem = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.setItems({强化石:9007199254740991});
+        var lease:Object = sourceRef(inventorySnapshot(), 0);
+        var snapshotParams:Object = params("quantity-max-safe");
+        snapshotParams.source = lease;
+        var snap:Object = EquipmentTuningService.execute("snapshot", snapshotParams);
+        assertTrue(snap.success
+                && snapshotMaterialCount(snap.snapshot, "强化石") == 9007199254740991,
+            "快照精确投影 2^53-1 上限数量");
+
+        // 现场值 10,000,000,875（> Int32）同样精确投影。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.setItems({强化石:10000000875});
+        lease = sourceRef(inventorySnapshot(), 0);
+        snapshotParams = params("quantity-field-case");
+        snapshotParams.source = lease;
+        snap = EquipmentTuningService.execute("snapshot", snapshotParams);
+        assertTrue(snap.success
+                && snapshotMaterialCount(snap.snapshot, "强化石") == 10000000875,
+            "快照精确投影超 Int32 的现场数量 10,000,000,875");
+
+        // 超限 2^53 → 隔离保留原值；快照 fail-closed，不静默投影 0。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.setItems({强化石:9007199254740992});
+        lease = sourceRef(inventorySnapshot(), 0);
+        snapshotParams = params("quantity-quarantined-over");
+        snapshotParams.source = lease;
+        snap = EquipmentTuningService.execute("snapshot", snapshotParams);
+        assertTrue(!snap.success
+                && snap.error == "material_quantity_quarantined"
+                && _root.收集品栏.材料.getQuarantinedEntryCount() == 1
+                && _root.收集品栏.材料.toObject()["强化石"] == 9007199254740992
+                && _root.收集品栏.材料.getValue("强化石") == 0,
+            "2^53 超限数量隔离保留原值，快照以 material_quantity_quarantined fail-closed");
+
+        // 字符串旧值同样隔离、可定位，不截断取整。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.setItems({强化石:"5000"});
+        lease = sourceRef(inventorySnapshot(), 0);
+        snapshotParams = params("quantity-quarantined-string");
+        snapshotParams.source = lease;
+        snap = EquipmentTuningService.execute("snapshot", snapshotParams);
+        assertTrue(!snap.success
+                && snap.error == "material_quantity_quarantined"
+                && String(_root.收集品栏.材料.toObject()["强化石"]) == "5000",
+            "字符串数量旧值隔离保留原样，快照 fail-closed");
+
+        // 隔离数量下的 preview 不得报“持有 0”的短缺：fail-closed 且零写。
+        var bagRevision:Number = _root.物品栏.背包.getMutationRevision();
+        var materialRevision:Number = _root.收集品栏.材料.getMutationRevision();
+        var previewParams:Object = params("quantity-quarantined-string");
+        previewParams.operation = "enhance";
+        previewParams.source = lease;
+        previewParams.targetLevel = 3;
+        var preview:Object = EquipmentTuningService.execute("preview", previewParams);
+        assertTrue(!preview.success
+                && preview.error == "material_quantity_quarantined"
+                && preview.materialShortage == undefined
+                && preview.tuningToken == undefined
+                && item.value.level == 1
+                && _root.物品栏.背包.getMutationRevision() == bagRevision
+                && _root.收集品栏.材料.getMutationRevision() == materialRevision,
+            "隔离数量 preview 给可定位错误，不伪造持有 0 报价且零写");
+
+        // 小数旧值同样 fail-closed。
+        resetFixture();
+        item = equipment("测试手枪A", 1, []);
+        _root.物品栏.背包.add(0, item);
+        _root.收集品栏.材料.setItems({强化石:100.5});
+        lease = sourceRef(inventorySnapshot(), 0);
+        snapshotParams = params("quantity-quarantined-fractional");
+        snapshotParams.source = lease;
+        snap = EquipmentTuningService.execute("snapshot", snapshotParams);
+        assertTrue(!snap.success
+                && snap.error == "material_quantity_quarantined",
+            "小数数量旧值隔离，快照 fail-closed");
     }
 
     private static function testCandidateAvailabilityRequiresOwnedMaterial():Void {

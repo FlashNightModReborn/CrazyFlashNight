@@ -199,6 +199,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         itemData["测试初始鞋"] = equipmentItemData("测试初始鞋", "脚部装备");
         itemData["白色中山上装"] = equipmentItemData("白色中山上装", "上装装备");
         itemData["白色中山装裤子"] = equipmentItemData("白色中山装裤子", "下装装备");
+        itemData["Andy工装裤"] = equipmentItemData("Andy工装裤", "下装装备");
         itemData["黑色板鞋"] = equipmentItemData("黑色板鞋", "脚部装备");
         itemData["福袋"] = {
             name:"福袋", displayname:"福袋", icon:"福袋",
@@ -211,6 +212,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         equipment["测试初始鞋"] = true;
         equipment["白色中山上装"] = true;
         equipment["白色中山装裤子"] = true;
+        equipment["Andy工装裤"] = true;
         equipment["黑色板鞋"] = true;
         ItemUtil.equipmentDict = equipment;
         // TestLoader 不加载时间轴上的生产桥；装备栏仍按生产契约经
@@ -1473,7 +1475,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root.__contextTaskUi.mainline == 0 && _root.__contextTaskUi.completed == undefined,
                 "replace_context: empty book tasks refresh the HUD instead of retaining the permanent delivery notice");
             assert(_root.物品栏.装备栏.getItem("上装装备").name == "白色中山上装"
-                    && _root.物品栏.装备栏.getItem("下装装备").name == "白色中山装裤子"
+                    && _root.物品栏.装备栏.getItem("下装装备").name == "Andy工装裤"
                     && _root.物品栏.装备栏.getItem("脚部装备").name == "黑色板鞋",
                 "replace_context: starter equipment uses the real BaseItem and EquipmentInventory path");
             assert(_root.主角技能表.length == 80 && _root.主角技能表[0][0] == ""

@@ -39,6 +39,10 @@ class org.flashNight.arki.render.FrameBroadcaster {
     private static var _playerHudCapture:Function;
     public static function setPlayerHudPayload(value:String):Void { _playerHudPayload = value; }
     public static function hasPlayerHudPending():Boolean { return _playerHudPayload != null; }
+    public static function retireWorkerProjectionSlots():Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) _playerHudPayload = null;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ordinaryBullet")) _bulletVisualPayload = null;
+    }
     public static function setPlayerHudCapture(callback:Function):Void { _playerHudCapture = callback; }
 
 

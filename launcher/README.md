@@ -168,6 +168,8 @@ U12 游戏内过场由 `SceneTransitionController` 复用独立合成表面。�
 
 Worker 默认固定 180p／LOW、最低表现预算与 320×180 输出，关闭 HUD、伤害数字和 Web 装饰性表现；仍保留真实场景围栏和 30 帧玩法时钟，普通性能配置不变。请求值与实际应用值分别记录。实现与候选实测边界见 [Worker P0–P1 合同](../docs/Arena-Worker-P0-P1-施工与验证-2026-10-11.md)。
 
+以 `38f24d4bc9d6d7a63941425639409cd4a3643df2` 加本轮未提交增量核对：隔离候选的 Worker launch v2 可在真实帧边界安装 D1/D2 消费者策略，保留装备/场景灯、实际捕获与揭幕；普通 Guardian 和 v1 Worker 保持原策略。F5 Q1-R 是独立的连接内格式协商。协议、源头停产、回退和验证入口见[流式成本与 Worker D1/D2](../docs/stream-cost-worker-d1-d2-2026-10-11.md)。
+
 实际栅格受 DPI 和有效客户区影响，不能把 180 上限写成实际源高度。本轮机器资格绑定连续亮屏状态与真实新帧 / 揭幕链；未把临时亮屏请求加入产品默认行为。最低表现候选已完成单 Worker、双 Worker、单侧故障与普通入口回归，短期完整吞吐比 1.4343；不代签 TDP、长时热稳态或人类输入体验。
 
 ## 构建、候选与发布
@@ -388,6 +390,8 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `hairdresser` | 业务 Panel | `modules/hairdresser.js` |
 | `surgery` | [医务室整形](../docs/医务室整形-Web面板与外观共享-2026-09-08.md) | `modules/plastic-surgery.js` |
 | `garage` | [车库购车](../agentsDoc/as2-web-panel-migration.md#u13-garage-purchase) | `modules/garage-purchase.js` |
+| `subway` | U7 地铁线路选关（隧道据点入口）；门槛与进关权威在 AS2 | `modules/subway-select.js` |
+| `egg-stage-select` | U7 彩蛋地图选关（彩蛋地图电脑入口）；彩蛋进度门权威在 AS2 | `modules/egg-stage-select.js` |
 | `sleep` | [床铺睡眠与拨针闹钟](../docs/U3睡眠面板-Web闹钟迁移-2026-09-19.md)；候选人验通过，发布状态见专项 | `modules/sleep-panel.js` |
 | `bookshelf` | [书架、角色档案与书中历险](../docs/bookshelf-player-context.md)；[系列章节与合集原版接入](../docs/bookshelf-series-integration.md)已正式 promotion 并通过远端部署 Audit，专项验证不代签完整旅程与人验 | `modules/bookshelf-panel.js` |
 | `book-comic` | [修理大学重制版漫画](../docs/bookshelf-series-integration.md#修理大学重制版漫画)；固定比例全屏演出与整页阅读 | `modules/book-comic-panel.js` |

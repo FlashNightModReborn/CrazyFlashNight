@@ -18,35 +18,61 @@ import org.flashNight.arki.unit.UnitComponent.Initializer.UnitAIInitializer;
 class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
     private static var passed:Number, failed:Number, ticks:Number, finished:Boolean;
     private static var world:MovieClip, military:MovieClip, black:MovieClip, driver:MovieClip;
+    private static var loadProbeOnly:Boolean = false;
+    private static var probeSpawnStage:Boolean = false;
     private static var loader:MovieClipLoader, listener:Object, cases:Array;
     private static var corpse:BitmapData, loadedCount:Number;
     private static var preview:MovieClip;
     private static var rapidPreviews:Array;
+    private static var exportBitmaps:Boolean, worldRetired:Boolean;
+    private static var exportPicture:Object, exportBounds:Rectangle;
+    private static var exportY:Number, exportEndY:Number, startedAt:Number;
+    private static var exportLines:Array;
+    private static var exportBufferedRows:Number, exportedImages:Number, exportedRows:Number;
+    private static var exportTimer:Number, hexCache:Object, hexCacheSize:Number;
+    private static var readbackScanMs:Number, readbackEncodeMs:Number, readbackTraceMs:Number, readbackCallbacks:Number;
     private static function check(ok:Boolean, label:String):Void {
         if (ok) passed++;
         else { failed++; trace("[TEST_FAIL] StudentRepairAssetTest: " + label); }
     }
-    public static function runAllTests():Void {
+    public static function runLoadProbe():Void { loadProbeOnly=true;probeSpawnStage=false;runFixture(); }
+    public static function runSpawnProbe():Void { loadProbeOnly=true;probeSpawnStage=true;runFixture(); }
+    public static function runAllTests():Void { loadProbeOnly=false;probeSpawnStage=false;runFixture(); }
+    private static function runFixture():Void {
         passed=failed=ticks=loadedCount=0;finished=false;cases=[];rapidPreviews=[];
+        exportBitmaps=_root.studentRepairExportBitmaps===true;exportPicture=null;startedAt=getTimer();exportedImages=exportedRows=0;worldRetired=false;exportTimer=undefined;hexCache={};hexCacheSize=0;readbackScanMs=readbackEncodeMs=readbackTraceMs=readbackCallbacks=0;
+        trace("StudentRepairAssetTest bitmap-export="+exportBitmaps);
+        trace("StudentRepairAssetTest phase=begin");
         Stage.scaleMode="noScale";
         world=_root.createEmptyMovieClip("__studentRepairWorld",_root.getNextHighestDepth());
+        // Timelines still execute. The suite inspects native geometry and BitmapData;
+        // avoid rasterizing seventy overlapping filtered actors into the test window.
+        world._visible=false;
         driver=_root.createEmptyMovieClip("__studentRepairDriver",_root.getNextHighestDepth());
         military=world.createEmptyMovieClip("militaryLibrary",world.getNextHighestDepth());
         black=world.createEmptyMovieClip("blackLibrary",world.getNextHighestDepth());
         _root.gameworld=black;
+        trace("StudentRepairAssetTest phase=world-created");
         fixture();
+        trace("StudentRepairAssetTest phase=fixture-ready");
         loader=new MovieClipLoader();listener={};
-        listener.onLoadInit=function(mc:MovieClip):Void { StudentRepairAssetTest.loaded(mc); };
+        listener.onLoadInit=function(mc:MovieClip):Void {
+            try { StudentRepairAssetTest.loaded(mc); }
+            catch (error:Object) { StudentRepairAssetTest.abortFixture("load-init "+mc._name,error); }
+        };
         listener.onLoadError=function(mc:MovieClip,error:String):Void { trace("[TEST_FAIL] asset load "+error);StudentRepairAssetTest.finish(); };
         loader.addListener(listener);
         loader.loadClip("../flashswf/arts/new/大学人员.swf",military);
         loader.loadClip("../flashswf/arts/new/Codex黑仔素材.swf",black);
+        trace("StudentRepairAssetTest phase=load-requested");
         driver.waited=0;
         driver.onEnterFrame=function():Void {
+            try {
             if (StudentRepairAssetTest.loadedCount < 2) {
                 this.waited++;
                 if (this.waited>200) { StudentRepairAssetTest.check(false,"asset load timeout");StudentRepairAssetTest.finish(); }
             } else StudentRepairAssetTest.tick();
+            } catch (error:Object) { StudentRepairAssetTest.abortFixture("driver tick "+StudentRepairAssetTest.ticks,error); }
         };
     }
     private static function fixture():Void {
@@ -111,18 +137,44 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         Mover.init();
     }
     private static function loaded(mc:MovieClip):Void {
+        trace("StudentRepairAssetTest phase=load-init name="+mc._name);
         mc.stop();loadedCount++;
+        trace("StudentRepairAssetTest phase=stopped name="+mc._name);
         var remove:Array=[];
         for (var key:String in mc) {
             var child:Object=mc[key];
             if (typeof(child)=="movieclip" && child._parent===mc) remove.push(child);
         }
+        trace("StudentRepairAssetTest phase=children-enumerated name="+mc._name+" count="+remove.length);
         for (var n:Number=0;n<remove.length;n++) { remove[n].swapDepths(mc.getNextHighestDepth());remove[n].removeMovieClip(); }
+        trace("StudentRepairAssetTest phase=children-removed name="+mc._name);
         if (loadedCount!=2) return;
         var deadbody:MovieClip=black.createEmptyMovieClip("deadbody",black.getNextHighestDepth());
         deadbody.layers=[null,null,corpse];deadbody.attachBitmap(corpse,1);
+        trace("StudentRepairAssetTest phase=before-depth-manager");
         DepthManager.instance=new DepthManager(black,0,1048575,128);
+        trace("StudentRepairAssetTest phase=depth-manager-created");
         check(DepthManager.instance.calibrate(-1000,1000),"real movement depth manager calibrated");
+        trace("StudentRepairAssetTest phase=depth-manager-calibrated");
+        if (loadProbeOnly) {
+            if (probeSpawnStage) {
+                trace("StudentRepairAssetTest phase=before-one-military");
+                addMilitary(0,false);
+                trace("StudentRepairAssetTest phase=after-one-military");
+                check(cases[0].unit._name==cases[0].id,"one real military instance attached");
+                trace("StudentRepairAssetTest phase=before-one-black");
+                addBlack("growthLow",0);
+                trace("StudentRepairAssetTest phase=after-one-black");
+                check(cases[1].unit._name==cases[1].id,"one real black instance attached");
+            }
+            if (probeSpawnStage) {
+                driver.onEnterFrame=function():Void { StudentRepairAssetTest.probeTick(); };
+                return;
+            }
+            trace("StudentLoadProbeTest passed="+passed+" failed="+failed);
+            finished=true;delete driver.onEnterFrame;complete();return;
+        }
+        trace("StudentRepairAssetTest phase=spawn-begin");
         // Libraries are dictionaries; cases remain in each actual published library.
         for (var face:Number=0;face<2;face++) {
             addMilitary(face,false);addMilitary(face,true);
@@ -133,9 +185,23 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             var kinds:Array=["combo","rapid","heavy","prehit","posthit","dead","lost","mp","cooldown","ai","aiHeavy","pause","walk","chase","aiClose","aiFar","aiOpening","retreat","retreatHit","poiseLow","poiseSafe","poiseClose","poiseHealthy","poiseDeath","poiseLost","poiseExternal","growthLow","growth20","growth30","growthInvalid"];
             for (var k:Number=0;k<kinds.length;k++) addBlack(kinds[k],face);
         }
+        trace("StudentRepairAssetTest phase=spawn-complete count="+cases.length);
+    }
+    private static function probeTick():Void {
+        ticks++;
+        if (ticks<3) return;
+        trace("StudentRepairAssetTest phase=before-one-military-begin");
+        begin(cases[0]);
+        trace("StudentRepairAssetTest phase=after-one-military-begin");
+        trace("StudentRepairAssetTest phase=before-one-black-begin");
+        begin(cases[1]);
+        trace("StudentRepairAssetTest phase=after-one-black-begin");
+        trace("StudentLoadProbeTest passed="+passed+" failed="+failed);
+        finished=true;delete driver.onEnterFrame;complete();
     }
     private static function addMilitary(face:Number, dead:Boolean):Void {
         var id:String="m"+cases.length;
+        trace("StudentRepairAssetTest phase=spawn id="+id+" kind="+(dead?"milDead":"milRise")+" face="+face);
         var unit:MovieClip=military.attachMovie("敌人-军阀派学员",id,military.getNextHighestDepth(),{性别:face==0?"男":"女"});
         cases.push({id:id,unit:unit,kind:dead?"milDead":"milRise",face:face,hits:0,invalid:0,stale:0,freeze:0});
     }
@@ -157,6 +223,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             extraForce=kind=="growth20"?100:kind=="growth30"?200:0;
             if (kind=="growthInvalid") { if (face==0) init.等级=Number.NaN;else init.技能配置.内力每级=-10; }
         }
+        trace("StudentRepairAssetTest phase=spawn id="+id+" kind="+kind+" face="+face);
         var unit:MovieClip=black.attachMovie("敌人-Codex黑仔",id,black.getNextHighestDepth(),init);
         unit.fixtureExpectedForce=35+extraForce;
         cases.push({id:id,unit:unit,target:target,kind:kind,face:face,hits:0,invalid:0,stale:0,first:0,deflects:0,stages:0,freeze:0});
@@ -171,6 +238,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             var state:String=item.kind=="milHit"?"被击":item.kind=="milFly"?"击倒":item.kind=="milMelee"?"长枪攻击":"倒地";
             u.状态改变(state);
             check(u.man._totalframes>1,item.id+" actual "+state+" animation exists");
+            if (state=="倒地") check(hasPosePart(u.man,-174.35,195.35),item.id+" first prone head matches canonical rise source");
             return;
         }
         u.攻击目标=item.target._name;u.__黑仔下次技能=99999999;
@@ -262,7 +330,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         }
         // Same unit and draw transform as rapid-f1: retain the actual incoming
         // idle pose to inspect the entry without changing controller timing.
-        if (item.kind=="rapid" && item.face==0) {
+        if (exportBitmaps && item.kind=="rapid" && item.face==0) {
             var idleImage:BitmapData=new BitmapData(750,440,true,0);
             u.man.刚体标签._visible=false;u.area._visible=false;u._visible=true;
             idleImage.draw(u,new Matrix(1.8,0,0,1.8,370,360),null,"normal",null,true);
@@ -341,19 +409,38 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         var item:Object=owner.fixtureCase;
         if (item!=undefined) item.deflects++;
     }
+    // Source goldens: university rise reimport 4a77c833c4, frames 1/2/15/20.
+    // That source has anonymous limb instances; authored coordinates are stable,
+    // whereas the previous copied names (head/feet/rifle) no longer exist.
+    private static function hasPosePart(man:MovieClip, x:Number, y:Number):Boolean {
+        for (var key:String in man) {
+            var part:Object=man[key];
+            if (typeof(part)=="movieclip" && part._parent===man &&
+                Math.abs(part._x-x)<0.1 && Math.abs(part._y-y)<0.1) return true;
+        }
+        trace("[ASSET_POSE_MISSING] frame="+man._currentframe+" x="+x+" y="+y);
+        return false;
+    }
     private static function freeze(u:MovieClip):Void {
         var item:Object=u.fixtureCase;
         if (item==undefined) return;
         item.freeze++;
         if (item.kind!="milDead") return;
-        check(u.man.头._x < -140 && u.man.头._y > 165,item.id+" actual death freezes connected prone head");
-        check(u.man.长枪._y>210,item.id+" rifle lies with body");
-        check(u.man.左下臂._y>210,item.id+" prone forearm stays attached");
+        check(hasPosePart(u.man,-174.4,195.4),item.id+" actual death freezes canonical prone head");
+        check(hasPosePart(u.man,4.9,264.7),item.id+" canonical rifle lies with body");
+        check(hasPosePart(u.man,-51.9,260.05),item.id+" canonical prone forearm stays attached");
     }
     private static function tick():Void {
         if (finished) return;ticks++;
         _root.帧计时器.当前帧数=ticks;
-        if (ticks==3) { for (var i:Number=0;i<cases.length;i++) begin(cases[i]);return; }
+        if (ticks==3) {
+            for (var i:Number=0;i<cases.length;i++) {
+                trace("StudentRepairAssetTest phase=begin-case id="+cases[i].id+" kind="+cases[i].kind);
+                begin(cases[i]);
+            }
+            trace("StudentRepairAssetTest phase=begin-complete count="+cases.length+" elapsed-ms="+(getTimer()-startedAt));return;
+        }
+        if (ticks%30==0) trace("StudentRepairAssetTest phase=timeline tick="+ticks+" previews="+rapidPreviews.length);
         if (ticks<4) return;
         for (var j:Number=0;j<cases.length;j++) {
             var item:Object=cases[j];var u:MovieClip=item.unit;
@@ -400,9 +487,8 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             }
             if (item.kind=="milRise" && u.状态=="倒地") {
                 var frame:Number=u.man._currentframe;
-                if (frame==1) check(u.man.头._y>180,item.id+" first prone pose attached");
-                if (frame==15) check(u.man.脚1._x>150 && u.man.脚2._x>120,item.id+" mid-rise feet do not teleport to stand");
-                if (frame==20) check(Math.abs(u.man.头._x)<50,item.id+" last rise pose connects to stand");
+                if (frame==15) { item.riseMid=true;check(hasPosePart(u.man,165.75,155.5) && hasPosePart(u.man,183.75,207.95),item.id+" both mid-rise feet match canonical source"); }
+                if (frame==20) { item.riseLate=true;check(hasPosePart(u.man,0,-20.7),item.id+" late rise head matches canonical source"); }
                 if (u.man._currentframe>item.lastFrame) item.lastFrame=u.man._currentframe;
             }
             var interruption:String=item.kind;
@@ -423,11 +509,13 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
     }
     private static function finish():Void {
         if (finished) return;finished=true;driver.onEnterFrame=null;
+        trace("StudentRepairAssetTest phase=assertions tick="+ticks+" count="+cases.length+" elapsed-ms="+(getTimer()-startedAt));
         for (var i:Number=0;i<cases.length;i++) {
             var item:Object=cases[i];var u:MovieClip=item.unit;
             if (item.kind=="milRise" || item.kind=="milHit" || item.kind=="milMelee" || item.kind=="milFly") {
                 check(u.状态=="长枪站立" && !u.倒地,item.id+" actual lifecycle restores state and collider");
                 if (item.kind=="milFly") check(item.landed===true,item.id+" knockdown-to-rise transition exercised");
+                if (item.kind=="milRise") check(item.riseMid && item.riseLate && item.lastFrame>=24,item.id+" canonical rise traverses middle and late poses before recovery");
                 if (item.kind=="milMelee") {
                     check(item.hits==8,item.id+" all eight actual rifle-melee windows executed");
                     check(item.invalid==0 && item.stale==0,item.id+" rifle-melee coordinates and lifetime valid");
@@ -497,14 +585,26 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         var visible:Rectangle=corpse.getColorBoundsRect(0xFF000000,0,false);
         trace("[ASSET_BITMAP_BOUNDS] military: "+visible);
         check(visible.width>50 && visible.height<80,"actual corpse bitmap stays in coherent prone band");
-        dumpBitmap(corpse,"military-corpses");
+        _root.暂停=true;stopMovieTree(world);
+        trace("StudentRepairAssetTest phase=export previews="+rapidPreviews.length);
+        // Corpse bounds remain a required assertion; lossless image rows are diagnostic export.
         preview=black.attachMovie("敌人-Codex黑仔","blackPreview",black.getNextHighestDepth(),{兵种:"敌人-Codex黑仔"});
         preview.__黑仔禁用技能AI=true;
         preview.状态改变("兵器站立");preview.man.gotoAndStop(1);
         driver.shotWait=0;
         driver.onEnterFrame=function():Void {
-            if (++this.shotWait>=4) StudentRepairAssetTest.snapshotAndComplete();
+            try { if (++this.shotWait>=4) StudentRepairAssetTest.snapshotAndComplete(); }
+            catch (error:Object) { StudentRepairAssetTest.abortFixture("standing snapshot",error); }
         };
+    }
+    // All behavior assertions have already run. Retire their timelines before
+    // diagnostic export; the new standing preview is attached after this freeze.
+    private static function stopMovieTree(mc:MovieClip):Void {
+        mc.stop();delete mc.onEnterFrame;
+        for (var key:String in mc) {
+            var child:Object=mc[key];
+            if (typeof(child)=="movieclip" && child._parent===mc) stopMovieTree(MovieClip(child));
+        }
     }
     private static function snapshotAndComplete():Void {
         driver.onEnterFrame=null;
@@ -515,17 +615,22 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         var torso:Object={x:0,y:0};preview.man.身体.身体.基本款.localToGlobal(torso);preview.globalToLocal(torso);
         var torsoPixel:Number=image.getPixel32(Math.round(250+torso.x*3),Math.round(450+torso.y*3));
         check((torsoPixel>>>24)>0 && ((torsoPixel>>>16)&255)<100 && ((torsoPixel>>>8)&255)<100 && (torsoPixel&255)<100,"native black jacket center is filled and dark");
-        dumpBitmap(image,"black-stand");image.dispose();
+        // All snapshots own their pixels; release the live scene before readback.
+        // Hidden timelines still allocate and dispatch events if left resident.
+        retireWorld();
+        if (!exportBitmaps) { image.dispose();complete();return; }
+        rapidPreviews.unshift({id:"black-stand",bitmap:image});
+        rapidPreviews.unshift({id:"military-corpses",bitmap:corpse,retain:true});
         driver.previewIndex=0;
-        driver.onEnterFrame=function():Void {
-            if (this.previewIndex<StudentRepairAssetTest.rapidPreviews.length) {
-                var picture:Object=StudentRepairAssetTest.rapidPreviews[this.previewIndex++];
-                StudentRepairAssetTest.dumpBitmap(picture.bitmap,picture.id);picture.bitmap.dispose();
-            } else StudentRepairAssetTest.complete();
-        };
+        // Pixel serialization is independent of animation frame cadence.
+        // A bounded timer slice also runs when the test player has an idle stage.
+        exportTimer=setInterval(function():Void {
+            try { StudentRepairAssetTest.exportTick(); }
+            catch (error:Object) { StudentRepairAssetTest.abortFixture("bitmap export "+StudentRepairAssetTest.driver.previewIndex,error); }
+        },10);
     }
     private static function recordOtherPreview(item:Object):Void {
-        if (item.face!=0 || (item.kind!="combo" && item.kind!="poiseSafe")) return;
+        if (!exportBitmaps || item.face!=0 || (item.kind!="combo" && item.kind!="poiseSafe")) return;
         var u:MovieClip=item.unit;var frame:Number=u.man._currentframe;
         if (item.otherFrames==undefined) item.otherFrames={};
         if (item.otherFrames[frame]) return;
@@ -546,7 +651,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             item.preMax=Math.max(item.preMax,u.man.身体._rotation);
             item.preDrift=Math.max(item.preDrift,Math.abs(u._x-item.startX));
         }
-        if (item.face!=0 || item.rapidFrames[frame]) return;
+        if (!exportBitmaps || item.face!=0 || item.rapidFrames[frame]) return;
         // Capture every actual rapid frame, including the anticipation-to-strike transition.
         item.rapidFrames[frame]=true;
         var image:BitmapData=new BitmapData(750,440,true,0);
@@ -558,40 +663,102 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         rapidPreviews.push({id:"black-rapid-f"+frame,bitmap:image});
     }
     private static function complete():Void {
-        trace("StudentRepairAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases");
-        loader.unloadClip(military);loader.unloadClip(black);
-        world.removeMovieClip();driver.removeMovieClip();corpse.dispose();
+        if (exportTimer!=undefined) { clearInterval(exportTimer);exportTimer=undefined; }
+        if (exportBitmaps) {
+            check(exportedImages==rapidPreviews.length && exportedImages>2 && exportedRows>0,"all queued native bitmaps exported before completion");
+            trace("StudentRepairBitmapExport: "+exportedImages+" images, "+exportedRows+" rows");
+        }
+        trace("StudentRepairAssetTest phase=complete elapsed-ms="+(getTimer()-startedAt));
+        if (!loadProbeOnly) trace("StudentRepairAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases");
+        retireWorld();driver.removeMovieClip();corpse.dispose();
         _root.studentRepairAssetComplete();
     }
-    // Native BitmapData.draw readback, lossless rows for offline visual inspection.
-    private static function dumpBitmap(bitmap:BitmapData, id:String):Void {
-        trace("[ASSET_BITMAP_BEGIN] "+id+" "+bitmap.width+" "+bitmap.height);
-        // Native full-color bounds skip only pixels known to be exactly zero.
-        // Keep original canvas coordinates and lossless zero runs at both sides.
-        var bounds:Rectangle=bitmap.getColorBoundsRect(0xFFFFFFFF,0,false);
-        var endX:Number=bounds.x+bounds.width,endY:Number=bounds.y+bounds.height;
-        for (var y:Number=bounds.y;y<endY;y++) {
-            var row:String="",last:Number=-1,count:Number=0,opaque:Boolean=false;
-            if (bounds.x>0) { last=0;count=bounds.x; }
-            for (var x:Number=bounds.x;x<endX;x++) {
-                var pixel:Number=bitmap.getPixel32(x,y);
-                if (pixel!=0) opaque=true;
-                if (pixel==last) count++;
-                else { if (count) row+=bitmapColorHex(last)+":"+count+",";last=pixel;count=1; }
-            }
-            if (endX<bitmap.width) {
-                if (last==0) count+=bitmap.width-endX;
-                else { row+=bitmapColorHex(last)+":"+count+",";last=0;count=bitmap.width-endX; }
-            }
-            row+=bitmapColorHex(last)+":"+count;
-            if (opaque) trace("[ASSET_BITMAP_ROW] "+y+" "+row);
+    private static function retireWorld():Void {
+        if (worldRetired) return;worldRetired=true;
+        loader.removeListener(listener);
+        loader.unloadClip(military);loader.unloadClip(black);world.removeMovieClip();
+    }
+    private static function abortFixture(phase:String, error:Object):Void {
+        if (exportTimer!=undefined) { clearInterval(exportTimer);exportTimer=undefined; }
+        trace("[TEST_FAIL] StudentRepairAssetTest exception phase="+phase+" error="+error);
+        failed++;finished=true;delete driver.onEnterFrame;
+        trace("StudentRepairAssetTest: "+passed+" passed, "+failed+" failed; "+cases.length+" actual timeline cases");
+        // The runner archives this failure and stops its owned host; never report pass.
+        _root.studentRepairAssetComplete();
+    }
+    // Optional lossless visual evidence. Bound computation between rows to 8ms,
+    // with a 64-row ceiling. Buffer trace writes so the editor does not repaint
+    // thousands of individual rows while already-tested actors keep animating.
+    private static function exportTick():Void {
+        if (exportPicture==null) {
+            if (driver.previewIndex>=rapidPreviews.length) { complete();return; }
+            exportPicture=rapidPreviews[driver.previewIndex++];
+            exportPicture.scanStart=readbackScanMs;exportPicture.encodeStart=readbackEncodeMs;exportPicture.traceStart=readbackTraceMs;exportPicture.beganAt=getTimer();
+            exportBounds=exportPicture.bitmap.getColorBoundsRect(0xFFFFFFFF,0,false);
+            exportY=exportBounds.y;exportEndY=exportBounds.y+exportBounds.height;
+            exportLines=[];exportBufferedRows=0;
+            trace("[ASSET_BITMAP_BEGIN] "+exportPicture.id+" "+exportPicture.bitmap.width+" "+exportPicture.bitmap.height);
         }
-        trace("[ASSET_BITMAP_END] "+id);
+        var began:Number=getTimer(),rows:Number=0;readbackCallbacks++;
+        while (exportY<exportEndY && rows<64 && (rows==0 || getTimer()-began<8)) {
+            exportRow(exportPicture.bitmap,exportY++);rows++;
+        }
+        if (exportBufferedRows>=32 || exportY>=exportEndY) {
+            var traceBegan:Number=getTimer();
+            if (exportLines.length) trace(exportLines.join("\n"));
+            readbackTraceMs+=getTimer()-traceBegan;
+            exportLines=[];exportBufferedRows=0;
+        }
+        if (exportY>=exportEndY) {
+            trace("[ASSET_READBACK_COST] "+exportPicture.id+" scan-ms="+(readbackScanMs-exportPicture.scanStart)+" encode-ms="+(readbackEncodeMs-exportPicture.encodeStart)+" trace-ms="+(readbackTraceMs-exportPicture.traceStart)+" wall-ms="+(getTimer()-exportPicture.beganAt));
+            trace("[ASSET_BITMAP_END] "+exportPicture.id);exportedImages++;
+            if (!exportPicture.retain) exportPicture.bitmap.dispose();
+            exportPicture.bitmap=null;exportPicture=null;
+        }
+    }
+    private static function exportRow(bitmap:BitmapData, y:Number):Void {
+        // AVM1 repeatedly resolves class-qualified static members. Keep the pixel
+        // and run loops on local aliases; join once instead of copying a growing row.
+        var bounds:Rectangle=exportBounds;
+        var palette:Object=hexCache;
+        var paletteSize:Number=hexCacheSize;
+        var makeHex:Function=bitmapColorHex;
+        var endX:Number=bounds.x+bounds.width;
+        var colors:Array=[],lengths:Array=[],runs:Array=[];
+        var last:Number=-1,count:Number=0,opaque:Boolean=false;
+        if (bounds.x>0) { last=0;count=bounds.x; }
+        var scanBegan:Number=getTimer();
+        for (var x:Number=bounds.x;x<endX;x++) {
+            var pixel:Number=bitmap.getPixel32(x,y);
+            if (pixel!=0) opaque=true;
+            if (pixel==last) count++;
+            else { if (count) { colors.push(last);lengths.push(count); } last=pixel;count=1; }
+        }
+        if (endX<bitmap.width) {
+            if (last==0) count+=bitmap.width-endX;
+            else { colors.push(last);lengths.push(count);last=0;count=bitmap.width-endX; }
+        }
+        colors.push(last);lengths.push(count);
+        var scanMs:Number=getTimer()-scanBegan;
+        var encodeBegan:Number=getTimer();
+        for (var n:Number=0;n<colors.length;n++) {
+            var value:Number=colors[n];
+            var color:String=palette[value];
+            if (color==undefined) {
+                color=makeHex(value);
+                if (paletteSize<32768) { palette[value]=color;paletteSize++; }
+            }
+            runs.push(color+":"+lengths[n]);
+        }
+        readbackScanMs+=scanMs;readbackEncodeMs+=getTimer()-encodeBegan;
+        hexCacheSize=paletteSize;
+        if (opaque) { exportLines.push("[ASSET_BITMAP_ROW] "+y+" "+runs.join(","));exportBufferedRows++;exportedRows++; }
     }
     private static function bitmapColorHex(pixel:Number):String {
         // AVM1 formats signed INT_MIN as "-(0000000". Serialize safe 16-bit halves.
         var low:String=(pixel & 65535).toString(16);
         while (low.length<4) low="0"+low;
-        return ((pixel >>> 16) & 65535).toString(16)+low;
+        var color:String=((pixel >>> 16) & 65535).toString(16)+low;
+        return color;
     }
 }

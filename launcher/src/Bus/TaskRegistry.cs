@@ -462,6 +462,8 @@ namespace CF7Launcher.Bus
             HairdresserTask hairdresserTask,
             PlasticSurgeryTask plasticSurgeryTask,
             GaragePurchaseTask garagePurchaseTask,
+            SubwaySelectTask subwaySelectTask,
+            EggStageSelectTask eggStageSelectTask,
             SleepTask sleepTask,
             BookshelfTask bookshelfTask,
             GymTrainingTask gymTrainingTask,
@@ -578,6 +580,10 @@ namespace CF7Launcher.Bus
                 router.RegisterAsync("plastic_surgery_response", plasticSurgeryTask.HandleFlashResponse);
             if (garagePurchaseTask != null)
                 router.RegisterAsync("garage_purchase_response", garagePurchaseTask.HandleFlashResponse);
+            if (subwaySelectTask != null)
+                router.RegisterAsync("subway_select_response", subwaySelectTask.HandleFlashResponse);
+            if (eggStageSelectTask != null)
+                router.RegisterAsync("egg_select_response", eggStageSelectTask.HandleFlashResponse);
             if (sleepTask != null)
                 router.RegisterAsync("sleep_response", sleepTask.HandleFlashResponse);
             if (bookshelfTask != null)
@@ -886,10 +892,24 @@ namespace CF7Launcher.Bus
         /// 全量 task 清单（含元数据）。httpCallable 标记在此声明，同时驱动
         /// _httpCallable 集合和 /status JSON 输出，消除双写不一致风险。
         /// </summary>
+        internal static void RegisterVisualWire(MessageRouter router, VisualWireNegotiator wire)
+            => router.RegisterSyncForGeneration("visual_wire_select", wire.Select);
+
+        internal static void RegisterWorkerProjection(MessageRouter router, CF7Launcher.ArenaWorker.WorkerProjectionNegotiator projection)
+        {
+            router.RegisterSyncForGeneration("worker_projection_prepared", projection.Prepared);
+            router.RegisterSyncForGeneration("worker_projection_committed", projection.Committed);
+            router.RegisterSyncForGeneration("worker_projection_rejected", projection.Rejected);
+        }
+
         private static void BuildTaskList(StringBuilder sb)
         {
             bool first = true;
             first = AppendTask(sb, "frame",          "fast_lane", "AS2->C#", false, first);
+            first = AppendTask(sb, "visual_wire_select", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_prepared", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_committed", "json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "worker_projection_rejected", "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "hn_reset",       "fast_lane", "AS2->C#", false, first);
             first = AppendTask(sb, "toast",          "json_sync", "AS2->C#", true,  first);
             first = AppendTask(sb, "warlord_stage_start", "json_sync", "AS2->C#", false, first);
@@ -913,6 +933,8 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "hairdresser_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "plastic_surgery_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "garage_purchase_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "subway_select_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "egg_select_response","json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "bookshelf_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "sleep_response", "json_async", "AS2<->C#", false, first);
             first = AppendTask(sb, "gym_training_response", "json_async", "AS2<->C#", false, first);

@@ -20,6 +20,8 @@ class org.flashNight.arki.render.SceneLightBridge {
     private static var capsSlv:String = "n/a";
     private static var capsKeys:String = "n/a";
     private static var failureReason:String = "";
+    private static var catalogDigest:String = "";
+    public static function installedCatalogDigest():String { return enabled ? catalogDigest : ""; }
 
     public static function configureCaps(caps:Object):Void {
         capsSeen++;
@@ -29,6 +31,7 @@ class org.flashNight.arki.render.SceneLightBridge {
         for (var k:String in caps) ks.push(k);
         capsKeys = ks.join(",");
         var next:Boolean = caps["native"] === true && caps.sceneLightsVersion === 1;
+        catalogDigest = org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(caps.sceneLightsDigest);
         if (enabled != next) {
             enabled = next; dirty = true; revision++;
             for (var i:Number = 0; i < entries.length; i++) entries[i].last = "";
@@ -237,8 +240,21 @@ class org.flashNight.arki.render.SceneLightBridge {
         for (var i:Number = 0; i < entries.length; i++) {
             var entry:Object = entries[i];
             if (entry.raw.AttachTo == undefined && !entry.stateDirty) continue;
-            var pose:Array = sample(entry); var row:String = pose.join(",");
-            if (row != entry.last) changed = true;
+            var pose:Array = sample(entry);
+            var previous:Array = entry.lastEncodedPose;
+            var row:String = entry.lastRow;
+            var equal:Boolean = previous != null;
+            if (equal) {
+                for (var p:Number = 0; p < 8; p++) {
+                    if (pose[p] !== previous[p]) { equal = false; break; }
+                }
+            }
+            if (!equal) {
+                row = pose.join(",");
+                if (row != entry.last) changed = true;
+                entry.lastEncodedPose = pose;
+                entry.lastRow = row;
+            }
             entry.last = row; entry.pose = pose; entry.stateDirty = false; rows.push(row);
         }
         if (!changed || !valid) return null;

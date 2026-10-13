@@ -1539,6 +1539,13 @@ class Program
         }
         HitNumberOverlay hnOverlay = new HitNumberOverlay(form, form.FlashHostPanel);
         FrameTask frameTask = new FrameTask(v8Runtime, hnOverlay);
+        int workerProjectionCatalogsReady = 0;
+        void ObserveWorkerCatalogReady(int bit, bool available, bool sent)
+        {
+            if (available && sent) Interlocked.Or(ref workerProjectionCatalogsReady, bit);
+            else Interlocked.And(ref workerProjectionCatalogsReady, ~bit);
+        }
+        socketServer.OnClientDisconnectedForGeneration += _ => Interlocked.Exchange(ref workerProjectionCatalogsReady, 0);
         // Source-derived geometry/sprite registry. Stale or missing resources keep
         // display ownership in Flash until the paired native resources are ready.
         CF7Launcher.Guardian.WorldCompositor.BulletVisualCatalog bulletVisualCatalog = null;
@@ -1590,6 +1597,15 @@ class Program
             return 1;
         }
         frameTask.ConfigureRayLighting(rayLightingCatalog);
+        string workerSceneLightDigest = workerPolicy?.Projection == null ? null
+            : CF7Launcher.Guardian.WorldCompositor.SceneLightCatalog.Load(projectRoot).Sha256;
+        string rayCatalogBinding = CF7Launcher.ArenaWorker.WorkerProjectionPolicy.Digest(new Newtonsoft.Json.Linq.JObject {
+            ["styles"] = new Newtonsoft.Json.Linq.JArray(CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.Styles),
+            ["lighting"] = rayLightingCatalog.Sha256,
+            ["maxArcs"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ArcLimit,
+            ["drawLimit"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.DrawLimit,
+            ["configLimit"] = CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ConfigLimit,
+            ["channelVersion"] = 1, ["lightingVersion"] = 1 });
         socketServer.OnClientDisconnectedForGeneration += frameTask.ResetBulletVisualShadowForGeneration;
         Func<bool,bool> publishBulletCapability = null;
         CF7Launcher.Guardian.WorldCompositor.BulletCapabilityPublisher bulletCapabilityPublisher = null;
@@ -1621,10 +1637,20 @@ class Program
                     LogManager.Log("event=bullet_visual_caps_send_failed generation=" + generation);
             };
             socketServer.OnClientReadyForGeneration += publishBulletCaps;
-            publishBulletCapability = bulletCapabilityPublisher.Publish;
+            publishBulletCapability = available => {
+                bool sent = bulletCapabilityPublisher.Publish(available);
+                ObserveWorkerCatalogReady(1, available, sent); return sent;
+            };
             if (socketServer.TryGetReadyGeneration(out int readyBulletGeneration))
                 publishBulletCaps(readyBulletGeneration);
         }
+
+        var visualWire = new VisualWireNegotiator(bulletVisualCatalog != null, socketServer.TrySendIfGen);
+        frameTask.SetVisualWire(visualWire);
+        TaskRegistry.RegisterVisualWire(router, visualWire);
+        socketServer.OnClientReadyForGeneration += visualWire.Ready;
+        socketServer.OnClientDisconnectedForGeneration += visualWire.Disconnected;
+        if (socketServer.TryGetReadyGeneration(out int readyWireGeneration)) visualWire.Ready(readyWireGeneration);
 
         // 性能决策引擎（主控模式：发送 P 指令到 AS2，AS2 端只采样+执行）
         var perfEngine = new PerfDecisionEngine(frameTask.FpsBuffer, socketServer);
@@ -1919,6 +1945,21 @@ class Program
                         form.BeginInvoke(new Action(panelHost.PrewarmCompositionHelp));
                 };
             panelHost.ConfigureHelpTutorialPreference(new HelpTutorialPreferenceCommand(userPrefs, userPrefs.Save));
+            // 第二个只读消费者：intelligence（情报档案）。独立 WebView2 profile 目录
+            // （同一 user data folder 不能被两个并存 environment 共享）；查询转发与
+            // 关闭裁决仍归 WebOverlayForm 既有权威，本段只接线不复制业务。
+            panelHost.ConfigureCompositionIntelligence(webDir,
+                Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile-intelligence"),
+                json => webOverlay.HandleCompositionIntelligenceMessage(json),
+                post => webOverlay.AcquireIntelligenceResponseChannel(post),
+                () => webOverlay.RestoreIntelligenceResponseChannel(),
+                deferPrewarm: form.BootstrapPanel != null);
+            if (form.BootstrapPanel != null)
+                form.BootstrapPanel.InitialNavigationCompleted += () =>
+                {
+                    if (!form.IsDisposed)
+                        form.BeginInvoke(new Action(panelHost.PrewarmCompositionIntelligence));
+                };
             webOverlay.SetPanelHost(panelHost);
             commandRouter.SetPanelHost(panelHost);
 
@@ -2179,7 +2220,8 @@ class Program
             drawLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.DrawLimit,
             configLimit=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ConfigLimit,
             channelVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.ChannelVersion,
-            lightingVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.LightingVersion
+            lightingVersion=CF7Launcher.Guardian.WorldCompositor.RayVisualCatalog.LightingVersion,
+            digest=rayCatalogBinding.Substring(7)
         })+"\0",generation);
         Action<int> readyRay=generation=> { Volatile.Write(ref rayCapsGeneration,generation);PublishRayCaps(false,generation); };
         socketServer.OnClientReadyForGeneration+=readyRay;
@@ -2187,7 +2229,8 @@ class Program
             if(Interlocked.CompareExchange(ref rayCapsGeneration,0,generation)==generation) worldCompositor.RayConnectionLost();
         };
         worldCompositor.RayCapabilityChanged=available=> {
-            int generation=Volatile.Read(ref rayCapsGeneration);return generation>0 && PublishRayCaps(available,generation);
+            int generation=Volatile.Read(ref rayCapsGeneration);bool sent=generation>0 && PublishRayCaps(available,generation);
+            ObserveWorkerCatalogReady(2, available, sent);return sent;
         };
         if(socketServer.TryGetReadyGeneration(out int readyRayGeneration)) readyRay(readyRayGeneration);
         frameTask.CombatFxObserved=worldCompositor.ObserveCombatFx;
@@ -2200,7 +2243,7 @@ class Program
                 fxStyles.Add(new { index=style.Index,linkage=style.Linkage,
                     kind=style.IsCasing?"casing":(style.IsImpact?"impact":"muzzle"),skipOriginYZero=style.SkipOriginYZero });
             bool PublishFxCaps(bool available,int generation) => socketServer.TrySendIfGen(JsonSerializer.Serialize(new {
-                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,styles=fxStyles
+                task="combat_fx_caps",version=1,generation,native=available,equipmentLights=available?2:0,equipmentRadialLights=available?1:0,sceneLightsVersion=available?1:0,digest=combatFxCatalog.Sha256,sceneLightsDigest=workerSceneLightDigest,styles=fxStyles
             })+"\0",generation);
             Action<int> readyFx=generation => {
                 Volatile.Write(ref fxCapsGeneration,generation);
@@ -2214,7 +2257,8 @@ class Program
             };
             worldCompositor.CombatFxCapabilityChanged=available => {
                 int generation=Volatile.Read(ref fxCapsGeneration);
-                return generation>0 && PublishFxCaps(available,generation);
+                bool sent=generation>0 && PublishFxCaps(available,generation);
+                ObserveWorkerCatalogReady(4, available, sent);return sent;
             };
             frameTask.CombatFxEventsReady=(events,generation) => {
                 var poses=new List<object>();
@@ -2332,6 +2376,8 @@ class Program
         TabletTask tabletTask = new TabletTask(socketServer);
         PlasticSurgeryTask plasticSurgeryTask = new PlasticSurgeryTask(socketServer);
         GaragePurchaseTask garagePurchaseTask = new GaragePurchaseTask(socketServer);
+        SubwaySelectTask subwaySelectTask = new SubwaySelectTask(socketServer);
+        EggStageSelectTask eggStageSelectTask = new EggStageSelectTask(socketServer);
         BookComicTask bookComicTask = new BookComicTask(socketServer);
         commandRouter.SetBookComicTask(bookComicTask);
         panelHost?.SetBookComicTask(bookComicTask);
@@ -2469,6 +2515,8 @@ class Program
                 if (panelName == "hairdresser") hairdresserTask.ClearPending();
                 if (panelName == "surgery") plasticSurgeryTask.ClearPending();
                 if (panelName == "garage") garagePurchaseTask.ClearPending();
+                if (panelName == "subway") subwaySelectTask.ClearPending();
+                if (panelName == "egg-stage-select") eggStageSelectTask.ClearPending();
                 if (panelName == "sleep") sleepTask.ClearPending();
                 if (panelName == "book-comic") bookComicTask.OnHostClosed(panelInstanceId);
                 if (panelName == "bookshelf") bookshelfTask.ClearPending();
@@ -2572,6 +2620,22 @@ class Program
             allowOwnedFlashRebind: workerPolicy == null,
             allowFaultInjection: workerPolicy?.AllowFaultInjection == true);
         arenaTask.SetCalibrationTask(arenaCalibrationTask);
+        WorkerProjectionNegotiator workerProjection = null;
+        if (workerPolicy?.Projection != null)
+        {
+            var bindings = WorkerProjectionPolicy.BindCatalogs(bulletVisualCatalog?.Sha256, combatFxCatalog?.Sha256,
+                rayCatalogBinding, workerSceneLightDigest);
+            workerProjection = new WorkerProjectionNegotiator(workerPolicy, bindings, socketServer.TrySendIfGen,
+                arenaCalibrationTask.RejectProjectionContract, clean: frameTask.HasCleanWorkerProjections,
+                startupReady: () => Volatile.Read(ref workerProjectionCatalogsReady) == 7);
+            arenaCalibrationTask.SetWorkerProjection(workerProjection);
+            frameTask.SetWorkerProjection(workerProjection);
+            TaskRegistry.RegisterWorkerProjection(router, workerProjection);
+            socketServer.OnClientReadyForGeneration += workerProjection.Ready;
+            socketServer.OnClientDisconnectedForGeneration += workerProjection.Disconnected;
+            if (socketServer.TryGetReadyGeneration(out int readyProjectionGeneration)) workerProjection.Ready(readyProjectionGeneration);
+            form.FormClosed += delegate { workerProjection.Dispose(); };
+        }
         WarlordBattleTask warlordBattleTask = new WarlordBattleTask(
             socketServer,
             projectRoot);
@@ -2781,7 +2845,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2801,6 +2865,8 @@ class Program
         webOverlay.SetHairdresserTask(hairdresserTask);
         webOverlay.SetPlasticSurgeryTask(plasticSurgeryTask);
         webOverlay.SetGaragePurchaseTask(garagePurchaseTask);
+        webOverlay.SetSubwaySelectTask(subwaySelectTask);
+        webOverlay.SetEggStageSelectTask(eggStageSelectTask);
         webOverlay.SetSleepTask(sleepTask);
         webOverlay.SetBookshelfTask(bookshelfTask);
         webOverlay.SetGymTrainingTask(gymTrainingTask);
@@ -2959,7 +3025,7 @@ class Program
             materialShopAccessTask.Dispose();
             npcShopTask.Dispose();
             craftingTask.Dispose();
-            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose(); bookComicTask.Dispose();
+            hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose(); bookComicTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose();
             settingsTask.Dispose();
             stageOutcomeTask.Dispose();
@@ -3041,7 +3107,7 @@ class Program
             try { materialShopAccessTask.Dispose(); } catch { }
             try { npcShopTask.Dispose(); } catch { }
             try { craftingTask.Dispose(); } catch { }
-            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose();
+            try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
             try { settingsTask.Dispose(); } catch { }
             try { stageOutcomeTask.Dispose(); } catch { }
@@ -3271,7 +3337,8 @@ class Program
                 () => frameTask.FpsBuffer.Performance);
             var controller = new ArenaWorkerController(workerPolicy, agentControlTask, arenaCalibrationTask,
                 () => processManager.FlashProcess, () => form.ForceExit(),
-                windowObservation: windowObserver.Capture, performanceObservation: windowObserver.CapturePerformance);
+                windowObservation: windowObserver.Capture, performanceObservation: windowObserver.CapturePerformance,
+                projection: workerProjection);
             httpServer.SetArenaWorkerControl(controller.Handle, controller.ResponseWritten);
         }
 
@@ -3985,7 +4052,7 @@ class Program
         try { materialShopAccessTask.Dispose(); } catch { }
         try { npcShopTask.Dispose(); } catch { }
         try { craftingTask.Dispose(); } catch { }
-        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); sleepTask.Dispose();
+        try { hairdresserTask.Dispose(); plasticSurgeryTask.Dispose(); garagePurchaseTask.Dispose(); subwaySelectTask.Dispose(); eggStageSelectTask.Dispose(); sleepTask.Dispose();
             bookshelfTask.Dispose(); gymTrainingTask.Dispose(); } catch { }
         try { worldCompositor.Dispose(); } catch { }
         try { settingsTask.Dispose(); } catch { }

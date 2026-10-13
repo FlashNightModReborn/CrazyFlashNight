@@ -9,6 +9,17 @@
             _root.最上层发布文字提示("睡眠面板暂时无法打开，请稍后重试。");
         return;
     }
+    // U7：隧道据点地铁按钮与彩蛋地图电脑的生产入口；连接失败不回流旧 SWF。
+    if (url == "flashswf/UI/地铁线路.swf") {
+        if (!org.flashNight.arki.ui.SubwaySelectPanelService.openPanel())
+            _root.最上层发布文字提示("地铁线路图暂时无法打开，请稍后重试。");
+        return;
+    }
+    if (url == "flashswf/UI/彩蛋地图关卡界面.swf") {
+        if (!org.flashNight.arki.ui.EggSelectPanelService.openPanel())
+            _root.最上层发布文字提示("彩蛋选关界面暂时无法打开，请稍后重试。");
+        return;
+    }
     _root.通用UI层.外部导入UI界面._visible = true;
     if(url != _root.通用UI层.外部UIURL){
         _root.通用UI层.外部UIURL = url;
@@ -82,6 +93,8 @@ org.flashNight.arki.ui.HairdresserPanelService.install();
 org.flashNight.arki.ui.PlasticSurgeryPanelService.install();
 org.flashNight.arki.ui.GaragePurchasePanelService.install();
 org.flashNight.arki.ui.SleepPanelService.install();
+org.flashNight.arki.ui.SubwaySelectPanelService.install();
+org.flashNight.arki.ui.EggSelectPanelService.install();
 org.flashNight.arki.ui.BookshelfPanelService.install();
 org.flashNight.arki.ui.GymPreviewPanelService.install();
 org.flashNight.arki.ui.GameSettingsPanelService.install();

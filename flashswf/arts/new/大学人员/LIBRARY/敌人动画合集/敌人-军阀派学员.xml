@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人动画合集/敌人-军阀派学员" itemID="69dd0402-00001791" linkageExportForAS="true" linkageIdentifier="敌人-军阀派学员" lastModified="1776364252" lastUniqueIdentifier="43">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人动画合集/敌人-军阀派学员" itemID="69dd0402-00001791" linkageExportForAS="true" linkageIdentifier="敌人-军阀派学员" lastModified="1776364252" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="敌人-军阀派学员" currentFrame="10">
+    <DOMTimeline name="敌人-军阀派学员" currentFrame="24">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false">
           <frames>
@@ -404,7 +404,7 @@ x轴保持距离 = 100;
             </DOMFrame>
             <DOMFrame index="88" duration="7" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="军阀派杂兵/sprite/军阀杂兵起身" name="man" centerPoint3DX="279.4" centerPoint3DY="158.85">
+                <DOMSymbolInstance libraryItemName="军阀派杂兵/sprite/军阀杂兵起身" name="man" selected="true" centerPoint3DX="279.4" centerPoint3DY="158.85">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.276901245117188" tx="3.4" ty="-62.35"/>
                   </matrix>

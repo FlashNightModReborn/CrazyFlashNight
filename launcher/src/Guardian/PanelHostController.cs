@@ -2623,15 +2623,15 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
-            // Candidate-only help uses the real game lifecycle and a separate
-            // composition endpoint. Never silently fall back during its acceptance.
-            bool compositionHelp = name == "help" && _compositionHelp != null;
+            // Composition panels (help / intelligence) use the real game lifecycle and a
+            // separate composition endpoint. Never silently fall back during acceptance.
+            CompositionHelpSurface compositionSurface = ResolveCompositionSurface(name);
             if(name=="loot" && _sceneSettlement?.CanAdmitSettlement(initDataJson)==true)
                 return OpenTransitionSettlement(provisional,initDataJson,instanceId,requireTrackedDelivery,trackedWebPostAccepted);
-            if (compositionHelp && !_compositionHelp.Ready)
+            if (compositionSurface != null && !compositionSurface.Ready)
             {
-                LogManager.Log("[CompositionHelp] open rejected: endpoint not ready");
-                PrepareCompositionHelp();
+                LogManager.Log("[CompositionPanel] open rejected: endpoint not ready panel=" + name);
+                PrepareCompositionSurface(compositionSurface);
                 return false;
             }
 
@@ -2648,7 +2648,7 @@ namespace CF7Launcher.Guardian
                 return false;
             }
 
-            _compositionHelpSelected = compositionHelp;
+            SetCompositionSurfaceSelected(compositionSurface);
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             PerfTrace.Mark("panel.open_start", name);
             try
@@ -2767,7 +2767,7 @@ namespace CF7Launcher.Guardian
 
         private void AbortOpenAttempt(bool pauseDelivered, string reason)
         {
-            bool compositionPauseOwned = _compositionHelpSelected;
+            bool compositionPauseOwned = AnyCompositionPanelSelected;
             ClearCommittedGeometry(reason);
             string abortClosePayload = BuildPanelClosePayload(
                 _activePanel,
@@ -3250,7 +3250,8 @@ namespace CF7Launcher.Guardian
             long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
             string closingName = _activePanel;
             string closingInstance = _activePanelInstanceId;
-            bool closingComposition = _compositionHelpSelected;
+            bool closingComposition = AnyCompositionPanelSelected;
+            CompositionHelpSurface closingCompositionSurface = SelectedOwnedCompositionSurface;
             bool closingSettlement = _transitionSettlementSelected;
             bool restoreCompositionFocus = false;
             PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
@@ -3295,7 +3296,7 @@ namespace CF7Launcher.Guardian
             try
             {
                 if (closingSettlement) restoreCompositionFocus = RetireTransitionSettlement();
-                else if (closingComposition) restoreCompositionFocus = RetireCompositionHelp();
+                else if (closingComposition) restoreCompositionFocus = RetireCompositionPanel();
                 else _web.SuspendAfterPanel(closingName);
             }
             catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
@@ -3340,8 +3341,11 @@ namespace CF7Launcher.Guardian
                 }
                 else if (closingComposition)
                 {
-                    if (restoreCompositionFocus && _compositionHelp.CanRestoreGameFocus)
-                        _compositionRestoreFocus?.Invoke("composition_help_close");
+                    if (restoreCompositionFocus
+                        && closingCompositionSurface != null
+                        && closingCompositionSurface.CanRestoreGameFocus)
+                        _compositionRestoreFocus?.Invoke(
+                            "composition_" + closingCompositionSurface.PanelName + "_close");
                 }
                 else _web.RestoreFlashInputFocusAfterPanelClose(closingName);
             }
@@ -3361,10 +3365,11 @@ namespace CF7Launcher.Guardian
         {
             if (_disposed) return;
             _disposed = true;
-            if (_compositionHelp != null)
+            if (_compositionHelp != null || _compositionIntelligence != null)
             {
-                try { if (_compositionHelpSelected) RetireCompositionHelp(); } catch { }
-                try { _compositionHelp.Dispose(); } catch { }
+                try { if (AnyCompositionPanelSelected) RetireCompositionPanel(); } catch { }
+                if (_compositionHelp != null) { try { _compositionHelp.Dispose(); } catch { } }
+                if (_compositionIntelligence != null) { try { _compositionIntelligence.Dispose(); } catch { } }
             }
             ClearActiveSettingsPreview();
             try
@@ -3615,7 +3620,7 @@ namespace CF7Launcher.Guardian
             try
             {
                 if (_transitionSettlementSelected) RetireTransitionSettlement();
-                else if (_compositionHelpSelected) RetireCompositionHelp();
+                else if (AnyCompositionPanelSelected) RetireCompositionPanel();
                 else _web.ForceIdleState(resetTag);
             }
             catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }

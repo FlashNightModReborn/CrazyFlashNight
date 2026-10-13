@@ -520,59 +520,11 @@ namespace CF7Launcher.Bus
                     // Frame 快车道：F{cam}\x01{hn}[\x02{fps}][\x03{uiState}][\x04{inputPayload}][\x05{bulletVisual}][\x06{combatFx}]
                     if (_frameTask == null) return;
 
-                    // 1) 从尾到头拆开装饰事件与子弹快照，保持旧帧段不变。
-                    string sceneFree=SplitFrameSection(message,'\x09',out string sceneLightPayload);
-                    string chainFree=SplitFrameSection(sceneFree,'\x08',out string chainVisualPayload);
-                    string rayFree=SplitFrameSection(chainFree,'\x07',out string rayVisualPayload);
-                    string fxFree=SplitFrameCombatFxSection(rayFree,out string combatFxPayload);
-                    string visualFree = SplitFrameVisualSection(fxFree, out string bulletVisualPayload);
-
-                    // 2) 提取 \x04 输入数据段
-                    string inputPayload = null;
-                    string fMsg = visualFree;
-                    int sep4 = visualFree.IndexOf('\x04', 1);
-                    if (sep4 >= 0)
-                    {
-                        inputPayload = (sep4 < visualFree.Length - 1) ? visualFree.Substring(sep4 + 1) : "";
-                        fMsg = visualFree.Substring(0, sep4);
-                    }
-
-                    // 3) 提取 \x03 UI 状态段
-                    string uiState = null;
-                    string body = fMsg;
-                    int sep3 = fMsg.IndexOf('\x03', 1);
-                    if (sep3 >= 0)
-                    {
-                        uiState = (sep3 < fMsg.Length - 1) ? fMsg.Substring(sep3 + 1) : "";
-                        body = fMsg.Substring(0, sep3);
-                    }
-
-                    // 4) 解析 cam / hn / fps
-                    int sep1 = body.IndexOf('\x01', 1);
-                    string cam, hn, fps;
-                    if (sep1 > 1)
-                    {
-                        cam = body.Substring(1, sep1 - 1);
-                        int sep2 = body.IndexOf('\x02', sep1 + 1);
-                        if (sep2 >= 0)
-                        {
-                            hn = body.Substring(sep1 + 1, sep2 - sep1 - 1);
-                            fps = (sep2 < body.Length - 1) ? body.Substring(sep2 + 1) : "";
-                        }
-                        else
-                        {
-                            hn = (sep1 < body.Length - 1) ? body.Substring(sep1 + 1) : "";
-                            fps = "";
-                        }
-                    }
-                    else
-                    {
-                        cam = body.Substring(1);
-                        hn = "";
-                        fps = "";
-                    }
-                    _frameTask.HandleRaw(cam, hn, fps, inputPayload, bulletVisualPayload, connectionGen,combatFxPayload,
-                        rayVisualPayload,chainVisualPayload,sceneLightPayload);
+                    FrameSections sections = FrameSections.Parse(message);
+                    if (!_frameTask.AcceptWorkerFrame(sections, connectionGen)) return;
+                    string uiState = sections.Ui;
+                    _frameTask.HandleRaw(sections.Camera, sections.HitNumbers, sections.Fps, sections.Input,
+                        sections.Bullets, connectionGen, sections.Combat, sections.Rays, sections.Chains, sections.Lights, workerAdmissionChecked:true);
                     // UI 状态段透传到 WebView2（与帧渲染同步）
                     if (uiState != null && uiState.Length > 0)
                     {
@@ -787,7 +739,7 @@ namespace CF7Launcher.Bus
             LogManager.Log(FormatJsonMessageLog(message));
 
             int respGen = connectionGen;
-            string response = _router.ProcessMessage(message, delegate(string asyncResp)
+            string response = _router.ProcessMessage(message, connectionGen, delegate(string asyncResp)
             {
                 if (asyncResp != null)
                     TrySendIfGen(asyncResp + "\0", respGen);

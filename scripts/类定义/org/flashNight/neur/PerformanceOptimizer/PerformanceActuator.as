@@ -39,8 +39,6 @@ class org.flashNight.neur.PerformanceOptimizer.PerformanceActuator {
         root._quality = renderQuality;
         if (root._quality != renderQuality) return false;
         root.__nativeHudDecorations = tier === 0;
-        if (tier === 0) root.显示列表.继续播放(root.显示列表.预设任务ID);
-        else root.显示列表.暂停播放(root.显示列表.预设任务ID);
 
         var es:Object = this._env.EffectSystem;
         var dr:Object = this._env.DeathEffectRenderer;

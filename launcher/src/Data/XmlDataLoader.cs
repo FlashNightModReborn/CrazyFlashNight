@@ -13,6 +13,12 @@ namespace CF7Launcher.Data
     public class DialogueGroup
     {
         public int TaskRequirement;
+        /// <summary>
+        /// &lt;Dialogue id="..."&gt; 属性原文；属性缺失时为空串（GetAttribute 语义）。
+        /// 同一文件跨 &lt;Dialogues&gt; 块会重复，所以定位一组必须「NPC 名 + 组 id」两个条件一起用。
+        /// 按存档的 Agent 对话覆盖层（AgentDialogueOverrides）据此定位要替换的组。
+        /// </summary>
+        public string GroupId = "";
         public JArray SubDialogues;
     }
 
@@ -99,6 +105,11 @@ namespace CF7Launcher.Data
                 foreach (XmlNode dialogueNode in dialogueNodes)
                 {
                     DialogueGroup group = new DialogueGroup();
+
+                    // 组 id 来自 <Dialogue> 的 XML 属性（非子元素），写法同下方 SubDialogue 的 id
+                    XmlElement dialogueElem = dialogueNode as XmlElement;
+                    if (dialogueElem != null)
+                        group.GroupId = dialogueElem.GetAttribute("id");
 
                     // TaskRequirement (Dialogue 的子元素, 可选, 默认 0)
                     XmlNode trNode = dialogueNode.SelectSingleNode("TaskRequirement");

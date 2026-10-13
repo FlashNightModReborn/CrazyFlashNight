@@ -11,7 +11,7 @@ $productionBlock = $productionBlock.Replace('Join-Path $env:APPDATA', 'Join-Path
 $DomainId = 'blood-sword'
 $runId = 'trace-fixture-current'
 $TimeoutSeconds = 1
-$AsyncBehaviorTimeoutSeconds = 30
+$AsyncBehaviorTimeoutSeconds = 1
 $ExpectedTracePatterns = @('(?m)^BloodSwordLifecycleTest Tests Passed: 56\r?$', '(?m)^BloodSwordLifecycleTest Tests Failed: 0\r?$')
 $startLine = "FocusedTestRunId $DomainId Start: $runId"
 $endLine = "FocusedTestRunId $DomainId Complete: $runId"
@@ -43,6 +43,13 @@ $results += Test-Case 'late-failure' "$startLine`n" ($good.Replace('Passed: 56',
 $results += Test-Case 'foreign-history' "$startLine`n" ($foreign + $good) $true
 $results += Test-Case 'duplicate-local' ("$startLine`n" + $good) '' $false
 $results += Test-Case 'only-complete' "$startLine`n" "$endLine`n" $false
+# Compilation and asynchronous behavior have independent budgets. A longer
+# behavior wait must not be silently capped by a short compilation timeout.
+$AsyncBehaviorTimeoutSeconds = 2
+$behaviorWatch = [Diagnostics.Stopwatch]::StartNew()
+$results += Test-Case 'behavior-budget-independent-of-compile' '' '' $false
+$behaviorWatch.Stop()
+if ($behaviorWatch.Elapsed.TotalSeconds -lt 1.8) { throw 'Behavior budget was capped by the compile timeout' }
 # Parse and invoke only the production parameter declaration: no Flash, scratch
 # writer, compilation or test-player process is reached by these range checks.
 $parseTokens = $null

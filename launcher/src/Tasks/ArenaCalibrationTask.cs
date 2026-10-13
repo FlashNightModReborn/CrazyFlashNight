@@ -71,6 +71,7 @@ namespace CF7Launcher.Tasks
             public JObject Identity;
             public string TransportError;
             public int SocketGeneration;
+            public JObject ProjectionBinding;
         }
 
         private readonly string _projectRoot;
@@ -97,6 +98,16 @@ namespace CF7Launcher.Tasks
         private Func<int, string, bool> _sendForGeneration;
         private Action<int> _retireGeneration;
         public event Action<string> TransportPoisoned;
+        private WorkerProjectionNegotiator _workerProjection;
+        internal void SetWorkerProjection(WorkerProjectionNegotiator projection) => _workerProjection = projection;
+        internal void RejectProjectionContract(string reason, int generation)
+        {
+            lock (_lock)
+                foreach (PendingRun pending in _pending.Values)
+                    if (pending.SocketGeneration == generation)
+                    { pending.TransportError = reason; pending.Done.Set(); }
+            PoisonTransport(reason, generation);
+        }
 
         private int _seq;
         private volatile bool _abortRequested;
@@ -321,7 +332,10 @@ namespace CF7Launcher.Tasks
                     else
                     {
                         _pending.Remove(fid);
-                        pending.Response = (JObject)msg.DeepClone();
+                        if (pending.ProjectionBinding != null && !MatchesProjectionBinding(result, pending.ProjectionBinding))
+                            pending.TransportError = "projection_result_contract_mismatch";
+                        else
+                            pending.Response = (JObject)msg.DeepClone();
                         pending.Done.Set();
                     }
                 }
@@ -593,11 +607,15 @@ namespace CF7Launcher.Tasks
             };
 
             int fid;
+            JObject command;
             lock (_lock)
             {
                 fid = ++_seq;
                 pending.SocketGeneration = _readyGeneration();
-                pending.Identity = ArenaRunIdentity.Capture(BuildFlashCommand(manifest, testCase, repeatIndex, runId, fid));
+                JObject projection = _workerProjection?.Status();
+                command = BuildFlashCommand(manifest, testCase, repeatIndex, runId, fid, projection);
+                pending.ProjectionBinding = CaptureProjectionBinding(projection);
+                pending.Identity = ArenaRunIdentity.Capture(command);
                 _pending[fid] = pending;
                 _currentCaseId = testCase.CaseId;
                 _currentRunId = runId;
@@ -613,7 +631,6 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
-            JObject command = BuildFlashCommand(manifest, testCase, repeatIndex, runId, fid);
             try
             {
                 if (pending.TransportError == null
@@ -683,7 +700,7 @@ namespace CF7Launcher.Tasks
             try { TransportPoisoned?.Invoke(reason); } catch { }
         }
 
-        private JObject BuildFlashCommand(BatchManifest manifest, CalibrationCase testCase, int repeatIndex, string runId, int fid)
+        private JObject BuildFlashCommand(BatchManifest manifest, CalibrationCase testCase, int repeatIndex, string runId, int fid, JObject projection)
         {
             JObject command = new JObject();
             command["task"] = "cmd";
@@ -709,6 +726,11 @@ namespace CF7Launcher.Tasks
                 : new JObject();
             command["blueRoster"] = ToFlashRoster(testCase.BlueRoster);
             command["redRoster"] = ToFlashRoster(testCase.RedRoster);
+            if (projection != null)
+            {
+                command["projectionContract"] = new JObject { ["version"] = 1,
+                    ["contractId"] = projection["contractId"], ["connectionGeneration"] = projection["connectionGeneration"] };
+            }
             return command;
         }
 
@@ -792,7 +814,33 @@ namespace CF7Launcher.Tasks
             row["blueUnitResults"] = NormalizeUnitResults(result["blueUnitResults"]);
             row["redUnitResults"] = NormalizeUnitResults(result["redUnitResults"]);
             row["errors"] = NormalizeErrors(result["errors"]);
+            if (_workerProjection != null)
+                foreach (string field in ProjectionResultFields)
+                    row[field] = result[field]?.DeepClone();
             return row;
+        }
+
+        private static readonly string[] ProjectionResultFields = { "presentationPolicy", "projectionConsumers",
+            "presentationContractVersion", "presentationContractId", "projectionInstallReceipt", "readinessKind",
+            "visualSeedRevision", "simulationRngConsumptionRevision" };
+
+        private static JObject CaptureProjectionBinding(JObject projection)
+        {
+            if (projection == null) return null;
+            return new JObject { ["presentationPolicy"] = projection.SelectToken("policy.presentation")?.DeepClone(),
+                ["projectionConsumers"] = projection.SelectToken("policy.projectionConsumers")?.DeepClone(),
+                ["presentationContractVersion"] = 1, ["presentationContractId"] = projection["contractId"]?.DeepClone(),
+                ["projectionInstallReceipt"] = projection["installReceipt"]?.DeepClone(),
+                ["readinessKind"] = projection.SelectToken("policy.readinessKind")?.DeepClone(),
+                ["visualSeedRevision"] = projection.SelectToken("policy.visualSeedRevision")?.DeepClone(),
+                ["simulationRngConsumptionRevision"] = projection.SelectToken("policy.simulationRngConsumptionRevision")?.DeepClone() };
+        }
+
+        private static bool MatchesProjectionBinding(JObject result, JObject expected)
+        {
+            foreach (string field in ProjectionResultFields)
+                if (result[field] == null || !JToken.DeepEquals(result[field], expected[field])) return false;
+            return true;
         }
 
         private JObject BuildSyntheticResult(
@@ -812,6 +860,18 @@ namespace CF7Launcher.Tasks
             row["red"] = NormalizeSideSummary(null);
             row["blueUnitResults"] = new JArray();
             row["redUnitResults"] = new JArray();
+            if (_workerProjection != null)
+            {
+                JObject projection = _workerProjection.Status();
+                row["presentationPolicy"] = "full";
+                row["projectionConsumers"] = projection.SelectToken("policy.projectionConsumers")?.DeepClone();
+                row["presentationContractVersion"] = 1;
+                row["presentationContractId"] = projection["contractId"]?.DeepClone();
+                row["projectionInstallReceipt"] = projection["installReceipt"]?.DeepClone();
+                row["readinessKind"] = "arena.presented.v1";
+                row["visualSeedRevision"] = WorkerProjectionPolicy.VisualRevision;
+                row["simulationRngConsumptionRevision"] = WorkerProjectionPolicy.SimulationRevision;
+            }
             JArray errors = new JArray();
             JObject error = new JObject();
             error["code"] = status;

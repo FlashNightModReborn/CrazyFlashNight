@@ -1,5 +1,12 @@
+# CerberusScheduler 验证记录
+
+现役实现为稳定 Task 的短期直接槽 / 长期索引堆；当前合同和按需验证见
+[AS2 基础设施施工](../../../../../../docs/AS2基础设施减法施工-2026-10-12.md#s1-时序与性能裁决)。
+下面是旧时间轮/节点池实现的历史记录，复现入口在 `org.flashNight.dev.schedulerLegacy.CerberusSchedulerTest`，
+不能用于证明现役实现。现役门执行 `scripts/run-scheduler-debt-tests.ps1`。
+
 // 手动模式（传入 false 禁用自动启动可视化测试）
-var tester = new org.flashNight.neur.ScheduleTimer.CerberusSchedulerTest(true);
+var tester = new org.flashNight.dev.schedulerLegacy.CerberusSchedulerTest(true);
 tester.runAllUnitTests();  // 一键运行所有单元测试（含 FIX v1.2）
 
 

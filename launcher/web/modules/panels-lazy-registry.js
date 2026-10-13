@@ -199,6 +199,10 @@
     // ── 医务室整形（共享身份控件与稳定取景，AS2 权威提交）──
     Panels.registerLazy('garage', ['modules/panel-runtime.js', 'modules/garage-purchase-runtime.js', 'modules/garage-purchase.js'], noop);
 
+    // ── U7 地铁线路与彩蛋地图选关：AS2 保留门槛/目的地/进关权威 ──
+    Panels.registerLazy('subway', ['modules/panel-runtime.js', 'modules/subway-select-runtime.js', 'modules/subway-select.js'], noop);
+    Panels.registerLazy('egg-stage-select', ['modules/panel-runtime.js', 'modules/egg-stage-select-runtime.js', 'modules/egg-stage-select.js'], noop);
+
     Panels.registerLazy('surgery',
         ['modules/panel-runtime.js', 'modules/asset-timeline.js', 'modules/dressup-doll-renderer.js',
          'modules/character-identity-controls.js', 'modules/character-appearance-preview.js',

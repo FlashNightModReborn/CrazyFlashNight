@@ -46,9 +46,9 @@ class org.flashNight.neur.PerformanceOptimizer.test.PerformanceActuatorTest {
             check(m.actuator.apply(tier,0,quality) === true && m.root._quality == quality,
                 "显式画质不受旧 LOW 预设限制："+quality);
         }
-        check(m.display.playing && m.root.__nativeHudDecorations,"非 LOW 继续播放并启用既有 HUD 装饰");
+        check(!m.display.playing && m.root.__nativeHudDecorations,"非 LOW 启用原生 HUD 装饰且不触碰旧显示列表");
         m.actuator.apply(1,0,"LOW");
-        check(!m.display.playing && !m.root.__nativeHudDecorations,"LOW 使用既有显示列表与装饰预算");
+        check(!m.display.playing && !m.root.__nativeHudDecorations,"LOW 关闭原生 HUD 装饰且不触碰旧显示列表");
         m.actuator.apply(0,0,"HIGH");
         check(m.es.maxEffectCount==20 && m.es.maxScreenEffectCount==20 && m.shell.limit==25
             && m.root.发射效果上限==15 && m.trail.q==0,"完整表现预算");

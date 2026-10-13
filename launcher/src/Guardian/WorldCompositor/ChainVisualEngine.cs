@@ -33,6 +33,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal bool NeedsResync { get { lock (_sync) return _needsResync; } }
         internal int Epoch { get { lock (_sync) return _epoch; } }
 
+        internal bool HasLiveGroups { get { lock (_sync) return _groups.Count != 0; } }
+
         internal BulletVisualInstance[] Consume(int generation, string payload, int styleCount)
         {
             lock (_sync)

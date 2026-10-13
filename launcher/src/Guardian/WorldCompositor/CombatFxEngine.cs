@@ -23,6 +23,16 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal int ImpactDropped { get; private set; }
         internal int LightDropped { get; private set; }
         internal int Epoch => _epoch;
+        internal bool HasDecorationState
+        {
+            get
+            {
+                if (_settled.Count != 0 || _groundHits != 0) return true;
+                foreach (var particle in _particles) if (particle.Phase != 0) return true;
+                foreach (var light in _lights) if (light.Ticks != 0) return true;
+                return false;
+            }
+        }
         internal CombatFxEngine(CombatFxCatalog catalog) { _catalog=catalog ?? throw new ArgumentNullException(nameof(catalog)); }
 
         // Existing particles keep their motion, settlement and acknowledgement

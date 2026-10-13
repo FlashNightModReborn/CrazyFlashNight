@@ -14,6 +14,10 @@
     var COMMAND = /^(snapshot|preview|commit|tooltip|detach)$/;
     var OPERATION = /^(enhance|convert|install_tier|install_mod|replace_mod|detach_mod|detach_all_mods)$/;
     var own = Object.prototype.hasOwnProperty;
+    // 数量字段（materials count/owned/before/delta/after 与 materialShortage
+    // required/owned/missing）统一上限 2^53-1：与 AS2 Number 精确整数边界一致。
+    // 等级/索引/revision/slot/epoch 仍为 32 位 int。
+    var MAX_QUANTITY = 9007199254740991;
 
     function safeToken(value) {
         value = String(value || '');
@@ -188,7 +192,7 @@
                 || !identityText(value.itemName, 256)
                 || !identityText(value.displayName, 256)
                 || !identityText(value.icon, 256)
-                || !integer(value.owned, 0, 2147483647)
+                || !integer(value.owned, 0, MAX_QUANTITY)
                 || typeof value.available !== 'boolean'
                 || !text(value.reason, 256, true)) return false;
         if (!isMod) return identityText(value.tierName, 64);
@@ -225,7 +229,7 @@
                     || !identityText(row.displayName, 256)
                     || !identityText(row.icon, 256)
                     || names[row.itemName]
-                    || !integer(row.count, 0, 2147483647)) return false;
+                    || !integer(row.count, 0, MAX_QUANTITY)) return false;
             names[row.itemName] = true;
         }
         return true;
@@ -268,10 +272,10 @@
                     || !identityText(row.displayName, 256)
                     || !identityText(row.icon, 256)
                     || names[row.itemName]
-                    || !integer(row.before, 0, 2147483647)
-                    || !integer(row.delta, -2147483648, 2147483647)
+                    || !integer(row.before, 0, MAX_QUANTITY)
+                    || !integer(row.delta, -MAX_QUANTITY, MAX_QUANTITY)
                     || row.delta === 0
-                    || !integer(row.after, 0, 2147483647)
+                    || !integer(row.after, 0, MAX_QUANTITY)
                     || row.before + row.delta !== row.after) return false;
             names[row.itemName] = true;
         }
@@ -391,8 +395,8 @@
             var shortage = data.materialShortage;
             if (cmd !== 'preview' || !payload || payload.operation !== 'enhance' || data.error !== 'insufficient_material'
                     || !shortage || Object.keys(shortage).length !== 4 || shortage.itemName !== '强化石'
-                    || !integer(shortage.required, 1, 2147483647) || !integer(shortage.owned, 0, 2147483647)
-                    || !integer(shortage.missing, 1, 2147483647) || shortage.required <= shortage.owned
+                    || !integer(shortage.required, 1, MAX_QUANTITY) || !integer(shortage.owned, 0, MAX_QUANTITY)
+                    || !integer(shortage.missing, 1, MAX_QUANTITY) || shortage.required <= shortage.owned
                     || shortage.missing !== shortage.required - shortage.owned) return false;
         }
         return !!data && data.success === false

@@ -57,7 +57,7 @@ TagManager.checkModAvailability(item, itemData, modName);
 ### 3. 测试支持
 ```actionscript
 // 运行完整测试套件
-EquipmentUtil.quickTest();
+org.flashNight.arki.item.equipment.EquipmentTestSuite.quickTest();
 
 // 查看重构信息
 trace(EquipmentUtil.getRefactoringInfo());
@@ -125,6 +125,6 @@ TierSystem.setDebugMode(true);
 
 ## 联系支持
 如遇到问题，请检查：
-1. 测试套件结果：`EquipmentUtil.quickTest()`
+1. 测试套件结果：`org.flashNight.arki.item.equipment.EquipmentTestSuite.quickTest()`
 2. 备份文件：`EquipmentUtil.as.backup`
 3. 重构文档：`REFACTORING_ROADMAP.md`

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian.WorldCompositor
@@ -16,6 +18,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly JObject _presets;
         internal readonly int SceneReserve;
         internal readonly float MaximumResponse;
+        internal string Sha256 { get; private set; }
         internal SceneLightCatalog(JObject root)
         {
             if (root?.Value<string>("schema") != "cf7-scene-lights.v1" || root["presets"] is not JObject presets)
@@ -26,7 +29,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
             MaximumResponse = (float)Number(root,"maximumResponse",.78,0,.8);
             foreach (var p in _presets.Properties()) Resolve(new JObject { ["Key"]="validate", ["Preset"]=p.Name }, 1);
         }
-        internal static SceneLightCatalog Load(string root) => new(JObject.Parse(File.ReadAllText(Path.Combine(root,RelativePath))));
+        internal static SceneLightCatalog Load(string root)
+        {
+            byte[] bytes = File.ReadAllBytes(Path.Combine(root, RelativePath));
+            var result = new SceneLightCatalog(JObject.Parse(Encoding.UTF8.GetString(bytes).TrimStart('\ufeff')));
+            result.Sha256 = Convert.ToHexStringLower(SHA256.HashData(bytes));
+            return result;
+        }
         private static readonly HashSet<string> Fields = new(StringComparer.Ordinal) {
             "Key","Preset","Shape","RenderMode","BudgetPool","Priority","X","Y","OffsetX","OffsetY","Angle",
             "Radius","Length","HalfWidth","Energy","BaseEnergy","Color","Color2","Animation","Amplitude","Rate","Phase","SweepAngle",

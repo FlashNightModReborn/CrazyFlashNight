@@ -33,7 +33,7 @@
     },
     {
       "file": "launcher/web/css/workbench/skins.css",
-      "ceiling": 10,
+      "ceiling": 1,
       "classification": "migration-debt",
       "reason": "Legacy skin rules still override structural declarations in the unlayered bundle.",
       "exitCondition": "Delete each override when the corresponding skin becomes token-only and computed-style fixtures stay unchanged."
@@ -66,6 +66,13 @@
       "exceptionId": "WB-HIDDEN-001",
       "reason": "The terminal unlayered semantic-hidden rule must outrank historical unlayered visible display declarations.",
       "exitCondition": "Remove only after feature and skin CSS is layered and computed display, hitbox and Tab matrices pass without the exception."
+    },
+    {
+      "file": "launcher/web/css/panels/npcshop.css",
+      "ceiling": 9,
+      "classification": "migration-debt",
+      "reason": "NPC 商店结算/帮助 CTA 与帮助钮的优先级覆盖从 skins.css 迁来，仍需压过工作台共享按钮态声明。",
+      "exitCondition": "商店二级页按钮改为组件化状态类、不再依赖优先级覆盖后删除。"
     }
   ]
 }

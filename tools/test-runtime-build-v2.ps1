@@ -178,6 +178,15 @@ try {
     }
     Assert-Equal 'equipment tuning runner contract is policy-bound documentation' 'policy' `
         $repositoryInputOwners['tools/equipment-tuning/README.md']
+    foreach ($as2PolicyInput in @(
+        '.github/workflows/as2-artifact-ownership.yml',
+        'tools/audit-as2-class-embedding.js', 'tools/swf-metadata.js',
+        'tools/test-swf-metadata.js', 'tools/swf-function-sizes.js',
+        'tools/cf7-packer/pack.config.yaml'
+    )) {
+        Assert-Equal "AS2 ownership workflow and execution closure are policy-bound: $as2PolicyInput" 'policy' `
+            $repositoryInputOwners[$as2PolicyInput]
+    }
     if ($InputClassificationOnly) {
         Write-Host "Runtime v2 input classification passed: $script:checks checks; no build, signatures or certificate writes." -ForegroundColor Green
         return

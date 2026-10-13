@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using CF7Launcher.Bus;
 using CF7Launcher.Guardian.HitNumbers;
 using CF7Launcher.Guardian.WorldCompositor;
 
@@ -7,6 +9,8 @@ namespace CF7Launcher.Tasks
     public partial class FrameTask
     {
         private readonly object _projectileLock=new object();
+        private VisualWireNegotiator _visualWire;
+        internal void SetVisualWire(VisualWireNegotiator wire) => _visualWire = wire;
         private readonly RayVisualEngine _rayVisualEngine=new RayVisualEngine();
         private readonly ChainVisualEngine _chainVisualEngine=new ChainVisualEngine();
         private BulletVisualInstance[] _chainVisualItems=Array.Empty<BulletVisualInstance>();
@@ -59,6 +63,7 @@ namespace CF7Launcher.Tasks
                 _rayVisualEngine.Reset();_chainVisualEngine.Reset();
                 _chainVisualItems=Array.Empty<BulletVisualInstance>();
                 _lastBulletEpoch=-1;
+                _lastOrdinaryCount=0;
                 RayVisualCleared?.Invoke();
             }
         }
@@ -137,12 +142,29 @@ namespace CF7Launcher.Tasks
         {
             lock(_projectileLock) {
                 if(generation<_projectileGeneration)return;
-                BulletVisualFrame visual=_bulletVisualShadow.Observe(payload,generation);
+                bool q1 = payload.StartsWith("Q1|", StringComparison.Ordinal);
+                BulletVisualFrame visual;
+                if (q1)
+                {
+                    long started = Stopwatch.GetTimestamp();
+                    if (!BulletVisualWireQ1.TryParse(payload, _bulletVisualStyleCount, out var parsed)
+                        || _visualWire?.CanDecodeQ1(generation, parsed.OfferId) != true)
+                    { BulletVisualRejected?.Invoke(); return; }
+                    if (parsed.Epoch < _minimumBulletEpoch) return;
+                    visual = _bulletVisualShadow.ObserveParsed(parsed, generation, payload.Length, started);
+                    if (visual != null && !_visualWire.ActivateQ1(generation)) return;
+                }
+                else
+                {
+                    if (_visualWire?.LegacyRetired(generation) == true) return;
+                    visual = _bulletVisualShadow.Observe(payload,generation);
+                }
                 if(visual!=null) {
                     if(visual.Epoch<_minimumBulletEpoch)return;
                     _lastBulletEpoch=visual.Epoch;
+                    _lastOrdinaryCount=visual.NormalCount;
                     DispatchProjectileBullets(visual,camera);
-                } else if(!BulletVisualFrame.TryParse(payload,_bulletVisualStyleCount,out _)) {
+                } else if(!q1 && !BulletVisualFrame.TryParse(payload,_bulletVisualStyleCount,out _)) {
                     BulletVisualRejected?.Invoke();
                 }
             }
@@ -153,6 +175,13 @@ namespace CF7Launcher.Tasks
                 var composed=_chainVisualItems.Length==0?ordinary:BulletVisualFrame.ComposeOwned(ordinary,_chainVisualItems);
                 BulletVisualObserved?.Invoke(composed,camera.OffsetX,camera.OffsetY,camera.Scale);
             }
+        }
+        private int _lastOrdinaryCount;
+        internal bool HasCleanWorkerProjections()
+        {
+            lock (_projectileLock)
+                if (_lastOrdinaryCount != 0 || _chainVisualEngine.HasLiveGroups || _rayVisualEngine.ActiveCount != 0) return false;
+            lock (_combatFxLock) return _combatFxEngine?.HasDecorationState != true;
         }
     }
 }

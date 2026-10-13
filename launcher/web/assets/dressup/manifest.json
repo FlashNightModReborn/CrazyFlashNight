@@ -22381,6 +22381,27 @@
       "sourceFile": "data/units/units.json#235",
       "virtual": true,
       "sourceUnitId": 235
+    },
+    "Andy工装裤": {
+      "use": "下装装备",
+      "icon": "Codex-Andy工装裤",
+      "dressup": "变装-Codex-Andy工装裤",
+      "helmet": false,
+      "fieldsByGender": {
+        "男": {
+          "屁股": "男变装-Codex-Andy工装裤屁股",
+          "左大腿": "男变装-Codex-Andy工装裤左大腿",
+          "右大腿": "男变装-Codex-Andy工装裤右大腿",
+          "小腿": "男变装-Codex-Andy工装裤小腿"
+        },
+        "女": {
+          "屁股": "女变装-Codex-Andy工装裤屁股",
+          "左大腿": "女变装-Codex-Andy工装裤左大腿",
+          "右大腿": "女变装-Codex-Andy工装裤右大腿",
+          "小腿": "女变装-Codex-Andy工装裤小腿"
+        }
+      },
+      "sourceFile": "防具_0-19级.xml"
     }
   },
   "skinKeys": {
@@ -151464,6 +151485,166 @@
           "height": 156,
           "originX": 50.4,
           "originY": 67.2
+        }
+      ]
+    },
+    "男变装-Codex-Andy工装裤右大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤右大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/0dfd07e8_1.png",
+        "width": 134,
+        "height": 318,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/0dfd07e8_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 134,
+          "height": 318,
+          "originX": 78.0,
+          "originY": 156.6
+        }
+      ]
+    },
+    "男变装-Codex-Andy工装裤小腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤小腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/9457d818_1.png",
+        "width": 109,
+        "height": 311,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/9457d818_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 109,
+          "height": 311,
+          "originX": 61.7,
+          "originY": 162.0
+        }
+      ]
+    },
+    "男变装-Codex-Andy工装裤屁股": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤屁股",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/fca62d3f_1.png",
+        "width": 193,
+        "height": 152,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/fca62d3f_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 193,
+          "height": 152,
+          "originX": 92.4,
+          "originY": 79.3
+        }
+      ]
+    },
+    "男变装-Codex-Andy工装裤左大腿": {
+      "covered": true,
+      "asset": {
+        "swf": "flashswf/arts/new/Codex专用素材.swf",
+        "symbolName": "Codex/Andy工装裤/男变装-Codex-Andy工装裤左大腿",
+        "conflict": false,
+        "matches": null
+      },
+      "uses": [
+        "下装装备"
+      ],
+      "items": [
+        "Andy工装裤"
+      ],
+      "sourceFiles": [
+        "防具_0-19级.xml"
+      ],
+      "export": {
+        "format": "png",
+        "zoom": 2,
+        "fps": 24.0,
+        "frameCount": 1,
+        "uri": "skins/6e33fc49_1.png",
+        "width": 141,
+        "height": 317,
+        "playback": "static",
+        "sourceFrameCount": 1
+      },
+      "frames": [
+        {
+          "uri": "skins/6e33fc49_1.png",
+          "frame": 1,
+          "sourceFrame": 1,
+          "width": 141,
+          "height": 317,
+          "originX": 57.9,
+          "originY": 160.6
         }
       ]
     }

@@ -629,6 +629,13 @@ check('shell-grid preparation rejects mixed legacy branches but permits closed p
     grid.shellGrid.length === 2);
 
 var fixtureRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'cf7-workbench-ratchet-'));
+// This temporary repository must never borrow the caller's worktree or index.
+var fixtureGitKeys = ['GIT_DIR', 'GIT_COMMON_DIR', 'GIT_WORK_TREE', 'GIT_INDEX_FILE'];
+var callerGitEnvironment = {};
+fixtureGitKeys.forEach(function(key) {
+    callerGitEnvironment[key] = process.env[key];
+    delete process.env[key];
+});
 try {
     childProcess.execFileSync('git', ['init', '-q'], {cwd:fixtureRoot});
     childProcess.execFileSync('git', ['config', 'user.email', 'ratchet@example.invalid'], {cwd:fixtureRoot});
@@ -651,7 +658,14 @@ try {
         && integrated.violations.length === 1
         && integrated.violations[0].touchedCount === 1);
 } finally {
-    fs.rmSync(fixtureRoot, {recursive:true, force:true});
+    try {
+        fs.rmSync(fixtureRoot, {recursive:true, force:true});
+    } finally {
+        fixtureGitKeys.forEach(function(key) {
+            if (callerGitEnvironment[key] === undefined) delete process.env[key];
+            else process.env[key] = callerGitEnvironment[key];
+        });
+    }
 }
 
 var longLexicalProbe = childProcess.spawnSync(

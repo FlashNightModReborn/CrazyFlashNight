@@ -15,6 +15,9 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
     private var testFailed:Number;   // 失败的测试数量
     private var currentType:String;  // 当前测试的树类型
 
+    public function getPassedCount():Number { return testPassed; }
+    public function getFailedCount():Number { return testFailed; }
+
     /**
      * 构造函数
      * 初始化测试统计变量。
@@ -46,6 +49,15 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 包括正确性测试和性能测试。
      * 改造后：循环测试所有树类型
      */
+    /** 快速正确性入口；大型树性能比较仍由 runTests 显式执行。 */
+    public function runFunctionalTests():Void {
+        var types:Array = [TreeSet.TYPE_AVL, TreeSet.TYPE_WAVL, TreeSet.TYPE_RB, TreeSet.TYPE_LLRB, TreeSet.TYPE_ZIP];
+        for (var i:Number = 0; i < types.length; i++) {
+            currentType = types[i];
+            runAllFunctionalTestsForCurrentType();
+        }
+    }
+
     public function runTests():Void {
         trace("开始 TreeSet 基座测试...");
 
@@ -96,7 +108,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
      * 创建新的 TreeSet 实例（使用当前类型）
      */
     private function newSet():TreeSet {
-        return new TreeSet(numberCompare, currentType);
+        return TreeSetTestFactory.create(numberCompare, currentType);
     }
 
     //====================== 原有正确性测试 ======================//
@@ -481,7 +493,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
         // 测试数组
         var arr:Array = [10, 3, 5, 20, 15, 7, 2];
         // 调用静态方法快速构建平衡树（使用当前类型）
-        var builtSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare, currentType);
+        var builtSet:TreeSet = TreeSetTestFactory.buildFromArray(arr, numberCompare, currentType);
 
         // 检查大小
         assert(builtSet.size() == arr.length, "[" + currentType + "] buildFromArray 后，size 应该等于数组长度 " + arr.length);
@@ -625,7 +637,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 // 计时
                 startTime = getTimer();
                 // build一个新的TreeSet（使用当前类型）
-                var tempSet:TreeSet = TreeSet.buildFromArray(arr, numberCompare, currentType);
+                var tempSet:TreeSet = TreeSetTestFactory.buildFromArray(arr, numberCompare, currentType);
                 var buildTime:Number = getTimer() - startTime;
                 totalBuildTime += buildTime;
 
@@ -749,7 +761,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                 var startTime:Number;
 
                 // 创建树
-                var tree:TreeSet = new TreeSet(numberCompare, treeType);
+                var tree:TreeSet = TreeSetTestFactory.create(numberCompare, treeType);
 
                 // 1) 添加性能
                 startTime = getTimer();
@@ -784,7 +796,7 @@ class org.flashNight.naki.DataStructures.TreeSetTest {
                     arr.push(k);
                 }
                 startTime = getTimer();
-                var builtTree:TreeSet = TreeSet.buildFromArray(arr, numberCompare, treeType);
+                var builtTree:TreeSet = TreeSetTestFactory.buildFromArray(arr, numberCompare, treeType);
                 var buildTime:Number = getTimer() - startTime;
                 buildTimes.push(buildTime);
                 trace("构建: " + buildTime + " ms");

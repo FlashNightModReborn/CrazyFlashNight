@@ -88,11 +88,12 @@
 .tablet-intro-wrap { position: absolute; inset: 0; z-index: 6; pointer-events: auto; }
 .tablet-intro-el { position: absolute; user-select: none; }
 /* 二阶段红字提示（原版"轻按屏幕唤起按键"文案位）；
-   ChillGSans = 寒蝉高黑体（工业窄黑，偏机械感），face weight 500 */
-.tablet-intro-wake { color: #ff2a2a; font-size: 1.5em; font-weight: 500;
+   ChillGSans = 寒蝉高黑体（工业窄黑，偏机械感），face weight 500；
+   警示红消费语义 token（ratchet：触线不留裸色值） */
+.tablet-intro-wake { color: var(--wb-semantic-danger); font-size: 1.5em; font-weight: 500;
   font-family: 'ChillGSans', 'Source Han Sans CN', 'Microsoft YaHei', sans-serif;
   letter-spacing: .08em;
-  text-align: center; line-height: 1.2; text-shadow: 0 0 6px rgba(255,42,42,.55); }
+  text-align: center; line-height: 1.2; text-shadow: 0 0 6px color-mix(in srgb, var(--wb-semantic-danger) 55%, transparent); }
 
 /* 转场期间禁点（原 XFL 按钮占用）与新视图 DOM 内容淡入/淡出：
    switching 期间旧 DOM 快速淡出（original 两栏内容淡出语义），转场提交后
@@ -104,10 +105,10 @@
    而不是再淡入一遍 */
 .tablet-stage.switching .tablet-view:not(.tablet-view-alt) {
   opacity: 0;
-  transition: opacity .19s ease;
+  transition: var(--wb-tablet-content-out-transition);
 }
 .tablet-stage.switching .tablet-view-alt.on {
-  transition: opacity .21s ease .17s;
+  transition: var(--wb-tablet-content-in-transition);
 }
 .tablet-dom { transition: var(--wb-tablet-content-transition); }
 .tablet-ambient { transition: var(--wb-tablet-content-transition); }
@@ -146,6 +147,10 @@
 .tablet-ambient-drone-wiggle {
   transform-origin: 50% 45%;
   animation: var(--wb-tablet-drone-wiggle);
+}
+/* 帧率封顶时（核显档）：无限摆动改步进，重绘率不再跟随显示器刷新率 */
+.perf-frame-capped .tablet-ambient-drone-wiggle {
+  animation: var(--wb-tablet-drone-wiggle-capped);
 }
 @keyframes tablet-drone-wiggle {
   from { transform: rotate(-1.1deg) scaleY(0.985); }

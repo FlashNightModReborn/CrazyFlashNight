@@ -106,8 +106,35 @@ function verifyGitRoot(projectRoot) {
   return { projectRoot: lines[0], gitCommonDir: lines[1] };
 }
 
+const PROJECTION_FIELDS = ["presentationPolicy", "projectionConsumers", "controlFrameFormat",
+  "visualSeedRevision", "simulationRngConsumptionRevision", "sessionVisualSeed"];
+const PROJECTION_CONSUMERS = ["playerHud", "ordinaryBullet", "ray", "chain", "combatDecoration", "sceneLighting", "equipmentLighting"];
+function normalizeProjection(value) {
+  if (value === undefined) return undefined;
+  if (!value || Array.isArray(value) || Object.keys(value).length !== PROJECTION_FIELDS.length
+      || PROJECTION_FIELDS.some((key) => !Object.hasOwn(value, key))
+      || value.presentationPolicy !== "full" || value.controlFrameFormat !== "f-visual-v1"
+      || value.visualSeedRevision !== "visual-event-v1" || value.simulationRngConsumptionRevision !== "legacy-global-consume-v1"
+      || !Number.isSafeInteger(value.sessionVisualSeed) || value.sessionVisualSeed < 1 || value.sessionVisualSeed > 2147483646) {
+    throw new Error("invalid D1/D2 Worker projection policy");
+  }
+  const input = value.projectionConsumers;
+  if (!input || Array.isArray(input) || Object.keys(input).length !== PROJECTION_CONSUMERS.length
+      || PROJECTION_CONSUMERS.some((key) => !Object.hasOwn(input, key) || !["full", "none"].includes(input[key]))
+      || input.sceneLighting !== "full" || input.equipmentLighting !== "full") {
+    throw new Error("invalid D1/D2 Worker consumers");
+  }
+  const result = {};
+  for (const key of PROJECTION_FIELDS) result[key] = key === "projectionConsumers"
+    ? Object.fromEntries(PROJECTION_CONSUMERS.map((name) => [name, input[name]])) : value[key];
+  return result;
+}
+
 function validateLaunch(launch) {
-  if (!launch || launch.schema !== "arena-worker.launch.v1") throw new Error("unsupported Worker launch schema");
+  if (!launch || !["arena-worker.launch.v1", "arena-worker.launch.v2"].includes(launch.schema)) throw new Error("unsupported Worker launch schema");
+  if (launch.schema === "arena-worker.launch.v2") {
+    normalizeProjection(Object.fromEntries(PROJECTION_FIELDS.map((key) => [key, launch[key]])));
+  } else if (PROJECTION_FIELDS.some((key) => Object.hasOwn(launch, key))) throw new Error("v1 Worker cannot request projection policy");
   safeId(launch.workerId, "workerId");
   safeId(launch.sessionEpoch, "sessionEpoch");
   normalizePerformance(launch.performance);
@@ -138,6 +165,8 @@ function validateOwner(owner, launch, expectedRuntime) {
   }
   assertTuple(owner, launch, ID_FIELDS.slice(0, 2));
   if (owner.slot !== launch.slot) throw new Error("Worker owner slot mismatch");
+  if (launch.schema === "arena-worker.launch.v2"
+      && !require("util").isDeepStrictEqual(owner.projectionConsumers, launch.projectionConsumers)) throw new Error("Worker owner consumers mismatch");
   if (normalizeFaultInjection(owner.allowFaultInjection) !== normalizeFaultInjection(launch.allowFaultInjection)) {
     throw new Error("Worker owner fault-injection policy mismatch");
   }
@@ -295,5 +324,5 @@ function createWorkerClient(launch, expectedRuntime, options = {}) {
 }
 
 module.exports = { CONTROL_HEADER, ID_FIELDS, ROOT_FIELDS, RUN_FIELDS, assertNoReparse, assertTuple, createWorkerClient,
-  normalizeFaultInjection, normalizePerformance, queryProcess, readJson, resolveInside, safeId, samePath, terminateExactProcess,
+  normalizeFaultInjection, normalizePerformance, normalizeProjection, PROJECTION_FIELDS, PROJECTION_CONSUMERS, queryProcess, readJson, resolveInside, safeId, samePath, terminateExactProcess,
   validateFaultRequest, validateLaunch, validateOwner, validateProcessObservation, verifyGitRoot, verifyProcessOwner };

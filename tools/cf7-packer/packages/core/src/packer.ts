@@ -6,6 +6,7 @@ import type { FilterResult, PackerOptions, PackResult, LayerSummary, PackConfig 
 import { OutputDirNotOwnedError } from "./types.js";
 import { isPathInsideRoot } from "./path-utils.js";
 import { getTagBlobInfo } from "./content-hash.js";
+import { spawnSync } from "node:child_process";
 import { validateGitRef, validateGitPath } from "./git-utils.js";
 import { createMinifyPathMatcher, minifyByExtension } from "./minify.js";
 import { applyEstimatedSizes } from "./summary.js";
@@ -222,6 +223,18 @@ export async function pack(
       size: packedEntries.get(entry.path)
     }))
   );
+
+  // Validate actual copied bytes once, sharing content metadata with local compile checks.
+  if (!dryRun && !cancelled && errors.length === 0 &&
+      filterResult.included.some(entry => entry.path === "scripts/asLoader.swf" || entry.path === "CRAZYFLASHER7MercenaryEmpire.swf")) {
+    const audit = spawnSync(process.execPath, [
+      path.join(repoRoot, "tools/audit-as2-class-embedding.js"), "--root", resolvedOutputDir,
+      "--files-json", "-", "--cache-dir", path.join(repoRoot, "tmp/swf-metadata-cache"), "--json"
+    ], { input: JSON.stringify(filterResult.included.map(entry => entry.path)), encoding: "utf8", maxBuffer: 2 * 1024 * 1024 });
+    if (audit.error || audit.status !== 0) {
+      errors.push({ path: resolvedOutputDir, error: "AS2 production class ownership: " + (audit.error?.message || audit.stdout || audit.stderr) });
+    }
+  }
 
   return {
     mode: dryRun ? "dry-run" : "execute",

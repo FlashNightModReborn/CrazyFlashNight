@@ -81,12 +81,12 @@ $focusedRun = @{
         'org.flashNight.arki.item.InventoryPanelServiceTest'
     )
     ExpectedTracePatterns = @(
-        '(?m)^EquipmentTuningServiceTest Tests Passed: 92\r?$'
+        '(?m)^EquipmentTuningServiceTest Tests Passed: 98\r?$'
         '(?m)^EquipmentTuningServiceTest Tests Failed: 0\r?$'
         '(?m)^InventoryPanelServiceTest Tests Passed: 194\r?$'
         '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'Equipment 92/92, Inventory 194/194'
+    SuccessSummary = 'Equipment 98/98, Inventory 194/194'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

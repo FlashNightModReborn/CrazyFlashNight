@@ -508,21 +508,7 @@ class org.flashNight.arki.item.EquipmentUtil {
         // 保留空实现以确保兼容性
     }
 
-    // ==================== 测试方法 ====================
 
-    /**
-     * 运行重构后的测试套件
-     */
-    public static function runTests():String {
-        return EquipmentTestSuite.runAllTests();
-    }
-
-    /**
-     * 快速测试并输出结果
-     */
-    public static function quickTest():Void {
-        EquipmentTestSuite.quickTest();
-    }
 
     // ==================== 版本信息 ====================
 

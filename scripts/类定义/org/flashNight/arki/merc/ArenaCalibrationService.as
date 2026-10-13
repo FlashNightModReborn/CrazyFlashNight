@@ -78,6 +78,9 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
 
         _inited = true;
     }
+    public static function isProjectionInstallClean():Boolean {
+        return _active == undefined && _pendingRun == undefined && _pendingStageRequest == undefined && !_transitionStarted;
+    }
 
     /** focused TestLoader 专用：只布置尚未 ready 的 pending run。 */
     public static function testOnlySetPendingRun(params:Object):Void {
@@ -145,6 +148,14 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
                 errors:[{code:"invalid_context", message:"exact run context is required"}]}, undefined);
             return;
         }
+        if (String(_root.cf7WorkerProjectionVersion || "") == "1"
+            && !org.flashNight.arki.render.WorkerProjectionPolicy.matchesRun(params.projectionContract)) {
+            sendResponse({task:"arena_calibration_response",callId:callId,success:false,status:"error",winner:"none",
+                errors:[{code:"projection_contract_mismatch",message:"run requires the installed Worker contract"}]},context);
+            return;
+        }
+        if (String(_root.cf7WorkerProjectionVersion || "") == "1")
+            context.projectionBinding = org.flashNight.arki.render.WorkerProjectionPolicy.captureResultBinding(params.projectionContract);
         // Capture a plain-object value before any asynchronous stage transition.
         params = ObjectUtil.clone(params);
         params._arenaContext = context;
@@ -2353,6 +2364,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
             var keys:Array = ["workerId", "sessionEpoch", "assignmentId", "attemptId",
                 "batchId", "manifestHash", "caseId", "caseHash", "runId", "repeatIndex"];
             for (var i:Number = 0; i < keys.length; i++) resp[keys[i]] = context[keys[i]];
+            if (context.projectionBinding != undefined) {
+                var projectionKeys:Array = ["presentationPolicy","projectionConsumers","presentationContractVersion",
+                    "presentationContractId","projectionInstallReceipt","readinessKind","visualSeedRevision",
+                    "simulationRngConsumptionRevision"];
+                for (var p:Number = 0; p < projectionKeys.length; p++)
+                    resp[projectionKeys[p]] = context.projectionBinding[projectionKeys[p]];
+            }
         }
         try {
             _root.server.sendSocketMessage(_json.stringifySafe(resp));

@@ -1,0 +1,16 @@
+﻿var schedulerDebtFinished:Boolean = false;
+_root.schedulerDebtComplete = function():Void {
+    if (schedulerDebtFinished) return;
+    schedulerDebtFinished = true;
+    trace("FocusedTestRunId scheduler-debt Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId scheduler-debt Start: __FOCUSED_RUN_ID__");
+try {
+    org.flashNight.dev.SchedulerDebtTest.runAllTests();
+    org.flashNight.dev.SchedulerDebtTest.runMovieClipTests(function():Void {
+        _root.schedulerDebtComplete();
+    });
+} catch (error) {
+    trace("[FAIL] SchedulerDebtTest unexpected exception: " + error);
+    _root.schedulerDebtComplete();
+}

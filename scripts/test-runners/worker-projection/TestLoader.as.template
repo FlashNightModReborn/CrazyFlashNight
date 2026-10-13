@@ -1,0 +1,8 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+trace("FocusedTestRunId worker-projection Start: __FOCUSED_RUN_ID__");
+_root.__workerProjectionRunId="__FOCUSED_RUN_ID__";
+org.flashNight.arki.render.WorkerProjectionTest.runAllTests();
+stop();

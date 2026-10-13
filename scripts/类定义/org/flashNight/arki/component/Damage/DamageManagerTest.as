@@ -1,9 +1,11 @@
-﻿import org.flashNight.arki.component.Damage.*;
+﻿import org.flashNight.dev.LegacyDamageManagerFactory;
+import org.flashNight.dev.LegacyDamageManager;
+import org.flashNight.arki.component.Damage.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.arki.component.Effect.HitNumberBatchProcessor;
 
 /**
- * DamageManager 测试类（扩展覆盖 9-16,17-32 区间）
+ * LegacyDamageManager 测试类（扩展覆盖 9-16,17-32 区间）
  * 目标：
  * 1. 当测试断言失败时，输出预期值与实际值的详细信息。
  * 2. 在每个测试案例中记录关键变量的状态，辅助问题定位。
@@ -104,10 +106,10 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
      * 运行所有测试（含对 9-16、17-32 区间的额外工厂覆盖）
      */
     public static function runTests():Void {
-        info("===== DamageManager 测试开始 =====");
+        info("===== LegacyDamageManager 测试开始 =====");
         
         // 1) 初始化基础工厂 (≤8 区间)
-        DamageManagerFactory.init();
+        LegacyDamageManagerFactory.init();
 
         // 2) 创建覆盖 9~16 个处理器的工厂
         //    这里以 9 个处理器为例，8 个与 Basic 相同，1 个使用 BaseDamageHandle 占位
@@ -124,7 +126,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
             ExecuteDamageHandle.getInstance(),   // 以上 8 个和 Basic 一致
             dummyHandle       // 占位处理器
         ];
-        DamageManagerFactory.registerFactory("Extended16", handles16, 64);
+        LegacyDamageManagerFactory.registerFactory("Extended16", handles16, 64);
 
         // 3) 创建覆盖 17~32 个处理器的工厂
         //    这里以 32 个处理器为例，8 个和 Basic 相同，其余 24 个用 BaseDamageHandle 占位
@@ -142,7 +144,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         for (var i:Number = 0; i < 24; i++) {
             handles32.push(dummyHandle);
         }
-        DamageManagerFactory.registerFactory("Extended32", handles32, 64);
+        LegacyDamageManagerFactory.registerFactory("Extended32", handles32, 64);
 
         // 4) 对三个工厂执行相同的测试案例
         runAllScenarios("Basic");
@@ -152,7 +154,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         // 5) Burst 队列契约 + reset 清零验证
         testBurstQueueContract();
 
-        info("===== DamageManager 测试结束 =====");
+        info("===== LegacyDamageManager 测试结束 =====");
     }
 
     /** focused runner 只执行本轮打击数字跨层契约，避免把历史性能循环混入门槛。 */
@@ -222,7 +224,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         // => 150 * 0.8571 = 128.57 => floor=128
         var expectedDamage1:Number = 128;
 
-        var manager1:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet1);
+        var manager1:LegacyDamageManager = LegacyDamageManagerFactory.getFactory(factoryName).getDamageManager(bullet1);
         manager1.overlapRatio = 1;
         manager1.dodgeState = "";
 
@@ -261,7 +263,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var damageResult2:DamageResult = new DamageResult();
         damageResult2.reset();
 
-        var manager2:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet2);
+        var manager2:LegacyDamageManager = LegacyDamageManagerFactory.getFactory(factoryName).getDamageManager(bullet2);
         manager2.overlapRatio = 1;
         manager2.dodgeState = "";
 
@@ -314,7 +316,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var damageResult3:DamageResult = new DamageResult();
         damageResult3.reset();
 
-        var manager3:DamageManager = DamageManagerFactory.getFactory(factoryName).getDamageManager(bullet3);
+        var manager3:LegacyDamageManager = LegacyDamageManagerFactory.getFactory(factoryName).getDamageManager(bullet3);
         manager3.overlapRatio = 1;
         manager3.dodgeState = "";
 
@@ -352,7 +354,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
         var preCreatedBullets:Array = [];
         var preCreatedTargets:Array = [];
         var tempDamageResult:DamageResult = new DamageResult();
-        var factory:DamageManagerFactory = DamageManagerFactory.getFactory(factoryName);
+        var factory:LegacyDamageManagerFactory = LegacyDamageManagerFactory.getFactory(factoryName);
 
         // 预生成 bullets 和 targets
         for (var i:Number = 0; i < iterations / 100; i++) {
@@ -390,7 +392,7 @@ class org.flashNight.arki.component.Damage.DamageManagerTest {
             });
         }
 
-        var tempManager:DamageManager;
+        var tempManager:LegacyDamageManager;
 
         var startTime:Number = getTimer();
 

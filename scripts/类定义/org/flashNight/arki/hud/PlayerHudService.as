@@ -158,7 +158,8 @@ class org.flashNight.arki.hud.PlayerHudService {
         forceFull = true;
         epoch++;
         FrameBroadcaster.setPlayerHudPayload(null);
-        if (_root.server.isSocketConnected === true) sendImmediate({v:1, epoch:epoch, seq:++sequence, full:true, visible:false});
+        if (_root.server.isSocketConnected === true && !org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud"))
+            sendImmediate({v:1, epoch:epoch, seq:++sequence, full:true, visible:false});
         wasVisible = false;
     }
     private static function configureProjection(p:Object):Void {
@@ -171,6 +172,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         forceFull = true;
     }
     public static function tick():Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
         if (!online) { connected = false; weaponVisualsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }

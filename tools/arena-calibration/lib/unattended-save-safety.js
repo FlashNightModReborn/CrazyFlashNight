@@ -90,9 +90,17 @@ function fileFingerprint(root, filePath, slot, kind) {
   };
 }
 
+// DurableFileWriter retains only these same-directory files for an exact target JSON.
+// Unknown suffixes, other slots and another root remain protected.
+function isTargetDurableArtifact(filePath, targetJsonPath) {
+  const full = path.resolve(filePath).toLowerCase(), target = path.resolve(targetJsonPath).toLowerCase();
+  return full.startsWith(target + ".") && /^\.(?:previous|tmp)-[a-f0-9]{32}$/.test(full.slice(target.length));
+}
+
 function captureProtectedSaveSnapshot(root, targetSlot, options = {}) {
   const savesDir = path.join(root, "saves");
   const files = [];
+  const targetArtifacts = [];
   // Walk save payloads and backups independently of the live JSON index. This
   // also covers custom slots and SOL-only slots without reading another origin.
   const walk = (directory) => {
@@ -106,7 +114,9 @@ function captureProtectedSaveSnapshot(root, targetSlot, options = {}) {
       } else if (entry.isFile() && /\.json(?:\..*)?$/i.test(entry.name)
           && !entry.name.startsWith(".") && entry.name !== `${targetSlot}.json`) {
         const slot = entry.name.split(".json")[0];
-        files.push(fileFingerprint(root, full, slot, "shadow_json"));
+        if (isTargetDurableArtifact(full, path.join(savesDir, `${targetSlot}.json`)))
+          targetArtifacts.push(fileFingerprint(root, full, targetSlot, "target_durable_artifact"));
+        else files.push(fileFingerprint(root, full, slot, "shadow_json"));
       }
     }
   };
@@ -118,7 +128,7 @@ function captureProtectedSaveSnapshot(root, targetSlot, options = {}) {
   }
   files.sort((a, b) => a.key.localeCompare(b.key));
   return {
-    capturedAt: new Date().toISOString(), targetSlot, files,
+    capturedAt: new Date().toISOString(), targetSlot, files, targetArtifacts,
     snapshotHash: sha256OfValue(files.map(({ key, sha256, size }) => ({ key, sha256, size }))),
   };
 }
@@ -141,6 +151,7 @@ function captureGlobalProtectionSnapshot(options) {
       suffixes: originSuffixes(swfOrigin).map((parts) => [...parts, `${target.slot}.sol`].join("/").toLowerCase()) };
   });
   const files = [];
+  const targetArtifacts = [];
   const seen = new Set();
   const walk = (directory, kind) => {
     if (!fs.existsSync(directory)) return;
@@ -152,6 +163,11 @@ function captureGlobalProtectionSnapshot(options) {
       else if (entry.isFile()) {
         if (kind === "flash_sol" && !/\.sol$/i.test(entry.name)) continue;
         const relative = path.relative(sharedRoot, full).split(path.sep).slice(1).join("/").toLowerCase();
+        const durableTarget = kind === "shadow_file" && allowed.find((target) => isTargetDurableArtifact(full, target.jsonPath));
+        if (durableTarget) {
+          targetArtifacts.push(fileFingerprint(directory, full, durableTarget.slot, "target_durable_artifact"));
+          continue;
+        }
         if (allowed.some((target) => kind === "flash_sol" ? target.suffixes.includes(relative) : target.jsonPath === full.toLowerCase())) continue;
         const key = full.toLowerCase();
         if (seen.has(key)) continue;
@@ -168,7 +184,7 @@ function captureGlobalProtectionSnapshot(options) {
   files.sort((a, b) => a.key.localeCompare(b.key));
   return { schema: "arena-worker.global-save-snapshot.v1", capturedAt: new Date().toISOString(),
     saveRoots: options.saveRoots.map((root) => path.resolve(root)), sharedObjectsRoot: sharedRoot,
-    allowedTargets: allowed.map(({ swfOrigin, slot }) => ({ swfOrigin, slot })), files,
+    allowedTargets: allowed.map(({ swfOrigin, slot }) => ({ swfOrigin, slot })), files, targetArtifacts,
     snapshotHash: sha256OfValue(files.map(({ key, sha256, size }) => ({ key, sha256, size }))) };
 }
 

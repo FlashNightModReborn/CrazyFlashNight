@@ -16,6 +16,14 @@
     "sessionEpoch": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
     "assignmentId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
     "attemptId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$" },
+    "presentationPolicy": { "const": "full" },
+    "presentationContractVersion": { "const": 1 },
+    "presentationContractId": { "$ref": "#/$defs/projectionContractId" },
+    "projectionConsumers": { "$ref": "#/$defs/projectionConsumers" },
+    "projectionInstallReceipt": { "$ref": "#/$defs/projectionInstallReceipt" },
+    "readinessKind": { "const": "arena.presented.v1" },
+    "visualSeedRevision": { "const": "visual-event-v1" },
+    "simulationRngConsumptionRevision": { "const": "legacy-global-consume-v1" },
     "batchId": { "type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$" },
     "manifestHash": { "$ref": "#/$defs/sha256" },
     "caseId": { "type": "string", "minLength": 1 },
@@ -74,9 +82,56 @@
     "workerId": ["sessionEpoch", "assignmentId", "attemptId"],
     "sessionEpoch": ["workerId", "assignmentId", "attemptId"],
     "assignmentId": ["workerId", "sessionEpoch", "attemptId"],
-    "attemptId": ["workerId", "sessionEpoch", "assignmentId"]
+    "attemptId": ["workerId", "sessionEpoch", "assignmentId"],
+    "presentationPolicy": ["workerId", "sessionEpoch", "assignmentId", "attemptId", "presentationContractVersion", "presentationContractId", "projectionConsumers", "projectionInstallReceipt", "readinessKind", "visualSeedRevision", "simulationRngConsumptionRevision"],
+    "presentationContractVersion": ["presentationPolicy"],
+    "presentationContractId": ["presentationPolicy"],
+    "projectionConsumers": ["presentationPolicy"],
+    "projectionInstallReceipt": ["presentationPolicy"],
+    "readinessKind": ["presentationPolicy"],
+    "visualSeedRevision": ["presentationPolicy"],
+    "simulationRngConsumptionRevision": ["presentationPolicy"]
   },
   "$defs": {
+    "projectionContractId": { "type": "string", "pattern": "^[0-9a-f]{32}$" },
+    "projectionConsumers": {
+      "type": "object", "additionalProperties": false,
+      "required": ["playerHud", "ordinaryBullet", "ray", "chain", "combatDecoration", "sceneLighting", "equipmentLighting"],
+      "properties": {
+        "playerHud": { "enum": ["full", "none"] }, "ordinaryBullet": { "enum": ["full", "none"] },
+        "ray": { "enum": ["full", "none"] }, "chain": { "enum": ["full", "none"] },
+        "combatDecoration": { "enum": ["full", "none"] },
+        "sceneLighting": { "const": "full" }, "equipmentLighting": { "const": "full" }
+      }
+    },
+    "projectionCatalogBindings": {
+      "type": "object", "additionalProperties": false,
+      "required": ["bulletStyles", "combatFxStyles", "rayStyles", "sceneLights"],
+      "properties": {
+        "bulletStyles": { "$ref": "#/$defs/sha256" }, "combatFxStyles": { "$ref": "#/$defs/sha256" },
+        "rayStyles": { "$ref": "#/$defs/sha256" }, "sceneLights": { "$ref": "#/$defs/sha256" }
+      }
+    },
+    "projectionInstallReceipt": {
+      "type": "object", "additionalProperties": false,
+      "required": ["task", "version", "workerId", "sessionEpoch", "connectionGeneration", "contractId", "sequence",
+        "presentation", "readinessKind", "projectionConsumers", "controlFrameFormat", "ownership", "catalogBindings",
+        "visualSeedRevision", "simulationRngConsumptionRevision", "sessionVisualSeed", "policyDigest",
+        "installClockKind", "installEpoch", "installTick"],
+      "properties": {
+        "task": { "const": "worker_projection_committed" }, "version": { "const": 1 },
+        "workerId": { "$ref": "#/properties/workerId" }, "sessionEpoch": { "$ref": "#/properties/sessionEpoch" },
+        "connectionGeneration": { "type": "integer", "minimum": 1 },
+        "contractId": { "$ref": "#/$defs/projectionContractId" }, "sequence": { "const": 2 },
+        "presentation": { "const": "full" }, "readinessKind": { "const": "arena.presented.v1" },
+        "projectionConsumers": { "$ref": "#/$defs/projectionConsumers" }, "controlFrameFormat": { "const": "f-visual-v1" },
+        "ownership": { "const": "as2-gameplay-native-model-v1" }, "catalogBindings": { "$ref": "#/$defs/projectionCatalogBindings" },
+        "visualSeedRevision": { "const": "visual-event-v1" }, "simulationRngConsumptionRevision": { "const": "legacy-global-consume-v1" },
+        "sessionVisualSeed": { "type": "integer", "minimum": 1, "maximum": 2147483646 },
+        "policyDigest": { "$ref": "#/$defs/sha256" }, "installClockKind": { "const": "flashRootEnterFrame" },
+        "installEpoch": { "type": "integer", "minimum": 1 }, "installTick": { "type": "integer", "minimum": 1 }
+      }
+    },
     "presentationState": {
       "type": "object", "additionalProperties": false,
       "required": ["observed", "qualityApplied", "performanceLevel", "lastAppliedSoftU", "appliedCommand", "sceneEpoch", "paused", "frameRate"],

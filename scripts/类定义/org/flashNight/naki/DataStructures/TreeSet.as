@@ -7,8 +7,8 @@ import org.flashNight.gesh.string.*;
  * @class TreeSet
  * @package org.flashNight.naki.DataStructures
  * @description 统一的平衡搜索树基座/外观类（门面模式）。
- *              内部持有一个 IBalancedSearchTree 实现，构造时决定使用 AVL / WAVL / RedBlack / Zip 中的哪一种。
- *              对外 API 保持不变，实现多种平衡树的透明切换。
+ *              生产固定构建 WAVL；测试可通过内部参数注入其他 IBalancedSearchTree 实现。
+ *              保留有序集合 API 和比较器合同；非 WAVL 工厂在独立测试根中。
  *
  * 【设计说明】
  * TreeSet 实现 IBalancedSearchTree 接口，使其可以：
@@ -72,20 +72,8 @@ class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree 
             cmpFn = compareFunction;
         }
 
-        // 根据类型创建对应的树实现
-        if (treeType == TYPE_AVL) {
-            _impl = new AVLTree(cmpFn);
-        } else if (treeType == TYPE_WAVL) {
-            _impl = new WAVLTree(cmpFn);
-        } else if (treeType == TYPE_RB) {
-            _impl = new RedBlackTree(cmpFn);
-        } else if (treeType == TYPE_LLRB) {
-            _impl = new LLRedBlackTree(cmpFn);
-        } else if (treeType == TYPE_ZIP) {
-            _impl = new ZipTree(cmpFn);
-        } else {
-            throw new Error("Unknown TreeSet type: " + treeType);
-        }
+        requireProductionType(treeType);
+        _impl = new WAVLTree(cmpFn);
     }
 
     /**
@@ -112,24 +100,15 @@ class org.flashNight.naki.DataStructures.TreeSet implements IBalancedSearchTree 
             cmpFn = compareFunction;
         }
 
-        // 根据类型调用对应实现的 buildFromArray
-        var impl:IBalancedSearchTree;
-        if (treeType == TYPE_AVL) {
-            impl = AVLTree.buildFromArray(arr, cmpFn);
-        } else if (treeType == TYPE_WAVL) {
-            impl = WAVLTree.buildFromArray(arr, cmpFn);
-        } else if (treeType == TYPE_RB) {
-            impl = RedBlackTree.buildFromArray(arr, cmpFn);
-        } else if (treeType == TYPE_LLRB) {
-            impl = LLRedBlackTree.buildFromArray(arr, cmpFn);
-        } else if (treeType == TYPE_ZIP) {
-            impl = ZipTree.buildFromArray(arr, cmpFn);
-        } else {
-            throw new Error("Unknown TreeSet type: " + treeType);
-        }
+        requireProductionType(treeType);
+        return new TreeSet(cmpFn, TYPE_WAVL, WAVLTree.buildFromArray(arr, cmpFn));
+    }
 
-        // 创建 TreeSet 包装器，直接传入已构建的树实现，避免创建多余的空树
-        return new TreeSet(cmpFn, treeType, impl);
+    /** 生产仅支持 WAVL；其他实现只允许测试根显式注入。 */
+    private static function requireProductionType(treeType:String):Void {
+        if (treeType != TYPE_WAVL) {
+            throw new Error("TreeSet production backend must be WAVL: " + treeType);
+        }
     }
 
     /**

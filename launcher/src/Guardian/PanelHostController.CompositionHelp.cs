@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
@@ -8,10 +9,67 @@ namespace CF7Launcher.Guardian
         private CompositionHelpSurface _compositionHelp;
         private bool _compositionHelpSelected;
         private bool _compositionHelpPreparing;
+        private CompositionHelpSurface _compositionIntelligence;
+        private bool _compositionIntelligenceSelected;
+        private bool _compositionIntelligencePreparing;
         private Action<bool> _compositionPanelState;
         private Func<string, bool> _compositionRestoreFocus;
+        private Action<Action<string>> _intelligenceAcquireResponseChannel;
+        private Action _intelligenceRestoreResponseChannel;
 
         internal bool CompositionHelpOwnsInput => SelectedCompositionSurface!=null;
+
+        // help 之外的第二个只读消费者：intelligence（情报档案）。
+        // 它的关闭信封（含返回装备 reason）与只读查询都转发给 WebOverlayForm 的既有
+        // HandlePanelMessage 权威；本控制器只负责实例绑定、暂停与几何，不复制业务判定。
+        internal void ConfigureCompositionIntelligence(string webRoot, string profileRoot,
+            Action<string> forwardPanelMessage,
+            Action<Action<string>> acquireResponseChannel, Action restoreResponseChannel,
+            bool deferPrewarm = false)
+        {
+            if (_compositionIntelligence != null)
+                throw new InvalidOperationException("Intelligence surface already configured");
+            if (forwardPanelMessage == null) throw new ArgumentNullException("forwardPanelMessage");
+            if (acquireResponseChannel == null) throw new ArgumentNullException("acquireResponseChannel");
+            if (restoreResponseChannel == null) throw new ArgumentNullException("restoreResponseChannel");
+            _intelligenceAcquireResponseChannel = acquireResponseChannel;
+            _intelligenceRestoreResponseChannel = restoreResponseChannel;
+            _compositionIntelligence = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot,
+                CompositionPanelProfile.Intelligence);
+            _compositionIntelligence.CloseEnvelopeDelegated += envelope =>
+            {
+                if (_disposed || !_compositionIntelligenceSelected || _activePanel != "intelligence") return;
+                if (envelope.Value<string>("panelInstanceId") != _activePanelInstanceId) return;
+                LogManager.Log("[CompositionIntelligence] close delegated reason="
+                    + (envelope.Value<string>("reason") ?? "ordinary"));
+                forwardPanelMessage(envelope.ToString(Newtonsoft.Json.Formatting.None));
+            };
+            _compositionIntelligence.InboundPanelMessage += message =>
+            {
+                if (_disposed || !_compositionIntelligenceSelected || _activePanel != "intelligence") return;
+                forwardPanelMessage(message.ToString(Newtonsoft.Json.Formatting.None));
+            };
+            if (!deferPrewarm) PrepareCompositionIntelligence();
+        }
+
+        internal void PrewarmCompositionIntelligence() => PrepareCompositionIntelligence();
+
+        private async void PrepareCompositionIntelligence()
+        {
+            if (_disposed || _compositionIntelligence == null || _compositionIntelligencePreparing
+                || _compositionIntelligence.Ready) return;
+            _compositionIntelligencePreparing = true;
+            try
+            {
+                await _compositionIntelligence.PrepareAsync();
+                if (!_disposed) LogManager.Log("[CompositionIntelligence] ready; normal game backend");
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[CompositionIntelligence] unavailable: " + ex.Message);
+            }
+            finally { _compositionIntelligencePreparing = false; }
+        }
 
         internal void ConfigureHelpTutorialPreference(HelpTutorialPreferenceCommand command)
         {
@@ -55,6 +113,37 @@ namespace CF7Launcher.Guardian
             finally { _compositionHelpPreparing = false; }
         }
 
+        private CompositionHelpSurface ResolveCompositionSurface(string name)
+        {
+            if (name == "help") return _compositionHelp;
+            if (name == "intelligence") return _compositionIntelligence;
+            return null;
+        }
+
+        private CompositionHelpSurface SelectedOwnedCompositionSurface
+            => _compositionHelpSelected ? _compositionHelp
+                : _compositionIntelligenceSelected ? _compositionIntelligence : null;
+
+        internal bool AnyCompositionPanelSelected => SelectedOwnedCompositionSurface != null;
+
+        private void PrepareCompositionSurface(CompositionHelpSurface surface)
+        {
+            if (ReferenceEquals(surface, _compositionIntelligence)) PrepareCompositionIntelligence();
+            else PrepareCompositionHelp();
+        }
+
+        // 选中状态只由 DoOpen/Retire 写入；intelligence 选中即接管其只读查询的回包通道，
+        // 退休时归还 WebOverlay，避免回包落入没有该页面的旧 Web 文档。
+        private void SetCompositionSurfaceSelected(CompositionHelpSurface surface)
+        {
+            _compositionHelpSelected = surface != null && ReferenceEquals(surface, _compositionHelp);
+            bool intelligence = surface != null && ReferenceEquals(surface, _compositionIntelligence);
+            if (intelligence == _compositionIntelligenceSelected) return;
+            _compositionIntelligenceSelected = intelligence;
+            if (intelligence) _intelligenceAcquireResponseChannel?.Invoke(json => surface.TryPost(json));
+            else _intelligenceRestoreResponseChannel?.Invoke();
+        }
+
         private int PanelSurfaceGeneration => SelectedCompositionSurface?.SessionGeneration ?? _web.PanelSessionGeneration;
         private IntPtr PanelSurfaceHandle => SelectedCompositionSurface?.Handle ?? (_web.IsHandleCreated ? _web.Handle : IntPtr.Zero);
         private bool ResumePanelSurface(Rectangle rect)
@@ -88,23 +177,25 @@ namespace CF7Launcher.Guardian
             => SelectedCompositionSurface!=null ? SelectedCompositionSurface.Replay(rect, generation, reason)
                 : _web.ReplayCommittedPanelPresentation(rect, generation, reason);
 
-        // Help exposes no game task or save authority. The separate, exact-instance
-        // tutorial preference command only changes a local launcher preference.
-        private bool RetireCompositionHelp()
+        // Composition panels expose no game task or save authority. The separate,
+        // exact-instance tutorial preference command only changes a local launcher
+        // preference; intelligence closes/queries stay with the existing Web authority.
+        private bool RetireCompositionPanel()
         {
-            if (!_compositionHelpSelected) return false;
-            bool restore = _compositionHelp.CanRestoreGameFocus;
-            try { _compositionHelp.Retire(); }
+            CompositionHelpSurface surface = SelectedOwnedCompositionSurface;
+            if (surface == null) return false;
+            bool restore = surface.CanRestoreGameFocus;
+            try { surface.Retire(); }
             finally
             {
-                _compositionHelpSelected = false;
+                SetCompositionSurfaceSelected(null);
                 _compositionPanelState?.Invoke(false);
                 if (!_web.ReleaseWebPanelPauseAfterFailedOpen())
-                    LogManager.Log("[CompositionHelp] pause release not delivered");
+                    LogManager.Log("[CompositionPanel] pause release not delivered");
             }
             // A fresh endpoint is preheated; the retired controller can never own
-            // later input. Preparation failure leaves help unavailable, not legacy.
-            if (!_disposed) PrepareCompositionHelp();
+            // later input. Preparation failure leaves the panel unavailable, not legacy.
+            if (!_disposed) PrepareCompositionSurface(surface);
             return restore;
         }
     }

@@ -1,4 +1,5 @@
-﻿import org.flashNight.neur.InputCommand.InputEvent; 
+﻿import org.flashNight.neur.InputCommand.CommandDFAMatcher;
+import org.flashNight.neur.InputCommand.InputEvent;
 import org.flashNight.neur.InputCommand.InputHistoryBuffer;
 import org.flashNight.neur.InputCommand.InputSampler;
 import org.flashNight.neur.InputCommand.CommandDFA;
@@ -29,7 +30,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
     // ========== 测试实例 ==========
 
     private var registry:CommandRegistry;
-    private var dfa:CommandDFA;
+    private var dfa:CommandDFAMatcher;
 
     // ========== 构造函数 ==========
 
@@ -37,6 +38,9 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.passCount = 0;
         this.failCount = 0;
     }
+
+    public function getPassedCount():Number { return passCount; }
+    public function getFailedCount():Number { return failCount; }
 
     // ========== 主入口 ==========
 
@@ -88,7 +92,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         this.registry.loadConfig(CommandConfig.getBarehanded());
         this.registry.compile();
 
-        this.dfa = this.registry.getDFA();
+        this.dfa = new CommandDFAMatcher(64, this.registry.getDFA());
 
         trace("Registered commands: " + this.dfa.getCommandCount());
         this.dfa.dump();
@@ -613,7 +617,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
         // 创建一个专用的测试 DFA，包含前缀冲突的招式
         // 短招: [FORWARD, A_PRESS] → "短招" (priority: 5)
         // 长招: [FORWARD, A_PRESS, B_PRESS] → "长招" (priority: 10)
-        var testDFA:CommandDFA = new CommandDFA(32);
+        var testDFA:CommandDFAMatcher = new CommandDFAMatcher(32);
 
         testDFA.registerCommand("短招", [InputEvent.FORWARD, InputEvent.A_PRESS], "短招", 5);
         testDFA.registerCommand("长招", [InputEvent.FORWARD, InputEvent.A_PRESS, InputEvent.B_PRESS], "长招", 10);
@@ -648,7 +652,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
 
         // 测试场景3：同一位置的优先级比较
         // 创建两个同长度但不同优先级的招式
-        var priorityDFA:CommandDFA = new CommandDFA(32);
+        var priorityDFA:CommandDFAMatcher = new CommandDFAMatcher(32);
         priorityDFA.registerCommand("低优先级", [InputEvent.DOWN, InputEvent.A_PRESS], "低优先级", 1);
         priorityDFA.registerCommand("高优先级", [InputEvent.DOWN, InputEvent.A_PRESS], "高优先级", 100);
         priorityDFA.build();
@@ -733,7 +737,7 @@ class org.flashNight.neur.InputCommand.InputCommandTest {
 
         // 创建包含长招的测试 DFA
         // 长招: [DOWN, DOWN_FORWARD, FORWARD, A_PRESS] → 4步
-        var longDFA:CommandDFA = new CommandDFA(32);
+        var longDFA:CommandDFAMatcher = new CommandDFAMatcher(32);
         longDFA.registerCommand("长招",
             [InputEvent.DOWN, InputEvent.DOWN_FORWARD, InputEvent.FORWARD, InputEvent.A_PRESS],
             "长招", 10);

@@ -44,6 +44,10 @@ class org.flashNight.arki.render.RayVisualBridge {
     private static var queuedBytes:Number = 0;
     private static var faultReported:Boolean = false;
     private static var defaultConfig:TeslaRayConfig = null;
+    private static var catalogDigest:String = "";
+    public static function installedCatalogDigest(expectedGeneration:Number):String {
+        return generation == expectedGeneration && negotiated && presenting && granted ? catalogDigest : "";
+    }
     private static var fields:Array = [
         "primaryColor", "secondaryColor", "thickness", "visualDuration", "fadeOutDuration",
         "flickerEnabled", "flickerMin", "flickerMax", "branchCount", "branchProbability",
@@ -110,6 +114,7 @@ class org.flashNight.arki.render.RayVisualBridge {
             presenting = false;
         }
         negotiated = true;
+        catalogDigest = org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(caps.digest);
         lightingEnabled = granted;
         channelsEnabled = granted;
         byStyle = proposed;
@@ -168,6 +173,7 @@ class org.flashNight.arki.render.RayVisualBridge {
                                        props:Object, weapon:Object):Void {
         if (props == null) return;
         props._rayVisualShot = null;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         if (!channelsEnabled || Number(props.霰弹值) !== 1) return;
         var attribute:Object = BulletInitializer.getAttributeData(props.子弹种类);
         // Factory uses the prepared split, not an assumed one-projectile weapon category.
@@ -225,6 +231,7 @@ class org.flashNight.arki.render.RayVisualBridge {
 
     /** Lifecycle entry. Freeze values, not a live MC/weapon or the mutable gun props object. */
     public static function bindBulletIdentity(bullet:Object):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         bullet._rayVisualIdentity = null;
         bullet._rayVisualPath = "";
         var shot:Object = bullet._rayVisualShot;
@@ -238,6 +245,7 @@ class org.flashNight.arki.render.RayVisualBridge {
 
     /** Capture geometric target topology before hit/kill callbacks can unload or replace an MC. */
     public static function noteTarget(bullet:Object, target:Object):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         if (bullet._rayVisualIdentity == null || bullet._rayVisualPath === null) return;
         var version:Number = Number(target.version);
         var name:String = target._name;
@@ -257,6 +265,11 @@ class org.flashNight.arki.render.RayVisualBridge {
     }
 
     public static function channelMeta(bullet:Object, meta:Object):Object {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isCommitted() && meta != null && bullet._workerVisualSeed > 0) {
+            var kind:Number=meta.segmentKind=="chain"?1:meta.segmentKind=="fork"?2:meta.segmentKind=="pierce"?3:meta.segmentKind=="flame"?4:0;
+            var part:Number=integer(meta.hitIndex,0);
+            meta.workerVisualSeed=Math.floor(((bullet._workerVisualSeed*65599+kind)%2147483646*65599+part)%2147483646)+1;
+        }
         var identity:Object = bullet._rayVisualIdentity;
         if (identity == null || meta == null) return meta;
         var path:String = meta.isHit === false ? "miss" : bullet._rayVisualPath;
@@ -413,6 +426,7 @@ class org.flashNight.arki.render.RayVisualBridge {
         if (config == null) return false;
         var style:Number = byStyle[config.vfxStyle];
         if (style == undefined) return false;
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return true;
         var offset:Object = SceneCoordinateManager.effectOffset;
         var ox:Number = num(offset.x, 0), oy:Number = num(offset.y, 0);
         sx += ox; sy += oy; ex += ox; ey += oy;
@@ -477,7 +491,7 @@ class org.flashNight.arki.render.RayVisualBridge {
         }
         var id:Number = updating ? r.id : nextId + 1;
         var channel:Number = updating ? r.keyId : prior != null ? prior.keyId : retired != null ? retired.keyId : key == null ? 0 : nextKey + 1;
-        var seed:Number = updating ? r.seed : VisualRandom.eventSeed(4);
+        var seed:Number = updating ? r.seed : (integer(saved.workerVisualSeed,0)>0 ? integer(saved.workerVisualSeed,0) : VisualRandom.eventSeed(4));
         var intensity:Number = num(saved.intensity, 1);
         var hitIndex:Number = integer(saved.hitIndex, 0), pulseIndex:Number = integer(saved.pulseIndex, 0);
         var pulseCount:Number = integer(saved.pulseCount, 0);
@@ -563,6 +577,7 @@ class org.flashNight.arki.render.RayVisualBridge {
         return ox * ox + oy * oy <= maxDist * maxDist;
     }
     public static function stopFlame(key:String, serial:Number):Void {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return;
         var r:Object = flameByKey["$" + key];
         if (!negotiated || r == null || serial < r.serial) return;
         if (!presenting) {
@@ -579,6 +594,7 @@ class org.flashNight.arki.render.RayVisualBridge {
         flameByKey["$" + key] = null;
     }
     public static function flush():String {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("ray")) return null;
         // 暂停呈现（shadow/断连）时既不发包也不推进视觉时钟，存活记录原样冻结。
         if (!enabled || !presenting) return null;
         var paused:Boolean = _root.暂停 ? true : false;

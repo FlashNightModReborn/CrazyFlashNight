@@ -302,6 +302,10 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
 
         // 绑定生命周期逻辑
         lifecycle.bindLifecycle(bulletInstance);
+        // Reserve a visual event at the actual ray birth, before consumer/capacity decisions.
+        // This isolated stream never replaces gameplay Math.random, scatter or damage RNG.
+        if (isRay && org.flashNight.arki.render.WorkerProjectionPolicy.isCommitted())
+            bulletInstance._workerVisualSeed = org.flashNight.arki.render.VisualRandom.eventSeed(4);
         // 首批子弹原生表现影子采样；能力未协商时该调用直接返回。
         org.flashNight.arki.render.BulletVisualProbe.registerNormal(bulletInstance);
 

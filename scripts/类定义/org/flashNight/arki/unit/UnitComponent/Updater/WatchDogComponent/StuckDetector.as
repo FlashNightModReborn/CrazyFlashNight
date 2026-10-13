@@ -221,8 +221,8 @@ class org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDete
     }
 
     private static function printStuckTaskInfo(taskID):Void{
-        var singleLevelTimeWheel = _root.帧计时器.ScheduleTimer.singleLevelTimeWheel;
-        _root.服务器.发布服务器消息(singleLevelTimeWheel.printTimerInfoByID(taskID));
+        var taskManager = _root.帧计时器.taskManager;
+        _root.服务器.发布服务器消息(taskManager.describeTask(taskID));
     }
     
     /**

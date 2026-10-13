@@ -205,6 +205,14 @@ layers:
       - "Microsoft.Web.WebView2.WinForms.dll"
       - "Microsoft.Web.WebView2.Wpf.dll"
       - "WebView2Loader.dll"
+      # 现役 runtime manifest 的离线 WebView2 安装闭包，保持逐文件白名单
+      - "webview2/000.cabpart"
+      - "webview2/001.cabpart"
+      - "webview2/002.cabpart"
+      - "webview2/003.cabpart"
+      - "webview2/004.cabpart"
+      - "webview2/005.cabpart"
+      - "webview2/006.cabpart"
       # Vortice.DXGI（GPU 适配器枚举 — GpuPreferenceManager 检测独显）
       - "Vortice.DXGI.dll"
       - "Vortice.DirectX.dll"
@@ -226,6 +234,9 @@ layers:
       # Native side-cars（与 Core.exe 同目录，让 P/Invoke LoadLibrary 默认搜索能命中）
       - "miniaudio.dll"
       - "sol_parser.dll"
+      - "FlashCompositorNative.dll"
+      - "FlashInputBridge.dll"
+      - "FlashInputBroker.exe"
     exclude: []
 
   - name: runtime-installer

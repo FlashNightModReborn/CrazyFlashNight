@@ -389,7 +389,6 @@ _root.__boot.f42 = function() {
     #include "../展现/视觉系统/视觉系统_fs_效果处理引擎.as"
     #include "../展现/视觉系统/视觉系统_fs_光照处理引擎.as"
     #include "../展现/视觉系统/视觉系统_fs_刀光处理引擎.as"
-    #include "../展现/视觉系统/视觉系统_fs_显示列表引擎.as"
 };
 
 // === loader-fire 函数（import 已提升至联合头） ===

@@ -15,6 +15,7 @@
 <script>
 window.__NPCSHOP_CONFIG__={requestTimeoutMs:300,sessionNonce:'harness'};
 window.CF7_NPCSHOP_ASSET_BASE='../../../';
+window.CF7_SHOP_PORTRAIT_ROOT='../../../assets/shop-portraits/';
 window.__npcshopHarnessScenario=new URLSearchParams(location.search).get('scenario')||'';
 window.__contractPurchaseProbe=Number(new URLSearchParams(location.search).get('contractQuantity'))||4549;
 window.__sent=[];window.__toasts=[];window.__handlers={};window.__tradeSeq=0;window.__lastTrade=null;window.__malformedCommit=false;
@@ -1474,14 +1475,15 @@ function respond(message){var result={type:'panel_resp',domain:message.domain,pa
   var adaptiveQuantity=document.querySelector('[data-purchase-lines] .workbench-quantity-control');
   var adaptiveRange=quantityRange('[data-purchase-lines]');
   var adaptiveAccent=adaptiveQuantity?getComputedStyle(adaptiveQuantity).getPropertyValue('--quantity-accent').trim():'';
-  ok('large settlement range is logarithmic, authority-bounded, marks the feasible preset, and inherits the NPC gold accent',
+  var expectedFactionAccent=(typeof NpcShopThemes!=='undefined'&&NpcShopThemes.factions[NpcShopThemes.shops['前治安官']]||{}).accent;
+  ok('large settlement range is logarithmic, authority-bounded, marks the feasible preset, and inherits the faction accent',
     adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-scale')==='log'
       &&Number(adaptiveQuantity.getAttribute('data-slider-max'))===999999
       &&Number(adaptiveQuantity.getAttribute('data-preset-max'))===window.__contractPurchaseProbe
       &&adaptiveRange&&adaptiveRange.max==='1000'
       &&adaptiveQuantity.querySelectorAll('.workbench-quantity-scale span').length===3
       &&!adaptiveQuantity.querySelector('.workbench-quantity-effective-marker').hidden
-      &&adaptiveAccent.toLowerCase()==='#e5a64d',
+      &&adaptiveAccent.toLowerCase()===String(expectedFactionAccent).toLowerCase(),
     JSON.stringify({scale:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-scale'),
       sliderMax:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-slider-max'),
       presetMax:adaptiveQuantity&&adaptiveQuantity.getAttribute('data-preset-max'),

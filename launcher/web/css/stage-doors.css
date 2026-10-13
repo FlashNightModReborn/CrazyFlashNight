@@ -1,0 +1,109 @@
+/* U7 地铁线路与彩蛋选关共用的目的地面板布局；颜色只取 token。 */
+#panel-container[data-panel="subway"] #panel-content,
+#panel-container[data-panel="egg-stage-select"] #panel-content {
+    inset: 0;
+    align-items: center;
+    justify-content: center;
+}
+#panel-container[data-panel="subway"] #panel-backdrop,
+#panel-container[data-panel="egg-stage-select"] #panel-backdrop { background: var(--appearance-backdrop); }
+.subway-scale-shell.panel-scale-shell,
+.egg-scale-shell.panel-scale-shell {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(var(--panel-scale, 1));
+    transform-origin: center;
+}
+.stage-door-panel { position: relative; }
+.stage-door-body {
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 16px;
+    min-height: 0;
+    padding: 20px 30px;
+}
+.subway-stations {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+    margin: 0;
+    padding: 12px 16px;
+    list-style: none;
+    border: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-pane-fill);
+}
+.subway-station {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    font-size: 13px;
+    color: var(--appearance-text);
+}
+.subway-station-dot {
+    width: 10px;
+    height: 10px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--appearance-accent);
+    box-shadow: 0 0 6px var(--appearance-accent);
+}
+.subway-station.locked { color: var(--appearance-muted); }
+.subway-station.locked .subway-station-dot { background: var(--appearance-muted); box-shadow: none; }
+.subway-station-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.stage-door-entries {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-content: start;
+    gap: 12px;
+    min-height: 0;
+    overflow-y: auto;
+}
+.egg-entries { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.stage-door-empty { margin: 0; color: var(--appearance-muted); font-size: 13px; }
+.stage-door-entry {
+    position: relative;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    gap: 6px;
+    min-height: 92px;
+    padding: 12px 14px;
+    text-align: left;
+    color: var(--appearance-text);
+    font: inherit;
+    border: 1px solid var(--appearance-line-soft);
+    background: var(--appearance-pane-fill);
+    cursor: pointer;
+}
+.stage-door-entry:hover:not(:disabled) { border-color: var(--appearance-accent); }
+.stage-door-entry:focus-visible { outline: 2px solid var(--appearance-accent); outline-offset: 1px; }
+.stage-door-entry.highlighted { border-color: var(--appearance-accent); }
+.stage-door-entry.locked { cursor: default; color: var(--appearance-muted); }
+.stage-door-entry-name { font-size: 15px; font-weight: 600; }
+.stage-door-entry-description { font-size: 12px; line-height: 1.6; color: var(--appearance-muted); }
+.stage-door-entry-difficulty {
+    justify-self: start;
+    padding: 2px 8px;
+    font-size: 12px;
+    border: 1px solid var(--appearance-line-soft);
+    color: var(--appearance-accent);
+}
+.stage-door-entry-note { font-size: 12px; color: var(--appearance-muted); }
+.stage-door-confirm {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--appearance-backdrop);
+    z-index: 2;
+}
+.stage-door-confirm[hidden] { display: none; }
+.stage-door-confirm > p {
+    margin: 0 0 14px;
+    font-size: 15px;
+    color: var(--appearance-text);
+    text-align: center;
+}
+.stage-door-confirm-actions { display: flex; gap: 12px; justify-content: center; }
+.stage-door-confirm .appearance-service-button { height: 40px; min-width: 108px; }
+.stage-door-status { margin: 0; font-size: 13px; color: var(--appearance-muted); }

@@ -24,6 +24,9 @@ class org.flashNight.arki.render.ChainVisualBridge {
     private static var maxUnits:Number = MAX_UNITS;
     private static var presenting:Boolean = false;
     public static var overflowGroups:Number = 0;
+    private static var catalogDigest:String = "";
+    public static function installedCatalogDigest():String { return enabled && presenting ? catalogDigest : ""; }
+    public static function getStats():Object { return {groups:groups.length,reserved:reserved,births:births.length,deaths:deaths.length}; }
 
     public static function configure(caps:Object):Void {
         // 配对原生必需模式：maxUnits 必须与三层统一预留 15360 精确一致。
@@ -70,6 +73,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
         styles = nextStyles;
         prefixes = nextPrefixes;
         maxUnits = caps.maxUnits;
+        catalogDigest = org.flashNight.arki.render.WorkerProjectionPolicy.adoptedCatalogDigest(caps.digest);
         if (caps.mode === "native") {
             // 授予或恢复呈现：宿主可能已重置引擎，以新 epoch 全量重发存活组。
             if (!presenting) resyncLiveGroups();
@@ -100,7 +104,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
 
     /** 旧世界已销毁时只断开视觉身份，不在新世界重建旧单元。 */
     public static function resetScene():Void {
-        for (var i:Number = 0; i < groups.length; i++) groups[i].nativeGroupOwned = false;
+        for (var i:Number = 0; i < groups.length; i++) { groups[i].nativeGroupOwned = false; groups[i].nativeDenseIndex = -1; }
         groups.length = 0;
         births.length = 0;
         deaths.length = 0;
@@ -125,11 +129,11 @@ class org.flashNight.arki.render.ChainVisualBridge {
                 group.nativeGroupOwned = false;
                 continue;
             }
-            groups[alive++] = group;
+            group.nativeDenseIndex = alive; groups[alive++] = group;
             var units = group.单元体列表;
             for (var u:Number = 0; u < units.length; u++) {
                 var unit = units[u];
-                if (unit.nativeLive === true)
+                if (unit.nativeLive === true && !group.nativeProjectionNone)
                     births[births.length] = {group:group, unit:unit, id:unit.nativeId};
             }
         }
@@ -169,6 +173,8 @@ class org.flashNight.arki.render.ChainVisualBridge {
         group.nativeGroupId = ++nextId;
         group.nativeStyle = style;
         group.aggregate = true;
+        group.nativeProjectionNone = org.flashNight.arki.render.WorkerProjectionPolicy.isNone("chain");
+        group.nativeDenseIndex = groups.length;
         groups[groups.length] = group;
         if (reserved + capacity > maxUnits) {
             // 总硬上限不够：致命源端容量故障。组仍标记原生所有权——调用方据
@@ -206,6 +212,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
                 return;
             }
         }
+        if (group.nativeProjectionNone) return;
         if (births.length >= 2 * MAX_UNITS) {
             reportFault("queue_overflow");
             unit.nativeLive = false;
@@ -215,7 +222,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
     }
 
     public static function removeUnit(group:ChainGroup, unit:ChainUnitData):Void {
-        if (group.nativeGroupOwned && unit.nativeSent)
+        if (group.nativeGroupOwned && !group.nativeProjectionNone && unit.nativeSent)
             deaths[deaths.length] = {group:group, id:unit.nativeId};
         unit.nativeLive = false;
     }
@@ -225,6 +232,13 @@ class org.flashNight.arki.render.ChainVisualBridge {
         reserved -= group.nativeReserved;
         group.nativeGroupOwned = false;
         group.nativeStarved = false;
+        if (group.nativeProjectionNone) {
+            var index:Number = group.nativeDenseIndex;
+            var last:Number = groups.length - 1;
+            if (index < 0 || index > last || groups[index] !== group) { reportFault("ledger_identity_invalid"); return; }
+            if (index != last) { groups[index] = groups[last]; groups[index].nativeDenseIndex = index; }
+            groups.length = last; group.nativeDenseIndex = -1;
+        }
     }
 
     public static function isEnabled():Boolean { return enabled; }
@@ -232,6 +246,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
     /** FrameBroadcaster 在每个 F 包生成前恰好调用一次，不能丢弃中间事件。
      *  宿主暂停呈现（shadow/断连）时停止发包但保留全部存活跟踪。 */
     public static function flush():String {
+        if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("chain")) return null;
         if (!enabled || !presenting) return null;
         var entries:Array = [];
         var group:ChainGroup;
@@ -240,7 +255,7 @@ class org.flashNight.arki.render.ChainVisualBridge {
         for (var i:Number = 0; i < groups.length; i++) {
             group = groups[i];
             if (!group.nativeGroupOwned || group.__removed) continue;
-            groups[alive++] = group;
+            group.nativeDenseIndex = alive; groups[alive++] = group;
             b = group.bullet;
             entries[entries.length] = "G," + group.nativeGroupId + "," + group.nativeStyle + ","
                 + group.nativeStep + "," + b._x + "," + b._y + "," + b._rotation + ","

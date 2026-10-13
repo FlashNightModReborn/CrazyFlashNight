@@ -196,25 +196,12 @@ class org.flashNight.arki.item.ItemSortUtil {
         inventory:ArrayInventory, 
         items:Array
     ):Void {
-        // 生成连续索引
-        var indexes:Array = [];
+        // ArrayInventory 唯一从规范化后的 items 派生索引，保留比较器和 revision。
         var itemMap:Object = {};
-        
         for (var i:Number = 0; i < items.length; i++) {
-            var key:String = String(i);
-            itemMap[key] = items[i];
-            indexes.push(i);
+            itemMap[String(i)] = items[i];
         }
-        
-        // 更新核心数据
-
         inventory.setItems(itemMap);
-        var avlTree:TreeSet = inventory.getTreeSet();
-        inventory.setIndexes(TreeSet.buildFromArray(
-            indexes, 
-            avlTree.getCompareFunction(),
-            avlTree.getTreeType()
-        ));
     }
 
     /*------------------------- 核心比较模块 ----------------------*/

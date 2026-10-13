@@ -193,6 +193,7 @@
             view_session_expired:'调制会话已失效，请重新进入。',commit_failed:'调制提交失败，未写入存档。',
             timeout:'调制响应超时。',client_timeout:'调制响应超时。',disconnected:'连接已断开。',not_sent:'请求未送达 Flash。',
             malformed_response:'Flash 回包不完整。',reconcile_required:'上次提交结果需要重新对账。',
+            material_quantity_quarantined:'材料数量超出可表示范围，已在存档中隔离保留原值；请备份存档并联系维护者修复。',
             inventory_projection_failed:'同类装备读取失败，请重试。',
             inventory_projection_unavailable:'当前无法读取同类装备。'};
         return labels[error] || '调制操作失败，请重试。';
