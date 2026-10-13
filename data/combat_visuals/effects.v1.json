@@ -6,7 +6,7 @@
     "path": "data/combat_visuals/effects-atlas.png",
     "width": 2048,
     "height": 1760,
-    "sha256": "011ddd8746ac39700570dde64d60e807e34b338aebef8c8d2dff0dcf79af390c"
+    "sha256": "ec2d00349a15c3de85d68fb9aa39060d12e6966d5397fa485d10a7cc18c47b88"
   },
   "sources": [
     {
@@ -275,7 +275,7 @@
     },
     {
       "path": "flashswf/arts/原版素材库-子弹.swf",
-      "sha256": "87053bbbdcba77104c782ade7be415b25fda84be50098c65823fcfcc529209d2"
+      "sha256": "d03534c889a743d1becf97f1b31db39ac6e97d9d86c513f17ac4c74ab9776f2e"
     }
   ],
   "tools": [
@@ -429,7 +429,7 @@
     }
   ],
   "rasterizer": {
-    "pillowVersion": "12.2.0",
+    "pillowVersion": "12.1.0",
     "pixelsPerUnit": 2,
     "duplicateFrames": "exact-rgba-sha256"
   },
