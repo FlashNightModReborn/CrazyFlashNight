@@ -70,7 +70,9 @@
           <DOMFolderItem name="重复项目文件夹2" itemID="66587d99-00005035"/>
           <DOMFolderItem name="子弹-特殊组" itemID="680991f7-000031f6" isExpanded="true"/>
           <DOMFolderItem name="自瞄准星特效" itemID="67139c16-00000684"/>
-     </folders>
+         <DOMFolderItem name="Codex" itemID="6acd0600-616efbe9"/>
+    <DOMFolderItem name="Codex/弹药r06" itemID="6acd0600-396a413f"/>
+  </folders>
      <media>
           <DOMBitmapItem name="未命名文件夹 1/bitmap11.png" itemID="65e1d4e3-000001e8" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap11.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap11.png" bitmapDataHRef="M 4 1710828681.dat" frameRight="4800" frameBottom="3000"/>
           <DOMBitmapItem name="未命名文件夹 1/bitmap13.png" itemID="65e1d4e3-000001ed" sourceExternalFilepath="../偷吃屑鱼坟头贡品/LIBRARY/未命名文件夹 1/bitmap13.png" sourceLastImported="1709298915" originalCompressionType="lossless" quality="50" href="未命名文件夹 1/bitmap13.png" bitmapDataHRef="M 5 1710828681.dat" frameRight="4800" frameBottom="3000"/>
@@ -967,7 +969,8 @@
           <Include href="抓取控制.xml" loadImmediate="false" itemID="5885c58b-00000107" lastModified="1485161867"/>
           <Include href="抓取判定.xml" loadImmediate="false" itemID="5885c3d5-00000105" lastModified="1485686758"/>
           <Include href="自瞄准星特效/火力支援新瞄准镜.xml" loadImmediate="false" itemID="671399a0-00002828" lastModified="1745464166"/>
-     </symbols>
+         <Include href="Codex/弹药r06/22-天使铳的子弹.xml" loadImmediate="false" itemID="6acd0600-860ffd91"/>
+  </symbols>
      <timelines>
           <DOMTimeline name="场景 1" guides='&lt;guidelines&gt;&lt;guideline direction="v"&gt;-184&lt;/guideline&gt;&lt;guideline direction="h"&gt;129&lt;/guideline&gt;&lt;/guidelines&gt;'>
                <layers>

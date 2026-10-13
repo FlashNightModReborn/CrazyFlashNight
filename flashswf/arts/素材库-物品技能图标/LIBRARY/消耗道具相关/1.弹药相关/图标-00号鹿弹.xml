@@ -1,4 +1,5 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/1.弹药相关/图标-00号鹿弹" itemID="66a5e81b-00001720" linkageExportForAS="true" linkageIdentifier="图标-00号鹿弹" lastModified="1722148891">
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/1.弹药相关/图标-00号鹿弹" itemID="66a5e81b-00001720" linkageExportForAS="true" linkageIdentifier="图标-00号鹿弹" lastModified="1722148891">
   <timeline>
     <DOMTimeline name="图标-00号鹿弹">
       <layers>
@@ -6,12 +7,12 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="消耗道具相关/1.弹药相关/Symbol 4544" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Codex/弹药r06/12-00号鹿弹" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
-                    <Matrix a="0.927902221679688" d="0.927902221679688" tx="-11.7" ty="-10.25"/>
+                    <Matrix a="0.215970979" d="0.215970979" tx="0.491561773" ty="0.941874842" />
                   </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point />
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

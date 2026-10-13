@@ -1,0 +1,118 @@
+{
+  "source": "ammo-icons-r06 art handoff accepted by user for assembly",
+  "package_manifest_sha256": "ca14ca9eb181e629be688f5db787386c66c76e44f5669778e6d6dcd3afe0e95e",
+  "items": [
+    {
+      "id": "01",
+      "name": "突击步枪通用弹药",
+      "svg_sha256": "3ebb12c55a924afdc7554cc0ca485cdf1cc92c53e6743e40f5b78ad7206f49e7"
+    },
+    {
+      "id": "02",
+      "name": "突击步枪钨芯穿甲弹",
+      "svg_sha256": "71692144a6b59965047972660abc4c35526ddaeab0bc4c00b9c1dbc82bb7bb3f"
+    },
+    {
+      "id": "03",
+      "name": "狙击步枪通用弹药",
+      "svg_sha256": "547db77bdfd5425071bee09b3c8c013ff064eac532c8be8312aa5ad745b27a0a"
+    },
+    {
+      "id": "04",
+      "name": "手枪通用弹药",
+      "svg_sha256": "dc8115b5ed98b7b2ab3cdd3d448d84b801eeb9f291afd5457d5bb653d79b8e59"
+    },
+    {
+      "id": "05",
+      "name": "火焰喷射器燃料罐",
+      "svg_sha256": "52566660e4db5d39b73c8e48c91a2da1c8b6c302e12f841bb87eb6138e8ee953"
+    },
+    {
+      "id": "06",
+      "name": "高温自锐式针弹",
+      "svg_sha256": "e94fd8fd0e4cedaaa5667d99efee486087acb636f516f4a5f43ecf1d5f6d987b"
+    },
+    {
+      "id": "07",
+      "name": "冲锋枪通用弹药",
+      "svg_sha256": "ee9a26e1a415a3e9e5807486e0ca170395cf270c382c5b84b536c1f73b83c0f4"
+    },
+    {
+      "id": "08",
+      "name": "冲锋枪钢芯穿甲弹",
+      "svg_sha256": "03081cf0d400355200a91042eb2675669e00e8897879f630162c7ec0bd3419a2"
+    },
+    {
+      "id": "09",
+      "name": "冲锋枪达姆弹弹药",
+      "svg_sha256": "1ed54153a8fd6f515b582090e91fccdebdf6c50cc0a9f6407c342ae19fb56cff"
+    },
+    {
+      "id": "10",
+      "name": "马格南手枪弹药",
+      "svg_sha256": "4708959164cd0d5242a8bbac3fb845a8391a0f1e606b87e54316bc79e887839d"
+    },
+    {
+      "id": "11",
+      "name": "12号霰弹弹药",
+      "svg_sha256": "7b61765d17de3daddeee821a1bd808cd9cc1ef0d6936837dd1347023124110c8"
+    },
+    {
+      "id": "12",
+      "name": "00号鹿弹",
+      "svg_sha256": "2bbe6a1511995b29e2d75334cfe0cfc0f56dad0f5d83b524ee91cf27c5a796cf"
+    },
+    {
+      "id": "13",
+      "name": "机枪通用弹药",
+      "svg_sha256": "844718b5aa97b95832a73d237a457d68427cb7454b5a6d4bf6305220ec092a7d"
+    },
+    {
+      "id": "14",
+      "name": "机枪贫铀穿甲弹",
+      "svg_sha256": "1594f0476ae696863a43a86b4971198a70e3919ffecd204a62a48e2ef4912b13"
+    },
+    {
+      "id": "15",
+      "name": "箭矢",
+      "svg_sha256": "0e72421b3df55cbf77707b809d451b51cec154f6bbf31b33a6847d6f28adb237"
+    },
+    {
+      "id": "16",
+      "name": "内爆弹",
+      "svg_sha256": "d3b441a84b0eeebd1ce89570868569c5f1fe5726033b76e452b92fd78340ae0d"
+    },
+    {
+      "id": "17",
+      "name": "榴弹弹药",
+      "svg_sha256": "690e3c9f781787e263a0b19e5b0df4aea6999be861f540946bca1cda8b579567"
+    },
+    {
+      "id": "18",
+      "name": "火箭弹弹药",
+      "svg_sha256": "407e83ea29d396edc03e0b4d3ab7599e73ebdca2756e29f1df40676d25c20364"
+    },
+    {
+      "id": "19",
+      "name": "能量电池",
+      "svg_sha256": "ada8b1190af17309a094f28e85d4c36b3cd38bc026cc154c0a920887e35f4b40"
+    },
+    {
+      "id": "20",
+      "name": "导弹弹药",
+      "svg_sha256": "4afc2a8cd5411ef6837d1cb886c4dce8fb2f04bf57f44f3cf86c008d421fbc5a"
+    },
+    {
+      "id": "21",
+      "name": "复合火箭弹弹药",
+      "svg_sha256": "d4ce8e26dce429ed9840b531daf41939e129c401b2ac63c72dabb36c493794ef"
+    },
+    {
+      "id": "22",
+      "name": "天使铳的子弹",
+      "svg_sha256": "399a3fc43abbc672bb9886aa335931a5ebc3bb086a2a0a2526f7d33c35e8befc"
+    }
+  ],
+  "method": "Model-guided native raster, color path tracing and per-icon correction; imported into native editable XFL shapes.",
+  "maintenance": "SVGs are frozen import inputs. The installed owning XFL remains the game editing source; deliberate reimport uses tools/ammo-icon-assets/build.py."
+}

@@ -1,4 +1,5 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/1.弹药相关/图标-机枪贫铀穿甲弹" itemID="66a5e830-00001728" linkageExportForAS="true" linkageIdentifier="图标-机枪贫铀穿甲弹" lastModified="1722148912">
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/1.弹药相关/图标-机枪贫铀穿甲弹" itemID="66a5e830-00001728" linkageExportForAS="true" linkageIdentifier="图标-机枪贫铀穿甲弹" lastModified="1722148912">
   <timeline>
     <DOMTimeline name="图标-机枪贫铀穿甲弹">
       <layers>
@@ -6,9 +7,12 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="消耗道具相关/1.弹药相关/Symbol 4550" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Codex/弹药r06/14-机枪贫铀穿甲弹" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22426766" d="0.22426766" tx="0.983640149" ty="-0.0817408138" />
+                  </matrix>
                   <transformationPoint>
-                    <Point/>
+                    <Point />
                   </transformationPoint>
                 </DOMSymbolInstance>
               </elements>

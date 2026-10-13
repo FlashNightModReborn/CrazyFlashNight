@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="消耗道具相关/1.弹药相关/图标-高温自锐式针弹" itemID="6acd0600-2e90778e" linkageExportForAS="true" linkageIdentifier="图标-高温自锐式针弹">
+  <timeline>
+    <DOMTimeline name="图标-高温自锐式针弹">
+      <layers>
+        <DOMLayer name="图标" color="#6C9C89">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/弹药r06/06-高温自锐式针弹" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.22426766" d="0.22426766" tx="0.989246841" ty="-0.171447878" />
+                  </matrix>
+                  <transformationPoint>
+                    <Point />
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

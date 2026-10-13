@@ -31,7 +31,9 @@
           <DOMFolderItem name="消耗道具相关/新道具/进口香烟" itemID="65fd7563-00001246"/>
           <DOMFolderItem name="消耗道具相关/新道具/啤酒" itemID="65fd755a-00001244"/>
           <DOMFolderItem name="消耗道具相关/新道具/巧克力板" itemID="65fd7551-00001242"/>
-     </folders>
+         <DOMFolderItem name="Codex" itemID="6acd0600-616efbe9"/>
+    <DOMFolderItem name="Codex/弹药r06" itemID="6acd0600-396a413f"/>
+  </folders>
      <media>
           <DOMBitmapItem name="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本 (1).png" itemID="669b7cbd-000004db" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本 (1).png" sourceLastImported="1721466036" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本 (1).png" bitmapDataHRef="M 26 1740550143.dat" frameRight="3000" frameBottom="3020"/>
           <DOMBitmapItem name="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本.png" itemID="669b7839-000004b6" sourceExternalFilepath="../../../SteamLibrary/steamapps/common/CRAZYFLASHER7StandAloneStarter/resources/flashswf/arts/素材库-物品技能图标/LIBRARY/技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本.png" sourceLastImported="1721464834" useImportedJPEGData="false" compressionType="lossless" originalCompressionType="lossless" quality="50" href="技能相关/图标素材/3ddc6fb12ce9f6da240981c1e02e85e7 - 副本.png" bitmapDataHRef="M 27 1740550143.dat" frameRight="3740" frameBottom="3760"/>
@@ -900,7 +902,29 @@
           <Include href="眼看喜.xml" itemIcon="1" loadImmediate="false" itemID="688dd837-00001bda" lastModified="1754126391"/>
           <Include href="意见欲.xml" itemIcon="1" loadImmediate="false" itemID="688dd638-000018f6" lastModified="1754125880"/>
           <Include href="元件 1029.xml" itemIcon="1" loadImmediate="false" itemID="6a44dbd0-00000c5e" lastModified="1782897616"/>
-     </symbols>
+         <Include href="Codex/弹药r06/01-突击步枪通用弹药.xml" loadImmediate="false" itemID="6acd0600-ce720be3"/>
+    <Include href="Codex/弹药r06/02-突击步枪钨芯穿甲弹.xml" loadImmediate="false" itemID="6acd0600-7ecaf176"/>
+    <Include href="Codex/弹药r06/03-狙击步枪通用弹药.xml" loadImmediate="false" itemID="6acd0600-3028f137"/>
+    <Include href="Codex/弹药r06/04-手枪通用弹药.xml" loadImmediate="false" itemID="6acd0600-a8a151e6"/>
+    <Include href="Codex/弹药r06/05-火焰喷射器燃料罐.xml" loadImmediate="false" itemID="6acd0600-9c687f6f"/>
+    <Include href="Codex/弹药r06/06-高温自锐式针弹.xml" loadImmediate="false" itemID="6acd0600-d8969190"/>
+    <Include href="消耗道具相关/1.弹药相关/图标-高温自锐式针弹.xml" loadImmediate="false" itemID="6acd0600-2e90778e"/>
+    <Include href="Codex/弹药r06/07-冲锋枪通用弹药.xml" loadImmediate="false" itemID="6acd0600-96149cb1"/>
+    <Include href="Codex/弹药r06/08-冲锋枪钢芯穿甲弹.xml" loadImmediate="false" itemID="6acd0600-ef0396e2"/>
+    <Include href="Codex/弹药r06/09-冲锋枪达姆弹弹药.xml" loadImmediate="false" itemID="6acd0600-6eb71293"/>
+    <Include href="Codex/弹药r06/10-马格南手枪弹药.xml" loadImmediate="false" itemID="6acd0600-97511194"/>
+    <Include href="Codex/弹药r06/11-12号霰弹弹药.xml" loadImmediate="false" itemID="6acd0600-b32d8136"/>
+    <Include href="Codex/弹药r06/12-00号鹿弹.xml" loadImmediate="false" itemID="6acd0600-8e070b6e"/>
+    <Include href="Codex/弹药r06/13-机枪通用弹药.xml" loadImmediate="false" itemID="6acd0600-dc6ad56c"/>
+    <Include href="Codex/弹药r06/14-机枪贫铀穿甲弹.xml" loadImmediate="false" itemID="6acd0600-d6a45dbe"/>
+    <Include href="Codex/弹药r06/15-箭矢.xml" loadImmediate="false" itemID="6acd0600-82a3c8e9"/>
+    <Include href="Codex/弹药r06/16-内爆弹.xml" loadImmediate="false" itemID="6acd0600-8e586cc1"/>
+    <Include href="Codex/弹药r06/17-榴弹弹药.xml" loadImmediate="false" itemID="6acd0600-043edfda"/>
+    <Include href="Codex/弹药r06/18-火箭弹弹药.xml" loadImmediate="false" itemID="6acd0600-25dade19"/>
+    <Include href="Codex/弹药r06/19-能量电池.xml" loadImmediate="false" itemID="6acd0600-a7b04a00"/>
+    <Include href="Codex/弹药r06/20-导弹弹药.xml" loadImmediate="false" itemID="6acd0600-79880b5c"/>
+    <Include href="Codex/弹药r06/21-复合火箭弹弹药.xml" loadImmediate="false" itemID="6acd0600-ff3e07a6"/>
+  </symbols>
      <timelines>
           <DOMTimeline name="场景 1">
                <layers>
