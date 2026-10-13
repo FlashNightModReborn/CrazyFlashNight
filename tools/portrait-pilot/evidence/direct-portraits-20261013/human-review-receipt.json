@@ -1,0 +1,25 @@
+{
+  "schema": "cf7.direct-portrait-human-review.v1",
+  "status": "human_accepted",
+  "authorizationSource": "direct_user_reply_to_request_user_input_async",
+  "requestToolCallId": "call_305babfa1838451b9218a852bffdbf3c",
+  "question": "预览中的前治安官（二阶段掉盔后）和黑仔，这两张头像的取景是否合适？",
+  "userReply": "认可这两张，接入头像库",
+  "decisions": [
+    {
+      "reviewKey": "敌人-前治安官::default",
+      "status": "pass",
+      "pngSha256": "92AA5D128C59C75752168B8FBC404DDAAE815CAA00A97E9E6CF0C9464EB566C5",
+      "svgSha256": "D7E17B6DB242C8E8E2973546AD49C1F804A177E3546D8FA9267FC9DE39850AF9",
+      "orientationAction": "keep"
+    },
+    {
+      "reviewKey": "敌人-Codex黑仔::default",
+      "status": "pass",
+      "pngSha256": "5661D5FAA985799A59F482045CCEB4A7330F7C5D902FC9E763FAFF01C31EC326",
+      "svgSha256": "E2BD9A476BAE7CD36B44B3977979D9FF60FCFAB597E7EEA2EF6CB9A206122689",
+      "orientationAction": "keep"
+    }
+  ],
+  "receiptDigest": "FBED7DC1FC8D3F56519A1AC5212363F80C51D3821CACC988BC9F3D28081491A0"
+}

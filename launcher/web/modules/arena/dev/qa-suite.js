@@ -1813,11 +1813,16 @@ var ArenaHarnessQA = (function() {
                     && jkOrange && jkWhite && jkOrange.svgUrl !== jkWhite.svgUrl,
                     '竞技场无发色状态时应使用 JK 默认橙发，同时共享清单必须保留橙发/白发两个独立头像');
                 api.assert(coverage && coverage.getAttribute('data-coverage-state') === 'complete', '当前全兵种素材包应明确投影为完整覆盖');
-                api.assertEqual(Number(coverage.getAttribute('data-coverage-total')), 217, '全兵种目录应按 217 个唯一 spritename 统计');
-                api.assertEqual(Number(coverage.getAttribute('data-coverage-ready')), 217, '怪物清单 214 项与主角纸娃娃 3 项应合并为 217 个可用身份');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-total')), 219, '全兵种目录应按 219 个唯一 spritename 统计');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-ready')), 219, '怪物清单 216 项与主角纸娃娃 3 项应合并为 219 个可用身份');
                 api.assertEqual(Number(coverage.getAttribute('data-coverage-missing')), 0, '全兵种目录不应再有锁定图身份缺口');
-                api.assertEqual(Number(coverage.getAttribute('data-coverage-enemy-ready')), 214, '214 个怪物消费身份应全部命中 manifest 或签名 alias');
+                api.assertEqual(Number(coverage.getAttribute('data-coverage-enemy-ready')), 216, '216 个怪物消费身份应全部命中 manifest 或签名 alias');
                 api.assertEqual(Number(coverage.getAttribute('data-coverage-dressup-ready')), 3, '三个主角模板身份都应进入纸娃娃头像路线');
+                ['敌人-前治安官','敌人-Codex黑仔'].forEach(function(ref) {
+                    var accepted = EnemyPortraits.resolve({portraitRef:ref});
+                    api.assert(accepted && accepted.status === 'human_accepted' && accepted.pngUrl,
+                        ref + ' 应命中维护者已认可的原生帧头像');
+                });
                 api.assert(simonli && simonliGenerator
                     && simonliGenerator.requestedPortraitRef === '敌人-锡蒙利范围光环发生器'
                     && simonliGenerator.portraitRef === '敌人-锡蒙利'

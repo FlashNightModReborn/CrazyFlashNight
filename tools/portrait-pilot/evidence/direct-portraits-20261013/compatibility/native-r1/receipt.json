@@ -1,0 +1,89 @@
+{
+  "schema": "cf7.enemy-portrait-promotion-receipt.v1",
+  "status": "enemy_portrait_pack_promoted",
+  "generatedAt": "2026-10-13T12:12:51.377744Z",
+  "manifest": {
+    "path": "launcher/web/assets/enemy-portraits/manifest.json",
+    "bytes": 1090331,
+    "sha256": "8890944C468322272B524452603531AE2F2E84E49A049C8C3591525B6FF094C8"
+  },
+  "manifestDigest": "3ECB702453FFB21614D0103EA45209F64022C7B0135EC710932F8D93018D5088",
+  "counts": {
+    "identityCount": 228,
+    "variantCount": 229,
+    "humanAcceptedIdentityCount": 223,
+    "humanAcceptedVariantCount": 224,
+    "pendingHumanReviewIdentityCount": 2,
+    "excludedUnimplementedIdentityCount": 1,
+    "aliasedIdentityCount": 2,
+    "teamIdentityCount": 98,
+    "arenaInventoryIdentityCount": 214,
+    "arenaSupplementalIdentityCount": 5,
+    "arenaCatalogIdentityCount": 214,
+    "directSupplementalIdentityCount": 2
+  },
+  "orientationAudit": {
+    "schema": "cf7.production-portrait-orientation-closure.v1",
+    "sourceProductionDigest": "237159192747926F2EEE6A4CF530338E18493981D680D5C33277AD0733CA8231",
+    "modelReportDigest": "CB6EF3AEAAE222C3F7DD24E765C089EC31D6BABB964BFAC9C096CE83D2BF68F4",
+    "humanReviewDigest": "D4555C9153A84AEF5CFD79FCE0A29E6D94E7F0BCE4F457A726D1B9BB31671FA0",
+    "humanReceiptDigest": "15828B45BC3C84D574BEDB778264F1DDFA925D381B194FC098703DD947D30243",
+    "counts": {
+      "total": 39,
+      "keep": 34,
+      "flipX": 5,
+      "modelClosedKeepOutsideReview": 178
+    },
+    "humanFlipReviewKeys": [
+      "敌人-ArmsArius::default",
+      "敌人-忍者BOSS::default",
+      "敌人-忍者兵::default",
+      "敌人-汽车炸弹::default",
+      "敌人-重盾骑士::default"
+    ],
+    "relativeFlipSemantics": true,
+    "preservedSourceAssetBindings": 434,
+    "preservedSourceAssetFiles": 432
+  },
+  "supplementalPromotion": {
+    "schema": "cf7.arena-portrait-supplemental-promotion.v1",
+    "closureDigest": "C70B03A8463DF1948F89B4ED1F7B3039846B67C58C03D80BE39B917C1DEE8AD3",
+    "baseManifestDigest": "EED4D8DC9D3CF5E4A5B30BE39C7D4B72CFF54B604F47ED042C6906EDD2B801D0",
+    "counts": {
+      "directHumanAccepted": 5,
+      "identityAliases": 1,
+      "combinedArenaReady": 217
+    }
+  },
+  "gates": {
+    "allHumanClosedSelectionsPromoted": true,
+    "arenaAcceptedOutsideTeamPromoted": true,
+    "unresolvedIdentitiesFailSoftOnly": true,
+    "identityAliasReceiptBound": true,
+    "shieldKnightHumanGuidancePromoted": true,
+    "runtimeManifestPublishedLast": true,
+    "allPreviouslyAcceptedTeamVariantsPromoted": true,
+    "allTeamVariantsWithRuntimeSourcesPromoted": true,
+    "jkTwoDistinctVariantsPromoted": true,
+    "directPassOrientationAppliedToSvg": true,
+    "humanCropSelectedOrientationInherited": true,
+    "fullProductionOrientationVisualAuditBound": true,
+    "modelClosedOrientationKeepsPreserved": true,
+    "allOrientationRiskRowsHumanReviewed": true,
+    "humanRelativeOrientationFlipsApplied": true,
+    "svgPrimaryAndExactPngFallbackBound": true,
+    "allPngMastersHaveTransparentBackground": true,
+    "threeLateSourceResolutionsHumanAccepted": true,
+    "seventeenInternalSubjectResolutionsHumanAccepted": true,
+    "maiRemainsExplicitlyUnimplemented": true,
+    "presentationSeparatedFromIdentityManifest": true,
+    "productionWrites": true,
+    "arenaSupplementalHumanReviewPromoted": true,
+    "arenaSupplementalOrientationClosed": true,
+    "simonliGeneratorAliasBound": true,
+    "arenaCatalogCoverageReady": true,
+    "supplementalManifestPublishedLast": true
+  },
+  "directSupplementalClosureDigest": "B7EE6DFBBF0AFD2416C53304E5B94DE8927832791F056E0B689AF39C9C74AC1F",
+  "receiptDigest": "13B4AB4FC588C69321DC31AC8DB9734C2B928F94ABDA2A56A7152512ECCF0B7A"
+}

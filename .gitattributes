@@ -134,3 +134,17 @@ launcher/app.manifest text eol=lf
 /flashswf/arts/new/Codex素材源稿/重装特勤-R26/** -text whitespace=cr-at-eol
 /flashswf/arts/new/Codex素材源稿/重装特勤-Q变形/** -text whitespace=cr-at-eol
 /flashswf/arts/new/Codex素材源稿/重装特勤-盾冲/** -text whitespace=cr-at-eol
+# Direct portrait additions bind exact producer and manifest bytes.
+/tools/portrait-pilot/promote-direct-portraits-v1.py text eol=lf
+/tools/portrait-pilot/SelectedSpriteSvgExporter.java text eol=lf
+/tools/portrait-pilot/promote-enemy-portraits-v1.py text eol=lf
+/tools/portrait-pilot/evidence/direct-portraits-20261013/** -text whitespace=cr-at-eol
+/launcher/web/assets/enemy-portraits/manifest.json text eol=lf
+/launcher/web/assets/enemy-portraits/promotion-receipt.json text eol=lf
+
+/launcher/web/assets/enemy-portraits/subjects/d7ee6408d7002434551c9199.svg text eol=lf
+/launcher/web/assets/enemy-portraits/subjects/71b05395461cdd12127e289a.svg text eol=lf
+/launcher/web/assets/enemy-portraits/subjects/d7e17b6db242c8e8e2973546.svg text eol=lf
+/launcher/web/assets/enemy-portraits/subjects/e2bd9a476bae7cd36b44b397.svg text eol=lf
+/launcher/web/assets/enemy-portraits/subjects/1b1ff7fd3a40686dd6d960e5.svg text eol=lf
+/launcher/web/assets/enemy-portraits/subjects/e4463541fce7e38c224d8a46.svg text eol=lf

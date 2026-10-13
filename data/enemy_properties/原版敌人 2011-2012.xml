@@ -721,6 +721,8 @@
     </敌人-僵尸1-狗>
     <敌人-终结者T800>
         <displayname>终结者T800</displayname>
+        <!-- 固定机械外观；hasDressup 仅保留装备与武器能力。 -->
+        <battleRecordAppearance>fixed</battleRecordAppearance>
         <最小经验值>267</最小经验值>
         <最大经验值>1080</最大经验值>
         <hp_min>1000</hp_min>

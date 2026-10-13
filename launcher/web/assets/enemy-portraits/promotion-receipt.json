@@ -1,25 +1,26 @@
 {
   "schema": "cf7.enemy-portrait-promotion-receipt.v1",
   "status": "enemy_portrait_pack_promoted",
-  "generatedAt": "2026-09-13T10:37:16Z",
+  "generatedAt": "2026-10-13T12:17:35.451968Z",
   "manifest": {
     "path": "launcher/web/assets/enemy-portraits/manifest.json",
-    "bytes": 1102169,
-    "sha256": "B3D269A4CD8088CC94E17707E9C733C30CF0C495E7597E1B7AA7FA5D9A910CF4"
+    "bytes": 1090331,
+    "sha256": "AD8166361E219AF6CD59000A24D6DF1043C01109C6CA63CCE08B5B7D75443273"
   },
-  "manifestDigest": "53358DF44FB13346EBCBEEB41A5C10E2E61AA08CB623D85C9A9D1683D98B2041",
+  "manifestDigest": "926622A3014A082D02C2A0B34CAA628819782C8D3E503BE8B439B1E3D58A372C",
   "counts": {
-    "identityCount": 226,
-    "variantCount": 227,
-    "humanAcceptedIdentityCount": 221,
-    "humanAcceptedVariantCount": 222,
+    "identityCount": 228,
+    "variantCount": 229,
+    "humanAcceptedIdentityCount": 223,
+    "humanAcceptedVariantCount": 224,
     "pendingHumanReviewIdentityCount": 2,
     "excludedUnimplementedIdentityCount": 1,
     "aliasedIdentityCount": 2,
     "teamIdentityCount": 98,
     "arenaInventoryIdentityCount": 214,
     "arenaSupplementalIdentityCount": 5,
-    "arenaCatalogIdentityCount": 214
+    "arenaCatalogIdentityCount": 214,
+    "directSupplementalIdentityCount": 2
   },
   "orientationAudit": {
     "schema": "cf7.production-portrait-orientation-closure.v1",
@@ -83,5 +84,6 @@
     "arenaCatalogCoverageReady": true,
     "supplementalManifestPublishedLast": true
   },
-  "receiptDigest": "9ED79F83771B746D94B974D391DB2AB121F86C2D431AC49017FA9B32BD137F1F"
+  "directSupplementalClosureDigest": "6A387C5AAF78894B7114CEB9FE99FAA65B1EB686A9DB8E49D1023D7818A5EE6D",
+  "receiptDigest": "6DFC345A442190FCCACD47AB4E9CC2A49F1559050811E9BCE191B9E0438FF2D8"
 }

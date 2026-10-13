@@ -1,7 +1,7 @@
 {
   "schema": "cf7.enemy-portrait-manifest.v1",
   "status": "human_accepted_portraits_promoted",
-  "generatedAt": "2026-09-13T10:37:16Z",
+  "generatedAt": "2026-10-13T12:17:35.451968Z",
   "consumerContract": {
     "identityKey": "portraitRef + variantKey",
     "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited",
@@ -12,17 +12,18 @@
     "arenaCompatible": true
   },
   "counts": {
-    "identityCount": 226,
-    "variantCount": 227,
-    "humanAcceptedIdentityCount": 221,
-    "humanAcceptedVariantCount": 222,
+    "identityCount": 228,
+    "variantCount": 229,
+    "humanAcceptedIdentityCount": 223,
+    "humanAcceptedVariantCount": 224,
     "pendingHumanReviewIdentityCount": 2,
     "excludedUnimplementedIdentityCount": 1,
     "aliasedIdentityCount": 2,
     "teamIdentityCount": 98,
     "arenaInventoryIdentityCount": 214,
     "arenaSupplementalIdentityCount": 5,
-    "arenaCatalogIdentityCount": 214
+    "arenaCatalogIdentityCount": 214,
+    "directSupplementalIdentityCount": 2
   },
   "sourceEnvelope": {
     "inputs": [
@@ -22004,6 +22005,214 @@
           "reason": "human-approved reuse of the visible Simonli identity for its logic-only range aura generator"
         }
       }
+    },
+    "敌人-Codex黑仔": {
+      "portraitRef": "敌人-Codex黑仔",
+      "enemyIds": [
+        "敌人-Codex黑仔"
+      ],
+      "petIds": [],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "png",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/71b05395461cdd12127e289a.svg",
+              "bytes": 188692,
+              "sha256": "71B05395461CDD12127E289AE68EA651C2989E35D701702496F6CF6FBB44F7D4",
+              "viewBox": [
+                1193,
+                105,
+                1329,
+                1329
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/5661d5faa985799a59f48204.png",
+              "bytes": 77768,
+              "sha256": "5661D5FAA985799A59F482045CCEB4A7330F7C5D902FC9E763FAFF01C31EC326",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                39,
+                485,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-Codex黑仔::default",
+            "resolution": "direct_user_approved_native_frame",
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex黑仔素材.swf",
+              "bytes": 238117,
+              "sha256": "3A6E8F206B1BA9AC6428F8A6629D2C3F2269637816A2A9338B47E23FBFB2260F"
+            },
+            "rootLinkage": "敌人-Codex黑仔",
+            "sourceSymbol": "Codex黑仔/动作/站立",
+            "renderCharacterId": 63,
+            "frame": 1,
+            "zoom": 12,
+            "sourceFrameArchive": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/frames/black.png.xz",
+              "bytes": 1198324,
+              "sha256": "0398C63DA24AC01C1F6972DD2D5CC07A6334103A7680C100EA97B9186E79B207"
+            },
+            "sourceFrameSha256": "6FB05E6FDD685269398FB2DFF55339ACBE00D4F05F45C09B070708237F10023C",
+            "cropPixels": [
+              1193,
+              105,
+              2522,
+              1434
+            ],
+            "masterSize": 1329,
+            "pillowVersion": "12.1.0",
+            "exporterSource": {
+              "path": "tools/portrait-pilot/SelectedSpriteFrameExporter.java",
+              "bytes": 4546,
+              "sha256": "7E1560CB3FFD01ADB4FA580A8F00FEB0E633C2BF89B01B333C9E8718E66587F9"
+            },
+            "decisionStatus": "pass",
+            "orientationAction": "keep",
+            "orientationSource": "explicit_native_frame_human_approval",
+            "rasterOrientationTransform": "none",
+            "humanReceipt": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/human-review-receipt.json",
+              "bytes": 1115,
+              "sha256": "76B66DA4CF8C8C1D7C664F6879A9452BD8705D89F50E0CBADEFCC4FC160EB9D3"
+            },
+            "acceptedRenderReport": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/render-report.json",
+              "bytes": 6194,
+              "sha256": "AA364AA45EEAB9E0941FB5086DE7607E2E487E30B935440E1CEE7595EF1556F5"
+            },
+            "nativeRepresentationEvidence": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/native-render-report.json",
+              "bytes": 6961,
+              "sha256": "2CAE74C34CA6A8E90E1492F86949D404EE427CEB68FBE8DAAA81FAB00F0312AF"
+            }
+          }
+        }
+      }
+    },
+    "敌人-前治安官": {
+      "portraitRef": "敌人-前治安官",
+      "enemyIds": [
+        "敌人-前治安官"
+      ],
+      "petIds": [],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "png",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/d7ee6408d7002434551c9199.svg",
+              "bytes": 370986,
+              "sha256": "D7EE6408D7002434551C9199A11C69D90D51AA82A347B7E6E74693AE0FCC5AC1",
+              "viewBox": [
+                1581,
+                271,
+                1355,
+                1355
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/92aa5d128c59c75752168b8f.png",
+              "bytes": 141337,
+              "sha256": "92AA5D128C59C75752168B8FBC404DDAAE815CAA00A97E9E6CF0C9464EB566C5",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                13,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-前治安官::default",
+            "resolution": "direct_user_approved_native_frame",
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex专用素材.swf",
+              "bytes": 798599,
+              "sha256": "AF3F2389860283B3B0DBE32A4F36F94E4F2FB90BCD7E13F0B793262175097848"
+            },
+            "rootLinkage": "前治安官动作-持盾待机",
+            "sourceSymbol": "Codex/前治安官二阶段/持盾待机",
+            "renderCharacterId": 817,
+            "frame": 1,
+            "zoom": 12,
+            "sourceFrameArchive": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/frames/sheriff.png.xz",
+              "bytes": 2893012,
+              "sha256": "BCD3092289FE4CB3A39A029591725461F78D6AA4D11CA1240D50002185FA6680"
+            },
+            "sourceFrameSha256": "A902BB031E99CBBE4155870BA48200042EFAA2AA9C530817F66E2158E2F05E59",
+            "cropPixels": [
+              1581,
+              271,
+              2936,
+              1626
+            ],
+            "masterSize": 1355,
+            "pillowVersion": "12.1.0",
+            "exporterSource": {
+              "path": "tools/portrait-pilot/SelectedSpriteFrameExporter.java",
+              "bytes": 4546,
+              "sha256": "7E1560CB3FFD01ADB4FA580A8F00FEB0E633C2BF89B01B333C9E8718E66587F9"
+            },
+            "decisionStatus": "pass",
+            "orientationAction": "keep",
+            "orientationSource": "explicit_native_frame_human_approval",
+            "rasterOrientationTransform": "none",
+            "humanReceipt": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/human-review-receipt.json",
+              "bytes": 1115,
+              "sha256": "76B66DA4CF8C8C1D7C664F6879A9452BD8705D89F50E0CBADEFCC4FC160EB9D3"
+            },
+            "acceptedRenderReport": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/render-report.json",
+              "bytes": 6194,
+              "sha256": "AA364AA45EEAB9E0941FB5086DE7607E2E487E30B935440E1CEE7595EF1556F5"
+            },
+            "nativeRepresentationEvidence": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/native-render-report.json",
+              "bytes": 6961,
+              "sha256": "2CAE74C34CA6A8E90E1492F86949D404EE427CEB68FBE8DAAA81FAB00F0312AF"
+            }
+          }
+        }
+      }
     }
   },
   "supplementalPromotion": {
@@ -22111,5 +22320,58 @@
     },
     "closureDigest": "C70B03A8463DF1948F89B4ED1F7B3039846B67C58C03D80BE39B917C1DEE8AD3"
   },
-  "manifestDigest": "53358DF44FB13346EBCBEEB41A5C10E2E61AA08CB623D85C9A9D1683D98B2041"
+  "directSupplementalPromotion": {
+    "schema": "cf7.direct-portrait-supplement.v1",
+    "status": "human_accepted_direct_portraits_promoted",
+    "baseManifestDigest": "53358DF44FB13346EBCBEEB41A5C10E2E61AA08CB623D85C9A9D1683D98B2041",
+    "portraitRefs": [
+      "敌人-Codex黑仔",
+      "敌人-前治安官"
+    ],
+    "inputs": {
+      "baseManifest": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/base-manifest.json",
+        "bytes": 1102169,
+        "sha256": "B3D269A4CD8088CC94E17707E9C733C30CF0C495E7597E1B7AA7FA5D9A910CF4"
+      },
+      "baseReceipt": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/base-promotion-receipt.json",
+        "bytes": 3629,
+        "sha256": "C2C04D4F2EC394A00E13D9AD3F058E16596A07D1055E891DB61096205ADA4CA4"
+      },
+      "humanReviewReceipt": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/human-review-receipt.json",
+        "bytes": 1115,
+        "sha256": "76B66DA4CF8C8C1D7C664F6879A9452BD8705D89F50E0CBADEFCC4FC160EB9D3"
+      },
+      "renderReport": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/render-report.json",
+        "bytes": 6194,
+        "sha256": "AA364AA45EEAB9E0941FB5086DE7607E2E487E30B935440E1CEE7595EF1556F5"
+      },
+      "controller": {
+        "path": "tools/portrait-pilot/promote-direct-portraits-v1.py",
+        "bytes": 20980,
+        "sha256": "927C6D91C0DCC19654ADD7E46446D8D425D84014AD09737F7087DCD336294789"
+      },
+      "sharedPublisher": {
+        "path": "tools/portrait-pilot/promote-enemy-portraits-v1.py",
+        "bytes": 74916,
+        "sha256": "C891988D4DD53476D7C9859BE171A6487F5CD490288E66FF560C24A8E18EE967"
+      }
+    },
+    "historicalCampaignEvidence": "preserved_without_recertification",
+    "legacyTextCompatibility": "crlf_to_lf_checksum_only",
+    "orientationActions": {
+      "敌人-Codex黑仔": "keep",
+      "敌人-前治安官": "keep"
+    },
+    "nativeCompatibility": {
+      "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/native-render-report.json",
+      "bytes": 6961,
+      "sha256": "2CAE74C34CA6A8E90E1492F86949D404EE427CEB68FBE8DAAA81FAB00F0312AF"
+    },
+    "closureDigest": "6A387C5AAF78894B7114CEB9FE99FAA65B1EB686A9DB8E49D1023D7818A5EE6D"
+  },
+  "manifestDigest": "926622A3014A082D02C2A0B34CAA628819782C8D3E503BE8B439B1E3D58A372C"
 }

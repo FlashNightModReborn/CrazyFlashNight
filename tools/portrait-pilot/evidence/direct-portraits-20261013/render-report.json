@@ -1,0 +1,177 @@
+{
+  "schema": "cf7.direct-native-frame-render.v1",
+  "status": "rendered",
+  "entries": {
+    "敌人-前治安官": {
+      "portraitRef": "敌人-前治安官",
+      "enemyIds": [
+        "敌人-前治安官"
+      ],
+      "petIds": [],
+      "status": "pending_human_review",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "candidate_proposed",
+          "subject": {
+            "preferredFormat": "png",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/d7e17b6db242c8e8e2973546.svg",
+              "bytes": 188657,
+              "sha256": "D7E17B6DB242C8E8E2973546AD49C1F804A177E3546D8FA9267FC9DE39850AF9",
+              "viewBox": [
+                0,
+                0,
+                512,
+                512
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 1,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/92aa5d128c59c75752168b8f.png",
+              "bytes": 141337,
+              "sha256": "92AA5D128C59C75752168B8FBC404DDAAE815CAA00A97E9E6CF0C9464EB566C5",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                13,
+                512,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-前治安官::default",
+            "resolution": "direct_user_approved_native_frame",
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex专用素材.swf",
+              "bytes": 798599,
+              "sha256": "AF3F2389860283B3B0DBE32A4F36F94E4F2FB90BCD7E13F0B793262175097848"
+            },
+            "rootLinkage": "前治安官动作-持盾待机",
+            "sourceSymbol": "Codex/前治安官二阶段/持盾待机",
+            "renderCharacterId": 817,
+            "frame": 1,
+            "zoom": 12,
+            "sourceFrameArchive": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/frames/sheriff.png.xz",
+              "bytes": 2893012,
+              "sha256": "BCD3092289FE4CB3A39A029591725461F78D6AA4D11CA1240D50002185FA6680"
+            },
+            "sourceFrameSha256": "A902BB031E99CBBE4155870BA48200042EFAA2AA9C530817F66E2158E2F05E59",
+            "cropPixels": [
+              1581,
+              271,
+              2936,
+              1626
+            ],
+            "masterSize": 1355,
+            "pillowVersion": "12.1.0",
+            "exporterSource": {
+              "path": "tools/portrait-pilot/SelectedSpriteFrameExporter.java",
+              "bytes": 4546,
+              "sha256": "7E1560CB3FFD01ADB4FA580A8F00FEB0E633C2BF89B01B333C9E8718E66587F9"
+            }
+          }
+        }
+      }
+    },
+    "敌人-Codex黑仔": {
+      "portraitRef": "敌人-Codex黑仔",
+      "enemyIds": [
+        "敌人-Codex黑仔"
+      ],
+      "petIds": [],
+      "status": "pending_human_review",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "candidate_proposed",
+          "subject": {
+            "preferredFormat": "png",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/e2bd9a476bae7cd36b44b397.svg",
+              "bytes": 103897,
+              "sha256": "E2BD9A476BAE7CD36B44B3977979D9FF60FCFAB597E7EEA2EF6CB9A206122689",
+              "viewBox": [
+                0,
+                0,
+                512,
+                512
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 1,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/5661d5faa985799a59f48204.png",
+              "bytes": 77768,
+              "sha256": "5661D5FAA985799A59F482045CCEB4A7330F7C5D902FC9E763FAFF01C31EC326",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                39,
+                485,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-Codex黑仔::default",
+            "resolution": "direct_user_approved_native_frame",
+            "sourceSwf": {
+              "path": "flashswf/arts/new/Codex黑仔素材.swf",
+              "bytes": 238117,
+              "sha256": "3A6E8F206B1BA9AC6428F8A6629D2C3F2269637816A2A9338B47E23FBFB2260F"
+            },
+            "rootLinkage": "敌人-Codex黑仔",
+            "sourceSymbol": "Codex黑仔/动作/站立",
+            "renderCharacterId": 63,
+            "frame": 1,
+            "zoom": 12,
+            "sourceFrameArchive": {
+              "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/frames/black.png.xz",
+              "bytes": 1198324,
+              "sha256": "0398C63DA24AC01C1F6972DD2D5CC07A6334103A7680C100EA97B9186E79B207"
+            },
+            "sourceFrameSha256": "6FB05E6FDD685269398FB2DFF55339ACBE00D4F05F45C09B070708237F10023C",
+            "cropPixels": [
+              1193,
+              105,
+              2522,
+              1434
+            ],
+            "masterSize": 1329,
+            "pillowVersion": "12.1.0",
+            "exporterSource": {
+              "path": "tools/portrait-pilot/SelectedSpriteFrameExporter.java",
+              "bytes": 4546,
+              "sha256": "7E1560CB3FFD01ADB4FA580A8F00FEB0E633C2BF89B01B333C9E8718E66587F9"
+            }
+          }
+        }
+      }
+    }
+  },
+  "renderDigest": "C6D0C8B42F3C593C1BC67999A013B4913BFAA164814F913F91B948E5E0E2E072"
+}

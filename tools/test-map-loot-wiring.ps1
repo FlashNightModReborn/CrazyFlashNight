@@ -518,4 +518,32 @@ Assert-NotContains $stageCorpus "<chestS0FixtureId>" (
 Assert-NotContains $stageCorpus "<chestS0As2GateId>" (
     "production stages contain S0 AS2 gate markers")
 
+# 实际敌人目录是固定外观声明的权威；不能只验 mock 中的三种类型。
+[xml]$enemyList = Read-Utf8 "data\enemy_properties\list.xml"
+$fixedAppearanceKeys = @{}
+foreach ($entry in @($enemyList.root.items)) {
+    [xml]$enemyDocument = Read-Utf8 ("data\enemy_properties\" + [string]$entry)
+    foreach ($enemy in $enemyDocument.root.ChildNodes) {
+        if ($enemy.NodeType -ne [Xml.XmlNodeType]::Element) { continue }
+        $appearanceNodes = @($enemy.SelectNodes("battleRecordAppearance"))
+        if ($appearanceNodes.Count -eq 0) { continue }
+        Assert-True ($appearanceNodes.Count -eq 1) (
+            "enemy $($enemy.Name) has one scalar battle appearance declaration")
+        Assert-True ($appearanceNodes[0].InnerText -ceq "fixed") (
+            "enemy $($enemy.Name) declares the supported fixed appearance mode")
+        $fixedAppearanceKeys[$enemy.Name] = $true
+    }
+}
+foreach ($key in @("敌人-终结者T800", "敌人-二足型机器人", "敌人-Codex黑仔")) {
+    Assert-True ($fixedAppearanceKeys.ContainsKey($key)) (
+        "production enemy $key explicitly retains its fixed appearance")
+}
+foreach ($key in @("敌人-大学军校生", "敌人-军阀派学员", "敌人-剑道社社员", "敌人-黑铁派学员", "敌人-重装拾荒者")) {
+    Assert-True (-not $fixedAppearanceKeys.ContainsKey($key)) (
+        "real dressup enemy $key retains its individual appearance")
+}
+$battleRecord = Read-Utf8 "scripts\类定义\org\flashNight\arki\unit\UnitBattleRecord.as"
+Assert-Contains $battleRecord 'info.battleRecordAppearance == "fixed"' (
+    "shared battle projection consumes the authored appearance declaration")
+
 Write-Output ("[PASS] map-loot-wiring: {0} assertions" -f $script:Assertions)

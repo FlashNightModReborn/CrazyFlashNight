@@ -48,6 +48,45 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
             }
         }
 
+        [Theory]
+        [InlineData("敌人-前治安官")]
+        [InlineData("敌人-Codex黑仔")]
+        public void TryGet_DirectPortrait_RendersVisibleImageWithTransparency(string portraitRef)
+        {
+            using (LootIconCatalog catalog = NewCatalog())
+            {
+                LootIconCatalog.LootIconFrames frames;
+                Assert.True(catalog.TryGet(portraitRef, out frames));
+                Assert.False(frames.Animated);
+                Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Width);
+                Assert.Equal(LootIconCatalog.ThumbSize, frames.First.Height);
+
+                // 内嵌 PNG 的 SVG 必须实际解码，不能只返回全透明画布或错误占位。
+                int coloredPixels = 0;
+                int transparentPixels = 0;
+                for (int y = 0; y < frames.First.Height; y++)
+                {
+                    for (int x = 0; x < frames.First.Width; x++)
+                    {
+                        Color pixel = frames.First.GetPixel(x, y);
+                        if (pixel.A == 0) transparentPixels++;
+                        int brightest = Math.Max(pixel.R, Math.Max(pixel.G, pixel.B));
+                        int darkest = Math.Min(pixel.R, Math.Min(pixel.G, pixel.B));
+                        if (pixel.A >= 192 && brightest - darkest > 30) coloredPixels++;
+                    }
+                }
+                Assert.True(coloredPixels > 64, "Portrait image was not decoded.");
+                Assert.True(transparentPixels > 128, "Portrait transparency was lost.");
+                string outputDir = Environment.GetEnvironmentVariable("CF7_TEST_PORTRAIT_OUTPUT");
+                if (!string.IsNullOrEmpty(outputDir))
+                {
+                    Directory.CreateDirectory(outputDir);
+                    frames.First.Save(Path.Combine(outputDir, portraitRef + ".png"),
+                        System.Drawing.Imaging.ImageFormat.Png);
+                }
+            }
+        }
+
         [Fact]
         public void TryGet_PortraitAlias_ResolvesToTarget()
         {

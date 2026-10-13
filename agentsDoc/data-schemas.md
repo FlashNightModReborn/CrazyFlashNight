@@ -94,6 +94,12 @@ data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生�
 data/arena/arena_calibrated_rosters.json → 已完成人机门的精确怪物组合到标准卡档位目录
 ```
 
+### 敌人战报外观
+
+`data/enemy_properties/*.xml` 的敌人类型可声明 `<battleRecordAppearance>fixed</battleRecordAppearance>`，明确其使用固定模板外观。`UnitBattleRecord` 优先读取该声明，生成固定头像引用和按类型聚合的击杀记录；友军仍保留逐单位死亡事实，由 Web 按状态归并展示。该字段不改变 `hasDressup`、装备数值、武器、技能或单位初始化。
+
+未声明时保留兼容行为：`hasDressup===true` 或 `主角-*` 类型生成纸娃娃与装备快照，并保留个体记录。终结者 T800、二足型机器人和 Codex 黑仔已声明固定外观；共用模板的终结者各兵种配置自动继承。该规则只用于新生成的快照，不重写已冻结、已持久化战报或其 fingerprint。
+
 ### GameStage 跨 SubStage 计时池
 
 `data/stages/**/*.xml` 可在一个 `GameStage` 内声明会话级 `TimePools`，并由任意 `SubStage` 直接引用零到多个池。未声明 `TimePools` 的旧关卡保持原行为；计时状态不写存档或 `tasks_to_do`，离开、失败、完成、重开或返回基地时清空。

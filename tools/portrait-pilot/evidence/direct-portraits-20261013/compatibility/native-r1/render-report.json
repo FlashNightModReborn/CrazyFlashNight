@@ -1,0 +1,150 @@
+{
+  "schema": "cf7.direct-portrait-native-vector.v1",
+  "status": "same_approved_frame_crop_vector_derived",
+  "reason": "Native SvgExternalResourcePolicy.Disabled blocks inline PNG; use original vector geometry at the approved crop, keeping approved Web PNG bytes.",
+  "originalPublication": {
+    "manifest": {
+      "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/base-direct-manifest.json",
+      "bytes": 1089460,
+      "sha256": "7C2307E1D09ACAC8138EC8E908842C0E12842A4C18138B80E9CC8EDAF061C1D1"
+    },
+    "receipt": {
+      "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/base-direct-receipt.json",
+      "bytes": 3696,
+      "sha256": "C4C1177EB355E108D0C7E51EFF8CA9C0466A0F2F9DB3075C1BF41A769EB516F6"
+    },
+    "directController": {
+      "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/previous-direct-controller.py",
+      "bytes": 14933,
+      "sha256": "C149D0970887814EFC01EE6F7A03D0A5176FA82C5B474E6FBA8657C3F5C5A55B"
+    },
+    "sharedPublisher": {
+      "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/previous-shared-publisher.py",
+      "bytes": 74916,
+      "sha256": "C891988D4DD53476D7C9859BE171A6487F5CD490288E66FF560C24A8E18EE967"
+    }
+  },
+  "entries": {
+    "敌人-前治安官": {
+      "sourceSwf": {
+        "path": "flashswf/arts/new/Codex专用素材.swf",
+        "bytes": 798599,
+        "sha256": "AF3F2389860283B3B0DBE32A4F36F94E4F2FB90BCD7E13F0B793262175097848"
+      },
+      "sourceVectorArchive": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/sheriff-native.svg.xz",
+        "bytes": 57180,
+        "sha256": "FDF08A091C9F1717C8D4B73D68CB98329BC3D590C78F73733925E529704D762F"
+      },
+      "sourceVectorSha256": "D64ED03C2AC665D46398C2AE23B361F11C353D6B37C1513C1968D67C1DC3BCD4",
+      "exporterSource": {
+        "path": "tools/portrait-pilot/SelectedSpriteSvgExporter.java",
+        "bytes": 4466,
+        "sha256": "6D6AB09FCF55C24E091425A3093A6180B82D977AD763C84DD40BF4AC33E7D83E"
+      },
+      "renderCharacterId": 817,
+      "frame": 1,
+      "zoom": 12,
+      "cropPixels": [
+        1581,
+        271,
+        2936,
+        1626
+      ],
+      "svg": {
+        "url": "assets/enemy-portraits/subjects/1b1ff7fd3a40686dd6d960e5.svg",
+        "bytes": 371024,
+        "sha256": "1B1FF7FD3A40686DD6D960E5182903B0228F225B88713F16A951331A8784BE0E",
+        "viewBox": [
+          1581,
+          271,
+          1355,
+          1355
+        ],
+        "flipX": false,
+        "embeddedRasterCount": 0,
+        "isRasterHeavy": false,
+        "runtimeAllowed": true,
+        "convolutionFilterCount": 0
+      }
+    },
+    "敌人-Codex黑仔": {
+      "sourceSwf": {
+        "path": "flashswf/arts/new/Codex黑仔素材.swf",
+        "bytes": 238117,
+        "sha256": "3A6E8F206B1BA9AC6428F8A6629D2C3F2269637816A2A9338B47E23FBFB2260F"
+      },
+      "sourceVectorArchive": {
+        "path": "tools/portrait-pilot/evidence/direct-portraits-20261013/compatibility/black-native.svg.xz",
+        "bytes": 21496,
+        "sha256": "8AAE175D954182FB6499E1B721F2A50F57D9B00A5893670806D27EC02971129C"
+      },
+      "sourceVectorSha256": "A9CDC637DE3BC3C1E0A6370B9E7D6814F12AFF3762CDDA9BBC882F3B3450E114",
+      "exporterSource": {
+        "path": "tools/portrait-pilot/SelectedSpriteSvgExporter.java",
+        "bytes": 4466,
+        "sha256": "6D6AB09FCF55C24E091425A3093A6180B82D977AD763C84DD40BF4AC33E7D83E"
+      },
+      "renderCharacterId": 63,
+      "frame": 1,
+      "zoom": 12,
+      "cropPixels": [
+        1193,
+        105,
+        2522,
+        1434
+      ],
+      "svg": {
+        "url": "assets/enemy-portraits/subjects/e4463541fce7e38c224d8a46.svg",
+        "bytes": 188730,
+        "sha256": "E4463541FCE7E38C224D8A4639E0079228DA12038F06787229B0B3882BCDE380",
+        "viewBox": [
+          1193,
+          105,
+          1329,
+          1329
+        ],
+        "flipX": false,
+        "embeddedRasterCount": 0,
+        "isRasterHeavy": false,
+        "runtimeAllowed": true,
+        "convolutionFilterCount": 0
+      }
+    }
+  },
+  "preservedSubjects": [
+    {
+      "url": "assets/enemy-portraits/subjects/d7e17b6db242c8e8e2973546.svg",
+      "bytes": 188657,
+      "sha256": "D7E17B6DB242C8E8E2973546AD49C1F804A177E3546D8FA9267FC9DE39850AF9",
+      "viewBox": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "flipX": false,
+      "embeddedRasterCount": 1,
+      "isRasterHeavy": false,
+      "runtimeAllowed": true,
+      "convolutionFilterCount": 0
+    },
+    {
+      "url": "assets/enemy-portraits/subjects/e2bd9a476bae7cd36b44b397.svg",
+      "bytes": 103897,
+      "sha256": "E2BD9A476BAE7CD36B44B3977979D9FF60FCFAB597E7EEA2EF6CB9A206122689",
+      "viewBox": [
+        0,
+        0,
+        512,
+        512
+      ],
+      "flipX": false,
+      "embeddedRasterCount": 1,
+      "isRasterHeavy": false,
+      "runtimeAllowed": true,
+      "convolutionFilterCount": 0
+    }
+  ],
+  "compatibilityDigest": "9CE436FC9EEC03B836A4EF2578ECD5CF08B70EDB159A7560C1E837FDAF6F4913"
+}

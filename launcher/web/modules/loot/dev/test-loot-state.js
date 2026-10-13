@@ -1838,6 +1838,30 @@ function battleAlly(id,status,hero) {const unit=battleUnit(id);delete unit.indiv
     return Object.assign(unit,{status,downs:1,isHero:!!hero});}
 function fixedBattleAlly(id,status) {return Object.assign(battleAlly(id,status||'dead'),{
     key:'enemy.tank',displayName:'支援坦克',iconName:'支援坦克',doll:null,loadout:null});}
+test('fixed equipment templates keep fixed portraits and merge only allied display records',()=>{
+    const keys=['敌人-终结者T800','敌人-二足型机器人','敌人-Codex黑仔'];
+    const source=battleReport();
+    source.kills=keys.map(key=>({key,displayName:key,iconName:key,eliteLevel:0,count:2,
+        doll:null,individual:false,unitId:'',level:0,loadout:null}));
+    source.totalKills=6;
+    source.allies=keys.flatMap((key,index)=>[0,1].map(n=>Object.assign(
+        fixedBattleAlly('fixed.'+index+'.'+n,'dead'),{key,iconName:key,displayName:'战宠'+n})));
+    source.totalAllyDowns=6;source.totalAllyLosses=6;
+    const report=LootView.normalizeSettlementReport(source);
+    assert.ok(report);
+    assert.deepStrictEqual(Array.from(report.kills,kill=>[kill.iconName,kill.doll,kill.individual,kill.count]),
+        keys.map(key=>[key,null,false,2]));
+    const records=LootView.projectAllyRecords(report.allies);
+    assert.strictEqual(records.length,3);
+    records.forEach((record,index)=>{
+        assert.strictEqual(record.iconName,keys[index]);
+        assert.strictEqual(record.doll,null);assert.strictEqual(record.individual,false);
+        assert.strictEqual(record.count,2);assert.strictEqual(record.downs,2);
+        assert.deepStrictEqual(Array.from(record.members,member=>member.displayName),['战宠0','战宠1']);
+    });
+    assert.strictEqual(report.allies.length,6);
+    assert.strictEqual(report.totalAllyLosses,6);
+});
 test('v2 preserves same-name unit identities and deep frozen weapon summaries',()=>{
     const source=battleReport();source.kills[0].loadout.primary='旧枪';
     const result=LootView.normalizeSettlementReport(source);

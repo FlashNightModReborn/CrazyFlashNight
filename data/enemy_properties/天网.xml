@@ -346,6 +346,8 @@
     </敌人-不明士兵>
     <敌人-二足型机器人>
         <displayname>二足机器人</displayname>
+        <!-- 固定机械外观；hasDressup 仅保留装备与武器能力。 -->
+        <battleRecordAppearance>fixed</battleRecordAppearance>
         <最小经验值>100</最小经验值>
         <最大经验值>250</最大经验值>
         <hp_min>550</hp_min>

@@ -258,6 +258,8 @@
     <敌人-Codex黑仔>
         <!-- 黑仔：成长2/档次6，韧性6；取消 MP 消耗后的强度仍待真实斗兽复验。 -->
         <displayname>黑仔</displayname>
+        <!-- 外观与球棒已固化；hasDressup 仅保留装备数值初始化。 -->
+        <battleRecordAppearance>fixed</battleRecordAppearance>
         <最小经验值>287</最小经验值>
         <最大经验值>2628</最大经验值>
         <hp_min>2962</hp_min>

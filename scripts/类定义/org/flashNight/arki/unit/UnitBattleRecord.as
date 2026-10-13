@@ -51,9 +51,12 @@ class org.flashNight.arki.unit.UnitBattleRecord {
     public static function snapshot(target:MovieClip):Object {
         var state:Object = stateFor(target);
         var key:String = text(UnitUtil.getUnitTypeKey(target), 128);
-        var individual:Boolean = target.hasDressup === true
-            || key.indexOf("主角-") == 0;
         var info:Object = _root.敌人属性表[key];
+        // hasDressup 也服务固定外观单位的装备数值与武器初始化，不能单独证明纸娃娃外观。
+        // 类型配置覆盖展示分类；保留单位的装备能力及既有未声明类型的兼容路径。
+        var fixedAppearance:Boolean = info != undefined && info.battleRecordAppearance == "fixed";
+        var individual:Boolean = !fixedAppearance
+            && (target.hasDressup === true || key.indexOf("主角-") == 0);
         var name:String = text(target.名字, 96);
         var icon:String = "";
         if (!individual && info != undefined && info.displayname != undefined) {

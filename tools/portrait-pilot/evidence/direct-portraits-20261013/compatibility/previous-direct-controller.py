@@ -1,0 +1,203 @@
+"""Add the two explicitly approved native-frame portraits, preserving the base.
+
+This delta verifies current source frames, human approval, every live subject,
+and the untouched prior manifest. It does not recertify historical campaign
+source audits. Publication reuses the shared manifest-last writer.
+"""
+from __future__ import annotations
+import argparse
+import base64
+import copy
+import datetime as dt
+import hashlib
+import importlib.util
+import io
+import json
+import lzma
+from pathlib import Path
+import shutil
+import tempfile
+import xml.etree.ElementTree as ET
+from PIL import Image, __version__ as PILLOW_VERSION
+
+ROOT = Path(__file__).resolve().parents[2]
+EVIDENCE = ROOT / "tools/portrait-pilot/evidence/direct-portraits-20261013"
+OUTPUT = ROOT / "launcher/web/assets/enemy-portraits"
+REFS = {"敌人-前治安官", "敌人-Codex黑仔"}
+
+def sha(data): return hashlib.sha256(data).hexdigest().upper()
+def stable(value): return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf8")
+def seal(value, field):
+    value = copy.deepcopy(value); value.pop(field, None); value[field] = sha(stable(value)); return value
+def verify_digest(value, field):
+    if value.get(field) != seal(value, field)[field]: raise ValueError(field + " drift")
+def read(path): return json.loads(path.read_text("utf8"))
+def write(path, value): path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+"\n", encoding="utf8", newline="\n")
+def artifact(path): return {"path":path.relative_to(ROOT).as_posix(),"bytes":path.stat().st_size,"sha256":sha(path.read_bytes())}
+def verify(record):
+    path=(ROOT/record["path"]).resolve()
+    if not path.is_relative_to(ROOT) or artifact(path)!=record: raise ValueError("artifact drift: "+record["path"])
+    return path
+def subject_path(root, record, *, legacy=False):
+    prefix="assets/enemy-portraits/subjects/"
+    url=record.get("url", "")
+    if not url.startswith(prefix) or Path(url).name!=record["sha256"][:24].lower()+Path(url).suffix:
+        raise ValueError("subject identity drift")
+    path=root/"subjects"/Path(url).name
+    blob=path.read_bytes()
+    if len(blob)!=record["bytes"] or sha(blob)!=record["sha256"]:
+        # The pre-existing SVG checkout uses CRLF while its content hashes bind
+        # LF. Permit only that provably identical text conversion on preserved
+        # base assets; new assets and all raster files remain byte-exact.
+        canonical=blob.replace(b"\r\n",b"\n")
+        if not legacy or path.suffix!=".svg" or len(canonical)!=record["bytes"] or sha(canonical)!=record["sha256"]:
+            raise ValueError("subject bytes drift: "+url)
+    return path
+def png_bytes(image):
+    stream=io.BytesIO(); image.save(stream,format="PNG",optimize=True); return stream.getvalue()
+def alpha(path):
+    image=Image.open(path).convert("RGBA"); channel=image.getchannel("A")
+    if image.size!=(512,512) or not channel.getbbox() or channel.getextrema()[0]==255: raise ValueError("portrait alpha/size")
+    return {"size":[512,512],"alphaExtrema":list(channel.getextrema()),"visibleBounds":list(channel.getbbox())}
+def package():
+    data=read(EVIDENCE/"render-report.json"); verify_digest(data,"renderDigest")
+    approval=read(EVIDENCE/"human-review-receipt.json"); verify_digest(approval,"receiptDigest")
+    if (approval.get("schema")!="cf7.direct-portrait-human-review.v1"
+        or approval.get("authorizationSource")!="direct_user_reply_to_request_user_input_async"
+        or approval.get("requestToolCallId")!="call_305babfa1838451b9218a852bffdbf3c"
+        or approval.get("status")!="human_accepted" or approval.get("userReply")!="认可这两张，接入头像库"):
+        raise ValueError("explicit human approval missing")
+    if (set(data["entries"])!=REFS or len(approval["decisions"])!=2
+        or {row["reviewKey"] for row in approval["decisions"]}!={ref+"::default" for ref in REFS}):
+        raise ValueError("approved identity set")
+    for ref,entry in data["entries"].items():
+        variant=entry["variants"]["default"]; row=next(r for r in approval["decisions"] if r["reviewKey"]==ref+"::default")
+        source=variant["provenance"]; subject=variant["subject"]
+        if (row["status"]!="pass" or row.get("orientationAction")!="keep"
+            or row["pngSha256"]!=subject["pngFallback"]["sha256"] or row["svgSha256"]!=subject["svg"]["sha256"]):
+            raise ValueError("approval is not bound to these pixels")
+        verify(source["sourceSwf"]); verify(source["exporterSource"])
+        frame_bytes=lzma.decompress(verify(source["sourceFrameArchive"]).read_bytes())
+        if sha(frame_bytes)!=source["sourceFrameSha256"]: raise ValueError("native frame drift")
+        frame=Image.open(io.BytesIO(frame_bytes)).convert("RGBA"); crop=source["cropPixels"]
+        side=crop[2]-crop[0]
+        if side!=crop[3]-crop[1] or not 1024<=side<=4096 or not (0<=crop[0]<crop[2]<=frame.width and 0<=crop[1]<crop[3]<=frame.height):
+            raise ValueError("native crop bounds")
+        if source["pillowVersion"]!=PILLOW_VERSION: raise ValueError("portrait renderer version drift")
+        generated=png_bytes(frame.crop(crop).resize((512,512),Image.Resampling.LANCZOS))
+        if sha(generated)!=row["pngSha256"]: raise ValueError("native crop cannot reproduce approved portrait")
+    return data, approval
+def counts(base):
+    result=copy.deepcopy(base["counts"])
+    for key in ("identityCount","variantCount","humanAcceptedIdentityCount","humanAcceptedVariantCount"):result[key]+=2
+    result["directSupplementalIdentityCount"]=2
+    return result
+def closure_inputs():
+    inputs={name:artifact(EVIDENCE/file) for name,file in {"baseManifest":"base-manifest.json",
+        "baseReceipt":"base-promotion-receipt.json","humanReviewReceipt":"human-review-receipt.json","renderReport":"render-report.json"}.items()}
+    inputs["controller"]=artifact(Path(__file__))
+    inputs["sharedPublisher"]=artifact(ROOT/"tools/portrait-pilot/promote-enemy-portraits-v1.py")
+    return inputs
+def check_manifest(path, *, logical_output=None):
+    manifest=read(path); verify_digest(manifest,"manifestDigest")
+    closure=manifest.get("directSupplementalPromotion",{}); verify_digest(closure,"closureDigest")
+    if (closure.get("schema")!="cf7.direct-portrait-supplement.v1"
+        or closure.get("status")!="human_accepted_direct_portraits_promoted"
+        or set(closure.get("portraitRefs",[]))!=REFS
+        or closure.get("historicalCampaignEvidence")!="preserved_without_recertification"
+        or closure.get("legacyTextCompatibility")!="crlf_to_lf_checksum_only"
+        or closure.get("orientationActions")!={ref:"keep" for ref in REFS}
+        or closure.get("inputs")!=closure_inputs()):
+        raise ValueError("direct portrait closure")
+    for record in closure["inputs"].values():verify(record)
+    base=read(verify(closure["inputs"]["baseManifest"])); verify_digest(base,"manifestDigest")
+    base_receipt=read(verify(closure["inputs"]["baseReceipt"])); verify_digest(base_receipt,"receiptDigest")
+    if base_receipt["manifestDigest"]!=base["manifestDigest"] or base["manifestDigest"]!=closure["baseManifestDigest"]:
+        raise ValueError("prior accepted manifest binding")
+    rendered,approval=package()
+    if set(manifest)!=set(base)|{"directSupplementalPromotion"}:raise ValueError("delta root contract")
+    if set(manifest["entries"])!=set(base["entries"])|REFS or REFS&set(base["entries"]):raise ValueError("delta identities")
+    for ref,entry in base["entries"].items():
+        if manifest["entries"][ref]!=entry:raise ValueError("prior accepted identity changed: "+ref)
+    for key,value in base.items():
+        if key not in {"entries","counts","manifestDigest","generatedAt"} and manifest.get(key)!=value:
+            raise ValueError("prior manifest contract changed: "+key)
+    if manifest["counts"]!=counts(base):raise ValueError("direct portrait count drift")
+    declared={}
+    for ref,entry in manifest["entries"].items():
+        for variant in entry["variants"].values():
+            if variant.get("status")!="human_accepted":continue
+            for record in (variant["subject"]["svg"],variant["subject"]["pngFallback"]):declared[Path(record["url"]).name]=record
+    for record in manifest["preservedEvidence"]["subjects"]:declared[Path(record["url"]).name]=record
+    if {f.name for f in (path.parent/"subjects").iterdir()}!=set(declared):raise ValueError("live subject fileset drift")
+    new_files={Path(asset["url"]).name for entry in rendered["entries"].values()
+        for asset in (entry["variants"]["default"]["subject"]["svg"],entry["variants"]["default"]["subject"]["pngFallback"])}
+    for name,record in declared.items():subject_path(path.parent,record,legacy=name not in new_files)
+    for ref in REFS:
+        expected=copy.deepcopy(rendered["entries"][ref]); expected["status"]="ready"
+        variant=expected["variants"]["default"]; variant["status"]="human_accepted"
+        variant["provenance"].update(decisionStatus="pass",orientationAction="keep",
+            orientationSource="explicit_native_frame_human_approval",rasterOrientationTransform="none",
+            humanReceipt=closure["inputs"]["humanReviewReceipt"],acceptedRenderReport=closure["inputs"]["renderReport"])
+        if manifest["entries"][ref]!=expected:raise ValueError("approved new entry drift: "+ref)
+        subject=variant["subject"]; png=subject_path(path.parent,subject["pngFallback"]); svg=subject_path(path.parent,subject["svg"])
+        if alpha(png)!={key:subject["pngFallback"][key] for key in ("size","alphaExtrema","visibleBounds")}:raise ValueError("alpha evidence drift")
+        root=ET.fromstring(svg.read_bytes()); images=root.findall("{http://www.w3.org/2000/svg}image")
+        if len(images)!=1 or len(list(root))!=1 or root.attrib.get("viewBox")!="0 0 512 512":raise ValueError("native SVG wrapper structure")
+        data=images[0].attrib.get("{http://www.w3.org/1999/xlink}href","")
+        if not data.startswith("data:image/png;base64,") or base64.b64decode(data.split(",",1)[1],validate=True)!=png.read_bytes():raise ValueError("SVG and PNG pixels differ")
+        if subject["preferredFormat"]!="png" or subject["svg"]["flipX"]:raise ValueError("approved orientation/representation drift")
+    receipt=read(path.parent/"promotion-receipt.json"); verify_digest(receipt,"receiptDigest")
+    expected_path=(logical_output or path.parent)/"manifest.json"
+    record={"path":expected_path.relative_to(ROOT).as_posix(),"bytes":path.stat().st_size,"sha256":sha(path.read_bytes())}
+    if (receipt["manifestDigest"]!=manifest["manifestDigest"] or receipt["manifest"]!=record or receipt["counts"]!=manifest["counts"]
+        or receipt.get("directSupplementalClosureDigest")!=closure["closureDigest"]
+        or receipt.get("generatedAt")!=manifest["generatedAt"]
+        or set(receipt)!=set(base_receipt)|{"directSupplementalClosureDigest"}):
+        raise ValueError("manifest-last receipt drift")
+    for key,value in base_receipt.items():
+        if key not in {"manifestDigest","manifest","counts","generatedAt","receiptDigest"} and receipt.get(key)!=value:
+            raise ValueError("prior receipt contract changed: "+key)
+    return manifest
+def promote():
+    data,approval=package(); base=read(EVIDENCE/"base-manifest.json"); verify_digest(base,"manifestDigest")
+    if sha((OUTPUT/"manifest.json").read_bytes())!=sha((EVIDENCE/"base-manifest.json").read_bytes()):
+        live=check_manifest(OUTPUT/"manifest.json"); print("Already applied: "+live["manifestDigest"]);return
+    manifest=copy.deepcopy(base); manifest["generatedAt"]=dt.datetime.now(dt.timezone.utc).isoformat().replace("+00:00","Z")
+    inputs=closure_inputs()
+    closure=seal({"schema":"cf7.direct-portrait-supplement.v1","status":"human_accepted_direct_portraits_promoted",
+        "baseManifestDigest":base["manifestDigest"],"portraitRefs":sorted(REFS),"inputs":inputs,
+        "historicalCampaignEvidence":"preserved_without_recertification","legacyTextCompatibility":"crlf_to_lf_checksum_only",
+        "orientationActions":{ref:"keep" for ref in sorted(REFS)}},"closureDigest")
+    for ref in REFS:
+        entry=copy.deepcopy(data["entries"][ref]);entry["status"]="ready";entry["variants"]["default"]["status"]="human_accepted"
+        entry["variants"]["default"]["provenance"].update(decisionStatus="pass",orientationAction="keep",
+            orientationSource="explicit_native_frame_human_approval",rasterOrientationTransform="none",
+            humanReceipt=inputs["humanReviewReceipt"],acceptedRenderReport=inputs["renderReport"])
+        manifest["entries"][ref]=entry
+    manifest["counts"]=counts(base);manifest["directSupplementalPromotion"]=closure;manifest=seal(manifest,"manifestDigest")
+    work_root=(ROOT/"tmp/portrait-pilot").resolve()
+    work_root.mkdir(parents=True,exist_ok=True)
+    temporary=Path(tempfile.mkdtemp(prefix="direct-20261013-staging-",dir=work_root)).resolve()
+    if not temporary.is_relative_to(work_root):raise ValueError("staging escaped portrait workspace")
+    shutil.copytree(OUTPUT,temporary,dirs_exist_ok=True)
+    for f in (EVIDENCE/"subjects").iterdir():shutil.copy2(f,temporary/"subjects"/f.name)
+    write(temporary/"manifest.json",manifest)
+    receipt=read(EVIDENCE/"base-promotion-receipt.json");receipt.update(manifestDigest=manifest["manifestDigest"],
+        counts=manifest["counts"],generatedAt=manifest["generatedAt"],directSupplementalClosureDigest=closure["closureDigest"],
+        manifest={"path":(OUTPUT/"manifest.json").relative_to(ROOT).as_posix(),"bytes":(temporary/"manifest.json").stat().st_size,"sha256":sha((temporary/"manifest.json").read_bytes())})
+    write(temporary/"promotion-receipt.json",seal(receipt,"receiptDigest"))
+    check_manifest(temporary/"manifest.json",logical_output=OUTPUT)
+    module_spec=importlib.util.spec_from_file_location("cf7_direct_shared_publisher",ROOT/"tools/portrait-pilot/promote-enemy-portraits-v1.py")
+    publisher=importlib.util.module_from_spec(module_spec);module_spec.loader.exec_module(publisher)
+    backup=Path(tempfile.mkdtemp(prefix="direct-20261013-backup-",dir=work_root)).resolve()
+    if not backup.is_relative_to(work_root):raise ValueError("backup escaped portrait workspace")
+    shutil.copytree(OUTPUT,backup,dirs_exist_ok=True)
+    publisher.publish_staged_pack(temporary,OUTPUT,backup)
+    print(json.dumps({"status":"direct_portraits_promoted","manifestDigest":manifest["manifestDigest"],"portraitRefs":sorted(REFS)},ensure_ascii=False))
+def main():
+    parser=argparse.ArgumentParser();parser.add_argument("command",choices=["check","promote"]);args=parser.parse_args()
+    if args.command=="promote":promote()
+    else:
+        manifest=check_manifest(OUTPUT/"manifest.json");print(json.dumps({"status":"direct_delta_and_preserved_base_verified","counts":manifest["counts"]},ensure_ascii=False))
+if __name__=="__main__":main()

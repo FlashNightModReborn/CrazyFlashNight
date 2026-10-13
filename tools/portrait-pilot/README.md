@@ -383,3 +383,15 @@ Web `EnemyPortraits.resolve` 在 descriptor 层移除禁用 SVG 地址，mount�
 
 
 本次机器验证：结构策略 3 项、resolver 15 项通过；现役 28 个含卷积的已接受变体禁用 SVG，222 个已接受变体的身份/别名/几何/来源及图像字节逐项不变，Team / Enemy / Arena evidence-only 门通过。真实 WebView2 `152.0.4191.66`，进程来自系统 `Microsoft/EdgeWebView/Application/152.0.4191.66/msedgewebview2.exe`；隔离 testhost 中两个身份的 PNG 正常渲染及强制 404 回退共 4 个场景通过，SVG 请求 0。夹具通过受限本地资源处理器和不缓存的缺图 URL 注入 404，避免浏览器图像缓存让故障注入失效；像素验证使用显式跨源许可。以上不覆盖旧 WebView2 真机、loot 业务、输入事故或最低版本矩阵。
+
+## 2026-10-13：前治安官与黑仔原生帧头像
+
+维护者明确认可两张取景并授权接入共用库。本批只新增 `敌人-前治安官`、`敌人-Codex黑仔`：前者锁定 `Codex/前治安官二阶段/持盾待机` 的 sprite 817 第 1 帧（掉盔后），后者锁定 `Codex黑仔/动作/站立` 的 sprite 63 第 1 帧。均以 12 倍原生帧导出、明确正方形裁剪和 512px 透明 PNG 生产，不改变 XFL/SWF 或真人已认可的 PNG 字节、方向。
+
+有限新增入口是 `python tools/portrait-pilot/promote-direct-portraits-v1.py promote`；复验使用同工具 `check` 或 `promote-enemy-portraits-v1.py check`。重复执行已应用批次只复验，未知现役基础包拒绝覆盖。新来源、完整原生 PNG/SVG 帧的压缩归档、裁剪坐标、真人回执及先前发布快照均在 `evidence/direct-portraits-20261013/`；发布复用共享 subjects-first / manifest-last writer，保持原 226 个身份及基础合同完整。
+
+Web 保持已认可的 PNG 为首选。Native `LootIconCatalog` 的 SVG 安全模式禁止内嵌 PNG，因此 Native 表示从同一 SWF、同一 sprite/frame、同一坐标裁剪原始矢量；不以 PNG 包装 SVG 冒充兼容。最初包装与编码修正前的表示、manifest/receipt/producer 均冻结保留，PNG 人审回执不重写。`LootIconCatalogPortraitTests` 直接读取现役库，验证两个 64px 缩略图有可见彩色像素和透明背景；设置 `CF7_TEST_PORTRAIT_OUTPUT` 可导出实际 Native 读回供取景复核。无需 Native 产品代码变更或 runtime 发布。
+
+本批 checker 的通过状态为 `direct_delta_and_preserved_base_verified`。它验证新增原生帧、真人回执、现役素材和原有 manifest 保持集，**不重认证旧 campaign 来源审计**。本机旧门原已存在 producer artifact 漂移；旧 SVG 的 CRLF checkout 只在归一为 LF 后长度与原 SHA-256 完全相符时接受，新素材仍逐字节校验，不改写历史报告或 digest。当前 Arena 覆盖为 219/219，其中怪物 216、纸娃娃 3，224 个 accepted variant / 448 个绑定 / 446 个唯一运行引用；历史 inventory 214 保留其原批次口径。
+
+验证还包括 `test-direct-portrait-preservation-v1.py`（旧身份重签改写、未人审新变体、PNG 损坏/缺失均拒绝）、`test-manifest-last-publish-v1.py`、`test-portrait-resolver-runtime.js`、`test-arena-portrait-coverage.js`、`test-arena-meta-portraits.js`、Team/Arena 浏览器 harness 及真实素材的 Loot 结算夹具。Team 三视口均 222/223，唯一 `equiplocked` 提示文案失败在冻结的新增前 manifest 下也相同；本批未处理该无关业务。夹具与 Native 读回不代签实际游戏结算、存档重启或正式部署。

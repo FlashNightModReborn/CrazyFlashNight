@@ -68,6 +68,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         testOutcomeLifeAndFrameClock();
         testKillReportAndRewardFreeze();
         testBattleUnitLifecycle();
+        testFixedAppearanceBattleRecords();
         testRealEnemyKilledCurrentFaction();
         testIndividualBattleReportFreezeAndRestore();
         testBattleReportBounds();
@@ -345,6 +346,85 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         unit.dispatcher = new EventDispatcher();
         UnitBattleRecord.initialize(unit);
         return unit;
+    }
+
+    private static function testFixedAppearanceBattleRecords():Void {
+        resetWorld(0);
+        StageRunSession.begin("固定装备外观战报", "挑战");
+        var oldProperties:Object = _root.敌人属性表;
+        var oldFeed:Function = _root.发布物资变更消息;
+        _root.敌人属性表 = {};
+        _root.__brAppearanceFeeds = [];
+        _root.发布物资变更消息 = function(direction,kind,key,count,source,tier,icon,
+                operationId,mergeScope,reason,doll):Void {
+            _root.__brAppearanceFeeds.push({icon:icon,doll:doll});
+        };
+        // 第四种类型证明规则由配置驱动，不依赖三个已知单位的名称特判。
+        var keys:Array = ["敌人-终结者T800", "敌人-二足型机器人", "敌人-Codex黑仔", "敌人-固定装备回归"];
+        var names:Array = ["终结者T800", "二足机器人", "黑仔", "固定装备回归"];
+        for (var i:Number = 0; i < keys.length; i++) {
+            var key:String = keys[i];
+            _root.敌人属性表[key] = {displayname:names[i],battleRecordAppearance:"fixed"};
+            var first:MovieClip = battleUnit("__brFixedFirst" + i, true);
+            var second:MovieClip = battleUnit("__brFixedSecond" + i, true);
+            first.兵种 = key; second.兵种 = key;
+            second.长枪 = "另一把长枪";
+            // 即使单位保留脸型、性别或装备字段，固定模板也不能被纸娃娃替换。
+            var a:Object = UnitBattleRecord.snapshot(first);
+            var b:Object = UnitBattleRecord.snapshot(second);
+            assertFalse(a.individual, key + " fixed appearance overrides equipment capability");
+            assertTrue(a.doll === null, key + " fixed portrait does not bake a human doll");
+            assertTrue(a.loadout === null, key + " fixed type does not claim a humanoid loadout");
+            assertEquals(key, a.iconName, key + " keeps its fixed portrait identity");
+            assertEquals(names[i], a.displayName, key + " enemy name comes from the type catalog");
+            assertTrue(first.hasDressup === true, key + " snapshot preserves equipment initialization flag");
+            assertEquals("第一把长枪", first.长枪, key + " snapshot preserves the live weapon");
+            StageRunSession.recordKillProjection(a);
+            StageRunSession.recordKillProjection(b);
+            first.是否为敌人 = false; second.是否为敌人 = false;
+            first.名字 = "战宠甲"; second.名字 = "战宠乙";
+            UnitBattleRecord.onDown(first); UnitBattleRecord.onDown(second);
+            var report:Object = StageRunSession.testOnlyBattleReport();
+            var ally:Object = report.allies[i * 2];
+            assertEquals("战宠甲", ally.displayName, key + " fixed ally keeps its personal name");
+            assertTrue(ally.doll === null && ally.loadout === null, key + " fixed allies remain eligible for display grouping");
+            assertEquals(key, _root.__brAppearanceFeeds[i * 2].icon, key + " casualty feed uses the fixed portrait");
+            assertTrue(_root.__brAppearanceFeeds[i * 2].doll === null, key + " casualty feed cannot override the portrait with a doll");
+            assertEquals(2, report.kills[i].count, key + " different weapons still aggregate by fixed type");
+            assertFalse(report.kills[i].individual, key + " report retains the fixed classification");
+            assertEquals(0, report.kills[i].level, key + " grouped kill obeys the existing schema");
+            assertEquals("", report.kills[i].unitId, key + " grouped kill does not expose an individual identity");
+            first.removeMovieClip(); second.removeMovieClip();
+        }
+        var dressupKeys:Array = ["敌人-大学军校生", "敌人-军阀派学员", "敌人-剑道社社员", "敌人-黑铁派学员", "敌人-重装拾荒者"];
+        for (i = 0; i < dressupKeys.length; i++) {
+            var dressed:MovieClip = battleUnit("__brDressed" + i, true);
+            dressed.兵种 = dressupKeys[i];
+            _root.敌人属性表[dressupKeys[i]] = {displayname:"标准类型名"};
+            var snapshot:Object = UnitBattleRecord.snapshot(dressed);
+            assertTrue(snapshot.individual, dressupKeys[i] + " real dressup unit retains its individual record");
+            assertTrue(snapshot.doll !== null && snapshot.loadout !== null, dressupKeys[i] + " retains appearance and weapon snapshots");
+            assertEquals("同名斗士", snapshot.displayName, dressupKeys[i] + " retains the individual name");
+            dressed.removeMovieClip();
+        }
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(8, report.totalKills, "fixed appearances preserve all kill facts");
+        assertEquals(4, report.kills.length, "fixed appearances retain four independent type groups");
+        assertEquals(8, report.totalAllyDowns, "fixed allies retain per-unit down facts");
+        assertEquals(8, report.totalAllyLosses, "fixed allies retain per-unit final losses");
+        StageRunSession.finish("victory");
+        assertTrue(StageRunSession.prepareSettlement(), "fixed equipment report freezes through the production boundary");
+        assertTrue(StageRunSession.persistPreparedSettlement().success, "fixed equipment report passes the persisted decoder");
+        StageRunSession.testOnlyReset();
+        assertTrue(StageRunSession.restorePendingSettlement().success, "fixed equipment report restores without reroll");
+        report = StageRunSession.testOnlyBattleReport();
+        assertEquals(4, report.kills.length, "restored fixed report keeps its type groups");
+        assertEquals(2, report.kills[0].count, "restored fixed report keeps aggregate kills");
+        assertTrue(report.kills[0].doll === null && !report.kills[0].individual, "restored fixed portrait cannot become a human doll");
+        assertEquals(8, report.allies.length, "restored fixed report keeps every allied unit");
+        _root.敌人属性表 = oldProperties;
+        _root.发布物资变更消息 = oldFeed;
+        delete _root.__brAppearanceFeeds;
     }
 
     private static function testBattleUnitLifecycle():Void {

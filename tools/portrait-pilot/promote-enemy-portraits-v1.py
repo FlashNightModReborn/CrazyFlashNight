@@ -1039,6 +1039,15 @@ def verify_manifest_artifact_closure(value: Any, location: str = "manifest") -> 
 
 
 def check_manifest(manifest_path: Path, *, logical_output: Path | None = None) -> dict[str, Any]:
+    # Detect a bounded supplement before loading the historical campaign state.
+    # That state has its own provenance gate, independent of the direct delta.
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if "directSupplementalPromotion" in manifest:
+        # 有限增补独立验证本轮原生帧、人审和完整保持集，不重签旧 campaign 来源审计。
+        spec = importlib.util.spec_from_file_location("cf7_direct_portrait_check", Path(__file__).with_name("promote-direct-portraits-v1.py"))
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module.check_manifest(manifest_path, logical_output=logical_output)
     manifest = T.load_json(manifest_path, "通用敌人头像 manifest")
     if manifest.get("schema") != "cf7.enemy-portrait-manifest.v1":
         raise T.PromotionError("通用敌人头像 manifest schema 非法")
@@ -1318,7 +1327,7 @@ def check(args: argparse.Namespace) -> None:
     path = Path(args.manifest).resolve()
     manifest = check_manifest(path)
     print(json.dumps({
-        "status": "enemy_portrait_pack_verified",
+        "status": "direct_delta_and_preserved_base_verified" if "directSupplementalPromotion" in manifest else "enemy_portrait_pack_verified",
         "manifest": T.repo_rel(path),
         "manifestDigest": manifest["manifestDigest"],
         "counts": manifest["counts"],

@@ -1405,6 +1405,40 @@ function activeResponse(message){var response=common(message);response.snapshots
         primary:'AK47',secondary1:'沙漠之鹰',secondary2:'未携带',melee:'武士刀',grenade:'手雷'}}; }
     function frozenAlly(id,name,status,downs,hero) {var unit=frozenUnit(id,name);delete unit.individual;delete unit.count;
       unit.status=status;unit.downs=downs;unit.isHero=!!hero;return unit;}
+    var fixedKeys=['敌人-终结者T800','敌人-二足型机器人','敌人-Codex黑仔'];
+    var fixedInit=settlementInit('fixed-equipment-v2');
+    fixedInit.report.v=2;fixedInit.report.totalKills=6;fixedInit.report.omittedKillTypes=0;
+    fixedInit.report.omittedIndividualKills=0;fixedInit.report.totalAllyDowns=6;
+    fixedInit.report.totalAllyLosses=6;fixedInit.report.heroDowns=0;fixedInit.report.omittedAllies=0;
+    fixedInit.report.kills=fixedKeys.map(function(key){return {key:key,displayName:key,iconName:key,
+      doll:null,eliteLevel:0,count:2,individual:false,unitId:'',level:0,loadout:null};});
+    fixedInit.report.allies=[];
+    fixedKeys.forEach(function(key,index){for(var n=0;n<2;n++){
+      var ally=frozenAlly('fixed.'+index+'.'+n,'战宠'+n,'dead',1);
+      ally.key=key;ally.iconName=key;ally.doll=null;ally.loadout=null;fixedInit.report.allies.push(ally);
+    }});
+    authority.loot=[empty(0),empty(1),empty(2)];
+    var fixedRendersBefore=__portraitStats.dollRenders;
+    Panels.open('loot',fixedInit);
+    var fixedReady=await waitFor(function(){return document.querySelectorAll('[data-settlement-kills] article').length===3
+      &&document.querySelectorAll('[data-settlement-allies] article').length===3;});
+    var fixedRoot=document.querySelector('.loot-workbench');
+    ok('fixed equipment templates retain grouped kill cards without humanoid identities',fixedReady
+      &&fixedRoot.querySelectorAll('[data-settlement-kills] [data-unit-id]').length===0
+      &&Array.from(fixedRoot.querySelectorAll('[data-settlement-kills] article > strong')).every(function(node){return node.textContent==='×2';}));
+    var fixedPortraitsReady=await waitFor(function(){return fixedRoot.querySelectorAll('.loot-settlement-kill-avatar[data-portrait-source="svg"]').length===6;});
+    ok('terminator robot and Black use six fixed portraits without a human doll bake',fixedPortraitsReady
+      &&__portraitStats.dollRenders===fixedRendersBefore);
+    ok('fixed equipment allies merge for display while retaining every casualty fact',
+      fixedRoot.querySelectorAll('[data-settlement-allies] [data-ally-count="2"]').length===3
+      &&fixedRoot.querySelector('[data-settlement-ally-loss]').textContent==='6'
+      &&fixedInit.report.allies.length===6);
+    fixedRoot.querySelector('.item-grid-mode-toggle[aria-label="关卡结算布局"] [data-layout-mode="full"]').click();await delay();
+    ok('full report preserves the same three fixed kill and ally groups',
+      fixedRoot.querySelectorAll('[data-settlement-kills] article').length===3
+      &&fixedRoot.querySelectorAll('[data-settlement-allies] article').length===3
+      &&fixedRoot.querySelectorAll('[data-unit-id]').length===0);
+    Panels.forceClose();await delay();resetAuthority(false);__mode='normal';
     battleInit.report.v=2;battleInit.report.stageName='DEATH MATCH角斗场';battleInit.report.difficulty='地狱';
     battleInit.report.activeFrames=930;battleInit.report.totalKills=8;battleInit.report.omittedKillTypes=0;
     battleInit.report.rewardRollOmissions=0;battleInit.report.rewardStashed=true;

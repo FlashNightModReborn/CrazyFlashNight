@@ -20,7 +20,7 @@
 
 友军首次倒地立刻发布 `loot v1 / loss / casualty / source=ally_casualty`，priority 4、Guaranteed、Immediate，优先于 Boss，且不等待 400ms 最低可见时间。operationId 与 itemKey 均为实例＋生命标识，重入不重复播报，同名单位不合并。头像仍按同一外观元组缓存复用。该消息是战斗事实，不进入资产 receipt，也不增加物资消耗。主角倒地由 `heroDowns` 单独计数；`totalAllyDowns` 与 `totalAllyLosses` 不包含主角。结算按单位列出 `dead / retreated / revived`（阵亡／撤退／已复活）；复活移除当前损失，再次倒地增加次数但最终只算一个单位。冻结时仍处于死亡且未复活的单位列为阵亡；返回冻结后不接收生命期回流。每个单位的姓名、等级、精英、外观及装备/武器文本分别来自首次倒地或首次击杀时快照，后续生命不改写首次配置；展开操作只读，不发 inventory 命令。
 
-可换装的人形（`hasDressup===true` 或主角模板）在结算按 unitId 独立保留；相同兵种、姓名、外观和装备也不合并。固定外观怪继续按类型 ×N 聚合。同一实例复活后被再次击杀，保留一个实例记录及其击杀次数。v2 kill 在原六字段上增加 `individual / unitId / level / loadout`；友军记录使用 `unitId / key / displayName / iconName / doll / eliteLevel / level / loadout / status / downs / isHero`。loadout 为十一固定字符串槽：head/body/leg/hand/foot/neck/primary/secondary1/secondary2/melee/grenade；每槽最多 128 字符，等级 0–9999。
+可换装的人形（`hasDressup===true` 或主角模板，且类型未声明固定外观）在结算按 unitId 独立保留；相同兵种、姓名、外观和装备也不合并。敌人属性可用 `battleRecordAppearance=fixed` 明确固定外观，优先于装备能力标记；终结者 T800、二足型机器人和 Codex 黑仔使用固定头像、按类型 ×N 聚合，保留原装备数值与武器初始化。该声明同时用于新生成的击杀播报、友军倒地播报及战报，不重写已冻结或持久化的旧记录；字段合同见 [数据规范](../agentsDoc/data-schemas.md#敌人战报外观)。同一人形实例复活后被再次击杀，保留一个实例记录及其击杀次数。v2 kill 在原六字段上增加 `individual / unitId / level / loadout`；友军记录使用 `unitId / key / displayName / iconName / doll / eliteLevel / level / loadout / status / downs / isHero`。loadout 为十一固定字符串槽：head/body/leg/hand/foot/neck/primary/secondary1/secondary2/melee/grenade；每槽最多 128 字符，等级 0–9999。
 
 详情上限为固定怪 96 类、人形 128 个、友军 64 个；`omittedKillTypes / omittedIndividualKills / omittedAllies` 分别显示未展开类型、未展开的人形击杀次数和未展开的友军个数。总击杀、倒地与最终损失在上限外仍准确；未展开友军的复活也可扣回最终损失。界面不因溢出把人形重新聚合，完整/紧凑密度沿用同一左栏纵向滚屏，紧凑模式所有单位保留原 48×48 方块体型，以记录序号、击杀次数、亡/撤/复及主角角标呈现差异，图例解释状态；悬停或键盘聚焦通过共享 PanelTooltip 只读展示姓名、等级及冻结配置，完整模式保留可展开记录。
 
