@@ -890,10 +890,10 @@ _root.UI系统.NPC商店WebView.executeBatchSell = function(params:Object):Objec
         org.flashNight.arki.item.PlayerAssetTransaction.settleAfterException(
             assetTransaction, !batchRestored);
         this.batchPlan = null;
-        // ArrayInventory.remove 的 ItemRemoved 在索引维护前同步派发；
+        // ArrayInventory 已在通知前完成索引；保留无事件的兼容修复入口。
         // listener fault 时立即按权威 items 重建，不能把脏索引留给下一请求。
         try {
-            if (bag != undefined && bag.setIndexes != undefined) bag.setIndexes(null);
+            if (bag != undefined && bag.rebuildIndexes != undefined) bag.rebuildIndexes();
         } catch (batchIndexRepairError) {
             this.log("batch sale index repair failed: " + String(batchIndexRepairError));
         }
@@ -1676,8 +1676,8 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
         try {
             var tradeBag:Object = _root.物品栏 == undefined
                 ? null : _root.物品栏.背包;
-            if (tradeBag != null && tradeBag.setIndexes != undefined) {
-                tradeBag.setIndexes(null);
+            if (tradeBag != null && tradeBag.rebuildIndexes != undefined) {
+                tradeBag.rebuildIndexes();
             }
         } catch (tradeIndexRepairError) {
             this.log("trade index repair failed: " + String(tradeIndexRepairError));

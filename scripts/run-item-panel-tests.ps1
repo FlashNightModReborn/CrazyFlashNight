@@ -53,6 +53,7 @@ $suiteConfigs = @{
         Template = 'scripts\test-runners\item-panels\TestLoader.as.template'
         Paths = @(
             'scripts\类定义\org\flashNight\arki\item\itemCollection\EquipmentInventoryTest.as'
+            'scripts\类定义\org\flashNight\arki\item\itemCollection\ArrayInventoryIndexTest.as'
             'scripts\类定义\org\flashNight\arki\item\NpcShopPanelServiceTest.as'
             'scripts\类定义\org\flashNight\arki\item\InventoryPanelServiceTest.as'
             'scripts\类定义\org\flashNight\arki\item\CraftingPanelServiceTest.as'
@@ -60,6 +61,7 @@ $suiteConfigs = @{
         )
         Fqns = @(
             'org.flashNight.arki.item.itemCollection.EquipmentInventoryTest'
+            'org.flashNight.arki.item.itemCollection.ArrayInventoryIndexTest'
             'org.flashNight.arki.item.NpcShopPanelServiceTest'
             'org.flashNight.arki.item.InventoryPanelServiceTest'
             'org.flashNight.arki.item.CraftingPanelServiceTest'
@@ -69,6 +71,8 @@ $suiteConfigs = @{
         Patterns = @(
             '(?m)^EquipmentInventoryTest Tests Passed: 28\r?$'
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
+            '(?m)^ArrayInventoryIndexTest Tests Passed: 31\r?$'
+            '(?m)^ArrayInventoryIndexTest Tests Failed: 0\r?$'
             '(?m)^InventoryPanelServiceTest Tests Passed: 194\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
             '(?m)^CraftingPanelServiceTest Tests Passed: 181\r?$'
@@ -77,27 +81,31 @@ $suiteConfigs = @{
             '(?m)^NpcShopPanelServiceTest Tests Passed: 66\r?$'
             '(?m)^NpcShopPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 194/194, Crafting 181/181, Synthesis 18/18, NPC 66/66'
+        Summary = 'ArrayInventoryIndex 31/31, EquipmentInventory 28/28, Inventory 194/194, Crafting 181/181, Synthesis 18/18, NPC 66/66'
     }
     Shared = @{
         DomainId = 'item-panels-shared'
         Template = 'scripts\test-runners\item-panels\TestLoader.shared.as.template'
         Paths = @(
             'scripts\类定义\org\flashNight\arki\item\itemCollection\EquipmentInventoryTest.as'
+            'scripts\类定义\org\flashNight\arki\item\itemCollection\ArrayInventoryIndexTest.as'
             'scripts\类定义\org\flashNight\arki\item\InventoryPanelServiceTest.as'
         )
         Fqns = @(
             'org.flashNight.arki.item.itemCollection.EquipmentInventoryTest'
+            'org.flashNight.arki.item.itemCollection.ArrayInventoryIndexTest'
             'org.flashNight.arki.item.InventoryPanelServiceTest'
         )
         Additional = @('scripts\逻辑系统分区\商店系统_兼容.as')
         Patterns = @(
             '(?m)^EquipmentInventoryTest Tests Passed: 28\r?$'
             '(?m)^EquipmentInventoryTest Tests Failed: 0\r?$'
+            '(?m)^ArrayInventoryIndexTest Tests Passed: 31\r?$'
+            '(?m)^ArrayInventoryIndexTest Tests Failed: 0\r?$'
             '(?m)^InventoryPanelServiceTest Tests Passed: 194\r?$'
             '(?m)^InventoryPanelServiceTest Tests Failed: 0\r?$'
         )
-        Summary = 'EquipmentInventory 28/28, Inventory 194/194'
+        Summary = 'ArrayInventoryIndex 31/31, EquipmentInventory 28/28, Inventory 194/194'
     }
     Crafting = @{
         DomainId = 'item-panels-crafting'

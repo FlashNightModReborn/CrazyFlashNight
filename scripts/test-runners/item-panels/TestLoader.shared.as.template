@@ -7,4 +7,5 @@ _root.loaders = _root.loaders || [];
 
 org.flashNight.arki.item.itemCollection.EquipmentInventoryTest.runAllTests();
 org.flashNight.arki.item.InventoryPanelServiceTest.runAllTests();
+org.flashNight.arki.item.itemCollection.ArrayInventoryIndexTest.runAllTests();
 trace("FocusedTestRunId item-panels-shared Complete: __FOCUSED_RUN_ID__");

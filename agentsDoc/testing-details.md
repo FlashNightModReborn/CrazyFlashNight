@@ -1,6 +1,6 @@
 # 测试正文：按需验证细节
 
-**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；其他专题保留各节既有基线。
+**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；库存索引专题核对至 `b98b6303aa409e76086e50f24cb1cfed00408204` + 2026-10-13 索引快照与 31 项专项回归，其他专题保留各节既有基线。
 
 本页是验证矩阵的规范层正文：按主题分节，读者只读命中章节即可，不要求回头全量读 AGENTS.md、`agentsDoc/testing-guide.md` 选择矩阵或迁移回包。任务到门的触发与选择规则在矩阵页；本页承接命中主题后的完整 runner、工作目录、参数、成功判据、失败恢复条件与证据边界。
 
@@ -149,6 +149,7 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 
 **tracked AS2 入口与机器钉死阈值**（`scripts/run-item-panel-tests.ps1`，`-Suite Shared|Crafting|Npc` 分域，缺省 `All` 全套；`-TimeoutSeconds 240`）：
 
+- `ArrayInventoryIndexTest` 31/31（All/Shared，机器钉死；同步通知、可变视图隔离、callback 快照与 rollback）。
 - `EquipmentInventoryTest` 28/28（机器钉死）。
 - `InventoryPanelServiceTest` 194/194（机器钉死；取代文本中 131/138/142/144/147/170 等旧计数，旧值见归档）。
 - `CraftingPanelServiceTest` 168/168 + `SynthesisIndexTest` 18/18（机器钉死）。

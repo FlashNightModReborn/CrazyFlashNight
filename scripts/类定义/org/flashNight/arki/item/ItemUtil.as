@@ -1197,15 +1197,14 @@ class org.flashNight.arki.item.ItemUtil{
             // Inventory 生命周期事件保持 let-it-crash；只恢复本次调用
             // 进入后增长的 EventBus depth，领域真实写入不被伪回滚。
             recoverAcquireDispatch();
-            // ArrayInventory.add 先写 items、后更新索引树；ItemAdded
-            // 监听器抛错会中断后半段。无事件重建索引只恢复容器
-            // 派生结构，不改写已入包的权威对象。
+            // 容器在通知前已完成索引/快照维护；此无事件重建保留
+            // 旧异常恢复入口，不撤销已入包的权威对象或吞掉 listener fault。
             try {
-                if(背包 != undefined && 背包.setIndexes != undefined) {
-                    背包.setIndexes(null);
+                if(背包 != undefined && 背包.rebuildIndexes != undefined) {
+                    背包.rebuildIndexes();
                 }
-                if(药剂栏 != undefined && 药剂栏.setIndexes != undefined) {
-                    药剂栏.setIndexes(null);
+                if(药剂栏 != undefined && 药剂栏.rebuildIndexes != undefined) {
+                    药剂栏.rebuildIndexes();
                 }
             } catch (indexRepairError) {
                 trace("[ItemUtil.acquire] inventory index repair failed: " + indexRepairError);
@@ -1556,14 +1555,13 @@ class org.flashNight.arki.item.ItemUtil{
             // 保留 EventBus 的 let-it-crash 语义，同时只恢复本次调用进入后增长的
             // dispatch depth。真实资产与已记录 effect 由下方 finally/外层领域结算。
             recoverSubmitDispatch();
-            // ArrayInventory.remove 在同步 ItemRemoved 之后才维护索引树；
-            // 监听器抛错时立即从权威 items 重建，避免把延迟自愈留给下一调用者。
+            // 保留无事件的兼容修复入口；通知异常不撤销已完成的真实移除。
             try {
-                if(背包 != undefined && 背包.setIndexes != undefined) {
-                    背包.setIndexes(null);
+                if(背包 != undefined && 背包.rebuildIndexes != undefined) {
+                    背包.rebuildIndexes();
                 }
-                if(药剂栏 != undefined && 药剂栏.setIndexes != undefined) {
-                    药剂栏.setIndexes(null);
+                if(药剂栏 != undefined && 药剂栏.rebuildIndexes != undefined) {
+                    药剂栏.rebuildIndexes();
                 }
             } catch (indexRepairError) {
                 trace("[ItemUtil.submit] inventory index repair failed: " + indexRepairError);

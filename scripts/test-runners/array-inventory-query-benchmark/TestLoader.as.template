@@ -1,0 +1,11 @@
+﻿// Bind the same production leaf closure as the canonical Shared inventory runner.
+var benchmarkCollectionBase:Object = org.flashNight.arki.item.itemCollection.ItemCollection;
+var benchmarkInventoryBase:Object = org.flashNight.arki.item.itemCollection.Inventory;
+_root.preloaders = _root.preloaders || [];
+_root.loaders = _root.loaders || [];
+#include "逻辑系统分区/商店系统_兼容.as"
+trace("FocusedTestRunId array-inventory-query-benchmark Start: __FOCUSED_RUN_ID__");
+org.flashNight.dev.ArrayInventoryQueryBenchmark.setCompletion(function():Void {
+    trace("FocusedTestRunId array-inventory-query-benchmark Complete: __FOCUSED_RUN_ID__");
+});
+org.flashNight.dev.ArrayInventoryQueryBenchmark.runAllTests();

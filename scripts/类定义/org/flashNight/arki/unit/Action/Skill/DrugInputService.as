@@ -233,11 +233,10 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
             // 领域效果没有通用逆操作；finally 已固化真实扣药，先恢复 EventBus/
             // frame，再做派生索引修复，始终保留原始异常。
             PlayerAssetTransaction.settleAfterException(assetTransaction, true);
-            // ArrayInventory.remove 先删除权威 item、同步发布 ItemRemoved，随后才
-            // 维护索引树；listener fault 会跳过后半段。这里无事件重建派生索引，
+            // ArrayInventory 已在通知前完成槽位/索引/快照；此兼容恢复入口无事件重建，
             // 同时保留原异常与已经发生的扣药事实。
             try {
-                if (inventory.setIndexes != undefined) inventory.setIndexes(null);
+                if (inventory.rebuildIndexes != undefined) inventory.rebuildIndexes();
             } catch (indexRepairError) {
                 trace("[DrugInputService] inventory index repair failed: " + indexRepairError);
             }
@@ -369,7 +368,7 @@ class org.flashNight.arki.unit.Action.Skill.DrugInputService {
         } catch (useError) {
             PlayerAssetTransaction.settleAfterException(transaction, true);
             try {
-                if (inventory.setIndexes != undefined) inventory.setIndexes(null);
+                if (inventory.rebuildIndexes != undefined) inventory.rebuildIndexes();
             } catch (indexRepairError) {
                 trace("[DrugInputService] direct inventory index repair failed: "
                     + indexRepairError);
