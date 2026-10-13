@@ -2004,6 +2004,46 @@
     </balance>
   </item>
   <item>
+    <name>Andy工装裤</name>
+    <displayname>Andy工装裤</displayname>
+    <icon>Codex-Andy工装裤</icon>
+    <type>防具</type>
+    <use>下装装备</use>
+    <price>900</price>
+    <description>Andy在修理大学时穿的橄榄色工装裤，大贴袋方便收纳随身物品。</description>
+    <data>
+      <level>1</level>
+      <weight>1</weight>
+      <dressup>变装-Codex-Andy工装裤</dressup>
+      <hp>0</hp>
+      <mp>0</mp>
+      <damage>0</damage>
+      <defence>20</defence>
+    </data>
+    <balance>
+      <formulaFamily>armor</formulaFamily>
+      <schemaVersion>1</schemaVersion>
+      <formulaVersion>1</formulaVersion>
+      <workbookVersion>1</workbookVersion>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <balanceMode>exception</balanceMode>
+      <exceptionCode>legacy-off-formula</exceptionCode>
+      <currentScore>40</currentScore>
+      <balanceScore>30</balanceScore>
+      <weightedScore>30</weightedScore>
+      <recommendedGoldPrice>2600</recommendedGoldPrice>
+      <recommendedKPointPrice>90</recommendedKPointPrice>
+      <marketPrice>900</marketPrice>
+      <status>unresolved</status>
+      <inputDigest>fnv1a32:c389deee</inputDigest>
+      <sourceDigest>sha256:ced9d51e2b14aff4eb5bcbaa7ceb9ead22500495ce96b008b769a7512e0135b5</sourceDigest>
+      <auditRef>armor:Andy工装裤</auditRef>
+    </balance>
+  </item>
+  <item>
     <name>白色中山上装</name>
     <displayname>白色中山上装</displayname>
     <icon>白色中山上装</icon>

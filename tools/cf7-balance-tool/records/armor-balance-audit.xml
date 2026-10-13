@@ -1539,6 +1539,33 @@
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
+      <auditRef>armor:Andy工装裤</auditRef>
+      <itemName>Andy工装裤</itemName>
+      <sourceFile>data/items/防具_0-19级.xml</sourceFile>
+      <weightLayers>0</weightLayers>
+      <priceLayers>0</priceLayers>
+      <category>1</category>
+      <damageTypeFactor>1</damageTypeFactor>
+      <adoptedGoldPrice>0</adoptedGoldPrice>
+      <status>unresolved</status>
+      <balanceMode>exception</balanceMode>
+      <exceptionCode>legacy-off-formula</exceptionCode>
+      <marketPrice>900</marketPrice>
+      <currentScore>40</currentScore>
+      <balanceScore>30</balanceScore>
+      <weightedScore>30</weightedScore>
+      <magicDefAvgCap>10.2</magicDefAvgCap>
+      <magicDefMaxCap>25.2</magicDefMaxCap>
+      <recommendedGoldPrice>2600</recommendedGoldPrice>
+      <recommendedKPointPrice>90</recommendedKPointPrice>
+      <inputs level="1" defence="20" hp="0" mp="0" damage="0" weaponBonus="0" weight="1" punch="0" magicDefence="0" />
+      <budgetBreakdown>
+      </budgetBreakdown>
+      <inputDigest>fnv1a32:c389deee</inputDigest>
+      <sourceDigest>sha256:ced9d51e2b14aff4eb5bcbaa7ceb9ead22500495ce96b008b769a7512e0135b5</sourceDigest>
+      <note>维护者授权CF1修理大学采用D外观，所有运行属性及售价原样继承白色中山装裤子；沿用原件的公式例外，不调数值</note>
+    </record>
+    <record>
       <auditRef>armor:白色中山上装</auditRef>
       <itemName>白色中山上装</itemName>
       <sourceFile>data/items/防具_0-19级.xml</sourceFile>

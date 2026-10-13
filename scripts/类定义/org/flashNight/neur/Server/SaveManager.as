@@ -2141,7 +2141,7 @@ class org.flashNight.neur.Server.SaveManager {
             _root.虚拟币 = 0; _root.身价 = _root.基础身价值;
             _root.difficultyMode = 0;
             _root.物品栏.装备栏.add("上装装备", BaseItem.create("白色中山上装", 1));
-            _root.物品栏.装备栏.add("下装装备", BaseItem.create("白色中山装裤子", 1));
+            _root.物品栏.装备栏.add("下装装备", BaseItem.create("Andy工装裤", 1));
             _root.物品栏.装备栏.add("脚部装备", BaseItem.create("黑色板鞋", 1));
             _root._saveExt.bookRun = org.flashNight.gesh.object.PersistedSnapshot.clone(run);
             _root.mydata = packGameState();
