@@ -1858,7 +1858,7 @@ _root.主角函数.释放主动战技 = function() {
     return false;
 }
 
-_root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
+_root.主角函数.装载主动战技 = function(战技信息, 攻击模式, 装备来源) {
     if (!攻击模式)
         return;
     if (!战技信息 || !战技信息.skillname) {
@@ -1867,6 +1867,11 @@ _root.主角函数.装载主动战技 = function(战技信息, 攻击模式) {
     }
     var 当前战技 = {};
     当前战技.名字 = 战技信息.skillname;
+    // Visual metadata only: keep the exact granting item for suit/mod skills.
+    当前战技.iconKey = 战技信息.iconKey != undefined ? 战技信息.iconKey : 战技信息.icon;
+    var 图标装备槽 = 攻击模式 == "兵器" ? "刀" : (攻击模式 == "空手" ? "手部装备" : 攻击模式);
+    var 图标装备 = 装备来源 != undefined ? 装备来源 : this[图标装备槽];
+    当前战技.装备来源 = typeof 图标装备 == "string" ? 图标装备 : 图标装备.name;
     当前战技.描述 = 战技信息.description;
     当前战技.信息 = 战技信息.information;
     当前战技.冷却时间 = 战技信息.cd > 100 ? Number(战技信息.cd) : 100; //冷却时间的下限为0.1秒

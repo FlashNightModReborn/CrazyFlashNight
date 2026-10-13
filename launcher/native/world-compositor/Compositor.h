@@ -116,6 +116,9 @@ __declspec(dllexport) void* __cdecl ProbeStartVisual(HWND source, DWORD sourcePi
 __declspec(dllexport) void* __cdecl ProbeStartWorldVisual(HWND source, DWORD sourcePid, HWND output, uint32_t vendor, int borderless, IUnknown* visual);
 __declspec(dllexport) int __cdecl ProbeRequestBorderless();
 __declspec(dllexport) int __cdecl ProbeSetMatrix(void* handle, const float* settings);
+// Additive ABI-12 camera extension; paired Host/DLL required. Scene fenced, 16 finite floats.
+__declspec(dllexport) int __cdecl ProbeSetNightVision(void* handle,const float* settings,int count,int64_t scene,
+    const float* grade,int useLut,const uint8_t* upload,int byteCount);
 // lut-set-v1：上传 32^3 RGBA8
 //（131072 字节，R 最快）并启用 LUT 采样路径；rgba=null 或长度语义不符返回 0。
 // ProbeClearLut 关断 LUT 路径（回退矩阵/Gamma，缓冲保留）。配套 Host 严格 Export 拒绝旧 DLL。

@@ -14,6 +14,7 @@
     var active = null;
     var activeElement = null;
     var bridgeMode = 'off';
+    var visionProfiles = fetch('/qa/night-vision-profiles').then(function(r) { return r.json(); }).catch(function() { return []; });
 
     window.Panels = {
         register: function(id, spec) { specs[id] = spec; },
@@ -113,12 +114,14 @@
                     return 'mock-bake';
                 }
                 if (name === 'lutlab.bakeXmlSet') {
-                    var setMode = payload && payload.mode === '夜视' ? '夜视' : '光照';
+                    var setMode = payload && payload.mode !== '光照' ? '夜视' : '光照';
                     var levels = [];
                     for (var lv = 0; lv <= 9; lv++) {
                         levels.push({ level: lv, rgbaBase64: toBase64(mockBakeRgba(lv, setMode)) });
                     }
-                    respond(cb, { task: name, mode: setMode === '夜视' ? '夜视仪' : '光照', size: 32, levels: levels });
+                    visionProfiles.then(function(profiles) {
+                        respond(cb, { task: name, mode: payload.mode, size: 32, levels: levels, visionProfiles: profiles });
+                    });
                     return 'mock-bake-set';
                 }
                 if (name === 'lutlab.savePreset') {

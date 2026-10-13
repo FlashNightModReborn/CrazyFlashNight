@@ -438,14 +438,24 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
             using var authoredPlus = new SolidBrush(Color.FromArgb(229, 229, 229));
             g.DrawString("+", _slotMark, authoredPlus, r.X + 8.7f, r.Y + 4.3f);
         }
-        var bitmap = _icons.Get(icon, (int)Math.Ceiling(24 * Scale));
-        if (bitmap != null) g.DrawImage(bitmap, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
+        var pixels = (int)Math.Ceiling(24 * Scale);
+        var bitmap = kind == "weapon" && Snapshot is { } snapshot
+            ? _icons.GetWeapon(snapshot.Combat.WeaponIconKey, snapshot.Combat.WeaponItemIconKey, pixels)
+            : _icons.Get(icon, pixels);
+        if (bitmap != null && kind != "weapon") g.DrawImage(bitmap, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
         if (kind != "weapon") DrawArt(g, "slot-detail", r.X + 13, r.Y + 13.1f);
         // All authored foreground belongs below cooldown feedback, including non-bitmap controls.
         if (kind == "switch") DrawBankDots(g, bank);
         else if (kind == "weapon")
         {
             DrawArt(g, "weapon", 573.55f, 547.65f);
+            if (bitmap != null)
+            {
+                // Keep the authored frame/title, replacing only the inner symbol.
+                using var backplate = new SolidBrush(Color.FromArgb(24, 28, 30));
+                g.FillRectangle(backplate, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
+                g.DrawImage(bitmap, r.X + 1, r.Y + 1, r.Width - 2, r.Height - 2);
+            }
         }
         if (kind == "drug" && cooldown.Ready && _hover?.Kind == kind && _hover.Slot == slot)
             DrawArt(g, "drug-hover", r.X + 13, r.Y + 13);

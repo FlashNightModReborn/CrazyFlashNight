@@ -41,6 +41,15 @@
             // 源图
             sourceCanvas: null,
             sourceLabel: '',
+            sourceRevision: 0,
+            fluorescent: CF7.LutLabRenderer.normalizeFluorescent(),
+            visionProfiles: [],
+            visionPreset: '',
+            visionRequest: 0,
+            scanTimer: null,
+            scanPhase: 0,
+            scanMotionPreference: null,
+            scanMotionChanged: null,
             // 集合模型
             sets: [],              // {id,title,mode,origin,levels[10],loaded,loading,license,notes,source}
             setAId: null,
@@ -176,7 +185,9 @@
                 drawerOpen: state.drawerOpen,
                 presetName: currentPresetName(),
                 lastFrameUrl: state.lastFrameUrl || null,
-                lastFrameLabel: state.lastFrameLabel || ''
+                lastFrameLabel: state.lastFrameLabel || '',
+                fluorescent: state.fluorescent,
+                visionPreset: state.visionPreset
             }));
         } catch (e) { /* localStorage 不可用时静默降级（无持久化） */ }
     }
@@ -195,6 +206,8 @@
 
     // 标量字段恢复（集合选择待集合加载完成后由 restoreSetSelection 处理）
     function restoreScalarFields(persisted) {
+        state.fluorescent = CF7.LutLabRenderer.normalizeFluorescent(persisted && persisted.fluorescent);
+        state.visionPreset = persisted && typeof persisted.visionPreset === 'string' ? persisted.visionPreset : '';
         if (!persisted) return;
         if (persisted.mode === '光照' || persisted.mode === '夜视') state.mode = persisted.mode;
         if (typeof persisted.level === 'number' && isFinite(persisted.level)) {
@@ -217,6 +230,7 @@
         var missing = [];
         function resolveSetId(id) {
             if (findSet(id)) return id;
+            if (id.indexOf('xml:') === 0 && id.length < 53) return loadXmlSet(id.slice(4)).id;
             // 样品退化集合是懒创建条目（'sample:<group>::<file>'）：
             // 跨关闭后从 samples 清单按 id 重建，恢复引用而非误报失效
             if (id.indexOf('sample:') === 0) {
@@ -308,7 +322,7 @@
         var set = {
             id: id,
             title: 'XML 当前预设 · ' + mode,
-            mode: mode,
+            mode: mode === '光照' ? '光照' : '夜视',
             origin: 'xml',
             levels: new Array(10).fill(null),
             loaded: false,
@@ -317,7 +331,14 @@
             source: 'data/environment/color_engine_preset.xml',
             notes: 'lutlab.bakeXmlSet 实时烘焙；桥不可用时回退 vhost 预烘焙 xml-regression',
             loader: function() {
-                return CF7.LutLabBridge.bakeXmlSet(mode).catch(function() {
+                var session = state.session;
+                return CF7.LutLabBridge.bakeXmlSet(mode).then(function(levels) {
+                    if (state.session === session && levels.visionProfiles && levels.visionProfiles.length) {
+                        state.visionProfiles = levels.visionProfiles;
+                        syncVisionPresetControls();
+                    }
+                    return levels;
+                }).catch(function() {
                     // 桥不可用 → vhost 预烘焙文件组
                     var loads = [];
                     for (var i = 0; i <= 9; i++) {
@@ -762,6 +783,7 @@
 
     function setSourceFromCanvas(canvas, label) {
         state.sourceCanvas = canvas;
+        state.sourceRevision++;
         state.sourceLabel = label;
         var info = state.root.querySelector('.lut-lab-source-info');
         if (info) info.textContent = '源图：' + label + '（' + canvas.width + '×' + canvas.height + '）';
@@ -850,19 +872,207 @@
         return findSet(side === 'A' ? state.setAId : state.setBId);
     }
 
+
+    // The spatial layer is a workbench effect, separate from exported 3D LUTs.
+    function effectiveFluorescent() {
+        return Object.assign({}, state.fluorescent, {
+            enabled: state.mode === '夜视' && state.fluorescent.enabled
+        });
+    }
+    function syncVisionPresetControls() {
+        if (!state.root) return;
+        var select = state.root.querySelector('#lut-lab-vision-preset');
+        if (!select) return;
+        select.textContent = '';
+        var custom = el('option', null, '手动调节'); custom.value = ''; select.appendChild(custom);
+        state.visionProfiles.forEach(function(profile) {
+            var option = el('option', null, profile.name + ' · ' + profile.title);
+            option.value = profile.name; select.appendChild(option);
+        });
+        select.value = state.visionPreset;
+        select.disabled = state.visionProfiles.length === 0;
+    }
+    function chooseVisionPreset(name) {
+        var profile = state.visionProfiles.find(function(p) { return p.name === name; });
+        if (!profile) { manualVisionChange(); saveState(); return; }
+        var request = ++state.visionRequest, session = state.session;
+        var set = loadXmlSet(profile.name);
+        setStatus('正在加载 ' + profile.name + '…');
+        ensureSetLoaded(set).then(function() {
+            if (state.session !== session || state.visionRequest !== request) return;
+            if (!set.loaded) { state.visionPreset = ''; syncVisionPresetControls(); return; }
+            stopSweep(); setMode('夜视');
+            state.setAId = loadXmlSet('夜视').id; state.setBId = set.id;
+            state.visionPreset = profile.name;
+            state.fluorescent = CF7.LutLabRenderer.normalizeFluorescent(Object.assign({}, profile.fluorescent, {
+                denoise: profile.fluorescent.retention < 1 && profile.fluorescent.suppression > 0
+            }));
+            state.view = 'split'; state.locked = 'B'; state.peekB = false; state.splitX = .5; state.filmKey = '';
+            refreshSetSelectors(); renderAll(); saveState();
+            setStatus('A：基础夜视；B：' + profile.name + '。单位填色和强光反应请在游戏中换装体验。', 'ok');
+        });
+    }
+    function manualVisionChange() { state.visionPreset = ''; state.visionRequest++; }
+    function syncFluorescentControls() {
+        if (!state.root) return;
+        syncVisionPresetControls();
+        var active = effectiveFluorescent().enabled;
+        state.root.setAttribute('data-fluorescent', active ? 'on' : 'off');
+        var details = state.root.querySelector('.lut-lab-fluorescent');
+        if (!details) return;
+        details.querySelector('summary').textContent = active
+            ? 'B 成像增强 · 底图 ' + Math.round(state.fluorescent.retention * 100) + '%（展开调节）'
+            : 'B 成像增强 · 参数';
+        details.querySelector('#lut-lab-fx-enabled').checked = state.fluorescent.enabled;
+        details.querySelector('#lut-lab-fx-only').checked = state.fluorescent.only;
+        ['strength', 'width', 'halo', 'radius', 'suppression', 'retention', 'scanStrength', 'color', 'base'].forEach(function(key) {
+            var input = details.querySelector('#lut-lab-fx-' + key);
+            input.value = state.fluorescent[key];
+            var output = details.querySelector('#lut-lab-fx-' + key + '-value');
+            if (output) output.textContent = key === 'retention' || key === 'scanStrength'
+                ? (state.fluorescent[key] * 100).toFixed(key === 'scanStrength' ? 1 : 0) + '%' : state.fluorescent[key].toFixed(2);
+        });
+    }
+    function useFluorescentPreset() {
+        stopSweep();
+        setMode('夜视');
+        var xml = loadXmlSet('夜视');
+        state.setAId = xml.id;
+        state.setBId = xml.id;
+        manualVisionChange();
+        state.fluorescent = CF7.LutLabRenderer.normalizeFluorescent({ enabled: true });
+        state.locked = 'B';
+        state.peekB = false;
+        state.view = 'split';
+        state.splitX = .5;
+        state.filmKey = '';
+        refreshSetSelectors();
+        renderAll();
+        saveState();
+        setStatus('A：现有夜视；B：荧光主导＋15% 现有夜视底图。关闭再重开工具台可换一张游戏实拍。', 'ok');
+    }
+    function buildFluorescentControls() {
+        var details = el('details', 'lut-lab-fluorescent');
+        details.appendChild(el('summary', null, 'B 成像增强 · 参数'));
+        var controls = el('div', 'lut-lab-fluorescent-controls');
+        var presetLabel = el('label', 'lut-lab-fx-field', '设备预设'), presetSelect = document.createElement('select');
+        presetSelect.id = 'lut-lab-vision-preset'; presetSelect.setAttribute('aria-label', '夜视设备预设');
+        presetSelect.addEventListener('change', function() { chooseVisionPreset(presetSelect.value); });
+        presetLabel.appendChild(presetSelect); controls.appendChild(presetLabel);
+        function checkbox(key, title) {
+            var label = el('label', 'lut-lab-fx-field'), input = document.createElement('input');
+            input.type = 'checkbox';
+            input.id = 'lut-lab-fx-' + key;
+            input.setAttribute('aria-label', title);
+            label.append(input, document.createTextNode(title));
+            controls.appendChild(label);
+            input.addEventListener('change', function() {
+                manualVisionChange();
+                state.fluorescent[key] = input.checked;
+                if (key === 'enabled' && input.checked && state.mode !== '夜视') setMode('夜视');
+                renderAll();
+                saveState();
+            });
+        }
+        checkbox('enabled', 'B 启用增强');
+        [
+            ['retention', '底图保留', 0, 1, .01], ['strength', '线条强度', 0, 2, .005],
+            ['width', '线条粗细', .7, 3, .05], ['halo', '光晕强度', 0, 1, .005],
+            ['radius', '光晕范围', 1, 6, .1], ['suppression', '纹理抑制', 0, 1, .01],
+            ['scanStrength', '仪器扫描', 0, .08, .005]
+        ].forEach(function(row) {
+            var label = el('label', 'lut-lab-fx-field', row[1]);
+            var input = document.createElement('input'), out = el('output');
+            input.type = 'range';
+            input.min = row[2]; input.max = row[3]; input.step = row[4];
+            input.id = 'lut-lab-fx-' + row[0];
+            input.setAttribute('aria-label', row[1]);
+            out.id = input.id + '-value';
+            label.append(input, out);
+            controls.appendChild(label);
+            input.addEventListener('input', function() {
+                manualVisionChange();
+                state.fluorescent[row[0]] = Number(input.value);
+                renderAll();
+                saveState();
+            });
+        });
+        var base = el('label', 'lut-lab-fx-field', '底图'), select = document.createElement('select');
+        select.id = 'lut-lab-fx-base';
+        select.setAttribute('aria-label', '荧光底图');
+        [['lut', 'B 当前夜视集合'], ['original', '原图']].forEach(function(pair) {
+            var option = el('option', null, pair[1]);
+            option.value = pair[0];
+            select.appendChild(option);
+        });
+        select.addEventListener('change', function() {
+            manualVisionChange();
+            state.fluorescent.base = select.value;
+            renderAll();
+            saveState();
+        });
+        base.appendChild(select);
+        controls.appendChild(base);
+        var color = el('label', 'lut-lab-fx-field', '荧光颜色'), picker = document.createElement('input');
+        picker.type = 'color';
+        picker.id = 'lut-lab-fx-color';
+        picker.setAttribute('aria-label', '荧光颜色');
+        picker.addEventListener('input', function() {
+            manualVisionChange();
+            state.fluorescent.color = picker.value;
+            renderAll();
+            saveState();
+        });
+        color.appendChild(picker);
+        controls.appendChild(color);
+        checkbox('only', '只看荧光');
+        details.appendChild(controls);
+        details.appendChild(el('p', 'lut-lab-fx-note', '这里预览调色和轮廓；单位填色、遮挡和强光反应请在游戏中换装体验。参数会保留。'));
+        return details;
+    }
+
+    function stopInstrumentAnimation() {
+        if (state.scanTimer) { clearInterval(state.scanTimer); state.scanTimer = null; }
+    }
+    function syncInstrumentAnimation() {
+        var effect=effectiveFluorescent();
+        var reduced=state.scanMotionPreference && state.scanMotionPreference.matches;
+        if (!state.sessionActive || !effect.enabled || effect.scanStrength<=0 || effectiveView()==='A' || reduced) {
+            stopInstrumentAnimation(); return;
+        }
+        if (state.scanTimer) return;
+        var last=performance.now();
+        state.scanTimer=setInterval(function() {
+            var now=performance.now(),delta=Math.min(100,Math.max(0,now-last)); last=now;
+            if (!state.sessionActive) { stopInstrumentAnimation(); return; }
+            if (document.hidden || state.helpOpen || state.inspectOpen) return;
+            if (state.scanMotionPreference && state.scanMotionPreference.matches) {
+                stopInstrumentAnimation(); return;
+            }
+            state.scanPhase=(state.scanPhase+delta/CF7.LutLabRenderer.scanCycleMs)%1;
+            if(state.renderer) {state.renderer.setScanPhase(state.scanPhase);state.renderer.render();}
+        },40);
+    }
     function renderMain() {
         if (!state || !state.sourceCanvas || !state.root) return;
+        state.root.querySelectorAll('.lut-lab-mode button').forEach(function(button) {
+            button.setAttribute('aria-pressed', button.getAttribute('data-mode') === state.mode ? 'true' : 'false');
+        });
         var renderer;
         try { renderer = ensureRenderer(); } catch (e) { return; }
         var setA = currentSet('A');
         var setB = currentSet('B');
         var pa = setA && setA.loaded ? levelPair(setA, state.level) : null;
         var pb = setB && setB.loaded ? levelPair(setB, state.level) : null;
-        renderer.setSource(state.sourceCanvas);
+        renderer.setSource(state.sourceCanvas, undefined, undefined, state.sourceRevision);
         renderer.setDualLut(pa && pa[0], pa && pa[1], pb && pb[0], pb && pb[1]);
         renderer.setLevelMix(pa ? pa[2] : 0);
         renderer.setView(effectiveView(), state.splitX);
+        renderer.setFluorescent(effectiveFluorescent());
+        renderer.setScanPhase(state.scanPhase);
         renderer.render();
+        syncInstrumentAnimation();
+        syncFluorescentControls();
         syncLevelReadout();
         syncViewButtons();
         syncLockButton();
@@ -882,7 +1092,8 @@
     function filmFingerprint() {
         var set = currentSet(state.locked);
         return (set ? set.id + ':' + set.loaded + ':' + (set.rev || 0) : 'none')
-            + '|' + (state.sourceCanvas ? state.sourceCanvas.width + 'x' + state.sourceCanvas.height + ':' + state.sourceLabel : 'nosrc');
+            + '|' + (state.sourceCanvas ? state.sourceCanvas.width + 'x' + state.sourceCanvas.height + ':' + state.sourceLabel + ':' + state.sourceRevision : 'nosrc')
+            + '|' + (state.locked === 'B' ? JSON.stringify(effectiveFluorescent()) : 'plain');
     }
 
     function renderFilmstrip() {
@@ -903,7 +1114,8 @@
         var renderer;
         try { renderer = ensureRenderer(); } catch (e) { return; }
         var source = state.sourceCanvas;
-        var w = source.width, h = source.height;
+        var w = source.width, h = source.height, sourceRevision = state.sourceRevision;
+        var filmSide = state.locked, filmEffect = effectiveFluorescent();
         for (var i = 0; i <= 9; i++) (function(level) {
             var cell = el('div', 'lut-lab-film-cell');
             cell.setAttribute('data-level', String(level));
@@ -958,9 +1170,15 @@
             // 逐格整档渲染（单 LUT 路径），与主预览共用离屏渲染器
             Promise.resolve().then(function() {
                 if (state.filmSeq !== seq) return;
-                renderer.setSource(source);
-                renderer.setLut(set.levels[level]);
-                renderer.setView('A');
+                renderer.setSource(source, undefined, undefined, sourceRevision);
+                if (filmSide === 'B') {
+                    renderer.setDualLut(null, null, set.levels[level], set.levels[level]);
+                    renderer.setView('B');
+                } else {
+                    renderer.setLut(set.levels[level]);
+                    renderer.setView('A');
+                }
+                renderer.setFluorescent(filmEffect);
                 renderer.render();
                 var out = document.createElement('canvas');
                 out.width = w; out.height = h;
@@ -970,6 +1188,11 @@
                 holder.appendChild(out);
             }).catch(function() { /* 单格失败不拖垮整排 */ });
         })(i);
+        // The visible renderer is shared with film baking. Restore the selected
+        // fractional level after the last tile, rather than leaving L9 visible.
+        Promise.resolve().then(function() {
+            if (state.sessionActive && state.filmSeq === seq) renderMain();
+        });
         syncFilmstripHighlight();
     }
 
@@ -1196,11 +1419,13 @@
         var setB = currentSet('B');
         var pa = setA && setA.loaded ? levelPair(setA, state.level) : null;
         var pb = setB && setB.loaded ? levelPair(setB, state.level) : null;
-        renderer.setSource(state.sourceCanvas);
-        function bake(p0, p1) {
-            renderer.setDualLut(p0, p1, null, null);
+        renderer.setSource(state.sourceCanvas, undefined, undefined, state.sourceRevision);
+        function bake(p0, p1, side) {
+            if (side === 'B') renderer.setDualLut(null, null, p0, p1);
+            else renderer.setDualLut(p0, p1, null, null);
+            renderer.setFluorescent(effectiveFluorescent());
             renderer.setLevelMix(pa ? pa[2] : 0);
-            renderer.setView('A');
+            renderer.setView(side);
             renderer.render();
             var out = document.createElement('canvas');
             out.width = state.sourceCanvas.width;
@@ -1208,7 +1433,9 @@
             out.getContext('2d').drawImage(renderer.canvas, 0, 0);
             return out;
         }
-        return { a: bake(pa && pa[0], pa && pa[1]), b: bake(pb && pb[0], pb && pb[1]) };
+        var surfaces={a:bake(pa&&pa[0],pa&&pa[1],'A'),b:bake(pb&&pb[0],pb&&pb[1],'B')};
+        renderMain();
+        return surfaces;
     }
 
     function applyInspectCam() {
@@ -1450,6 +1677,7 @@
             modeWrap.appendChild(b);
         });
         toolbar.appendChild(modeWrap);
+        var fluorescent=el('button','lut-lab-btn','试用荧光夜视');fluorescent.type='button';fluorescent.id='lut-lab-fluorescent-preset';fluorescent.addEventListener('click',useFluorescentPreset);toolbar.appendChild(fluorescent);
 
         var viewWrap = el('span', 'lut-lab-view');
         viewWrap.setAttribute('role', 'group');
@@ -1536,6 +1764,7 @@
         pixelToggle.setAttribute('aria-label', '主预览缩放显示切换（平滑/最近邻）');
         presetBar.appendChild(pixelToggle);
         root.appendChild(presetBar);
+        root.appendChild(buildFluorescentControls());
 
         // 一行短提示（遮挡策略细节在帮助界面）
         root.appendChild(el('div', 'lut-lab-capture-note',
@@ -1771,6 +2000,11 @@
         // cleanup 已复位会话字段并 lose GL；这里按新会话完整重建内容（幂等、可重入）。
         state.root = el || state.root;
         state.sessionActive = true;
+        if(window.matchMedia) {
+            state.scanMotionPreference=window.matchMedia('(prefers-reduced-motion: reduce)');
+            state.scanMotionChanged=function(){syncInstrumentAnimation();};
+            state.scanMotionPreference.addEventListener('change',state.scanMotionChanged);
+        }
         state.root.setAttribute('data-webgl', 'unknown');
         state.root.setAttribute('data-vhost', 'unknown');
         setBadge('lut-lab-badge-webgl', '', 'muted');
@@ -1833,12 +2067,16 @@
 
     function cleanup() {
         state.sessionActive = false;
+        stopInstrumentAnimation(); state.scanPhase=0;
+        if(state.scanMotionPreference && state.scanMotionChanged)
+            state.scanMotionPreference.removeEventListener('change',state.scanMotionChanged);
+        state.scanMotionPreference=null;state.scanMotionChanged=null;
         stopSweep();
         closeInspect();
         if (state && state.renderer) {
             try {
-                var ext = state.renderer.gl.getExtension('WEBGL_lose_context');
-                if (ext) ext.loseContext();
+                if(state.renderer.dispose)state.renderer.dispose();
+                else{var ext=state.renderer.gl.getExtension('WEBGL_lose_context');if(ext)ext.loseContext();}
             } catch (e) {}
             // 渲染器画布从舞台摘除（GL 已死），下次 open 由 ensureRenderer 重建并重新挂载
             if (state.renderer.canvas && state.renderer.canvas.parentNode) {
@@ -1859,6 +2097,8 @@
         state.samples = [];
         state.sourceCanvas = null;
         state.sourceLabel = '';
+        state.fluorescent=CF7.LutLabRenderer.normalizeFluorescent();
+        state.visionProfiles=[]; state.visionPreset=''; state.visionRequest++;
         state.vhostState = 'unknown';
         state.bridgeState = null;
         state.bridgeReason = '';
@@ -1908,6 +2148,8 @@
                 locked: state.locked,
                 peekB: state.peekB,
                 sweeping: state.sweeping,
+                instrumentAnimating: !!state.scanTimer,
+                scanPhase: state.scanPhase,
                 vhost: state.vhostState,
                 bridge: state.bridgeState,
                 xmlSet: state.xmlSetState,

@@ -308,8 +308,8 @@ try {
   assert(qaState !== 'pending', 'Harness QA did not reach a terminal state.');
   summary.qa = await evaluate('window.__LUTLAB_QA_RESULTS__ || null');
   assert(Array.isArray(summary.qa), 'Harness did not expose QA results.');
-  assert(summary.qa.length === 31 && summary.qa.every((check) => check.pass === true),
-    `Harness QA contract drifted: ${JSON.stringify(summary.qa.filter((check) => !check.pass))}`);
+  assert(summary.qa.length === 77 && summary.qa.every((check) => check.pass === true),
+    `Harness QA contract drifted: expected 77, received ${summary.qa.length}; failures=${JSON.stringify(summary.qa.filter((check) => !check.pass))}`);
   assert(qaState === 'passed', `Harness QA ended in ${qaState}.`);
 
   // 第二视口（1100×640）复跑全量页面内 QA：布局响应式断言必须在更小视口同样成立
@@ -330,7 +330,7 @@ try {
   assert(qaState !== 'pending', 'Harness QA (small viewport) did not reach a terminal state.');
   summary.qaSmallViewport = await evaluate('window.__LUTLAB_QA_RESULTS__ || null');
   assert(Array.isArray(summary.qaSmallViewport)
-    && summary.qaSmallViewport.length === 31
+    && summary.qaSmallViewport.length === 77
     && summary.qaSmallViewport.every((check) => check.pass === true),
     `Harness QA small-viewport drifted: ${JSON.stringify((summary.qaSmallViewport || []).filter((check) => !check.pass))}`);
   assert(qaState === 'passed', `Harness QA (small viewport) ended in ${qaState}.`);
@@ -366,6 +366,7 @@ try {
   // 联动检视：点击主预览进 A|B 检视并滚轮放大两档，留 banding 检查视图证据
   await evaluate(`(async () => {
     const rootEl = document.getElementById('lut-lab-panel');
+    rootEl.querySelector('.lut-lab-view button[data-view="single"]').click();
     const stage = rootEl.querySelector('.lut-lab-stage');
     const rect = stage.getBoundingClientRect();
     const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
@@ -387,6 +388,36 @@ try {
   await capturePage('lut-lab-inspection.png');
   await evaluate(`document.querySelector('.lut-lab-inspect')
     ?.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape', bubbles: true }))`);
+
+  // Exercise real media-query changes and close lifecycle, not a mocked preference.
+  await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
+  await evaluate(`(async()=>{
+    const select=document.getElementById('lut-lab-vision-preset');select.value='高级夜视仪';select.dispatchEvent(new Event('change',{bubbles:true}));
+    const deadline=Date.now()+5000;
+    while(Date.now()<deadline){if(window.__lutLabHarness.spec()._debugState().instrumentAnimating)return true;await new Promise(r=>setTimeout(r,40));}
+    throw new Error('instrument animation did not start');
+  })()`);
+  await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'reduce'}]});
+  await delay(120);
+  const frozenPhase=await evaluate('window.__lutLabHarness.spec()._debugState().scanPhase');
+  await delay(240);
+  summary.instrumentMotion=await evaluate(`({staticTexture:!window.__lutLabHarness.spec()._debugState().instrumentAnimating,phase:window.__lutLabHarness.spec()._debugState().scanPhase})`);
+  assert(summary.instrumentMotion.staticTexture && summary.instrumentMotion.phase===frozenPhase,'Reduced motion must freeze the moving scan band.');
+  await cdp.send('Emulation.setEmulatedMedia', {features:[{name:'prefers-reduced-motion',value:'no-preference'}]});
+  await delay(200);
+  summary.instrumentMotion.resumed=await evaluate('window.__lutLabHarness.spec()._debugState().instrumentAnimating');
+  assert(summary.instrumentMotion.resumed,'Motion preference changes must resume the scan.');
+  summary.instrumentMotion.clock=await evaluate(`(async()=>{
+    const phase=window.__lutLabHarness.spec()._debugState().scanPhase,start=performance.now();
+    await new Promise(resolve=>setTimeout(resolve,600));
+    return {elapsedMs:performance.now()-start,phaseDelta:(window.__lutLabHarness.spec()._debugState().scanPhase-phase+1)%1};
+  })()`);
+  const instrumentClock=summary.instrumentMotion.clock;
+  assert(instrumentClock.phaseDelta>=instrumentClock.elapsedMs/7000*.75
+    && instrumentClock.phaseDelta<=instrumentClock.elapsedMs/7000*1.25,'Preview must advance at the shared seven-second scan rate.');
+  await evaluate('Panels.close()');
+  summary.instrumentMotion.closedCleanly=await evaluate('!window.__lutLabHarness.spec()._debugState().instrumentAnimating');
+  assert(summary.instrumentMotion.closedCleanly,'Panel close must release the instrument timer.');
 
   assert(summary.consoleErrors.length === 0,
     `Browser console errors: ${JSON.stringify(summary.consoleErrors)}`);

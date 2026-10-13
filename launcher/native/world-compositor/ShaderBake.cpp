@@ -10,6 +10,7 @@
 #include <iterator>
 #include <string>
 #include "ShaderSources.h"
+#include "NightVisionShader.h"
 
 // Build-only tool. The absolute compiler path is hash-checked by the native
 // toolchain gate; loading it explicitly avoids the machine's DLL search order.
@@ -32,7 +33,12 @@ int wmain(int argc, wchar_t** argv) {
         {CombatFxShader,"FVS","vs_4_0"},{CombatFxShader,"FPS","ps_4_0"},
         {RayShader,"RVS","vs_4_0"},{RayShader,"RPS","ps_4_0"},
         {PointLightShader,"LVS","vs_4_0"},{PointLightShader,"LPS","ps_4_0"},
-        {HudRasterShader,"HVS","vs_4_0"},{HudRasterShader,"HPS","ps_4_0"}
+        {HudRasterShader,"HVS","vs_4_0"},{HudRasterShader,"HPS","ps_4_0"},
+        {NightVisionShader,"NVS","vs_4_0"},{NightVisionShader,"NEPS","ps_4_0"},
+        {NightVisionShader,"NAPS","ps_4_0"},{NightVisionShader,"NHPS","ps_4_0"},
+        {NightVisionShader,"NVPS","ps_4_0"},{NightVisionShader,"NJPS","ps_4_0"},
+        {NightVisionShader,"NBPS","ps_4_0"},{NightVisionShader,"NMPS","ps_4_0"},
+        {NightVisionShader,"NFPS","ps_4_0"}
     };
     std::ofstream output(std::filesystem::path(argv[2]),std::ios::binary|std::ios::trunc);
     if (!output) { FreeLibrary(compiler);return 1; }

@@ -102,7 +102,7 @@ try {
     }
     $candidateProducerSource = [IO.File]::ReadAllText(
         (Join-Path $ProjectRoot 'launcher\build-runtime-candidate.ps1'), [Text.Encoding]::UTF8)
-    foreach ($shaderInput in @('ShaderSources.h','ShaderBake.cpp','RayShader.h','RayStyleShader.h','RayFlameShader.h')) {
+    foreach ($shaderInput in @('ShaderSources.h','ShaderBake.cpp','NightVisionShader.h','NightVisionStage.h','RayShader.h','RayStyleShader.h','RayFlameShader.h')) {
         Assert-Equal "shader build input enters only artifact source: $shaderInput" 'artifactSource' `
             $repositoryInputOwners['launcher/native/world-compositor/' + $shaderInput]
         Assert-Equal "canonical native build copies shader input: $shaderInput" $true `

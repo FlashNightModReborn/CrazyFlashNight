@@ -29,6 +29,9 @@ class org.flashNight.arki.render.WeatherParticleRenderer {
         return type == "rain" || type == "snow" || type == "dust"
             || type == "fog" || type == "slash";
     }
+    // Paired Host capability survives clear weather and indoor scenes.
+    // isNativeEnabled below describes whether selected weather has a native pass.
+    public static function hasNativeHost():Boolean { return _nativeEnabled; }
     public static function isNativeEnabled():Boolean {
         return _nativeEnabled && _isNativeType(_type);
     }

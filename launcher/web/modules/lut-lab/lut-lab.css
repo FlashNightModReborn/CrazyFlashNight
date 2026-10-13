@@ -456,3 +456,15 @@
 .lut-lab-film-ops .lut-lab-btn-mini { padding: 0 4px; font-size: 9px; line-height: 1.4; }
 
 .lut-lab-view-canvas.pixelated { image-rendering: pixelated; }
+
+/* B-only fluorescent snapshot preview; collapsed controls keep the stage large. */
+.lut-lab-fluorescent { flex:0 0 auto; border-bottom:1px solid var(--ll-line-soft); color:var(--ll-copy); }
+.lut-lab-fluorescent summary { padding:5px 10px; cursor:pointer; font-size:12px; }
+.lut-lab-fluorescent summary:focus-visible { outline:2px solid var(--ll-focus); outline-offset:-2px; }
+.lut-lab-fluorescent-controls { display:flex; flex-wrap:wrap; gap:7px 14px; padding:5px 10px; max-height:126px; overflow:auto; }
+.lut-lab-fx-field { display:flex; align-items:center; gap:5px; font-size:12px; white-space:nowrap; }
+.lut-lab-fx-field input[type=range] { width:78px; accent-color:var(--ll-ok); }
+.lut-lab-fx-field input[type=color] { width:30px; height:24px; padding:0; }
+.lut-lab-fx-field input[type=checkbox] { accent-color:var(--ll-ok); }
+.lut-lab-fx-field output { min-width:32px; font-variant-numeric:tabular-nums; color:var(--ll-sand); }
+.lut-lab-fx-note { font-size:11px; color:var(--ll-muted); margin:3px 10px 7px; }

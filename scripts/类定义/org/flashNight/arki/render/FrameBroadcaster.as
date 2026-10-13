@@ -105,6 +105,7 @@ class org.flashNight.arki.render.FrameBroadcaster {
      * 每帧无条件调用（只要 socket 连接），保证 C# reducer 的自然寿命动画持续推进。
      */
     public static function send():Void {
+        org.flashNight.arki.weather.NightVisionUnitTint.tick();
         var sm:Object = _root.server;
         if (!sm.isSocketConnected) {
             _hnPayload = null;

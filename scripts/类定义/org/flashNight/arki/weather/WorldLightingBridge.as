@@ -10,6 +10,7 @@ class org.flashNight.arki.weather.WorldLightingBridge {
     private static var _snap:Boolean = true;
 
     public static function sceneChanged():Void {
+        org.flashNight.arki.weather.NightVisionUnitTint.clear();
         _scene++; _snap=true;
         org.flashNight.arki.render.SceneLightBridge.resetScene();
         _ready = false;
@@ -90,7 +91,8 @@ class org.flashNight.arki.weather.WorldLightingBridge {
         var sent:Boolean = server.sendTaskToNode("world_lighting", {
             slDiag:org.flashNight.arki.render.SceneLightBridge.diag(),
             version:1, sequence:++_sequence, scene:_scene, ready:_ready,
-            light:light, mode:_mode, parameters:values,
+            light:light, mode:_mode, parameters:values, visionVersion:1,
+            visionActive:typeof ws.getNightVisionManager == "function" && ws.getNightVisionManager().isActive(),
             paused:ws.pauseDayNightCycle === true, immediate:_snap,
             sourceNeutral:true,
             weatherNative:WeatherParticleRenderer.isNativeEnabled(),

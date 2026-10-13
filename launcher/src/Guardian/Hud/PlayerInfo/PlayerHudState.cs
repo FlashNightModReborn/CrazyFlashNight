@@ -24,7 +24,8 @@ internal sealed record PlayerHudDrug(int Slot, string Name, string Icon, string 
 internal sealed record PlayerHudLoadout(long Revision, long DrugRevision, int Bank,
     string SwitchKey, PlayerHudSkill[] Skills, PlayerHudDrug[] Drugs);
 internal sealed record PlayerHudCombat(string Mode, string[] Ammo, bool WeaponVisible,
-    string WeaponName, string WeaponKey, double WeaponMp, double WeaponCooldown);
+    string WeaponName, string WeaponKey, double WeaponMp, double WeaponCooldown,
+    string WeaponIconKey = "", string WeaponItemIconKey = "", string WeaponSourceItem = "");
 internal readonly record struct PlayerHudCooldown(bool Ready, double Step, double Total)
 {
     internal double Fraction => Ready ? 1 : Total > 0 ? Math.Clamp(Step / Total, 0, 1) : 0;
@@ -198,9 +199,10 @@ internal sealed class PlayerHudState
         var mode = Text(o["mode"], 32);
         if (!new[] { "", "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }.Contains(mode)) throw new FormatException("mode");
         var ammo = Array(o["ammo"], 4).Select(t => Text(t, 64)).ToArray();
-        var weapon = Object(o["weapon"]); Keys(weapon, "visible", "name", "mp", "cooldownMs", "key");
+        var weapon = Object(o["weapon"]); Keys(weapon, "visible", "name", "mp", "cooldownMs", "key", "iconKey", "itemIconKey", "sourceItem");
         return new(mode, ammo, Boolean(weapon["visible"]), Text(weapon["name"], 128), Text(weapon["key"], 32),
-            Number(weapon["mp"]), Number(weapon["cooldownMs"]));
+            Number(weapon["mp"]), Number(weapon["cooldownMs"]), OptionalText(weapon["iconKey"], 128),
+            OptionalText(weapon["itemIconKey"], 128), OptionalText(weapon["sourceItem"], 128));
     }
 
     private static PlayerHudLoadout ReadLoadout(JToken token)

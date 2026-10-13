@@ -35,6 +35,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var shieldDetailsEnabled:Boolean = false;
     private static var poiseVisualsEnabled:Boolean = false;
     private static var resourceHintsEnabled:Boolean = false;
+    private static var weaponVisualsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
     private static var profileEnabled:Boolean = false;
@@ -166,11 +167,12 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (p.shieldDetails === true) shieldDetailsEnabled = true;
         if (p.poiseVisuals === true) poiseVisualsEnabled = true;
         if (p.resourceHints === true) resourceHintsEnabled = true;
+        if (p.weaponVisuals === true) weaponVisualsEnabled = true;
         forceFull = true;
     }
     public static function tick():Void {
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; weaponVisualsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         if (!ensureContext(unit) || typeof _root.gameworld != "movieclip") {
@@ -320,13 +322,32 @@ class org.flashNight.arki.hud.PlayerHudService {
         var visible:Boolean = skill != null && skill.isSubweaponControl !== true;
         var name:String = weaponName(skill), mp:Number = finiteValue(skill.消耗mp);
         var cooldownMs:Number = finiteValue(skill.冷却时间), key:String = keyLabel("武器技能键");
+        var iconKey:String = "", itemIconKey:String = "", sourceItem:String = "";
+        if (weaponVisualsEnabled && visible) {
+            iconKey = text(skill.iconKey);
+            sourceItem = text(skill.装备来源);
+            if (sourceItem == "") {
+                var sourceSlot:String = mode == "兵器" ? "刀" : (mode == "空手" ? "手部装备" : mode);
+                var equipment = unit[sourceSlot];
+                sourceItem = typeof equipment == "string" ? text(equipment) : text(equipment.name);
+            }
+            var sourceData:Object = sourceItem == "" ? null : ItemUtil.getRawItemData(sourceItem);
+            itemIconKey = text(sourceData.icon);
+        }
         var oldWeapon:Object = lastCombat.weapon;
         if (lastCombat != null && lastCombat.mode === mode && lastCombat.ammo[0] === firstAmmo
                 && lastCombat.ammo[1] === firstMagazine && lastCombat.ammo[2] === secondAmmo && lastCombat.ammo[3] === secondMagazine
                 && oldWeapon.visible === visible && oldWeapon.name === name && oldWeapon.mp === mp
-                && oldWeapon.cooldownMs === cooldownMs && oldWeapon.key === key) return lastCombat;
+                && oldWeapon.cooldownMs === cooldownMs && oldWeapon.key === key
+                && (weaponVisualsEnabled ? (oldWeapon.iconKey === iconKey && oldWeapon.itemIconKey === itemIconKey
+                    && oldWeapon.sourceItem === sourceItem) : oldWeapon.iconKey == undefined)) return lastCombat;
         lastCombat = {mode:mode, ammo:[firstAmmo, firstMagazine, secondAmmo, secondMagazine],
             weapon:{visible:visible, name:name, mp:mp, cooldownMs:cooldownMs, key:key}};
+        if (weaponVisualsEnabled) {
+            lastCombat.weapon.iconKey = iconKey;
+            lastCombat.weapon.itemIconKey = itemIconKey;
+            lastCombat.weapon.sourceItem = sourceItem;
+        }
         return lastCombat;
     }
     private static function synchronizeAmmoOwners(unit:Object):Void {

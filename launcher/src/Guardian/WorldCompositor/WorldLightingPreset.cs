@@ -24,7 +24,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal WorldLutSet LutSet { get; private set; }
         internal string LutFile { get; private set; }
 
-        // 生产分派契约：仅 mode=="光照" 走 LUT 路径；夜视与其他未知 mode 保持 legacy 矩阵不动。
+        // Authored ambient LUT set applies only to 光照. The controller separately
+        // bakes an activated night-vision matrix into its post-lighting camera LUT.
         internal bool UsesLut(string mode) =>
             LutSet != null && string.Equals(mode, "光照", StringComparison.Ordinal);
 

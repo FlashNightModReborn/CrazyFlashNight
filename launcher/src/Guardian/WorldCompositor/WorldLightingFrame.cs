@@ -8,6 +8,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
     {
         internal long Sequence, Scene;
         internal bool Ready, Paused, Immediate;
+        internal bool NightVisionRequested;
         internal double Light;
         internal string Mode;
         internal double[] Parameters;
@@ -33,6 +34,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             for (int i = 0; i < 8; i++) if (!Number(values[i], i < 4 ? 8 : 360, out parameters[i])) return false;
             frame = new WorldLightingFrame { Sequence=sequence, Scene=scene, Ready=value.Value<bool>("ready"),
                 Paused=value.Value<bool>("paused"), Immediate=value.Value<bool>("immediate"), Mode=mode, Light=light, Parameters=parameters };
+            if (value["visionVersion"] != null || value["visionActive"] != null)
+            {
+                if (value["visionVersion"]?.Type != JTokenType.Integer || value.Value<int>("visionVersion") != 1
+                    || value["visionActive"]?.Type != JTokenType.Boolean) return false;
+                frame.NightVisionRequested = value.Value<bool>("visionActive");
+            }
             JToken weatherNative = value["weatherNative"];
             if (weatherNative != null && weatherNative.Type != JTokenType.Boolean) return false;
             if (weatherNative?.Value<bool>() == true)

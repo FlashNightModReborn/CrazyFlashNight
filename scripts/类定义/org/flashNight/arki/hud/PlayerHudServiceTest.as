@@ -27,8 +27,41 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         testPoiseProjection();
         testResourceFacts();
         testResourceHints();
+        testWeaponIconProjection();
         ManualCooldownService.resetForTests();
         trace("--- PlayerHudServiceTest: " + passed + "/" + total + " passed, " + (total-passed) + " failed ---");
+    }
+    private static function testWeaponIconProjection():Void {
+        var service:Object = org.flashNight.arki.hud.PlayerHudService;
+        var oldVisuals:Boolean = service.weaponVisualsEnabled;
+        var oldData:Object = ItemUtil.itemDataDict;
+        var world:MovieClip = _root.createEmptyMovieClip("gameworld", _root.getNextHighestDepth());
+        var unit:MovieClip = world.createEmptyMovieClip("iconPlayer", 1);
+        ItemUtil.itemDataDict = {刀A:{icon:"刀A图"},刀B:{icon:"刀B图"},护甲:{icon:"护甲图"}};
+        unit.攻击模式 = "兵器"; unit.刀 = {name:"刀A"};
+        unit.主动战技 = {兵器:{名字:"连斩",消耗mp:20,冷却时间:1000}};
+        service.weaponVisualsEnabled = false;
+        var legacy:Object = PlayerHudService.testOnlyCombat(unit);
+        check(legacy.weapon.iconKey == undefined,"legacy client keeps its exact combat field set");
+        service.weaponVisualsEnabled = true;
+        var first:Object = PlayerHudService.testOnlyCombat(unit);
+        check(first.weapon.itemIconKey == "刀A图" && first.weapon.sourceItem == "刀A","weapon glyph comes from the controlled actor equipment");
+        check(first.weapon.iconKey == "","equipment glyph is the fallback when no dedicated icon is declared");
+        check(PlayerHudService.testOnlyCombat(unit) === first,"unchanged icon projection reuses the detached combat snapshot");
+        unit.刀 = {name:"刀B"};
+        var replaced:Object = PlayerHudService.testOnlyCombat(unit);
+        check(replaced !== first && replaced.weapon.itemIconKey == "刀B图","same skill name still refreshes after changing equipment");
+        check(first.weapon.itemIconKey == "刀A图","replacement does not mutate the earlier snapshot");
+        unit.主动战技.兵器 = {名字:"空中连斩",iconKey:"专用战技图",装备来源:"护甲",消耗mp:20,冷却时间:1000};
+        var granted:Object = PlayerHudService.testOnlyCombat(unit);
+        check(granted.weapon.iconKey == "专用战技图" && granted.weapon.itemIconKey == "护甲图",
+            "dedicated icon and actual granting armor survive active-weapon changes");
+        unit.主动战技.兵器 = null;
+        var empty:Object = PlayerHudService.testOnlyCombat(unit);
+        check(!empty.weapon.visible && empty.weapon.itemIconKey == "" && empty.weapon.iconKey == "","unequip clears visual metadata without borrowing an old icon");
+        service.weaponVisualsEnabled = false;
+        check(PlayerHudService.testOnlyCombat(unit).weapon.iconKey == undefined,"legacy field set is restored after capability retirement");
+        service.weaponVisualsEnabled = oldVisuals;ItemUtil.itemDataDict = oldData;world.removeMovieClip();
     }
     private static function resourceInventory(rows:Array):Object {
         var bag:Object = {rows:rows};

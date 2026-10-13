@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian.Hud.PlayerInfo;
@@ -15,6 +16,7 @@ internal sealed class PlayerHudIconCache : IDisposable
     private readonly string _root;
     private readonly JObject _manifest;
     private readonly Dictionary<(string, int), Bitmap?> _cache = new();
+    private readonly Dictionary<(string, int), Bitmap?> _weaponOutlines = new();
     private long _bytes;
     internal PlayerHudIconCache(string root)
     {
@@ -28,7 +30,7 @@ internal sealed class PlayerHudIconCache : IDisposable
         var cacheKey = (key, pixels);
         if (_cache.TryGetValue(cacheKey, out var existing)) return existing;
         // Get is consumed synchronously inside Paint. No returned bitmap escapes that call.
-        if (_bytes + pixels * pixels * 4L > 16 * 1024 * 1024) Clear();
+        if (_bytes + pixels * pixels * 4L > 16 * 1024 * 1024 || _cache.Count + _weaponOutlines.Count >= 2048) Clear();
         Bitmap? result = null;
         var file = _manifest[key]?["f1"]?.Value<string>();
         if (!string.IsNullOrEmpty(file))
@@ -51,6 +53,49 @@ internal sealed class PlayerHudIconCache : IDisposable
         }
         _cache.Add(cacheKey, result); return result;
     }
-    private void Clear() { foreach (var b in _cache.Values) b?.Dispose(); _cache.Clear(); _bytes = 0; }
+    internal Bitmap? GetWeapon(string dedicatedKey, string equipmentKey, int pixels)
+    {
+        dedicatedKey = CanonicalKey(dedicatedKey); equipmentKey = CanonicalKey(equipmentKey);
+        if (dedicatedKey.Length > 0)
+        {
+            try { if (Get(dedicatedKey, pixels) is { } dedicated) return dedicated; }
+            catch (Exception e) when (e is ArgumentException or IOException or ExternalException or UnauthorizedAccessException or InvalidOperationException)
+            {
+                _cache[(dedicatedKey, Math.Clamp(pixels, 16, 256))] = null;
+            }
+        }
+        if (equipmentKey.Length == 0) return null;
+        pixels = Math.Clamp(pixels, 16, 256);
+        var cacheKey = (equipmentKey, pixels);
+        if (_weaponOutlines.TryGetValue(cacheKey, out var existing)) return existing;
+        if (_bytes + pixels * pixels * 4L > 16 * 1024 * 1024 || _weaponOutlines.Count >= 1024 || _cache.Count + _weaponOutlines.Count >= 2048) Clear();
+        Bitmap? result = null;
+        // Frame 1 is the authored square item icon. Frame 2 is the full-size
+        // world/drop texture and must not replace its close-up composition.
+        var file = _manifest[equipmentKey]?["f1"]?.Value<string>();
+        if (!string.IsNullOrEmpty(file))
+        {
+            var path = Path.GetFullPath(Path.Combine(_root, file));
+            if (path.StartsWith(_root, StringComparison.OrdinalIgnoreCase) && File.Exists(path))
+            {
+                try
+                {
+                    using var source = MapHudImageDecoder.LoadBitmap(path, 2048);
+                    result = PlayerHudEquipmentOutline.Create(source, pixels);
+                }
+                catch (Exception e) when (e is ArgumentException or IOException or ExternalException or UnauthorizedAccessException or InvalidOperationException) { }
+            }
+        }
+        if (result != null) _bytes += pixels * pixels * 4L;
+        _weaponOutlines.Add(cacheKey, result); return result;
+    }
+    private string CanonicalKey(string key) => _manifest[key] != null ? key
+        : key.StartsWith("图标-", StringComparison.Ordinal) ? key[3..] : key;
+    private void Clear()
+    {
+        foreach (var b in _cache.Values) b?.Dispose();
+        foreach (var b in _weaponOutlines.Values) b?.Dispose();
+        _cache.Clear(); _weaponOutlines.Clear(); _bytes = 0;
+    }
     public void Dispose() => Clear();
 }

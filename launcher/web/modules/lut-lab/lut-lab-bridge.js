@@ -103,7 +103,9 @@
             if (resp.size !== 32 || !Array.isArray(resp.levels) || resp.levels.length !== 10) {
                 throw new Error('bakeXmlSet 回包缺字段（需要 size:32 与 levels[10]）');
             }
-            return decodeLevels(resp.levels);
+            var decoded = decodeLevels(resp.levels);
+            decoded.visionProfiles = Array.isArray(resp.visionProfiles) ? resp.visionProfiles : [];
+            return decoded;
         });
     }
 

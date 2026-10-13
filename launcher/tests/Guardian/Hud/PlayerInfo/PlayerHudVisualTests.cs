@@ -23,6 +23,46 @@ namespace CF7Launcher.Tests.Guardian.Hud.PlayerInfo;
 
 public sealed class PlayerHudVisualTests
 {
+    [Fact]
+    public void EquipmentBattleIconReplacesOnlyInnerSymbolAndKeepsCooldownFeedback()
+    {
+        RunOnSta(() =>
+        {
+            var root = FindRoot(); RuntimeFontCatalog.Configure(root);
+            using var owner = new Form { ClientSize = new Size(1024, 576) };
+            using var anchor = new Panel { Dock = DockStyle.Fill };
+            owner.Controls.Add(anchor); owner.CreateControl(); anchor.CreateControl();
+            using var controller = new PlayerHudController(_ => true, () => true, action => action());
+            using var bottom = new PlayerHudBottomWidget(anchor, controller, Path.Combine(root, "launcher", "web", "icons"));
+            var packet = PlayerHudStateTests.Full(); packet["groups"]["combat"]["mode"] = "兵器";
+            packet["groups"]["vitals"]["decorations"] = false;
+            using var generic = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            using var equipment = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            using var cooling = new Bitmap(1024, 576, PixelFormat.Format32bppPArgb);
+            var origin = anchor.PointToScreen(Point.Empty);
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet), 1));
+            using (var g = Graphics.FromImage(generic)) bottom.Paint(g, 1, origin);
+            packet["seq"] = 2; packet["groups"]["combat"]["weapon"]["itemIconKey"] = "键盘镰刀";
+            packet["groups"]["combat"]["weapon"]["sourceItem"] = "键盘镰刀";
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet), 2));
+            using (var g = Graphics.FromImage(equipment)) bottom.Paint(g, 1, origin);
+            var slot = Rectangle.Ceiling(PlayerHudBottomWidget.WeaponRect); var changed = 0;
+            for (var y = 504; y < 576; y++) for (var x = 0; x < 1024; x++)
+            {
+                if (generic.GetPixel(x, y) == equipment.GetPixel(x, y)) continue;
+                changed++; Assert.True(slot.Contains(x, y), $"Battle glyph escaped its slot at {x},{y}");
+            }
+            Assert.InRange(changed, 20, 676);
+            packet["seq"] = 3; packet["groups"]["cooldowns"][0] = new JArray(0, 15, 30);
+            Assert.True(controller.State.Receive(PlayerHudStateTests.Encode(packet), 3));
+            using (var g = Graphics.FromImage(cooling)) bottom.Paint(g, 1, origin);
+            var shade = 0;
+            for (var y = slot.Top + 2; y < slot.Top + 10; y++) for (var x = slot.Left + 2; x < slot.Right - 2; x++)
+                if (cooling.GetPixel(x, y).R < equipment.GetPixel(x, y).R) shade++;
+            Assert.True(shade > 10, "Cooldown shading must stay above the generated glyph.");
+        });
+    }
+
     public static IEnumerable<object[]> AuthoredAssets => PlayerHudArtData.Ids.Select(id => new object[] { id });
     [Fact]
     public void ResourceColorsMatchTheirNamedAuthoredAssets()

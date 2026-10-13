@@ -20,6 +20,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private string _mode;
         // 最近一次 Commit 的模式（hold/pending 期间保持）：LUT/legacy 分派只认它，不看在途报文。
         internal string CurrentMode => _mode;
+        internal bool NightVisionRequested { get; private set; }
         private WorldLightingFrame _pendingReady;
         private double _captureNotBefore;
         internal bool WaitingForCapture => _pendingReady != null;
@@ -67,6 +68,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         }
         private void Commit(WorldLightingFrame frame,double now)
         {
+            NightVisionRequested = frame.NightVisionRequested;
             bool sceneHandoff=HasValidState && (Pending || frame.Scene!=_readyScene);
             if (HasValidState && Pending)
                 _estimatedGapMs=0.75*_estimatedGapMs+0.25*Math.Clamp(now-_pendingSince,0,2000);

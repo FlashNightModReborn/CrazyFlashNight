@@ -219,18 +219,18 @@ _root.agent.投影剥除标签 = function(raw):String {
     var out:String = "";
     var i:Number = 0;
     while (i < s.length) {
-        var lt:Number = s.indexOf("<", i);
-        if (lt < 0) {
+        var tagStart:Number = s.indexOf("<", i);
+        if (tagStart < 0) {
             out += s.substr(i);
             break;
         }
-        var gt:Number = s.indexOf(">", lt + 1);
-        if (gt < 0) {
+        var tagEnd:Number = s.indexOf(">", tagStart + 1);
+        if (tagEnd < 0) {
             out += s.substr(i);
             break;
         }
-        out += s.substr(i, lt - i);
-        i = gt + 1;
+        out += s.substr(i, tagStart - i);
+        i = tagEnd + 1;
     }
     return out;
 };

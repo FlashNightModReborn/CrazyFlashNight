@@ -147,73 +147,100 @@
   </PresetSet>
   <PresetSet>
     <name>夜视仪</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>低干扰轮廓型</Title>
+      <EdgeStrength>0.22</EdgeStrength>
+      <EdgeWidth>0.8</EdgeWidth>
+      <EdgeHalo>0.05</EdgeHalo>
+      <EdgeRadius>1.4</EdgeRadius>
+      <EdgeSuppression>0.95</EdgeSuppression>
+      <Retention>0.9</Retention>
+      <UnitStrength>0</UnitStrength>
+      <UnitRed>0.45</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>0.45</UnitBlue>
+      <EdgeRed>0.46</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>0.49</EdgeBlue>
+      <GlareStrength>0.95</GlareStrength>
+      <GlareThreshold>0.85</GlareThreshold>
+      <GainFloor>0.4</GainFloor>
+      <RecoverySeconds>0.8</RecoverySeconds>
+      <AttackSeconds>0.045</AttackSeconds>
+      <UnitOutlineStrength>1.15</UnitOutlineStrength>
+      <UnitOutlineWidth>1.8</UnitOutlineWidth>
+    </VisionEffects>
     <Preset>
       <level>0</level>
-      <Brightness>0</Brightness>
-      <Contrast>50</Contrast>
-      <Saturation>0</Saturation>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
       <Hue>0</Hue>
-      <redMultiplier>0.15</redMultiplier>
+      <redMultiplier>0.25</redMultiplier>
       <greenMultiplier>1</greenMultiplier>
-      <blueMultiplier>0.15</blueMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>1</level>
-      <Brightness>15</Brightness>
-      <Contrast>40.00</Contrast>
-      <Saturation>0</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.15</redMultiplier>
-      <greenMultiplier>1.00</greenMultiplier>
-      <blueMultiplier>0.15</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>2</level>
-      <Brightness>25</Brightness>
-      <Contrast>30.00</Contrast>
-      <Saturation>0</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.15</redMultiplier>
-      <greenMultiplier>1.00</greenMultiplier>
-      <blueMultiplier>0.15</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>3</level>
-      <Brightness>32.50</Brightness>
-      <Contrast>15.00</Contrast>
-      <Saturation>0</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.20</redMultiplier>
-      <greenMultiplier>1.00</greenMultiplier>
-      <blueMultiplier>0.20</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>4</level>
-      <Brightness>50.00</Brightness>
-      <Contrast>20.00</Contrast>
-      <Saturation>0</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.30</redMultiplier>
-      <greenMultiplier>1.00</greenMultiplier>
-      <blueMultiplier>0.30</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>5</level>
-      <Brightness>33.33</Brightness>
-      <Contrast>13.33</Contrast>
-      <Saturation>-20.00</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.5</redMultiplier>
-      <blueMultiplier>0.5</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
+      <greenMultiplier>1</greenMultiplier>
     </Preset>
     <Preset>
       <level>6</level>
-      <Brightness>16.67</Brightness>
-      <Contrast>6.67</Contrast>
-      <Saturation>-10.00</Saturation>
-      <Hue>0.00</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <blueMultiplier>0.8</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
+      <greenMultiplier>1</greenMultiplier>
     </Preset>
     <Preset>
       <level>7</level>
@@ -224,30 +251,61 @@
     </Preset>
     <Preset>
       <level>8</level>
-      <Brightness>15.00</Brightness>
-      <Contrast>0.00</Contrast>
-      <Saturation>10.00</Saturation>
-      <Hue>0.00</Hue>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
     <Preset>
       <level>9</level>
-      <Brightness>30</Brightness>
-      <Contrast>0</Contrast>
-      <Saturation>0</Saturation>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
       <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
     </Preset>
   </PresetSet>
   <PresetSet>
     <name>浅红夜视仪</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>白热目标型</Title>
+      <EdgeStrength>0</EdgeStrength>
+      <EdgeWidth>1</EdgeWidth>
+      <EdgeHalo>0</EdgeHalo>
+      <EdgeRadius>1</EdgeRadius>
+      <EdgeSuppression>0.9</EdgeSuppression>
+      <Retention>0.96</Retention>
+      <UnitStrength>1</UnitStrength>
+      <UnitRed>1</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>1</UnitBlue>
+      <EdgeRed>1</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>1</EdgeBlue>
+      <GlareStrength>0.9</GlareStrength>
+      <GlareThreshold>0.95</GlareThreshold>
+      <GainFloor>0.44</GainFloor>
+      <RecoverySeconds>0.72</RecoverySeconds>
+      <AttackSeconds>0.045</AttackSeconds>
+      <UnitStyle>whitehot</UnitStyle>
+      <UnitOutlineStrength>0</UnitOutlineStrength>
+    </VisionEffects>
     <Preset>
       <level>0</level>
-      <Brightness>-27.3</Brightness>
-      <Contrast>-20.0</Contrast>
-      <Saturation>-8.3</Saturation>
-      <Hue>50.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>50.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -256,13 +314,13 @@
     </Preset>
     <Preset>
       <level>1</level>
-      <Brightness>-21.8</Brightness>
-      <Contrast>-16.0</Contrast>
-      <Saturation>-6.7</Saturation>
-      <Hue>40.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>45.2</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -271,13 +329,13 @@
     </Preset>
     <Preset>
       <level>2</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>46.3</redOffset>
       <greenOffset>-4.5</greenOffset>
@@ -286,13 +344,13 @@
     </Preset>
     <Preset>
       <level>3</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>39.3</redOffset>
       <greenOffset>-2.7</greenOffset>
@@ -301,13 +359,13 @@
     </Preset>
     <Preset>
       <level>4</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>32.5</redOffset>
       <greenOffset>-1.0</greenOffset>
@@ -316,13 +374,13 @@
     </Preset>
     <Preset>
       <level>5</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>26.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -331,13 +389,13 @@
     </Preset>
     <Preset>
       <level>6</level>
-      <Brightness>6.1</Brightness>
-      <Contrast>14.0</Contrast>
-      <Saturation>3.0</Saturation>
-      <Hue>-26.5</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>19.5</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -361,13 +419,13 @@
     </Preset>
     <Preset>
       <level>8</level>
-      <Brightness>16.3</Brightness>
-      <Contrast>37.3</Contrast>
-      <Saturation>8.0</Saturation>
-      <Hue>-70.7</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.3</redOffset>
       <greenOffset>-2.7</greenOffset>
@@ -376,13 +434,13 @@
     </Preset>
     <Preset>
       <level>9</level>
-      <Brightness>24.4</Brightness>
-      <Contrast>56.0</Contrast>
-      <Saturation>12.0</Saturation>
-      <Hue>-106.0</Hue>
-      <redMultiplier>0.7</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -392,15 +450,40 @@
   </PresetSet>
   <PresetSet>
     <name>浅绿夜视仪</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>绿色结构型</Title>
+      <EdgeStrength>0.18</EdgeStrength>
+      <EdgeWidth>0.8</EdgeWidth>
+      <EdgeHalo>0.04</EdgeHalo>
+      <EdgeRadius>1.4</EdgeRadius>
+      <EdgeSuppression>0.95</EdgeSuppression>
+      <Retention>0.92</Retention>
+      <UnitStrength>0</UnitStrength>
+      <UnitRed>0.5</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>0.5</UnitBlue>
+      <EdgeRed>0.46</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>0.49</EdgeBlue>
+      <GlareStrength>0.8</GlareStrength>
+      <GlareThreshold>1.05</GlareThreshold>
+      <GainFloor>0.48</GainFloor>
+      <RecoverySeconds>0.65</RecoverySeconds>
+      <AttackSeconds>0.04</AttackSeconds>
+      <UnitOutlineStrength>1.05</UnitOutlineStrength>
+      <UnitOutlineWidth>1.6</UnitOutlineWidth>
+    </VisionEffects>
     <Preset>
       <level>0</level>
-      <Brightness>-27.3</Brightness>
-      <Contrast>-20.0</Contrast>
-      <Saturation>-8.3</Saturation>
-      <Hue>50.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>50.0</greenOffset>
@@ -409,13 +492,13 @@
     </Preset>
     <Preset>
       <level>1</level>
-      <Brightness>-21.8</Brightness>
-      <Contrast>-16.0</Contrast>
-      <Saturation>-6.7</Saturation>
-      <Hue>40.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>45.0</greenOffset>
@@ -424,13 +507,13 @@
     </Preset>
     <Preset>
       <level>2</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>6.0</redOffset>
       <greenOffset>34.8</greenOffset>
@@ -439,13 +522,13 @@
     </Preset>
     <Preset>
       <level>3</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>4.0</redOffset>
       <greenOffset>31.0</greenOffset>
@@ -454,13 +537,13 @@
     </Preset>
     <Preset>
       <level>4</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>2.0</redOffset>
       <greenOffset>28.0</greenOffset>
@@ -469,13 +552,13 @@
     </Preset>
     <Preset>
       <level>5</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>25.0</greenOffset>
@@ -484,13 +567,13 @@
     </Preset>
     <Preset>
       <level>6</level>
-      <Brightness>6.1</Brightness>
-      <Contrast>14.0</Contrast>
-      <Saturation>3.0</Saturation>
-      <Hue>-26.5</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>18.8</greenOffset>
@@ -514,13 +597,13 @@
     </Preset>
     <Preset>
       <level>8</level>
-      <Brightness>16.3</Brightness>
-      <Contrast>37.3</Contrast>
-      <Saturation>8.0</Saturation>
-      <Hue>-70.7</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>-6.0</redOffset>
       <greenOffset>3.3</greenOffset>
@@ -529,13 +612,13 @@
     </Preset>
     <Preset>
       <level>9</level>
-      <Brightness>24.4</Brightness>
-      <Contrast>56.0</Contrast>
-      <Saturation>12.0</Saturation>
-      <Hue>-106.0</Hue>
-      <redMultiplier>0.7</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>16</Brightness>
+      <Contrast>4</Contrast>
+      <Saturation>-25</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.25</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>0.25</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -545,15 +628,40 @@
   </PresetSet>
   <PresetSet>
     <name>浅蓝夜视仪</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>白热目标型 II</Title>
+      <EdgeStrength>0</EdgeStrength>
+      <EdgeWidth>1</EdgeWidth>
+      <EdgeHalo>0</EdgeHalo>
+      <EdgeRadius>1</EdgeRadius>
+      <EdgeSuppression>0.85</EdgeSuppression>
+      <Retention>0.98</Retention>
+      <UnitStrength>0.96</UnitStrength>
+      <UnitRed>1</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>1</UnitBlue>
+      <EdgeRed>1</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>1</EdgeBlue>
+      <GlareStrength>0.75</GlareStrength>
+      <GlareThreshold>1.15</GlareThreshold>
+      <GainFloor>0.5</GainFloor>
+      <RecoverySeconds>0.6</RecoverySeconds>
+      <AttackSeconds>0.04</AttackSeconds>
+      <UnitStyle>whitehot</UnitStyle>
+      <UnitOutlineStrength>0</UnitOutlineStrength>
+    </VisionEffects>
     <Preset>
       <level>0</level>
-      <Brightness>-12.1</Brightness>
-      <Contrast>-10.0</Contrast>
-      <Saturation>-3.7</Saturation>
-      <Hue>50.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -562,13 +670,13 @@
     </Preset>
     <Preset>
       <level>1</level>
-      <Brightness>-10.4</Brightness>
-      <Contrast>-8.7</Contrast>
-      <Saturation>-3.2</Saturation>
-      <Hue>50.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -577,13 +685,13 @@
     </Preset>
     <Preset>
       <level>2</level>
-      <Brightness>-0.9</Brightness>
-      <Contrast>-0.8</Contrast>
-      <Saturation>-0.3</Saturation>
-      <Hue>12.5</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>9.0</redOffset>
       <greenOffset>-3.7</greenOffset>
@@ -592,13 +700,13 @@
     </Preset>
     <Preset>
       <level>3</level>
-      <Brightness>-1.3</Brightness>
-      <Contrast>-1.1</Contrast>
-      <Saturation>-0.4</Saturation>
-      <Hue>16.7</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>8.0</redOffset>
       <greenOffset>-3.3</greenOffset>
@@ -607,13 +715,13 @@
     </Preset>
     <Preset>
       <level>4</level>
-      <Brightness>-1.9</Brightness>
-      <Contrast>-1.7</Contrast>
-      <Saturation>-0.6</Saturation>
-      <Hue>25.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>6.0</redOffset>
       <greenOffset>-2.5</greenOffset>
@@ -622,13 +730,13 @@
     </Preset>
     <Preset>
       <level>5</level>
-      <Brightness>-3.8</Brightness>
-      <Contrast>-3.3</Contrast>
-      <Saturation>-1.1</Saturation>
-      <Hue>50.1</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -637,13 +745,13 @@
     </Preset>
     <Preset>
       <level>6</level>
-      <Brightness>3.3</Brightness>
-      <Contrast>11.5</Contrast>
-      <Saturation>2.1</Saturation>
-      <Hue>11.1</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -667,13 +775,13 @@
     </Preset>
     <Preset>
       <level>8</level>
-      <Brightness>16.3</Brightness>
-      <Contrast>37.3</Contrast>
-      <Saturation>8.0</Saturation>
-      <Hue>-70.7</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>-2.7</redOffset>
       <greenOffset>-4.0</greenOffset>
@@ -682,13 +790,13 @@
     </Preset>
     <Preset>
       <level>9</level>
-      <Brightness>24.4</Brightness>
-      <Contrast>56.0</Contrast>
-      <Saturation>12.0</Saturation>
-      <Hue>-106.0</Hue>
-      <redMultiplier>0.7</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>-12</Brightness>
+      <Contrast>10</Contrast>
+      <Saturation>-100</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>1</redMultiplier>
+      <greenMultiplier>1</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -698,15 +806,43 @@
   </PresetSet>
   <PresetSet>
     <name>高级夜视仪</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>冷青扫描型</Title>
+      <ShadowLift>0.85</ShadowLift>
+      <ScanStrength>0.065</ScanStrength>
+      <EdgeStrength>0</EdgeStrength>
+      <EdgeWidth>0.8</EdgeWidth>
+      <EdgeHalo>0</EdgeHalo>
+      <EdgeRadius>1</EdgeRadius>
+      <EdgeSuppression>0.18</EdgeSuppression>
+      <Retention>0.98</Retention>
+      <UnitStrength>0</UnitStrength>
+      <UnitRed>1</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>1</UnitBlue>
+      <EdgeRed>0.72</EdgeRed>
+      <EdgeGreen>0.82</EdgeGreen>
+      <EdgeBlue>0.94</EdgeBlue>
+      <GlareStrength>0.58</GlareStrength>
+      <GlareThreshold>1.45</GlareThreshold>
+      <GainFloor>0.6</GainFloor>
+      <RecoverySeconds>0.44</RecoverySeconds>
+      <AttackSeconds>0.035</AttackSeconds>
+      <UnitStyle>natural</UnitStyle>
+      <UnitOutlineStrength>0.18</UnitOutlineStrength>
+      <UnitOutlineWidth>1</UnitOutlineWidth>
+    </VisionEffects>
     <Preset>
       <level>0</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>0.8</greenMultiplier>
-      <blueMultiplier>0.8</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -715,13 +851,13 @@
     </Preset>
     <Preset>
       <level>1</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>0.8</greenMultiplier>
-      <blueMultiplier>0.8</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -730,13 +866,13 @@
     </Preset>
     <Preset>
       <level>2</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>0.8</greenMultiplier>
-      <blueMultiplier>0.8</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -745,13 +881,13 @@
     </Preset>
     <Preset>
       <level>3</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -760,13 +896,13 @@
     </Preset>
     <Preset>
       <level>4</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>0.9</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -775,13 +911,13 @@
     </Preset>
     <Preset>
       <level>5</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -790,13 +926,13 @@
     </Preset>
     <Preset>
       <level>6</level>
-      <Brightness>0.0</Brightness>
-      <Contrast>0.0</Contrast>
-      <Saturation>0.0</Saturation>
-      <Hue>0.0</Hue>
-      <redMultiplier>1.0</redMultiplier>
-      <greenMultiplier>1.0</greenMultiplier>
-      <blueMultiplier>1.0</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -820,13 +956,13 @@
     </Preset>
     <Preset>
       <level>8</level>
-      <Brightness>16.3</Brightness>
-      <Contrast>37.3</Contrast>
-      <Saturation>8.0</Saturation>
-      <Hue>-70.7</Hue>
-      <redMultiplier>0.8</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -835,13 +971,13 @@
     </Preset>
     <Preset>
       <level>9</level>
-      <Brightness>24.4</Brightness>
-      <Contrast>56.0</Contrast>
-      <Saturation>12.0</Saturation>
-      <Hue>-106.0</Hue>
-      <redMultiplier>0.7</redMultiplier>
-      <greenMultiplier>0.9</greenMultiplier>
-      <blueMultiplier>0.9</blueMultiplier>
+      <Brightness>0</Brightness>
+      <Contrast>0</Contrast>
+      <Saturation>0</Saturation>
+      <Hue>0</Hue>
+      <redMultiplier>0.92</redMultiplier>
+      <greenMultiplier>0.98</greenMultiplier>
+      <blueMultiplier>1</blueMultiplier>
       <alphaMultiplier>1.0</alphaMultiplier>
       <redOffset>0.0</redOffset>
       <greenOffset>0.0</greenOffset>
@@ -851,6 +987,29 @@
   </PresetSet>
   <PresetSet>
     <name>剑圣视觉三阶</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>自然增强型</Title>
+      <EdgeStrength>0.055</EdgeStrength>
+      <EdgeWidth>0.8</EdgeWidth>
+      <EdgeHalo>0.025</EdgeHalo>
+      <EdgeRadius>1.1</EdgeRadius>
+      <EdgeSuppression>1</EdgeSuppression>
+      <Retention>1</Retention>
+      <UnitStrength>0.08</UnitStrength>
+      <UnitRed>0.9</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>0.9</UnitBlue>
+      <EdgeRed>0.75</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>0.8</EdgeBlue>
+      <GlareStrength>0.35</GlareStrength>
+      <GlareThreshold>2.2</GlareThreshold>
+      <GainFloor>0.76</GainFloor>
+      <RecoverySeconds>0.28</RecoverySeconds>
+      <AttackSeconds>0.03</AttackSeconds>
+    </VisionEffects>
     <Preset>
       <level>0</level>
       <Brightness>0.0</Brightness>
@@ -1004,6 +1163,29 @@
   </PresetSet>
   <PresetSet>
     <name>剑圣视觉四阶</name>
+    <!-- 成像增强只作用于已激活的夜视；单位染色保留透明度与遮挡。 -->
+    <VisionEffects>
+      <Version>1</Version>
+      <Title>真实视觉</Title>
+      <EdgeStrength>0</EdgeStrength>
+      <EdgeWidth>1</EdgeWidth>
+      <EdgeHalo>0</EdgeHalo>
+      <EdgeRadius>1</EdgeRadius>
+      <EdgeSuppression>1</EdgeSuppression>
+      <Retention>1</Retention>
+      <UnitStrength>0</UnitStrength>
+      <UnitRed>1</UnitRed>
+      <UnitGreen>1</UnitGreen>
+      <UnitBlue>1</UnitBlue>
+      <EdgeRed>0.85</EdgeRed>
+      <EdgeGreen>1</EdgeGreen>
+      <EdgeBlue>0.85</EdgeBlue>
+      <GlareStrength>0.18</GlareStrength>
+      <GlareThreshold>3.6</GlareThreshold>
+      <GainFloor>0.88</GainFloor>
+      <RecoverySeconds>0.16</RecoverySeconds>
+      <AttackSeconds>0.025</AttackSeconds>
+    </VisionEffects>
     <Preset>
       <level>0</level>
       <Brightness>0.0</Brightness>
@@ -1156,4 +1338,3 @@
     </Preset>
   </PresetSet>
 </ColorEngine>
-  

@@ -27,6 +27,7 @@
 #include <string>
 #include "FeedbackHistory.h"
 #include "CasSourceStage.h"
+#include "NightVisionStage.h"
 
 using namespace winrt;
 using namespace winrt::Windows::Graphics::Capture;
@@ -308,7 +309,7 @@ public:
     }
     ~Capture() { stop_ = true; Signal(); if (worker_.joinable()) worker_.join(); }
     void Mode(int mode) { if(mode_!=std::clamp(mode,0,2))++historyEpoch_; mode_ = std::clamp(mode, 0, 2); Signal(); }
-    void Active(bool active) { if(active_!=active)++historyEpoch_; active_ = active; Signal(); }
+    void Active(bool active) { if(active_!=active){++historyEpoch_;++nightVisionEpoch_;} active_ = active; Signal(); }
     bool Postprocess(int cas,float sharp,int feedback,int stage=0) {
         if((cas!=0 && cas!=1) || (feedback!=0 && feedback!=1)
                 || (stage!=0 && stage!=1) || !std::isfinite(sharp) || sharp<0 || sharp>1)return false;
@@ -340,6 +341,27 @@ public:
     void ClearLut() {
         { std::lock_guard guard(mutex_); lutEnabled_ = false; ++lutVersion_; ++historyEpoch_; }
         Signal();
+    }
+    bool NightVision(const float* p,int count,int64_t scene,const float* grade,int useLut,const uint8_t* upload,int byteCount) {
+        if(!NightVisionStage::Valid(p,count) || scene<0 || (p[0]==1 && scene==0) || !grade
+            || (useLut!=0 && useLut!=1) || (upload?byteCount!=static_cast<int>(LutBytes):byteCount!=0) || (upload && !useLut))return false;
+        for(int i=0;i<16;i++)if(!std::isfinite(grade[i]) || std::abs(grade[i])>32)return false;
+        if(grade[15]<.25f || grade[15]>4)return false;
+        {std::lock_guard guard(mutex_);
+            if(scene<nightVisionScene_ || (useLut && !upload && !lutEnabled_))return false;
+            // Grade, LUT and camera phase commit atomically; a worker must not
+            // see a night LUT on the ordinary pre-lighting path during an equip.
+            if(upload) {std::memcpy(lutData_,upload,LutBytes);++lutVersion_;++historyEpoch_;}
+            if(lutEnabled_!=(useLut!=0)) {lutEnabled_=useLut!=0;++lutVersion_;++historyEpoch_;}
+            if(!custom_ || std::memcmp(&customSettings_,grade,sizeof(Settings))!=0) {
+                std::memcpy(&customSettings_,grade,sizeof(Settings));custom_=true;++settingsVersion_;++historyEpoch_;
+            }
+            if(scene!=nightVisionScene_ || std::memcmp(nightVisionSettings_,p,64)!=0) {
+                std::memcpy(nightVisionSettings_,p,64);nightVisionScene_=scene;
+                ++nightVisionVersion_;++historyEpoch_;
+            }
+        }
+        Signal();return true;
     }
     void RequestProof() { proofRequested_ = true; }
     // Dev-only LUT lab grab. Blocks the caller until the capture worker services the
@@ -826,6 +848,9 @@ private:
         com_ptr<ID3D11Buffer> constants;
         D3D11_BUFFER_DESC cb{}; cb.ByteWidth = sizeof(Settings); cb.Usage = D3D11_USAGE_DEFAULT; cb.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
         check_hresult(device->CreateBuffer(&cb, nullptr, constants.put()));
+        com_ptr<ID3D11Buffer> neutralConstants;
+        Settings neutral=ColorMode(0);D3D11_SUBRESOURCE_DATA neutralData{&neutral,0,0};
+        check_hresult(device->CreateBuffer(&cb,&neutralData,neutralConstants.put()));
         com_ptr<ID3D11Buffer> samplingConstants;
         cb.ByteWidth=32; check_hresult(device->CreateBuffer(&cb,nullptr,samplingConstants.put()));
         com_ptr<ID3D11Buffer> atmosphereConstants;
@@ -967,6 +992,7 @@ private:
         float cachedLightParams[16]{},cachedLights[PointLightCap*16]{};
         FeedbackHistory feedbackHistory;
         CasSourceStage casSource;
+        NightVisionStage nightVision;
         ProbeCasStageStats casStageWork{sizeof(ProbeCasStageStats)};
         uint64_t appliedPostprocess=0;
         ProbePostprocessStats postprocessWork{sizeof(ProbePostprocessStats)};
@@ -996,9 +1022,15 @@ private:
                 casStrength=casSharpness_;casStage=casStage_;postprocessVersion=postprocessVersion_;}
             uint64_t settingsVersion; bool custom; Settings settings; WeatherState weather; WeatherCameraState weatherCamera; uint64_t weatherVersion;
             uint64_t lutVersion; bool lutEnabled;
+            float vision[16];uint64_t visionVersion;
             AtmosphereState atmosphere; AtmosphereStyleState atmosphereStyle; uint64_t atmosphereVersion;
             WeatherStyleState weatherStyle; uint64_t bulletVersion,bulletAtlasObserved,fxVersion,fxAtlasVersion,rayVersion;
             { std::lock_guard guard(mutex_); settingsVersion=settingsVersion_; custom=custom_; settings=customSettings_;
+                std::memcpy(vision,nightVisionSettings_,64);visionVersion=nightVisionVersion_;
+                lutVersion=lutVersion_;lutEnabled=lutEnabled_;
+                if(lutEnabled && lutVersion!=lutCopiedVersion) {
+                    std::memcpy(lutWork.get(),lutData_,LutBytes);lutCopiedVersion=lutVersion;
+                }
                 weather=weather_; weatherCamera=weatherCamera_; weatherVersion=weatherVersion_;
                 weatherStyle=weatherStyle_; atmosphere=atmosphere_;
                 atmosphereStyle=atmosphereStyle_; atmosphereVersion=atmosphereVersion_;
@@ -1016,7 +1048,7 @@ private:
             uint64_t observedHudVersion;bool hudVisible;
             {std::lock_guard guard(mutex_);observedHudVersion=hudVersion_;
                 hudVisible=std::any_of(hudFrames_.begin(),hudFrames_.end(),[](const auto& frame){return static_cast<bool>(frame.pixels);});}
-            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0) ? 30 : 0);
+            int paceFps = fps_>0 ? fps_ : ((weatherOn || atmosphereOn || bulletsOn || fxOn || rayFrame.count>0 || vision[0]==1) ? 30 : 0);
             // Preserve independent HUD animation responsiveness; static HUD does not force redraw.
             if(hudVisible && observedHudVersion!=appliedHudVersion)paceFps=60;
             if (paceFps>0) {
@@ -1028,11 +1060,6 @@ private:
             if (grabRequested_.load() && (!grabComposite_.load() || !texture)) {
                 ServiceGrab(device.get(),context.get(),texture.get(),textureW,textureH);continue;
             }
-            { std::lock_guard guard(mutex_);
-                lutVersion=lutVersion_; lutEnabled=lutEnabled_;
-                if (lutEnabled && lutVersion!=lutCopiedVersion) {
-                    std::memcpy(lutWork.get(), lutData_, LutBytes); lutCopiedVersion=lutVersion;
-                } }
             if (!ValidSource()) { State(2, S_OK, L"Source closed"); break; }
             if (!IsWindow(output_)) break;
             if(!IsIconic(source_) && frameSignature()!=sessionFrame) {
@@ -1071,7 +1098,7 @@ private:
                     && appliedBullet==bulletVersion && appliedBulletAtlas==bulletAtlasObserved
                     && !bulletsOn && appliedRay==rayVersion && rayFrame.count==0
                     && appliedFx==fxVersion && appliedFxAtlas==fxAtlasVersion && !fxOn
-                    && sceneGpu.version==observedSceneLightVersion && appliedHudVersion==observedHudVersion))) {
+                    && sceneGpu.version==observedSceneLightVersion && appliedHudVersion==observedHudVersion && vision[0]==0))) {
                 previousTimingPresent=0;
                 presentation.unlock();
                 std::unique_lock lock(waitMutex_);
@@ -1248,6 +1275,8 @@ private:
             float scale = std::min(static_cast<float>(w)/textureW, static_cast<float>(h)/textureH);
             D3D11_VIEWPORT viewport{(w-textureW*scale)/2, (h-textureH*scale)/2, textureW*scale, textureH*scale, 0, 1};
             bool proof = proofRequested_.exchange(false);
+            bool nightOn=vision[0]==1 && !proof;
+            bool gradeLutActive=lutActive && !nightOn;
             bool lightsOn=!proof && fxFrame.lightCount>0 && fxFrame.maximumLightResponse>0;
             uint64_t sceneVersion;
             {std::lock_guard guard(mutex_);sceneVersion=sceneLightVersion_;if(sceneVersion!=sceneGpu.version)sceneSnapshot=sceneLights_;}
@@ -1259,7 +1288,7 @@ private:
             float palette[3]{1,1,1};
             // Production uses LUT only for ambient "光照". Direct gunfire must not
             // inherit its blue darkness; night vision uses the separate matrix path.
-            if((lightsOn || sceneOn) && !lutActive) {
+            if((lightsOn || sceneOn) && !lutActive && !nightOn) {
                 Settings grade=custom?settings:ColorMode(mode);
                 const float* rows[]{grade.r,grade.g,grade.b};
                 for(int c=0;c<3;c++)palette[c]=std::pow(std::clamp(rows[c][0]+rows[c][1]+rows[c][2]+rows[c][3]+grade.offset[c],0.f,1.f),1.f/std::max(grade.offset[3],.001f));
@@ -1314,13 +1343,13 @@ private:
             auto field=lightsOn?lightResource.get():nullptr;auto fieldSampler=fxSampler.get();
             context->PSSetShaderResources(3,1,&field);context->PSSetSamplers(3,1,&fieldSampler);
             context->VSSetShader(vs.get(), nullptr, 0); context->PSSetShader(ps.get(), nullptr, 0);
-            auto sampling = sampler.get(); auto buffer = constants.get();
+            auto sampling = sampler.get(); auto buffer = nightOn?neutralConstants.get():constants.get();
             context->PSSetShaderResources(0,1,&resource); context->PSSetSamplers(0,1,&sampling); context->PSSetConstantBuffers(0,1,&buffer);
             ID3D11ShaderResourceView* lutResource = lutActive ? lutSrv.get() : nullptr;
             context->PSSetShaderResources(1,1,&lutResource);
             auto lutSamp = lutSampler.get(); context->PSSetSamplers(1,1,&lutSamp);
             appliedSharpness=sharpness_.load();
-            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,lutActive?1.f:0.f,
+            float samplingValues[]{1.f/textureW,1.f/textureH,appliedSharpness,gradeLutActive?1.f:0.f,
                 sourceNeighborhood?1.f/textureW:1.f/viewport.Width,sourceNeighborhood?1.f/textureH:1.f/viewport.Height,
                 casStageWork.appliedStage==1?0.f:static_cast<float>(postprocessWork.casEnabled),adjustedCas};
             context->UpdateSubresource(samplingConstants.get(),0,nullptr,samplingValues,0,0);
@@ -1369,7 +1398,7 @@ private:
                 if (weather.quality==1) rainCount=rainCount*5/8;
                 else if (weather.quality==2) rainCount=rainCount*3/8;
                 float wp[16]{weatherTime,weather.intensity,static_cast<float>(weather.type),
-                    static_cast<float>(weather.seed & 0xFFFFFFu),viewport.Width,viewport.Height,static_cast<float>(rainCount),lutActive?1.f:0.f,
+                    static_cast<float>(weather.seed & 0xFFFFFFu),viewport.Width,viewport.Height,static_cast<float>(rainCount),gradeLutActive?1.f:0.f,
                     weatherCamera.x,weatherCamera.y,weatherCamera.scale,weatherCamera.groundMin,
                     weatherCamera.groundMax,576.f,0,0};
                 context->UpdateSubresource(weatherParams.get(),0,nullptr,wp,0,0);
@@ -1386,7 +1415,7 @@ private:
             } else if (!weatherOn) lastWeatherDrawMs = 0;
             auto drawFx=[&](int first,int count) {
                 if(count<=0 || !fxSrv || proof) return;
-                float fp[8]{fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,lutActive?1.f:0.f,static_cast<float>(first),0,0,0};
+                float fp[8]{fxFrame.cameraX,fxFrame.cameraY,fxFrame.cameraScale,gradeLutActive?1.f:0.f,static_cast<float>(first),0,0,0};
                 context->UpdateSubresource(fxParams.get(),0,nullptr,fp,0,0);
                 if(fxItemsDirty) {
                     context->UpdateSubresource(fxItems.get(),0,nullptr,fxFrame.params,0,0);
@@ -1404,7 +1433,7 @@ private:
             // alpha blended over world+weather+atmosphere. The base grade
             // cbuffer and LUT resource stay bound for the bullet grade.
             if (bulletFrame.count>0 && bulletStyles.count>0 && texture && !proof) {
-                float bp[8]{viewport.Width,viewport.Height,lutActive?1.f:0.f,static_cast<float>(bulletFrame.count),
+                float bp[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(bulletFrame.count),
                     bulletFrame.cameraX,bulletFrame.cameraY,bulletFrame.cameraScale,static_cast<float>(bulletStyles.count)};
                 context->UpdateSubresource(bulletStyleParams.get(),0,nullptr,bulletStyles.params,0,0);
                 context->VSSetShader(bulletVs.get(),nullptr,0); context->PSSetShader(bulletPs.get(),nullptr,0);
@@ -1452,7 +1481,7 @@ private:
                     float batch[RayBatchCap*32];
                     for(size_t at=0;at<bucket.size();at+=RayBatchCap) {
                         int count=static_cast<int>(std::min(bucket.size()-at,static_cast<size_t>(RayBatchCap)));
-                        float params[8]{viewport.Width,viewport.Height,lutActive?1.f:0.f,static_cast<float>(count),
+                        float params[8]{viewport.Width,viewport.Height,gradeLutActive?1.f:0.f,static_cast<float>(count),
                             rayFrame.cameraX,rayFrame.cameraY,rayFrame.cameraScale,static_cast<float>(pass)};
                         for(int k=0;k<count;k++) std::memcpy(batch+k*32,rayFrame.params+bucket[at+k]*32,128);
                         if(count<RayBatchCap)std::memset(batch+count*32,0,static_cast<size_t>(RayBatchCap-count)*128);
@@ -1471,6 +1500,16 @@ private:
             ID3D11ShaderResourceView* emptyFx=nullptr;context->PSSetShaderResources(2,1,&emptyFx);
             appliedWeather = weatherVersion;
             appliedAtmosphere = atmosphereVersion;
+            if(nightOn) {
+                // All world lighting and effects are now composed. Unit tint is
+                // supplied by Flash's actual actor art, preserving its alpha/occlusion.
+                com_ptr<ID3D11Texture2D> composed;
+                check_hresult(swap->GetBuffer(0,__uuidof(ID3D11Texture2D),composed.put_void()));
+                auto grade=constants.get();context->PSSetConstantBuffers(0,1,&grade);
+                context->PSSetShaderResources(1,1,&lutResource);context->PSSetSamplers(1,1,&lutSamp);
+                nightVision.Apply(device.get(),context.get(),composed.get(),target,viewport,vision,
+                    visionVersion,nightVisionEpoch_.load(),QpcMs(),lutActive);
+            } else if(!proof) nightVision.Reset();
             context->PSSetShaderResources(1,1,&empty);
             std::array<HudRasterFrame,HudRasterLayerCount> hudFrames;
             {std::lock_guard guard(mutex_);hudFrames=hudFrames_;appliedHudVersion=hudVersion_;}
@@ -1713,6 +1752,8 @@ private:
     uint8_t* grabBuffer_=nullptr; uint32_t grabBufferSize_=0;
     uint32_t grabWidth_=0, grabHeight_=0; int grabResult_=0;
     Settings customSettings_{}; bool custom_=false; uint64_t settingsVersion_=0;
+    float nightVisionSettings_[16]{};int64_t nightVisionScene_=0;uint64_t nightVisionVersion_=0;
+    std::atomic<uint64_t> nightVisionEpoch_{0};
     // lut-set-v1：宿主线程 SetLut/ClearLut 经 mutex_ 入库，工作线程按 lutVersion_
     // 惰性建/更 Texture3D（变更才上传，不逐帧）；ClearLut 只关断分支，GPU 纹理保留复用。
     static constexpr uint32_t LutSize = 32;
@@ -1846,6 +1887,10 @@ int __cdecl ProbeRequestBorderless() {
 }
 int __cdecl ProbeSetMatrix(void* handle, const float* settings) {
     return handle && static_cast<Capture*>(handle)->Matrix(settings) ? 1 : 0;
+}
+int __cdecl ProbeSetNightVision(void* handle,const float* settings,int count,int64_t scene,
+        const float* grade,int useLut,const uint8_t* upload,int byteCount) {
+    return handle && static_cast<Capture*>(handle)->NightVision(settings,count,scene,grade,useLut,upload,byteCount)?1:0;
 }
 int __cdecl ProbeSetLut(void* handle, const uint8_t* rgba) {
     return handle && static_cast<Capture*>(handle)->SetLut(rgba) ? 1 : 0;

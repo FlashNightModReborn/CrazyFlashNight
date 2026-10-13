@@ -94,14 +94,43 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void ShadowLiftPreservesInkHueAndHighlightsWhileKeepingGrayStepsMonotonic()
+        {
+            var identity=WorldColorMatrix.Identity();
+            Assert.Equal(WorldLutBaker.BakeMatrix(identity,1),WorldLutBaker.BakeMatrix(identity,1,0));
+            foreach(double lift in new[]{.85,2.0}) {
+                var lut=WorldLutBaker.BakeMatrix(identity,1,lift);
+                int previous=-1;
+                for(int gray=0;gray<32;gray++) {
+                    int at=((gray*32+gray)*32+gray)*4;
+                    Assert.Equal(lut[at],lut[at+1]);Assert.Equal(lut[at+1],lut[at+2]);
+                    Assert.True(lut[at]>previous);previous=lut[at];
+                }
+                Assert.Equal(0,lut[0]);Assert.Equal(255,lut[lut.Length-2]);
+                // A 3:2:1 dark material retains its channel ratios after exposure lift.
+                int color=((2*32+4)*32+6)*4;
+                Assert.InRange(lut[color]-(int)lut[color+2]*3,-2,2);
+                Assert.InRange(lut[color+1]-(int)lut[color+2]*2,-2,2);
+                Assert.True(lut[color+2]>Math.Round(2/31.0*255));
+                // A saturated bright patch stays bounded without clipping another channel.
+                int highlight=((10*32+20)*32+31)*4;
+                Assert.Equal(255,lut[highlight]);
+                Assert.Equal((byte)Math.Round(20/31.0*255),lut[highlight+1]);
+                Assert.Equal((byte)Math.Round(10/31.0*255),lut[highlight+2]);
+            }
+            foreach(double lift in new[]{double.NaN,double.PositiveInfinity,-.01,2.01})
+                Assert.Throws<ArgumentException>(()=>WorldLutBaker.BakeMatrix(identity,1,lift));
+        }
+
+        [Fact]
         public void IntegerLevelUsesExactPresetRow()
         {
             var tables = RealTables();
             // 光照 level 2：Brightness -27.1 / Contrast 35.7 / Saturation -30 / Hue 0，乘数缺省 1。
             Assert.Equal(new double[] { 1, 1, 1, 1, -27.1, 35.7, -30, 0 },
                 WorldLutBaker.Interpolate(tables["光照"], 2));
-            // 夜视仪 level 0：red/blue 乘数 0.15，Brightness 0 / Contrast 50。
-            Assert.Equal(new double[] { 0.15, 1, 0.15, 1, 0, 50, 0, 0 },
+            // 夜视仪 level 0：压低高频底图的调色放大，仍精确使用整数档数据。
+            Assert.Equal(new double[] { 0.25, 1, 0.25, 1, 16, 4, -25, 0 },
                 WorldLutBaker.Interpolate(tables["夜视仪"], 0));
         }
 

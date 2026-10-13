@@ -83,7 +83,7 @@
                 if(战技种类 && !this.主动战技[战技种类] && !(装备种类 == "长枪" && this[装备类型 + "数据"].subweapon))
                 {
                     var 旧战技:Object = this.主动战技[战技种类];
-                    this.装载主动战技(skill,战技种类);
+                    this.装载主动战技(skill,战技种类,装备名称);
                     if(isGated)
                     {
                         org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController.registerSkillRestore(

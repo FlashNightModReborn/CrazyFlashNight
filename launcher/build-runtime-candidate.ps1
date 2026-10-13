@@ -392,7 +392,7 @@ try {
 
     Write-Host 'Build deterministic world compositor and Flash input bridge...' -ForegroundColor Yellow
     $canonicalWorldSource = Join-Path $jobTemp 'world-compositor-source'
-    foreach ($worldInput in @('Compositor.cpp','Compositor.h','CompositionScene.cpp','CompositionScene.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','InputTrace.h','ShaderSources.h','ShaderBake.cpp','RayShader.h','RayStyleShader.h','RayFlameShader.h','RayPassBuckets.h','FeedbackHistory.h','CasSourceStage.h','CAS-LICENSE.txt')) {
+    foreach ($worldInput in @('Compositor.cpp','Compositor.h','CompositionScene.cpp','CompositionScene.h','InputBridge.cpp','InputBridge.h','InputBroker.cpp','InputTrace.h','ShaderSources.h','ShaderBake.cpp','NightVisionShader.h','NightVisionStage.h','RayShader.h','RayStyleShader.h','RayFlameShader.h','RayPassBuckets.h','FeedbackHistory.h','CasSourceStage.h','CAS-LICENSE.txt')) {
         Copy-Cf7CanonicalLfFile `
             -Source (Join-Path $launcherDir ('native\world-compositor\' + $worldInput)) `
             -Destination (Join-Path $canonicalWorldSource $worldInput)

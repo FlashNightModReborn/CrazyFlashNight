@@ -592,6 +592,7 @@ _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String
 		if (success) 
 		{
             _root.色彩引擎.光照等级映射表 = {};
+            _root.色彩引擎.视觉增强映射表 = {};
             var presetSets:Array = _root.解析XML节点(this.firstChild);
 			var presetsData:Object = presetSets.PresetSet;
 
@@ -599,6 +600,9 @@ _root.色彩引擎.加载并配置色彩预设 = function(xml文件地址:String
 			{
 				var presets:Object = presetsData[i];
 				var name:String = presets.name;
+                if (presets.VisionEffects != undefined) {
+                    _root.色彩引擎.视觉增强映射表[name] = presets.VisionEffects;
+                }
 				var presetLevels = presets.Preset;
 				var tempPreset:Object = {};
 				for(var j:Number = 0; j < presetLevels.length; ++j)

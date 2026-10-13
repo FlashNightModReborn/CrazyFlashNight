@@ -37,6 +37,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         // 严格 Export 拒绝未配套旧 DLL（与 ProbeGetCaptureSize 同模式）。
         private readonly LutDelegate _lut;
         private readonly StopDelegate _clearLut;
+        private readonly NightVisionDelegate _nightVision;
         private readonly WeatherDelegate _weather;
         private readonly WeatherCameraDelegate _weatherCamera;
         private readonly AtmosphereDelegate _atmosphere;
@@ -79,6 +80,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 _grab=TryExport<GrabDelegate>("ProbeGrabLatestFrame");
                 _grabComposite=TryExport<GrabDelegate>("ProbeGrabCompositeFrame");
                 _lut=Export<LutDelegate>("ProbeSetLut"); _clearLut=Export<StopDelegate>("ProbeClearLut");
+                _nightVision=Export<NightVisionDelegate>("ProbeSetNightVision");
                 _weather=Export<WeatherDelegate>("ProbeSetWeather"); // paired native presentation capability
                 _weatherCamera=Export<WeatherCameraDelegate>("ProbeSetWeatherCamera");
                 _atmosphere=Export<AtmosphereDelegate>("ProbeSetAtmosphere");
@@ -115,6 +117,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             GrabNoWorldViewport = -7;
         // 与 Compositor.cpp 的 BulletItemCap/RayItemCap 镜像的硬上限；配对能力合同另验。
         internal const int NativeBulletItemLimit = 16384, NativeRayItemLimit = 4096;
+        internal void NightVision(NightVisionProfile profile, long scene, float[] grade, bool useLut, byte[] upload)
+        {
+            if (_session == IntPtr.Zero) throw new ObjectDisposedException(nameof(NativeCompositorSession));
+            if (grade==null || grade.Length!=16 || (upload!=null && upload.Length!=WorldLutBaker.RgbaBytes))
+                throw new ArgumentException("Invalid night camera grade");
+            if (_nightVision(_session,profile.Native,profile.Native.Length,scene,grade,useLut?1:0,upload,upload?.Length??0)!=1)
+                throw new ArgumentException("Night vision camera rejected");
+        }
         // Dev-only LUT lab：buffer=null 为尺寸查询（返回 GrabBufferTooSmall 并给出宽高）。
         internal int GrabLatestFrame(byte[] buffer, out int width, out int height)
             => GrabFrame(_grab,buffer,out width,out height);
@@ -463,6 +473,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate void ModeDelegate(IntPtr handle,int mode);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int GrabDelegate(IntPtr handle,[In,Out] byte[] buffer,uint bufferSize,out uint width,out uint height);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int LutDelegate(IntPtr handle,[In] byte[] rgba);
+        [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int NightVisionDelegate(IntPtr handle,[In] float[] settings,int count,long scene,
+            [In] float[] grade,int useLut,[In] byte[] upload,int byteCount);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherDelegate(IntPtr handle,int type,float intensity,int quality,uint seed);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int WeatherCameraDelegate(IntPtr handle,float x,float y,float scale,float groundMin,float groundMax);
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)] private delegate int AtmosphereDelegate(IntPtr handle,int preset,[In] float[] parameters);

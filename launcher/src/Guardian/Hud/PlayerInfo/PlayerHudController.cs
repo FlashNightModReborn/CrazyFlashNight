@@ -99,7 +99,7 @@ internal sealed class PlayerHudController : IDisposable
                 _adoptedGeneration = packet.Generation;
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))

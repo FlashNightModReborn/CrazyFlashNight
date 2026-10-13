@@ -66,6 +66,23 @@ const server = createServer((request, response) => {
   try {
     const requestUrl = new URL(request.url || '/', `http://127.0.0.1:${port}`);
     const decoded = decodeURIComponent(requestUrl.pathname).replace(/^\/+/, '');
+    if (decoded === 'qa/night-vision-profiles') {
+      // Test-only projection from the actual XML; never a second authored catalog.
+      const xml = readFileSync(resolve(webRoot, '../../data/environment/color_engine_preset.xml'), 'utf8');
+      const profiles = [];
+      for (const set of xml.matchAll(/<PresetSet>[\s\S]*?<\/PresetSet>/g)) {
+        const effects = set[0].match(/<VisionEffects>([\s\S]*?)<\/VisionEffects>/);
+        if (!effects) continue;
+        const field = key => effects[1].match(new RegExp('<' + key + '>([^<]+)</' + key + '>'))[1];
+        const hex = key => Math.round(Number(field(key)) * 255).toString(16).padStart(2, '0');
+        profiles.push({name:set[0].match(/<name>([^<]+)<\/name>/)[1],title:field('Title'),unitStrength:Number(field('UnitStrength')),
+          fluorescent:{enabled:true,strength:Number(field('EdgeStrength')),width:Number(field('EdgeWidth')),
+            suppression:Number(field('EdgeSuppression')),halo:Number(field('EdgeHalo')),radius:Number(field('EdgeRadius')),
+            retention:Number(field('Retention')),scanStrength:Number(effects[1].match(/<ScanStrength>([^<]+)<\/ScanStrength>/)?.[1] || 0),base:'lut',only:false,color:'#'+hex('EdgeRed')+hex('EdgeGreen')+hex('EdgeBlue')}});
+      }
+      response.writeHead(200, {'content-type':mime['.json'],'cache-control':'no-store'});
+      response.end(JSON.stringify(profiles)); return;
+    }
     if (decoded.startsWith('vhost-missing')) {
       response.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
       response.end('not found (intentional: degraded-path probe)');

@@ -21,6 +21,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private readonly Action<int> _setRenderHeight;
         private readonly Action _focusFlash;
         private readonly WorldLightingPreset _preset;
+        private readonly Dictionary<string,NightVisionProfile> _nightVisionProfiles;
+        private NightVisionProfile _appliedNightVision;
+        private long _appliedNightVisionScene;
+        private double[] _lastNightMatrix;
+        private double _lastNightShadowLift = double.NaN;
+        private string _lutOwner;
         private readonly WorldPresentationCatalog _presentationCatalog;
         private readonly BulletVisualCatalog _bulletCatalog;
         private readonly CombatFxCatalog _combatFxCatalog;
@@ -355,6 +361,18 @@ namespace CF7Launcher.Guardian.WorldCompositor
             return active && crop.Width >= 1 && crop.Height >= 1;
         }
 
+        internal static NightVisionProfile ResolveNightVision(Dictionary<string,NightVisionProfile> profiles,string mode,bool requested,bool ready)
+            => requested && ready && mode!=null && profiles.TryGetValue(mode,out var profile)?profile:NightVisionProfile.None;
+        private static bool SameMatrix(double[] left,double[] right)
+        {
+            if (right==null || left.Length!=right.Length)return false;
+            for(int i=0;i<left.Length;i++)if(Math.Abs(left[i]-right[i])>1e-6)return false;
+            return true;
+        }
+
+        internal static bool NightLutChanged(double[] matrix,double shadowLift,double[] previousMatrix,double previousLift)
+            => !double.IsFinite(previousLift) || Math.Abs(shadowLift-previousLift)>1e-6 || !SameMatrix(matrix,previousMatrix);
+
         internal WorldCompositorController(Form owner, Control anchor, Func<IntPtr> getFlash,
             Func<bool> canPresent, Action<string> notify, string projectRoot, Func<bool> shouldPrepare,
             Action<int> setRenderHeight,Action focusFlash,uint inputEpochLimit=WorldPointerMapper.EpochLimit,
@@ -389,6 +407,8 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 && Environment.GetEnvironmentVariable("CF7_BULLET_NATIVE_DISABLE")!="1";
             _preset=WorldLightingPreset.Load(Path.Combine(projectRoot,"launcher","data","world-lighting","preset.json"),
                 message => LogManager.Log(message));
+            string visionPath=Path.Combine(projectRoot,"data","environment","color_engine_preset.xml");
+            _nightVisionProfiles=File.Exists(visionPath)?NightVisionProfile.Load(visionPath):new Dictionary<string,NightVisionProfile>(StringComparer.Ordinal);
             string visualPath=Path.Combine(projectRoot,
                 WorldPresentationCatalog.RelativePath.Replace('/',Path.DirectorySeparatorChar));
             _presentationCatalog=WorldPresentationCatalog.Load(visualPath);
@@ -499,7 +519,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     LogManager.Log("event=world_compositor_identity S=0x"+_owner.Handle.ToString("X")+" P=0x"+_surface.Handle.ToString("X")
                         +" F=0x"+_flash.ToString("X")+" hostPid="+Environment.ProcessId+" inputSession="+_pointerBridge.SessionIdentity);
                     _crop=Rectangle.Empty; _startedMs=NowMs(); _lastSettings=null; _active=true; _appliedSharpness=float.NaN;
-                    _lastLut=null; _lutActive=false;
+                    _lastLut=null; _lutActive=false; _lutOwner=null; _lastNightMatrix=null; _lastNightShadowLift=double.NaN; _appliedNightVision=null;
                     _appliedWeatherType=-1;
                     _appliedWeatherStyleType=-1;
                     _appliedAtmospherePreset=-1;
@@ -595,22 +615,35 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     if(ApplySceneLightsLocked() && _native!=null)
                         _worldLightSubmissions.Submit(_worldLights.Compose(_weatherCameraX,_weatherCameraY,_weatherCameraScale),_weatherCameraX,_weatherCameraY,_weatherCameraScale,false);
                 }
-                if (_preset.UsesLut(_lighting.CurrentMode)) {
-                    // LUT 路径（lut-set-v1）：350ms 过渡状态机不变，采样语义由矩阵改为连续 light 等级，
-                    // 相邻整数档 CPU blend（32^3 逐字节）；变更才上传原生（过渡期间逐 tick、稳态零上传）。
-                    double lutLight=WorldLutSet.ClampLight(_lighting.SampleLight(NowMs()));
-                    if (_lastLut==null || Math.Abs(lutLight-_lastLutLight)>1e-6) {
-                        _lastLut=_preset.LutSet.BlendLevel(lutLight);
-                        _native.SetLut(_lastLut);
-                        _lastLutLight=lutLight;
-                    }
-                    _lutActive=true;
-                } else {
-                    if (_lutActive) { _native.ClearLut(); _lutActive=false; }
-                    var settings=_preset.ShaderSettings(_lighting.Sample(NowMs()));
-                    bool changed=_lastSettings==null;
-                    for (int i=0;!changed && i<settings.Length;i++) if (Math.Abs(settings[i]-_lastSettings[i])>0.000001f) changed=true;
-                    if (changed) { _native.Matrix(settings); _lastSettings=settings; }
+                double cameraNow=NowMs();
+                var night=ResolveNightVision(_nightVisionProfiles,_lighting.CurrentMode,_lighting.NightVisionRequested,
+                    _frame?.Ready==true && !_lighting.Pending && !_lighting.WaitingForCapture && _lighting.ReadyScene==_frame.Scene);
+                long visionScene=_frame?.Scene??0;
+                var matrix=_lighting.Sample(cameraNow);
+                var settings=_preset.ShaderSettings(matrix);
+                byte[] upload=null;
+                bool useLut=night.Enabled || _preset.UsesLut(_lighting.CurrentMode);
+                string owner=night.Enabled?"night":useLut?"ambient":null;
+                double lutLight=useLut && !night.Enabled?WorldLutSet.ClampLight(_lighting.SampleLight(cameraNow)):0;
+                double shadowLift=night.Enabled && _lighting.SampleLight(cameraNow)!=7?night.ShadowLift:0;
+                if(night.Enabled) {
+                    if(_lutOwner!=owner || NightLutChanged(matrix,shadowLift,_lastNightMatrix,_lastNightShadowLift))
+                        upload=WorldLutBaker.BakeMatrix(matrix,_preset.Gamma,shadowLift);
+                } else if(useLut) {
+                    if(_lutOwner!=owner || _lastLut==null || Math.Abs(lutLight-_lastLutLight)>1e-6)
+                        upload=_preset.LutSet.BlendLevel(lutLight);
+                }
+                bool profileChanged=!ReferenceEquals(night,_appliedNightVision) || _appliedNightVisionScene!=visionScene;
+                bool cameraChanged=profileChanged || upload!=null || useLut!=_lutActive || _lastSettings==null;
+                for(int i=0;!cameraChanged && i<settings.Length;i++)
+                    if(Math.Abs(settings[i]-_lastSettings[i])>1e-6f)cameraChanged=true;
+                if(cameraChanged) {
+                    _native.NightVision(night,visionScene,settings,useLut,upload);
+                    _appliedNightVision=night;_appliedNightVisionScene=visionScene;_lastSettings=settings;
+                    _lutOwner=owner;_lutActive=useLut;
+                    if(night.Enabled){_lastNightMatrix=matrix;_lastNightShadowLift=shadowLift;}
+                    else if(useLut){if(upload!=null)_lastLut=upload;_lastLutLight=lutLight;}
+                    if(profileChanged)LogManager.Log("event=night_vision_profile mode="+night.Name+" title="+night.Title+" active="+night.Enabled+" scene="+visionScene);
                 }
                 // Read can still report the pre-paint capture while Synchronize
                 // releases our held viewport. Keep the submitted target during

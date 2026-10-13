@@ -249,6 +249,20 @@ namespace CF7Launcher.Tasks
             resp["ok"] = true; resp["success"] = true; resp["task"] = TaskNameBakeXmlSet;
             resp["mode"] = resolvedMode; resp["size"] = WorldLutBaker.LutSize;
             resp["levels"] = levels;
+            var profiles=NightVisionProfile.Load(_presetXmlPath);
+            var previewProfiles=new JArray();
+            foreach(var p in profiles.Values) {
+                string Color(float value)=>((int)Math.Round(value*255)).ToString("x2",CultureInfo.InvariantCulture);
+                previewProfiles.Add(new JObject {
+                    ["name"]=p.Name,["title"]=p.Title,["unitStrength"]=p.UnitStrength,
+                    ["fluorescent"]=new JObject {
+                        ["enabled"]=true,["strength"]=p.Native[1],["width"]=p.Native[2],["suppression"]=p.Native[3],
+                        ["halo"]=p.Native[4],["radius"]=p.Native[5],["retention"]=p.Native[6],["scanStrength"]=p.Native[15],["base"]="lut",
+                        ["color"]="#"+Color(p.Native[8])+Color(p.Native[9])+Color(p.Native[10]),["only"]=false
+                    }
+                });
+            }
+            resp["visionProfiles"]=previewProfiles;
             LogManager.Log("event=lutlab_bake_xml_set mode=" + resolvedMode + " levels=" + levels.Count);
             return resp.ToString(Formatting.None);
         }

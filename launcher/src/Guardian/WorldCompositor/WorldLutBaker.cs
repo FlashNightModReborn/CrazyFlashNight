@@ -86,7 +86,15 @@ namespace CF7Launcher.Guardian.WorldCompositor
 
         internal static byte[] Bake(double[] parameters, double gamma)
         {
-            double[] m = WorldColorMatrix.Generate(parameters);
+            return BakeMatrix(WorldColorMatrix.Generate(parameters), gamma);
+        }
+
+        internal static byte[] BakeMatrix(double[] m, double gamma, double shadowLift = 0)
+        {
+            if (m == null || m.Length != 20 || !double.IsFinite(gamma) || gamma < .25 || gamma > 4
+                || !double.IsFinite(shadowLift) || shadowLift < 0 || shadowLift > 2)
+                throw new ArgumentException("Finite 4x5 matrix, bounded gamma and shadow lift required");
+            foreach (double value in m) if (!double.IsFinite(value)) throw new ArgumentException("Nonfinite matrix");
             double inverseGamma = 1.0 / Math.Max(gamma, 1e-3);
             var rgba = new byte[RgbaBytes];
             int offset = 0;
@@ -99,12 +107,27 @@ namespace CF7Launcher.Guardian.WorldCompositor
                     for (int r = 0; r < LutSize; r++)
                     {
                         double cr = r / (double)(LutSize - 1);
-                        rgba[offset++] = Quantize(Math.Pow(Saturate(
-                            m[0] * cr + m[1] * cg + m[2] * cb + m[3] + m[4] / 255.0), inverseGamma));
-                        rgba[offset++] = Quantize(Math.Pow(Saturate(
-                            m[5] * cr + m[6] * cg + m[7] * cb + m[8] + m[9] / 255.0), inverseGamma));
-                        rgba[offset++] = Quantize(Math.Pow(Saturate(
-                            m[10] * cr + m[11] * cg + m[12] * cb + m[13] + m[14] / 255.0), inverseGamma));
+                        double red = Math.Pow(Saturate(
+                            m[0] * cr + m[1] * cg + m[2] * cb + m[3] + m[4] / 255.0), inverseGamma);
+                        double green = Math.Pow(Saturate(
+                            m[5] * cr + m[6] * cg + m[7] * cb + m[8] + m[9] / 255.0), inverseGamma);
+                        double blue = Math.Pow(Saturate(
+                            m[10] * cr + m[11] * cg + m[12] * cb + m[13] + m[14] / 255.0), inverseGamma);
+                        if (shadowLift > 0)
+                        {
+                            // Lift shadows by a shared luminance gain. Preserve channel ratios,
+                            // black ink and saturated highlights rather than adding a gray offset.
+                            double luminance = .2126 * red + .7152 * green + .0722 * blue;
+                            double peak = Math.Max(red, Math.Max(green, blue));
+                            double toe = Saturate((luminance - .02) / .04);
+                            double gate = toe * toe * (3 - 2 * toe);
+                            double gain = 1 + shadowLift * (1 - luminance) * (1 - luminance) * gate;
+                            if (peak > 0) gain = Math.Min(gain, 1 / peak);
+                            red *= gain; green *= gain; blue *= gain;
+                        }
+                        rgba[offset++] = Quantize(red);
+                        rgba[offset++] = Quantize(green);
+                        rgba[offset++] = Quantize(blue);
                         rgba[offset++] = 255;
                     }
                 }
@@ -118,7 +141,14 @@ namespace CF7Launcher.Guardian.WorldCompositor
             resolvedMode = ResolvePresetSetName(tables, mode);
             if (resolvedMode == null) return null;
             double[] parameters = Interpolate(tables[resolvedMode], level);
-            return parameters == null ? null : Bake(parameters, gamma);
+            if (parameters == null) return null;
+            var document = XDocument.Load(xmlPath);
+            double shadowLift = 0;
+            foreach (var set in document.Root.Elements("PresetSet"))
+                if (((string)set.Element("name"))?.Trim() == resolvedMode)
+                    shadowLift = NightVisionProfile.ReadShadowLift(set.Element("VisionEffects"));
+            // Preserve the AS2 light=7 identity short circuit for every profile.
+            return BakeMatrix(WorldColorMatrix.Generate(parameters), gamma, level == 7 ? 0 : shadowLift);
         }
 
         private static double Saturate(double value) { return value < 0 ? 0 : value > 1 ? 1 : value; }
