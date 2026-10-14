@@ -32,6 +32,7 @@ var CookingPanel = (function() {
 
     function unmount() {
         _generation++;
+        releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
         _selectedBook = ''; _selectedIndex = -1; _selectedRecipe = null;
@@ -389,6 +390,8 @@ var CookingPanel = (function() {
 
     function renderRight() {
         if (!_rightEl || !_popEl) return;
+        releaseTooltipTree(_rightEl);
+        releaseTooltipTree(_popEl);
         _rightEl.innerHTML = '';
         _popEl.innerHTML = '';
         renderDishList();
@@ -428,6 +431,7 @@ var CookingPanel = (function() {
             var thumb = document.createElement('span');
             thumb.className = 'cooking-dish-thumb';
             thumb.innerHTML = _host.iconHtml(recipe.output.icon, 'cooking-icon');
+            _host.bindTooltip(card, recipe.output);
             var name = document.createElement('span');
             name.className = 'cooking-dish-name';
             name.textContent = recipe.title;
@@ -482,6 +486,7 @@ var CookingPanel = (function() {
         var thumb = document.createElement('span');
         thumb.className = 'cooking-dish-thumb sm';
         thumb.innerHTML = _host.iconHtml(recipe.output.icon, 'cooking-icon');
+        _host.bindTooltip(thumb, recipe.output);
         var titleBlock = document.createElement('div');
         titleBlock.className = 'cooking-recipe-title';
         var title = document.createElement('b');
@@ -610,6 +615,7 @@ var CookingPanel = (function() {
             mark2.textContent = material.enough ? '✓' : '✗';
             line.appendChild(iconNode); line.appendChild(nameNode);
             line.appendChild(count); line.appendChild(mark2);
+            _host.bindTooltip(line, material);
             body.appendChild(line);
         }
     }
@@ -666,6 +672,10 @@ var CookingPanel = (function() {
 
     function toast(message) { if (_host && _host.toast) _host.toast(message); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
+    // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
+    function releaseTooltipTree(node) {
+        if (node && _host && _host.releaseTooltipTree) _host.releaseTooltipTree(node);
+    }
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

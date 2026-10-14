@@ -31,6 +31,7 @@ var IronspearPanel = (function() {
 
     function unmount() {
         _generation++;
+        releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
         _selectedIndex = -1; _selectedRecipe = null;
@@ -232,6 +233,7 @@ var IronspearPanel = (function() {
     // ── 左页：订单簿 ──
     function renderBook() {
         if (!_bookEl) return;
+        releaseTooltipTree(_bookEl);
         _bookEl.innerHTML = '';
         var head = document.createElement('div');
         head.className = 'isp-book-head';
@@ -272,6 +274,7 @@ var IronspearPanel = (function() {
             state.textContent = availabilityLabel(recipe);
             item.appendChild(num); item.appendChild(icon);
             item.appendChild(name); item.appendChild(state);
+            _host.bindTooltip(item, recipe.output);
             item.addEventListener('click', bindRecipe(recipe.recipeIndex));
             list.appendChild(item);
         }
@@ -291,6 +294,7 @@ var IronspearPanel = (function() {
     // ── 右页：加工工契 ──
     function renderDoc() {
         if (!_docEl) return;
+        releaseTooltipTree(_docEl);
         _docEl.innerHTML = '';
         _docEl.appendChild(_veilEl);
         _veilEl.innerHTML = '';
@@ -341,6 +345,7 @@ var IronspearPanel = (function() {
         var figure = document.createElement('span');
         figure.className = 'isp-doc-figure';
         mountIcon(figure, recipe.output.icon, 'isp-icon-lg');
+        _host.bindTooltip(figure, recipe.output);
         var cap = document.createElement('span');
         cap.className = 'isp-doc-figcap';
         cap.textContent = '图鉴：' + recipe.output.displayName;
@@ -488,6 +493,7 @@ var IronspearPanel = (function() {
             markNode.textContent = material.enough ? '核验通过' : '核验未过';
             node.appendChild(iconNode); node.appendChild(nameNode);
             node.appendChild(markNode);
+            _host.bindTooltip(node, material);
             list.appendChild(node);
         }
     }
@@ -560,6 +566,10 @@ var IronspearPanel = (function() {
 
     function toast(message) { if (_host && _host.toast) _host.toast(message); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
+    // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
+    function releaseTooltipTree(node) {
+        if (node && _host && _host.releaseTooltipTree) _host.releaseTooltipTree(node);
+    }
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

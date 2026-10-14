@@ -29,6 +29,7 @@ var CommunePanel = (function() {
 
     function unmount() {
         _generation++;
+        releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
         _selectedIndex = -1; _selectedRecipe = null;
@@ -223,6 +224,7 @@ var CommunePanel = (function() {
     // ── 左页：会议纪要 ──
     function renderMinutes() {
         if (!_minutesEl) return;
+        releaseTooltipTree(_minutesEl);
         _minutesEl.innerHTML = '';
         var head = document.createElement('div');
         head.className = 'comm-minutes-head';
@@ -264,6 +266,7 @@ var CommunePanel = (function() {
             circle.setAttribute('aria-hidden', 'true');
             item.appendChild(num); item.appendChild(name);
             item.appendChild(state); item.appendChild(circle);
+            _host.bindTooltip(item, recipe.output);
             item.addEventListener('click', bindRecipe(recipe.recipeIndex));
             list.appendChild(item);
         }
@@ -276,6 +279,7 @@ var CommunePanel = (function() {
     // ── 右页：生产指标档案 ──
     function renderDoc() {
         if (!_docEl) return;
+        releaseTooltipTree(_docEl);
         _docEl.innerHTML = '';
         _docEl.appendChild(_veilEl);
         _veilEl.innerHTML = '';
@@ -321,6 +325,7 @@ var CommunePanel = (function() {
         var figure = document.createElement('span');
         figure.className = 'comm-doc-figure';
         mountIcon(figure, recipe.output.icon, 'comm-icon-lg');
+        _host.bindTooltip(figure, recipe.output);
         var cap = document.createElement('span');
         cap.className = 'comm-doc-figcap';
         cap.textContent = '图：' + recipe.output.displayName;
@@ -489,6 +494,7 @@ var CommunePanel = (function() {
             markNode.textContent = material.enough ? '审计通过' : '审计未通过';
             node.appendChild(iconNode); node.appendChild(nameNode);
             node.appendChild(markNode);
+            _host.bindTooltip(node, material);
             list.appendChild(node);
         }
     }
@@ -563,6 +569,10 @@ var CommunePanel = (function() {
 
     function toast(message) { if (_host && _host.toast) _host.toast(message); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
+    // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
+    function releaseTooltipTree(node) {
+        if (node && _host && _host.releaseTooltipTree) _host.releaseTooltipTree(node);
+    }
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

@@ -37,6 +37,7 @@ var ArmoryPanel = (function() {
 
     function unmount() {
         _generation++;
+        releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
         _selectedIndex = -1; _selectedRecipe = null;
@@ -268,6 +269,7 @@ var ArmoryPanel = (function() {
     // ── 左栏：军械目录（三列网格，图标在上名称在下）──
     function renderList() {
         if (!_listEl) return;
+        releaseTooltipTree(_listEl);
         _listEl.innerHTML = '';
         var head = document.createElement('div');
         head.className = 'arm-list-head';
@@ -304,6 +306,7 @@ var ArmoryPanel = (function() {
             state.textContent = availabilityLabel(recipe);
             item.appendChild(idx); item.appendChild(iconNode);
             item.appendChild(name); item.appendChild(state);
+            _host.bindTooltip(item, recipe.output);
             item.addEventListener('click', bindRecipe(recipe.recipeIndex));
             list.appendChild(item);
         }
@@ -316,6 +319,7 @@ var ArmoryPanel = (function() {
     // ── 右栏：蓝图卡 ──
     function renderDoc() {
         if (!_docEl) return;
+        releaseTooltipTree(_docEl);
         _docEl.innerHTML = '';
         _docEl.appendChild(_veilEl);
         _veilEl.innerHTML = '';
@@ -361,6 +365,7 @@ var ArmoryPanel = (function() {
         var fg = document.createElement('span');
         fg.className = 'arm-bp-fg';
         mountIcon(fg, recipe.output.icon, 'arm-icon-fg');
+        _host.bindTooltip(fg, recipe.output);
         bp.appendChild(fg);
         var bpTag = document.createElement('span');
         bpTag.className = 'arm-bp-tag';
@@ -503,6 +508,7 @@ var ArmoryPanel = (function() {
             markNode.textContent = material.enough ? '满足' : '不足';
             node.appendChild(iconNode); node.appendChild(nameNode);
             node.appendChild(markNode);
+            _host.bindTooltip(node, material);
             list.appendChild(node);
         }
     }
@@ -577,6 +583,10 @@ var ArmoryPanel = (function() {
 
     function toast(message) { if (_host && _host.toast) _host.toast(message); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
+    // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
+    function releaseTooltipTree(node) {
+        if (node && _host && _host.releaseTooltipTree) _host.releaseTooltipTree(node);
+    }
     function escapeHtml(value) {
         return String(value == null ? '' : value)
             .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');

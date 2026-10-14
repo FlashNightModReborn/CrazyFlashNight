@@ -170,6 +170,7 @@ var CraftingPanel = (function() {
                 iconHtml:iconHtml,
                 staticIconUrl:staticIconUrl,
                 bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree,
                 onSelect:requestMaterialDetail,
                 onSelectionChange:function() { invalidateMaterialUseIntent(true); },
                 onOpenRecipe:function(use, opener) {
@@ -2328,7 +2329,9 @@ var CraftingPanel = (function() {
                 cue:cue,
                 iconHtml:iconHtml,
                 formatNumber:formatNumber,
-                requestClose:requestClose
+                requestClose:requestClose,
+                bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree
             });
             return true;
         }
@@ -2350,7 +2353,9 @@ var CraftingPanel = (function() {
                 cue:cue,
                 iconHtml:iconHtml,
                 formatNumber:formatNumber,
-                requestClose:requestClose
+                requestClose:requestClose,
+                bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree
             });
             return true;
         }
@@ -2399,6 +2404,8 @@ var CraftingPanel = (function() {
                 iconHtml:iconHtml,
                 formatNumber:formatNumber,
                 requestClose:requestClose,
+                bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree,
                 category:_category
             });
             return true;
@@ -2421,7 +2428,9 @@ var CraftingPanel = (function() {
                 cue:cue,
                 iconHtml:iconHtml,
                 formatNumber:formatNumber,
-                requestClose:requestClose
+                requestClose:requestClose,
+                bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree
             });
             return true;
         }
@@ -2443,7 +2452,9 @@ var CraftingPanel = (function() {
                 cue:cue,
                 iconHtml:iconHtml,
                 formatNumber:formatNumber,
-                requestClose:requestClose
+                requestClose:requestClose,
+                bindTooltip:bindTooltip,
+                releaseTooltipTree:releaseTooltipTree
             });
             return true;
         }

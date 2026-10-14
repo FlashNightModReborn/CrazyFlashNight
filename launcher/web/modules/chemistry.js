@@ -28,6 +28,7 @@ var ChemistryPanel = (function() {
 
     function unmount() {
         _generation++;
+        releaseTooltipTree(_el);
         if (_el && _el.parentNode) _el.parentNode.removeChild(_el);
         _el = null; _host = null; _snapshot = null; _preview = null;
         _selectedIndex = -1; _selectedRecipe = null;
@@ -238,6 +239,7 @@ var ChemistryPanel = (function() {
     // ── 左：两列合成目录 ──
     function renderList() {
         if (!_listEl) return;
+        releaseTooltipTree(_listEl);
         _listEl.innerHTML = '';
         if (!_recipes.length && _snapshot) {
             var empty = document.createElement('div');
@@ -263,6 +265,7 @@ var ChemistryPanel = (function() {
             state.className = 'chem-cell-state';
             state.textContent = availabilityLabel(recipe);
             cell.appendChild(icon); cell.appendChild(name); cell.appendChild(state);
+            _host.bindTooltip(cell, recipe.output);
             cell.addEventListener('click', bindRecipe(recipe.recipeIndex));
             _listEl.appendChild(cell);
         }
@@ -274,6 +277,8 @@ var ChemistryPanel = (function() {
     // ── 右：蓝图（材料列 + 汇聚线 + 结果大图 + 确认） ──
     function renderBlueprint() {
         if (!_blueprintEl) return;
+        releaseTooltipTree(_matsEl);
+        releaseTooltipTree(_resultEl);
         _matsEl.innerHTML = ''; _resultEl.innerHTML = '';
         _footEl.innerHTML = ''; _veilEl.innerHTML = '';
         _wiresEl.innerHTML = '';
@@ -340,6 +345,7 @@ var ChemistryPanel = (function() {
             markNode.textContent = material.enough ? '✓' : '✗';
             node.appendChild(iconNode); node.appendChild(nameNode);
             node.appendChild(count); node.appendChild(markNode);
+            _host.bindTooltip(node, material);
             _matsEl.appendChild(node);
         }
         // 基建条件排在弧的最下段（group 2）。
@@ -417,6 +423,7 @@ var ChemistryPanel = (function() {
         var figure = document.createElement('div');
         figure.className = 'chem-result-figure';
         mountIcon(figure, recipe.output.icon, 'chem-icon-lg');
+        _host.bindTooltip(figure, recipe.output);
         _resultEl.appendChild(figure);
         var name = document.createElement('div');
         name.className = 'chem-result-name';
@@ -577,6 +584,10 @@ var ChemistryPanel = (function() {
 
     function toast(message) { if (_host && _host.toast) _host.toast(message); }
     function cue(name) { if (_host && _host.cue) _host.cue(name); }
+    // 工作台合同：节点脱离 DOM 前释放域内 tooltip binding。
+    function releaseTooltipTree(node) {
+        if (node && _host && _host.releaseTooltipTree) _host.releaseTooltipTree(node);
+    }
 
     return {
         mount:mount,
