@@ -1966,4 +1966,38 @@ test('display grouping does not count omitted ally records or rewrite frozen tot
     assert.strictEqual(LootView.projectAllyRecords([]).length,0);
 });
 
+test('report cash totals keep money K points and physical item kinds independent',()=>{
+    const flows=[['gain','money','金币',1000],['loss','money','金币',200],['gain','kpoint','K点',30],
+        ['loss','kpoint','K点',5],['gain','material','强化石',7],['gain','material','强化石',3],['loss','item','急救针',2]]
+        .map(([direction,kind,itemKey,count])=>({direction,kind,itemKey,count}));
+    const report={itemFlows:flows,omittedItemFlowTypes:0};const before=JSON.stringify(report);
+    const summary=LootView.projectAssetSummary(report);
+    assert.deepStrictEqual(JSON.parse(JSON.stringify(summary)),{
+        money:{gain:1000,loss:200},kpoint:{gain:30,loss:5},gainKinds:1,lossKinds:1,partial:false});
+    assert.strictEqual(JSON.stringify(report),before);
+});
+test('omitted flows explicitly make cash and supply subtotals incomplete',()=>{
+    const summary=LootView.projectAssetSummary({itemFlows:[],omittedItemFlowTypes:1});
+    assert.strictEqual(summary.partial,true);assert.strictEqual(summary.money.gain,0);
+});
+test('report definition inspection is readonly revision-bound and disabled after detach',()=>{
+    const wire=fakeTransport(),stageIdentity=Object.assign({},identity,{source:'stage_settlement'});
+    const model=new LootState.Coordinator({identity:stageIdentity,capacity:2,request:wire.request});
+    model.open();wire.respond(0,active(3,[slot(0),slot(1)]));
+    const before=JSON.stringify(model.debugState());
+    assert.strictEqual(model.reportTooltip({kind:'flow',index:0},()=>{}),true);
+    assert.strictEqual(wire.calls[1].cmd,'reportTooltip');
+    assert.strictEqual(wire.calls[1].fields.expectedAuthorityRevision,3);
+    assert.notStrictEqual(wire.calls[1].options.write,true);
+    assert.strictEqual(JSON.stringify(model.debugState()),before);
+    model.forceDetach();assert.strictEqual(model.reportTooltip({kind:'flow',index:0},()=>{}),false);
+});
+test('map containers cannot request report definitions and losses tab restores without changing the report',()=>{
+    const wire=fakeTransport(),model=new LootState.Coordinator({identity,capacity:2,request:wire.request});
+    model.open();wire.respond(0,active(1,[slot(0),slot(1)]));
+    assert.strictEqual(model.reportTooltip({kind:'material',name:'强化石'},()=>{}),false);
+    assert.strictEqual(wire.calls.length,1);
+    assert.ok(LootView.normalizeReportPresentation({scrollTop:0,density:'compact',rightTab:'losses',materialSearch:''}));
+});
+
 console.log('loot state ' + checks.length + '/' + checks.length + ' passed');

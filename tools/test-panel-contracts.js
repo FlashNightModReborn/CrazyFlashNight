@@ -58,7 +58,7 @@ function run() {
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
     assert(report.checked.domains === 13, "expected thirteen governed domains including tablet and the U7 stage doors");
-    assert(report.checked.commands === 59, "expected fifty-nine governed command mappings");
+    assert(report.checked.commands === 60, "expected sixty governed command mappings");
     const garage = contract.domains.find(function (domain) { return domain.id === "garage"; });
     assert(garage && garage.hostPayloadMode === "normalized"
       && garage.commands.map(function (command) { return command.cmd; }).join(',') === 'snapshot,commit,query'

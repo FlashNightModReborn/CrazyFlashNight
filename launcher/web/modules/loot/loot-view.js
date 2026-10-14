@@ -269,6 +269,20 @@ var LootView = (function() {
         return records;
     }
 
+    /** Presentation-only totals from frozen, committed flows; omitted facts are never reconstructed. */
+    function projectAssetSummary(report) {
+        var result={money:{gain:0,loss:0},kpoint:{gain:0,loss:0},
+            gainKinds:0,lossKinds:0,partial:report.omittedItemFlowTypes>0};
+        var seen={gain:Object.create(null),loss:Object.create(null)};
+        report.itemFlows.forEach(function(flow) {
+            if (flow.kind==='money'||flow.kind==='kpoint') result[flow.kind][flow.direction]+=flow.count;
+            else seen[flow.direction][JSON.stringify([flow.kind,flow.itemKey])]=true;
+        });
+        result.gainKinds=Object.keys(seen.gain).length;
+        result.lossKinds=Object.keys(seen.loss).length;
+        return result;
+    }
+
     function exactKeys(value, expected) {
         if (!value||typeof value!=='object'||Array.isArray(value)) return false;
         var keys=Object.keys(value),expectedKeys=Object.keys(expected);
@@ -360,6 +374,11 @@ var LootView = (function() {
         this.settlementSideView = null;
         this.rewardTabButton = null;
         this.materialTabButton = null;
+        this.lossTabButton = null;
+        this.lossSection = null;
+        this.lossList = null;
+        this.pendingRewardSection = null;
+        this.assetSummary = null;
         this.rewardSection = null;
         this.reportSection = null;
         this.reportOutcome = null;
@@ -409,7 +428,7 @@ var LootView = (function() {
             title:this.init.displayName,
             subtitle:this.isSettlement ? '战报与基地奖励' : '从战利品箱领取物品到背包',
             leftLabel:this.isSettlement ? '行动报告' : '玩家背包',
-            rightLabel:this.isSettlement ? '奖励与存量' : '战利品箱',
+            rightLabel:this.isSettlement ? '本关收支' : '战利品箱',
             flowLabel:this.isSettlement ? '结算' : '只出不进',
             status:'同步中'
         });
@@ -434,14 +453,14 @@ var LootView = (function() {
             ariaLabel:this.isSettlement ? '查看关卡结算帮助' : '查看战利品整理帮助',
             title:this.isSettlement ? '关卡结算帮助' : '战利品整理帮助',
             message:this.isStashedReport
-                ? '本轮奖励已保存到暂存区。右栏展示本轮实际入账的关卡奖励，无需重复领取。'
+                ? '本轮奖励已保存到暂存区。右栏展示本关所得与消耗，奖励已入账，无需重复领取。'
                 : this.isSettlement
-                ? '领取奖励\n• 单击或 Enter 可直接领取。\n• Ctrl+A 或底部“全部收取”会批量领取。\n• 左栏合并击杀与物资记录；右栏可切换材料存量。'
+                ? '领取奖励\n• 单击或 Enter 可直接领取。\n• Ctrl+A 或底部“全部收取”会批量领取。\n• 左栏查看战斗战报；右栏切换所得、消耗和材料存量。'
                 : '领取物品\n• Enter、双击或 Ctrl+单击可直接领取。\n• 空格先选择，再到背包侧确认。\n• Ctrl+A 或底部“全部收取”会批量领取。',
             detail:this.isStashedReport
                 ? '关闭结算不会丢失奖励。可在角色物品页进入暂存区整理；材料存量展示当前持有量。'
                 : this.isSettlement
-                ? '左栏合并展示击杀与物资记录；右栏可切换待领取奖励和当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
+                ? '左栏展示击杀和友军记录；右栏展示本关所得、消耗与当前材料存量。\n库存整理仍使用原有背包与战备箱界面。普通关闭会保留未领取内容；“放弃剩余”会永久丢弃剩余奖励。'
                 : this.isRewardInbox
                     ? '普通关闭会保留未领取内容；待领取恢复批次不提供永久放弃。'
                 : '可进入库存整理。关闭页面时，箱中剩余物资会存入暂存区，稍后可从角色物品页取出。',
@@ -562,7 +581,7 @@ var LootView = (function() {
                 viewKind:'stage-settlement-side',
                 mount:function(container) {
                     container.appendChild(sidePane);
-                    if (!self.isStashedReport) self.rightGrid.view.mount(rewardSection);
+                    if (!self.isStashedReport) self.rightGrid.view.mount(self.pendingRewardSection);
                 },
                 unmount:function() {
                     self.rightGrid.view.unmount();
@@ -620,7 +639,7 @@ var LootView = (function() {
             instanceKey:'loot:' + kind,
             instancePolicy:'singletonByBinding',
             itemModel:'owned',
-            title:isLoot ? this.init.displayName : '背包',
+            title:isLoot ? (this.isSettlement ? '待领取关卡奖励' : this.init.displayName) : '背包',
             kicker:isLoot ? (this.isSettlement ? '基地奖励' : '战利品箱') : '我的背包',
             meta:isLoot ? (this.isSettlement ? '等待奖励内容' : '等待箱子内容')
                 : '领取目标由游戏决定',
@@ -688,15 +707,6 @@ var LootView = (function() {
             +'    </div><div class="loot-settlement-kills" data-settlement-allies></div>'
             +'    <p class="loot-settlement-unit-legend" data-settlement-ally-legend>角标：亡 阵亡 · 撤 撤退 · 复 已复活 · 主 主角</p>'
             +'  </section>'
-            +'  <section class="loot-settlement-flow-section" data-settlement-section="flows">'
-            +'    <header class="loot-settlement-flow-toolbar"><div><small>ASSET RECORD</small>'
-            +'      <h2>物资获得与消耗</h2></div><span data-settlement-flow-status></span></header>'
-            +'    <div class="loot-settlement-flow-metrics">'
-            +'      <div><small>获得</small><b data-settlement-flow-gain></b></div>'
-            +'      <div><small>消耗</small><b data-settlement-flow-loss></b></div>'
-            +'    </div>'
-            +'    <div class="loot-settlement-flows" data-settlement-flows></div>'
-            +'  </section>'
             +'</div>';
         this.reportSection=root.querySelector('[data-settlement-section="report"]');
         this.reportOutcome=root.querySelector('[data-settlement-outcome]');
@@ -712,46 +722,63 @@ var LootView = (function() {
         this.allyStatus=root.querySelector('[data-settlement-ally-status]');
         this.allyLossTotal=root.querySelector('[data-settlement-ally-loss]');
         this.heroDownTotal=root.querySelector('[data-settlement-hero-downs]');
-        this.flowSection=root.querySelector('[data-settlement-section="flows"]');
-        this.flowList=root.querySelector('[data-settlement-flows]');
-        this.flowStatus=root.querySelector('[data-settlement-flow-status]');
-        this.flowGainTotal=root.querySelector('[data-settlement-flow-gain]');
-        this.flowLossTotal=root.querySelector('[data-settlement-flow-loss]');
         return root;
     };
 
     View.prototype._createSettlementSidePane = function() {
         var root=document.createElement('section');
         root.className='workbench-view loot-settlement-side';
-        root.setAttribute('aria-label','待领取奖励与材料存量');
+        root.setAttribute('aria-label','本关收支与材料存量');
         root.innerHTML=''
-            +'<div class="loot-settlement-tabs loot-settlement-side-tabs" role="tablist" aria-label="奖励与存量">'
-            +'  <button type="button" role="tab" data-settlement-side-tab="rewards">待领取奖励</button>'
+            +'<div class="loot-settlement-asset-summary" aria-label="本关收支摘要">'
+            +'  <div class="loot-settlement-currency" data-currency="money"><b>金币</b><span data-currency-gain></span><span data-currency-loss></span></div>'
+            +'  <div class="loot-settlement-currency" data-currency="kpoint"><b>K 点</b><span data-currency-gain></span><span data-currency-loss></span></div>'
+            +'  <div class="loot-settlement-item-summary"><span>物资 <b data-settlement-flow-gain></b> / <b data-settlement-flow-loss></b></span><small data-settlement-summary-status></small></div>'
+            +'</div>'
+            +'<div class="loot-settlement-tabs loot-settlement-side-tabs" role="tablist" aria-label="所得、消耗与存量">'
+            +'  <button type="button" role="tab" data-settlement-side-tab="rewards">所得</button>'
+            +'  <button type="button" role="tab" data-settlement-side-tab="losses">消耗</button>'
             +'  <button type="button" role="tab" data-settlement-side-tab="materials">材料存量</button>'
             +'</div>'
             +'<div class="loot-settlement-side-body">'
-            +'  <section class="loot-settlement-reward-section" role="tabpanel" data-settlement-side-section="rewards"></section>'
+            +'  <section class="loot-settlement-reward-section" role="tabpanel" data-settlement-side-section="rewards">'
+            +'    <div class="loot-settlement-pending-rewards" data-settlement-pending-rewards></div>'
+            +'    <section class="loot-settlement-flow-section" data-settlement-section="flows">'
+            +'      <header class="loot-settlement-flow-toolbar"><h2>本关所得</h2><span data-settlement-flow-status></span></header>'
+            +'      <p class="loot-settlement-flow-note" data-settlement-gain-note></p>'
+            +'      <div class="loot-settlement-flows" data-settlement-flows></div>'
+            +'    </section>'
+            +'  </section>'
+            +'  <section class="loot-settlement-loss-section" role="tabpanel" data-settlement-side-section="losses" hidden>'
+            +'    <header class="loot-settlement-flow-toolbar"><h2>本关消耗</h2></header>'
+            +'    <p class="loot-settlement-flow-note">仅记录实际扣除或失去的物资，具体原因见物品说明。</p>'
+            +'    <div class="loot-settlement-flows" data-settlement-losses></div>'
+            +'  </section>'
             +'  <section class="loot-settlement-material-section" role="tabpanel" data-settlement-side-section="materials" hidden>'
             +'    <header class="loot-settlement-material-toolbar"><div><small>MATERIAL ARCHIVE</small>'
-            +'      <h2>材料存量</h2></div><input type="search" maxlength="64" '
-            +'      placeholder="查找材料" aria-label="查找材料"></header>'
+            +'      <h2>材料存量</h2></div><input type="search" maxlength="64" placeholder="查找材料" aria-label="查找材料"></header>'
             +'    <p class="loot-settlement-material-status" data-settlement-material-status></p>'
             +'    <div class="loot-settlement-materials" data-settlement-materials></div>'
             +'  </section>'
             +'</div>';
         this.rewardTabButton=root.querySelector('[data-settlement-side-tab="rewards"]');
+        this.lossTabButton=root.querySelector('[data-settlement-side-tab="losses"]');
         this.materialTabButton=root.querySelector('[data-settlement-side-tab="materials"]');
         this.rewardSection=root.querySelector('[data-settlement-side-section="rewards"]');
+        this.lossSection=root.querySelector('[data-settlement-side-section="losses"]');
+        this.pendingRewardSection=root.querySelector('[data-settlement-pending-rewards]');
+        this.pendingRewardSection.hidden=this.isStashedReport;
         this.materialSection=root.querySelector('[data-settlement-side-section="materials"]');
         this.materialSearch=root.querySelector('input[type="search"]');
         this.materialStatus=root.querySelector('[data-settlement-material-status]');
         this.materialList=root.querySelector('[data-settlement-materials]');
-        if (this.isStashedReport) {
-            root.setAttribute('aria-label','本轮已入账奖励与材料存量');
-            this.rewardTabButton.textContent='本轮关卡奖励';
-            this.rewardSection.classList.add('loot-settlement-stashed-report');
-            this.reportDensity.register(this.rewardSection);
-        }
+        this.assetSummary=root.querySelector('.loot-settlement-asset-summary');
+        this.flowSection=root.querySelector('[data-settlement-section="flows"]');
+        this.flowList=root.querySelector('[data-settlement-flows]');
+        this.lossList=root.querySelector('[data-settlement-losses]');
+        this.flowStatus=root.querySelector('[data-settlement-flow-status]');
+        this.flowGainTotal=root.querySelector('[data-settlement-flow-gain]');
+        this.flowLossTotal=root.querySelector('[data-settlement-flow-loss]');
         this._selectRightTab('rewards');
         return root;
     };
@@ -807,69 +834,120 @@ var LootView = (function() {
             allyRecords[i], true, allyRecords[i].individual ? ++allyOrdinal : 0));
         this._bindBattleRecordNotes();
 
-        this.flowGainTotal.textContent='+'+String(report.totalItemGains);
-        this.flowLossTotal.textContent='−'+String(report.totalItemLosses);
-        while (this.flowList.firstChild) this.flowList.removeChild(this.flowList.firstChild);
-        if (!report.itemFlows.length) {
-            var flowEmpty=document.createElement('p');
-            flowEmpty.className='loot-settlement-empty';
-            flowEmpty.textContent='本次行动没有记录到物资获得或消耗。';
-            this.flowList.appendChild(flowEmpty);
-        }
+        var summary=projectAssetSummary(report);
+        var self=this;
+        ['money','kpoint'].forEach(function(kind) {
+            var row=self.assetSummary.querySelector('[data-currency="'+kind+'"]');
+            row.querySelector('[data-currency-gain]').textContent='+'+summary[kind].gain.toLocaleString('zh-CN');
+            row.querySelector('[data-currency-loss]').textContent='−'+summary[kind].loss.toLocaleString('zh-CN');
+        });
+        this.flowGainTotal.textContent='+'+summary.gainKinds+' 种';
+        this.flowLossTotal.textContent='−'+summary.lossKinds+' 种';
+        this.assetSummary.querySelector('[data-settlement-summary-status]').textContent=summary.partial?'仅统计已展开明细':'获得 / 消耗';
+        this.flowStatus.textContent=summary.partial?'另有 '+report.omittedItemFlowTypes+' 类明细未展开':'';
+        this.rewardSection.querySelector('[data-settlement-gain-note]').textContent=this.isStashedReport
+            ? '战斗拾取与关卡奖励。关卡奖励已存入暂存区，可在角色物品页整理。'
+            : '本关已获得的物资；上方待领取奖励领取后进入背包。';
+        if (this.tooltipScope) { this.tooltipScope.releaseTree(this.flowList);this.tooltipScope.releaseTree(this.lossList); }
+        this.flowList.textContent='';this.lossList.textContent='';
         for (i=0;i<report.itemFlows.length;i++) {
-            var flow=report.itemFlows[i],flowCard=document.createElement('article');
-            flowCard.className='loot-settlement-flow-card';
-            flowCard.setAttribute('data-direction',flow.direction);
-            flowCard.title=flow.displayName+' '+(flow.direction==='gain'?'+':'−')+flow.count
-                +' · '+flowSourceLabel(flow.source);
-            flowCard.setAttribute('aria-label',flowCard.title);
-            var flowIcon=document.createElement('div');
-            flowIcon.className='loot-settlement-flow-icon';
-            flowIcon.innerHTML=iconHtml(flow.iconName||flow.itemKey,
-                'loot-settlement-flow-image');
-            this._trackIconImages(flowIcon, null);
-            var flowCopy=document.createElement('div');
-            flowCopy.className='loot-settlement-flow-copy';
-            var flowName=document.createElement('b');flowName.textContent=flow.displayName;
-            var flowDetail=document.createElement('small');
-            flowDetail.textContent=flowSourceLabel(flow.source)
-                +(flow.reason==='stage_reward_stashed'?' · 已存入暂存区':flow.reason?' · '+flow.reason:'');
-            flowCopy.appendChild(flowName);flowCopy.appendChild(flowDetail);
-            var flowCount=document.createElement('strong');
-            flowCount.textContent=(flow.direction==='gain'?'+':'−')+flow.count;
-            flowCard.appendChild(flowIcon);flowCard.appendChild(flowCopy);
-            flowCard.appendChild(flowCount);this.flowList.appendChild(flowCard);
+            var flow=report.itemFlows[i],list=flow.direction==='gain'?this.flowList:this.lossList;
+            list.appendChild(this._createFlowCard(flow,i));
         }
-        this.flowStatus.textContent=report.omittedItemFlowTypes
-            ? '另有 '+report.omittedItemFlowTypes+' 类物资事实未展开'
-            : '展示 '+report.itemFlows.length+' 类';
-        if (this.isStashedReport && this.rewardSection) {
-            this.rewardSection.textContent='';
-            var rewardStatus=document.createElement('p');
-            rewardStatus.className='loot-settlement-empty';
-            rewardStatus.textContent='已存入暂存区，可在角色物品页整理。';
-            this.rewardSection.appendChild(rewardStatus);
-            var rewards=document.createElement('div');
-            rewards.className='loot-settlement-flows';
-            rewards.setAttribute('data-settlement-stashed-rewards','');
-            for (i=0;i<report.itemFlows.length;i++) {
-                var reward=report.itemFlows[i];
-                if (reward.direction==='gain' && reward.source==='stage_settlement'
-                    && reward.reason==='stage_reward_stashed') {
-                    rewards.appendChild(this.flowList.children[i].cloneNode(true));
-                }
-            }
-            if (!rewards.children.length) rewardStatus.textContent=report.omittedItemFlowTypes
-                ? '本轮物资已保存；部分明细未展开，可在角色物品页查看暂存区。'
-                : report.outcome==='victory' ? '本轮未获得额外关卡奖励；战斗拾取见左侧记录。'
-                : '本轮未通关，没有额外关卡奖励；战斗拾取见左侧记录。';
-            this.rewardSection.appendChild(rewards);
-        }
+        [this.flowList,this.lossList].forEach(function(list) {
+            if (list.children.length) return;
+            var empty=document.createElement('p');empty.className='loot-settlement-empty';
+            empty.textContent=summary.partial?'未展开的记录可能包含此类明细。'
+                :list===self.flowList?'本关没有记录到物资获得。':'本关没有记录到物资消耗。';
+            list.appendChild(empty);
+        });
+        this._bindReportItemNotes();
         this._diagnostic({event:'report_render', outcome:'complete',
             kills:report.kills.length, flows:report.itemFlows.length,
             requested:this.reportAssetCounts ? this.reportAssetCounts.requested : 0});
         this._armReportAssetDeadline();
     };
+
+    View.prototype._createFlowCard = function(flow,index) {
+        var card=document.createElement('article');card.className='loot-settlement-flow-card';
+        card.setAttribute('data-direction',flow.direction);card.setAttribute('tabindex','0');
+        card.setAttribute('aria-label',flow.displayName+' '+(flow.direction==='gain'?'+':'−')+flow.count+' · '+flowSourceLabel(flow.source));
+        card.__reportItem=flow;card.__reportReference={kind:'flow',index:index};
+        var icon=document.createElement('div');icon.className='loot-settlement-flow-icon';
+        icon.setAttribute('aria-hidden','true');icon.innerHTML=iconHtml(flow.iconName,'loot-settlement-flow-image');
+        this._trackIconImages(icon,null);
+        var copy=document.createElement('div');copy.className='loot-settlement-flow-copy';
+        var name=document.createElement('b');name.textContent=flow.displayName;
+        var detail=document.createElement('small');detail.textContent=flowSourceLabel(flow.source)
+            +(flow.reason==='stage_reward_stashed'?' · 已存入暂存区':'');
+        copy.appendChild(name);copy.appendChild(detail);
+        var count=document.createElement('strong');count.textContent=(flow.direction==='gain'?'+':'−')+flow.count;
+        card.appendChild(icon);card.appendChild(copy);card.appendChild(count);
+        return card;
+    };
+
+    View.prototype._bindReportItemNotes = function() {
+        if (!this.tooltipScope || !this.settlementSidePane) return;
+        var totals=projectAssetSummary(this.init.report),scope=this.tooltipScope;
+        var cashRows=this.assetSummary.querySelectorAll('[data-currency]');
+        for (var cashIndex=0;cashIndex<cashRows.length;cashIndex++) {
+            var cashRow=cashRows[cashIndex];
+            if (cashRow.__reportNoteScope===scope) continue;
+            cashRow.__reportNoteScope=scope;cashRow.tabIndex=0;
+            var kind=cashRow.getAttribute('data-currency'),label=kind==='money'?'金币':'K 点';
+            var facts=totals[kind],text=label+' · 获得 +'+facts.gain.toLocaleString('zh-CN')
+                +' · 消耗 −'+facts.loss.toLocaleString('zh-CN');
+            cashRow.setAttribute('aria-label',text);
+            scope.bindAsyncHover(cashRow,{profile:'simple-tooltip',key:'cash:'+kind,
+                item:{text:text,partial:totals.partial},renderBasic:function(value){
+                    return '<div class="kshop-tt-header"><b>'+escapeHtml(value.text)+'</b></div>'
+                        +'<div class="kshop-tt-divider"></div>'+(value.partial?'存在未展开明细，此处仅统计已展开记录。'
+                            :'本关已入账的获得与实际支出，金币和 K 点分别统计。');
+                }});
+        }
+        var self=this,nodes=this.settlementSidePane.querySelectorAll('.loot-settlement-flow-card,.loot-settlement-material-card');
+        for (var i=0;i<nodes.length;i++) {
+            var node=nodes[i],item=node.__reportItem,reference=node.__reportReference;
+            if (!item || !reference || node.__reportNoteScope===this.tooltipScope) continue;
+            node.__reportNoteScope=this.tooltipScope;
+            this.tooltipScope.bindAsyncHover(node,{
+                cache:this.tooltipCache,key:'report:'+this.init.report.runId+':'+JSON.stringify(reference),item:item,
+                isSuppressed:function(){return self.tooltipSuppressed;},
+                renderBasic:function(value){return reportItemTooltip(value);},
+                renderRich:function(value,response){
+                    var data=response&&response.tooltip;
+                    if (!data) return reportItemTooltip(value);
+                    return PanelTooltip.buildItemRichHtml({iconHtml:PanelTooltip.dynamicIconHtml(data.iconName),
+                        iconUrl:PanelTooltip.staticIconUrl(data.iconName),introHTML:data.introHTML||'',
+                        descHTML:data.descHTML||'',document:data.document,metaHTML:reportItemContext(value),
+                        rootClass:'kshop-tt-rich-context loot-tooltip-context',layoutType:PanelTooltip.inferLayoutType(data.itemType)});
+                },
+                fetch:(function(item,reference){return function(_,callback){
+                    if (item.kind==='money'||item.kind==='kpoint') {callback(null);return;}
+                    var accepted=typeof self.options.requestReportTooltip==='function'
+                        &&self.options.requestReportTooltip(reference,function(response){
+                            if (self._isOpen()) callback(response&&response.success?response:null);
+                        });
+                    if (!accepted) callback(null);
+                };})(item,reference)
+            });
+        }
+    };
+
+    function reportItemContext(item) {
+        if (item.owned!==undefined) return '<div class="kshop-tt-dim">当前持有 '+item.owned+'</div>';
+        return '<div class="kshop-tt-dim">'+escapeHtml(flowSourceLabel(item.source))+' · '
+            +(item.direction==='gain'?'获得 +':'消耗 −')+item.count
+            +(item.reason==='stage_reward_stashed'?' · 已存入暂存区':'')
+            +(item.kind==='equip'?' · 基础属性，强化与配件以物品页为准':'')+'</div>';
+    }
+
+    function reportItemTooltip(item) {
+        var description=item.kind==='money'?'本关实际获得或支出的金币，与 K 点分别统计。'
+            :item.kind==='kpoint'?'本关实际获得或支出的 K 点，与金币分别统计。':'读取物品说明…';
+        return '<div class="kshop-tt-header"><b>'+escapeHtml(item.displayName)+'</b></div>'
+            +reportItemContext(item)+'<div class="kshop-tt-divider"></div>'+description;
+    }
 
     View.prototype._createBattleUnitCard = function(unit, ally, ordinal) {
         var card=document.createElement('article');
@@ -881,6 +959,11 @@ var LootView = (function() {
             +(ally?(!individual?' ×'+unit.count:'')+' · 倒地 '+unit.downs+' 次':' ×'+unit.count);
         if (individual) card.title='记录 #'+ordinal+' · '+card.title+(ally&&unit.isHero?' · 主角':'');
         card.setAttribute('aria-label',card.title);
+        card.__battleRecord=unit;
+        card.setAttribute('data-battle-record-note','');
+        card.__battleNoteHtml='<div class="kshop-tt-header"><b>'+escapeHtml(unit.displayName)+'</b></div>'
+            +'<div class="kshop-tt-divider"></div>'+escapeHtml(rank+' · '+state+' ×'+unit.count);
+        if (!ally&&!individual) card.tabIndex=0;
         if (individual) card.setAttribute('data-unit-id',unit.unitId);
         if (ally) {
             card.setAttribute('data-ally-state',unit.status);
@@ -951,11 +1034,9 @@ var LootView = (function() {
                     list.appendChild(label);list.appendChild(value);
                 });details.appendChild(list);
             }
-            summary.setAttribute('data-battle-record-note','');
-            summary.__battleRecord=unit;
-            summary.__battleNoteHtml='<div class="kshop-tt-rich flash-tt-rich flash-tt-rich--stacked"><div class="loot-settlement-unit-details kshop-tt-desc"><p><b>'+escapeHtml(card.title)+'</b></p>';
-            for (var n=1;n<details.children.length;n++) summary.__battleNoteHtml+=details.children[n].outerHTML;
-            summary.__battleNoteHtml+='</div></div>';
+            card.__battleNoteHtml='<div class="kshop-tt-rich flash-tt-rich flash-tt-rich--stacked"><div class="loot-settlement-unit-details kshop-tt-desc"><p><b>'+escapeHtml(card.title)+'</b></p>';
+            for (var n=1;n<details.children.length;n++) card.__battleNoteHtml+=details.children[n].outerHTML;
+            card.__battleNoteHtml+='</div></div>';
             card.appendChild(details);
         }
         return card;
@@ -967,15 +1048,15 @@ var LootView = (function() {
         var summaries=this.reportPane.querySelectorAll('[data-battle-record-note]');
         function bind(summary) {
             scope.bindAsyncHover(summary,{
-                key:'battle-record:'+summary.__battleRecord.unitId,
+                profile:summary.__battleRecord.individual||summary.__battleRecord.members?'dense-inspect':'simple-tooltip',
+                key:'battle-record:'+JSON.stringify([summary.__battleRecord.unitId,summary.__battleRecord.key,summary.__battleRecord.eliteLevel]),
                 item:summary.__battleRecord,
-                anchor:summary.closest('.loot-settlement-unit-card'),
+                anchor:summary,
                 renderBasic:function(){return summary.__battleNoteHtml;},
-                isSuppressed:function(){return self.tooltipSuppressed||!self.reportPane
-                    ||!self.reportPane.classList.contains('loot-settlement-compact');}
+                isSuppressed:function(){return self.tooltipSuppressed||!self.reportPane;}
             });
             // 使用共享注释，避免同时弹出浏览器继承自 card 的 title。
-            summary.title='';
+            summary.closest('.loot-settlement-kill-card').removeAttribute('title');
         }
         for (var i=0;i<summaries.length;i++) bind(summaries[i]);
     };
@@ -987,7 +1068,7 @@ var LootView = (function() {
             consumable_effect:'消耗品',reload:'装填',skill_cost:'技能消耗',
             weapon_cost:'武器消耗',item_use:'使用物品',arena_entry:'竞技场入场',
             arena_reward:'竞技场奖励',player_revive:'复活',stage_settlement:'关卡奖励',unknown:'其他'};
-        return labels[source]||source;
+        return labels[source]||'其他收支';
     }
 
     View.prototype._mountKillPortrait = function(container,kill) {
@@ -1398,20 +1479,18 @@ var LootView = (function() {
 
     View.prototype._selectRightTab = function(tab) {
         if (!this.isSettlement) return false;
-        this.rightTab=tab==='materials'?'materials':'rewards';
-        var materials=this.rightTab==='materials';
-        if (this.rewardSection) this.rewardSection.hidden=materials;
-        if (this.materialSection) this.materialSection.hidden=!materials;
-        if (this.rewardTabButton) {
-            this.rewardTabButton.setAttribute('aria-selected',materials?'false':'true');
-            this.rewardTabButton.tabIndex=materials?-1:0;
+        this.rightTab=tab==='materials'||tab==='losses'?tab:'rewards';
+        hideTooltip();
+        if (this.broker) this.broker.clearSelection();
+        var pairs=[['rewards',this.rewardTabButton,this.rewardSection],['losses',this.lossTabButton,this.lossSection],
+            ['materials',this.materialTabButton,this.materialSection]];
+        for (var i=0;i<pairs.length;i++) {
+            var selected=pairs[i][0]===this.rightTab;
+            if (pairs[i][2]) pairs[i][2].hidden=!selected;
+            if (pairs[i][1]) {pairs[i][1].setAttribute('aria-selected',selected?'true':'false');pairs[i][1].tabIndex=selected?0:-1;}
         }
-        if (this.materialTabButton) {
-            this.materialTabButton.setAttribute('aria-selected',materials?'true':'false');
-            this.materialTabButton.tabIndex=materials?0:-1;
-        }
-        if (materials) this._renderMaterials();
-        else if (this.rightGrid) this.rightGrid.render();
+        if (this.rightTab==='materials') this._renderMaterials();
+        else if (this.rightTab==='rewards'&&this.rightGrid) this.rightGrid.render();
         return true;
     };
 
@@ -1424,6 +1503,7 @@ var LootView = (function() {
 
     View.prototype._renderMaterials = function() {
         if (!this.materialList||!this.materialStatus) return;
+        if (this.tooltipScope) this.tooltipScope.releaseTree(this.materialList);
         while (this.materialList.firstChild) this.materialList.removeChild(this.materialList.firstChild);
         if (this.materialsBusy) {
             this.materialStatus.textContent='正在从游戏读取当前材料存量…';
@@ -1462,6 +1542,8 @@ var LootView = (function() {
             material=visible[i];
             var card=document.createElement('article');
             card.className='loot-settlement-material-card';
+            card.tabIndex=0;card.setAttribute('aria-label',material.displayName+' · 持有 '+material.owned);
+            card.__reportItem=material;card.__reportReference={kind:'material',name:material.name};
             if (!material.owned) card.classList.add('is-empty');
             var icon=document.createElement('div');
             icon.className='loot-settlement-material-icon';
@@ -1476,6 +1558,7 @@ var LootView = (function() {
             card.appendChild(icon);card.appendChild(name);card.appendChild(owned);
             this.materialList.appendChild(card);
         }
+        this._bindReportItemNotes();
     };
 
     View.prototype.activate = function(session) {
@@ -1484,6 +1567,7 @@ var LootView = (function() {
         this.tooltipScope = typeof PanelTooltip !== 'undefined' && PanelTooltip.createScope
             ? PanelTooltip.createScope('loot-workbench', {profile:'dense-inspect'}) : null;
         this._bindBattleRecordNotes();
+        this._bindReportItemNotes();
         var activeTooltipScope = this.tooltipScope;
         session.defer(function() {
             if (activeTooltipScope) activeTooltipScope.dispose();
@@ -1510,6 +1594,15 @@ var LootView = (function() {
         });
         if (this.rewardTabButton) session.listen(this.rewardTabButton,'click',function() {
             self._selectRightTab('rewards');
+        });
+        if (this.lossTabButton) session.listen(this.lossTabButton,'click',function() { self._selectRightTab('losses'); });
+        if (this.settlementSidePane) session.listen(this.settlementSidePane.querySelector('[role="tablist"]'),'keydown',function(event) {
+            if (['ArrowLeft','ArrowRight','Home','End'].indexOf(event.key)<0) return;
+            event.preventDefault();
+            var tabs=['rewards','losses','materials'],index=tabs.indexOf(self.rightTab);
+            index=event.key==='Home'?0:event.key==='End'?2:(index+(event.key==='ArrowRight'?1:2))%3;
+            self._selectRightTab(tabs[index]);
+            self.settlementSidePane.querySelector('[data-settlement-side-tab="'+tabs[index]+'"]').focus();
         });
         if (this.materialTabButton) session.listen(this.materialTabButton,'click',function() {
             self._selectRightTab('materials');
@@ -1898,7 +1991,7 @@ var LootView = (function() {
         if (target&&target.closest&&target.closest(
                 'input,textarea,select,[contenteditable="true"],[data-browser-native]')) return;
         if ((event.ctrlKey||event.metaKey)&&String(event.key).toLowerCase()==='a') {
-            if (this.isSettlement&&this.rightTab==='materials') return;
+            if (this.isSettlement&&this.rightTab!=='rewards') return;
             event.preventDefault();
             if (typeof this.options.onPrimary === 'function') this.options.onPrimary();
         }
@@ -2065,7 +2158,7 @@ var LootView = (function() {
         if (!exactKeys(value,{scrollTop:true,density:true,rightTab:true,materialSearch:true})
             || !Number.isSafeInteger(value.scrollTop)||value.scrollTop<0||value.scrollTop>1000000
             || (value.density!=='compact'&&value.density!=='full')
-            || (value.rightTab!=='rewards'&&value.rightTab!=='materials')
+            || (value.rightTab!=='rewards'&&value.rightTab!=='materials'&&value.rightTab!=='losses')
             || !safeText(value.materialSearch,64,true)) return null;
         return {scrollTop:value.scrollTop,density:value.density,
             rightTab:value.rightTab,materialSearch:value.materialSearch};
@@ -2094,6 +2187,7 @@ var LootView = (function() {
         View:View,
         normalizeSettlementReport:normalizeSettlementReport,
         projectAllyRecords:projectAllyRecords,
+        projectAssetSummary:projectAssetSummary,
         normalizeReportPresentation:normalizeReportPresentation,
         normalizeInitData:normalizeInitData,
         commitPresentation:commitPresentation,
