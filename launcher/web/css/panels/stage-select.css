@@ -69,72 +69,81 @@
     --ss-bg-deep-rgb: 11,17,24;
     --ss-panel-grad-top-rgb: 17,25,35;
     --ss-panel-grad-bottom-rgb: 8,12,18;
-    --ss-line-rgb: 148,163,184;
-    --ss-leader-edge-rgb: 12,14,15;
-    --ss-leader-ink-rgb: 224,201,158;
-    --ss-leader-active-rgb: 255,240,201;
+    --ss-line-rgb: 138,148,162;
+    --ss-leader-edge-rgb: 6,8,12;
+    --ss-leader-ink-rgb: 176,186,198;
+    --ss-leader-active-rgb: 240,164,58;
     --ss-black-rgb: 0,0,0;
     --ss-white-rgb: 255,255,255;
-    --ss-header-rgb: 8,13,20;
-    --ss-surface-rgb: 15,23,42;
-    --ss-accent-rgb: 96,165,250;
-    --ss-active-rgb: 30,64,175;
-    --ss-toggle-text-rgb: 224,242,254;
-    --ss-counter-text-rgb: 203,213,245;
-    --ss-gold-rgb: 250,204,21;
-    --ss-region-text-rgb: 147,197,253;
-    --ss-tab-text-rgb: 219,234,254;
-    --ss-tab-task-bg-rgb: 80,19,24;
-    --ss-task-rgb: 255,74,58;
-    --ss-task-edge-rgb: 255,94,74;
-    --ss-task-hot-rgb: 255,146,98;
-    --ss-badge-rgb: 125,211,252;
-    --ss-tab-focus-bg-rgb: 15,118,110;
-    --ss-close-text-rgb: 226,232,240;
-    --ss-danger-rgb: 248,113,113;
-    --ss-close-hover-bg-rgb: 153,27,27;
-    --ss-stage-bg-rgb: 2,6,23;
-    --ss-name-scrim-rgb: 2,6,18;
+    --ss-header-rgb: 10,12,16;
+    --ss-surface-rgb: 16,19,24;
+    --ss-accent-rgb: 164,188,210;
+    --ss-active-rgb: 42,54,68;
+    --ss-toggle-text-rgb: 220,228,236;
+    --ss-counter-text-rgb: 168,178,190;
+    --ss-gold-rgb: 240,164,58;
+    --ss-region-text-rgb: 214,224,234;
+    --ss-tab-text-rgb: 212,220,230;
+    --ss-tab-task-bg-rgb: 68,22,20;
+    --ss-task-rgb: 224,102,68;
+    --ss-task-edge-rgb: 240,164,58;
+    --ss-task-hot-rgb: 245,184,82;
+    --ss-badge-rgb: 164,188,210;
+    --ss-tab-focus-bg-rgb: 28,42,54;
+    --ss-close-text-rgb: 212,220,230;
+    --ss-danger-rgb: 223,102,91;
+    --ss-close-hover-bg-rgb: 124,32,28;
+    --ss-stage-bg-rgb: 8,10,14;
+    --ss-name-scrim-rgb: 8,10,14;
     --ss-marker-rgb: 153,0,0;
-    --ss-marker-locked-rgb: 102,0,0;
+    --ss-marker-locked-rgb: 88,96,108;
     --ss-marker-map-rgb: 0,153,0;
-    --ss-task-entry-text-rgb: 255,232,210;
-    --ss-task-entry-bg-rgb: 75,14,18;
-    --ss-task-entry-hover-bg-rgb: 104,24,20;
-    --ss-lock-body-rgb: 102,102,102;
-    --ss-edge-ink-rgb: 5,5,5;
-    --ss-red-rgb: 255,0,0;
-    --ss-pulse-glow-rgb: 255,255,0;
-    --ss-pulse-glow-warm-rgb: 255,230,0;
-    --ss-card-grad-top-rgb: 49,50,44;
-    --ss-card-grad-bottom-rgb: 17,17,17;
-    --ss-preview-bg-rgb: 11,15,15;
-    --ss-card-name-text-rgb: 248,250,252;
-    --ss-easy-grad-top-rgb: 0,204,255;
-    --ss-easy-grad-bottom-rgb: 0,51,153;
-    --ss-adventure-grad-top-rgb: 153,255,0;
-    --ss-adventure-grad-bottom-rgb: 102,153,0;
-    --ss-shura-grad-top-rgb: 255,204,0;
-    --ss-shura-grad-bottom-rgb: 255,102,0;
-    --ss-difficulty-pressed-rgb: 180,83,9;
-    --ss-nav-grad-top-rgb: 49,49,44;
-    --ss-nav-grad-bottom-rgb: 26,26,25;
-    --ss-nav-text-rgb: 204,204,204;
-    --ss-nav-inset-rgb: 153,153,153;
-    --ss-nav-yellow-grad-top-rgb: 255,214,51;
-    --ss-nav-yellow-grad-bottom-rgb: 184,120,0;
-    --ss-nav-red-grad-top-rgb: 240,24,24;
-    --ss-nav-red-grad-bottom-rgb: 159,8,8;
-    --ss-entry-yellow-grad-bottom-rgb: 153,102,0;
-    --ss-entry-red-grad-top-rgb: 228,0,0;
-    --ss-entry-red-grad-bottom-rgb: 143,0,0;
+    --ss-pin-scrim-rgb: 12,15,20;
+    --ss-pin-frame-rgb: 186,196,208;
+    --ss-pin-combat-rgb: 196,78,66;
+    --ss-pin-map-rgb: 98,172,148;
+    --ss-pin-map-text-rgb: 216,228,224;
+    --ss-pin-jump-rgb: 126,168,198;
+    --ss-pin-jump-text-rgb: 222,230,238;
+    --ss-task-entry-text-rgb: 242,228,208;
+    --ss-task-entry-bg-rgb: 58,20,18;
+    --ss-task-entry-hover-bg-rgb: 82,28,24;
+    --ss-lock-body-rgb: 112,118,126;
+    --ss-edge-ink-rgb: 6,8,10;
+    --ss-red-rgb: 224,102,68;
+    --ss-pulse-glow-rgb: 240,164,58;
+    --ss-pulse-glow-warm-rgb: 224,102,68;
+    --ss-card-grad-top-rgb: 20,24,30;
+    --ss-card-grad-bottom-rgb: 11,13,17;
+    --ss-preview-bg-rgb: 8,10,14;
+    --ss-card-name-text-rgb: 238,240,242;
+    --ss-easy-grad-top-rgb: 36,92,112;
+    --ss-easy-grad-bottom-rgb: 16,42,54;
+    --ss-adventure-grad-top-rgb: 44,96,68;
+    --ss-adventure-grad-bottom-rgb: 18,44,30;
+    --ss-shura-grad-top-rgb: 168,92,28;
+    --ss-shura-grad-bottom-rgb: 78,40,12;
+    --ss-hell-grad-top-rgb: 164,42,38;
+    --ss-hell-grad-bottom-rgb: 76,18,16;
+    --ss-difficulty-pressed-rgb: 168,92,28;
+    --ss-nav-grad-top-rgb: 22,26,32;
+    --ss-nav-grad-bottom-rgb: 12,15,19;
+    --ss-nav-text-rgb: 218,226,234;
+    --ss-nav-inset-rgb: 148,160,174;
+    --ss-nav-yellow-grad-top-rgb: 218,164,58;
+    --ss-nav-yellow-grad-bottom-rgb: 142,96,20;
+    --ss-nav-red-grad-top-rgb: 196,52,44;
+    --ss-nav-red-grad-bottom-rgb: 122,24,20;
+    --ss-entry-yellow-grad-bottom-rgb: 132,88,16;
+    --ss-entry-red-grad-top-rgb: 188,44,38;
+    --ss-entry-red-grad-bottom-rgb: 114,20,18;
     --ss-scene-ring-rgb: 0,160,0;
     --ss-scene-ring-bg-rgb: 0,120,0;
-    --ss-nav-hover-text-rgb: 254,243,199;
-    --ss-side-title-text-rgb: 191,219,254;
-    --ss-side-text-rgb: 203,213,225;
-    --ss-error-text-rgb: 254,202,202;
-    --ss-error-bg-rgb: 127,29,29;
+    --ss-nav-hover-text-rgb: 248,238,212;
+    --ss-side-title-text-rgb: 212,222,232;
+    --ss-side-text-rgb: 188,198,208;
+    --ss-error-text-rgb: 248,202,202;
+    --ss-error-bg-rgb: 108,28,28;
     --ss-font-xs: 11px;
     --ss-font-sm: 12px;
     --ss-font-base: 13px;
@@ -154,10 +163,74 @@
     --ss-ease-linear: linear;
     /* 打磨批：选中光环呼吸缓动（对称往返） */
     --ss-ease-in-out: ease-in-out;
-    /* P2 焦点环 / 选中态：值分别复用 badge（青蓝）与 gold（金黄）通道，暗色舞台高对比；
-       语义独立成 token，后续换肤不必回追消费点。 */
-    --ss-focus-rgb: 125,211,252;
-    --ss-selected-rgb: 250,204,21;
+    /* P2 焦点环 / 选中态：对齐 workbench 战术琥珀与冷青 */
+    --ss-focus-rgb: 138,192,224;
+    --ss-selected-rgb: 240,164,58;
+    --ss-mod-cyan-rgb: 126,168,198;
+    --ss-mod-amber-rgb: 240,164,58;
+    --ss-mod-amber-bg-rgb: 48,32,12;
+    --ss-mod-cyan-bg-rgb: 18,30,42;
+}
+
+/* ── 区域战术终端动态色板（工业灰模母体：底板保持深冷枪铁石墨，区域色仅作低饱和金属刻线与顶栏能量条）── */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="base"] {
+    --ss-accent-rgb: 118,176,210;
+    --ss-active-rgb: 32,54,72;
+    --ss-region-text-rgb: 204,224,238;
+    --ss-badge-rgb: 118,176,210;
+    --ss-header-rgb: 10,13,17;
+    --ss-card-grad-top-rgb: 18,23,30;
+    --ss-card-grad-bottom-rgb: 10,13,17;
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="blackiron"] {
+    --ss-accent-rgb: 218,152,68;
+    --ss-active-rgb: 78,48,20;
+    --ss-region-text-rgb: 236,212,172;
+    --ss-badge-rgb: 218,152,68;
+    --ss-header-rgb: 13,12,11;
+    --ss-card-grad-top-rgb: 25,21,18;
+    --ss-card-grad-bottom-rgb: 12,11,10;
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="fallen"] {
+    --ss-accent-rgb: 164,188,210;
+    --ss-active-rgb: 38,50,64;
+    --ss-region-text-rgb: 216,226,236;
+    --ss-badge-rgb: 164,188,210;
+    --ss-header-rgb: 10,12,16;
+    --ss-card-grad-top-rgb: 19,23,29;
+    --ss-card-grad-bottom-rgb: 10,12,16;
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="warlord"] {
+    --ss-accent-rgb: 214,138,84;
+    --ss-active-rgb: 82,42,22;
+    --ss-region-text-rgb: 238,204,176;
+    --ss-badge-rgb: 214,138,84;
+    --ss-header-rgb: 14,11,10;
+    --ss-card-grad-top-rgb: 26,20,17;
+    --ss-card-grad-bottom-rgb: 13,10,9;
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="remnant"] {
+    --ss-accent-rgb: 204,88,78;
+    --ss-active-rgb: 84,26,24;
+    --ss-region-text-rgb: 238,188,182;
+    --ss-badge-rgb: 204,88,78;
+    --ss-header-rgb: 14,10,11;
+    --ss-card-grad-top-rgb: 26,18,19;
+    --ss-card-grad-bottom-rgb: 13,9,10;
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="underground"] {
+    --ss-accent-rgb: 108,172,168;
+    --ss-active-rgb: 26,58,58;
+    --ss-region-text-rgb: 198,226,224;
+    --ss-badge-rgb: 108,172,168;
+    --ss-header-rgb: 9,13,15;
+    --ss-card-grad-top-rgb: 17,24,27;
+    --ss-card-grad-bottom-rgb: 9,13,15;
 }
 
 /* ── 全屏 anchor / 去 backdrop 暗屏（原 foundation-rest.css，仅服务 stage-select）── */
@@ -580,11 +653,11 @@
 .stage-select-diorama-comparison button[aria-pressed="true"] { border-color: rgb(var(--ss-selected-rgb)); }
 .stage-select-diorama-comparison label { display: inline-flex; align-items: center; gap: 4px; padding: 0 4px; }
 .stage-select-location-leader { position: absolute; left: 20px; top: 20px; width: 1px; height: 1px; overflow: visible; pointer-events: none; }
-.stage-select-location-leader path { fill: none; stroke-linecap: round; pointer-events: none; }
-.stage-select-leader-edge { stroke: rgba(var(--ss-leader-edge-rgb), .9); stroke-width: 5; }
-.stage-select-leader-ink { stroke: rgb(var(--ss-leader-ink-rgb)); stroke-width: 2.5; }
-.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-ink { stroke: rgb(var(--ss-leader-active-rgb)); stroke-width: 3.5; }
-.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-edge { stroke-width: 6; }
+.stage-select-location-leader path { fill: none; stroke-linecap: butt; stroke-linejoin: miter; pointer-events: none; }
+.stage-select-leader-edge { stroke: rgba(var(--ss-leader-edge-rgb), .92); stroke-width: 4.5; }
+.stage-select-leader-ink { stroke: rgba(var(--ss-leader-ink-rgb), .74); stroke-width: 2.5; }
+.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-ink { stroke: rgb(var(--ss-leader-active-rgb)); stroke-width: 3; }
+.stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-leader-edge { stroke-width: 5.2; }
 .stage-select-panel.is-stage-focused .stage-select-diorama-comparison,
 .stage-select-panel.is-camera-editing .stage-select-diorama-comparison { display: none; }
 .stage-select-diorama[data-state="fallback"] .stage-select-diorama-status { inset: auto 12px 12px auto; padding: 8px 12px; font-size: 12px; max-width: 340px; }
@@ -761,12 +834,26 @@
     overflow: visible;
 }
 
+.stage-select-marker-disc {
+    fill: rgba(var(--ss-pin-scrim-rgb), 0.92);
+    stroke: rgba(var(--ss-black-rgb), 0.96);
+    stroke-width: 28;
+}
+
 .stage-select-marker-fill {
     fill: rgb(var(--ss-marker-rgb));
 }
 
+.stage-select-marker-core {
+    fill: rgba(var(--ss-white-rgb), 0.94);
+}
+
 .stage-select-stage-button.is-locked .stage-select-marker-fill {
     fill: rgb(var(--ss-marker-locked-rgb));
+}
+
+.stage-select-stage-button.is-locked .stage-select-marker-core {
+    fill: transparent;
 }
 
 .stage-select-stage-button:hover,
@@ -786,10 +873,10 @@
     cursor: pointer;
 }
 
-/* P2：普通未选中节点在 hover/focus 时由悬停卡承接视觉；任务节点的红色标记与黄圈
-   必须持续可见，避免鼠标一进入命中区就丢失任务目标。选中节点继续由固定检查器承接。 */
-.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):hover > .stage-select-marker,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):focus > .stage-select-marker,
+/* P2：普通未选中节点在 hover/focus 时由悬停卡承接视觉；任务节点的红色标记与黄圈、
+   以及二维外交据点的绿色菱形标记必须持续可见，避免鼠标进入命中区时丢失图标。 */
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):not(.is-map-entry):hover > .stage-select-marker,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-task):not(.is-map-entry):focus > .stage-select-marker,
 .stage-select-stage-button:not(.is-locked):not(.is-selected):hover > .stage-select-lock,
 .stage-select-stage-button:not(.is-locked):not(.is-selected):focus > .stage-select-lock {
     display: none;
@@ -833,9 +920,9 @@
     background: radial-gradient(ellipse 60% 78% at 50% 55%, rgba(var(--ss-name-scrim-rgb),0.78) 0%, rgba(var(--ss-name-scrim-rgb),0.45) 55%, rgba(var(--ss-name-scrim-rgb),0) 92%);
 }
 
-/* P2：选中节点名称不随 hover/focus 隐藏（检查器承接信息展示，原地保留可辨识名称）。 */
-.stage-select-stage-button:not(.is-locked):not(.is-selected):hover .stage-select-stage-name,
-.stage-select-stage-button:not(.is-locked):not(.is-selected):focus .stage-select-stage-name {
+/* P2：选中节点与外交据点名称不随 hover/focus 隐藏（检查器或外置悬浮卡承接信息展示，原地保留可辨识名称）。 */
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-map-entry):hover .stage-select-stage-name,
+.stage-select-stage-button:not(.is-locked):not(.is-selected):not(.is-map-entry):focus .stage-select-stage-name {
     visibility: hidden;
 }
 
@@ -881,7 +968,7 @@
     background: transparent;
 }
 
-.stage-select-panel.is-runtime .stage-select-stage-button.is-map-entry .stage-select-stage-name {
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.is-map-entry .stage-select-stage-name {
     background: transparent;
 }
 
@@ -1133,7 +1220,8 @@
     width: calc(var(--stage-card-width, 167px) - 7px);
 }
 
-.stage-select-panel.is-runtime .stage-select-stage-button[data-card-name-lines="2"] .stage-select-difficulties {
+.stage-select-panel.is-runtime .stage-select-stage-button[data-card-name-lines="2"] .stage-select-difficulties,
+.stage-select-panel.is-runtime .stage-select-card-anchor[data-card-name-lines="2"] .stage-select-difficulties {
     top: 131px;
 }
 
@@ -1320,7 +1408,9 @@
 
 /* busy 期间禁点难度：hover 卡锚点与 pinned 检查器两处（节点内已不含难度按钮）。 */
 .stage-select-card-anchor.is-busy .stage-select-difficulty,
-.stage-select-inspector.is-busy .stage-select-difficulty {
+.stage-select-card-anchor.is-busy .stage-select-map-action,
+.stage-select-inspector.is-busy .stage-select-difficulty,
+.stage-select-inspector.is-busy .stage-select-map-action {
     pointer-events: none;
 }
 
@@ -1891,3 +1981,597 @@
     transform: translate(-50%, -50%);
     min-width: 0; height: 32px; min-height: 32px; padding: 5px 4px; font-size: 13px; line-height: 20px;
 }
+
+/* ── 战术终端 HUD 增强、演习修改器与双轨头图预留（2026-10-14 Round 2）── */
+
+/* 1. 左上角区域跳转降权为静默战术面包屑（低频辅助入口，悬停/展开时唤醒） */
+.stage-select-panel.is-runtime .stage-select-frame-toggle {
+    min-width: 0;
+    height: 24px;
+    padding: 0 8px;
+    gap: 6px;
+    font-size: var(--ss-font-xs);
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    color: rgba(var(--ss-toggle-text-rgb), 0.72);
+    background: rgba(var(--ss-header-rgb), 0.46);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.2);
+    box-shadow: none;
+    opacity: 0.78;
+    backdrop-filter: blur(4px);
+    transition:
+        opacity var(--ss-motion-fast) var(--ss-ease-default),
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task {
+    border-color: rgba(var(--ss-task-rgb), 0.38);
+    box-shadow: inset 2px 0 0 rgba(var(--ss-task-rgb), 0.55);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle .stage-select-frame-toggle-counter {
+    padding: 0 3px;
+    font-size: var(--ss-font-xs);
+    color: rgba(var(--ss-counter-text-rgb), 0.65);
+    background: transparent;
+    border-color: transparent;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle .stage-select-frame-toggle-icon {
+    color: rgba(var(--ss-region-text-rgb), 0.68);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible,
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle {
+    opacity: 1;
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-header-rgb), 0.92);
+    border-color: rgba(var(--ss-accent-rgb), 0.82);
+    box-shadow:
+        inset 2px 0 0 rgb(var(--ss-accent-rgb)),
+        0 6px 16px rgba(var(--ss-black-rgb), 0.52);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover .stage-select-frame-toggle-icon,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible .stage-select-frame-toggle-icon,
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle .stage-select-frame-toggle-icon {
+    color: rgb(var(--ss-accent-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-tabs {
+    backdrop-filter: blur(10px);
+}
+
+.stage-select-header .stage-camera-toggle {
+    min-height: 30px;
+    height: 30px;
+    padding: 0 10px;
+    font-size: var(--ss-font-xs);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: rgb(var(--ss-region-text-rgb));
+    background: rgba(var(--ss-header-rgb), 0.84);
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.42);
+    box-shadow: 0 4px 12px rgba(var(--ss-black-rgb), 0.42);
+    backdrop-filter: blur(6px);
+}
+
+.stage-select-header .stage-camera-toggle:hover {
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-active-rgb), 0.55);
+    border-color: rgba(var(--ss-accent-rgb), 0.85);
+}
+
+.stage-select-mod-pod {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 4px;
+    background: rgba(var(--ss-header-rgb), 0.84);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.32);
+    box-shadow: 0 4px 12px rgba(var(--ss-black-rgb), 0.42);
+    backdrop-filter: blur(6px);
+}
+
+.stage-select-mod-pod[hidden] {
+    display: none;
+}
+
+.stage-select-mod-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 26px;
+    padding: 0 9px;
+    border: 1px solid rgba(var(--ss-line-rgb), 0.38);
+    background: rgba(var(--ss-surface-rgb), 0.86);
+    color: rgb(var(--ss-toggle-text-rgb));
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+    font-size: var(--ss-font-xs);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    cursor: pointer;
+    transition:
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-mod-btn:hover {
+    border-color: rgba(var(--ss-mod-cyan-rgb), 0.88);
+    background: rgba(var(--ss-mod-cyan-bg-rgb), 0.84);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-mod-btn.is-active,
+.stage-select-mod-btn[aria-pressed="true"] {
+    border-color: rgba(var(--ss-mod-amber-rgb), 0.95);
+    background: rgba(var(--ss-mod-amber-bg-rgb), 0.88);
+    color: rgb(var(--ss-gold-rgb));
+    box-shadow:
+        inset 2px 0 0 rgb(var(--ss-mod-amber-rgb)),
+        0 0 10px rgba(var(--ss-mod-amber-rgb), 0.28);
+}
+
+.stage-select-stage-button.is-force-unlocked .stage-select-marker-fill {
+    fill: rgb(var(--ss-mod-amber-rgb));
+}
+
+.stage-select-inspector-lock.is-force-unlocked {
+    color: rgb(var(--ss-gold-rgb));
+    background: rgba(var(--ss-mod-amber-bg-rgb), 0.65);
+    border-color: rgba(var(--ss-mod-amber-rgb), 0.62);
+}
+
+/* 2. 三维沙盘地标信标与 HUD 铭牌升级（硬朗 45° 战术菱形准星 + 哑光石墨碳钢铭牌 + 工业克制语义侧标，保持 0px 几何包络漂移） */
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-marker {
+    filter: drop-shadow(0 2px 4px rgba(var(--ss-black-rgb), 0.95));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button .stage-select-marker-fill {
+    fill: rgb(var(--ss-pin-frame-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button .stage-select-marker-core {
+    fill: rgb(var(--ss-pin-combat-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry .stage-select-marker-fill {
+    fill: rgb(var(--ss-pin-frame-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry .stage-select-marker-core {
+    fill: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task > .stage-select-marker {
+    filter:
+        drop-shadow(0 2px 4px rgba(var(--ss-black-rgb), 0.95))
+        drop-shadow(0 0 6px rgba(var(--ss-gold-rgb), 0.55));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task .stage-select-marker-fill,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task .stage-select-marker-core {
+    fill: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked .stage-select-marker-fill {
+    fill: rgb(var(--ss-marker-locked-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked .stage-select-marker-core {
+    fill: transparent;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-force-unlocked .stage-select-marker-fill,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-force-unlocked .stage-select-marker-core {
+    fill: rgb(var(--ss-mod-amber-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-marker-fill,
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus, .is-selected) .stage-select-marker-core {
+    fill: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-lock {
+    left: 14.5px;
+    top: 11px;
+    width: 11px;
+    height: 16.5px;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-task-pulse {
+    left: 6px;
+    top: 6px;
+    width: 28px;
+    height: 28px;
+    border-radius: 0;
+    rotate: 45deg;
+    border: 1.5px solid rgba(var(--ss-gold-rgb), 0.92);
+    box-shadow:
+        0 0 8px rgba(var(--ss-gold-rgb), 0.65),
+        inset 0 0 4px rgba(var(--ss-gold-rgb), 0.35);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-selected-ring {
+    left: 5px;
+    top: 5px;
+    width: 30px;
+    height: 30px;
+    border-radius: 0;
+    rotate: 45deg;
+    border: 1.5px solid rgba(var(--ss-selected-rgb), 0.9);
+    box-shadow:
+        0 0 8px rgba(var(--ss-selected-rgb), 0.68),
+        inset 0 0 4px rgba(var(--ss-selected-rgb), 0.35);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name {
+    color: rgb(var(--ss-card-name-text-rgb));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-pin-scrim-rgb), 0.95) 0%,
+            rgba(var(--ss-header-rgb), 0.97) 100%
+        );
+    border: 1px solid rgba(var(--ss-pin-frame-rgb), 0.34);
+    border-left: 3px solid rgb(var(--ss-pin-combat-rgb));
+    border-radius: 0;
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.94),
+        0 3px 10px rgba(var(--ss-black-rgb), 0.82),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.06);
+    letter-spacing: 0.4px;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry > .stage-select-stage-name {
+    color: rgb(var(--ss-pin-map-text-rgb));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-pin-scrim-rgb), 0.95) 0%,
+            rgba(var(--ss-header-rgb), 0.97) 100%
+        );
+    border: 1px solid rgba(var(--ss-pin-frame-rgb), 0.34);
+    border-left: 3px solid rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task > .stage-select-stage-name {
+    color: rgb(var(--ss-white-rgb));
+    background:
+        linear-gradient(
+            90deg,
+            rgba(var(--ss-gold-rgb), 0.16) 0%,
+            rgba(var(--ss-pin-scrim-rgb), 0.95) 28%,
+            rgba(var(--ss-header-rgb), 0.97) 100%
+        );
+    border-color: rgba(var(--ss-gold-rgb), 0.68);
+    border-left: 3px solid rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked > .stage-select-stage-name {
+    color: rgba(var(--ss-pin-frame-rgb), 0.52);
+    background: rgba(var(--ss-pin-scrim-rgb), 0.88);
+    border-color: rgba(var(--ss-pin-frame-rgb), 0.18);
+    border-left: 3px solid rgba(var(--ss-marker-locked-rgb), 0.65);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:hover > .stage-select-stage-name,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-kb-focus > .stage-select-stage-name {
+    color: rgb(var(--ss-white-rgb));
+    border-color: rgba(var(--ss-selected-rgb), 0.85);
+    border-left-color: rgb(var(--ss-selected-rgb));
+    background:
+        linear-gradient(
+            90deg,
+            rgba(var(--ss-selected-rgb), 0.18) 0%,
+            rgba(var(--ss-pin-scrim-rgb), 0.96) 32%,
+            rgba(var(--ss-header-rgb), 0.98) 100%
+        );
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.95),
+        0 5px 14px rgba(var(--ss-black-rgb), 0.85),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.12);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected > .stage-select-stage-name {
+    color: rgb(var(--ss-selected-rgb));
+    border-color: rgba(var(--ss-selected-rgb), 0.9);
+    border-left-color: rgb(var(--ss-selected-rgb));
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.95),
+        0 5px 14px rgba(var(--ss-black-rgb), 0.85),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.14);
+}
+
+.stage-select-panel.is-diorama .stage-select-nav-button.is-diorama-nav,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return-garage {
+    color: rgb(var(--ss-pin-jump-text-rgb));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-pin-scrim-rgb), 0.95) 0%,
+            rgba(var(--ss-header-rgb), 0.97) 100%
+        );
+    border: 1px solid rgba(var(--ss-pin-frame-rgb), 0.38);
+    border-radius: 0;
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.94),
+        0 3px 10px rgba(var(--ss-black-rgb), 0.82),
+        inset 2px 0 0 rgb(var(--ss-pin-jump-rgb)),
+        inset -2px 0 0 rgb(var(--ss-pin-jump-rgb)),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.08);
+}
+
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return::before,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return-garage::before {
+    background: rgb(var(--ss-pin-jump-rgb));
+}
+
+/* 3. 战术终端母体 + 6 大区域动态色板：悬浮卡与检查器换肤（保持 0px 几何包络漂移） */
+.stage-select-card,
+.stage-select-inspector {
+    background:
+        radial-gradient(120% 80% at 0% 0%, rgba(var(--ss-accent-rgb), 0.22) 0%, transparent 65%),
+        repeating-linear-gradient(
+            180deg,
+            rgba(var(--ss-accent-rgb), 0.03) 0px,
+            rgba(var(--ss-accent-rgb), 0.03) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-card-grad-top-rgb), 0.96) 0%,
+            rgba(var(--ss-card-grad-bottom-rgb), 0.98) 100%
+        );
+    box-shadow:
+        0 14px 32px rgba(var(--ss-black-rgb), 0.78),
+        0 0 18px rgba(var(--ss-accent-rgb), 0.16),
+        inset 0 2px 0 rgba(var(--ss-accent-rgb), 0.92),
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.38);
+}
+
+.stage-select-inspector {
+    border-color: rgba(var(--ss-accent-rgb), 0.42);
+}
+
+.stage-select-card-corner,
+.stage-select-inspector-corner {
+    background: rgb(var(--ss-accent-rgb));
+    filter: drop-shadow(0 0 4px rgba(var(--ss-accent-rgb), 0.65));
+}
+
+.stage-select-card-name,
+.stage-select-inspector-name {
+    color: rgb(var(--ss-region-text-rgb));
+}
+
+.stage-select-card-detail,
+.stage-select-inspector-detail {
+    color: rgba(var(--ss-text-rgb), 0.92);
+}
+
+.stage-select-difficulty {
+    border: 1px solid rgba(var(--ss-white-rgb), 0.22);
+    box-shadow:
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.28),
+        0 2px 4px rgba(var(--ss-black-rgb), 0.45);
+}
+
+.stage-select-difficulty.is-hell {
+    background: linear-gradient(180deg, rgb(var(--ss-hell-grad-top-rgb)) 0%, rgb(var(--ss-hell-grad-bottom-rgb)) 100%);
+}
+
+/* 双轨头图兼容架构：legacy (161x69) 战术监视器扫描线精裱 vs hd (720x320) 满幅裁切 */
+.stage-select-preview-wrap,
+.stage-select-inspector-preview {
+    position: relative;
+}
+
+.stage-select-preview-wrap[data-preview-tier="legacy"]::after,
+.stage-select-inspector-preview[data-preview-tier="legacy"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(var(--ss-black-rgb), 0) 0px,
+        rgba(var(--ss-black-rgb), 0) 2px,
+        rgba(var(--ss-black-rgb), 0.18) 3px
+    );
+    box-shadow: inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.32);
+}
+
+.stage-select-preview-wrap[data-preview-tier="hd"] .stage-select-preview,
+.stage-select-inspector-preview[data-preview-tier="hd"] .stage-select-inspector-preview-img {
+    object-fit: cover;
+}
+
+/* 4. 消除原生浏览器控件（总部取景对比栏 checkbox / button 战术终端化）与外交地图悬停卡对齐（2026-10-14 Round 4） */
+.stage-select-diorama-comparison {
+    gap: 5px;
+    height: 30px;
+    padding: 0 5px;
+    background: rgba(var(--ss-header-rgb), 0.9);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.36);
+    box-shadow:
+        0 4px 12px rgba(var(--ss-black-rgb), 0.55),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.06);
+    backdrop-filter: blur(6px);
+}
+
+.stage-select-diorama-comparison button {
+    height: 24px;
+    min-height: 24px;
+    padding: 0 9px;
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+    font-size: var(--ss-font-xs);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: rgb(var(--ss-toggle-text-rgb));
+    background: rgba(var(--ss-surface-rgb), 0.86);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.38);
+    transition:
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-diorama-comparison button:hover:not(:disabled) {
+    border-color: rgba(var(--ss-accent-rgb), 0.78);
+    background: rgba(var(--ss-active-rgb), 0.45);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-diorama-comparison button[aria-pressed="true"] {
+    border-color: rgba(var(--ss-selected-rgb), 0.95);
+    background: rgba(var(--ss-mod-amber-bg-rgb), 0.88);
+    color: rgb(var(--ss-gold-rgb));
+    box-shadow:
+        inset 2px 0 0 rgb(var(--ss-selected-rgb)),
+        0 0 8px rgba(var(--ss-selected-rgb), 0.25);
+}
+
+.stage-select-diorama-comparison label {
+    height: 24px;
+    padding: 0 9px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "Microsoft YaHei", "SimHei", Arial, sans-serif;
+    font-size: var(--ss-font-xs);
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    color: rgb(var(--ss-toggle-text-rgb));
+    background: rgba(var(--ss-surface-rgb), 0.86);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.38);
+    cursor: pointer;
+    user-select: none;
+    transition:
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-diorama-comparison label:hover {
+    border-color: rgba(var(--ss-accent-rgb), 0.78);
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-diorama-comparison label:has(input:checked) {
+    border-color: rgba(var(--ss-accent-rgb), 0.72);
+    background: rgba(var(--ss-active-rgb), 0.48);
+    color: rgb(var(--ss-region-text-rgb));
+    box-shadow: inset 2px 0 0 rgb(var(--ss-accent-rgb));
+}
+
+.stage-select-diorama-comparison input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+    width: 11px;
+    height: 11px;
+    flex: 0 0 auto;
+    display: inline-grid;
+    place-content: center;
+    border: 1px solid rgba(var(--ss-pin-frame-rgb), 0.58);
+    background: rgba(var(--ss-stage-bg-rgb), 0.92);
+    cursor: pointer;
+    transition:
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-diorama-comparison input[type="checkbox"]::before {
+    content: "";
+    width: 5px;
+    height: 5px;
+    background: rgb(var(--ss-accent-rgb));
+    box-shadow: 0 0 5px rgba(var(--ss-accent-rgb), 0.85);
+    transform: rotate(45deg) scale(0);
+    transition: transform var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-diorama-comparison input[type="checkbox"]:checked {
+    border-color: rgba(var(--ss-accent-rgb), 0.95);
+    background: rgba(var(--ss-active-rgb), 0.75);
+}
+
+.stage-select-diorama-comparison input[type="checkbox"]:checked::before {
+    transform: rotate(45deg) scale(1);
+}
+
+/* 外交地图悬停卡单键直达按钮（.stage-select-map-action） */
+.stage-select-map-action {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    padding: 0 8px;
+    border: 1px solid rgba(var(--ss-pin-map-rgb), 0.68);
+    background: linear-gradient(180deg, rgb(var(--ss-adventure-grad-top-rgb)) 0%, rgb(var(--ss-adventure-grad-bottom-rgb)) 100%);
+    color: rgb(var(--ss-pin-map-text-rgb));
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: var(--ss-font-base);
+    font-weight: 700;
+    line-height: 18px;
+    letter-spacing: 1px;
+    text-align: center;
+    text-shadow:
+        0 0 2px rgb(var(--ss-black-rgb)),
+        0 0 4px rgb(var(--ss-black-rgb)),
+        1px 1px 0 rgb(var(--ss-black-rgb));
+    box-shadow:
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.25),
+        0 2px 4px rgba(var(--ss-black-rgb), 0.45);
+    cursor: pointer;
+}
+
+.stage-select-map-action:hover {
+    filter: brightness(1.22);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.95);
+}
+
+.stage-select-map-action.is-pressed {
+    background: rgba(var(--ss-adventure-grad-bottom-rgb), 0.92);
+}
+
+/* 二维地图外交据点：选中金环对位 marker 中心，悬停卡外置停靠不遮挡绿色菱形图标与地名 */
+.stage-select-panel:not(.is-diorama) .stage-select-stage-button.is-map-entry .stage-select-selected-ring {
+    left: calc(var(--stage-map-marker-x, 0px) - 24px);
+    top: calc(var(--stage-map-marker-y, 120px) - 24px);
+}
+
+.stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry.is-card-open {
+    z-index: 25;
+}
+
+.stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry:not(.is-edge-top) .stage-select-card {
+    top: calc(-34px - var(--stage-card-height, 232px));
+}
+
+.stage-select-panel:not(.is-diorama) .stage-select-card-anchor.is-map-entry.is-edge-top .stage-select-card {
+    top: 38px;
+}
+
+@layer workbench.states {
+    .stage-select-mod-btn:focus-visible,
+    .stage-select-diorama-comparison button:focus-visible,
+    .stage-select-diorama-comparison input[type="checkbox"]:focus-visible,
+    .stage-select-map-action:focus-visible {
+        outline: 2px solid rgb(var(--ss-focus-rgb));
+        outline-offset: 1px;
+    }
+}
+
+
+

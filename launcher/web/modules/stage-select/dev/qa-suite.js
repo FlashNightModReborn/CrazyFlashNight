@@ -216,7 +216,7 @@ var StageSelectHarnessQA = (function() {
             ['hover-preview', 'stage card has preview and difficulty buttons', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var button = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var button = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!button, 'stage button exists');
                     // 三维图的程序性回焦不弹卡；键盘 Tab 到达才应打开预览。
                     button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
@@ -981,7 +981,7 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['direct-entry-actions', 'direct map/task entries send entryKind without difficulty', function() {
+            ['direct-entry-actions', 'map entries open hover card with one-click action while task entries remain direct', function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 document.getElementById('stage-frame-select').value = '地下2层';
                 host.open({ mode: 'runtime', debug: false });
@@ -992,12 +992,20 @@ var StageSelectHarnessQA = (function() {
                     var mapEntry = document.querySelector('.stage-select-stage-button.is-map-entry[data-stage-name="幸存者营地"]');
                     var taskEntry = document.querySelector('.stage-select-stage-button.is-task-entry[data-stage-name="菲尼克斯Lv10"]');
                     api.assert(sigils.length === 2, '地下2层 magic sigil base art rendered');
-                    api.assert(directEntries.length >= 6, '地下2层 direct entries rendered');
+                    api.assert(directEntries.length >= 4, '地下2层 direct task entries rendered');
                     api.assert(!!mapEntry, '幸存者营地 map entry rendered');
                     api.assert(!!taskEntry, '菲尼克斯Lv10 task entry rendered');
                     host.enterMessages.length = 0;
-                    api.assert(!mapEntry.querySelector('.stage-select-difficulty'), 'map entry has no secondary choice');
-                    mapEntry.click();
+                    mapEntry.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    var mapMarker = mapEntry.querySelector('.stage-select-marker');
+                    var mapName = mapEntry.querySelector('.stage-select-stage-name');
+                    api.assert(getComputedStyle(mapMarker).display !== 'none', '2D map marker stays visible on hover');
+                    api.assert(getComputedStyle(mapName).visibility !== 'hidden', '2D map name stays visible on hover');
+                    var mapAnchor = findCardAnchor(mapEntry.getAttribute('data-stage-id'));
+                    api.assert(!!mapAnchor && mapAnchor.classList.contains('is-card-open'), 'map entry opens hover card');
+                    var mapAction = mapAnchor.querySelector('.stage-select-map-action');
+                    api.assert(!!mapAction, 'map hover card renders one-click action button');
+                    mapAction.click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
                     }, 2000, 'direct map enter').then(function(msg) {
@@ -1164,7 +1172,7 @@ var StageSelectHarnessQA = (function() {
                 document.getElementById('stage-fixture-select').value = 'mixed';
                 host.open();
                 return waitReady(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!node, 'unlocked difficulty node exists');
                     var stageId = node.getAttribute('data-stage-id');
                     node.focus();
@@ -1189,7 +1197,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function() {
                     host.enterMessages.length = 0;
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageName = node.getAttribute('data-stage-name');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1217,7 +1225,7 @@ var StageSelectHarnessQA = (function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageId = node.getAttribute('data-stage-id');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1293,7 +1301,7 @@ var StageSelectHarnessQA = (function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     host.enterMessages.length = 0;
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageName = node.getAttribute('data-stage-name');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1348,7 +1356,7 @@ var StageSelectHarnessQA = (function() {
             ['esc-layering', 'Escape consumes frame menu > inspector > panel in order on both paths', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
                     api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector open');
@@ -1492,7 +1500,7 @@ var StageSelectHarnessQA = (function() {
             ['selection-persists-rebuild', 'selection and inspector survive snapshot merge and same-frame re-render', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageId = node.getAttribute('data-stage-id');
                     var stageName = node.getAttribute('data-stage-name');
                     node.click();
@@ -1521,7 +1529,7 @@ var StageSelectHarnessQA = (function() {
                     return 'selection persists across rebuilds';
                 });
             }],
-            ['direct-entry-no-inspector', 'direct entries keep one-step enter and never open inspector', function() {
+            ['direct-entry-no-inspector', 'map entries open focus inspector while task entries keep one-step enter', function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 document.getElementById('stage-frame-select').value = '地下2层';
                 host.open({ mode: 'runtime', debug: false });
@@ -1532,11 +1540,15 @@ var StageSelectHarnessQA = (function() {
                     host.enterMessages.length = 0;
                     mapEntry.focus();
                     mapEntry.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
-                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'no inspector for map entry');
-                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'no selection for map entry');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector opens for map entry');
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, mapEntry.getAttribute('data-stage-id'), 'map entry selected');
+                    var enterBtn = document.getElementById('stage-focus-enter');
+                    api.assert(document.activeElement === enterBtn, 'focus moves to stage-focus-enter for map entry');
+                    api.assertEqual(enterBtn.textContent, '前往地点', 'map focus enter label');
+                    enterBtn.click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
-                    }, 2000, 'direct map enter via keyboard').then(function(msg) {
+                    }, 2000, 'map enter via focus inspector').then(function(msg) {
                         api.assertEqual(msg.entryKind, 'map', 'map entryKind sent');
                         api.assertEqual(msg.difficulty, '', 'map difficulty empty');
                     });
@@ -1556,7 +1568,7 @@ var StageSelectHarnessQA = (function() {
                         }, 2000, 'direct task enter via keyboard').then(function(msg) {
                             api.assertEqual(msg.entryKind, 'task', 'task entryKind sent');
                             api.assertEqual(msg.difficulty, '', 'task difficulty empty');
-                            return 'direct entries bypass inspector';
+                            return 'map inspector and task direct entry ok';
                         });
                     });
                 });
@@ -1566,7 +1578,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function(state) {
                     api.assert(state.challenge, 'challenge flag set');
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!node, 'challenge node exists');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1855,6 +1867,55 @@ var StageSelectHarnessQA = (function() {
                     api.assert(!locked.classList.contains('is-kb-focus'), 'pointerdown strips ring without refocus');
                     api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'none', 'ring gone under pointer modality');
                     return 'keyboard ring semantics ok';
+                });
+            }],
+            ['modifier-pod-and-tactical-ux', 'regional data-accent, dual-track preview tier, force-unlock toggle, test-space jump, and challenge auto-hide', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                document.getElementById('stage-frame-select').value = '基地车库';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    var panel = document.querySelector('.stage-select-panel');
+                    var modPod = document.querySelector('.stage-select-mod-pod');
+                    var unlockBtn = document.getElementById('stage-select-mod-unlock');
+                    var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
+                    api.assert(!!modPod && !modPod.hidden, 'modifier pod visible in normal mode');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'fallen', '基地车库 (堕落城) uses fallen accent');
+                    var previewWrap = document.querySelector('.stage-select-preview-wrap');
+                    api.assertEqual(previewWrap && previewWrap.getAttribute('data-preview-tier'), 'legacy', 'legacy preview tier set by default');
+
+                    StageSelectPanel._debugSetFrame('基地门口', 'qa-accent-base');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'base', '基地门口 uses base accent');
+                    StageSelectPanel._debugSetFrame('黑铁会总部', 'qa-accent');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'blackiron', '黑铁会总部 uses blackiron accent');
+                    StageSelectPanel._debugSetFrame('基地房顶', 'qa-accent-warlord');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'warlord', '基地房顶 (荒漠) uses warlord accent');
+                    StageSelectPanel._debugSetFrame('基地车库', 'qa-accent-back');
+
+                    var lockedBefore = document.querySelectorAll('.stage-select-stage-button.is-locked').length;
+                    api.assert(lockedBefore > 0, 'mixed fixture has locked stages before force unlock');
+                    unlockBtn.click();
+                    return api.waitFor(function() {
+                        return unlockBtn.getAttribute('aria-pressed') === 'true'
+                            && document.querySelectorAll('.stage-select-stage-button.is-locked').length === 0;
+                    }, 2000, 'force unlock applied');
+                }).then(function() {
+                    var forceNodes = document.querySelectorAll('.stage-select-stage-button.is-force-unlocked');
+                    api.assert(forceNodes.length > 0, 'force-unlocked stages carry .is-force-unlocked');
+                    host.returnMessages.length = 0;
+                    var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
+                    testSpaceBtn.click();
+                    return api.waitFor(function() {
+                        return host.returnMessages.length ? host.returnMessages[0] : null;
+                    }, 2000, 'test space return_frame');
+                }).then(function(retMsg) {
+                    api.assertEqual(retMsg.frameLabel, '地图-测试空间', 'test space button jumps to 地图-测试空间');
+                    document.getElementById('stage-fixture-select').value = 'challenge';
+                    host.open();
+                    return waitRuntime(api);
+                }).then(function() {
+                    var modPod = document.querySelector('.stage-select-mod-pod');
+                    api.assert(!!modPod && modPod.hidden, 'modifier pod auto-hidden in challenge mode');
+                    return 'modifier pod and tactical ux ok';
                 });
             }]
         ];

@@ -86,7 +86,7 @@ async function main(){
   report.checks.push('ten ordinary/event entries focus their own selection mesh, reuse one canvas and return to overview');
   await select('stage_18_2');await page.locator('#stage-focus-enter').click();await page.waitForFunction(()=>Panels.getActive()===null);
   assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.at(-1).stageName),'黑铁会翅虎堂内部');assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.at(-1).difficulty),'简单');
-  await open();await page.locator('[data-stage-id="stage_18_10"] > .stage-select-stage-name').click();await page.waitForFunction(()=>Panels.getActive()===null);
+  await open();await select('stage_18_10');await page.locator('#stage-focus-enter').click();await page.waitForFunction(()=>Panels.getActive()===null);
   const jump=await page.evaluate(()=>StageSelectHarnessHost.enterMessages.at(-1));report.diplomacy=jump;assert.equal(jump.stageName,'外交-黑铁会修炼场');assert.equal(jump.entryKind,'map');assert.ok(!jump.difficulty);
   report.checks.push('ordinary and diplomacy use original Host protocol/Chinese difficulty; no demo-state adapter');
   await open();await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:{'黑铁会总部边缘':true,'黑铁会总堂':false},stageDetails:{'黑铁会总堂':{unlocked:false,lockReason:'接收端锁定检查'}}}));

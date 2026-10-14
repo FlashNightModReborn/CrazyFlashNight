@@ -12,7 +12,7 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
     config=Object.assign({},config,{focusCameras:{}});
     const started=performance.now(),abort=new AbortController(),listeners=[];
     const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});
-    renderer.setPixelRatio(1);renderer.setSize(1024,576);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
+    renderer.setPixelRatio(1);renderer.setSize(1024,576,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
     const canvas=renderer.domElement;canvas.className='stage-select-diorama-canvas';canvas.setAttribute('aria-hidden','true');
     const scene=new THREE.Scene();scene.background=new THREE.Color(config.lighting.background);
     const camera=new THREE.OrthographicCamera(-160,160,90,-90,.1,2200);
@@ -79,7 +79,10 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
             const aim=box.getCenter(new THREE.Vector3()),position=aim.clone().add(new THREE.Vector3(8,100,115)),probe=camera.clone(),projected=new THREE.Box3();
             probe.position.copy(position);probe.lookAt(aim);probe.updateMatrixWorld(true);
             for(const x of [box.min.x,box.max.x])for(const y of [box.min.y,box.max.y])for(const z of [box.min.z,box.max.z])projected.expandByPoint(new THREE.Vector3(x,y,z).applyMatrix4(probe.matrixWorldInverse));
-            const size=projected.getSize(new THREE.Vector3());config.focusCameras[e.id]={position:position.toArray(),target:aim.toArray(),span:Math.max(26,Math.max(size.x,size.y*1.2)*1.45)};
+            const size=projected.getSize(new THREE.Vector3()),center=projected.getCenter(new THREE.Vector3());
+            const shift=new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld,0).multiplyScalar(center.x).addScaledVector(new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld,1),center.y);
+            aim.add(shift);position.add(shift);
+            config.focusCameras[e.id]={position:position.toArray(),target:aim.toArray(),span:Math.max(26,Math.max(size.x,size.y*1.2)*1.38)};
         }
         for(const [id,p] of Object.entries(config.pins))if(!scene.getObjectByName(p.labelAnchor)){
             // Use the validated semantic file, not raw layout coordinates.

@@ -98,7 +98,7 @@
         return false;
     }
 
-    function requestSnapshot() {
+    function requestSnapshot(options) {
         if (typeof Bridge === 'undefined' || !Bridge || typeof Bridge.send !== 'function') {
             StageSelectCore.logDev('snapshot skipped: bridge unavailable');
             return false;
@@ -145,6 +145,9 @@
             catalogSchema: manifest.schema,
             stageNames: StageSelectViewModel.getManifestStageNames()
         };
+        if (options && typeof options.setForceUnlock === 'boolean') {
+            snapshotRequest.setForceUnlock = options.setForceUnlock;
+        }
         // 非生产目录的 frameLabel 是 Web 内部虚拟页，不得写进 AS2 的
         // Web选关当前帧值/返回帧值。空串也不能发送：AS2 resolver 会把它归一为基地门口，
         // 因此 scoped snapshot 必须完全省略两键；生产目录继续显式携带两键。

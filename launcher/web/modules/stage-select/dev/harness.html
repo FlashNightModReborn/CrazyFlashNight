@@ -177,6 +177,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
         jumpMessages: [],
         returnMessages: [],
         nextEnterError: '',
+        forceUnlock: false,
         openCounter: 0,      // P3：合成 Host 实例序号（对齐 BuildPanelOpenPayload 的 panelInstanceId 注入）
         stateRevision: 0,    // P3：C# 侧 snapshot 回包单调序号的 mock 等价物
         withBridgeSendFault: function(mode, action) {
@@ -202,6 +203,7 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
         },
         open: function(options) {
             options = options || {};
+            host.forceUnlock = false;
             if (Panels.getActive && Panels.getActive() === 'stage-select') Panels.close();
             var requestedCatalogId = options.catalogId || '';
             var requestedManifest = StageSelectData.getCatalog(requestedCatalogId);
@@ -230,6 +232,9 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
                 sessionGeneration: message.sessionGeneration
             };
             if (message.cmd === 'snapshot') {
+                if (typeof message.setForceUnlock === 'boolean') {
+                    host.forceUnlock = message.setForceUnlock;
+                }
                 var snapshot = buildSnapshot(fixtureSelect.value, message.stageNames || []);
                 var revision = ++host.stateRevision;
                 var catalogVersion = message.catalogVersion;
@@ -303,15 +308,21 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
     function buildSnapshot(fixtureName, stageNames) {
         var activeManifest = StageSelectData.getManifest();
         var fixture = StageSelectData.getFixture(fixtureName || 'mixed') || {};
+        var isChallenge = !!fixture.challenge;
+        if (isChallenge) host.forceUnlock = false;
+        var forceUnlock = !isChallenge && !!host.forceUnlock;
         var stages = fixture.stages || {};
         var unlocked = {};
+        var nativeUnlocked = {};
         var stageDetails = {};
         var names = stageNames && stageNames.length ? stageNames : collectStageNames();
         names.forEach(function(name) {
             if (!name) return;
             var state = stages[name] || {};
             var manifestButton = findManifestStageButton(name);
-            unlocked[name] = stages[name] ? !!state.unlocked : true;
+            var nativeOpen = stages[name] ? !!state.unlocked : true;
+            nativeUnlocked[name] = nativeOpen;
+            unlocked[name] = nativeOpen || forceUnlock;
             stageDetails[name] = {
                 exists: true,
                 stageType: manifestButton && manifestButton.stageType || '无限过图',
@@ -322,13 +333,15 @@ window.CF7_PORTRAIT_LEGACY_ROOT='../../../assets/pets/';
                 task: !!state.task,
                 highestDifficulty: state.highestDifficulty || '简单',
                 // 逐关锁定原因 mock（对位 AS2 buildLockReason 文案规格）：锁定给具体原因，解锁恒空串
-                lockReason: unlocked[name] ? '' : '主线任务进度达到 75 解锁（当前 42）'
+                lockReason: nativeOpen ? '' : '主线任务进度达到 75 解锁（当前 42）'
             };
         });
         return {
             unlockedStages: unlocked,
+            nativeUnlockedStages: nativeUnlocked,
+            forceUnlock: forceUnlock,
             stageDetails: stageDetails,
-            isChallengeMode: !!fixture.challenge,
+            isChallengeMode: isChallenge,
             currentFrameLabel: StageSelectPanel._debugGetState().frameLabel || activeManifest.frameOrder[0]
         };
     }

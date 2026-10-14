@@ -51,6 +51,10 @@
                 '</div>' +
                 '<div class="stage-select-tabs" id="stage-select-tabs"></div>' +
                 '<div class="stage-select-tools">' +
+                    '<div class="stage-select-mod-pod" id="stage-select-mod-pod" role="group" aria-label="选关修改器">' +
+                        '<button class="stage-select-mod-btn" id="stage-select-mod-unlock" type="button" aria-pressed="false" title="选关修改器：临时解锁全部关卡（挑战模式自动禁用）" data-audio-cue="navigate">⚡ 全关卡解锁</button>' +
+                        '<button class="stage-select-mod-btn is-test-space" id="stage-select-mod-test-space" type="button" title="选关修改器：进入测试空间（挑战模式自动禁用）" data-audio-cue="activate">⌖ 测试空间</button>' +
+                    '</div>' +
                     '<label class="stage-select-fixture-label">fixture</label>' +
                     '<select id="stage-select-fixture">' +
                         '<option value="mixed">mixed</option>' +
@@ -122,6 +126,28 @@
         S._frameToggleLabelEl = S._el.querySelector('#stage-select-frame-toggle-label');
         S._frameToggleCounterEl = S._el.querySelector('#stage-select-frame-toggle-counter');
         S._frameToggleTaskBadgeEl = S._el.querySelector('#stage-select-frame-toggle-task-badge');
+        S._modToolbarEl = S._el.querySelector('#stage-select-mod-pod');
+        S._modUnlockBtnEl = S._el.querySelector('#stage-select-mod-unlock');
+        S._modTestSpaceBtnEl = S._el.querySelector('#stage-select-mod-test-space');
+
+        if (S._modUnlockBtnEl) {
+            S._modUnlockBtnEl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (VM.isChallengeMode()) return;
+                var next = VM.setForceUnlock(!VM.isForceUnlockActive());
+                renderCurrentFrame();
+                StageSelectBridge.requestSnapshot({ setForceUnlock: next });
+                StageSelectCore.logDev('modifier forceUnlock: ' + (next ? 'on' : 'off'));
+            });
+        }
+        if (S._modTestSpaceBtnEl) {
+            S._modTestSpaceBtnEl.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (VM.isChallengeMode()) return;
+                StageSelectCore.cue('activate');
+                StageSelectBridge.requestReturnFrame('地图-测试空间', { id: 'mod-test-space' });
+            });
+        }
 
         S._el.querySelector('.stage-select-close-btn').addEventListener('click', requestClose);
         S._frameToggleEl.addEventListener('click', function(e) {
@@ -233,6 +259,9 @@
         S._hoverStageId = '';
         S._cardHoverStageId = '';
         S._focusStageId = '';
+        S._forceUnlock = false;
+        S._tourPinsVisible = false;
+        if (S._el) S._el.classList.remove('is-tour-pins-visible');
         S._lastInputKeyboard = false; // 打磨批二轮：键盘模态位随面板打开复位（默认指针模态）
         renderTabs();
         attachScaleWatcher();
@@ -496,6 +525,15 @@
         if (S._el) {
             S._el.setAttribute('data-catalog-id', S._catalogId || StageSelectData.DEFAULT_CATALOG_ID);
             S._el.setAttribute('data-test-catalog', manifest.testOnly ? 'true' : 'false');
+            S._el.setAttribute('data-accent', VM.getFrameAccent(frame.frameLabel));
+        }
+        if (S._modToolbarEl) {
+            S._modToolbarEl.hidden = VM.isChallengeMode() || !!manifest.testOnly;
+        }
+        if (S._modUnlockBtnEl) {
+            var forceActive = VM.isForceUnlockActive();
+            S._modUnlockBtnEl.setAttribute('aria-pressed', forceActive ? 'true' : 'false');
+            S._modUnlockBtnEl.classList.toggle('is-active', forceActive);
         }
         var region = S._el.querySelector('#stage-select-region');
         if (region) region.textContent = frame.frameLabel;
@@ -609,13 +647,14 @@
         var detail = StageSelectCore.buildStageDetail(button, state);
         var sizing = computeCardSizing(button, detail);
         var direct = VM.isDirectEntry(button);
-        var directSizing = direct ? computeDirectSizing(button) : null;
-        var mapLayout = direct && button.entryKind === 'map' && button.directLayout ? buildMapDirectLayout(button.directLayout) : null;
+        var isMapEntry = button.entryKind === 'map';
+        var directSizing = (direct || isMapEntry) ? computeDirectSizing(button) : null;
+        var mapLayout = isMapEntry && button.directLayout ? buildMapDirectLayout(button.directLayout) : null;
         var displayName = VM.getStageDisplayName(button);
         var node = document.createElement('div');
         node.className = 'stage-select-stage-button';
-        if (direct) {
-            node.classList.add('is-direct-entry');
+        if (direct || isMapEntry) {
+            if (direct) node.classList.add('is-direct-entry');
             node.classList.add('is-' + (button.entryKind || 'direct') + '-entry');
             node.style.setProperty('--stage-direct-width', directSizing.width + 'px');
             node.style.setProperty('--stage-direct-height', directSizing.height + 'px');
@@ -654,6 +693,8 @@
             // 锁定节点仍可聚焦：aria-disabled + 名称后缀让焦点可读锁定态，原因文案由检查器展示。
             node.setAttribute('aria-disabled', 'true');
             node.setAttribute('aria-label', displayName + '（未解锁）');
+        } else if (state.forceUnlocked) {
+            node.classList.add('is-force-unlocked');
         }
         if (state.task) node.classList.add('is-task');
         if (S._busyStageName && S._busyStageName === button.stageName) node.classList.add('is-busy');
@@ -667,11 +708,11 @@
             '<span class="stage-select-selected-ring" aria-hidden="true"></span>';
         node.addEventListener('click', function(e) {
             if (direct) {
-                // 直达入口（外交地图 / 副本任务）：保持一步跳转，不经过检查器。
+                // 直达入口（副本任务）：保持一步跳转，不经过检查器。
                 StageSelectInspector.requestStageActivation(button, '', null);
                 return;
             }
-            // 普通关卡：点击 = 选中并 pin 检查器；再点同节点取消选中。
+            // 普通关卡与外交据点：点击 = 选中并 pin 检查器；再点同节点取消选中。
             StageSelectInspector.toggleStageSelection(button.id);
             StageSelectCore.logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
         });
@@ -682,7 +723,7 @@
                     StageSelectInspector.requestStageActivation(button, '', null);
                     return;
                 }
-                // 键盘路径：Enter/Space 选中并打开检查器，焦点移交检查器内难度（锁定节点移交关闭钮）。
+                // 键盘路径：Enter/Space 选中并打开检查器，焦点移交检查器内主操作（锁定节点移交关闭钮）。
                 StageSelectInspector.selectStage(button.id, { focusInspector: true });
                 StageSelectCore.logDev('select stage: ' + button.stageName + (state.unlocked ? '' : ' (locked fixture)'));
                 return;
@@ -739,27 +780,39 @@
     // 消除「role=button 内嵌 button」的嵌套交互语义。节点上的状态类 / 卡片尺寸变量同步镜像到锚点，
     // 让既有卡片 CSS（edge 吸附 / data-card-name-lines / 自适应宽高）无需改几何即可继续生效。
     function createCardAnchor(button, state, detail, sizing, displayName) {
+        var previewAsset = VM.getPreviewAsset(button);
+        var resolvedPreviewUrl = StageSelectCore.resolveAssetUrl(previewAsset.url || button.previewUrl);
         var anchor = document.createElement('div');
         anchor.className = 'stage-select-card-anchor';
+        if (button.entryKind === 'map') {
+            anchor.classList.add('is-map-entry');
+        }
         anchor.setAttribute('data-stage-name', button.stageName);
         anchor.setAttribute('data-stage-id', button.id);
         anchor.setAttribute('data-card-name-lines', String(sizing.nameLines));
-        anchor.style.left = button.x + 'px';
-        anchor.style.top = button.y + 'px';
+        var anchorX = button.x;
+        var anchorY = button.y;
+        if (button.entryKind === 'map' && button.directLayout && button.directLayout.marker) {
+            anchorX = button.x + StageSelectCore.finiteNumber(button.directLayout.marker.x, 0);
+            anchorY = button.y + StageSelectCore.finiteNumber(button.directLayout.marker.y, 120) - 120;
+        }
+        anchor.style.left = anchorX + 'px';
+        anchor.style.top = anchorY + 'px';
         anchor.style.setProperty('--stage-card-width', sizing.width + 'px');
         anchor.style.setProperty('--stage-card-height', sizing.cardHeight + 'px');
-        if (button.y < 60) anchor.classList.add('is-edge-top');
-        if (button.x < 40) anchor.classList.add('is-edge-left');
-        if (button.x > 790) anchor.classList.add('is-edge-right');
+        if (anchorY < (button.entryKind === 'map' ? 155 : 60)) anchor.classList.add('is-edge-top');
+        if (anchorX < 40) anchor.classList.add('is-edge-left');
+        if (anchorX > 790) anchor.classList.add('is-edge-right');
         if (!state.unlocked) anchor.classList.add('is-locked');
+        else if (state.forceUnlocked) anchor.classList.add('is-force-unlocked');
         if (state.task) anchor.classList.add('is-task');
         if (S._busyStageName && S._busyStageName === button.stageName) anchor.classList.add('is-busy');
         anchor.innerHTML =
             '<span class="stage-select-card">' +
                 '<span class="stage-select-card-corner" aria-hidden="true"></span>' +
                 '<span class="stage-select-card-name">' + StageSelectCore.escapeHtml(displayName) + '</span>' +
-                '<span class="stage-select-preview-wrap">' +
-                    '<img class="stage-select-preview" src="' + StageSelectCore.escapeAttr(StageSelectCore.resolveAssetUrl(button.previewUrl)) + '" alt="' + StageSelectCore.escapeAttr(displayName) + ' 预览" data-preview-source="' + StageSelectCore.escapeAttr(button.previewSource || '') + '">' +
+                '<span class="stage-select-preview-wrap" data-preview-tier="' + StageSelectCore.escapeAttr(previewAsset.tier) + '">' +
+                    '<img class="stage-select-preview" src="' + StageSelectCore.escapeAttr(resolvedPreviewUrl) + '" alt="' + StageSelectCore.escapeAttr(displayName) + ' 预览" data-preview-source="' + StageSelectCore.escapeAttr(button.previewSource || '') + '">' +
                 '</span>' +
                 '<span class="stage-select-card-detail">' + detail.html + '</span>' +
                 '<span class="stage-select-difficulties">' + renderDifficulties(button, state, false) + '</span>' +
@@ -815,11 +868,12 @@
     function renderStageMarkerSvg() {
         return '<span class="stage-select-marker" aria-hidden="true">' +
             '<svg class="stage-select-marker-svg" viewBox="-293 -293 586 586" focusable="false">' +
+                '<path class="stage-select-marker-disc" d="M0 -264 L264 0 L0 264 L-264 0 Z"/>' +
                 '<path class="stage-select-marker-fill" fill-rule="evenodd" d="' +
-                    'M118 -118 Q167 -69 167 1 Q167 70 118 119 Q69 168 0 168 Q-69 168 -118 119 Q-167 70 -167 1 Q-167 -69 -118 -118 Q-69 -167 0 -166 Q69 -167 118 -118 Z ' +
-                    'M168 -167 Q237 -98 237 1 Q237 99 168 168 Q99 238 1 238 Q-98 238 -167 168 Q-237 99 -236 1 Q-237 -98 -167 -167 Q-98 -237 1 -236 Q99 -237 168 -167 Z ' +
-                    'M207 -207 Q292 -121 293 1 Q293 122 207 207 Q121 293 0 293 Q-121 293 -207 207 Q-293 122 -292 1 Q-293 -121 -207 -207 Q-121 -292 0 -292 Q121 -292 207 -207 Z' +
+                    'M0 -220 L220 0 L0 220 L-220 0 Z ' +
+                    'M0 -162 L-162 0 L0 162 L162 0 Z' +
                 '"/>' +
+                '<path class="stage-select-marker-core" d="M0 -84 L84 0 L0 84 L-84 0 Z"/>' +
             '</svg>' +
         '</span>';
     }
@@ -839,9 +893,12 @@
     }
 
     function renderDifficulties(button, state, tabbable) {
-        var difficulties = VM.isChallengeMode() ? ['地狱'] : ['简单', '冒险', '修罗', '地狱'];
         // hover 卡内按钮是鼠标快捷路径（tabIndex=-1 不进 Tab 序）；检查器内按钮承接键盘路径。
         var tabAttr = tabbable === false ? ' tabindex="-1"' : '';
+        if (button && button.entryKind === 'map') {
+            return '<button type="button" class="stage-select-map-action" data-stage-name="' + StageSelectCore.escapeAttr(button.stageName) + '" data-entry-kind="map" data-difficulty=""' + tabAttr + '>前往地点</button>';
+        }
+        var difficulties = VM.isChallengeMode() ? ['地狱'] : ['简单', '冒险', '修罗', '地狱'];
         return difficulties.map(function(name) {
             var active = state.task && state.highestDifficulty === name ? ' is-recommended' : '';
             return '<button type="button" class="stage-select-difficulty is-' + difficultyClass(name) + active + '" data-stage-name="' + StageSelectCore.escapeAttr(button.stageName) + '" data-entry-kind="' + StageSelectCore.escapeAttr(button.entryKind || 'difficulty') + '" data-difficulty="' + StageSelectCore.escapeAttr(name) + '"' + tabAttr + '>' + StageSelectCore.escapeHtml(name) + '</button>';

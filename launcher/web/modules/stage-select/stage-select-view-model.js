@@ -52,11 +52,96 @@ var StageSelectViewModel = (function() {
         return s;
     }
 
+    var FRAME_ACCENT_MAP = {
+        '基地门口': 'base',
+        '基地车库': 'fallen',
+        '基地房顶': 'warlord',
+        '车库': 'fallen',
+        '黑铁会': 'blackiron',
+        '黑铁会总部': 'blackiron',
+        '黑铁会总堂': 'blackiron',
+        '堕落城': 'fallen',
+        '诺亚': 'fallen',
+        '诺亚前线基地深处': 'fallen',
+        '诺亚前线基地深处第二层': 'fallen',
+        '沙漠虫洞': 'warlord',
+        '亡灵沙漠': 'warlord',
+        '近郊': 'warlord',
+        '荒漠': 'warlord',
+        '军阀': 'warlord',
+        '军阀重地': 'warlord',
+        '军阀总基地': 'warlord',
+        '雪山': 'remnant',
+        '雪山第二层': 'remnant',
+        '雪山内部': 'remnant',
+        '雪山内部第二层': 'remnant',
+        '坠毁战舰': 'remnant',
+        '遗迹': 'remnant',
+        '遗迹外部': 'remnant',
+        '遗迹深处': 'remnant',
+        '地下': 'underground',
+        '地下2': 'underground',
+        '地下2层': 'underground',
+        '异界战场': 'underground',
+        '试炼场深处': 'underground',
+        '修道院': 'underground'
+    };
+
+    function getFrameAccent(frameLabel) {
+        var label = String(frameLabel || S._currentFrameLabel || '');
+        return FRAME_ACCENT_MAP[label] || 'base';
+    }
+
+    function isChallengeMode() {
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.isChallengeMode !== 'undefined') return !!S._runtimeSnapshot.isChallengeMode;
+        return !!(S._fixture && S._fixture.challenge);
+    }
+
+    function isForceUnlockActive() {
+        if (isChallengeMode()) return false;
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.forceUnlock === 'boolean') {
+            return S._runtimeSnapshot.forceUnlock;
+        }
+        return !!S._forceUnlock;
+    }
+
+    function setForceUnlock(active) {
+        if (isChallengeMode()) {
+            S._forceUnlock = false;
+            if (S._runtimeSnapshot && typeof S._runtimeSnapshot === 'object') {
+                S._runtimeSnapshot.forceUnlock = false;
+            }
+            return false;
+        }
+        var next = !!active;
+        S._forceUnlock = next;
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot === 'object') {
+            S._runtimeSnapshot.forceUnlock = next;
+        }
+        return next;
+    }
+
+    function getPreviewAsset(button) {
+        var b = button || {};
+        var hdUrl = typeof b.bannerUrl === 'string' && b.bannerUrl
+            ? b.bannerUrl
+            : (typeof b.hdPreviewUrl === 'string' && b.hdPreviewUrl ? b.hdPreviewUrl : '');
+        var legacyUrl = typeof b.previewUrl === 'string' && b.previewUrl ? b.previewUrl : '';
+        return {
+            url: hdUrl || legacyUrl || '',
+            legacyUrl: legacyUrl,
+            hdUrl: hdUrl,
+            tier: hdUrl ? 'hd' : 'legacy'
+        };
+    }
+
     function getStageState(stageName) {
         var stages = S._fixture && S._fixture.stages || {};
         var base = stages[stageName] || {};
         var state = {
             unlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            nativeUnlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            forceUnlocked: false,
             task: !!base.task,
             highestDifficulty: base.highestDifficulty || '简单',
             detail: base.detail || '',
@@ -83,13 +168,16 @@ var StageSelectViewModel = (function() {
         }
         if (S._runtimeSnapshot && S._runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.unlockedStages, stageName)) {
             state.unlocked = !!S._runtimeSnapshot.unlockedStages[stageName];
+            state.nativeUnlocked = state.unlocked;
+        }
+        if (S._runtimeSnapshot && S._runtimeSnapshot.nativeUnlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.nativeUnlockedStages, stageName)) {
+            state.nativeUnlocked = !!S._runtimeSnapshot.nativeUnlockedStages[stageName];
+        }
+        if (isForceUnlockActive()) {
+            state.forceUnlocked = !state.nativeUnlocked;
+            state.unlocked = true;
         }
         return state;
-    }
-
-    function isChallengeMode() {
-        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.isChallengeMode !== 'undefined') return !!S._runtimeSnapshot.isChallengeMode;
-        return !!(S._fixture && S._fixture.challenge);
     }
 
     function isRuntimeMode() {
@@ -166,7 +254,7 @@ var StageSelectViewModel = (function() {
     }
 
     function isDirectEntry(button) {
-        return button && button.entryKind && button.entryKind !== 'difficulty';
+        return !!(button && button.entryKind && button.entryKind !== 'difficulty' && button.entryKind !== 'map');
     }
 
     function getStageDisplayName(button) {
@@ -276,12 +364,21 @@ var StageSelectViewModel = (function() {
     function setFixture(name) {
         S._fixtureName = name || 'mixed';
         S._fixture = StageSelectData.getFixture(S._fixtureName);
+        if (S._fixture && S._fixture.challenge) {
+            S._forceUnlock = false;
+        }
     }
 
     // runtime snapshot 应用（纯状态半）：全量替换 + 帧标签随动；重渲染 / 日志由 renderer 编排。
     function applySnapshot(snapshot) {
         S._runtimeSnapshot = snapshot || {};
         S._lastError = '';
+        if (S._runtimeSnapshot.isChallengeMode) {
+            S._forceUnlock = false;
+            S._runtimeSnapshot.forceUnlock = false;
+        } else if (typeof S._runtimeSnapshot.forceUnlock === 'boolean') {
+            S._forceUnlock = S._runtimeSnapshot.forceUnlock;
+        }
         if (S._runtimeSnapshot.currentFrameLabel
                 && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.currentFrameLabel))) {
             S._currentFrameLabel = S._runtimeSnapshot.currentFrameLabel;
@@ -325,9 +422,14 @@ var StageSelectViewModel = (function() {
     // 导出：被 renderer / inspector / bridge / facade 引用的纯数据层 API
     return {
         LIMITATION_DESC: LIMITATION_DESC,
+        FRAME_ACCENT_MAP: FRAME_ACCENT_MAP,
+        getFrameAccent: getFrameAccent,
         renderLimitDetail: renderLimitDetail,
         getStageState: getStageState,
         isChallengeMode: isChallengeMode,
+        isForceUnlockActive: isForceUnlockActive,
+        setForceUnlock: setForceUnlock,
+        getPreviewAsset: getPreviewAsset,
         isRuntimeMode: isRuntimeMode,
         getTaskTargets: getTaskTargets,
         formatTaskCount: formatTaskCount,

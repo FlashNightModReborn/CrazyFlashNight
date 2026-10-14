@@ -35,10 +35,17 @@ async function main(){
         await page.waitForTimeout(100);const stopped=await frames();await page.waitForTimeout(180);assert.equal(await frames(),stopped);
         await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':{task:true,highestDifficulty:'修罗'}}}));
         assert.equal(await page.evaluate(()=>StageSelectDiorama.stats().editing),true);near(await pose(),traveled);
+        assert.equal(await page.locator('[data-camera="toggle-pins"]').isVisible(),true);
+        await page.locator('[data-camera="toggle-pins"]').click();
+        assert.equal(await page.locator('.stage-select-panel').evaluate(el=>el.classList.contains('is-tour-pins-visible')),true);
+        await page.locator('[data-camera="toggle-pins"]').click();
+        assert.equal(await page.locator('.stage-select-panel').evaluate(el=>el.classList.contains('is-tour-pins-visible')),false);
+        await page.locator('[data-camera="next-poi"]').click();await idle();
+        assert.notDeepEqual((await pose()).target,traveled.target);
         await page.getByRole('button',{name:'结束游览',exact:true}).first().click();near(await pose(),original);
         assert.equal(await page.evaluate(()=>localStorage.getItem('cf7.stage-camera.base-gate.v1')),stored);
         assert.equal(await page.evaluate(()=>StageSelectCore.state._cardLayerEl.inert || StageSelectCore.state._navLayerEl.inert),false);
-        report.checks.push('visible player tour button; simultaneous WASD and mouse orbit; snapshot preserves tour; release stops frames; exit restores view without writing presets');
+        report.checks.push('visible player tour button; simultaneous WASD and mouse orbit; POI stepping and landmark pin toggle; snapshot preserves tour; release stops frames; exit restores view without writing presets');
 
         await page.keyboard.press('Control+Shift+C');await movingMode();
         const arrowStart=await pose();await page.keyboard.down('ArrowUp');await page.waitForTimeout(160);await page.keyboard.up('ArrowUp');

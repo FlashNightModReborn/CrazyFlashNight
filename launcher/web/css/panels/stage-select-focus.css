@@ -43,9 +43,11 @@
 .stage-focus-footer[hidden] { display:none; }
 .stage-focus-section-title { display:none; }
 .stage-focus-footer .stage-select-inspector-difficulties { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+.stage-focus-footer .stage-select-inspector-difficulties[hidden] { display:none; }
 .stage-focus-footer .stage-select-difficulty { width:auto; height:42px; min-height:42px; }
 .stage-focus-footer .stage-select-difficulty.is-chosen { outline:2px solid var(--wb-accent); outline-offset:2px; }
 .stage-focus-panel .stage-focus-enter { width:100%; min-height:44px; margin-top:12px; background:var(--wb-accent); color:rgb(var(--ss-header-rgb)); border:0; font:inherit; font-weight:700; cursor:pointer; }
+.stage-focus-footer .stage-select-inspector-difficulties[hidden] + .stage-focus-enter { margin-top:0; }
 .stage-focus-enter:disabled { opacity:.5; cursor:default; }
 .stage-focus-surface button:focus-visible,.stage-focus-content:focus-visible { outline:2px solid var(--wb-focus); outline-offset:2px; }
 .stage-focus-rewards,.stage-focus-enemies { display:grid; grid-template-columns:repeat(auto-fill,42px); gap:6px; }
@@ -89,3 +91,273 @@
 .stage-select-panel.is-camera-editing .stage-select-button-layer,
 .stage-select-panel.is-camera-editing .stage-select-card-layer,
 .stage-select-panel.is-camera-editing .stage-select-nav-layer { pointer-events:none; visibility:hidden; opacity:0; }
+
+/* ── 聚焦战术终端母体 + 6 大区域动态色板、双轨头图精裱与巡礼模式（2026-10-14 Round 2）── */
+.stage-focus-surface .workbench-shell {
+    --wb-accent: rgb(var(--ss-accent-rgb));
+    --wb-accent-soft: rgba(var(--ss-accent-rgb), 0.16);
+}
+
+.stage-focus-surface .workbench-header {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(var(--ss-active-rgb), 0.45) 0%,
+            rgba(var(--ss-header-rgb), 0.95) 42%,
+            rgba(var(--ss-header-rgb), 0.98) 100%
+        );
+    border-bottom: 1px solid rgba(var(--ss-accent-rgb), 0.42);
+    box-shadow:
+        inset 0 2px 0 rgba(var(--ss-accent-rgb), 0.88),
+        0 6px 20px rgba(var(--ss-black-rgb), 0.55);
+}
+
+.stage-focus-surface .workbench-title {
+    color: rgb(var(--ss-region-text-rgb));
+    letter-spacing: 0.6px;
+    text-shadow: 0 0 12px rgba(var(--ss-accent-rgb), 0.32);
+}
+
+.stage-focus-viewport {
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.34);
+    box-shadow:
+        inset 0 0 28px rgba(var(--ss-black-rgb), 0.68),
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.14);
+}
+
+.stage-focus-panel.stage-select-inspector {
+    color: rgb(var(--ss-text-rgb));
+    background:
+        radial-gradient(130% 65% at 100% 0%, rgba(var(--ss-accent-rgb), 0.18) 0%, transparent 62%),
+        repeating-linear-gradient(
+            180deg,
+            rgba(var(--ss-accent-rgb), 0.028) 0px,
+            rgba(var(--ss-accent-rgb), 0.028) 1px,
+            transparent 1px,
+            transparent 4px
+        ),
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-card-grad-top-rgb), 0.96) 0%,
+            rgba(var(--ss-card-grad-bottom-rgb), 0.99) 100%
+        );
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.38);
+    border-top: 2px solid rgba(var(--ss-accent-rgb), 0.92);
+    box-shadow:
+        -10px 0 28px rgba(var(--ss-black-rgb), 0.62),
+        inset 0 0 24px rgba(var(--ss-accent-rgb), 0.06);
+}
+
+.stage-focus-topbar {
+    padding-bottom: 0;
+    border-bottom: 1px solid rgba(var(--ss-accent-rgb), 0.24);
+}
+
+.stage-focus-panel .stage-select-inspector-name {
+    color: rgb(var(--ss-region-text-rgb));
+    letter-spacing: 0.4px;
+}
+
+.stage-focus-panel .stage-select-inspector-type {
+    padding: 2px 7px;
+    color: rgb(var(--ss-region-text-rgb));
+    background: rgba(var(--ss-active-rgb), 0.42);
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.48);
+    letter-spacing: 0.4px;
+}
+
+.stage-focus-history,
+.stage-focus-muted {
+    color: rgba(var(--ss-text-rgb), 0.68);
+}
+
+.stage-focus-action,
+.stage-focus-tabs button {
+    color: rgb(var(--ss-text-rgb));
+    background: rgba(var(--ss-header-rgb), 0.82);
+    border: 1px solid rgba(var(--ss-line-rgb), 0.32);
+    transition:
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-focus-action:hover,
+.stage-focus-tabs button:hover {
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-active-rgb), 0.42);
+    border-color: rgba(var(--ss-accent-rgb), 0.72);
+}
+
+.stage-focus-tabs button[aria-selected="true"] {
+    color: rgb(var(--ss-region-text-rgb));
+    background: rgba(var(--ss-active-rgb), 0.62);
+    border-color: rgb(var(--ss-accent-rgb));
+    box-shadow: inset 0 2px 0 rgb(var(--ss-accent-rgb));
+    font-weight: 700;
+}
+
+.stage-focus-content h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding-left: 8px;
+    color: rgb(var(--ss-region-text-rgb));
+    font-size: var(--ss-font-md);
+    letter-spacing: 0.5px;
+    border-left: 3px solid rgb(var(--ss-accent-rgb));
+}
+
+.stage-focus-preview {
+    position: relative;
+    overflow: hidden;
+    background: rgb(var(--ss-preview-bg-rgb));
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.42);
+    box-shadow:
+        0 8px 20px rgba(var(--ss-black-rgb), 0.55),
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.16);
+}
+
+.stage-focus-preview[data-preview-tier="legacy"]::before {
+    content: "";
+    position: absolute;
+    inset: -8px;
+    background-image: var(--stage-preview-bg);
+    background-size: cover;
+    background-position: center;
+    filter: blur(10px) brightness(0.45);
+    opacity: 0.78;
+    pointer-events: none;
+}
+
+.stage-focus-preview[data-preview-tier="legacy"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+        180deg,
+        rgba(var(--ss-black-rgb), 0) 0px,
+        rgba(var(--ss-black-rgb), 0) 2px,
+        rgba(var(--ss-black-rgb), 0.2) 3px
+    );
+    box-shadow:
+        inset 0 0 16px rgba(var(--ss-black-rgb), 0.58),
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.28);
+}
+
+.stage-focus-preview .stage-select-inspector-preview {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+.stage-focus-preview[data-preview-tier="hd"] img {
+    max-height: 168px;
+    object-fit: cover;
+}
+
+.stage-focus-token {
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.3);
+    background: rgba(var(--ss-header-rgb), 0.82);
+    color: rgba(var(--ss-text-rgb), 0.72);
+    box-shadow: inset 0 0 8px rgba(var(--ss-black-rgb), 0.55);
+}
+
+.stage-focus-token:hover,
+.stage-focus-token:focus-visible {
+    border-color: rgb(var(--ss-accent-rgb));
+    outline: 1px solid rgb(var(--ss-accent-rgb));
+    outline-offset: 1px;
+    box-shadow: 0 0 10px rgba(var(--ss-accent-rgb), 0.32);
+}
+
+.stage-focus-footer {
+    border-top: 1px solid rgba(var(--ss-accent-rgb), 0.28);
+}
+
+.stage-focus-footer .stage-select-difficulty.is-chosen {
+    outline: 2px solid rgb(var(--ss-accent-rgb));
+    outline-offset: 2px;
+    box-shadow:
+        0 0 14px rgba(var(--ss-accent-rgb), 0.52),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.35);
+}
+
+.stage-focus-panel .stage-focus-enter {
+    color: rgb(var(--ss-white-rgb));
+    background:
+        linear-gradient(
+            90deg,
+            rgba(var(--ss-active-rgb), 0.96) 0%,
+            rgba(var(--ss-accent-rgb), 0.88) 50%,
+            rgba(var(--ss-active-rgb), 0.96) 100%
+        );
+    border: 1px solid rgba(var(--ss-accent-rgb), 0.92);
+    letter-spacing: 2px;
+    text-shadow: 0 1px 3px rgba(var(--ss-black-rgb), 0.88);
+    box-shadow:
+        0 8px 20px rgba(var(--ss-black-rgb), 0.6),
+        0 0 16px rgba(var(--ss-accent-rgb), 0.26),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.35);
+    transition:
+        filter var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-focus-panel .stage-focus-enter:hover:not(:disabled) {
+    filter: brightness(1.12);
+    box-shadow:
+        0 10px 24px rgba(var(--ss-black-rgb), 0.7),
+        0 0 22px rgba(var(--ss-accent-rgb), 0.42),
+        inset 0 1px 0 rgba(var(--ss-white-rgb), 0.45);
+}
+
+.stage-focus-map-reticle {
+    fill: none;
+    stroke: rgba(var(--ss-selected-rgb), 0.68);
+    stroke-width: 1.5px;
+    stroke-dasharray: 6 4;
+}
+
+.stage-focus-map-caption {
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(var(--ss-header-rgb), 0.86) 20%,
+        rgba(var(--ss-header-rgb), 0.86) 80%,
+        transparent 100%
+    );
+    padding: 5px 14px;
+    border-top: 1px solid rgba(var(--ss-selected-rgb), 0.32);
+    border-bottom: 1px solid rgba(var(--ss-selected-rgb), 0.32);
+}
+
+.stage-select-panel.is-camera-editing .stage-camera-editor {
+    max-width: min(570px, calc(100% - 24px));
+    background:
+        linear-gradient(
+            180deg,
+            rgba(var(--ss-card-grad-top-rgb), 0.95) 0%,
+            rgba(var(--ss-header-rgb), 0.98) 100%
+        );
+    border-color: rgba(var(--ss-accent-rgb), 0.48);
+    box-shadow:
+        0 12px 28px rgba(var(--ss-black-rgb), 0.72),
+        inset 0 2px 0 rgba(var(--ss-accent-rgb), 0.85);
+}
+
+.stage-select-panel.is-camera-editing.is-tour-pins-visible .stage-select-button-layer {
+    visibility: visible;
+    opacity: 0.92;
+    pointer-events: none;
+}
+
+.stage-camera-editor button[aria-pressed="true"] {
+    border-color: rgb(var(--ss-selected-rgb));
+    color: rgb(var(--ss-selected-rgb));
+    background: rgba(var(--ss-mod-amber-bg-rgb), 0.65);
+}
+
+

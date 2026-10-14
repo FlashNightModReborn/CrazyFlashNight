@@ -46,8 +46,20 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         var requestedReturnFrameLabel:String = params != undefined && params.returnFrameLabel != undefined
             ? resolveRootReturnFrameLabel(String(params.returnFrameLabel))
             : "";
+        var challengeActive:Boolean = isChallengeMode();
+        if (params != undefined && params.setForceUnlock != undefined) {
+            if (challengeActive) {
+                _root.Web选关强制解锁 = false;
+            } else {
+                _root.Web选关强制解锁 = (params.setForceUnlock == true || params.setForceUnlock == "true" || params.setForceUnlock == 1);
+            }
+        } else if (challengeActive && _root.Web选关强制解锁 == true) {
+            _root.Web选关强制解锁 = false;
+        }
+        var forceUnlockActive:Boolean = (!challengeActive && _root.Web选关强制解锁 == true);
         var names:Array = normalizeStageNames(params.stageNames);
         var unlocked:Object = {};
+        var nativeUnlocked:Object = {};
         var details:Object = {};
         var i:Number;
 
@@ -55,6 +67,7 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         if (requestedReturnFrameLabel != "") _root.Web选关返回帧值 = requestedReturnFrameLabel;
 
         for (i = 0; i < names.length; i++) {
+            nativeUnlocked[names[i]] = isNativeStageUnlocked(names[i]);
             unlocked[names[i]] = canEnterStage(names[i]);
             details[names[i]] = buildStageDetail(names[i]);
         }
@@ -65,8 +78,10 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
             success: true,
             snapshot: {
                 unlockedStages: unlocked,
+                nativeUnlockedStages: nativeUnlocked,
+                forceUnlock: forceUnlockActive,
                 stageDetails: details,
-                isChallengeMode: isChallengeMode(),
+                isChallengeMode: challengeActive,
                 currentFrameLabel: resolveStageSelectFrameLabel(String(_root.Web选关当前帧值 || _root.关卡地图帧值 || "")),
                 returnFrameLabel: resolveRootReturnFrameLabel(String(_root.Web选关返回帧值 || _root.关卡地图帧值 || ""))
             }
@@ -310,6 +325,15 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
         // 返回目标是根场景身份，不能按关卡目录归一成选关页。
         frameLabel = resolveRootReturnFrameLabel(frameLabel);
         if (frameLabel == "") frameLabel = "基地门口";
+        if (frameLabel == "地图-测试空间" && isChallengeMode()) {
+            sendResponse({
+                task: "stage_select_response",
+                callId: callId,
+                success: false,
+                error: "challenge_mode_restricted"
+            });
+            return;
+        }
         var skipTransition:Boolean = isAlreadyAtReturnFrame(frameLabel);
 
         if (!skipTransition && (_root.淡出动画 == undefined || _root.淡出动画.淡出跳转帧 == undefined)) {
@@ -721,12 +745,22 @@ class org.flashNight.arki.stageSelect.StageSelectPanelService {
     // performTaskOpen 已移除：副本任务条目改走 handleEnter 内的 openWebDungeon 重定向（web 副本视图），
     // 不再依赖旧 Flash Symbol 1873(_root.委托任务界面)。这是该面板对 委托任务界面 的最后一处引用。
 
-    private static function canEnterStage(stageName:String):Boolean {
+    private static function isNativeStageUnlocked(stageName:String):Boolean {
         if (stageName == "") return false;
         if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) return false;
         if (!isSupportedStageType(_root.StageInfoDict[stageName].Type)) return false;
         if (typeof _root.isStageUnlocked != "function") return false;
         return _root.isStageUnlocked(stageName) == true;
+    }
+
+    private static function canEnterStage(stageName:String):Boolean {
+        if (stageName == "") return false;
+        if (_root.StageInfoDict == undefined || _root.StageInfoDict[stageName] == undefined) return false;
+        if (!isSupportedStageType(_root.StageInfoDict[stageName].Type)) return false;
+        if (!isChallengeMode() && _root.Web选关强制解锁 == true) {
+            return true;
+        }
+        return isNativeStageUnlocked(stageName);
     }
 
     private static function buildStageDetail(stageName:String):Object {
