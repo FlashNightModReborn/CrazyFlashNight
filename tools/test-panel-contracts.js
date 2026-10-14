@@ -58,7 +58,7 @@ function run() {
     assert(report.ok, JSON.stringify(report.errors));
     assert(report.contractVersion === 2, "expected strict panel contract v2");
     assert(report.checked.domains === 13, "expected thirteen governed domains including tablet and the U7 stage doors");
-    assert(report.checked.commands === 59, "expected fifty-nine governed command mappings");
+    assert(report.checked.commands === 60, "expected sixty governed command mappings");
     const garage = contract.domains.find(function (domain) { return domain.id === "garage"; });
     assert(garage && garage.hostPayloadMode === "normalized"
       && garage.commands.map(function (command) { return command.cmd; }).join(',') === 'snapshot,commit,query'
@@ -85,13 +85,16 @@ function run() {
       return domain.id === "settings";
     });
     assert(settings && settings.hostPayloadMode === "normalized"
-      && settings.commands.length === 8,
-      "settings must keep the normalized eight-command Flash boundary");
-    assert(settings.commands[0].cmd === "snapshot"
-      && settings.commands[1].cmd === "preview"
-      && settings.commands[2].cmd === "apply"
-      && settings.commands[7].cmd === "try_revive",
+      && settings.commands.length === 9,
+      "settings must keep the normalized nine-command Flash boundary");
+    assert(settings.commands.map(function (command) { return command.cmd; }).join(',')
+      === 'snapshot,reconcile,preview,apply,cancel,save,cheat,return_base,try_revive',
       "settings command order and rescue boundary must remain explicit");
+    assert(settings.commands[1].action === 'settingsReconcile'
+      && settings.commands[1].capability === 'query'
+      && settings.commands[1].access === 'read'
+      && settings.commands[1].businessDecisionOwner === 'as2',
+      "settings exact reconcile must remain an AS2-owned read-only query");
     const kshop = contract.domains.find(function (domain) {
       return domain.id === "kshop";
     });

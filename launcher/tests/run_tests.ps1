@@ -6,6 +6,7 @@
 # Phase 4 重写：从 nuget restore + msbuild + xunit.console.exe 路径切到
 # `dotnet test`（Microsoft.NET.Test.Sdk + xunit.runner.visualstudio）。
 
+param([switch]$NoBuild, [string]$ResultsDirectory)
 $ErrorActionPreference = "Stop"
 
 $testsDir    = $PSScriptRoot
@@ -155,9 +156,12 @@ try {
     # Keep it non-terminating while the complete testhost diagnostic stream
     # is captured, then restore the runner's fail-fast preference.
     $ErrorActionPreference = "Continue"
+    $additionalArguments=@()
+    if($NoBuild){$additionalArguments+=@('--no-build','--no-restore')}
+    if($ResultsDirectory){$additionalArguments+=@('--logger','trx;LogFileName=recheck.trx','--results-directory',$ResultsDirectory)}
     $testOutput = @(
         & $dotnet test $testsCsproj -c Release `
-            --logger "console;verbosity=normal" 2>&1
+            --logger "console;verbosity=normal" @additionalArguments 2>&1
     )
     $exitCode = $LASTEXITCODE
 } finally {

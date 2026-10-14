@@ -14,7 +14,7 @@ namespace CF7Launcher.Guardian
         private bool _compositionIntelligencePreparing;
         private Action<bool> _compositionPanelState;
         private Func<string, bool> _compositionRestoreFocus;
-        private Action<Action<string>> _intelligenceAcquireResponseChannel;
+        private Action<Func<Action<string>>> _intelligenceAcquireResponseChannel;
         private Action _intelligenceRestoreResponseChannel;
 
         internal bool CompositionHelpOwnsInput => SelectedCompositionSurface!=null;
@@ -24,7 +24,7 @@ namespace CF7Launcher.Guardian
         // HandlePanelMessage 权威；本控制器只负责实例绑定、暂停与几何，不复制业务判定。
         internal void ConfigureCompositionIntelligence(string webRoot, string profileRoot,
             Action<string> forwardPanelMessage,
-            Action<Action<string>> acquireResponseChannel, Action restoreResponseChannel,
+            Action<Func<Action<string>>> acquireResponseChannel, Action restoreResponseChannel,
             bool deferPrewarm = false)
         {
             if (_compositionIntelligence != null)
@@ -36,13 +36,14 @@ namespace CF7Launcher.Guardian
             _intelligenceRestoreResponseChannel = restoreResponseChannel;
             _compositionIntelligence = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot,
                 CompositionPanelProfile.Intelligence);
-            _compositionIntelligence.CloseEnvelopeDelegated += envelope =>
+            _compositionIntelligence.AttachHostLifetime(_hostLifetime);
+            _compositionIntelligence.HostCloseRequested += context =>
             {
                 if (_disposed || !_compositionIntelligenceSelected || _activePanel != "intelligence") return;
-                if (envelope.Value<string>("panelInstanceId") != _activePanelInstanceId) return;
+                if (!ExactCloseSource(context)) return;
                 LogManager.Log("[CompositionIntelligence] close delegated reason="
-                    + (envelope.Value<string>("reason") ?? "ordinary"));
-                forwardPanelMessage(envelope.ToString(Newtonsoft.Json.Formatting.None));
+                    + context.Cause);
+                _web.HandleCompositionIntelligenceClose(context);
             };
             _compositionIntelligence.InboundPanelMessage += message =>
             {
@@ -86,11 +87,11 @@ namespace CF7Launcher.Guardian
             _compositionPanelState = panelState;
             _compositionRestoreFocus = restoreFocus;
             _compositionHelp = new CompositionHelpSurface(_ownerForm, webRoot, profileRoot);
-            _compositionHelp.CloseRequested += reason =>
+            _compositionHelp.AttachHostLifetime(_hostLifetime);
+            _compositionHelp.HostCloseRequested += context =>
             {
                 if (_disposed || !_compositionHelpSelected || _activePanel != "help") return;
-                LogManager.Log("[CompositionHelp] close requested reason=" + reason);
-                TryClosePanelExact("help", _activePanelInstanceId, true, null);
+                TryCloseHostContext(context,true,()=>ExactCloseSource(context),null,null);
             };
             if (!deferPrewarm) PrepareCompositionHelp();
         }
@@ -140,7 +141,7 @@ namespace CF7Launcher.Guardian
             bool intelligence = surface != null && ReferenceEquals(surface, _compositionIntelligence);
             if (intelligence == _compositionIntelligenceSelected) return;
             _compositionIntelligenceSelected = intelligence;
-            if (intelligence) _intelligenceAcquireResponseChannel?.Invoke(json => surface.TryPost(json));
+            if (intelligence) _intelligenceAcquireResponseChannel?.Invoke(surface.CaptureResponseSink);
             else _intelligenceRestoreResponseChannel?.Invoke();
         }
 
@@ -184,18 +185,14 @@ namespace CF7Launcher.Guardian
         {
             CompositionHelpSurface surface = SelectedOwnedCompositionSurface;
             if (surface == null) return false;
-            bool restore = surface.CanRestoreGameFocus;
+            bool restore = false;
             try { surface.Retire(); }
             finally
             {
                 SetCompositionSurfaceSelected(null);
-                _compositionPanelState?.Invoke(false);
-                if (!_web.ReleaseWebPanelPauseAfterFailedOpen())
-                    LogManager.Log("[CompositionPanel] pause release not delivered");
             }
             // A fresh endpoint is preheated; the retired controller can never own
             // later input. Preparation failure leaves the panel unavailable, not legacy.
-            if (!_disposed) PrepareCompositionSurface(surface);
             return restore;
         }
     }

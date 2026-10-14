@@ -19,6 +19,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         return {_currentframe:frame,
             play:function():Void {counters.plays++;},stop:function():Void {counters.stops++;},
             gotoAndPlay:function(frame:Number):Void {counters.jumps++;counters.target=frame;this._currentframe=frame;},
+            gotoAndStop:function(frame:Number):Void {this._currentframe=frame;if(frame==37)SceneTransitionService.failed(this);},
             淡出跳转帧:function(frame:String,token:String):Void {counters.retries++;}};
     }
     public static function runAllTests():Void {
@@ -198,6 +199,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         check(!SceneTransitionService.cleanupCompleted(fade),
             "unmanaged legacy cleanup can resume its original fade timeline");
         testCalibrationPresentation();
+        testBackgroundPresentation();
         _root.淡出动画=old.fade; _root.gameworld=old.world; _root.加载背景列表=old.data;
         _root.初期关卡列表=old.stages; _root.关卡标志=old.flag; _root.主线任务进度=old.progress;
         _root.从加载失败返回=old.returned; _root.场景进入位置名=old.entry;
@@ -207,6 +209,82 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         EventBus.getInstance().unsubscribe("SceneTransitionReleased",onReleased,SceneTransitionServiceTest);
         trace("SceneTransitionServiceTest Tests Passed: "+passed);
         trace("SceneTransitionServiceTest Tests Failed: "+failed);
+    }
+    private static var backgroundLoads:Array;
+    private static var rejectBackground:Boolean;
+    private static function pendingBackground():Object {
+        SceneTransitionService.clear();
+        var fade:Object=fixture(5);_root.淡出动画=fade;
+        _root.gameworld={__stageReturnWorldIdentity:{}};
+        SceneTransitionService.begin(fade);var cover:Object=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        _root.gameworld={__stageReturnWorldIdentity:{}};
+        var target:Object={};
+        _root.gameworld.背景={外部动画加载壳mc:target};
+        SceneTransitionService.loadBackground(_root.gameworld,"fixture.swf",target);
+        fade._currentframe=30;
+        EventBus.getInstance().publish("SceneReady",_root.gameworld,"",_root.gameworld.__stageReturnWorldIdentity);
+        return {fade:fade,target:target,load:backgroundLoads[backgroundLoads.length-1]};
+    }
+    private static function testBackgroundPresentation():Void {
+        backgroundLoads=[];rejectBackground=false;
+        var proto:Object=MovieClipLoader.prototype;
+        var original:Object={load:proto.loadClip,add:proto.addListener,remove:proto.removeListener};
+        proto.addListener=function(listener:Object):Boolean {this.fixtureListener=listener;return true;};
+        proto.removeListener=function(listener:Object):Boolean {this.fixtureListener=null;return true;};
+        proto.loadClip=function(url:String,target:Object):Boolean {
+            backgroundLoads.push({listener:this.fixtureListener,target:target});return !rejectBackground;
+        };
+        var value:Object=pendingBackground();
+        check(sent[sent.length-1].phase!="reveal","business SceneReady cannot reveal an unfinished background");
+        SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","ordinary ticks cannot complete the external loader");
+        value.load.listener.onLoadInit({});SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","foreign loader target cannot complete visual readiness");
+        value.load.listener.onLoadInit(value.target);
+        check(sent[sent.length-1].phase!="reveal","load-init callback does not reveal in its own frame");
+        SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","first tick may share the load-init frame");
+        SceneTransitionService.tick();
+        check(sent[sent.length-1].phase=="reveal","initialized background crosses a frame before Host reveal request");
+        var revision:Number=sent[sent.length-1].revision;
+        value.load.listener.onLoadError(value.target,"late",0);SceneTransitionService.tick();
+        check(sent[sent.length-1].phase=="reveal" && sent[sent.length-1].revision==revision,"late loader error cannot reverse successful initialization");
+        value=pendingBackground();
+        SceneTransitionService.backgroundBaked(_root.gameworld,_root.gameworld.背景);
+        SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","baking a pre-load placeholder cannot grant background readiness");
+        value.load.listener.onLoadComplete(value.target);SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","download completion alone is not initialized pixels");
+        SceneTransitionService.backgroundBaked(_root.gameworld,{});SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","foreign background bake cannot acknowledge this loader");
+        SceneTransitionService.backgroundBaked(_root.gameworld,_root.gameworld.背景);
+        delete _root.gameworld.背景.外部动画加载壳mc;
+        SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase=="reveal","completed bitmap bake survives unloading the original loader child");
+        value=pendingBackground();
+        var old:Object=value.load;
+        SceneTransitionService.loadBackground(_root.gameworld,"replacement.swf",value.target);
+        var fresh:Object=backgroundLoads[backgroundLoads.length-1];
+        old.listener.onLoadInit(value.target);old.listener.onLoadError(value.target,"late",0);
+        SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal" && value.fade._currentframe==30,"superseded load cannot complete or fail the replacement at the same path");
+        fresh.listener.onLoadInit(value.target);SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase=="reveal","current replacement owns readiness");
+        value=pendingBackground();_root.gameworld.__stageReturnWorldIdentity={};
+        value.load.listener.onLoadInit(value.target);SceneTransitionService.tick();SceneTransitionService.tick();
+        check(sent[sent.length-1].phase!="reveal","world identity replacement rejects late load-init");
+        value=pendingBackground();value.load.listener.onLoadError(value.target,"missing",404);SceneTransitionService.tick();
+        check(value.fade._currentframe==37 && sent[sent.length-1].phase=="error","load error enters the existing covered failure timeline");
+        revision=sent[sent.length-1].revision;
+        value.load.listener.onLoadInit(value.target);SceneTransitionService.tick();
+        check(sent[sent.length-1].phase=="error" && sent[sent.length-1].revision==revision,"load-init after failure cannot release the curtain");
+        rejectBackground=true;value=pendingBackground();SceneTransitionService.tick();rejectBackground=false;
+        check(value.fade._currentframe==37 && sent[sent.length-1].phase=="error","synchronous load rejection remains covered");
+        value=pendingBackground();value.load.listener.ticket.started=getTimer()-30001;SceneTransitionService.tick();
+        check(value.fade._currentframe==37 && sent[sent.length-1].phase=="error" && counters.retries==0,"load deadline fails closed without navigation replay");
+        SceneTransitionService.clear();
+        proto.loadClip=original.load;proto.addListener=original.add;proto.removeListener=original.remove;
     }
     private static function revealedFixture():Object {
         var fade:Object=fixture(5); _root.淡出动画=fade;

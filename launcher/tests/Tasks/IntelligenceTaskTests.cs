@@ -661,6 +661,38 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void FlashResponseUsesOriginalRequestSinkAcrossBothQueuedDeliveries()
+        {
+            var wire=new List<string>(); var first=new List<string>(); var second=new List<string>();
+            var outer=new Queue<Action>(); var inner=new Queue<Action>();
+            bool firstLease=true;
+            using var task=new IntelligenceTask(_root,()=>true,json=>wire.Add(json));
+            task.SetInvoker(outer.Enqueue);
+            task.SetResponseLeaseProvider(()=>json=>inner.Enqueue(()=> { if(firstLease)first.Add(json); }));
+            task.HandleWebRequest("state",new JObject { ["callId"]="A" });
+            task.SetResponseLeaseProvider(()=>json=>second.Add(json));
+            var sent=JObject.Parse(wire[0].TrimEnd('\0'));
+            task.HandleFlashResponse(new JObject { ["callId"]=sent["callId"], ["success"]=true,
+                ["values"]=new JObject(), ["decryptLevel"]=0, ["pcName"]="" },null);
+            outer.Dequeue()(); firstLease=false; inner.Dequeue()();
+            Assert.Empty(first); Assert.Empty(second);
+        }
+
+        [Fact]
+        public void LiveRequestKeepsItsSinkWhenChannelChangesBeforeFlashReply()
+        {
+            var wire=new List<string>(); var first=new List<string>(); var second=new List<string>();
+            using var task=new IntelligenceTask(_root,()=>true,json=>wire.Add(json));
+            task.SetResponseLeaseProvider(()=>first.Add);
+            task.HandleWebRequest("state",new JObject { ["callId"]="A" });
+            task.SetResponseLeaseProvider(()=>second.Add);
+            var sent=JObject.Parse(wire[0].TrimEnd('\0'));
+            task.HandleFlashResponse(new JObject { ["callId"]=sent["callId"], ["success"]=true,
+                ["values"]=new JObject(), ["decryptLevel"]=0, ["pcName"]="" },null);
+            Assert.Single(first); Assert.Empty(second);
+        }
+
+        [Fact]
         public void GlossaryCatalog_FiltersTermsByItemProgressAndDecrypt()
         {
             WriteGlossaryIndex(

@@ -1,0 +1,8 @@
+﻿// Resolve the shared BaseItem dependency before traversing derived inventory classes.
+var ownedItemDependency:Function = org.flashNight.arki.item.BaseItem;
+trace("FocusedTestRunId settings-storage-boundary Start: __FOCUSED_RUN_ID__");
+_root.__ownedSettingsSolConfig=new LiteJSON().parse(__SETTINGS_SOL_CONFIG__);
+org.flashNight.neur.Server.test.SaveManagerTest.runAllTests();
+org.flashNight.arki.item.RewardStashServiceTest.runAllTests();
+org.flashNight.neur.Server.test.SettingsOwnedSolTest.runAllTests();
+trace("FocusedTestRunId settings-storage-boundary Complete: __FOCUSED_RUN_ID__");

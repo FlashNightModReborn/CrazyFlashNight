@@ -18,6 +18,13 @@ const RuntimeGuard = require('../workbench-live-e2e/lib/runtime-guard');
 async function main() {
     let passed = 0;
     function test(name, body) { body(); passed++; }
+    test('observer binds the fixed-engine profile without relaxing exact process attestation', () => {
+        const spec = { schema:'cf7-fixed-webview2.v1', architecture:'x64', version:'154.0.4258.53' };
+        assert.strictEqual(Observer.expectedOverlayProfile('C:\\owned', spec),
+            path.join('C:\\owned', 'launcher', 'webview2_overlay_userdata', 'fixed-154.0.4258.53', 'EBWebView'));
+        assert.throws(() => Observer.expectedOverlayProfile('C:\\owned', { ...spec, version:'../other' }), /exact fixed/);
+        assert.throws(() => Observer.expectedOverlayProfile('C:\\owned', { ...spec, schema:'future' }), /exact fixed/);
+    });
     test('fixed target slot and explicit source', () => {
         assert.strictEqual(Preflight.TARGET_SLOT, 'cf7_agent_gym');
         assert.throws(() => Preflight.parseArgs(['--seed-slot', 'cf7_agent_seed']),
@@ -102,7 +109,11 @@ async function main() {
     test('Gym source closure covers Host, AS2 SWF, Web, and fixed input', () => {
         const root = path.resolve(__dirname, '..', '..');
         const closure = SourceClosure.capture(root);
-        assert.strictEqual(closure.files.length, 29);
+        assert.strictEqual(closure.files.length, 31);
+        assert.ok(closure.files.some(row => row.role === 'fixed_engine'
+            && row.relativePath === 'launcher/webview2-runtime.lock.json'));
+        assert.ok(closure.files.some(row => row.role === 'host_profile'
+            && row.relativePath === 'launcher/src/FixedWebViewRuntime.cs'));
         assert.ok(closure.files.some(row => row.role === 'candidate_start'
             && row.relativePath === 'automation/start.ps1'));
         const startup = fs.readFileSync(path.join(root, 'automation', 'start.ps1'), 'utf8');

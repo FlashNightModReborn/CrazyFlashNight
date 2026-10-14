@@ -173,7 +173,7 @@ var DressupPanel = (function() {
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
         if (typeof Bridge !== 'undefined' && Bridge && Bridge.send) {
-            Bridge.send({ type: 'panel', cmd: 'close', panel: 'dressup' });
+            Bridge.send({ type: 'panel', cmd: 'close', panel: 'dressup', panelInstanceId: _currentInitData.panelInstanceId });
         }
     }
 

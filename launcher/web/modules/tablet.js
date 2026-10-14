@@ -694,8 +694,9 @@
 
   // ── 生命周期 ──
   function requestClose() {
+    var instance = initData && initData.panelInstanceId;
     try { Panels.close(); } catch (e) {}
-    try { Bridge.send({ type: 'panel', cmd: 'close', panel: 'tablet' }); } catch (e) {}
+    try { Bridge.send({ type: 'panel', cmd: 'close', panel: 'tablet', panelInstanceId: instance }); } catch (e) {}
   }
 
   function createDOM() {

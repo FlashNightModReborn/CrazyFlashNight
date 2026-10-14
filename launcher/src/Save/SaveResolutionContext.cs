@@ -16,6 +16,8 @@ namespace CF7Launcher.Save
         // ProjectRoot: 由 diagnostic / audio_preview 等 BMH 命令使用。在 v1 加入；
         // 老调用方不传时设为 null，相关命令自行降级（diagnostic 直接报错）。
         public readonly string ProjectRoot;
+        internal SettingsRecoveryGate SettingsRecovery;
+        internal bool CanMutate(string slot)=>SettingsRecovery?.MayWrite(slot) ?? true;
 
         public SaveResolutionContext(SolFileLocator locator, SolResolver resolver, ArchiveTask archive, string swfPath)
             : this(locator, resolver, archive, swfPath, null) { }
@@ -28,6 +30,7 @@ namespace CF7Launcher.Save
             SwfPath = swfPath;
             ProjectRoot = projectRoot;
             LegacySeeder = new LegacyPresetSlotSeeder(archive, resolver, swfPath);
+            LegacySeeder.SettingsWriteAdmission=CanMutate;
         }
     }
 }

@@ -1,0 +1,32 @@
+{
+  "schema": "cf7.settings-authority.v2",
+  "protocol": 2,
+  "receiptSchema": 1,
+  "canonicalSchema": 1,
+  "keySchema": 2,
+  "settings": [
+    "setGlobalVolume", "setBGMVolume", "性能等级上限", "是否阴影",
+    "是否视觉元素", "cameraZoomToggle", "basicZoomScale", "开启昼夜系统",
+    "暂停昼夜系统", "使用滤镜渲染", "立绘类型", "jukeboxOverride",
+    "jukeboxTrueRandom", "jukeboxPlayMode"
+  ],
+  "booleanIndexes": [3, 4, 5, 7, 8, 9, 11, 12],
+  "playModes": ["singleLoop", "albumLoop", "playOnce"],
+  "keys": [
+    "上键", "下键", "左键", "右键", "A键", "B键", "C键",
+    "键1", "键2", "键3", "键4", "键5", "药剂组切换键",
+    "快捷物品栏键1", "快捷物品栏键2", "快捷物品栏键3", "快捷物品栏键4",
+    "快捷技能栏键1", "快捷技能栏键2", "快捷技能栏键3", "快捷技能栏键4",
+    "快捷技能栏键5", "快捷技能栏键6", "快捷技能栏键7", "快捷技能栏键8",
+    "快捷技能栏键9", "快捷技能栏键10", "快捷技能栏键11", "快捷技能栏键12",
+    "切换武器键", "互动键", "武器技能键", "飞行键", "武器变形键", "奔跑键", "组合键"
+  ],
+  "vector": {
+    "s": [42, 55, 1, 1, 1, 1, 12, 1, 0, 1, 1, 0, 0, 1],
+    "k": [87, 83, 65, 68, 74, 75, 82, 49, 50, 51, 52, 53, 54, 55, 56, 57, 48, 32, 85, 73, 79, 80, 76, 72, 71, 67, 66, 78, 77, 47, 69, 70, 18, 81, 16, 17],
+    "payloadBytes": 342,
+    "settingsDigest": "4fb6357741c1110d8f82c10b1e0c93e09359d1a84e5b81cea42e070d5fdaa13a",
+    "intent": ["ctx.demo", "owner.demo", "vm.2", "op.1", "base.7", "7"],
+    "originMutationRequestDigest": "af8bc4415f182363388034e249e8299b8da9534310912787fccb136b8953f31f"
+  }
+}

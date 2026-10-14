@@ -25,6 +25,16 @@ const LOADED_WEB = Object.freeze([
 ]);
 const GYM_TOKEN_KEYS = new Set(['openToken', 'sessionToken']);
 
+function expectedOverlayProfile(root, specification) {
+    if (!specification || specification.schema !== 'cf7-fixed-webview2.v1'
+            || specification.architecture !== 'x64'
+            || !/^\d+\.\d+\.\d+\.\d+$/.test(specification.version)) {
+        throw new Error('Gym observer requires the exact fixed WebView2 profile contract');
+    }
+    return path.join(root, 'launcher', 'webview2_overlay_userdata',
+        'fixed-' + specification.version, 'EBWebView');
+}
+
 function redactGymTokens(value, key) {
     if (Array.isArray(value)) return value.map(entry => redactGymTokens(entry, null));
     if (value && typeof value === 'object') {
@@ -185,8 +195,8 @@ async function attachPassiveObserver(options) {
         await client.call('Page.enable', {}, 10000);
         const endpoint = RuntimeGuard.attestLoopbackCdpEndpoint({
             port:binding.port, runtimePid:identity.pid,
-            expectedUserDataRoot:path.join(ROOT, 'launcher',
-                'webview2_overlay_userdata', 'EBWebView'),
+            expectedUserDataRoot:expectedOverlayProfile(ROOT, JSON.parse(fs.readFileSync(
+                path.join(ROOT, 'launcher', 'webview2-runtime.lock.json'), 'utf8'))),
             expectedExecutableName:'msedgewebview2.exe'
         });
         const page = await evaluateByValue(client,
@@ -292,4 +302,4 @@ async function attachPassiveObserver(options) {
 }
 
 module.exports = { TranscriptWriter, attachPassiveObserver,
-    browserInjectionSource, redactGymTokens, LOADED_WEB, OVERLAY_URL };
+    browserInjectionSource, redactGymTokens, LOADED_WEB, OVERLAY_URL, expectedOverlayProfile };

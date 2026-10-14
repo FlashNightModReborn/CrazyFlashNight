@@ -1,3 +1,4 @@
+using CF7Launcher.Tests.Guardian;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +9,7 @@ using Xunit;
 
 namespace CF7Launcher.Tests.Diagnostic
 {
+    [ResourceCaseGuard]
     public sealed class FocusTracePhysicalHistoryTests : IDisposable
     {
         private static readonly Point Target = new Point(150, 150);
@@ -60,6 +62,22 @@ namespace CF7Launcher.Tests.Diagnostic
             NativeMouseCorrelation third = FocusTrace.CorrelateNativeMouse(Target, 0x0201, t0 + 900, true);
             Assert.Equal("repeat_reference", third.Kind);
             Assert.Equal(g2, third.MouseId);
+        }
+
+        [Fact]
+        public void IndependentFreshPeekCanChooseSecondUnclaimedCandidate()
+        {
+            const int t0 = 1000;
+            string a = FocusTrace.PhysicalEdge(0x0201, Target, 1, t0, 7);
+            FocusTrace.PhysicalEdge(0x0202, Target, 1, t0 + 10, 7);
+            string b = FocusTrace.PhysicalEdge(0x0201, Target, 1, t0 + 20, 7);
+            NativeMouseCorrelation enter = FocusTrace.CorrelateNativeMouse(Target, 0x0201, t0 + 40, true);
+            NativeMouseCorrelation exit = FocusTrace.PeekNativeMouseCorrelation(Target, 0x0201, t0 + 40, true);
+            Console.WriteLine("E02 manually seeded ring: A=" + a + " B=" + b
+                + " enter=" + enter.MouseId + " exit=" + exit.MouseId);
+            Assert.Equal(a, enter.MouseId);
+            // A fresh independent peek legitimately sees B; WndProc exit must reuse its entry sample.
+            Assert.Equal(b, exit.MouseId);
         }
 
         [Fact]

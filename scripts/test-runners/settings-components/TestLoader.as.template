@@ -1,0 +1,7 @@
+﻿#include "../展现/UI交互/UI交互_aka_健身房训练.as"
+trace("FocusedTestRunId settings-components Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.ui.GameSettingsPanelServiceTest.runAllTests();
+org.flashNight.arki.ui.GaragePurchasePanelServiceTest.runAllTests();
+org.flashNight.arki.ui.GymTrainingPanelServiceTest.runAllTests();
+org.flashNight.neur.Server.test.SettingsAuthorityComponentTest.runAllTests();
+trace("FocusedTestRunId settings-components Complete: __FOCUSED_RUN_ID__");

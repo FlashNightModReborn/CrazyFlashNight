@@ -131,7 +131,7 @@ namespace CF7Launcher.Tests.Guardian
                 "reason==='terminal'||reason==='suspended'",
                 finish);
             Assert.Contains(
-                "if (!preserveForRewardReturn) Panels.close();",
+                "if (!preserveForRewardReturn && !preserveForWorldResume) Panels.close();",
                 finish);
 
             string host = File.ReadAllText(FindWebOverlaySource());
@@ -297,49 +297,51 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void PanelCloseRestoresFlashFocusAfterOverlaySettlement()
+        public void PanelCloseHandsOffWhileSourceLivesAndQueuesOnlyInnerFocusTail()
         {
             string panelHost = File.ReadAllText(
                 FindRepositoryFile(
                     "launcher", "src", "Guardian",
-                    "PanelHostController.cs"));
+                    "PanelHostController.CloseTransaction.cs"));
             string close = Slice(
                 panelHost,
-                "private void DoClose()",
-                "public void Dispose()");
+                "private bool DoCloseTransaction(HostCloseContext context)",
+                "if(surface!=null && !settlement");
             int webClose = close.IndexOf(
-                "TryPostToPanelSurface(closePayload)",
+                "surface.TryPostExact(payload,context.Endpoint)",
                 StringComparison.Ordinal);
             int suspend = close.IndexOf(
-                "_web.SuspendAfterPanel(closingName)",
+                "_web.SuspendAfterPanel(panel)",
                 StringComparison.Ordinal);
             int shield = close.IndexOf(
-                "_shield.ExitTelemetryMode()",
+                "_shield?.ExitTelemetryMode()",
                 StringComparison.Ordinal);
             int hud = close.IndexOf(
-                "_hud.Resume()",
+                "_hud?.Resume()",
                 StringComparison.Ordinal);
             int escape = close.IndexOf(
-                "_escSource.SetPanelEscapeEnabled(false)",
+                "_escSource?.SetPanelEscapeEnabled(false)",
                 StringComparison.Ordinal);
             int cursor = close.IndexOf(
-                "_web.UpdateCursorFromScreenPoint",
+                "_web?.UpdateCursorFromScreenPoint",
                 StringComparison.Ordinal);
             int closed = close.IndexOf(
-                "PostPanelClosed(closingName, closingInstance)",
+                "PostPanelClosed(panel,instance,()=>",
                 StringComparison.Ordinal);
-            int settledRestore = close.IndexOf(
-                "_web.RestoreFlashInputFocusAfterPanelClose(closingName)",
+            int liveRestore = close.IndexOf(
+                "permit=TryBeginCloseFocus(context)",
                 StringComparison.Ordinal);
 
             Assert.True(webClose >= 0);
-            Assert.True(suspend > webClose);
+            Assert.True(liveRestore > webClose);
+            Assert.True(suspend > liveRestore);
             Assert.True(shield > suspend);
             Assert.True(hud > shield);
             Assert.True(escape > hud);
             Assert.True(cursor > escape);
             Assert.True(closed > cursor);
-            Assert.True(settledRestore > closed);
+            Assert.Contains("DeferSettlementResumeTail(()=>FinishCloseFocus(context,permit))",close);
+            Assert.DoesNotContain("RestoreFlashInputFocusAfterPanelClose",close);
 
             string overlay = File.ReadAllText(FindWebOverlaySource());
             string restore = Slice(

@@ -280,7 +280,10 @@
     }
 
     function sendCloseNotification() {
-        return tryBridgeSend({ type: 'panel', panel: 'stage-select', cmd: 'close' }, 'close');
+        var instance = S._panelInstanceId;
+        if (typeof instance !== 'string' || !instance) return false;
+        return tryBridgeSend({ type: 'panel', panel: 'stage-select', cmd: 'close',
+            panelInstanceId: instance }, 'close');
     }
 
     // 导出：被 renderer / inspector / facade 引用的名字

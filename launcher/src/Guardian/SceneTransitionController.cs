@@ -23,7 +23,7 @@ namespace CF7Launcher.Guardian
         private readonly Action<bool> _holdWorldInput;
         private readonly SceneTransitionPresentationPolicy _presentationPolicy;
         private readonly CompositionHelpSurface _surface;
-        private readonly Form _fallback;
+        private readonly SceneTransitionBackingForm _fallback;
         private readonly OverlayBase[] _overlays;
         private readonly Timer _timer = new() { Interval=25 };
         private JObject _latest, _pendingAction;
@@ -33,7 +33,18 @@ namespace CF7Launcher.Guardian
         private int _attempts;
         private DateTime _retryAt;
         internal readonly SceneTransitionTask Task;
-        internal bool OwnsCurtain => _latest!=null && !_revealed;
+        private long _retainedScene, _resumeScene;
+        private string _resumeClose, _resumeInstance;
+        private Action _resumeTail;
+        private Action<long> _requireFreshFrame = _ => {};
+        internal bool OwnsCurtain => _resumeScene>0 || _latest!=null && !_revealed;
+        internal bool SettlementResumePending => _resumeScene>0;
+        internal void ConfigurePresentationFence(Action<long> requireFreshFrame) => _requireFreshFrame=requireFreshFrame;
+        internal bool DeferSettlementResumeTail(Action tail) {
+            if(_resumeScene<=0) return false;
+            _resumeTail+=tail;
+            return true;
+        }
         internal event Action CurtainReleased;
         internal event Action SceneCompleted;
         internal event Action<JObject> SettlementRequest;
@@ -59,10 +70,42 @@ namespace CF7Launcher.Guardian
                     && JToken.DeepEquals(init["report"],_latest["report"]);
             } catch { return false; }
         }
-        internal void ReleaseSettlement() {
+        internal void ReleaseSettlement(string closePayload=null) {
+            if(_resumeScene>0) {
+                if(closePayload!=null) return;
+                FinishSettlementResume();
+            }
+            long scene=_preparedScene>0 ? _preparedScene : _retainedScene;
+            if(closePayload!=null && (_latest==null || _handoffSent) && scene>0
+                && _surface.SettlementInstance.Length>0 && _currentScene(scene)) {
+                // The authority close is already committed. Keep only the old view;
+                // ingress is blocked until a fresh full-window world is presented.
+                _resumeScene=scene; _resumeClose=closePayload; _resumeInstance=_surface.SettlementInstance;
+                _holdWorldInput(true); _requireFreshFrame(scene);
+                LogManager.Log("event=scene_settlement_resume_wait scene="+scene);
+                return;
+            }
+            if(closePayload!=null) _surface.TryPostTransitionPanel(closePayload);
             _surface.ReleaseSettlementBinding();
             if(_latest!=null && !_handoffSent) Task.ReportClosed();
             if(_latest==null || _handoffSent) HidePresentation(handoff:true);
+        }
+        private void FinishSettlementResume() {
+            if(_resumeScene<=0) return;
+            long scene=_resumeScene;
+            string close=_resumeClose, instance=_resumeInstance;
+            var tail=_resumeTail;
+            _resumeScene=0; _resumeClose=null; _resumeInstance=null; _resumeTail=null;
+            if(_surface.SettlementInstance==instance) {
+                _surface.TryPostTransitionPanel(close);
+                _surface.ReleaseSettlementBinding();
+                // The original close transaction owns its one focus tail.
+                HidePresentation(handoff:false);
+            }
+            _holdWorldInput(_latest!=null && !_revealed);
+            tail?.Invoke();
+            CurtainReleased?.Invoke();
+            LogManager.Log("event=scene_settlement_resume_released scene="+scene);
         }
 
         internal SceneTransitionController(Form owner, Control anchor, string projectRoot,
@@ -74,11 +117,11 @@ namespace CF7Launcher.Guardian
             _owner=owner; _anchor=anchor; _admitted=admitted; _scenePresented=scenePresented; _handoffFocus=handoffFocus;
             _holdWorldInput=holdWorldInput;
             _overlays=overlays.Where(o=>o!=null).Distinct().ToArray();
-            _surface=new CompositionHelpSurface(owner,Path.Combine(projectRoot,"launcher","web"),
-                profileRoot ?? Path.Combine(projectRoot,"tmp","unified-live-entry","web-profile"),transition:true,
-                presentationPolicy:_presentationPolicy);
             _fallback=new SceneTransitionBackingForm(_presentationPolicy) {Owner=owner,FormBorderStyle=FormBorderStyle.None,ShowInTaskbar=false,
                 StartPosition=FormStartPosition.Manual,BackColor=Color.Black,KeyPreview=true,Text="CF7 Transition Recovery"};
+            _surface=new CompositionHelpSurface(owner,Path.Combine(projectRoot,"launcher","web"),
+                profileRoot ?? Path.Combine(projectRoot,"tmp","unified-live-entry","web-profile"),transition:true,
+                presentationPolicy:_presentationPolicy,transitionBacking:_fallback);
             _fallback.Controls.Add(new Label {Dock=DockStyle.Fill,TextAlign=ContentAlignment.MiddleCenter,
                 ForeColor=Color.White,BackColor=Color.Black,Font=new Font("Microsoft YaHei",14),
                 Text="正在准备加载画面…\n请稍候"});
@@ -86,6 +129,7 @@ namespace CF7Launcher.Guardian
             Task=new SceneTransitionTask(dispatch,Present,Hide,send);
             _surface.TransitionMessage+=OnMessage;
             _surface.SettlementMessage+=p=> {
+                if(_resumeScene>0) return;
                 if(p.Value<string>("type")=="scene_transition_report_presented") ObserveSettlementPresented(p);
                 else if(!_disposed && Task.Connected && _admitted()) SettlementRequest?.Invoke(p);
             };
@@ -98,6 +142,11 @@ namespace CF7Launcher.Guardian
             _timer.Tick+=(_,_)=>Tick(); _timer.Start();
         }
         private void Present(JObject p) {
+            if(_resumeScene>0) FinishSettlementResume();
+            if(p.Value<string>("phase")=="reveal" && (_latest?.Value<string>("phase")!="reveal"
+                || _latest?.Value<long>("targetScene")!=p.Value<long>("targetScene")
+                || _projectionEpoch!=Task.Epoch || _identity!=p.Value<string>("requestId")))
+                _requireFreshFrame(p.Value<long>("targetScene"));
             if(_latest?.Value<long>("targetScene")!=p.Value<long>("targetScene") || _projectionEpoch!=Task.Epoch
                 || _latest?.Value<string>("requestId")!=p.Value<string>("requestId")) {
                 _preparedScene=0;
@@ -161,6 +210,21 @@ namespace CF7Launcher.Guardian
         private void Tick() {
             using var latency = InputLatencyProbe.Measure("transition_tick");
             if(_disposed || _owner.IsDisposed || _anchor.IsDisposed) return;
+            if(_resumeScene>0) {
+                if(Task.Connected && _currentScene(_resumeScene) && _scenePresented(_resumeScene)) {
+                    FinishSettlementResume();
+                    return;
+                }
+                if(_admitted() && _owner.Visible && _owner.WindowState!=FormWindowState.Minimized
+                    && _surface.CanRestoreGameFocus && !_exclusivePresentation()) {
+                    if(_recovering || !_surface.Ready) {
+                        _fallback.Bounds=Bounds();
+                        if(!_fallback.Visible) _fallback.Show();
+                    } else _surface.PresentTransition(Bounds());
+                    RestoreWindowOrder();
+                } else { _fallback.Hide(); _surface.SuppressTransition(); }
+                return;
+            }
             _bookshelfReturn?.RetryPauseRestore();
             if (_exclusivePresentation()) { if (_fallback.Visible) _fallback.Hide(); _surface.SuppressTransition(); return; }
             if (_bookshelfReturn?.Active == true)
@@ -232,7 +296,7 @@ namespace CF7Launcher.Guardian
             }
         }
         private void OnMessage(JObject p) {
-            if(_disposed || _latest==null || !Task.Connected) return;
+            if(_disposed || _resumeScene>0 || _latest==null || !Task.Connected) return;
             string type=p["type"]?.Type==JTokenType.String?p.Value<string>("type"):null;
             if(type=="scene_transition_action" ? !Task.MatchesWebAction(p) : !Task.MatchesWeb(p)) return;
             if(type=="scene_transition_report_view") {
@@ -297,6 +361,7 @@ namespace CF7Launcher.Guardian
             using var latency = InputLatencyProbe.Measure("transition_hide");
             bool retained=_surface.SettlementInstance.Length>0;
             bool complete=_handoffSent && _preparedScene>0 && _currentScene(_preparedScene);
+            if(retained && complete) _retainedScene=_preparedScene;
             bool held=_latest!=null && !_revealed;
             bool handoff=held && (_surface.Visible || _fallback.Visible);
             _latest=null; _identity=null; _pendingAction=null; _posted=null; _revealed=false; _covered=false;
@@ -338,6 +403,7 @@ namespace CF7Launcher.Guardian
         }
         public void Dispose() {
             if(_disposed)return; _disposed=true;
+            FinishSettlementResume();
             foreach(var overlay in _overlays) overlay.PresentationChanged-=OnOverlayPresented;
             _holdWorldInput(false);
             _timer.Dispose(); _surface.Dispose(); _fallback.Dispose();

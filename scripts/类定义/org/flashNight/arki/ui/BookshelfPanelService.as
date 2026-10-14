@@ -118,6 +118,10 @@ class org.flashNight.arki.ui.BookshelfPanelService {
                 || recovered.originSlot !== r.slot || recovered.seed !== feature.active.seed) return fail(cmd, token, "invalid_target");
             r.result = PersistedSnapshot.clone(recovered);
         } else return fail(cmd, token, "invalid_payload");
+        if (kind != "settle" && SaveManager.getInstance().settingsProtocolV2()) {
+            if (!SaveManager.registerSettingsDestination(p.settingsAuthority, r.destination)
+                    || !SaveManager.registerSettingsDestination(p.settingsRollbackAuthority, r.slot)) return fail(cmd, token, "settings_recovery_required");
+        }
         r.kind = kind; r.target = p.target; _job = r; _lastAccepted = r;
         if (kind == "play") {
             r.phase = "save_pending"; r.waitFor = "entry";
@@ -313,7 +317,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         return !isNaN(Number(_root.tasks_finished[21])) && Number(_root.tasks_finished[21]) >= 1;
     }
     private static function canSwitch():Boolean {
-        return _root.允许存档 === true && (StageRunSession.canNavigateAwayFromStage() || StageRunSession.canReturnBookContext())
+        return SaveManager.getInstance().settingsWriteAllowed() && _root.允许存档 === true && (StageRunSession.canNavigateAwayFromStage() || StageRunSession.canReturnBookContext())
             && !org.flashNight.arki.scene.BookRunService.hasUnsettledOutcome()
             && !SaveManager.getInstance().hasRewardCommitPending() && PlayerAssetTransaction.current() == null
             && !org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()
@@ -331,6 +335,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             var fresh:Object = newSession(); fresh.slots = r.slots; r.nextToken = fresh.token;
         }
         return {v:1, operation:cmd, token:r.token, phase:r.phase, success:r.phase != "expired" && r.phase != "save_pending",
+            settingsAuthorityOwner:SaveManager.getInstance().getSettingsAuthority() == null ? null : SaveManager.getInstance().getSettingsAuthority().ownerId(),
             nextToken:String(r.nextToken || ""), exitRequired:run != null && (run.outcome != "active" || StageRunSession.canReturnBookContext()),
             activeSlot:String(_root.savePath), role:String(_root.角色名), canSwitch:canSwitch() && _job == null,
             kind:String(r.kind || ""), target:String(r.target || ""),
@@ -349,6 +354,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         if (cmd == "snapshot") allowed.slots = true;
         if (cmd == "query") { allowed.reconcileKind = true; allowed.reconcileTarget = true; }
         if (cmd == "commit") {
+            allowed.settingsAuthority = true; allowed.settingsRollbackAuthority = true;
             if (typeof p.kind != "string" || typeof p.target != "string" || p.target == "") return false;
             allowed.kind = true; allowed.target = true;
             if (p.kind == "play") allowed.runSlot = true;

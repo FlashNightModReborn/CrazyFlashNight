@@ -82,6 +82,35 @@ async function openGymInputChannel(options) {
         async function click(targetName) {
             const selector = TARGETS[targetName];
             if (!selector) throw new Error('gym input target is outside the fixed allowlist');
+            // Project rows below the viewport must be reached through browser input,
+            // before the same visible/hit-tested click checks used by every target.
+            if (['goldStat', 'cancelTarget', 'kSkill'].includes(targetName)) {
+                for (let attempt = 0; attempt < 4; attempt++) {
+                    const scroll = await evaluateByValue(client, `(function(selector){
+                        var panel=document.getElementById('panel-container');
+                        var list=document.querySelector('.gym-project-list');
+                        var target=document.querySelector(selector);
+                        if(!panel||panel.hidden||panel.style.display==='none'
+                            ||panel.getAttribute('data-panel')!=='gym'||!list||!target)
+                            return null;
+                        var box=list.getBoundingClientRect(), row=target.getBoundingClientRect();
+                        var x=box.left+box.width/2,y=box.top+box.height/2;
+                        var hit=document.elementFromPoint(x,y);
+                        if(!(box.width>0&&box.height>0&&hit&&list.contains(hit)))return null;
+                        return {x:x,y:y,delta:row.bottom>box.bottom?Math.min(600,row.bottom-box.bottom+24):
+                            row.top<box.top?-Math.min(600,box.top-row.top+24):0};
+                    })(${JSON.stringify(selector)})`, 'Gym project scroll viewport');
+                    if (!scroll) throw new Error('gym project viewport is not visibly actionable');
+                    if (scroll.delta === 0) break;
+                    await client.call('Input.dispatchMouseEvent', {
+                        type:'mouseWheel',x:scroll.x,y:scroll.y,deltaX:0,deltaY:scroll.delta
+                    }, 10000);
+                    writer.append({kind:'gym_candidate_page_input',inputType:'trusted_scroll',
+                        targetName,selector,geometry:scroll,runtimePid:identity.pid,
+                        candidatePageInput:true,physicalInputAttestation:false});
+                    await sleep(150);
+                }
+            }
             const geometry = await evaluateByValue(client, `(function(selector){
                 var panel=document.getElementById('panel-container');
                 var element=document.querySelector(selector);

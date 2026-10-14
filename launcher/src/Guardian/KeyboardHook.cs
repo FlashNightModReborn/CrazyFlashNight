@@ -126,6 +126,7 @@ namespace CF7Launcher.Guardian
         private volatile bool _panelEscEnabled;
         public bool PanelEscEnabled { get { return _panelEscEnabled; } }
         public void SetPanelEscapeEnabled(bool enabled) { _panelEscEnabled = enabled; }
+        internal Func<Action> CapturePanelEscapeAction;
 
         // native_interaction ESC（NPC 菜单 / pinned tooltip 存活时吞掉 ESC 转交宿主关闭）。
         // 探针由 GuardianForm.SetInteractionEscSurface 注入，在本钩子专用线程同步调用，
@@ -311,12 +312,20 @@ namespace CF7Launcher.Guardian
 
                     if (shouldBlock && ShouldInterceptForOurApp(_strictVks.Contains(vk)))
                     {
+                        // Capture a panel owner now, before the queued worker/UI callbacks.
+                        Action capturedEscape=vk==VK_ESCAPE ? CapturePanelEscapeAction?.Invoke() : null;
+                        if(vk==VK_ESCAPE && _panelEscEnabled && capturedEscape==null)return TraceDecision(vk,msg,lParam,false);
                         _shortcutConsumedKeys.Add(vk);
                         // 触发动作回调（异步，不阻塞钩子线程）
                         Action action;
-                        if (_actionVks.TryGetValue(vk, out action) && action != null)
+                        bool panelEscAtCapture=_panelEscEnabled;
+                        if(capturedEscape!=null)ThreadPool.QueueUserWorkItem(delegate { capturedEscape(); });
+                        else if (_actionVks.TryGetValue(vk, out action) && action != null)
                         {
-                            ThreadPool.QueueUserWorkItem(delegate { action(); });
+                            ThreadPool.QueueUserWorkItem(delegate {
+                                if(vk==VK_ESCAPE && panelEscAtCapture!=_panelEscEnabled)return;
+                                action();
+                            });
                         }
                         return TraceDecision(vk, msg, lParam, true); // 拦截
                     }

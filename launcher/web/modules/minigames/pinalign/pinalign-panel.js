@@ -184,7 +184,9 @@ var PinAlignPanel = (function() {
         }
     }
 
+    var _closePanelInstanceId = '';
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         var data = initData || {};
         _audio = PinAlignAudio && PinAlignAudio.create ? PinAlignAudio.create() : null;
         _debugEnabled = !!data.debug;
@@ -251,7 +253,7 @@ var PinAlignPanel = (function() {
         });
         cleanup();
         if (typeof Panels !== "undefined" && Panels.close) Panels.close();
-        Bridge.send({ type: "panel", cmd: "close", panel: "pinalign" });
+        Bridge.send({ type: "panel", cmd: "close", panel: "pinalign", panelInstanceId: _closePanelInstanceId });
     }
 
     function detachResizeHandler() {

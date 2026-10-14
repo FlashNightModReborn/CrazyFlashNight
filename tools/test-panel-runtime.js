@@ -320,6 +320,16 @@ test('response diagnostics distinguish shape, transform and accepted outcomes', 
     assert.strictEqual(diagnostics[3].error, '');
 });
 
+test('pending ordinary panel cancel preserves the Host instance too', () => {
+    const fixture = createPanelsFixture(pendingLazyLoader());
+    fixture.Panels.registerLazy('stage-select', ['stage-select-panel.js'], () => {});
+    fixture.handlers.panel_cmd({cmd:'open', panel:'stage-select',
+        initData:{panelInstanceId:'panel.stage-select.current'}});
+    fixture.handlers.panel_esc({});
+    assert.strictEqual(fixture.sent.length, 1);
+    assert.strictEqual(fixture.sent[0].panelInstanceId, 'panel.stage-select.current');
+});
+
 test('pending workbench lazy cancel reports the latest exact Host instance', () => {
     const fixture = createPanelsFixture(pendingLazyLoader());
     fixture.Panels.registerLazy('workbench', ['workbench.js'], () => {});

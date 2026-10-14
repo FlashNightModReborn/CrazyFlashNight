@@ -285,7 +285,9 @@ var LockboxPanel = (function() {
         _pointerReleaseBound = false;
     }
 
+    var _closePanelInstanceId = '';
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         var data = normalizeInitData(initData || DEFAULT_INIT);
         _panelOpen = true;
         _helpOpen = true;
@@ -323,7 +325,7 @@ var LockboxPanel = (function() {
         });
         cleanup();
         Panels.close();
-        Bridge.send({ type: 'panel', cmd: 'close', panel: 'lockbox' });
+        Bridge.send({ type: 'panel', cmd: 'close', panel: 'lockbox', panelInstanceId: _closePanelInstanceId });
     }
 
     function toggleHelp() {

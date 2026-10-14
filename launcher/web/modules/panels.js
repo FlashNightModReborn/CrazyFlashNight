@@ -42,7 +42,8 @@ var Panels = (function() {
     }
 
     function panelCloseMessage(id, initData, reason) {
-        var closeMessage = {type:'panel', cmd:'close', panel:id};
+        var closeMessage = {type:'panel', cmd:'close', panel:id,
+            panelInstanceId:readPanelInstanceId(initData)};
         if (id === 'skills' || id === 'crafting' || id === 'kshop'
                 || id === 'settings' || id === 'surgery'
                 || id === 'npcshop' || id === 'blackmarket' || id === 'team' || id === 'gym'

@@ -13,7 +13,7 @@ namespace CF7Launcher.Tasks
     /// settings domain 的严格 WebView2↔Flash 桥。游戏设置与键位仍由 AS2 判定；
     /// Launcher 偏好由本任务本地落盘，并按精确 panel instance 回包。
     /// </summary>
-    public sealed class SettingsTask : IDisposable
+    public sealed partial class SettingsTask : IDisposable
     {
         private sealed class PendingRequest
         {
@@ -21,6 +21,7 @@ namespace CF7Launcher.Tasks
             public string PanelInstanceId;
             public bool IsWrite;
             public int ReconcileEpoch;
+            internal AuthorityCall Authority;
         }
 
         private const int DefaultTimeoutMs = 10000;
@@ -189,6 +190,13 @@ namespace CF7Launcher.Tasks
                 RejectAndRemember(callId, cmd, requestedInstance, "disconnected");
                 return;
             }
+            if(_authorityConfigured && !_backendV2 && (cmd is "apply" or "save" or "preview" or "reconcile")) {
+                RejectAndRemember(callId,cmd,requestedInstance,"settings_protocol_required");return;
+            }
+            if(_authorityConfigured && _backendV2 && (cmd is "snapshot" or "preview" or "apply" or "save" or "cancel" or "reconcile")) {
+                HandleAuthorityRequest(callId,cmd,requestedInstance,action,normalized,isWrite);
+                return;
+            }
 
             int fid;
             lock (_lock)
@@ -233,15 +241,22 @@ namespace CF7Launcher.Tasks
 
         public void HandleFlashResponse(JObject msg, Action<string> respond)
         {
-            int fid = ReadPositiveInt(msg != null ? msg["callId"] : null);
+            int fid = ReadResponseCorrelationNoThrow(msg);
+            if(HandleAuthorityResponse(fid,msg)) { respond?.Invoke(null);return; }
             PanelPendingCall<PendingRequest> pendingCall;
+            PanelPendingCall<PendingRequest> observedCall;
             PendingRequest entry;
             bool malformed;
             bool authoritativeRequiresReconcile;
             bool snapshotStillRequiresReconcile;
+            if (!_pendingCalls.TryPeek(fid, out observedCall)) {
+                if (respond != null) respond(null);
+                return;
+            }
+            var parsed = ParseFlashResponseNoThrow(msg, observedCall.Context.WebCmd);
             lock (_lock)
             {
-                if (!_pendingCalls.TryComplete(fid, out pendingCall))
+                if (!_pendingCalls.TryCompleteExact(fid, observedCall, out pendingCall))
                 {
                     if (respond != null) respond(null);
                     return;
@@ -249,16 +264,16 @@ namespace CF7Launcher.Tasks
                 entry = pendingCall.Context;
                 if (entry.IsWrite && entry.WebCmd != "preview")
                     _nonPreviewWritePending = false;
-                malformed = IsMalformedFlashResponse(msg, entry.WebCmd);
+                malformed = parsed.Malformed;
                 authoritativeRequiresReconcile = !malformed
                     && IsReconcileRequiredWrite(entry)
-                    && msg.Value<bool?>("requiresReconcile") == true;
+                    && parsed.RequiresReconcile;
                 if ((malformed || authoritativeRequiresReconcile)
                     && IsReconcileRequiredWrite(entry))
                     EnterRequiresReconcileLocked();
-                else if (!malformed && entry.WebCmd == "snapshot"
+                else if (!_authorityConfigured && !malformed && entry.WebCmd == "snapshot"
                     && entry.ReconcileEpoch == _reconcileEpoch
-                    && msg.Value<bool?>("success") == true
+                    && parsed.Success
                     && _requiresReconcile)
                     _requiresReconcile = false;
                 snapshotStillRequiresReconcile = entry.WebCmd == "snapshot"
@@ -277,7 +292,7 @@ namespace CF7Launcher.Tasks
             }
             else
             {
-                web = (JObject)msg.DeepClone();
+                web = parsed.Response;
                 web.Remove("task");
                 web["type"] = "panel_resp";
                 web["panel"] = "settings";
@@ -288,6 +303,7 @@ namespace CF7Launcher.Tasks
                 if (entry.WebCmd == "snapshot" && web.Value<bool?>("success") == true)
                 {
                     web["hostPrefs"] = BuildHostPrefs();
+                    if(_authorityConfigured && !_backendV2)web["writeAdmission"]="blocked_by_context";
                 }
             }
             // A snapshot issued before the current unknown-write epoch is useful only as
@@ -317,6 +333,7 @@ namespace CF7Launcher.Tasks
                 if (_disposed) return;
                 _disposed = true;
                 _pendingCalls.Dispose();
+                _authorityCalls.Clear(); // Unresolved facts remain in the durable journal for cold recovery.
                 _panelInstanceId = null;
                 _nonPreviewWritePending = false;
                 _requiresReconcile = false;
@@ -605,6 +622,9 @@ namespace CF7Launcher.Tasks
                 case "snapshot":
                     action = "settingsSnapshot";
                     return true;
+                case "reconcile":
+                    action="settingsReconcile";
+                    return true;
                 case "preview":
                     action = "settingsPreviewAudio";
                     isWrite = true;
@@ -646,6 +666,7 @@ namespace CF7Launcher.Tasks
             switch (cmd)
             {
                 case "snapshot":
+                case "reconcile":
                 case "cancel":
                 case "save":
                     if (!HasExactProperties(payload, "v")) return false;
@@ -748,7 +769,7 @@ namespace CF7Launcher.Tasks
             normalized["setBGMVolume"] = bgm;
             normalized["性能等级上限"] = performance;
             normalized["立绘类型"] = portrait;
-            normalized["basicZoomScale"] = Math.Round(zoom, 1);
+            normalized["basicZoomScale"] = Math.Floor(zoom * 10 + 0.5) / 10;
             return true;
         }
 
@@ -812,14 +833,13 @@ namespace CF7Launcher.Tasks
             if (!success)
             {
                 if (!IsCleanString(msg["error"], 80)) return true;
-                if (cmd == "apply" && (msg["keys"] != null
-                        || msg["keySchemaVersion"] != null))
+                if (cmd == "apply")
                 {
-                    return !IsValidAuthoritySnapshot(msg);
+                    if (msg["applied"] != null && !IsBoolean(msg["applied"])) return true;
+                    if (msg.Value<bool?>("applied") == true) return !IsValidApplyResponse(msg);
+                    if (msg["keys"] != null || msg["keySchemaVersion"] != null) return !IsValidAuthoritySnapshot(msg);
                 }
-                return cmd == "apply" && msg.Value<bool?>("applied") == true
-                    ? !IsValidApplyResponse(msg)
-                    : false;
+                return false;
             }
 
             if (!string.Equals(msg.Value<string>("operation"), cmd, StringComparison.Ordinal))
@@ -1020,6 +1040,7 @@ namespace CF7Launcher.Tasks
             PanelPendingCallEndReason reason)
         {
             PendingRequest entry = pendingCall.Context;
+            if(entry.Authority!=null) { HandleAuthorityPendingEnded(entry.Authority,pendingCall,reason);return; }
             lock (_lock)
             {
                 if (entry.IsWrite && entry.WebCmd != "preview")

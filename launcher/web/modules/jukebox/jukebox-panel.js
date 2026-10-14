@@ -141,7 +141,7 @@
         }
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：真正关面板才响（浮层消解提前 return）
         try { Panels.close(); } catch (e) {}
-        Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox'});
+        Bridge.send({type: 'panel', cmd: 'close', panel: 'jukebox', panelInstanceId: _closePanelInstanceId});
     }
 
     function createDOM() {
@@ -324,7 +324,9 @@
     var _uiSubs = [];   // [{key, handler}] 用于 UiData.off
     var _helpLoaded = false;
 
-    function onOpen() {
+    var _closePanelInstanceId = '';
+    function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         _opened = true;
         applyTheme(loadTheme());
         // CRT 开机动画：class 重触发（元素常驻，每次 open 重放一次；perf-low-effects 全局禁用动画）

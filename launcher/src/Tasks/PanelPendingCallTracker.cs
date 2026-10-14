@@ -159,6 +159,27 @@ namespace CF7Launcher.Tasks
             return call != null;
         }
 
+        internal bool TryPeek(int backendCallId, out PanelPendingCall<TContext> call)
+        {
+            lock (_gate) {
+                TrackedCall tracked;
+                call = _pending.TryGetValue(backendCallId, out tracked) ? tracked.Call : null;
+                return call != null;
+            }
+        }
+
+        internal bool TryCompleteExact(int backendCallId, PanelPendingCall<TContext> expected,
+            out PanelPendingCall<TContext> call)
+        {
+            lock (_gate) {
+                TrackedCall tracked;
+                if (!_pending.TryGetValue(backendCallId, out tracked) || !ReferenceEquals(tracked.Call, expected)) {
+                    call = null; return false;
+                }
+                call = TakeLocked(backendCallId); return true;
+            }
+        }
+
         public void Clear()
         {
             List<PanelPendingCall<TContext>> calls;

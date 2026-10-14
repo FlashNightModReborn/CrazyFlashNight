@@ -73,9 +73,18 @@ int wmain(int argc,wchar_t** argv) {
     wchar_t modulePath[MAX_PATH]{};GetModuleFileNameW(nullptr,modulePath,MAX_PATH);
     std::wstring path=modulePath;path=path.substr(0,path.find_last_of(L"\\/"))+L"\\FlashInputBridge.dll";
     HMODULE module=LoadLibraryExW(path.c_str(),nullptr,LOAD_WITH_ALTERED_SEARCH_PATH);
+    DWORD loadError=module ? ERROR_SUCCESS : GetLastError();
     auto callback=module ? reinterpret_cast<HOOKPROC>(GetProcAddress(module,"InputHook")) : nullptr;
+    DWORD exportError=callback ? ERROR_SUCCESS : (module ? GetLastError() : loadError);
     HHOOK hook=callback ? SetWindowsHookExW(WH_GETMESSAGE,callback,module,thread) : nullptr;
-    if(!hook) {RemovePropW(source,InputProperty);GlobalDeleteAtom(atom);UnmapViewOfFile(data);ReleaseMutex(exclusive.value);return 7;}
+    DWORD hookError=hook ? ERROR_SUCCESS : (callback ? GetLastError() : exportError);
+    if(!hook) {
+        // Only emit after a definite failure: the Host treats the first stdout line as the handshake result.
+        std::printf("FAIL input_hook stage=%s win32=%lu sourcePid=%lu sourceTid=%lu\n",
+            !module ? "load_library" : !callback ? "resolve_hook" : "install_hook",hookError,pid,thread);
+        std::fflush(stdout);
+        RemovePropW(source,InputProperty);GlobalDeleteAtom(atom);UnmapViewOfFile(data);ReleaseMutex(exclusive.value);return 7;
+    }
     UINT control=RegisterWindowMessageW(InputControlMessage);
     bool initPosted=PostMessageW(source,control,ControlInit,static_cast<LPARAM>(cookie))!=FALSE;
     DWORD started=GetTickCount();

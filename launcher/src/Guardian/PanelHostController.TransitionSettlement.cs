@@ -19,6 +19,7 @@ namespace CF7Launcher.Guardian
         internal void ConfigureTransitionSettlement(SceneTransitionController controller)
         {
             _sceneSettlement=controller;
+            controller.SettlementSurface.AttachHostLifetime(_hostLifetime);
             controller.ConfigureExclusivePresentation(() => SceneTransitionController.IsExclusivePresentation(_activePanel, _activePanelInstanceId));
             controller.SettlementRequest+=p=>_web.HandleTransitionSettlementMessage(p);
             controller.SettlementTransportFailed+=()=>_web.HandleTransitionSettlementFailure();
@@ -64,14 +65,12 @@ namespace CF7Launcher.Guardian
         internal bool TryPostTransitionSettlement(string json)
             => _transitionSettlementSelected && _sceneSettlement.SettlementSurface.TryPostTransitionPanel(json);
 
-        private bool RetireTransitionSettlement()
+        private bool RetireTransitionSettlement(string closePayload=null)
         {
             if(!_transitionSettlementSelected) return false;
-            bool restore=_transitionSettlementPaused && _sceneSettlement.SettlementSurface.CanRestoreGameFocus;
             _transitionSettlementSelected=false; _transitionSettlementPaused=false;
-            _compositionPanelState?.Invoke(false);
-            _sceneSettlement.ReleaseSettlement();
-            return restore;
+            _sceneSettlement.ReleaseSettlement(closePayload);
+            return false;
         }
     }
 }

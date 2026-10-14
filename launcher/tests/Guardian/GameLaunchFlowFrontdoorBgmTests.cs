@@ -53,7 +53,8 @@ namespace CF7Launcher.Tests.Guardian
                     SolResolveResult.NewEmpty(),
                     true,
                     "create",
-                    null);
+                    null,
+                    false);
 
                 Assert.Empty(create.Lease.Yields);
             }

@@ -1,0 +1,474 @@
+{
+  "schema": "cf7-scene-presentation-readiness-fix.v1",
+  "recordedAtUtc": "2026-10-14T00:35:12.3853802Z",
+  "authorization": "2026-10-14 用户要求：那就先完成已知的修复。范围为已确认的背景显示就绪与结算关闭交接缺口。",
+  "state": "candidate_executed",
+  "source": {
+    "head": "b98b6303aa409e76086e50f24cb1cfed00408204",
+    "worktree": true,
+    "existingChangesPreserved": true,
+    "baselineIndex": {
+      "path": "tmp/scene-presentation-fix-20261014/baseline-20261013T233537348Z/index.json",
+      "sha256": "FE803712ACCC426909F019A4EE76AEB36BFD4DB33A5EE11F8F57B61C35635833",
+      "bytes": 2228
+    },
+    "files": [
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as",
+        "sha256": "F830274E492C49CA98BFF5D1E1A8A94C902D92A68B5CAC329F2CF1294307E0A9",
+        "bytes": 24179
+      },
+      {
+        "path": "scripts/类定义/org/flashNight/arki/ui/SceneTransitionServiceTest.as",
+        "sha256": "D717A2678BFEDC154A957A5D8362411C68B35D88177A2A1B83DDC708BC7CBAFF",
+        "bytes": 32024
+      },
+      {
+        "path": "scripts/逻辑/关卡系统/关卡系统_lsy_add2map_加载背景.as",
+        "sha256": "6333FE83EBDA99899A586FA705272E6A67F52867571BF2AA2FA6EFCED9C62D38",
+        "bytes": 10082
+      },
+      {
+        "path": "scripts/run-scene-transition-tests.ps1",
+        "sha256": "7B76DC69F8C1684CE84C642A59742489DC269E0C6E8578F1EF014F8D193574CF",
+        "bytes": 1036
+      },
+      {
+        "path": "launcher/src/Guardian/SceneTransitionController.cs",
+        "sha256": "24F8127E3B13288474F134463D64CF4AF65C7945E99B18FD0D8D4895FB9BF8ED",
+        "bytes": 26992
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.TransitionSettlement.cs",
+        "sha256": "E8EDF8598B404C41224EA06B84548A4017BF7FBE8B37C6B34BB3E31BEC13B4CA",
+        "bytes": 4333
+      },
+      {
+        "path": "launcher/src/Guardian/PanelHostController.CloseTransaction.cs",
+        "sha256": "B2A37B5422D3DD0BD73E68A2B92CC961D7DA6069C241D8AFFAA826FEA483421E",
+        "bytes": 11096
+      },
+      {
+        "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+        "sha256": "7B109DA03E9610960EDEA84E69CA3421B559632351E97AF2D5E4FCB7D0647BBB",
+        "bytes": 76839
+      },
+      {
+        "path": "launcher/src/Program.cs",
+        "sha256": "3FE081DB02B12C77DAE187BB961074699125E16ABA177394A56179E7C00855A9",
+        "bytes": 211630
+      },
+      {
+        "path": "launcher/web/modules/loot/loot-panel.js",
+        "sha256": "66D9F319E91FE313765CFA738B38783135460D977F59CE32728AA17E74ACA663",
+        "bytes": 52125
+      },
+      {
+        "path": "launcher/tests/Guardian/SceneTransitionResumeTests.cs",
+        "sha256": "A50C102C94D1253A9AD6C56E372D4BDB50EEBDDDAE53A369172E057ACF3AE347",
+        "bytes": 4685
+      },
+      {
+        "path": "launcher/tests/Guardian/WebOverlayFormPanelCloseTests.cs",
+        "sha256": "15ECBEE037D388F49BF3813613C7B2D4B6405AF08A0F674EE31DF04CC3B57966",
+        "bytes": 92961
+      },
+      {
+        "path": "tools/test-scene-transition.js",
+        "sha256": "B492354EE3F99E226A216FE3A0040795D65EEF3CF3DD4DB955E1E88493377E53",
+        "bytes": 42813
+      },
+      {
+        "path": "tools/scene-transition-smoke/Program.cs",
+        "sha256": "547EB18ADE014A9DE2DC653DF0B995F2C5EEFC88CB2F786032AE7CBD8E778435",
+        "bytes": 53840
+      },
+      {
+        "path": "agentsDoc/as2-web-panel-migration.md",
+        "sha256": "60657C4CD3DBD86077D90BCA34BE4C67507AB229C154262DAD9CA34B5C9734E9",
+        "bytes": 234635
+      },
+      {
+        "path": "agentsDoc/testing-details.md",
+        "sha256": "E2287376ABB8CEE5B789A442DBF094334023C204AC8ED9E2AA07D5B627BC8677",
+        "bytes": 304691
+      },
+      {
+        "path": "docs/U12过场Web迁移与人力验收-2026-10-01.md",
+        "sha256": "95B6BA1A8259E347763BFC89FB9330FC888D6E54568D87F59C0EE535FB39A4BB",
+        "bytes": 46453
+      }
+    ]
+  },
+  "fixes": [
+    {
+      "name": "外部背景就绪后揭幕",
+      "behavior": "保持业务 SceneReady 的语义，按世界对象身份、scene 和 ticket 等待 onLoadInit，或下载完成后成功烘焙入位图，再跨实际帧边界。烘焙确认先于原容器卸载。Host 对新 reveal 请求新的捕获与呈现证明。",
+      "failure": "加载失败或 30 秒期限进入原失败时间轴，不自动重放导航。"
+    },
+    {
+      "name": "结算关闭等待新世界画面",
+      "behavior": "原业务关闭已确认后保留同一报告视图并禁用输入，直到当前 scene 的新鲜满窗画面呈现，再发送原 exact close、释放输入并执行原关闭焦点尾部一次。",
+      "boundary": "提前关闭仍回同一次加载；未知写、旧实例和重复关闭的保护保持原合同。"
+    }
+  ],
+  "candidate": {
+    "root": "tmp/runtime-candidates/v2/c-6b605d0cc391-08846e81b3-20261014t000542029z-0969cde1",
+    "entry": "本地开发启动.cmd",
+    "metadata": {
+      "path": "tmp/runtime-candidates/v2/c-6b605d0cc391-08846e81b3-20261014t000542029z-0969cde1/runtime-build-metadata.v2.json",
+      "sha256": "BDF3312312249AA1C93ECCF24A027FD500EAD6BE40D2737A2F34D6567805CA6F",
+      "bytes": 1295
+    },
+    "core": {
+      "path": "tmp/runtime-candidates/v2/c-6b605d0cc391-08846e81b3-20261014t000542029z-0969cde1/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "sha256": "7024F3F19F6E5089EC4E850FD6E692D299DB11690DDEDFBC05B56B47B0460A48",
+      "bytes": 6397952
+    },
+    "artifactSourceHash": "4F2EAE87CD11418EE715990178A0C2A6E512214B0F1C429592951D225C752452",
+    "buildIdentityHash": "6B605D0CC3912C58779805B5C3ADC8E403DB5CE69E169B0163DE6849F9353EED",
+    "payloadClosureHash": "5B451683FDC7F28E71413F25C68488F74A39900906385D6A5C79C6F4DCBD0D6D",
+    "builtReceipt": {
+      "path": "tmp/scene-presentation-fix-20261014/candidate-build.log",
+      "sha256": "DCF3373CC99CE10B233BD3294B462D14C0164FFDD4A8378093810A8640D54261",
+      "bytes": 6168
+    },
+    "readyStatusReceipt": {
+      "path": "tmp/scene-presentation-fix-20261014/candidate-status-final.txt",
+      "sha256": "FEB8D4E9398854B44E1B2CFFF697D94E0C1C213EA8004C875C5D3C53F84C9899",
+      "bytes": 1997
+    },
+    "activePointer": {
+      "path": "tmp/runtime-dev/active.v1.json",
+      "sha256": "DD9B7C91EFD461155B3174A3E1DB680A5A8684E3AA16808887794E737BA56516",
+      "bytes": 850
+    },
+    "deploymentStatus": "NOT_DEPLOYED"
+  },
+  "validation": {
+    "documents": {
+      "receipt": {
+        "path": "tmp/scene-presentation-fix-20261014/doc-governance-final.log",
+        "sha256": "1ED911369A849ACC09C579431F9CE4825EEEA880D361E894BC316F420027B416",
+        "bytes": 3593
+      },
+      "passed": true,
+      "warnings": "现有文档链接欠账和行数提示仍保留，本轮未新增断链。"
+    },
+    "as2": {
+      "suite": "SceneTransitionServiceTest",
+      "passed": 101,
+      "failed": 0,
+      "freshRunId": "a8e45cba18e0441e9bf3b38e07290003",
+      "behaviorEvidence": {
+        "path": "tmp/scene-presentation-fix-20261014/as2-test-final/flashlog.txt",
+        "sha256": "FDE3475279C7204CD5E8E87477FF0DDA71C0D76B14B7825753C01156640BCB63",
+        "bytes": 601
+      },
+      "compiler": {
+        "path": "tmp/scene-presentation-fix-20261014/asloader-compiled-final/compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "publishOutput": {
+        "path": "tmp/scene-presentation-fix-20261014/asloader-compiled-final/compile_output.txt",
+        "sha256": "89ABF2A02804799DF25CEB3BF810F66094AF348F73465277451E89E8C5B919B6",
+        "bytes": 63
+      },
+      "asLoader": {
+        "path": "scripts/asLoader.swf",
+        "sha256": "829816FA936A61FD0B06B5ED84379AB77FC8B0A814CFCB066348C07FDEA8C3D5",
+        "bytes": 5937803
+      },
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "ownership": {
+        "errors": [],
+        "files": 692,
+        "parsed": 0,
+        "cacheHits": 692,
+        "loaderClasses": 711,
+        "closureChecked": true,
+        "policy": "production",
+        "milliseconds": 2338.2457
+      },
+      "nativeLoaderIo": "AVM1 suite uses a controlled MovieClipLoader fixture; the separate live journey exercises the actual external SWF."
+    },
+    "hostFocused": {
+      "receipt": {
+        "path": "tmp/focus-sol-20261013/candidate-20261013T235815429Z/recheck.trx",
+        "sha256": "7ED8FE020355ED52786DB8D08E91FEE57BC7DE5EC2E46950AE8B5FBB65596051",
+        "bytes": 323957
+      },
+      "total": 188,
+      "passed": 188,
+      "failed": 0,
+      "skipped": 0,
+      "resourceQualificationCancellations": 0,
+      "otherFailures": [],
+      "allGreen": true
+    },
+    "hostFullAttempts": [
+      {
+        "receipt": {
+          "path": "tmp/focus-sol-20261013/integration-20261013T234949953Z/recheck.trx",
+          "sha256": "E754D8B12EDCB58B2DCEBA12C9CFF3DC23B9C81DEB25C4607221F31796299730",
+          "bytes": 11563561
+        },
+        "total": 7413,
+        "passed": 7261,
+        "failed": 122,
+        "skipped": 30,
+        "resourceQualificationCancellations": 120,
+        "otherFailures": [
+          {
+            "test": "CF7Launcher.Tests.Guardian.WebOverlayFormPanelCloseTests.RewardInboxTerminalClosePreservesWebSurfaceUntilExactReplacement",
+            "message": "Assert.Contains() Failure: Sub-string not found\r\nString:    \"function finishVisualClose(reason) {\\r\\n   \"···\r\nNot found: \"if (!preserveForRewardReturn) Panels.clos\"···"
+          },
+          {
+            "test": "CF7Launcher.Tests.Guardian.WebOverlayFormPanelCloseTests.PanelCloseHandsOffWhileSourceLivesAndQueuesOnlyInnerFocusTail",
+            "message": "Assert.True() Failure\r\nExpected: True\r\nActual:   False"
+          }
+        ],
+        "allGreen": false
+      },
+      {
+        "receipt": {
+          "path": "tmp/focus-sol-20261013/integration-20261014T000226507Z/recheck.trx",
+          "sha256": "D3479A8545481E908E20B92E1605C65D830CDD9AE9BC4A4C38CCCB066214D133",
+          "bytes": 11445836
+        },
+        "total": 7413,
+        "passed": 7335,
+        "failed": 48,
+        "skipped": 30,
+        "resourceQualificationCancellations": 48,
+        "otherFailures": [],
+        "allGreen": false
+      },
+      {
+        "receipt": {
+          "path": "tmp/focus-sol-20261013/integration-20261014T002927893Z/recheck.trx",
+          "sha256": "D1B2D2A2AEB5803909937B1E0217997B8652BC1F976B5E39E35F5DFE49CE8ECF",
+          "bytes": 11367512
+        },
+        "total": 7413,
+        "passed": 7383,
+        "failed": 0,
+        "skipped": 30,
+        "resourceQualificationCancellations": 0,
+        "otherFailures": [],
+        "allGreen": true
+      }
+    ],
+    "browser": {
+      "sceneTransitionPassed": 381,
+      "lootHarnessPassed": 135,
+      "lootLazyCancellationPassed": 6,
+      "lootStatePassed": 100,
+      "panelContractsPassed": 70,
+      "panelRuntimePassed": 42,
+      "stageEntrySourceChecksPassed": 38,
+      "catalogCheckPassed": true,
+      "evidenceKind": "本轮命令执行结果；不代替真实游戏及物理输入验收。"
+    },
+    "composition": {
+      "finalReceipt": {
+        "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-07/result.json",
+        "sha256": "A22002AA8865FDE69F4D06D64172493BB37C5B77D8C6F2008C4D2BB8189E460C",
+        "bytes": 9632
+      },
+      "passed": 65,
+      "reportPixelsVerified": true,
+      "candidateCoreSha256": "7024F3F19F6E5089EC4E850FD6E692D299DB11690DDEDFBC05B56B47B0460A48",
+      "attempts": [
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final/result.json",
+            "sha256": "97C7F562A78BA868C9E4060F0BCC2AF1DB526C962714E49A36C2FA4DACFF2A00",
+            "bytes": 2756
+          },
+          "state": "failed",
+          "checks": 0,
+          "reportPixelsVerified": false,
+          "failure": "System.Reflection.TargetParameterCountException: Parameter count mismatch.\r\n   at System.Reflection.MethodBaseInvoker.ThrowTargetParameterCountException()\r\n   at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)\r\n   at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)\r\n   at Probe.CheckInputLatencyProbe() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 557\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 157"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-02/result.json",
+            "sha256": "799F5767B9E00EBC235B38F672B38EA5CA48D9B106DB9ECF02196BE78D442EA0",
+            "bytes": 2519
+          },
+          "state": "failed",
+          "checks": 2,
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: fixture initial foreground was not admitted; visible=True foreground=461170 owner=44436118\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 169"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-03/result.json",
+            "sha256": "8AB883874A82D629714C61E695DF25E3EDB35B9F4BA5D45CBF266B370637D591",
+            "bytes": 2681
+          },
+          "state": "failed",
+          "checks": 2,
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: probe timed out: fixture initial foreground admitted\r\n   at Probe.Wait(Func`1 done, String label) in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 57\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 171"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-04/result.json",
+            "sha256": "8AB883874A82D629714C61E695DF25E3EDB35B9F4BA5D45CBF266B370637D591",
+            "bytes": 2681
+          },
+          "state": "failed",
+          "checks": 2,
+          "reportPixelsVerified": false,
+          "failure": "System.Exception: probe timed out: fixture initial foreground admitted\r\n   at Probe.Wait(Func`1 done, String label) in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 57\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 171"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-05/result.json",
+            "sha256": "4601822D8B016F02C4B7C92621800C99B2E6D118F110817475AD068826746EA4",
+            "bytes": 3807
+          },
+          "state": "failed",
+          "checks": 12,
+          "reportPixelsVerified": false,
+          "failure": "System.MissingMethodException: Constructor on type 'CF7Launcher.Guardian.SceneTransitionController' not found.\r\n   at System.RuntimeType.CreateInstanceImpl(BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture)\r\n   at System.Activator.CreateInstance(Type type, BindingFlags bindingAttr, Binder binder, Object[] args, CultureInfo culture)\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 220"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-06/result.json",
+            "sha256": "3AD04C05DACA2CAAEF65B045074772AEFED90E3954A499837FCD209F57619FC2",
+            "bytes": 6051
+          },
+          "state": "failed",
+          "checks": 31,
+          "reportPixelsVerified": true,
+          "failure": "System.Exception: timeout: compact v2 ally keeps the original 48px square with a status badge errors=\"[]\"\r\n   at Probe.<>c__DisplayClass31_0.<<Run>g__waitScript|27>d.MoveNext() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 349\r\n--- End of stack trace from previous location ---\r\n   at Probe.Run() in C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\scene-transition-smoke\\Program.cs:line 365"
+        },
+        {
+          "receipt": {
+            "path": "tmp/scene-presentation-fix-20261014/native-smoke-final-07/result.json",
+            "sha256": "A22002AA8865FDE69F4D06D64172493BB37C5B77D8C6F2008C4D2BB8189E460C",
+            "bytes": 9632
+          },
+          "state": "fixture_executed",
+          "checks": 65,
+          "reportPixelsVerified": true,
+          "failure": null
+        }
+      ],
+      "fixtureMaintenance": "按当前接口补全反射可选参数、为独立角色夹具提供装备快照；独立窗口保留 20 秒 exact foreground 门并允许在任务栏选中。"
+    },
+    "live": {
+      "receipt": {
+        "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/report.json",
+        "sha256": "401578D90359FC55E5869FF352D4365B7E8C0B339F6D8377B8EC8A35E346DB09",
+        "bytes": 872834
+      },
+      "status": "observed",
+      "slot": "cf7_agent_scene_ready_1014",
+      "identity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-6b605d0cc391-08846e81b3-20261014t000542029z-0969cde1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "7024F3F19F6E5089EC4E850FD6E692D299DB11690DDEDFBC05B56B47B0460A48",
+        "buildIdentity": "6B605D0CC3912C58779805B5C3ADC8E403DB5CE69E169B0163DE6849F9353EED",
+        "payloadClosure": "5B451683FDC7F28E71413F25C68488F74A39900906385D6A5C79C6F4DCBD0D6D",
+        "pid": 26816,
+        "httpPort": 1192
+      },
+      "runtimeAdmission": {
+        "gameEnteredObserved": true,
+        "readyForRuntimeAutomation": true,
+        "attemptId": "26d7bd31258749caa72560e1120d9e7a"
+      },
+      "observations": {
+        "scope": "isolated candidate, cloned save, normal map and stage UI",
+        "background": {
+          "stage": "堕落城下水道入口",
+          "difficulty": "简单",
+          "scene": 3,
+          "revealRequestedLocal": "08:24:31.613",
+          "freshFrameRequiredLocal": "08:24:31.616",
+          "revealAllowedLocal": "08:24:31.720",
+          "revealedLocal": "08:24:32.169",
+          "worldVisibleObserved": true
+        },
+        "settlement": {
+          "return": "主动撤离",
+          "instance": "panelloot_cfIozC_kQfmpaQDyG9uezZfz",
+          "scene": 4,
+          "waitLocal": "08:27:58.422",
+          "releasedLocal": "08:27:58.705",
+          "waitMs": 283,
+          "waitingReportVisibleObserved": true,
+          "fullBaseVisibleAfterClose": true,
+          "finalActivePanel": null
+        },
+        "physicalInputAttestation": false,
+        "continuousFrameRecording": false,
+        "formalPromotion": false
+      },
+      "logs": [
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/before-stage-log.json",
+          "sha256": "2FD62607AD06761B05ED02F0467FE160BE97CCCBFD883A817AC6C74906F6A73E",
+          "bytes": 575199
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/stage-entry-log.json",
+          "sha256": "B4F838C55616AF9018307FEBBBBDAA703AD15F39C7C8E4E729ED8A2C50AEEB7D",
+          "bytes": 565797
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/before-return-log.json",
+          "sha256": "73CA8ABE17C8EF787A3715F8F1709D0B77BDBB68A0D887D0E9ED5AF4DB1605BE",
+          "bytes": 560871
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/return-report-log.json",
+          "sha256": "6784A25E75A022F77A49929190E6F2A248747F60E5CF29976EC30A7E6FCC461F",
+          "bytes": 557257
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/before-close-log.json",
+          "sha256": "12E527EE239D20C3E7C17E38738D5FFF1DF050C0539B1B951B91C6ADA7FC7FEC",
+          "bytes": 565329
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/after-close-log.json",
+          "sha256": "1AB9089B8678D615DE8FFCC6E4F51E3D584ADB4E4A9F87CE269DF0B92EDD1BBA",
+          "bytes": 568320
+        },
+        {
+          "path": "tmp/workbench-live-e2e/business-live/2026-10-14T00-20-24-286Z/close-handoff-log.json",
+          "sha256": "F04552CF07AE27431443BD8ABC29A3733A0F9595C0C957AC4CFD3920C8456C47",
+          "bytes": 540660
+        }
+      ],
+      "protectedSaveArtifacts": 47,
+      "protectedSaveUniverseSha256": "eecd9002df37c75fa1542ba9cd4530721c5fccc4cbca76d357926e255fc543a9",
+      "originalSaveUniverseUnchanged": true,
+      "normalShutdown": true,
+      "cloneLockReleased": true
+    }
+  },
+  "boundaries": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "completeGameE2eVerified": false,
+    "humanVisualAcceptance": "pending",
+    "promoted": false,
+    "standard_entry_verified": false,
+    "limitations": [
+      "实际旅程覆盖一个专用克隆槽的下水道简单难度入场、主动撤退、结算关闭与回基地；未覆盖全部地图、胜利结算、多轮长时体验或保存重启读回。",
+      "实际截图与日志不是连续逐帧录像，工具输入不构成人类物理输入验收。",
+      "战斗中独立的动态分辨率闪变仍未归因，本次两处修复不宣称解决该现象。",
+      "候选同时包含当前工作区原有改动；本轮未 commit、push 或正式 runtime promotion。",
+      "保留所有失败与资源资格取消回执，不把它们改写成通过。"
+    ]
+  }
+}

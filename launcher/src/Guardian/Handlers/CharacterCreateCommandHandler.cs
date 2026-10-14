@@ -5,7 +5,7 @@ namespace CF7Launcher.Guardian.Handlers
 {
     internal static class CharacterCreateCommandHandler
     {
-        internal static void HandleOpen(
+        internal static async void HandleOpen(
             JObject message,
             BootstrapPanel bootForm,
             GameLaunchFlow launchFlow)
@@ -20,19 +20,10 @@ namespace CF7Launcher.Guardian.Handlers
                 return;
             }
 
-            string attemptId;
-            string slotKey;
-            string error;
-            if (!launchFlow.OpenCharacterCreate(
-                    mode,
-                    requestedSlot,
-                    openRequestId,
-                    out attemptId,
-                    out slotKey,
-                    out error))
-            {
-                PostState(bootForm, "rejected", openRequestId, null, requestedSlot, error, true);
-            }
+            try {
+                var result=await launchFlow.OpenCharacterCreateWithRecoveryAsync(mode,requestedSlot,openRequestId);
+                if (!result.ok)PostState(bootForm, "rejected", openRequestId, null, requestedSlot, result.error, true);
+            } catch { PostState(bootForm,"rejected",openRequestId,null,requestedSlot,"settings_metadata_unavailable",true); }
         }
 
         internal static void HandleSubmit(

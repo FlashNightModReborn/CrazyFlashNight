@@ -121,12 +121,13 @@ namespace CF7Launcher.Guardian
                 uint messageTime = unchecked((uint)GetMessageTime());
                 // activate 由正在派发的输入消息触发；GetMessageTime 指向上一条泵取消息，
                 // inSendMessage=true 时它仍是触发点击的入队时间，作为上下文记录但不参与认领。
+                bool messageTimeAvailable = HasQueuedPointerTimestamp();
                 NativeMouseCorrelation corr = FocusTrace.PeekNativeMouseCorrelation(
-                    point, triggerMessage, messageTime, !inSend);
+                    point, triggerMessage, messageTime, messageTimeAvailable);
                 FocusTrace.Record("hud.native_mouse_activate", new {
                     receiver = message.HWnd.ToInt64(), triggerMessage,
                     hitTest = (short)(message.LParam.ToInt64() & 0xffff), point, pointSource = "GetMessagePos",
-                    messageTime, inSendMessage = inSend,
+                    messageTime, messageTimeAvailable, inSendMessage = inSend,
                     mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
                     windows = FocusWindowSnapshot.At(point, message.HWnd),
                     hudInput = FocusTrace.CaptureHudInput(message.HWnd, point) });
@@ -144,43 +145,69 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern bool GetCurrentInputMessageSource(out InputMessageSource source);
 
+        private bool? _pointerSourceSucceeded;
+        private uint? _pointerSourceDevice, _pointerSourceOrigin;
+        private string _pointerSourceFailure;
         protected virtual bool HasQueuedPointerTimestamp()
         {
-            // 同线程 SendMessage 的 InSendMessage 也为 false，需同时核设备来源。
-            return !InSendMessage() && GetCurrentInputMessageSource(out InputMessageSource source)
-                && source.DeviceType != 0;
+            try {
+                if (InSendMessage()) return false;
+                bool ok = TryReadCurrentPointerSource(out uint device, out uint origin);
+                _pointerSourceSucceeded = ok; _pointerSourceDevice = device; _pointerSourceOrigin = origin;
+                _pointerSourceFailure = ok ? null : "api_failed";
+                return ok && device != 0;
+            } catch (Exception error) {
+                _pointerSourceSucceeded = false; _pointerSourceFailure = error.GetType().Name;
+                return false;
+            }
+        }
+
+#if CF7_TEST_SEAMS
+        protected virtual bool TryReadCurrentPointerSource(out uint device, out uint origin)
+#else
+        private bool TryReadCurrentPointerSource(out uint device, out uint origin)
+#endif
+        {
+            bool ok = GetCurrentInputMessageSource(out InputMessageSource source);
+            device = source.DeviceType; origin = source.OriginId; return ok;
         }
 
         protected virtual uint QueuedPointerMessageTime() { return unchecked((uint)GetMessageTime()); }
 
-        private void TraceFocusNativeMouse(Message message, string phase, long started)
+        private sealed class NativeMouseFocusSample
         {
-            try
-            {
+            internal FocusTrace.TraceLease Lease;
+            internal FocusTrace.NativeTraceData Entry;
+        }
+        private NativeMouseFocusSample TraceFocusNativeMouse(Message message, string phase, long started,
+            NativeMouseFocusSample sample = null, FocusTrace.TraceLease lease = null,
+            bool available = false, uint messageTime = 0, string outcome = null)
+        {
+            try {
+                if (phase == "exit") {
+                    if (sample != null) FocusTrace.TryEndNative(sample.Lease, sample.Entry, message.Result.ToInt64(),
+                        (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency, outcome);
+                    return sample;
+                }
+                if (lease == null) return null;
                 long packed = message.LParam.ToInt64();
-                Point client = new Point((short)(packed & 0xffff), (short)((packed >> 16) & 0xffff));
+                Point client = new Point((short)packed, (short)(packed >> 16));
                 Point point = PointToScreen(client);
-                bool inSend = InSendMessage();
-                uint messageTime = unchecked((uint)GetMessageTime());
-                // posted 输入消息：GetMessageTime 是本消息真实入队时间，认领时用它测"hook→入队"延迟；
-                // SendMessage 合成投递：GetMessageTime 属于上一条泵取消息，退回 observed 域。
-                NativeMouseCorrelation corr = phase == "enter"
-                    ? FocusTrace.CorrelateNativeMouse(point, message.Msg, messageTime, !inSend)
-                    : FocusTrace.PeekNativeMouseCorrelation(point, message.Msg, messageTime, !inSend);
-                // messageAgeMs 与 hookDispatchMs 同一条 wrap-safe 规则：负区间=歧义，显式标注。
-                int messageAge = FocusTrace.WrappingTickDeltaMs(
-                    unchecked((uint)Environment.TickCount), messageTime, out bool messageAgeAmb);
-                FocusTrace.Record("hud.native_mouse", new {
-                    receiver = message.HWnd.ToInt64(), message = message.Msg, phase, client, point,
-                    messageTime, messageAgeMs = messageAge, messageAgeAmbiguous = messageAgeAmb,
-                    inSendMessage = inSend,
-                    mouseId = corr.MouseId, correlation = corr, result = message.Result.ToInt64(),
+                int? age = null; bool? ambiguous = null;
+                if (available) { age = FocusTrace.WrappingTickDeltaMs(unchecked((uint)Environment.TickCount),
+                    messageTime, out bool value); ambiguous = value; }
+                var entry = new FocusTrace.NativeTraceData {
+                    receiver = message.HWnd.ToInt64(), message = message.Msg, client = client, point = point,
+                    messageTime = messageTime, messageTimeAvailable = available, messageAgeMs = age,
+                    messageAgeAmbiguous = ambiguous, inSendMessage = InSendMessage(),
+                    sourceQuerySucceeded = _pointerSourceSucceeded, sourceDevice = _pointerSourceDevice,
+                    sourceOrigin = _pointerSourceOrigin, sourceFailure = _pointerSourceFailure,
+                    result = message.Result.ToInt64(), ObservedTick = Environment.TickCount64,
                     elapsedMs = (Stopwatch.GetTimestamp() - started) * 1000.0 / Stopwatch.Frequency,
-                    windows = phase == "enter" ? FocusWindowSnapshot.At(point, message.HWnd) : null,
-                    hudInput = phase == "enter" ? FocusTrace.CaptureHudInput(message.HWnd, point) : null
-                });
-            }
-            catch { /* 观察不能吞掉或补发鼠标消息。 */ }
+                    windows = FocusWindowSnapshot.At(point, message.HWnd), hudInput = FocusTrace.CaptureHudInput(message.HWnd, point)
+                };
+                return FocusTrace.TryBeginNative(lease, entry) ? new NativeMouseFocusSample { Lease = lease, Entry = entry } : null;
+            } catch { return sample; }
         }
 
         [DllImport("user32.dll")] private static extern uint GetMessagePos();

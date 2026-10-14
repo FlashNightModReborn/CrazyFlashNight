@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
+using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Guardian.Hud.PlayerInfo;
 using CF7Launcher.Guardian.WorldCompositor;
 using Newtonsoft.Json.Linq;
@@ -20,7 +21,9 @@ public sealed class PlayerHudSharedPresentationTests
     {
         internal bool HasContent;
         internal int Clears,Uploads;
-        public void UploadHud(IntPtr pixels,int width,int height,int stride,int x,int y) { HasContent=true;Uploads++; }
+        internal Rectangle Region;
+        public void UploadHud(IntPtr pixels,int width,int height,int stride,int x,int y)
+        { HasContent=true;Uploads++;Region=new Rectangle(x,y,width,height); }
         public void ClearHud(IntPtr transparent) { HasContent=false;Clears++; }
     }
     private sealed class Flash : IWorldPointerSink
@@ -30,6 +33,22 @@ public sealed class PlayerHudSharedPresentationTests
         public long EndpointConsumedSeq=>0;
     }
     private sealed class PassiveWindow : Form { protected override bool ShowWithoutActivation=>true; }
+    private sealed class MovingWidget : INativeHudWidget
+    {
+        private readonly Control anchor;
+        internal MovingWidget(Control anchor) => this.anchor=anchor;
+        public Rectangle ScreenBounds => anchor.RectangleToScreen(new Rectangle(700,10,200,40));
+        public bool Visible => true;
+        public bool WantsAnimationTick => false;
+        public void Paint(Graphics graphics,float dpr,Point origin)
+        { var bounds=ScreenBounds;bounds.Offset(-origin.X,-origin.Y);graphics.FillRectangle(Brushes.Gold,bounds); }
+        public bool TryHitTest(Point point) => ScreenBounds.Contains(point);
+        public void OnMouseEvent(MouseEventArgs args,MouseEventKind kind) { }
+        public void Tick(int milliseconds) { }
+        public event EventHandler BoundsOrVisibilityChanged {add{}remove{}}
+        public event EventHandler RepaintRequested {add{}remove{}}
+        public event EventHandler AnimationStateChanged {add{}remove{}}
+    }
     [Fact]
     public void CaptureHandoffKeepsWholeHudOwnedUntilOutputActuallyRetires()
     {
@@ -47,19 +66,20 @@ public sealed class PlayerHudSharedPresentationTests
                 commands.TakeUiData("pi:"+PlayerHudStateTests.Encode(state));
                 using var resources=PlayerInfoSplitSurface.CreateLive(owner,owner,commands.State);
                 using var main=new NativeHudOverlay(owner,owner);
+                main.AddWidget(new MovingWidget(owner));
                 using var surface=new WorldCompositionSurface(()=>owner.Handle,()=>{},new Flash()) {Owner=owner};
                 surface.Bounds=owner.RectangleToScreen(owner.ClientRectangle);surface.Show();
                 using var world=new WorldCompositorController(owner,owner,()=>owner.Handle,()=>true,_=>{},root,()=>false,_=>{},()=>{});
                 Set(world,"_surface",surface);Set(world,"_active",true);
-                var scenes=new[]{new Raster(),new Raster(),new Raster(),new Raster()};
-                string[] names={"_damageRasterScene","_resourceRasterScene","_bottomRasterScene","_buffRasterScene"};
+                var scenes=new[]{new Raster(),new Raster(),new Raster(),new Raster(),new Raster()};
+                string[] names={"_damageRasterScene","_resourceRasterScene","_bottomRasterScene","_buffRasterScene","_mainHudRasterScene"};
                 for(int i=0;i<names.Length;i++)Set(world,names[i],scenes[i]);
-                var presentations=new[]{world.DamagePresentation,world.ResourcePresentation,world.BottomPresentation,world.BuffPresentation};
-                using var runtime=new PlayerHudRuntime(owner,owner,resources,commands,Path.Combine(root,"launcher","web","icons"),main);
+                var presentations=new[]{world.DamagePresentation,world.ResourcePresentation,world.BottomPresentation,world.BuffPresentation,world.MainHudPresentation};
+                using var runtime=new PlayerHudRuntime(owner,owner,resources,commands,Path.Combine(root,"launcher","web","icons"),main,shareMainHud:true);
                 runtime.SetSharedWorld(world);
                 world.RefreshHudPresentations();
                 Assert.All(presentations,p=>Assert.False(p.IsAvailable)); // never captured
-                Set(world,"_everReady",true);world.RefreshHudPresentations();runtime.SetReady();
+                Set(world,"_everReady",true);world.RefreshHudPresentations();runtime.SetReady();main.SetReady();
                 Pump(()=>scenes.Skip(1).All(s=>s.HasContent));
                 Assert.All(runtime.PresentationSurfaces,s=>Assert.False(s.Visible));
                 long commits=resources.Counters.CommitCount;
@@ -76,8 +96,18 @@ public sealed class PlayerHudSharedPresentationTests
                     Assert.All(presentations,p=>Assert.True(p.IsAvailable));
                     Assert.False(world.SchedulingAllowed);
                 }
+                var regions=scenes.Select(scene=>scene.Region).ToArray();
                 owner.Location=new Point(95,85); // invoke production move callback, no capture tick
                 Assert.Equal(owner.RectangleToScreen(owner.ClientRectangle),surface.Bounds);
+                // A modal move does not have to dispatch queued paint work. Every
+                // retained HUD raster must stay at the same output-relative origin.
+                Assert.Equal(regions,scenes.Select(scene=>scene.Region).ToArray());
+                foreach(var location in new[]{new Point(-30,120),new Point(130,30),new Point(40,40)})
+                {
+                    owner.Location=location;
+                    Assert.Equal(regions,scenes.Select(scene=>scene.Region).ToArray());
+                    Assert.Equal(owner.RectangleToScreen(owner.ClientRectangle),surface.Bounds);
+                }
                 Assert.All(presentations,p=>Assert.True(p.IsAvailable));
                 Assert.Equal(0,withdrawals);Assert.Equal(clears,scenes.Sum(s=>s.Clears));
                 Assert.Equal(commits,resources.Counters.CommitCount);

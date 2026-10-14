@@ -1,0 +1,4 @@
+﻿trace("FocusedTestRunId settings-sol-boundary Start: __FOCUSED_RUN_ID__");
+_root.__ownedSettingsSolConfig=new LiteJSON().parse(__SETTINGS_SOL_CONFIG__);
+org.flashNight.neur.Server.test.SettingsOwnedSolTest.runAllTests();
+trace("FocusedTestRunId settings-sol-boundary Complete: __FOCUSED_RUN_ID__");

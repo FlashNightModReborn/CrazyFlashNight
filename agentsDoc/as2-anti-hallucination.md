@@ -13,7 +13,7 @@
 - **字典对象**：仅限封闭内部字典可 `obj.__proto__ = null`；凡会泄露到模块边界的数据/配置对象保持普通 `Object`
 - **proto-null 判空**：对断原型对象禁用 `== null` / `!= null` / `== undefined` / `!= undefined`
 - **NUL 被吞**：`String.fromCharCode(0)` 在字符串拼接中被 AVM1 吞掉（`"A\x00"+x` 退化为 `"A"+x`)——哈希/HMAC 的 0x00 分隔符必须以 code unit 直喂（2026-09-04 KAT 实锤，K 店行指纹 FNV lane 因此全域偏移）
-- **`try...catch`**：生产代码禁用（性能损耗大），测试中允许
+- **`try...catch`**：热路径禁用，测试中允许。持久写、预览恢复与持久确认后的通知边界允许隔离异常；不得降级已确认事实或解除未知写锁。
 - **`#include` 路径**：基准是 `.fla` 类路径（`scripts/`），引用宏统一用 `#include "../macros/XXX.as"`
 
 ---
@@ -126,7 +126,7 @@
 - `LiteJSON` 的 `parse` / `stringify` / `stringifySafe` 是实例方法。先 `var codec:LiteJSON = new LiteJSON()`，再 `codec.stringifySafe(value)`；不要把上面的类名说明写成静态调用。
 - **`LiteJSON.stringify` 不做任何转义**：字符串值含 `"` 会产出畸形 JSON 并被 Host 端静默丢弃（材料详情曾因描述含引号整单无响应）。凡把自由文本放上对 Host/Web 的 wire，必须在发送收口处用 `LiteJSON.stringifySafe()`（标准转义）；其输出不能用 `LiteJSON.parse` 本地回读（parse 保持纯 `indexOf('"')` 扫描契约）。固定枚举、数字和 opaque token 组成的结构性请求只有在封闭 validator 证明不含自由文本时才可继续用 `stringify()`。2026-08-15 起已迁移领域的 `split('"').join("'")` / `join("&quot;")` 变通均已移除，新增变通写法视为回归
 - 无原生 `Promise`/`async`/`await`。`aven.Promise.Promise` 尚未完工，暂勿使用
-- `try...catch...finally` 存在但**生产代码禁用**（性能损耗大）。测试中允许
+- `try...catch...finally` 存在；热路径禁用。持久写、预览恢复和确认后的通知边界可隔离异常，保留已确认与未知写语义；测试中允许。
 - 无模板字符串，只能用 `+` 拼接（**不要用 `Array.join()`**，远慢于 `+`）
 - 无 `Number.toFixed()` 等，需手写：`Math.round(x * 100) / 100`
 - 无解构赋值、无原生展开运算符 `...args`

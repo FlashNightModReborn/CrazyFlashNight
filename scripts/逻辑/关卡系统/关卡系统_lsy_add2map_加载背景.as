@@ -108,6 +108,7 @@ _root.贴背景图 = function(){
 
 	// 背景已烤进 deadbody 位图，unloadMovie 清空原背景夹、释放全部矢量子级内存
 	// （对时间轴负深度实例同样有效；外部图则连 外部动画加载壳mc 一并清；留空壳故 gameworld.背景 不会变 undefined）
+	org.flashNight.arki.ui.SceneTransitionService.backgroundBaked(游戏世界, 背景层);
 	背景层.unloadMovie();
 };
 
@@ -197,7 +198,7 @@ _root.加载场景背景 = function (动画名){
 	}
 	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
 	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, false);
-	loadMovie(游戏世界.场景背景url, 背景层.外部动画加载壳mc);
+	org.flashNight.arki.ui.SceneTransitionService.loadBackground(游戏世界, 游戏世界.场景背景url, 背景层.外部动画加载壳mc);
 	// if(环境配置.背景元素){
 	// 	for(var i = 0; i < 环境配置.背景元素.length; i++){
 	// 		_root.加载背景元素(环境配置.背景元素[i].url, 环境配置.背景元素[i].name, 环境配置.背景元素[i].x, 环境配置.背景元素[i].y, 环境配置.背景元素[i].depth);

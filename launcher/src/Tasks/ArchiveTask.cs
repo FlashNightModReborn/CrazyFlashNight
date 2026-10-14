@@ -42,6 +42,11 @@ namespace CF7Launcher.Tasks
         private readonly object _lock = new object();
         private readonly SaveSlotCatalog _slotCatalog;
         private readonly RebuildBackupStore _rebuildBackups;
+        internal Func<string,bool> SettingsWriteAdmission;
+        internal bool CanMutateSlot(string slot)
+        {
+            try { return SettingsWriteAdmission?.Invoke(slot) ?? true; } catch { return false; }
+        }
 
         // R3a 顺序门：全局单 FIFO 消费者。入队顺序 == HandleAsync 调用顺序 == 消息到达顺序。
         private readonly BlockingCollection<Action> _opQueue = new BlockingCollection<Action>();
@@ -158,6 +163,7 @@ namespace CF7Launcher.Tasks
         {
             targetPath = Path.Combine(_savesDir, safeName + ".json");
             error = null;
+            if(!CanMutateSlot(safeName)) { error="settings_recovery_required";return false; }
             string tombPath = Path.Combine(_savesDir, safeName + ".tombstone");
 
             if (File.Exists(tombPath))
@@ -221,6 +227,7 @@ namespace CF7Launcher.Tasks
         /// </summary>
         public void ResetSlotSync(string slot)
         {
+            if(!CanMutateSlot(slot))throw new InvalidOperationException("settings_recovery_required");
             string safeName;
             if (!SaveSlotKey.TryValidateExisting(slot, out safeName))
                 throw new ArgumentException("invalid slot key", "slot");
@@ -229,6 +236,7 @@ namespace CF7Launcher.Tasks
 
             RunOnFifo(delegate
             {
+                if(!CanMutateSlot(safeName))throw new InvalidOperationException("settings_recovery_required");
                 lock (_lock)
                 {
                     Exception firstFailure = null;
@@ -692,6 +700,7 @@ namespace CF7Launcher.Tasks
         private string HandleDelete(JObject payload)
         {
             string slot = payload.Value<string>("slot");
+            if(!CanMutateSlot(slot))return BuildError("settings_recovery_required");
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 
@@ -874,6 +883,7 @@ namespace CF7Launcher.Tasks
         private string HandleReset(JObject payload)
         {
             string slot = payload.Value<string>("slot");
+            if(!CanMutateSlot(slot))return BuildError("settings_recovery_required");
             if (string.IsNullOrEmpty(slot))
                 return BuildError("missing slot");
 

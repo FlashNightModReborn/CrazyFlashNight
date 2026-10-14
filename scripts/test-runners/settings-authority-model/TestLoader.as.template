@@ -1,0 +1,6 @@
+﻿// Seed the shared item dependency before the focused suite. Starting at a derived
+// inventory enters BaseItem -> ItemUtil -> SaveManager while its parent is pending.
+var ownedItemDependency:Function = org.flashNight.arki.item.BaseItem;
+trace("FocusedTestRunId settings-authority-model Start: __FOCUSED_RUN_ID__");
+org.flashNight.neur.Server.test.SettingsAuthorityModelTest.runAllTests();
+trace("FocusedTestRunId settings-authority-model Complete: __FOCUSED_RUN_ID__");

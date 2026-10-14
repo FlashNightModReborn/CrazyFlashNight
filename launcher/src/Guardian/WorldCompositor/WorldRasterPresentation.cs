@@ -46,6 +46,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private Rectangle _bounds;
         private bool _available, _hasContent, _disposed;
         private long _adoptionVersion, _faultVersion;
+        private readonly Func<Rectangle> _currentOutputBounds;
         private readonly IntPtr _transparent = Marshal.AllocHGlobal(4);
         internal event Action Changed;
         internal event Action<Exception> Faulted;
@@ -53,7 +54,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
         internal ulong Uploads { get; private set; }
         internal ulong UploadedBytes { get; private set; }
 
-        internal WorldRasterPresentation() => Marshal.WriteInt32(_transparent, 0);
+        internal WorldRasterPresentation(Func<Rectangle> currentOutputBounds = null)
+        {
+            _currentOutputBounds = currentOutputBounds;
+            Marshal.WriteInt32(_transparent, 0);
+        }
 
         internal void Adopt(IWorldRasterScene scene, Rectangle bounds, bool available)
         {
@@ -75,7 +80,12 @@ namespace CF7Launcher.Guardian.WorldCompositor
             if (!IsAvailable) return false;
             if (pixels == IntPtr.Zero || width < 1 || height < 1 || width > 4096 || height > 4096 || stride > 16384)
                 return false;
-            var region = WorldRasterRegion.Clip(new Rectangle(screenOrigin, new Size(width, height)), _bounds, stride);
+            // Owner.Move can update a HUD before the world's LocationChanged
+            // callback moves P. Resolve both in the current anchor coordinate
+            // space; clipping against the previous desktop origin truncates and
+            // offsets the retained raster until a queued repaint gets dispatched.
+            Rectangle output = _currentOutputBounds?.Invoke() ?? _bounds;
+            var region = WorldRasterRegion.Clip(new Rectangle(screenOrigin, new Size(width, height)), output, stride);
             if (region.Width == 0 || region.Height == 0) { Hide(); return true; }
             if (!Upload(IntPtr.Add(pixels, region.OffsetBytes), region.Width, region.Height,
                 stride, region.X, region.Y)) return true;

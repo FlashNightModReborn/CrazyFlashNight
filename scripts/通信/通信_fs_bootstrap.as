@@ -23,7 +23,8 @@ _root._bootstrap.startHandshake = function():Void {
         var sm:Object = _root.server;
         if (sm != undefined && sm.isSocketConnected) {
             sm.sendTaskWithCallback("bootstrap_handshake",
-                { attemptId: attemptId, hello: "from_flash" }, null, onResponse, timeoutMs);
+                { attemptId: attemptId, hello: "from_flash", settingsProtocolVersions:[1,2],
+                    settingsReceiptSchema:1, settingsCanonicalSchema:1 }, null, onResponse, timeoutMs);
         }
     });
 
@@ -33,6 +34,10 @@ _root._bootstrap.startHandshake = function():Void {
     org.flashNight.neur.Server.BootstrapHandshake.start(_root._bootstrapAttemptId,
         function(resp:Object):Void {
             _root.savePath = resp.savePath;
+            if (!org.flashNight.neur.Server.SaveManager.installSettingsAuthorityBootstrap(resp.settingsAuthority)) {
+                _root._bootstrapFailed = "settings_bootstrap_invalid";
+                return;
+            }
             // G2-3②：握手确定了本会话的存档槽位——向终端重推绑定并触发任务目录按槽位对齐。
             if (_root.agent != undefined && _root.agent != null
                     && typeof _root.agent.槽位已切换 == "function") {

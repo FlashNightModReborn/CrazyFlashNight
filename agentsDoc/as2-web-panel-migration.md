@@ -26,6 +26,10 @@
 
 旧淡出时间轴第 17 帧的 `__returnFadeActive` 释放是副本初始化 admission 合同，不能随遮罩延长到揭幕结束；Web 遮罩由独立投影身份继续等待 `SceneReady` 和目标帧。修改这段时序需覆盖生产副本 admission，防止初始化与揭幕相互等待。
 
+2026-10-14 显示就绪修正（最后核对代码基线：commit `b98b6303aa409e76086e50f24cb1cfed00408204` 加本轮工作区）：业务 `SceneReady` 不改语义。外部场景背景由同一世界普通对象身份、场景编号和加载 ticket 绑定 `MovieClipLoader.onLoadInit`，或字节加载完成后当前背景成功烘焙进位图的确认，再跨一次实际帧边界；烘焙确认先于原背景容器卸载，未完成下载的占位壳不能代签。完成前不能请求揭幕，失败或 30 秒加载期限进入原失败时间轴，不自动重试导航。无外部背景的内嵌场景不增加等待。Host 收到新的 reveal/目标场景后重置呈现围栏，不复用此前空背景的捕获证明。
+
+已结束结算的业务 close 仍先由原权威裁决。返回游戏的视觉退休保留同一只读、不可操作的报告，停止旧端点业务入站，恢复满窗世界并取得新捕获后才发送 exact 视觉 close 和撤幕；原 close transaction 的唯一焦点尾部随之完成。重复 close 不重置等待，foreign scene/新开窗不能消费旧证明，强制退休与退出释放等待。提前关闭且场景尚未完成仍切回同一次加载遮罩。
+
 长尾优化候选仅缩短原动画的等待帧：第 6 帧清场返回成功后，安排进入原第 13 帧；第 17 帧先释放初始化标志、执行原 dirty save 守卫，再安排进入第 30 帧。两次推进都经过至少一次实际 `EnterFrame` 边界；未获 covered、清场受阻、foreign fade、已取消或失败的请求不能推进。第 15 帧任务检查、第 30 帧新世界 `SceneReady` 与 Host capture fence、第 36 帧交接保持原权威。延迟清场没有 Web 接管时续播原时间线，重复完成回调保留已安排的帧边界。
 
 当前已连接的转场持有遮罩时，普通面板关闭不再调用 Flash 子窗口焦点恢复，由转场按当前前台归属完成交还；断连仍走原关闭兜底。
@@ -615,6 +619,19 @@ AS2 smoke 的成功边界按 [testing-guide.md](testing-guide.md) 与 [FlashCS6�
 迁移 Flash MovieClip 素材时，manifest 不能只记录“静图 / 多帧图”二分。必须保留时间线语义：父 sprite 首帧纯 `stop();` 时父级停在第一帧；若第一帧内有自播放子 MovieClip，子层仍应独立播放，不能把整件素材误折叠为普通静图，也不能按子层周期最小公倍数预合成全量大序列。图标素材先用 `tools/bake-icons-offline.py --animation-structure-audit-only --ffdec-timeout-seconds 120` 审 `animationStructureCandidates` / `animationStructureParentStopNested` / `animationStructureUnsupported` / `spriteGraphErrors[].error=swf_xml_timeout`；`--ffdec-timeout-seconds` 作用于每个 FFDec 子进程，PNG/SVG/XML2SWF 超时按对应 export error 的 `exitCode=124` 审。生产推广用 `--animation-candidates-only --animation-candidate-report tmp/icon-animation-structure-audit.json` 复用结构审计候选，并可配 `--animated-candidate-max-source-frames` 在 PNG 导出前跳过超长周期候选；每轮仍应按 `--name` 分批审首帧 oracle 与体积，批量推进走 `tools/promote-icon-animation-candidates.py` 汇总 `animated|visual-static|budget-static|unsupported-static|timeout`。父级纯 `stop();` 的图标应写 `playback=static-first-frame` 并移除 `f2` 运行时引用，不能让 FFDec 导出的后续变形帧变成循环动画。图标素材若父首帧、stripped base 全透明且只有一个自播放子 MovieClip，可写成 `playback=nested-animation` 的全画布 `frames[]/timelineFrames[]`，第 1 帧复用原父级首帧以守住既有偏移；若父第 1 帧直接挂一个或多个可动子层且层深度不与静态 base 交错，写 `nestedAnimation.strategy=direct-layered-icon-canvas`，运行时用 `Icons.html()` 生成 base+layers wrapper 并按层独立播放。direct-layered 图标导出时应烘焙 PlaceObject 上可支持的滤镜，并用父首帧 oracle 做小范围自动 `offset` 校准；layer frame 可按透明包围盒裁剪，使用 `cropX/cropY/cropWidth/cropHeight/canvasWidth/canvasHeight` 在 Web 侧放回原 256 画布位置；`filters` / `offset` / crop 字段都是导出审计与还原元数据，不是手工 offset 表，也不要求 Web 运行时实现 Flash 滤镜。复杂嵌套只进 `nestedIconCanvasUnsupported` / `nestedIconLayeredUnsupported`。图标动图进生产目录前可用 `--max-animated-icon-bytes` 设置单图标体积门槛；超预算条目必须记录 `animatedIconBudgetSkipped` 并回退静态首帧；多帧候选若视觉上只有同一 `uri + crop`，必须记录 `animatedVisualStaticDowngraded` 并回退静态首帧，避免无意义运行时 tick。纸娃娃素材以 `nestedAnimation.autoPlayingDescendants`、`playback=static-parent-nested-animation|nested-animation`、重复帧 `duplicateOfFrame` 作为当前契约；能直接分层的 child MovieClip 进一步写 `nestedAnimation.layers[]`，包含 stripped base 之外的子层帧、矩阵与 `drawOrder`。连续重复显示帧应保留为播放时长而不是重复实体帧：`frames[]` 可作为完整逻辑帧/审计明细，运行时优先读取 `timelineFrames[]` 与 `durationFrames`。图标与纸娃娃运行时都必须通过 `web/modules/asset-timeline.js` 解释这些字段；`icons.js` / `dressup-doll-renderer.js` 只保留各自的 DOM、URL、Canvas、matrix/origin 逻辑，不能再分叉实现播放时间线。导出端的 digest 去重、`duplicateOfFrame` 与连续 hold 压缩同样必须走 `tools/asset_timeline_export.py`；图标可按 `uri` 合并，layered 图标判断是否动起来必须把 `cropX/cropY/cropWidth/cropHeight/canvasWidth/canvasHeight` 纳入 identity，纸娃娃必须把尺寸和注册点纳入 identity key。`python tools/test-nested-animation-stop-semantics.py` 是父级首帧 `stop();` 只冻结父时间线、第一帧内未停止子 MovieClip 仍播放的固定回归。
 
 ## 6. Close 与旧 Flash UI 副作用
+
+Host 关闭请求在接纳时冻结原 endpoint、Host 生命周期与输入接纳代次。页面业务 reason 不授予原生关闭 cause；
+所有生产页面的 close（含普通面板与 lazy cancel）携带该次 open 绑定的非空 `panelInstanceId`；
+发送端须在本地清理前保留原身份，不以无身份兼容回退或当前全局实例补盖迟到请求。
+迟到的关闭、timer、controller 回调、情报响应和两层 UI 投递均复核原租约，最终发送使用捕获的 Core。
+authority gate 与 commit 后分别复核；提交抛错保留 Unknown，只清理原资源，不导航或重做业务。
+普通关闭等待物理鼠标键与 ESC 释放；legacy ESC 仍先交原页面处理子页返回。
+普通情报、帮助阅读窗口切到其他应用时保留当前面板实例与阅读状态，不把 `Deactivate` 当作关闭，
+不发送业务 close 或申请前台恢复。转场失活的显示抑制、实际捕获丢失及浏览器进程故障的清理仍分别处理。
+只有 ReturnGame 可取得一次根窗口交接许可，必须在原页面仍存活时执行；退休后只允许同许可的内层确认。
+新的 Open/Rebind/Replace 接纳立即撤权；fault/reset/dispose、返回栈与导航不取得归还游戏的焦点许可。
+输入归属同时占位 Opening、Closing、settlement/loading、native edit 与不可用状态；清理失败不能发布 Game。
+source/focused 与候选实机是不同证据，收口记录见 [本批施工](../docs/焦点输入与持久化修复施工-2026-10-13.md)。
 
 默认规则：Web panel close 不应触发旧 Flash UI 重排。尤其不要在 close、hire success、save success 这类回调里调用旧 UI 的：
 

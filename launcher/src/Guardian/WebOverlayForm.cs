@@ -27,7 +27,7 @@ namespace CF7Launcher.Guardian
     /// - TransparencyKey 颜色像素：视觉透明 + 点击穿透（无需轮询切换）
     /// - 非 TransparencyKey 像素（notch/toast）：可见 + 可点击
     /// </summary>
-    public class WebOverlayForm : Form, IToastSink, INotchSink, IDisposable
+    public partial class WebOverlayForm : Form, IToastSink, INotchSink, IDisposable
     {
         private AssetWorkbenchTask _assetWorkbenchTask;
         private MapWorkbenchTask _mapWorkbenchTask;
@@ -1830,13 +1830,17 @@ namespace CF7Launcher.Guardian
                     "init_webview2");
 
                 // JS→C# 消息
-                _webView.CoreWebView2.WebMessageReceived += OnWebMessageReceived;
+                _legacyDocumentEpoch++;
+                _legacyControllerEpoch++;
+                RegisterLegacyEndpointCallbacks();
                 // WebView2 进程故障：主渲染进程退出/GPU/工具进程分类记录；致命类先做
                 // 文档属主退役+权威和解，再做有界恢复。SDK 1.0.3856.49 确认 API 存在。
-                _webView.CoreWebView2.ProcessFailed += OnWebViewProcessFailed;
+                var registeredCore=_webView.CoreWebView2;
+                long registeredControllerEpoch=_legacyControllerEpoch;
                 _webView.CoreWebView2.NavigationStarting += delegate(object sender,
                     CoreWebView2NavigationStartingEventArgs args)
                 {
+                    if(_disposed || !ReferenceEquals(sender,registeredCore) || registeredControllerEpoch!=_legacyControllerEpoch)return;
                     // A document transition destroys the Web-side request owner. Drop
                     // transport pending immediately; InventoryTask preserves any
                     // in-flight write as needs_reconcile instead of forgetting it.
@@ -1880,12 +1884,14 @@ namespace CF7Launcher.Guardian
                 _webView.CoreWebView2.ContentLoading += delegate(object sender,
                     CoreWebView2ContentLoadingEventArgs args)
                 {
+                    if(_disposed || !ReferenceEquals(sender,registeredCore) || registeredControllerEpoch!=_legacyControllerEpoch)return;
                     if (_webNavigationId == args.NavigationId)
                         _webNavigationLoadedNewDocument = true;
                 };
                 _webView.CoreWebView2.NavigationCompleted += delegate(object sender,
                     CoreWebView2NavigationCompletedEventArgs args)
                 {
+                    if(_disposed || !ReferenceEquals(sender,registeredCore) || registeredControllerEpoch!=_legacyControllerEpoch)return;
                     if (_webNavigationId == args.NavigationId)
                     {
                         bool restoreOldReady = (!args.IsSuccess || !_webNavigationLoadedNewDocument)
@@ -1988,6 +1994,9 @@ namespace CF7Launcher.Guardian
         private void OnWebViewProcessFailed(object sender,
             CoreWebView2ProcessFailedEventArgs args)
         {
+            long callbackController=_legacyControllerEpoch, callbackDocument=_legacyDocumentEpoch;
+            int callbackSession=_panelSessionGeneration;
+            var callbackCore=_webView?.CoreWebView2;
             // 先在事件线程同步捕获快照字段：args 对象在事件返回后的可跨线程读取
             // 不受 SDK 契约保障，全部落到基元后再 marshal。
             CoreWebView2ProcessFailedKind kind;
@@ -2014,6 +2023,8 @@ namespace CF7Launcher.Guardian
                 {
                     BeginInvoke(new Action(delegate
                     {
+                        if(_disposed || callbackController!=_legacyControllerEpoch || callbackDocument!=_legacyDocumentEpoch
+                            || callbackSession!=_panelSessionGeneration || !ReferenceEquals(callbackCore,_webView?.CoreWebView2))return;
                         HandleWebViewProcessFailed(kind, reason, exitCode,
                             processDescription, failureModule, frameCount);
                     }));
@@ -2386,6 +2397,8 @@ namespace CF7Launcher.Guardian
 
         private void PublishDocumentAdvanced()
         {
+            _legacyDocumentEpoch++;
+            RegisterLegacyEndpointCallbacks();
             _webDocumentObservationGeneration =
                 _webDocumentObservationGeneration == int.MaxValue
                     ? 1
@@ -5021,6 +5034,7 @@ namespace CF7Launcher.Guardian
         {
             _settingsTask = task;
             task.SetPostToWeb(PostToWeb);
+            task.SetAuthorityResponseLeaseProvider(CaptureResponseSink);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
@@ -5245,6 +5259,7 @@ namespace CF7Launcher.Guardian
         {
             _intelligenceTask = task;
             task.SetPostToWeb(PostToWeb);
+            task.SetResponseLeaseProvider(CaptureResponseSink);
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
@@ -5256,6 +5271,7 @@ namespace CF7Launcher.Guardian
             if (_disposed) return;
             JObject parsed;
             try { parsed = JObject.Parse(json); } catch { return; }
+            if(parsed?["cmd"]?.Type==JTokenType.String && (string)parsed["cmd"]=="close")return;
             if (parsed != null && parsed.Value<string>("type") == "panel-toast")
             {
                 string html = parsed.Value<string>("html");
@@ -5266,15 +5282,15 @@ namespace CF7Launcher.Guardian
         }
 
         // intelligence 回包通道在 composition 会话期间指向 surface；会话结束归还本 overlay。
-        internal void AcquireIntelligenceResponseChannel(Action<string> post)
+        internal void AcquireIntelligenceResponseChannel(Func<Action<string>> post)
         {
             if (post == null) return;
-            if (_intelligenceTask != null) _intelligenceTask.SetPostToWeb(post);
+            if (_intelligenceTask != null) _intelligenceTask.SetResponseLeaseProvider(post);
         }
 
         internal void RestoreIntelligenceResponseChannel()
         {
-            if (_intelligenceTask != null) _intelligenceTask.SetPostToWeb(PostToWeb);
+            if (_intelligenceTask != null) _intelligenceTask.SetResponseLeaseProvider(CaptureResponseSink);
         }
 
         public void SetBlackMarketTask(BlackMarketTask task)
@@ -5532,6 +5548,7 @@ namespace CF7Launcher.Guardian
             ClearCommittedPanelGeometry("panel_resume_begin");
             _panelMode = true;
             _panelSessionGeneration = _panelFocusRestoreGate.BeginPanel();
+            RegisterLegacyEndpointCallbacks();
             if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
                 CF7Launcher.Diagnostic.FocusTrace.Record("panel.begin", new { generation = _panelSessionGeneration });
             _panelCloseFocusGeneration = 0;
@@ -6215,6 +6232,7 @@ namespace CF7Launcher.Guardian
         internal bool RestoreFlashInputFocusAfterPanelClose(
             string closingPanelName = null)
         {
+            if(_managedCloseDepth>0)return false;
             string panelTag = closingPanelName ?? "?";
             PanelCloseFocusTraceContext trace =
                 ResolvePanelCloseFocusTraceForStage(
@@ -6273,7 +6291,7 @@ namespace CF7Launcher.Guardian
             string panelTag,
             PanelCloseFocusTraceContext trace)
         {
-            if (_disposed || _panelMode || !_panelTakeForeground
+            if (_managedCloseDepth > 0 || _disposed || _panelMode || !_panelTakeForeground
                 || _flashFocusRestorer == null)
                 return false;
 
@@ -6552,7 +6570,7 @@ namespace CF7Launcher.Guardian
 
             // 当前仍由面板持有前台时，先交还 Flash 所在的顶层窗口，再隐藏活动面板。
             // 外部/空前台不交接；后续 idle/settled 的实时外部前台保护保持不变。
-            HandoffPanelForegroundBeforeHide(panelTag, trace);
+            if (_managedCloseDepth == 0) HandoffPanelForegroundBeforeHide(panelTag, trace);
 
             // 3) Retire browser presentation before hiding the native parent.
             // Otherwise Chromium keeps a visible controller behind a hidden HWND;
@@ -8373,8 +8391,7 @@ namespace CF7Launcher.Guardian
                                     "panelInstanceId"));
                         }
                         bool deferInventoryOwnerCloseCommit =
-                            _panelHost != null
-                            && inventoryOwnerClose;
+                            _panelHost != null;
                         if (!deferInventoryOwnerCloseCommit)
                         {
                             CommitAcceptedPanelCloseEffects(
@@ -8594,6 +8611,8 @@ namespace CF7Launcher.Guardian
                                         panel,
                                         closeInstance,
                                         dismissReturnStack,
+                                        () => _panelHost.ActivePanelName == panel && _panelHost.ActivePanelInstanceId == closeInstance,
+                                        () => CommitAcceptedPanelCloseEffects(panel, returnBase, characterBuildPauseReleaseHandled),
                                         delegate(bool closed)
                                         {
                                             if (!closed)
@@ -8603,10 +8622,6 @@ namespace CF7Launcher.Guardian
                                                     + panel + " instance=" + closeInstance);
                                                 return;
                                             }
-                                            CommitAcceptedPanelCloseEffects(
-                                                panel,
-                                                returnBase,
-                                                characterBuildPauseReleaseHandled);
                                         });
                                 if (!closeQueued)
                                 {
@@ -9190,9 +9205,10 @@ namespace CF7Launcher.Guardian
             }
             if (returnBase)
                 TrySendGameCommand("arenaReturnBase");
-            if (!pauseReleaseHandled)
-                TryReleaseGenericWebPanelPause();
-            if (_onPanelStateChanged != null)
+            HostCloseContext closing=_panelHost?.ExecutingClose;
+            if(closing!=null)closing.ReleaseGenericPause=!pauseReleaseHandled;
+            else if (!pauseReleaseHandled)TryReleaseGenericWebPanelPause();
+            if (closing==null && _onPanelStateChanged != null)
                 _onPanelStateChanged(false);
         }
 

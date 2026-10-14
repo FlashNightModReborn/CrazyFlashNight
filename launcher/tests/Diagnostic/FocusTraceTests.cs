@@ -151,7 +151,7 @@ namespace CF7Launcher.Tests.Diagnostic
             FocusTrace.Start(_batches.Add, false, true);
             _batches.Clear();
             string session = FocusTrace.Session;
-            typeof(FocusTrace).GetField("_deadline", BindingFlags.Static | BindingFlags.NonPublic).SetValue(null, -1L);
+            FocusTrace.SetDeadlineForTests(-1L);
             for (int i = 0; i < FocusTrace.EventBudget + 2; i++)
             {
                 FocusTrace.Record("rolling.fixture");

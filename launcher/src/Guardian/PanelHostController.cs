@@ -300,6 +300,7 @@ namespace CF7Launcher.Guardian
             public string ReturnToName;          // 可空；非空 = 关闭本 panel 时自动 reopen 之
             public string ReturnInitDataJson;    // 可空；reopen returnTo 时用作 initData
             internal long TimingQueuedAt;
+            internal long InputAdmissionStamp;
             public bool IsTrackedOpen;
             public bool IsTrackedClose;
             public bool IsExactClose;
@@ -313,6 +314,7 @@ namespace CF7Launcher.Guardian
             public Action<bool> ExactCloseCompleted;
             public Func<bool> ExactCloseExecutionGate;
             public Action ExactCloseCommitNoFail;
+            internal HostCloseContext CloseContext;
             public Action<VisualRetireOutcome> VisualRetireCompleted;
             public string ExpectedSourcePanel;
             public string ExpectedSourceInstanceId;
@@ -332,6 +334,7 @@ namespace CF7Launcher.Guardian
                 ReturnToName = returnToName;
                 ReturnInitDataJson = returnInitDataJson;
                 TimingQueuedAt = 0;
+                InputAdmissionStamp = 0;
                 IsTrackedOpen = false;
                 IsTrackedClose = false;
                 IsExactClose = false;
@@ -345,6 +348,7 @@ namespace CF7Launcher.Guardian
                 ExactCloseCompleted = null;
                 ExactCloseExecutionGate = null;
                 ExactCloseCommitNoFail = null;
+                CloseContext = null;
                 VisualRetireCompleted = null;
                 ExpectedSourcePanel = null;
                 ExpectedSourceInstanceId = null;
@@ -899,13 +903,17 @@ namespace CF7Launcher.Guardian
         public void ClosePanel()
         {
             if (_disposed) return;
-            lock (_queueLock)
-            {
-                _deferredRebind = null;
-                _deferredBarrierOpen = null;
+            if(_activePanel==null) {
+                var idle=new PanelCommand(PanelCommandKind.Close,null,null) { IsExactClose=true,
+                    CloseContext=new HostCloseContext(new EndpointLease(null,null,null,null,null,_hostLifetime,0,0,0,IntPtr.Zero),
+                        NativeCloseCause.HostOperation,new Newtonsoft.Json.Linq.JObject(),IntPtr.Zero) };
+                EnqueueAndPump(idle);
+                return;
             }
-            if (!EnqueueAndPump(new PanelCommand(PanelCommandKind.Close, null, null)))
-                LogManager.Log("[PanelHost] generic close rejected while tracked open/lease is active");
+            // Host operations freeze their source when admitted, just like page closes.
+            var context=CaptureHostClose(_activePanel,_activePanelInstanceId);
+            if(!TryCloseHostContext(context,false,null,null,null))
+                LogManager.Log("[PanelHost] exact host close rejected");
         }
 
         public void SetOpenGate(Func<string, bool> gate) { _openGate = gate; }
@@ -1192,6 +1200,11 @@ namespace CF7Launcher.Guardian
                 {
                     return false;
                 }
+                if(cmd.IsExactClose && cmd.CloseContext==null)
+                    cmd.CloseContext=_admittingClose ?? CaptureHostClose(cmd.Name,cmd.ReservedPanelInstanceId);
+                if(cmd.IsExactClose && !cmd.CloseContext.TryAdmit(System.Threading.Interlocked.Read(ref _inputAdmissionStamp),
+                    _closeFocusManager?.CaptureFlashFocusTarget()))return false;
+                AdmitInputOwnerIntent(ref cmd);
                 _queue.Enqueue(cmd);
                 _openAdmissionEpoch++;
                 if (_processing) return true;
@@ -1380,6 +1393,7 @@ namespace CF7Launcher.Guardian
                     try { ResetToClosedState(); }
                     catch (Exception ex2) { LogManager.Log("[PanelHost] reset failed: " + ex2); }
                 }
+                finally { FinishInputOwnerIntent(cmd); }
             }
         }
 
@@ -1759,8 +1773,11 @@ namespace CF7Launcher.Guardian
         private void ExecuteExactClose(PanelCommand cmd)
         {
             bool closed = false;
+            HostCloseContext context=cmd.CloseContext ?? CaptureHostClose(cmd.Name,cmd.ReservedPanelInstanceId);
+            if(TryDeferCloseForInputRelease(cmd,context))return;
             try
             {
+                if(!context.TryExecuteOnce() || !ExactSourceAndAdmission(context))return;
                 if (!string.Equals(
                         _activePanel, cmd.Name, StringComparison.Ordinal)
                     || !string.Equals(
@@ -1791,26 +1808,40 @@ namespace CF7Launcher.Guardian
                     }
                     if (!gateAccepted) return;
                 }
+                if(!ExactSourceAndAdmission(context)) { context.Outcome="Superseded"; return; }
                 if (cmd.ExactCloseCommitNoFail != null)
                 {
-                    try { cmd.ExactCloseCommitNoFail(); }
+                    var previousClose=_executingClose;
+                    _executingClose=context;
+                    try { cmd.ExactCloseCommitNoFail(); context.Authority=AuthorityCommitState.Committed; }
                     catch (Exception ex)
                     {
+                        context.Authority=AuthorityCommitState.Unknown;
+                        context.Plan=ClosePlanKind.CleanupOnly;
                         // The callback contract is no-fail. Once the gate granted a commit permit,
                         // a caller bug cannot authorize rollback or resurrection of the source.
                         LogManager.Log(
                             "[PanelHost] exact close commit callback threw: "
                             + ex.GetType().Name);
                     }
+                    finally { _executingClose=previousClose; }
                 }
+                if(!ExactSourceAndAdmission(context)) {
+                    context.Outcome=context.Authority==AuthorityCommitState.Committed ? "CommittedSuperseded" : "Superseded";
+                    return;
+                }
+                if(context.Plan!=ClosePlanKind.CleanupOnly && !cmd.DismissReturnStackOnExactClose && _returnStack.Count>0)
+                    context.Plan=ClosePlanKind.ReturnStack;
+                if(!TryEnterClosing(context))return;
                 lock (_queueLock)
                 {
                     _deferredRebind = null;
                     _deferredBarrierOpen = null;
-                    if (cmd.DismissReturnStackOnExactClose)
+                    ClearConsumedDeferredInputIntentLocked();
+                    if (cmd.DismissReturnStackOnExactClose || context.Plan==ClosePlanKind.CleanupOnly)
                         _returnStack.Clear();
                 }
-                DoClose();
+                closed=DoCloseTransaction(context);
                 if (string.Equals(_trackedLeasePanelName, cmd.Name,
                         StringComparison.Ordinal)
                     && string.Equals(_trackedLeaseInstanceId,
@@ -1820,18 +1851,18 @@ namespace CF7Launcher.Guardian
                     _trackedLeasePanelName = null;
                     _trackedLeaseInstanceId = null;
                 }
-                closed = true;
                 LogManager.Log(
                     AuthorityLogFormatter.FormatPanelExactCloseCompleted(
                         cmd.Name,
                         cmd.ReservedPanelInstanceId));
-                if (!cmd.DismissReturnStackOnExactClose
+                if (closed && context.Plan==ClosePlanKind.ReturnStack && context.Authority!=AuthorityCommitState.Unknown && !cmd.DismissReturnStackOnExactClose
                     && _returnStack.Count > 0)
                     QueueReturnOpen();
                 _consecutiveFailures = 0;
             }
             finally
             {
+                LastCloseOutcome=context;
                 Action<bool> completed =
                     cmd.ExactCloseCompleted;
                 if (completed != null)
@@ -3213,156 +3244,16 @@ namespace CF7Launcher.Guardian
 
         private void DoClose()
         {
-            if (_testPumpDispatcher != null)
-            {
-                Action testBeforeClose = _testBeforeDoClose;
-                _testBeforeDoClose = null;
-                if (testBeforeClose != null) testBeforeClose();
-                string testClosingName =
-                    _activePanel;
-                string testClosingInstance =
-                    _activePanelInstanceId;
-                Action<string, string> testObserver =
-                    _panelCloseObserver;
-                if (testObserver != null)
-                {
-                    try
-                    {
-                        testObserver(
-                            testClosingName,
-                            testClosingInstance);
-                    }
-                    catch { }
-                }
-                ResumeHudCompanion();
-                ClearActiveSettingsPreview();
-                _activePanel = null;
-                _activePanelInstanceId = null;
-                PublishPanelChanged(
-                    null,
-                    null);
-                PostPanelClosed(
-                    testClosingName,
-                    testClosingInstance);
-                return;
-            }
-
-            long perfStart = System.Diagnostics.Stopwatch.GetTimestamp();
-            string closingName = _activePanel;
-            string closingInstance = _activePanelInstanceId;
-            bool closingComposition = AnyCompositionPanelSelected;
-            CompositionHelpSurface closingCompositionSurface = SelectedOwnedCompositionSurface;
-            bool closingSettlement = _transitionSettlementSelected;
-            bool restoreCompositionFocus = false;
-            PerfTrace.Mark("panel.close_start", closingName ?? "<null>");
-            Action<string, string> closeObserver = _panelCloseObserver;
-            if (closeObserver != null)
-            {
-                try { closeObserver(closingName, closingInstance); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] close observer failed: " + ex.Message); }
-            }
-            // Step 0: 取消 owner 跟随订阅（先于 SuspendAfterPanel，防止 SW_HIDE 触发的 LocationChanged 误触发 reposition）
-            ClearCommittedGeometry("panel_close");
-            UnsubscribeOwnerLayout();
-            // Step 1: 先让 Web 精确卸载当前 owner，再隐藏 WebOverlay。
-            // crafting 等 Host-owned panel 的 requestClose 只提交 intent，不会自行 Panels.close；
-            // 若直接 SW_HIDE，最后一次全屏 interactiveRect 会留在 InputShield 中。
-            string closePayload = BuildPanelClosePayload(
-                closingName,
-                closingInstance);
-            if (closePayload != null)
-            {
-                try
-                {
-                    if (!TryPostToPanelSurface(closePayload))
-                    {
-                        LogManager.Log(
-                            "[PanelHost] exact web close post not delivered: "
-                            + closingName);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log(
-                        "[PanelHost] exact web close post failed: "
-                        + ex.Message);
-                }
-            }
-            // Step 2: WebOverlay 收尾（Phase 1 stub：SW_HIDE）
-            // closingName 传给 SuspendAfterPanel 用于 [FocusRestore] 日志归因——
-            // WebOverlay._activePanel 此时可能已被 HandlePanelMessage 置 null。
-            if (FocusTrace.Enabled) FocusTrace.Record("panel.close_handoff", new {
-                panel = closingName, instance = closingInstance, generation = PanelSurfaceGeneration });
-            try
-            {
-                if (closingSettlement) restoreCompositionFocus = RetireTransitionSettlement();
-                else if (closingComposition) restoreCompositionFocus = RetireCompositionPanel();
-                else _web.SuspendAfterPanel(closingName);
-            }
-            catch (Exception ex) { LogManager.Log("[PanelHost] SuspendAfterPanel failed: " + ex.Message); }
-            // Step 3: Shield 退 telemetry
-            if (_shield != null)
-            {
-                try { _shield.ExitTelemetryMode(); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] ExitTelemetryMode failed: " + ex.Message); }
-            }
-            // Step 4: backdrop 隐藏
-            try { using (PerfTrace.PanelScope("panel.close.backdrop", closingName)) _backdrop.Hide(); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] backdrop.Hide failed: " + ex.Message); }
-            // Step 5: HUD 复活（NativeHud 复显）
-            try { using (PerfTrace.PanelScope("panel.close.hud_resume", closingName)) _hud.Resume(); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] hud.Resume failed: " + ex.Message); }
-            ResumeHudCompanion();
-            // Step 6: ESC 禁用
-            if (_escSource != null) _escSource.SetPanelEscapeEnabled(false);
-            // Step 7: cursor 重新顶置 + 强制刷一次位置（HUD 复显的 HWND_TOP 会把 cursor 压下；
-            //   且 cursor 上次坐标可能在 panel 矩形内，关闭后该区域无 mouse hook 触发更新——直到玩家动鼠标
-            //   才刷新 → 视觉上 cursor "消失，移动后突然出现"。这里主动 ReTop + 用当前真实鼠标位置刷一次）
-            ReTopOverlay(_cursor as Form);
-            try { _web.UpdateCursorFromScreenPoint(System.Windows.Forms.Cursor.Position); }
-            catch (Exception ex) { LogManager.Log("[PanelHost] cursor refresh failed: " + ex.Message); }
-
-            _activePanel = null;
-            _activePanelInstanceId = null;
-            ClearActiveSettingsPreview();
-            PublishPanelChanged(
-                null,
-                null);
-            PostPanelClosed(closingName, closingInstance);
-            // SuspendAfterPanel 中的首次归还早于 HUD/cursor 收尾。
-            // 在所有 overlay 稳定后再确认一次 Flash 焦点，避免玩家看到
-            // 面板已关闭却无法与游戏 UI 交互。
-            try
-            {
-                if (closingSettlement)
-                {
-                    if(restoreCompositionFocus && _sceneSettlement.SettlementSurface.CanRestoreGameFocus)
-                        _compositionRestoreFocus?.Invoke("scene_settlement_close");
-                }
-                else if (closingComposition)
-                {
-                    if (restoreCompositionFocus
-                        && closingCompositionSurface != null
-                        && closingCompositionSurface.CanRestoreGameFocus)
-                        _compositionRestoreFocus?.Invoke(
-                            "composition_" + closingCompositionSurface.PanelName + "_close");
-                }
-                else _web.RestoreFlashInputFocusAfterPanelClose(closingName);
-            }
-            catch (Exception ex) { LogManager.Log("[PanelHost] settled focus restore failed: " + ex.Message); }
-            if (FocusTrace.Enabled) FocusTrace.Record("panel.close_settled", new {
-                panel = closingName, instance = closingInstance, generation = PanelSurfaceGeneration,
-                windows = FocusWindowSnapshot.At(System.Windows.Forms.Cursor.Position) });
-            LogManager.Log("[PanelHost] closed: " + (closingName ?? "<null>"));
-            PerfTrace.Duration("panel.close", perfStart, closingName ?? "<null>");
-            PerfTrace.FlushCounters("panel_close:" + (closingName ?? "<null>"));
-            // B0 诊断: panel-close 后立即 dump, 对照 panel-open 看 layered_visible 是否真的回落
-            if (DiagnosticsBootstrap.LayerAuditEnabled)
-                LayerAuditDump.DumpToLog("panel-close:" + (closingName ?? "<null>"));
+            if (_activePanel == null) return;
+            var context = CaptureHostClose(_activePanel, _activePanelInstanceId);
+            if (System.Threading.Volatile.Read(ref _pendingInputOwner) != null) context.Plan = ClosePlanKind.Navigate;
+            else if (_returnStack.Count > 0) context.Plan = ClosePlanKind.ReturnStack;
+            if (context.TryExecuteOnce() && TryEnterClosing(context)) DoCloseTransaction(context);
         }
-
         public void Dispose()
         {
+            using var closeScope=_web?.EnterManagedClose();
+            DisposePhysicalCloseWaits();
             if (_disposed) return;
             _disposed = true;
             if (_compositionHelp != null || _compositionIntelligence != null)
@@ -3455,14 +3346,15 @@ namespace CF7Launcher.Guardian
             catch { }
         }
 
-        private void PostPanelClosed(string panelName, string panelInstanceId)
+        private void PostPanelClosed(string panelName, string panelInstanceId, Action after=null, HostCloseContext context=null)
         {
             Action<string, string> closed = PanelClosed;
-            if (closed == null) return;
+            if (closed == null) { after?.Invoke(); return; }
             Action fire = delegate
             {
                 try { closed(panelName, panelInstanceId); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] closed event failed: " + ex.Message); }
+                catch (Exception ex) { if(context!=null)context.CleanupFailed=true; LogManager.Log("[PanelHost] closed event failed: " + ex.Message); }
+                finally { after?.Invoke(); }
             };
             try
             {
@@ -3476,6 +3368,8 @@ namespace CF7Launcher.Guardian
             }
             catch (Exception ex)
             {
+                if(context!=null)context.CleanupFailed=true;
+                after?.Invoke();
                 LogManager.Log("[PanelHost] closed event dispatch failed: " + ex.Message);
             }
         }
@@ -3484,6 +3378,12 @@ namespace CF7Launcher.Guardian
             string panelName,
             string panelInstanceId)
         {
+            if(panelName!=null) {
+                _activeEndpointLease=SelectedCompositionSurface?.CaptureEndpointLease()
+                    ?? _web?.CaptureEndpointLease(panelName,panelInstanceId,_hostLifetime)
+                    ?? new EndpointLease(null,null,null,panelName,panelInstanceId,_hostLifetime,0,0,0,IntPtr.Zero);
+            }
+            PublishInputOwner(panelName,panelInstanceId);
             Action<string, string> changed =
                 PanelChanged;
             if (changed == null) return;
@@ -3498,6 +3398,7 @@ namespace CF7Launcher.Guardian
                 }
                 catch (Exception ex)
                 {
+                    if(_executingClose!=null)_executingClose.CleanupFailed=true;
                     LogManager.Log(
                         "[PanelHost] changed event failed: "
                         + ex.Message);
@@ -3606,50 +3507,39 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void ResetToClosedState()
         {
-            ClearCommittedGeometry("reset_to_closed");
-            UnsubscribeOwnerLayout();
-            Action<string, string> closeObserver = _panelCloseObserver;
-            if (closeObserver != null && _activePanel != null)
+            using var closeScope=_web?.EnterManagedClose();
+            if (_activePanel != null)
             {
-                try { closeObserver(_activePanel, _activePanelInstanceId); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] reset close observer failed: " + ex.Message); }
+                var context=CaptureHostClose(_activePanel,_activePanelInstanceId,NativeCloseCause.Reset);
+                if(context.TryExecuteOnce() && TryEnterClosing(context))DoCloseTransaction(context);
             }
-            // _activePanel 此时尚未置 null（line 613 才置），优先传它作为 closingPanelName；
-            // ResetToClosedState 路径是异常恢复，reason 后缀 ":reset" 用于日志区分正常 close。
-            string resetTag = (_activePanel != null) ? (_activePanel + ":reset") : "reset";
-            try
+            else
             {
-                if (_transitionSettlementSelected) RetireTransitionSettlement();
-                else if (AnyCompositionPanelSelected) RetireCompositionPanel();
-                else _web.ForceIdleState(resetTag);
+                // A failed open may own private presentation without an active panel.
+                // Revoke this cleanup as soon as a successor is admitted or published.
+                var expected=EffectiveInputOwner;
+                long admission=System.Threading.Interlocked.Read(ref _inputAdmissionStamp);
+                bool failed=false;
+                bool owns() => !_disposed && _activePanel==null && ReferenceEquals(expected,EffectiveInputOwner)
+                    && admission==System.Threading.Interlocked.Read(ref _inputAdmissionStamp);
+                void cleanup(Action action) { if(!owns())return; try { action(); } catch { failed=true; } }
+                cleanup(()=>ClearCommittedGeometry("reset_to_closed"));
+                cleanup(UnsubscribeOwnerLayout);
+                string resetTag="reset";
+                cleanup(()=> {
+                    if (_transitionSettlementSelected) RetireTransitionSettlement();
+                    else if (AnyCompositionPanelSelected) RetireCompositionPanel();
+                    else _web?.ForceIdleState(resetTag);
+                });
+                cleanup(()=>_backdrop?.Hide()); cleanup(()=>_hud?.Resume());
+                cleanup(ResumeHudCompanion); cleanup(()=>_shield?.ExitTelemetryMode());
+                cleanup(()=>_escSource?.SetPanelEscapeEnabled(false));
+                cleanup(ClearActiveSettingsPreview);
+                if(!owns())return;
+                if(failed)System.Threading.Volatile.Write(ref _inputOwner,new EffectiveInputOwnerSnapshot(
+                    EffectiveInputOwnerKind.Unavailable,null,++_inputOwnerEpoch));
             }
-            catch (Exception ex) { LogManager.Log("[PanelHost] Web ForceIdleState partial failure: " + ex.Message); }
-            try { _backdrop.Hide(); } catch { }
-            try { _hud.Resume(); } catch { }
-            ResumeHudCompanion();
-            if (_shield != null) { try { _shield.ExitTelemetryMode(); } catch { } }
-            if (_escSource != null) { try { _escSource.SetPanelEscapeEnabled(false); } catch { } }
-            string resetClosingName = _activePanel;
-            string resetClosingInstance = _activePanelInstanceId;
-            _activePanel = null;
-            _activePanelInstanceId = null;
-            ClearActiveSettingsPreview();
-            _trackedLeasePanelName = null;
-            _trackedLeaseInstanceId = null;
-            if (resetClosingName != null
-                || resetClosingInstance != null)
-            {
-                PublishPanelChanged(
-                    null,
-                    null);
-            }
-            Action<string, string> resetClosed = PanelClosed;
-            if (resetClosed != null && resetClosingName != null)
-            {
-                try { resetClosed(resetClosingName, resetClosingInstance); }
-                catch (Exception ex) { LogManager.Log("[PanelHost] reset closed event failed: " + ex.Message); }
-            }
-
+            _trackedLeasePanelName=null; _trackedLeaseInstanceId=null;
             // 异常路径不应触发 returnTo reopen：清栈避免在已经混乱的状态上叠加新 panel 命令。
             _returnStack.Clear();
             _deferredBarrierOpen = null;

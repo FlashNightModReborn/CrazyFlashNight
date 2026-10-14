@@ -40,10 +40,10 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private NativeCompositorSession _native;
         private CompositionSceneHost _compositionScene;
         internal WorldRasterPresentation DamagePresentation { get; } = new WorldRasterPresentation();
-        internal WorldRasterPresentation ResourcePresentation { get; } = new WorldRasterPresentation();
-        internal WorldRasterPresentation BottomPresentation { get; } = new WorldRasterPresentation();
-        internal WorldRasterPresentation BuffPresentation { get; } = new WorldRasterPresentation();
-        internal WorldRasterPresentation MainHudPresentation { get; } = new WorldRasterPresentation();
+        internal WorldRasterPresentation ResourcePresentation { get; }
+        internal WorldRasterPresentation BottomPresentation { get; }
+        internal WorldRasterPresentation BuffPresentation { get; }
+        internal WorldRasterPresentation MainHudPresentation { get; }
         private readonly bool _opaqueHudEnabled;
         private bool _playerHudFaulted;
         private IWorldRasterScene _damageRasterScene,_resourceRasterScene,_bottomRasterScene,_buffRasterScene,_mainHudRasterScene;
@@ -78,6 +78,13 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private long _reportedPendingScene;
         private long _transitionGradeScene, _transitionPresentedScene;
         private double _transitionGradeSubmittedAt;
+        internal void RequireFreshTransitionFrame(long scene) {
+            if(_disposed || scene<=0) return;
+            _requiredFrameMs=Math.Max(_requiredFrameMs,NowMs());
+            _transitionGradeScene=0; _transitionPresentedScene=0;
+            LogManager.Log("event=world_transition_frame_required scene="+scene+" frameFenceMs="
+                +_requiredFrameMs.ToString("F1",CultureInfo.InvariantCulture));
+        }
         internal bool IsTransitionScenePresented(long scene) => !_disposed && !_faulted && _active
             && _surface?.Visible == true && _transitionPresentedScene == scene
             && _frame?.Ready == true && _frame.Scene == scene && !_lighting.Pending && !_lighting.WaitingForCapture;
@@ -389,6 +396,11 @@ namespace CF7Launcher.Guardian.WorldCompositor
             }
             _inputEpochLimit=inputEpochLimit;
             _owner=owner; _anchor=anchor; _getFlash=getFlash; _canPresent=canPresent; _notify=notify; _shouldPrepare=shouldPrepare;
+            Rectangle CurrentOutputBounds() => _anchor.RectangleToScreen(_anchor.ClientRectangle);
+            ResourcePresentation = new WorldRasterPresentation(CurrentOutputBounds);
+            BottomPresentation = new WorldRasterPresentation(CurrentOutputBounds);
+            BuffPresentation = new WorldRasterPresentation(CurrentOutputBounds);
+            MainHudPresentation = new WorldRasterPresentation(CurrentOutputBounds);
             DamagePresentation.Faulted += error => EnterRenderFault("shared_raster", error);
             ResourcePresentation.Faulted += error => RejectPlayerHud("resource_raster", error);
             BottomPresentation.Faulted += error => RejectPlayerHud("bottom_raster", error);

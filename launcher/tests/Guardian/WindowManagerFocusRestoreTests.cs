@@ -1,9 +1,12 @@
+using CF7Launcher.Tests.Guardian;
 using System;
+using System.Collections.Generic;
 using CF7Launcher.Guardian;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
 {
+    [ResourceCaseGuard]
     public sealed class WindowManagerFocusRestoreTests
     {
         private static readonly IntPtr Flash =
@@ -202,6 +205,9 @@ namespace CF7Launcher.Tests.Guardian
                 Flash);
 
             Assert.False(restored);
+            Assert.Equal(IntPtr.Zero, api.LastFocusTarget);
+            Assert.Equal(1, api.SetForegroundCallCount);
+            Assert.Equal(0, api.AttachCallCount);
         }
 
         [Fact]
@@ -277,6 +283,125 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(manager.RestoreFlashInputFocus("no_claim",()=>false));
             Assert.Equal(0,api.SetForegroundCallCount);Assert.Equal(IntPtr.Zero,api.LastFocusTarget);
         }
+        [Fact] public void EligibilityCallbackCannotRetireTargetAndStillPermitFocus()
+        {
+            var api = new FakeFocusApi { Root = FlashRoot };
+            var manager = new WindowManager(api, Flash);
+            Assert.False(manager.RestoreFlashInputFocus("claim_reentry", () => {
+                manager.ResetEmbedState(); return true;
+            }));
+            Assert.Equal(0, api.SetForegroundCallCount);
+            Assert.Equal(0, api.SetFocusCallCount);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
+        [Fact] public void FallbackThreadQueryRetiringTargetCannotAttach()
+        {
+            var api = new FakeFocusApi { Root = FlashRoot, ForegroundAfterSet = GuardianIndicator };
+            var manager = new WindowManager(api, Flash);
+            api.AfterGetThread = manager.ResetEmbedState;
+            Assert.False(manager.RestoreFlashInputFocus("thread_query_retirement", Flash));
+            Assert.Equal(1, api.SetFocusCallCount);
+            Assert.Equal(0, api.AttachCallCount);
+        }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus(bool detachResult)
+        {
+            var api = new FakeFocusApi { Root = FlashRoot, ForegroundAfterSet = GuardianIndicator,
+                DetachResult = detachResult };
+            var manager = new WindowManager(api, Flash);
+            api.AfterAttach = manager.ResetEmbedState;
+            Assert.False(manager.RestoreFlashInputFocus("attach_retirement", Flash));
+            Assert.Equal(1, api.SetForegroundCallCount);
+            Assert.Equal(1, api.SetFocusCallCount);
+            Assert.Equal(2, api.AttachCallCount);
+            Assert.Equal(new[] { (42u, 43u, true), (42u, 43u, false) }, api.AttachArguments);
+        }
+
+        [Fact] public void SuccessfulAttachFollowedByEligibilityRevocationDetachesExactPair()
+        {
+            bool eligible=true;
+            var api=new FakeFocusApi {Root=FlashRoot,ForegroundAfterSet=GuardianIndicator};
+            var manager=new WindowManager(api,Flash);api.AfterAttach=()=>eligible=false;
+            Assert.False(manager.RestoreFlashInputFocus("recheck_revoke",()=>eligible));
+            Assert.Equal(new[]{(42u,43u,true),(42u,43u,false)},api.AttachArguments);
+            Assert.Equal(1,api.SetForegroundCallCount);Assert.Equal(1,api.SetFocusCallCount);
+            Console.WriteLine("F01 revoke exact ordered calls: "+string.Join(";",api.AttachArguments));
+        }
+        [Fact] public void EligibilityCallbackThrowAfterSuccessfulAttachStillDetachesExactPair()
+        {
+            var api=new FakeFocusApi {Root=FlashRoot,ForegroundAfterSet=GuardianIndicator};
+            var manager=new WindowManager(api,Flash);
+            Assert.Throws<InvalidOperationException>(()=>manager.RestoreFlashInputFocus("recheck_callback_throw",()=>{
+                if(api.AttachArguments.Count>0)throw new InvalidOperationException("owned eligibility callback");return true;}));
+            Assert.Equal(new[]{(42u,43u,true),(42u,43u,false)},api.AttachArguments);
+            Assert.Equal(1,api.SetForegroundCallCount);Assert.Equal(1,api.SetFocusCallCount);
+            Console.WriteLine("F01 callback exception cleanup: "+string.Join(";",api.AttachArguments));
+        }
+        [Theory][InlineData(false)][InlineData(true)]
+        public void DetachFailureRetainsSpecificDiagnosticAndExactPair(bool throws)
+        {
+            var logs=new List<string>();LogManager.SetSink(logs.Add);
+            try{
+                var api=new FakeFocusApi {Root=FlashRoot,ForegroundAfterSet=GuardianIndicator,DetachResult=false,ThrowOnDetach=throws};
+                var manager=new WindowManager(api,Flash);api.AfterAttach=manager.ResetEmbedState;
+                manager.RestoreFlashInputFocus("recheck_detach_failed",Flash);
+                Assert.Equal(new[]{(42u,43u,true),(42u,43u,false)},api.AttachArguments);
+                foreach(string line in logs)Console.WriteLine(line);
+                Assert.Contains(logs,x=>throws?x.Contains("DETACH FAILED"):x.Contains("detach returned false"));
+            }finally{LogManager.ResetSink();}
+        }
+        private static WindowManager CloseManager(FakeFocusApi api)
+        {
+            api.ProcessId=(uint)System.Diagnostics.Process.GetCurrentProcess().Id;
+            var manager=new WindowManager(api,Flash);
+            typeof(WindowManager).GetField("_registeredFocusProcess",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance)
+                .SetValue(manager,System.Diagnostics.Process.GetCurrentProcess());
+            return manager;
+        }
+        [Fact] public void ClosePermitHasOneRootAttemptAndTailUsesOnlyInnerFocusAfterSourceRetires()
+        {
+            var api=new FakeFocusApi { Foreground=GuardianIndicator,Root=FlashRoot,Focused=GuardianIndicator,
+                SetForegroundResult=true,ForegroundAfterSet=FlashRoot };
+            api.AfterSetFocus=()=>api.Focused=Flash;
+            var manager=CloseManager(api); var target=manager.CaptureFlashFocusTarget();
+            bool sourceAlive=true, successor=false;
+            var context=new HostCloseContext(new EndpointLease(null,null,null,"help","A","host",1,1,1,IntPtr.Zero),
+                NativeCloseCause.PageClose,new Newtonsoft.Json.Linq.JObject(),IntPtr.Zero);
+            var permit=new FocusPermit(context,()=>!successor && (context.SourceRetired || sourceAlive),target);
+            Assert.True(permit.EnterLive());
+            permit.RootVerified=manager.HandoffFlashFocusOnce("close",GuardianIndicator,target,permit.Eligible);
+            Assert.True(permit.RootVerified); context.SourceRetired=true; sourceAlive=false; api.Focused=GuardianIndicator;
+            Assert.True(permit.EnterTail()); Assert.True(manager.RestoreFlashInnerFocusOnce("tail",target,permit.Eligible));
+            Assert.False(permit.EnterTail()); Assert.Equal(1,api.SetForegroundCallCount); Assert.Equal(2,api.SetFocusCallCount);
+            Assert.Equal(new[] {(42u,43u,true),(42u,43u,false),(42u,43u,true),(42u,43u,false)},api.AttachArguments);
+            permit.Complete(); Assert.False(permit.Eligible());
+        }
+        [Fact] public void TailLosesPermissionWhenAnotherOwnerOrForeignForegroundArrives()
+        {
+            var api=new FakeFocusApi { Foreground=GuardianIndicator,Root=FlashRoot,Focused=Flash,
+                SetForegroundResult=true,ForegroundAfterSet=FlashRoot };
+            var manager=CloseManager(api); var target=manager.CaptureFlashFocusTarget(); bool owner=true;
+            var context=new HostCloseContext(new EndpointLease(null,null,null,"help","A","host",1,1,1,IntPtr.Zero),
+                NativeCloseCause.PageClose,new Newtonsoft.Json.Linq.JObject(),IntPtr.Zero);
+            var permit=new FocusPermit(context,()=>owner,target); Assert.True(permit.EnterLive());
+            permit.RootVerified=manager.HandoffFlashFocusOnce("close",GuardianIndicator,target,permit.Eligible);
+            context.SourceRetired=true; owner=false; Assert.False(permit.EnterTail()); owner=true; Assert.False(permit.Eligible());
+            api.Foreground=new IntPtr(0x9999);
+            Assert.False(manager.RestoreFlashInnerFocusOnce("tail",target,()=>true));
+            Assert.Equal(1,api.SetForegroundCallCount); Assert.Equal(0,api.SetFocusCallCount);
+        }
+        [Fact] public void CloseAttachRevocationStillDetachesExactPair()
+        {
+            var api=new FakeFocusApi { Foreground=FlashRoot,Root=FlashRoot,Focused=GuardianIndicator };
+            var manager=CloseManager(api); var target=manager.CaptureFlashFocusTarget(); bool eligible=true;
+            api.AfterAttach=()=>eligible=false;
+            Assert.False(manager.RestoreFlashInnerFocusOnce("tail",target,()=>eligible));
+            Assert.Equal(0,api.SetFocusCallCount); Assert.Equal(new[] {(42u,43u,true),(42u,43u,false)},api.AttachArguments);
+        }
         private sealed class FakeFocusApi
             : IFlashFocusWindowApi
         {
@@ -286,10 +411,18 @@ namespace CF7Launcher.Tests.Guardian
             internal IntPtr Focused { get; set; }
             internal bool SetForegroundResult { get; set; }
             internal Action AfterSetForeground { get; set; }
+            internal Action AfterGetThread { get; set; }
+            internal Action AfterAttach { get; set; }
+            internal Action AfterSetFocus { get; set; }
+            internal uint ProcessId=200;
+            internal bool ThrowOnDetach;
+            internal bool DetachResult { get; set; } = true;
+            internal int SetFocusCallCount { get; private set; }
             internal int SetForegroundCallCount { get; private set; }
             internal IntPtr LastForegroundTarget { get; private set; }
             internal IntPtr LastFocusTarget { get; private set; }
             internal int AttachCallCount { get; private set; }
+            internal List<(uint from, uint to, bool attach)> AttachArguments = new List<(uint,uint,bool)>();
 
             public IntPtr GetForegroundWindow()
             {
@@ -300,7 +433,8 @@ namespace CF7Launcher.Tests.Guardian
                 IntPtr windowHandle,
                 out uint processId)
             {
-                processId = 200;
+                processId = ProcessId;
+                AfterGetThread?.Invoke();
                 return 43;
             }
 
@@ -319,13 +453,18 @@ namespace CF7Launcher.Tests.Guardian
                 uint attachToThreadId,
                 bool attach)
             {
+                AttachArguments.Add((attachThreadId, attachToThreadId, attach));
                 AttachCallCount++;
-                return true;
+                if (attach) AfterAttach?.Invoke();
+                if (!attach && ThrowOnDetach) throw new InvalidOperationException("owned detach failure");
+                return attach || DetachResult;
             }
 
             public IntPtr SetFocus(IntPtr windowHandle)
             {
+                SetFocusCallCount++;
                 LastFocusTarget = windowHandle;
+                AfterSetFocus?.Invoke();
                 return windowHandle;
             }
 

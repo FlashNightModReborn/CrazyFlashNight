@@ -1992,10 +1992,12 @@
 
     function closeLocally() {
         try { Panels.close(); } catch (e) {}
-        if (typeof Bridge !== 'undefined') Bridge.send({ type: 'panel', cmd: 'close', panel: 'lut-lab' });
+        if (typeof Bridge !== 'undefined') Bridge.send({ type: 'panel', cmd: 'close', panel: 'lut-lab', panelInstanceId: _closePanelInstanceId });
     }
 
+    var _closePanelInstanceId = '';
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         // Panels 契约：create 只在首次 open 跑一次（panel._el 保留），onOpen 每次打开都跑。
         // cleanup 已复位会话字段并 lose GL；这里按新会话完整重建内容（幂等、可重入）。
         state.root = el || state.root;

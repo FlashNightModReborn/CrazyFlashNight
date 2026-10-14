@@ -16,7 +16,11 @@ namespace CF7Launcher.Tasks
     /// <summary>Bookshelf transport and canonical slot resolution. AS2 owns context admission.</summary>
     public sealed class BookshelfTask : IDisposable
     {
-        private sealed class Request { public string Cmd, Token, Instance, Kind, Target, Destination; public bool IsWrite; }
+        private sealed class Request {
+            public string Cmd, Token, Instance, Kind, Target, Destination;
+            public bool IsWrite;
+            internal SettingsRecoveryAdmission SettingsDestination,SettingsRollback;
+        }
         private static readonly Regex Id = new Regex("^[A-Za-z0-9._~-]{1,128}$");
         private readonly string _runNamespace = Guid.NewGuid().ToString("N");
         private readonly object _gate = new object();
@@ -26,12 +30,15 @@ namespace CF7Launcher.Tasks
         private Action<string> _permanentSlotApplied;
         private Action<string, JObject> _returnPresentation;
         private string _lastAppliedToken;
+        private string _activeSlot;
+        private Action<SettingsRecoveryAdmission> _settingsSourceApplied;
         private string _originalInstance, _originalToken;
         private Action _originalRevoked;
         private SaveResolutionContext _saves;
         private readonly Func<JArray> _catalogSource;
         private readonly Func<string, SolResolveResult> _resolveSource;
         private string _unresolved, _unresolvedKind, _unresolvedTarget, _unresolvedDestination;
+        private SettingsRecoveryAdmission _unresolvedSettingsDestination,_unresolvedSettingsRollback;
         private bool _writePending, _disposed;
 
         public BookshelfTask(XmlSocketServer socket) : this(() => socket != null && socket.IsClientReady,
@@ -46,6 +53,7 @@ namespace CF7Launcher.Tasks
         }
         public void SetPermanentSlotApplied(Action<string> callback) { _permanentSlotApplied = callback; }
         public void SetSaveContext(SaveResolutionContext saves) { _saves = saves; }
+        internal void SetSettingsSourceApplied(Action<SettingsRecoveryAdmission> callback) { _settingsSourceApplied=callback; }
         public void SetPostToWeb(Action<string> post) { _post = post; }
         public void SetInvoker(Action<Action> invoke) { _invoke = invoke; }
         internal void SetReturnPresentation(Action<string, JObject> callback) { _returnPresentation = callback; }
@@ -130,6 +138,9 @@ namespace CF7Launcher.Tasks
                             || (kind == "return" && IsPermanentSlot(target))
                             || (kind == "settle" && SaveSlotKey.IsValidExisting(target) && target.StartsWith("bookrun_", StringComparison.Ordinal)))
                         {
+                            if(_saves?.SettingsRecovery!=null && !_saves.CanMutate(target)) {
+                                RejectAndRemember(callId,cmd,instance,"settings_recovery_required");return;
+                            }
                             var resolved = _resolveSource != null ? _resolveSource(target) : _saves.Resolver.Resolve(target, _saves.SwfPath);
                             if (kind == "settle" && (resolved.Kind == DecisionKind.Empty || resolved.Kind == DecisionKind.Deleted))
                             {
@@ -154,9 +165,19 @@ namespace CF7Launcher.Tasks
                     Kind = isWrite ? Text(payload["kind"]) : _unresolvedKind,
                     Target = isWrite ? Text(payload["target"]) : _unresolvedTarget,
                     Destination = isWrite ? Text(normalized["runSlot"]) ?? Text(payload["target"]) : _unresolvedDestination };
+                if(!isWrite) { context.SettingsDestination=_unresolvedSettingsDestination;context.SettingsRollback=_unresolvedSettingsRollback; }
+                if(isWrite && context.Kind!="settle" && _saves?.SettingsRecovery!=null) {
+                    try {
+                        context.SettingsDestination=_saves.SettingsRecovery.PrepareReplacement(context.Destination);
+                        context.SettingsRollback=_saves.SettingsRecovery.PrepareReplacement(_activeSlot);
+                        normalized["settingsAuthority"]=context.SettingsDestination.BootstrapMetadata();
+                        normalized["settingsRollbackAuthority"]=context.SettingsRollback.BootstrapMetadata();
+                    } catch { RejectAndRemember(callId,cmd,instance,"settings_recovery_required");return; }
+                }
                 if (!_pending.TryBegin(callId, context, out int fid)) return;
                 if (isWrite) { RevokeOriginal(); _writePending = true; _unresolved = context.Token; _unresolvedKind = context.Kind;
-                    _unresolvedTarget = context.Target; _unresolvedDestination = context.Destination; }
+                    _unresolvedTarget = context.Target; _unresolvedDestination = context.Destination;
+                    _unresolvedSettingsDestination=context.SettingsDestination;_unresolvedSettingsRollback=context.SettingsRollback; }
                 _pending.Send(fid, PanelBridge.BuildFlashCommand(action, fid, normalized).ToString(Formatting.None) + "\0");
             }
         }
@@ -203,6 +224,14 @@ namespace CF7Launcher.Tasks
                 if (state && message["records"] != null) state = ValidRecords(message["records"] as JObject);
                 if (state && message["returningResult"]?.Type != JTokenType.Null && message["returningResult"] != null)
                     state = ValidResult(message["returningResult"] as JObject, true);
+                if(state) {
+                    _activeSlot=Text(message["activeSlot"]);
+                    var admission=contextSettings(request,_activeSlot,Text(message["settingsAuthorityOwner"]));
+                    if(admission!=null) {
+                        Action bind=()=>_settingsSourceApplied?.Invoke(admission);
+                        if(_invoke==null)bind();else _invoke(bind);
+                    }
+                }
                 bool rejected = envelope && message["success"]?.Type == JTokenType.Boolean && !message.Value<bool>("success")
                     && new[] { "invalid_payload", "stale_token", "context_changed", "busy", "locked", "invalid_target",
                         "save_failed", "transition_rejected", "token_conflict", "config_unavailable" }.Contains(Text(message["error"]));
@@ -252,6 +281,12 @@ namespace CF7Launcher.Tasks
                     Send(new JObject { ["success"] = false, ["error"] = reason == PanelPendingCallEndReason.Timeout ? "timeout" : "disconnected" },
                         call.WebCallId, call.Context.Cmd, call.Context.Instance);
             }
+        }
+        private static SettingsRecoveryAdmission contextSettings(Request request,string slot,string owner)
+        {
+            foreach(var admission in new[] {request.SettingsDestination,request.SettingsRollback})
+                if(admission!=null && admission.Context.Slot==slot && admission.Owner==owner)return admission;
+            return null;
         }
         private static bool BoundedInteger(JToken value, long maximum)
             => value?.Type == JTokenType.Integer && long.TryParse(value.ToString(), out long number) && number >= 0 && number <= maximum;

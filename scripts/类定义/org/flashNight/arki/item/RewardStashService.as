@@ -75,7 +75,7 @@ class org.flashNight.arki.item.RewardStashService {
         var snapshot:Object;
         try {
             snapshot = {assets:ItemUtil.capturePlayerAssetSnapshot(),
-                ext:_root._saveExt, progress:captureProgress()};
+                ext:PersistedSnapshot.cloneData(_root._saveExt), progress:captureProgress()};
             if (!SaveManager.getInstance().beginRewardCommit(operationId, resolveDomain, null)) {
                 lastError = "save_unavailable"; return false;
             }
@@ -86,7 +86,7 @@ class org.flashNight.arki.item.RewardStashService {
         try {
             _pending.transaction = PlayerAssetTransaction.begin(context);
             var candidateExt:Object = {};
-            for(var key:String in snapshot.ext) if(key != "rewardInbox") candidateExt[key] = PersistedSnapshot.clone(snapshot.ext[key]);
+            for(var key:String in snapshot.ext) if(key != "rewardInbox") candidateExt[key] = PersistedSnapshot.cloneData(snapshot.ext[key]);
             candidateExt.rewardInbox = converted.store;
             _root._saveExt = candidateExt;
             PlayerAssetTransaction.markDirtyRequired(_root.存档系统);
@@ -119,7 +119,7 @@ class org.flashNight.arki.item.RewardStashService {
         if (p == null) return true;
         if (!committed) {
             if (!ItemUtil.restorePlayerAssetSnapshot(p.before.assets)) return false;
-            _root._saveExt = PersistedSnapshot.clone(p.before.ext);
+            _root._saveExt = PersistedSnapshot.cloneData(p.before.ext);
             restoreProgress(p.before.progress);
         }
         // 发布已提交资产通知后才进入任务对话/后继任务等可选消费者。

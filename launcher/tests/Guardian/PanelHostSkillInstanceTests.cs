@@ -385,7 +385,7 @@ namespace CF7Launcher.Tests.Guardian
                 "_activePanelInstanceId,",
                 StringComparison.Ordinal);
             int close = exactClose.IndexOf(
-                "DoClose();",
+                "DoCloseTransaction(context)",
                 StringComparison.Ordinal);
             int completion = exactClose.IndexOf(
                 "cmd.ExactCloseCompleted",

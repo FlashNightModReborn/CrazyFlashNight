@@ -115,6 +115,32 @@ class org.flashNight.arki.ui.GaragePurchasePanelServiceTest {
         check(commit(initial,"bicycle").error == "context_changed" && _root.金钱 == 600000, "slot switch rejects old command");
         setup(); initial = snapshot("bicycle"); commit(initial,"bicycle"); _root.savePath = "another-test-slot";
         check(query(initial).error == "context_changed", "receipt stays with original slot");
+        setup(); initial = snapshot("bicycle");
+        _root.记录玩家货币变化 = function():Void { _root.__garageFeeds++;throw new Error("owned notification failure"); };
+        result = commit(initial,"bicycle");
+        check(result.saved && _root.__garageSaves == 1 && _root.金钱 == 592000,
+            "currency notification failure still reaches durable fence");
+        commit(initial,"bicycle");
+        check(_root.__garageFeeds == 1 && _root.__garageSaves == 1,"notification failure never repeats business");
+        setup(); initial = snapshot("bicycle");
+        _root.存档系统.flushDurableNow = function():Boolean { _root.__garageSaves++;throw new Error("owned save failure");return false; };
+        result = commit(initial,"bicycle");
+        check(result.phase == "save_pending" && _root.金钱 == 592000 && _root.__garageFeeds == 1,
+            "save exception preserves applied purchase");
+        _root.存档系统.flushDurableNow = function():Boolean { _root.__garageSaves++;return true; };
+        result = commit(initial,"bicycle");
+        check(result.saved && _root.__garageSaves == 2 && _root.__garageFeeds == 1 && _root.金钱 == 592000,
+            "exception retry saves without charging");
+        _root.存档系统 = {markDirty:function():Void {},flushDurableNow:function():Boolean {return true;}};
+        check(query(initial).error == "context_changed","same slot replacement owner cannot borrow receipt");
+        setup(); initial = snapshot("bicycle");
+        _root.基建系统.infrastructure.addProperty("自行车",function():Number {return 0;},
+            function(value:Number):Void {throw new Error("owned mid-apply failure");});
+        result = commit(initial,"bicycle");
+        check(result.phase == "apply_unknown" && result.applied === null && _root.金钱 == 592000 && _root.__garageSaves == 0,
+            "partial purchase never pretends applied or refundable");
+        commit(initial,"bicycle");
+        check(_root.金钱 == 592000 && _root.__garageSaves == 0,"partial purchase never replays deduction");
         trace("GaragePurchasePanelServiceTest Tests Passed: " + passed);
         trace("GaragePurchasePanelServiceTest Tests Failed: " + failed);
     }

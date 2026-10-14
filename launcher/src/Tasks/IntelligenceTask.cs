@@ -22,6 +22,7 @@ namespace CF7Launcher.Tasks
         {
             public string WebCallId;
             public string WebCmd;
+            public Action<string> ResponseSink;
         }
 
         private sealed class RuntimeState
@@ -188,7 +189,18 @@ namespace CF7Launcher.Tasks
             _projectRoot = root;
         }
 
-        public void SetPostToWeb(Action<string> post) { _postToWeb = post; }
+        private Func<Action<string>> _responseLeaseProvider;
+        [ThreadStatic] private static IntelligenceTask _respondingOwner;
+        [ThreadStatic] private static Action<string> _respondingSink;
+        public void SetPostToWeb(Action<string> post) { _postToWeb = post; _responseLeaseProvider=null; }
+        internal void SetResponseLeaseProvider(Func<Action<string>> provider) { _responseLeaseProvider=provider; }
+        private Action<string> FreezeResponseSink() => _responseLeaseProvider?.Invoke() ?? _postToWeb;
+        private void WithResponseSink(Action<string> sink, Action action)
+        {
+            var oldOwner=_respondingOwner; var oldSink=_respondingSink;
+            _respondingOwner=this; _respondingSink=sink;
+            try { action(); } finally { _respondingOwner=oldOwner; _respondingSink=oldSink; }
+        }
         public void SetInvoker(Action<Action> invoker) { _invokeOnUI = invoker; }
 
         public void Dispose()
@@ -209,6 +221,8 @@ namespace CF7Launcher.Tasks
         }
 
         public void HandleWebRequest(string cmd, JObject parsed)
+            => WithResponseSink(FreezeResponseSink(),()=>HandleWebRequestCore(cmd,parsed));
+        private void HandleWebRequestCore(string cmd, JObject parsed)
         {
             LogManager.Log("[IntelligenceTask] HandleWebRequest: cmd=" + cmd);
             string webCallId = parsed.Value<string>("callId");
@@ -276,6 +290,7 @@ namespace CF7Launcher.Tasks
                 }
             }
 
+            WithResponseSink(entry.ResponseSink, () => {
             try
             {
                 if (entry.WebCmd == "state")
@@ -292,6 +307,7 @@ namespace CF7Launcher.Tasks
                 LogManager.Log("[IntelligenceTask] flash response failed: " + ex.Message);
                 RespondError(entry.WebCallId, entry.WebCmd, "internal_error");
             }
+            });
 
             if (respond != null) respond(null);
         }
@@ -479,6 +495,7 @@ namespace CF7Launcher.Tasks
                 return;
             }
 
+            Action<string> responseSink=ReferenceEquals(_respondingOwner,this) ? _respondingSink : FreezeResponseSink();
             int fid;
             lock (_lock)
             {
@@ -486,7 +503,8 @@ namespace CF7Launcher.Tasks
                 _pending[fid] = new PendingRequest
                 {
                     WebCallId = webCallId,
-                    WebCmd = webCmd
+                    WebCmd = webCmd,
+                    ResponseSink = responseSink
                 };
             }
 
@@ -502,7 +520,7 @@ namespace CF7Launcher.Tasks
                     _timers.Remove(fid);
                 }
 
-                RespondError(entry.WebCallId, entry.WebCmd, "timeout");
+                WithResponseSink(entry.ResponseSink,()=>RespondError(entry.WebCallId, entry.WebCmd, "timeout"));
             }, null, 10000, Timeout.Infinite);
 
             lock (_lock) { _timers[fid] = timer; }
@@ -1542,10 +1560,10 @@ namespace CF7Launcher.Tasks
         private void PostToWeb(string json)
         {
             if (_disposed) return;
+            Action<string> sink=ReferenceEquals(_respondingOwner,this) ? _respondingSink : FreezeResponseSink();
             if (_invokeOnUI != null)
-                _invokeOnUI(delegate { if (_disposed) return; if (_postToWeb != null) _postToWeb(json); });
-            else if (_postToWeb != null)
-                _postToWeb(json);
+                _invokeOnUI(delegate { if (!_disposed) sink?.Invoke(json); });
+            else sink?.Invoke(json);
         }
 
         private static int GetRuntimeValue(RuntimeState state, string itemName)

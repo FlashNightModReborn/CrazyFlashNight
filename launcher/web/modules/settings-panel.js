@@ -6,6 +6,8 @@
     var _shell, _root, _content, _status, _apply, _discard, _saveRetry;
     var _init, _instance = '', _snapshot, _draft, _scale;
     var _busy = false, _requiresReconcile = false;
+    var _authority = null, _persistenceStatus, _reconcileButton;
+    var _readOnlyProtocol = false;
     var _performanceDraft = null, _performanceBusy = false;
     var _performanceMessage = '', _performanceMessageState = 'ready';
     var _hostReconcileDraft = null;
@@ -100,6 +102,8 @@
         _hostReconcileDraft = null;
         _busy = false;
         _requiresReconcile = false;
+        _authority = null;
+        _readOnlyProtocol = false;
         _previewActive = false;
         _capturing = -1;
         _activeTab = 'game';
@@ -189,8 +193,13 @@
         _root.appendChild(_content);
 
         var footer = node('footer', 'settings-footer');
+        _persistenceStatus = node('div', 'settings-persistence-status', '正在读取保存确认…');
+        _persistenceStatus.setAttribute('role','status'); _persistenceStatus.setAttribute('aria-live','polite');
+        footer.appendChild(_persistenceStatus);
         var actions = node('div', 'settings-footer-actions');
-        _saveRetry = button('重试保存', 'settings-button warning', retrySave);
+        _reconcileButton = button('核对状态', 'settings-button secondary', requestReconcile);
+        _reconcileButton.hidden = true; actions.appendChild(_reconcileButton);
+        _saveRetry = button('只重试保存', 'settings-button warning', retrySave);
         _saveRetry.hidden = true;
         actions.appendChild(annotate(_saveRetry, '只重试上一次已经应用成功、但未能落盘的游戏设置。', 'top'));
         _discard = button('放弃游戏改动', 'settings-button secondary', discardGameDraft);
@@ -210,12 +219,11 @@
         setStatus(reconcileMessage || '正在读取游戏权威状态…', 'loading');
         var id = _mux.request('snapshot', {v:1}, {}, function(response) {
             _busy = false;
+            adoptAuthority(response);
+            if(response && response.v===1 && response.writeAdmission==='blocked_by_context')_readOnlyProtocol=true;
             if (response && response.requiresReconcile === true) {
                 _requiresReconcile = true;
                 setStatus('该权威快照早于未决写入终态，写入仍保持锁定；请重新读取。', 'warning');
-                renderCurrentTab();
-                refreshFooter();
-                return;
             }
             var model = SettingsRuntime.normalizeSnapshot(response);
             if (!model) {
@@ -226,7 +234,7 @@
                 refreshFooter();
                 return;
             }
-            _requiresReconcile = false;
+            if (!_authority && response.requiresReconcile!==true) _requiresReconcile = false;
             _snapshot = model;
             var keepGameDraft = _hostReconcileDraft
                 && _hostReconcileDraft.revision === model.revision
@@ -248,7 +256,9 @@
             }
             _previewActive = model.previewActive;
             var keyState = SettingsRuntime.validateKeyDraft(model.keys, model.allowedKeyCodes);
-            if (!keyState.valid) {
+            if (_requiresReconcile) {
+                setStatus('上次操作等待核对，写入保持锁定。', 'warning');
+            } else if (!keyState.valid) {
                 setStatus('检测到历史键位冲突或保留键；可逐项修复，全部有效后再应用。', 'warning');
             } else {
                 setStatus(model.migrationPending
@@ -287,6 +297,23 @@
         renderCurrentTab();
         requestSnapshot(message || '写入结果未知，正在重新读取游戏权威状态；不会自动重放。');
     }
+    function adoptAuthority(response) {
+        _authority = SettingsRuntime.reduceAuthority(_authority, response);
+        if (_authority) _requiresReconcile = _authority.requiresReconcile;
+    }
+    function requestReconcile() {
+        if (_busy) return;
+        _busy=true;refreshFooter();setStatus('正在核对上次操作与保存结果…','loading');
+        _mux.request('reconcile',{v:1},{},function(response) {
+            _busy=false;adoptAuthority(response);
+            if (response && response.success===true && !_requiresReconcile) {
+                setStatus('上次操作已核对。','ready');
+                requestSnapshot();return;
+            }
+            setStatus('现有证据尚不能结案；保存入口保持锁定。','warning');
+            renderCurrentTab();refreshFooter();
+        });
+    }
 
     function showTab(tab) {
         _activeTab = tab;
@@ -307,9 +334,9 @@
         if (_requiresReconcile) {
             var reconcile = node('div', 'settings-empty');
             reconcile.appendChild(node('h2', '', '写入状态等待权威核对'));
-            reconcile.appendChild(node('p', '', '上一次请求可能已经生效；在游戏状态重新读取成功前，所有设置写入均保持锁定。'));
+            reconcile.appendChild(node('p', '', '上一次请求可能已经生效；只有核对原操作与保存尝试后，才能解除写入锁。'));
             var retry = button('重新读取权威状态', 'settings-button primary', function() {
-                requestSnapshot('正在重新核对游戏权威状态；不会自动重放写入。');
+                if(_authority)requestReconcile();else requestSnapshot('正在重新核对游戏权威状态；不会自动重放写入。');
             });
             retry.disabled = _busy;
             reconcile.appendChild(retry);
@@ -1417,7 +1444,7 @@
         _previewTimer=setTimeout(function(){previewAudio('none');},120);
     }
     function previewAudio(sample) {
-        if (!_draft || _busy || _requiresReconcile) return;
+        if (!_draft || _busy || _requiresReconcile || _readOnlyProtocol) return;
         _mux.request('preview',{v:1,globalVolume:_draft.settings.setGlobalVolume,
             bgmVolume:_draft.settings.setBGMVolume,sample:sample},
             {kind:'preview',latestWins:true,singleFlight:false},function(response){
@@ -1427,12 +1454,13 @@
     }
     function changed() { refreshFooter(); }
     function applyGameDraft() {
-        if (!_snapshot || !_draft || _busy || _requiresReconcile) return;
+        if (!_snapshot || !_draft || _busy || _requiresReconcile || _readOnlyProtocol || !SettingsRuntime.persistenceView(_authority).canApply) return;
         var validation=SettingsRuntime.validateKeyDraft(_draft.keys,_snapshot.allowedKeyCodes);
         if(!validation.valid){showTab('keys');setStatus(validation.error==='key_conflict'?'仍有键位冲突。':'键位包含保留或无效按键。','error');return;}
         _busy=true; refreshFooter(); setStatus('正在应用并同步保存…','loading');
         _mux.request('apply',SettingsRuntime.applyPayload(_snapshot,_draft),{},function(response){
             _busy=false;
+            adoptAuthority(response);
             if(response&&response.applied===true&&response.keySchemaVersion===2){
                 _snapshot.revision=Number(response.revision);
                 _snapshot.settings=SettingsRuntime.copy(response.settings||_draft.settings);
@@ -1454,10 +1482,11 @@
         });
     }
     function discardGameDraft() {
-        if(!_snapshot||_busy||_requiresReconcile)return;
+        if(!_snapshot||_busy)return;
         _busy=true; refreshFooter();
         _mux.request('cancel',{v:1},{},function(response){
             _busy=false;
+            adoptAuthority(response);
             if(response&&response.success===true){_draft=SettingsRuntime.gameDraft(_snapshot);_previewActive=false;_capturing=-1;setStatus('已放弃未应用改动并恢复试听音量。','ready');}
             else if(response&&response.requiresReconcile===true){
                 reconcileUnknownWrite('试听恢复结果未知，正在重新读取游戏权威状态；面板保持打开。'); return;
@@ -1467,9 +1496,10 @@
         });
     }
     function retrySave() {
-        if(_busy||_requiresReconcile)return; _busy=true;refreshFooter();
+        if(_busy||_requiresReconcile||(_authority&&!SettingsRuntime.persistenceView(_authority).canSave))return; _busy=true;refreshFooter();
         _mux.request('save',{v:1},{},function(response){
             _busy=false;
+            adoptAuthority(response);
             var ok=response&&response.success===true&&response.durable===true;
             if(ok){_snapshot.migrationPending=response.migrationPending===true;if(!_snapshot.migrationPending)_snapshot.keyMigrationNotice='';}
             if(!ok&&response&&response.requiresReconcile===true){
@@ -1515,9 +1545,16 @@
         var changed=_snapshot&&_draft&&(SettingsRuntime.hasGameChanges(_snapshot,_draft)
             || _snapshot.migrationPending===true);
         _apply.disabled=_busy||_requiresReconcile||!changed;
+        var persistence=SettingsRuntime.persistenceView(_authority);
+        if(_authority)_apply.disabled=_apply.disabled||!persistence.canApply;
+        if(_readOnlyProtocol)_apply.disabled=true;
         var manualChanged=_snapshot&&_draft&&SettingsRuntime.hasGameChanges(_snapshot,_draft);
-        _discard.disabled=_busy||_requiresReconcile||(!manualChanged&&!_previewActive);
+        _discard.disabled=_busy||(!manualChanged&&!_previewActive);
         _saveRetry.disabled=_busy||_requiresReconcile;
+        if(_authority) { _saveRetry.hidden=!persistence.canSave;_saveRetry.disabled=_saveRetry.disabled||!persistence.canSave; }
+        if(_persistenceStatus && _snapshot)_persistenceStatus.textContent=persistence.text;
+        if(_persistenceStatus && _readOnlyProtocol)_persistenceStatus.textContent='当前版本仅支持查看设置，未提供保存确认。';
+        if(_reconcileButton) { _reconcileButton.hidden=!persistence.canReconcile;_reconcileButton.disabled=_busy; }
         refreshPerformanceControls();
     }
     function setStatus(text,state) {

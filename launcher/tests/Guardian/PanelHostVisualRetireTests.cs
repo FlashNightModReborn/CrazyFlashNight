@@ -263,7 +263,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void ExactCloseAheadOfSameNameReplacementClosesAThenOpensB()
+        public void AcceptedReplacementSupersedesEarlierExactCloseBeforeExecution()
         {
             using (var harness = new HostHarness())
             {
@@ -295,7 +295,7 @@ namespace CF7Launcher.Tests.Guardian
 
                 harness.Pump();
 
-                Assert.True(closeResult);
+                Assert.False(closeResult);
                 Assert.Equal(
                     "workbench",
                     harness.Host.ActivePanelName);

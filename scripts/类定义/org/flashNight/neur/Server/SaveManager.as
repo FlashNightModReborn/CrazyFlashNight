@@ -1,5 +1,10 @@
 ﻿import org.flashNight.neur.Server.ServerManager;
-import org.flashNight.arki.item.itemCollection.*;
+import org.flashNight.arki.item.itemCollection.ArrayInventory;
+import org.flashNight.arki.item.itemCollection.DrugInventory;
+import org.flashNight.arki.item.itemCollection.EquipmentInventory;
+import org.flashNight.arki.item.itemCollection.DictCollection;
+import org.flashNight.arki.item.itemCollection.InformationCollection;
+import org.flashNight.neur.Server.SettingsAuthority;
 import org.flashNight.arki.item.*;
 import org.flashNight.neur.Event.*;
 import org.flashNight.arki.weather.*;
@@ -328,6 +333,81 @@ class org.flashNight.neur.Server.SaveManager {
     private var _deferredResolutionAttempted:Boolean = false;
     private var _deferredDecisionSource:String = undefined;
     private var _runtimeSaveLoaded:Boolean = false;
+    private var _runtimeSaveSource:String;
+    private static var _settingsBootstrap:Object;
+    private static var _settingsContextBootstraps:Object = {};
+    private static var _settingsLegacyReadOnly:Boolean = false;
+    private static var _settingsContextGeneration:Number = 0;
+    private var _settingsAuthority:SettingsAuthority;
+    private var _settingsPackedProjection:Object;
+    private var _settingsPackedReceipt:Object;
+    private var _settingsFlushAttempt:Object;
+    private var _dirtyGeneration:Number = 0;
+    private var _fullSaveAttempt:Object;
+    private var _fullSaveSerial:Number = 0;
+    public function fullSaveSerial():Number { return _fullSaveSerial; }
+    public function fullSaveConfirmedAfter(serial:Number, owner:Object, slot:String):Boolean {
+        return _fullSaveAttempt != null && _fullSaveAttempt.serial > serial
+            && _fullSaveAttempt.owner === owner && _fullSaveAttempt.slot === slot
+            && _fullSaveAttempt.rawConfirmed === true;
+    }
+
+    public static function installSettingsAuthorityBootstrap(metadata:Object):Boolean {
+        if (metadata == undefined) { _settingsLegacyReadOnly = true; return true; }
+        if (metadata.protocol !== 2 || typeof metadata.contextId != "string"
+                || typeof metadata.saveOwnerId != "string" || typeof metadata.authorityEpoch != "string"
+                || typeof metadata.originNamespaceDigest != "string" || typeof metadata.slot != "string"
+                || (metadata.writeAdmission != "allowed" && metadata.writeAdmission != "blocked_by_operation"
+                    && metadata.writeAdmission != "blocked_by_metadata" && metadata.writeAdmission != "blocked_by_context")) return false;
+        _settingsBootstrap = org.flashNight.gesh.object.PersistedSnapshot.cloneData(metadata);
+        _settingsContextBootstraps["slot." + metadata.slot] = _settingsBootstrap;
+        return true;
+    }
+    public function settingsLegacyReadOnly():Boolean { return _settingsLegacyReadOnly; }
+    public static function registerSettingsDestination(metadata:Object, slot:String):Boolean {
+        if (_settingsBootstrap == null) return true;
+        if (metadata == null || metadata.protocol !== 2 || metadata.slot !== slot || metadata.writeAdmission != "allowed"
+                || metadata.originNamespaceDigest !== _settingsBootstrap.originNamespaceDigest
+                || typeof metadata.contextId != "string" || typeof metadata.saveOwnerId != "string"
+                || typeof metadata.authorityEpoch != "string") return false;
+        _settingsContextBootstraps["slot." + slot] = org.flashNight.gesh.object.PersistedSnapshot.cloneData(metadata);
+        return true;
+    }
+    public function settingsProtocolV2():Boolean { return _settingsBootstrap != null && _settingsBootstrap.protocol === 2; }
+    public function settingsWriteAllowed():Boolean {
+        if (!settingsProtocolV2()) return true;
+        if (_settingsBootstrap.slot !== String(_root.savePath) || _settingsBootstrap.writeAdmission != "allowed") return false;
+        if (_settingsAuthority != null && !_settingsAuthority.sameOwner(_root.存档系统, String(_root.savePath))) return false;
+        return _settingsAuthority == null || _settingsAuthority.writeAdmission() == "allowed";
+    }
+    public function getSettingsAuthority():SettingsAuthority {
+        if (!settingsProtocolV2() || _settingsBootstrap.slot !== String(_root.savePath)
+                || _root.存档系统 == undefined || _settingsAuthority != null
+                && !_settingsAuthority.sameOwner(_root.存档系统, String(_root.savePath))) return null;
+        if (_settingsAuthority == null) {
+            _settingsContextGeneration++;
+            _settingsAuthority = new SettingsAuthority(_settingsBootstrap, _root.存档系统,
+                String(_root.savePath), _settingsBootstrap.authorityEpoch + "." + _settingsContextGeneration);
+        }
+        return _settingsAuthority;
+    }
+    public function captureSettingsAuthority():Boolean {
+        var authority:SettingsAuthority = getSettingsAuthority();
+        var captured:Boolean = authority != null && authority.sameOwner(_root.存档系统, String(_root.savePath))
+            && authority.capture(ReadRuntimeSettingsRaw(), _root.键值设定);
+        if (captured && _runtimeSaveLoaded) authority.installRecovery(_runtimeSaveSource);
+        return captured;
+    }
+    public function canBeginSettingsWrite():Boolean {
+        return settingsWriteAllowed() && !_saveInFlight && _rewardCandidate == null
+            && canWriteCurrentRootState(ServerManager.getInstance());
+    }
+    public function settingsFlushWasConfirmed(operationToken:String, saveAttemptId:String):Boolean {
+        return _settingsFlushAttempt != null && _settingsFlushAttempt.rawConfirmed === true
+            && _settingsFlushAttempt.receipt != null
+            && _settingsFlushAttempt.receipt.operationToken === operationToken
+            && _settingsFlushAttempt.receipt.saveAttemptId === saveAttemptId;
+    }
 
     // ── C2-β: 修复挂起态 ──
     // saveDecision="repairable" 时, preload() 不立即把 snapshot 喂给 _root.mydata,
@@ -785,30 +865,46 @@ class org.flashNight.neur.Server.SaveManager {
 
     public function beginRewardCommit(operationId:String, resolved:Function,
                                       scope:Object):Boolean {
-        if (_rewardCandidate != null || _saveInFlight || _root.允许存档 !== true
+        if (!settingsWriteAllowed() || _rewardCandidate != null || _saveInFlight || _root.允许存档 !== true
                 || operationId == null || operationId.length == 0
                 || !canWriteCurrentRootState(ServerManager.getInstance())) return false;
-        var so:SharedObject = getSO();
+        // 抢门先于 getter/clone；领域变更前先切断 SO 与运行态的所有共享引用。
+        _saveInFlight = true;
+        var so:SharedObject;
         var beforeStart:Number = getTimer();
-        var before:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(so.data);
-        _rewardCandidate = {operationId:operationId, so:so,
+        var before:Object;
+        var detached:Object;
+        var mydataBefore:Object;
+        try {
+            so = getSO();
+            before = org.flashNight.gesh.object.PersistedSnapshot.cloneData(so.data);
+            detached = org.flashNight.gesh.object.PersistedSnapshot.cloneData(before);
+            mydataBefore = _root.mydata === so.data[SAVE_KEY] ? before[SAVE_KEY]
+                : org.flashNight.gesh.object.PersistedSnapshot.cloneData(_root.mydata);
+        } catch (freezeBeforeError) { _saveInFlight = false; return false; }
+        _rewardCandidate = {operationId:operationId, so:so, owner:_root.存档系统,
             savePath:String(_root.savePath), role:String(_root.角色名),
-            before:before, mydataBefore:_root.mydata === so.data[SAVE_KEY]
-                ? before[SAVE_KEY] : org.flashNight.gesh.object.PersistedSnapshot.clone(_root.mydata),
+            before:before, mydataBefore:mydataBefore,
             dirtyBefore:_dirtyMark, rootDirtyBefore:_root.存档系统.dirtyMark,
-            resolved:resolved, scope:scope, phase:"prepared", after:null,
+            resolved:resolved, scope:scope, phase:"detaching", after:null, exposed:false,
             previousStatus:so.onStatus};
         _rewardTiming = {beforeMs:getTimer()-beforeStart,packMs:0,freezeMs:0,flushMs:0};
         _rewardPhysicalStarted = false;
         _rewardPhysicalResult = undefined;
-        _saveInFlight = true;
+        try { installRewardImage(so.data, detached); }
+        catch (detachError) {
+            _rewardCandidate.phase = "restore_pending";
+            finishRewardCandidate(false);
+            return false;
+        }
+        _rewardCandidate.phase = "prepared";
         return true;
     }
 
     /** prepared 可撤销；一旦物理结果未知，只能提交同一完整候选。 */
     public function cancelRewardCommit(operationId:String):Boolean {
         if (_rewardCandidate == null || _rewardCandidate.operationId != operationId
-                || _rewardCandidate.phase != "prepared" || _rewardPhysicalStarted) return false;
+                || _rewardCandidate.phase != "prepared" || _rewardCandidate.exposed === true) return false;
         finishRewardCandidate(false);
         return _rewardCandidate == null;
     }
@@ -844,10 +940,11 @@ class org.flashNight.neur.Server.SaveManager {
         // flush 返回 true 之后的任何日志/投影异常不得倒退资产 finality。
         if (ok || _rewardPhysicalResult === true) {
             finishRewardCandidate(true);
-            logRewardCommit("event=commit outcome=committed" + opDetail);
-            return "committed";
+            var committedState:String = _rewardCandidate == null ? "committed" : "pending";
+            logRewardCommit("event=commit outcome=" + committedState + opDetail);
+            return committedState;
         }
-        if (!_rewardPhysicalStarted || _rewardPhysicalResult === false) {
+        if (_rewardCandidate.exposed !== true) {
             finishRewardCandidate(false);
             logRewardCommit("event=commit outcome=" + (_rewardCandidate == null
                 ? "not_committed" : "pending") + " detail=physical_failed" + opDetail);
@@ -869,6 +966,7 @@ class org.flashNight.neur.Server.SaveManager {
             logRewardCommit("event=resolve outcome=stale" + opDetail);
             return "stale";
         }
+        if (c.finishing === true) return "pending";
         if (c.phase == "restore_pending") {
             finishRewardCandidate(false);
             logRewardCommit("event=resolve outcome=" + (_rewardCandidate == null
@@ -879,14 +977,15 @@ class org.flashNight.neur.Server.SaveManager {
             logRewardCommit("event=resolve outcome=pending detail=phase_prepared" + opDetail);
             return "pending";
         }
-        if (String(_root.savePath) != c.savePath || String(_root.角色名) != c.role) {
+        if (_root.存档系统 !== c.owner || String(_root.savePath) != c.savePath || String(_root.角色名) != c.role) {
             logRewardCommit("event=resolve outcome=pending detail=role_mismatch" + opDetail);
             return "pending";
         }
         var ok:Boolean = c.phase == "confirmed";
         if (!ok) {
             try {
-                replaceRewardSoData(c.so.data, c.after);
+                var retryImage:Object = org.flashNight.gesh.object.PersistedSnapshot.cloneData(c.after);
+                installRewardImage(c.so.data, retryImage);
                 ok = flushSO(c.so, "full");
             } catch (retryError) { ok = _rewardPhysicalResult === true; }
         }
@@ -895,8 +994,9 @@ class org.flashNight.neur.Server.SaveManager {
                 + boundedLogText(_rewardPhysicalResult, 24) + opDetail);
             return "pending";
         }
-        _root.mydata = org.flashNight.gesh.object.PersistedSnapshot.clone(c.after[SAVE_KEY]);
+        _root.mydata = org.flashNight.gesh.object.PersistedSnapshot.cloneData(c.after[SAVE_KEY]);
         finishRewardCandidate(true);
+        if (_rewardCandidate === c) return "pending";
         // 重试成功才产生 shadow；首次成功由 _doSaveAll 既有路径推送。
         try {
             var sm:ServerManager = ServerManager.getInstance();
@@ -909,9 +1009,8 @@ class org.flashNight.neur.Server.SaveManager {
     private function onRewardSoStatus(candidate:Object, info:Object):Void {
         if (_rewardCandidate == null || _rewardCandidate !== candidate || info == null) return;
         if (info.code == "SharedObject.Flush.Success") {
-            _rewardCandidate.phase = "confirmed";
-            // 成功通知对应同一 so / handler；领域回调在同一角色候选上完成。
-            resolveRewardCommit(String(_rewardCandidate.operationId));
+            // 原生 code 不携 attempt/revision；仅留下提示，显式重交同一候选取得 raw true。
+            logRewardCommit("event=sostatus outcome=confirmation_hint op=" + boundedLogText(candidate.operationId, 64));
         } else if (info.code == "SharedObject.Flush.Failed") {
             // Failed 也不允许回滚一个曾经不确定的候选；下一次明确重交仍使用 after。
             // 但必须留下生产记录：曾经不确定的 flush 已被用户/系统明确拒绝过。
@@ -921,14 +1020,18 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     private static function replaceRewardSoData(target:Object, source:Object):Void {
-        var copy:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(source);
+        var copy:Object = org.flashNight.gesh.object.PersistedSnapshot.cloneData(source);
+        installRewardImage(target, copy);
+    }
+    private static function installRewardImage(target:Object, copy:Object):Void {
         for (var oldKey:String in target) delete target[oldKey];
         for (var key:String in copy) target[key] = copy[key];
     }
 
     private function finishRewardCandidate(committed:Boolean):Void {
         var c:Object = _rewardCandidate;
-        if (c == null) return;
+        if (c == null || c.finishing === true || (!committed && c.exposed === true)) return;
+        c.finishing = true;
         if (!committed) {
             c.phase = "restore_pending";
             try {
@@ -941,18 +1044,12 @@ class org.flashNight.neur.Server.SaveManager {
                 logRewardCommit("event=finish outcome=restore_pending detail=restore_exception"
                     + " op=" + boundedLogText(c.operationId, 64));
                 trace("[RewardCommit] restore image: " + restoreError);
+                c.finishing = false;
                 return;
             }
         } else {
             c.phase = "confirmed";
-            _dirtyMark = false;
-            _root.存档系统.dirtyMark = false;
-            _root.存盘标志 = 1;
-            _settingsMigrationPending = false;
-            _drugLoadoutMigrationPending = false;
-            _rewardInboxMigrationPending = false;
-            KeyManager.clearPendingKeySettingsMigration();
-            _absorbPendingRequest();
+            settleConfirmedSave(c.saveAttempt);
         }
         // 先确认领域状态/回执，再释放游戏推进。回调异常不能推翻物理提交。
         var domainSettled:Boolean = true;
@@ -962,20 +1059,22 @@ class org.flashNight.neur.Server.SaveManager {
             domainSettled = false;
             trace("[RewardCommit] domain finalizer: " + projectionError);
         }
-        if (!committed && !domainSettled) {
-            c.phase = "restore_pending";
-            org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true);
-            logRewardCommit("event=finish outcome=restore_pending detail=domain_not_settled"
+        if (!domainSettled) {
+            c.phase = committed ? "confirmed" : "restore_pending";
+            try { org.flashNight.arki.pause.PauseManager.setRewardCommitPending(true); } catch (pauseNoticeError) {}
+            logRewardCommit("event=finish outcome=" + c.phase + " detail=domain_not_settled"
                 + " op=" + boundedLogText(c.operationId, 64));
+            c.finishing = false;
             return;
         }
-        c.so.onStatus = c.previousStatus;
+        try { c.so.onStatus = c.previousStatus; } catch (statusRestoreError) {}
+        if (_rewardCandidate !== c) return;
         _rewardCandidate = null;
         _saveInFlight = false;
         _rewardPhysicalStarted = false;
         _rewardPhysicalResult = undefined;
-        org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false);
-        FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3");
+        try { org.flashNight.arki.pause.PauseManager.setRewardCommitPending(false); } catch (pauseNoticeError) {}
+        try { FrameBroadcaster.pushUiState(committed ? "sv:2" : "sv:3"); } catch (uiNoticeError) {}
     }
 
     /** 奖励事务有界生产日志：单行分类字段、连续重复折叠、进程内封顶；不带存档内容。 */
@@ -1102,9 +1201,15 @@ class org.flashNight.neur.Server.SaveManager {
         var physicalStats:Object = savePhysicalStats();
         var flushPendingBefore:Number = Number(physicalStats.flushPending);
         var flushFalseBefore:Number = Number(physicalStats.flushFalse);
+        var attemptSerialBefore:Number = _fullSaveSerial;
+        var attemptOwner:Object = _root.存档系统;
+        var attemptSlot:String = String(_root.savePath);
         try {
             ok = _doSaveAll(origin);
         } catch (saveError) {
+            if (fullSaveConfirmedAfter(attemptSerialBefore, attemptOwner, attemptSlot)) {
+                ok = true;
+            } else {
             // 生产异常同样不得让安全退出永远停在 Saving；先投影失败，再保留原异常语义。
             try {
                 FrameBroadcaster.pushUiState("sv:3");
@@ -1113,13 +1218,14 @@ class org.flashNight.neur.Server.SaveManager {
             outcomeStats["throw"]++;
             recordSaveApiTrace(origin, reason, "throw");
             throw saveError;
+            }
         } finally {
             _saveInFlight = false;
         }
-        if (ok) {
+        try { if (ok) {
             outcomeStats.success++;
             recordSaveApiTrace(origin, reason, "success");
-            _absorbPendingRequest();
+            settleConfirmedSave(_fullSaveAttempt);
         } else if (Number(physicalStats.flushPending) > flushPendingBefore) {
             outcomeStats.pending++;
             recordSaveApiTrace(origin, reason, "pending");
@@ -1130,7 +1236,7 @@ class org.flashNight.neur.Server.SaveManager {
             // _doSaveAll 内部写入门（角色名/等级校验）拒绝：未到达物理 flush
             outcomeStats.earlyReject++;
             recordSaveApiTrace(origin, reason, "earlyReject");
-        }
+        } } catch (strictDiagnosticError) { trace("[SaveManager] post-flush strict diagnostics failed"); }
         return ok;
     }
 
@@ -1165,6 +1271,7 @@ class org.flashNight.neur.Server.SaveManager {
     // origin ∈ legacyDebounce / request / legacyStrict / durable / transition，
     // 供 R1 Slice 4 full-save origin 分桶；不改变任何物理存盘行为。
     private function _doSaveAll(origin:String):Boolean {
+        if (!settingsWriteAllowed()) return false;
         savePhysicalStats().doSaveAll++;
         // R1 Slice 4 full-save origin 分桶（闭集五桶；未知 origin 只诊断不计数，
         // 测试以 sum(fullOrigin) == doSaveAll 守门）
@@ -1208,9 +1315,40 @@ class org.flashNight.neur.Server.SaveManager {
         // 组包
         var rewardPhaseStart:Number = getTimer();
         var mydata:Object = packGameState();
+        if (settingsProtocolV2()) _settingsFlushAttempt = {authority:getSettingsAuthority(),
+            projection:_settingsPackedProjection, receipt:_settingsPackedReceipt, rawConfirmed:false};
         if (_rewardCandidate != null) _rewardTiming.packMs = getTimer()-rewardPhaseStart;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
+        _fullSaveAttempt = {serial:++_fullSaveSerial, so:so, owner:_root.存档系统,
+            slot:String(_root.savePath), role:String(_root.角色名), generation:_dirtyGeneration,
+            settings:_settingsFlushAttempt, rawConfirmed:false};
+        var exactAttempt:Object = _fullSaveAttempt;
+        var exactReward:Object = _rewardCandidate;
+        if (exactReward != null) {
+            if (exactReward.owner !== exactAttempt.owner || exactReward.so !== so
+                    || exactReward.savePath !== exactAttempt.slot || exactReward.role !== exactAttempt.role)
+                throw new Error("reward_context_changed");
+            // 完整 after 与独立曝光副本都在触碰真实 SO 前准备完毕。
+            var after:Object = org.flashNight.gesh.object.PersistedSnapshot.cloneData(exactReward.before);
+            after[SAVE_KEY] = mydata;
+            delete after._deleted;
+            after.tasks_to_do = _root.tasks_to_do;
+            after.tasks_finished = _root.tasks_finished;
+            after.task_chains_progress = _root.task_chains_progress;
+            after.战宠 = _root.宠物信息;
+            after.宠物领养限制 = _root.宠物领养限制;
+            after.商城已购买物品 = _root.商城已购买物品;
+            after.商城购物车 = _root.商城购物车;
+            after = org.flashNight.gesh.object.PersistedSnapshot.cloneData(after);
+            var exposure:Object = org.flashNight.gesh.object.PersistedSnapshot.cloneData(after);
+            exactReward.after = after;
+            exactReward.saveAttempt = exactAttempt;
+            exactReward.phase = "after_ready";
+            exactReward.exposed = true;
+            installRewardImage(soData, exposure);
+            mydata = soData[SAVE_KEY];
+        } else {
 
         // 写入新位置
         soData[SAVE_KEY] = mydata;
@@ -1225,18 +1363,12 @@ class org.flashNight.neur.Server.SaveManager {
         soData.宠物领养限制 = _root.宠物领养限制;
         soData.商城已购买物品 = _root.商城已购买物品;
         soData.商城购物车 = _root.商城购物车;
+        }
 
-        if (_rewardCandidate != null) {
-            // 顶层镜像也必须脱离 _root；不能让其他对象别名改写 pending afterimage。
-            rewardPhaseStart = getTimer();
-            var frozen:Object = org.flashNight.gesh.object.PersistedSnapshot.clone(soData);
-            replaceRewardSoData(soData, frozen);
-            _rewardCandidate.after = frozen;
-            // Use the detached SO copy for the public projection. The retry image stays private.
-            mydata = soData[SAVE_KEY];
+        if (exactReward != null) {
             _rewardTiming.freezeMs = getTimer()-rewardPhaseStart;
             var rewardManager:SaveManager = this;
-            var rewardIdentity:Object = _rewardCandidate;
+            var rewardIdentity:Object = exactReward;
             so.onStatus = function(info:Object):Void { rewardManager.onRewardSoStatus(rewardIdentity, info); };
         }
         // 单次 flush。这里是本地 SharedObject 的唯一提交点；此前异常不得清 dirty。
@@ -1247,21 +1379,15 @@ class org.flashNight.neur.Server.SaveManager {
         var ok:Boolean = flushSO(so, "full");
         if (_rewardCandidate != null) _rewardTiming.flushMs = getTimer()-rewardPhaseStart;
         if (ok) {
-            _dirtyMark = false;
-            _root.存档系统.dirtyMark = false;
-            _root.存盘标志 = 1;
-            _settingsMigrationPending = false;
-            _drugLoadoutMigrationPending = false;
-            _rewardInboxMigrationPending = false;
-            KeyManager.clearPendingKeySettingsMigration();
+            settleConfirmedSave(exactAttempt);
             // G2-3③：durable 落盘完成后推一次存档投影刷新（best-effort，exe 不在线静默跳过）。
-            if (_root.agent != undefined && _root.agent != null
+            try { if (_root.agent != undefined && _root.agent != null
                     && typeof _root.agent.推送绑定刷新 == "function") {
                 _root.agent.推送绑定刷新();
-            }
+            } } catch (bindingNoticeError) { reportPostFlushFailure(sm, "binding_notice", bindingNoticeError, true); }
         }
 
-        _root.mydata = mydata;
+        if (_root.存档系统 === exactAttempt.owner && String(_root.savePath) === exactAttempt.slot) _root.mydata = mydata;
         try {
             // sv:2 只代表 SharedObject.flush() 已确认成功；false / "pending"
             // 必须投影为失败态，安全退出面板据此禁止 EXIT_CONFIRM。
@@ -1330,6 +1456,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     private function markRuntimeSaveLoaded(source:String):Void {
+        _runtimeSaveSource = source;
         _runtimeSaveLoaded = true;
         _root._saveRuntimeLoaded = true;
         _root._saveRuntimeLoadedAttemptId = _root._bootstrapAttemptId;
@@ -1359,6 +1486,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 对齐 SOL 墓碑（_deleted=true）。不变式 3：launcher tombstone 清除的唯一路径仍是 shadow。
      */
     public function handlePreloadTombstoned(slot:String):Boolean {
+        if (!settingsWriteAllowed()) return false;
         if (_rewardCandidate != null) return false;
         // 不变式 3：launcher tombstone → 对齐 SOL 墓碑，清预取
         // （saveAll → shadow 是 tombstone 唯一安全清除路径；这里不碰 launcher tombstone）
@@ -1384,6 +1512,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function preload():Void {
+        if (!settingsWriteAllowed()) { _root._bootstrapFailed = "settings_recovery_required"; return; }
         if (_rewardCandidate != null) return;
         var sm:ServerManager = ServerManager.getInstance();
         _runtimeSaveLoaded = false;
@@ -1542,6 +1671,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function loadAll():Boolean {
+        if (!settingsWriteAllowed()) return false;
         if (_rewardCandidate != null) return false;
         var sm:ServerManager = ServerManager.getInstance();
         sm.sendServerMessage("[SaveManager.loadAll] savePath=" + _root.savePath);
@@ -1757,6 +1887,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function deleteSlot():Boolean {
+        if (!settingsWriteAllowed()) return false;
         if (_rewardCandidate != null) return false;
         // P3a: 清理预取缓存（防止删档后被内存缓存复活）
         clearPrefetch();
@@ -1939,6 +2070,7 @@ class org.flashNight.neur.Server.SaveManager {
      *   - success=false → 不动 mydata, 留 _repairPending=true (用户可在卡片上重试).
      */
     public function applyRepairResolved(resp:Object):Void {
+        if (!settingsWriteAllowed()) return;
         if (_rewardCandidate != null) return;
         var sm:ServerManager = ServerManager.getInstance();
         if (resp == undefined) {
@@ -2091,6 +2223,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 只采信场景加载完真实主角后发布的 SceneReady。
      */
     public function newCharacter():Boolean {
+        if (!settingsWriteAllowed()) return false;
         if (_rewardCandidate != null) return false;
         if (_root.帧计时器 == undefined
                 || typeof _root.帧计时器.添加单次任务 != "function") {
@@ -2103,6 +2236,9 @@ class org.flashNight.neur.Server.SaveManager {
 
     /** 仅供覆盖过场中的角色切换调用；旧世界和所有写事务必须已经退出。 */
     public function replacePlayerContext(slot:String, snapshot:Object, run:Object):Boolean {
+        if (!settingsWriteAllowed()) return false;
+        var destinationMetadata:Object = _settingsContextBootstraps["slot." + slot];
+        if (settingsProtocolV2() && (destinationMetadata == null || destinationMetadata.writeAdmission != "allowed")) return false;
         if (_rewardCandidate != null || _saveInFlight || PlayerAssetTransaction.current() != null
                 || slot == undefined || slot == "" || slot.length > 128 || sanitizeSlot(slot) !== slot
                 || _root.gameworld._parent != undefined
@@ -2116,6 +2252,11 @@ class org.flashNight.neur.Server.SaveManager {
         // G2-3②：只有真正换槽位才刷新终端绑定与任务目录；play/return/失败恢复的同槽位重入天然跳过。
         var previousSlot:String = _root.savePath == undefined ? "" : String(_root.savePath);
         _root.savePath = slot;
+        if (settingsProtocolV2()) {
+            _settingsBootstrap = destinationMetadata;
+            _settingsAuthority = null; _settingsFlushAttempt = null; _settingsPackedProjection = null; _settingsPackedReceipt = null;
+            _runtimeSaveLoaded = false; _runtimeSaveSource = undefined;
+        }
         _root.转场景数据 = [0, 0, "空手"];
         _root.转场景记录数据第一次记录 = false;
         _root.新出生 = true;
@@ -2163,6 +2304,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 表示沿用旧时间轴已经写入 _root 的外观字段。
      */
     public function prepareNewCharacter(initialState:Object, reservationOwner:String):Object {
+        if (!settingsWriteAllowed()) return {success:false, error:"settings_recovery_required"};
         if (_rewardCandidate != null) return {success:false, error:"reward_commit_pending"};
         var reservation:Object = reserveNewCharacterTutorial(reservationOwner);
         if (!reservation.success) return reservation;
@@ -2416,13 +2558,21 @@ class org.flashNight.neur.Server.SaveManager {
      * 注意：mydata.lastSaved / mydata.version 必须每次都更新（不可分块跳过）。
      */
     public function packGameState():Object {
+        var settingsProjection:Object;
+        var settingsReceipt:Object;
+        if (settingsProtocolV2()) {
+            if (!captureSettingsAuthority()) throw new Error("settings_authority_unavailable");
+            settingsProjection = getSettingsAuthority().projection();
+            settingsReceipt = getSettingsAuthority().freezeReceipt(settingsProjection);
+        }
         savePhysicalStats().packGameState++;
         _root.身价 = _root.基础身价值 * _root.等级;
 
         var 主角储存数据:Array = [
             _root.角色名, _root.性别, _root.金钱, _root.等级, _root.经验值,
             _root.身高, _root.技能点数, _root.玩家称号, _root.身价, _root.虚拟币,
-            _root.键值设定, _root.difficultyMode, _root.佣兵是否出战信息, _root.easterEgg
+            settingsProtocolV2() ? org.flashNight.gesh.object.PersistedSnapshot.cloneData(settingsProjection.keys) : _root.键值设定,
+            _root.difficultyMode, _root.佣兵是否出战信息, _root.easterEgg
         ];
 
         var 装备储存数据:Array = [
@@ -2454,7 +2604,7 @@ class org.flashNight.neur.Server.SaveManager {
         }
 
         var 其他存储数据:Object = {
-            设置: packSettings(),
+            设置: settingsProtocolV2() ? org.flashNight.gesh.object.PersistedSnapshot.cloneData(settingsProjection.settings) : packSettings(),
             击杀统计: _root.killStats,
             物品来源缓存: ItemObtainIndex.getInstance().exportToSave()
         };
@@ -2502,7 +2652,12 @@ class org.flashNight.neur.Server.SaveManager {
             trace("[SaveManager.packGameState] drugLoadout preserved: "
                 + String(packedDrugFeature.error));
         }
-        mydata.ext = _root._saveExt;
+        mydata.ext = settingsProtocolV2() ? org.flashNight.gesh.object.PersistedSnapshot.cloneData(_root._saveExt) : _root._saveExt;
+        if (settingsProtocolV2()) {
+            _settingsPackedProjection = settingsProjection;
+            _settingsPackedReceipt = settingsReceipt;
+            if (settingsReceipt != null) mydata.ext.settingsReceipt = org.flashNight.gesh.object.PersistedSnapshot.cloneData(settingsReceipt);
+        }
         mydata.reserved = {};
 
         return mydata;
@@ -2599,6 +2754,7 @@ class org.flashNight.neur.Server.SaveManager {
      * loadAll 的 JSON 分支不调用此方法，而是用 _applyCore + SO 覆盖 + 副作用。
      */
     public function loadFromMydata(mydata:Object, source:String):Boolean {
+        if (!settingsWriteAllowed()) return false;
         if (_rewardCandidate != null) return false;
         var sm:ServerManager = ServerManager.getInstance();
 
@@ -2869,6 +3025,7 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 商城即时写入 ====================
 
     public function saveShopCart():Void {
+        if (!settingsWriteAllowed()) return;
         if (_rewardCandidate != null) return;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
@@ -2879,6 +3036,8 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function loadShopCart():Void {
+        if (!settingsWriteAllowed()) return;
+        if (_rewardCandidate != null) return;
         var soData:Object = getSO().data;
         var nestedShop:Object = (soData[SAVE_KEY] != undefined) ? soData[SAVE_KEY].shop : undefined;
         _root.商城购物车 = preferListLayer(soData.商城购物车,
@@ -2887,6 +3046,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function saveShopPurchased():Void {
+        if (!settingsWriteAllowed()) return;
         if (_rewardCandidate != null) return;
         var so:SharedObject = getSO();
         var soData:Object = so.data;
@@ -2897,6 +3057,8 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function loadShopPurchased():Void {
+        if (!settingsWriteAllowed()) return;
+        if (_rewardCandidate != null) return;
         var soData:Object = getSO().data;
         var nestedShop:Object = (soData[SAVE_KEY] != undefined) ? soData[SAVE_KEY].shop : undefined;
         _root.商城已购买物品 = preferListLayer(soData.商城已购买物品,
@@ -2913,6 +3075,7 @@ class org.flashNight.neur.Server.SaveManager {
      * 不得被当作"已请求存盘"或"已 durable"。
      */
     public function markDirty():Void {
+        _dirtyGeneration++;
         saveApiStats().ingress.markDirty++;
         recordSaveApiTrace("markDirty", null, "set");
         _dirtyMark = true;
@@ -3225,6 +3388,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function migrateAndSync(mydata:Object, soData:Object):Void {
+        if (!settingsWriteAllowed()) return;
         if (_rewardCandidate != null) return;
         migrate(mydata, soData);
         if (_drugLoadoutSchemaRejected) {
@@ -3236,6 +3400,7 @@ class org.flashNight.neur.Server.SaveManager {
     }
 
     public function syncTopLevelFromMydata(mydata:Object, soData:Object):Void {
+        if (!settingsWriteAllowed()) return;
         if (_rewardCandidate != null) return;
         if (mydata == undefined) return;
         if (mydata.tasks != undefined) {
@@ -3405,6 +3570,13 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== 设置/初始化 ====================
 
     public function packSettings():Object {
+        if (settingsProtocolV2()) {
+            if (!captureSettingsAuthority()) throw new Error("settings_authority_unavailable");
+            return getSettingsAuthority().projection().settings;
+        }
+        return ReadRuntimeSettingsRaw();
+    }
+    public function ReadRuntimeSettingsRaw():Object {
         var ws:WeatherSystem = WeatherSystem.getInstance();
         var sem:Object = _root.soundEffectManager;
         return {
@@ -3486,7 +3658,8 @@ class org.flashNight.neur.Server.SaveManager {
     // ==================== SO 访问 ====================
 
     public function getSOData():Object {
-        return getSO().data;
+        var data:Object = getSO().data;
+        return settingsWriteAllowed() && _rewardCandidate == null ? data : org.flashNight.gesh.object.PersistedSnapshot.cloneData(data);
     }
 
     // ==================== Shadow 推送 ====================
@@ -3565,6 +3738,9 @@ class org.flashNight.neur.Server.SaveManager {
     // lane 闭集：full / shop_partial / delete_tombstone / preload_tombstone / read_migration。
     // lane 只增不改：物理八分桶 flushAttempt/flushSuccess/flushPending/flushFalse 原样累计。
     private function flushSO(so:SharedObject, lane:String):Boolean {
+        var exactAttempt:Object = lane == "full" && _fullSaveAttempt != null && _fullSaveAttempt.so === so ? _fullSaveAttempt : null;
+        var exactSettings:Object = exactAttempt == null ? null : exactAttempt.settings;
+        var exactReward:Object = _rewardCandidate;
         var stats:Object = savePhysicalStats();
         stats.flushAttempt++;
         var laneStats:Object = saveApiStats().flushLane[lane];
@@ -3581,7 +3757,18 @@ class org.flashNight.neur.Server.SaveManager {
         var result:Object = _flushResultOverrideForTests !== undefined
             ? _flushResultOverrideForTests
             : so.flush();
-        if (_rewardCandidate != null) _rewardPhysicalResult = result;
+        // raw true 的锁存前不得读取统计、日志、getter 或调用通知。
+        if (result === true && exactAttempt != null) exactAttempt.rawConfirmed = true;
+        if (result === true && exactSettings != null) exactSettings.rawConfirmed = true;
+        if (exactReward != null && exactReward === _rewardCandidate) {
+            if (_rewardPhysicalResult !== true) _rewardPhysicalResult = result;
+            if (result === true) exactReward.phase = "confirmed";
+        }
+        if (result === true && exactSettings != null) {
+            try { exactSettings.authority.confirmPacked(exactSettings.projection, exactSettings.receipt); }
+            catch (settingsConfirmError) { trace("[SaveManager] settings confirmation bookkeeping failed"); }
+        }
+        try {
         if (result === true) {
             stats.flushSuccess++;
             laneStats.success++;
@@ -3598,7 +3785,24 @@ class org.flashNight.neur.Server.SaveManager {
             ? "SaveManager: flush pending (awaiting user authorization) for "
             : "SaveManager: flush failed (result=" + result + ") for ";
         ServerManager.getInstance().sendServerMessage(msg + _root.savePath);
-        return false;
+        } catch (statsOrNoticeError) { trace("[SaveManager] post-flush diagnostics failed"); }
+        return result === true;
+    }
+
+    private function settleConfirmedSave(attempt:Object):Void {
+        if (attempt == null || attempt.rawConfirmed !== true || attempt.owner !== _root.存档系统
+                || attempt.slot !== String(_root.savePath) || attempt.role !== String(_root.角色名)
+                || attempt.generation !== _dirtyGeneration) return;
+        if (attempt.settings != null && (attempt.settings.authority !== _settingsAuthority
+                || attempt.settings.projection.stateToken !== _settingsAuthority.stateToken())) return;
+        _dirtyMark = false;
+        try { _root.存档系统.dirtyMark = false; } catch (dirtyCleanupError) {}
+        try { _root.存盘标志 = 1; } catch (saveFlagError) {}
+        _settingsMigrationPending = false;
+        _drugLoadoutMigrationPending = false;
+        _rewardInboxMigrationPending = false;
+        try { KeyManager.clearPendingKeySettingsMigration(); } catch (keyCleanupError) {}
+        try { _absorbPendingRequest(); } catch (pendingCleanupError) {}
     }
 
     private function ensureShopNode(soData:Object):Object {

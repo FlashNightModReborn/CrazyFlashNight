@@ -34,6 +34,7 @@
     var _pendingReq = {};
     var _reqSeq = 0;
     var _session = 0;
+    var _closePanelInstanceId = '';
     var _busy = false;
     var _iconsReady = false;
     var _cssLink = null;
@@ -352,6 +353,7 @@
     // 生命周期
     // ═══════════════════════════════════════════════════════════
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         _session++;
         try { _dialogueMode = localStorage.getItem('cf7.dialogueMode') === 'brief' ? 'brief' : 'rich'; }
         catch (dialoguePreferenceError) { _dialogueMode = 'rich'; }
@@ -495,12 +497,12 @@
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭（dispatch 关闭钮/ESC 同走此口）
         hideTip();
         Panels.close();
-        Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+        Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', panelInstanceId: _closePanelInstanceId });
     }
 
     function closeForStageEnter() {
         Panels.close();
-        Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', dismissReturnStack: true });
+        Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', panelInstanceId: _closePanelInstanceId, dismissReturnStack: true });
     }
 
     function onClose() {
@@ -774,7 +776,7 @@
                 // （玩家看不到也无法消解奖励弹窗）。关面板把它们露出来（closePanel 语义同前往交付 / 地图 navigate）。
                 hideTip();
                 Panels.close();
-                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', panelInstanceId: _closePanelInstanceId });
             } else {
                 toast(writeErrorMsg('交付失败', data), 'error');
                 // 失败也消费刷新后的 tasks：任务未 splice 时 applyWriteSnapshot 按 taskId 原位保留选中，
@@ -800,7 +802,7 @@
                 // 跳转已在游戏内发起（closePanel 语义同地图面板 navigate）→ 关闭任务面板
                 hideTip();
                 Panels.close();
-                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', panelInstanceId: _closePanelInstanceId });
             } else {
                 var msg = '无法前往交付NPC';
                 if (data && data.error === 'not_navigable') msg = '地点或人物条件尚未满足，请刷新任务详情';
@@ -1761,7 +1763,7 @@
                 if (window.BootstrapAudio) window.BootstrapAudio.cue('success');
                 // 进图成功：AS2 已扣费+AddTask+触发场景淡出跳转，关面板交还 Flash
                 Panels.close();
-                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close' });
+                Bridge.send({ type: 'panel', panel: 'tasks', cmd: 'close', panelInstanceId: _closePanelInstanceId });
                 return;
             }
             var err = (data && data.error) || 'unknown';

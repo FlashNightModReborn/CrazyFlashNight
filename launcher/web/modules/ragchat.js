@@ -18,6 +18,7 @@
   var root = null;
   var statusEl = null;
   var disposers = [];
+  var _closePanelInstanceId = '';
 
   Panels.register('ragchat', {
     create: createDOM,
@@ -33,7 +34,7 @@
   function closeTerminal() {
     if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
     try { Panels.close(); } catch (e) {}
-    Bridge.send({ type: 'panel', cmd: 'close', panel: 'ragchat' });
+    Bridge.send({ type: 'panel', cmd: 'close', panel: 'ragchat', panelInstanceId: _closePanelInstanceId });
   }
 
   function listen(node, event, fn) {
@@ -63,6 +64,7 @@
   }
 
   function onOpen(element, data) {
+    _closePanelInstanceId = data && typeof data.panelInstanceId === 'string' ? data.panelInstanceId : '';
     root = element;
     root.innerHTML =
       '<div class="ragchat-stage">' +

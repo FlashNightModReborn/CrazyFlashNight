@@ -112,6 +112,18 @@ namespace CF7Launcher.Save
             return null;
         }
 
+        // Settings recovery cannot select a historical namespace by probe preference.
+        // Only a unique direct hit for this exact SWF/projector root is admissible.
+        internal string FindUnambiguousRawSol(string slot,string swfPath)
+        {
+            if(!SaveSlotKey.IsValidExisting(slot) || string.IsNullOrEmpty(swfPath))return null;
+            var matches=new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach(var hash in EnumerateHashDirs() ?? Array.Empty<string>())
+                foreach(var probe in BuildDirectProbes(hash,swfPath,SanitizeSlot(slot)+".sol"))
+                    if(File.Exists(probe.Path))matches.Add(Path.GetFullPath(probe.Path));
+            return matches.Count==1 ? new List<string>(matches)[0] : null;
+        }
+
         public int DeleteAllSolFiles(string slot, string swfPath)
         {
             HashSet<string> candidates = CollectSolCandidates(slot, swfPath);

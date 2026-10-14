@@ -10,7 +10,7 @@
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
-    var COMMAND = /^(snapshot|preview|apply|cancel|save|cheat|return_base|try_revive|host_set|hit_number_ledger)$/;
+    var COMMAND = /^(snapshot|preview|apply|cancel|save|reconcile|cheat|return_base|try_revive|host_set|hit_number_ledger)$/;
     var CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f]/;
     var PERFORMANCE_HEIGHTS = [0,360,540,720,900,1080,1440,2160];
     var KEY_IDS = [
@@ -24,9 +24,9 @@
     ];
 
     function copy(value) { return JSON.parse(JSON.stringify(value)); }
-    function validOpaque(value) { return /^[A-Za-z0-9._~-]{1,160}$/.test(String(value || '')); }
+    function validOpaque(value) { return typeof value==='string' && value.length>0 && value.length<=160 && !/[^A-Za-z0-9._~-]/.test(value); }
     function requiresAuthorityReconcile(cmd) {
-        return cmd !== 'snapshot' && cmd !== 'preview' && cmd !== 'hit_number_ledger';
+        return cmd !== 'snapshot' && cmd !== 'preview' && cmd !== 'reconcile' && cmd !== 'hit_number_ledger';
     }
     function integer(value, min, max) {
         return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
@@ -121,6 +121,20 @@
                     && data.panelInstanceId === entry.session.panelInstanceId;
             },
             transformResponse:function(data, entry) {
+                if (data.v === 2) {
+                    var authority = parseAuthority(data);
+                    if (authority) {
+                        var flat = data.snapshot ? copy(data.snapshot) : {};
+                        Object.keys(data).forEach(function(key) { flat[key] = data[key]; });
+                        if (authority.state) { flat.revision=authority.state.revision;flat.migrationPending=authority.state.migrationPending; }
+                        flat.applied=authority.outcome.applied;flat.durable=authority.outcome.durable;
+                        flat.error=data.error || authority.outcome.error;flat.authorityFacts=authority;
+                        return flat;
+                    }
+                    return {type:'panel_resp',panel:'settings',domain:'settings',cmd:entry.cmd,callId:entry.callId,
+                        panelInstanceId:entry.session.panelInstanceId,success:false,error:'malformed_response',
+                        requiresReconcile:requiresAuthorityReconcile(entry.cmd),clientSynthetic:true};
+                }
                 if (typeof data.success === 'boolean') return data;
                 return {type:'panel_resp', panel:'settings', domain:'settings', cmd:entry.cmd,
                     callId:entry.callId, panelInstanceId:entry.session.panelInstanceId,
@@ -216,10 +230,84 @@
         return {valid:true, error:'', indexes:[]};
     }
 
+    function parseAuthority(response) {
+        if (!response || response.v!==2 || !validOpaque(response.contextId) || !validOpaque(response.saveOwnerId)
+            || !validOpaque(response.authorityEpoch) || typeof response.success!=='boolean' || typeof response.requiresReconcile!=='boolean'
+            || ['allowed','blocked_by_operation','blocked_by_metadata','blocked_by_context'].indexOf(response.writeAdmission)<0
+            || !Array.isArray(response.warnings) || !response.outcome) return null;
+        var state=response.state, out=response.outcome;
+        if (['none','not_applied','applied','unknown'].indexOf(out.applyState)<0 || typeof out.durable!=='boolean'
+            || ['none','not_sent','in_flight','returned_unconfirmed','confirmed','unknown'].indexOf(out.attemptState)<0
+            || ['none','flush_true','cold_read_exact','cold_read_current'].indexOf(out.confirmation)<0
+            || ['none','applied','not_applied','unresolved'].indexOf(out.resolution)<0
+            || (out.error!==null && typeof out.error!=='string')) return null;
+        if (out.applyState==='applied' ? out.applied!==true : out.applyState==='not_applied' ? out.applied!==false : out.applied!==null) return null;
+        if (out.applyState==='none') {
+            if (out.operationToken!==null || out.targetStateToken!==null || out.saveAttemptId!==null || out.sourceAuthorityEpoch!==null
+                || out.originMutationRequestDigest!==null || out.durable || out.attemptState!=='none' || out.confirmation!=='none') return null;
+        } else if (!validOpaque(out.operationToken) || !validOpaque(out.targetStateToken) || !validOpaque(out.saveAttemptId)
+            || !validOpaque(out.sourceAuthorityEpoch) || !/^[0-9a-f]{64}$/.test(out.originMutationRequestDigest || '')) return null;
+        if (out.durable ? (out.applyState!=='applied' || ['confirmed','not_sent'].indexOf(out.attemptState)<0 || out.confirmation==='none')
+            : (out.attemptState==='confirmed' || out.confirmation!=='none')) return null;
+        if (out.applyState==='unknown' && (out.durable || out.resolution!=='unresolved')
+            || out.applyState==='not_applied' && (out.resolution!=='not_applied' || ['none','not_sent'].indexOf(out.attemptState)<0)
+            || out.applyState==='applied' && out.resolution!=='applied') return null;
+        if (state!==null && (!state || !integer(state.revision,0,9007199254740991) || !validOpaque(state.stateToken)
+            || typeof state.durable!=='boolean' || typeof state.needsSaveRetry!=='boolean' || typeof state.migrationPending!=='boolean'
+            || ['confirmed','unconfirmed','unknown'].indexOf(state.persistenceState)<0
+            || ['none','flush_true','cold_read_exact','cold_read_current'].indexOf(state.confirmation)<0
+            || state.durable!==(state.persistenceState==='confirmed') || state.durable===(state.confirmation==='none'))) return null;
+        if (state===null && (response.snapshot!==null || response.warnings.indexOf('current_authority_unavailable')<0)) return null;
+        if (state && ((response.requiresReconcile || response.writeAdmission!=='allowed') && state.needsSaveRetry
+            || out.applyState!=='none' && state.stateToken===out.targetStateToken && state.durable!==out.durable)) return null;
+        return {contextId:response.contextId,saveOwnerId:response.saveOwnerId,authorityEpoch:response.authorityEpoch,
+            state:copy(state),outcome:copy(out),requiresReconcile:response.requiresReconcile,
+            writeAdmission:response.writeAdmission,warnings:copy(response.warnings),operation:response.operation || response.cmd};
+    }
+    function reduceAuthority(previous, response) {
+        var next=response && (response.authorityFacts || parseAuthority(response));
+        if (!next) {
+            if (previous && response && response.requiresReconcile===true) {
+                next=copy(previous);next.requiresReconcile=true;next.writeAdmission='blocked_by_operation';
+                if(next.state)next.state.needsSaveRetry=false;return next;
+            }
+            return previous;
+        }
+        next=copy(next);
+        var same=previous && previous.contextId===next.contextId && previous.saveOwnerId===next.saveOwnerId
+            && previous.authorityEpoch===next.authorityEpoch;
+        if (same) {
+            if (previous.state && next.state && (next.state.revision<previous.state.revision
+                || next.state.stateToken===previous.state.stateToken && previous.state.durable && !next.state.durable)) next.state=copy(previous.state);
+            if (previous.outcome.durable && previous.outcome.operationToken===next.outcome.operationToken && !next.outcome.durable)
+                next.outcome=copy(previous.outcome);
+            if (next.operation!=='reconcile' && previous.requiresReconcile)next.requiresReconcile=true;
+        }
+        if(next.requiresReconcile && next.state)next.state.needsSaveRetry=false;
+        return next;
+    }
+    function persistenceView(authority) {
+        if (!authority) return {text:'设置已同步；此版本未提供保存确认。',canApply:true,canSave:false,canReconcile:false};
+        var state=authority.state, allowed=authority.writeAdmission==='allowed' && !authority.requiresReconcile;
+        var confirmed=state && state.durable===true;
+        var retry=state && state.needsSaveRetry===true && allowed;
+        var exactKnown=confirmed && authority.outcome.durable && authority.outcome.targetStateToken===state.stateToken;
+        var text=authority.requiresReconcile && !exactKnown ? '上次操作结果尚未核对；请先核对状态。'
+            : confirmed ? (allowed ? '当前设置已保存。' : '设置已保存；状态通知尚未完成。')
+            : retry ? '设置已生效，保存尚未确认；可只重试保存。'
+            : !allowed ? '当前保存入口已锁定；可查看并核对状态。' : '当前设置尚未取得保存确认。';
+        return {text:text,canApply:!!(allowed && state && !state.needsSaveRetry),canSave:!!retry,
+            canReconcile:authority.requiresReconcile || !allowed};
+    }
     function normalizeSnapshot(response) {
+        if (response && response.v===2 && response.snapshot && parseAuthority(response)) {
+            var projected=copy(response.snapshot);projected.v=1;projected.success=true;
+            projected.revision=response.state.revision;projected.migrationPending=response.state.migrationPending;
+            projected.hostPrefs=response.hostPrefs;response=projected;
+        }
         if (!response || response.success !== true || response.v !== 1
             || response.keySchemaVersion !== 2
-            || !integer(response.revision, 0, 2147483647)
+            || !integer(response.revision, 0, 9007199254740991)
             || !response.settings || typeof response.settings !== 'object'
             || !Array.isArray(response.keys) || response.keys.length !== KEY_IDS.length
             || !Array.isArray(response.defaultKeys) || response.defaultKeys.length !== KEY_IDS.length
@@ -281,6 +369,7 @@
     }
 
     return {RequestMux:RequestMux, KEY_IDS:KEY_IDS.slice(), isReservedKey:isReserved,
+        parseAuthority:parseAuthority,reduceAuthority:reduceAuthority,persistenceView:persistenceView,
         validateKeyDraft:validateKeyDraft, validateKeyCandidate:validateKeyCandidate,
         normalizeSnapshot:normalizeSnapshot, normalizeFlashPreview:normalizeFlashPreview,
         normalizePerformanceConfig:normalizePerformanceConfig,

@@ -17,8 +17,11 @@ import org.flashNight.arki.pause.PauseManager;
 class org.flashNight.arki.item.RewardStashServiceTest {
     private static var passed:Number;
     private static var failed:Number;
+    private static var _fixtureNonce:String;
+    private static function fixtureSlot(kind:String):String { return _fixtureNonce + "_" + kind; }
     public static function runAllTests():Boolean {
         passed = 0; failed = 0;
+        _fixtureNonce = _root.__ownedSettingsSolConfig.slot || ("cf7_env_reward_" + new Date().getTime() + "_" + Math.floor(Math.random()*1000000000));
         testSnapshots();
         testStore();
         testSummaryPurity();
@@ -95,12 +98,12 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var material:Object = ItemUtil.materialDict;
         var information:Object = ItemUtil.informationMaxValueDict;
         var sm:SaveManager = SaveManager.getInstance();
-        var slot:String = "CF7_RewardStash_Integration_Test";
+        var slot:String = fixtureSlot("integration");
         var so:SharedObject = SharedObject.getLocal(slot); so.clear();
         _root.savePath = slot; _root.允许存档 = true; _root.角色名 = "StashIntegration";
         _root.等级 = 1; _root.基础身价值 = 1000; _root.金钱 = 0; _root.虚拟币 = 0;
         _root.经验值 = 0; _root.技能点数 = 0; _root.商城已购买物品 = [];
-        _root.存档系统 = {dirtyMark:false}; _root._saveExt = {}; _root.主角被动技能 = {};
+        _root.存档系统 = {dirtyMark:false}; _root._saveExt = {retained:{__future:{value:7}}}; _root.主角被动技能 = {};
         _root.UpdateTaskProgress = function():Void {};
         _root.物品栏 = {};
         var containers:Array = ["背包", "药剂栏", "装备栏", "仓库", "战备箱"];
@@ -118,6 +121,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             check(RewardStashService.admit([{name:"暂存测试材料", value:9, lastUpdate:1}], false, true, context), "source admits physical item");
             var done:Object = RewardStashService.end("source.1", {success:true}, "reward.map_stash");
             check(done.success && RewardStashService.peek().entries[0].item.value == 9, "source and stash commit once");
+            check(so.data.test.ext.retained.__future.value == 7,"reward domain preserves unknown serialized extension fields");
             var stash:Object = RewardStashService.peek();
             var take:Object = {storeId:stash.storeId, expectedRevision:stash.commitRevision, operationId:"take.1",
                 entries:[{entryId:stash.entries[0].entryId, revision:stash.entries[0].revision, quantity:4}]};
@@ -131,11 +135,14 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             take = {storeId:stash.storeId, expectedRevision:stash.commitRevision, operationId:"take.false",
                 entries:[{entryId:stash.entries[0].entryId, revision:stash.entries[0].revision, quantity:2}]};
             var fail:Object = RewardStashService.take(take);
-            check(!fail.success && fail.error == "save_not_committed" && RewardStashService.peek().entries[0].item.value == 5,
-                "failed take restores source and destination");
-            check(ItemUtil.contain([{name:"暂存测试材料", value:5}]) == null, "failed take does not leak inventory quantity");
+            check(!fail.success && fail.error == "commit_pending" && RewardStashService.peek().entries[0].item.value == 3,
+                "exposed false take retains one exact applied candidate");
+            check(ItemUtil.contain([{name:"暂存测试材料", value:6}]) != null && RewardStashService.pendingOperationId() == "take.false",
+                "exposed take is paused rather than rolled back");
             sm._configureSaveFlowForTest({flushResult:true});
-            // 地图源从计划到消费分开，false 恢复原规则、true 之后才执行实体结束。
+            check(RewardStashService.resume("take.false").success && RewardStashService.peek().entries[0].item.value == 3,
+                "take confirmation never removes the stock a second time");
+            // 地图源在候选里消费；暴露后只核对同一候选，确认后执行实体结束。
             _root.gameworld = {}; MapChestStashService.beginWorld(_root.gameworld);
             var rule:Object = {名字:"暂存测试材料", 最小数量:2, 最大数量:2, 总数:4};
             var box:Object = {presetName:"装备箱", row:2, col:4, 掉落物:[rule], killedCount:0};
@@ -144,7 +151,8 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             check(plan.success && rule.总数 == 4 && box.掉落物 != null, "map planning does not consume source");
             sm._configureSaveFlowForTest({flushResult:false});
             var no:Object = MapChestStashService.open(box, kill);
-            check(!no.success && box.killedCount == 0 && rule.总数 == 4 && box.掉落物 != null, "map false restores source before retry");
+            check(!no.success && no.error == "commit_pending" && box.killedCount == 0 && rule.总数 == 2 && box.掉落物 == null,
+                "exposed map false retains consumed source without ending entity");
             sm._configureSaveFlowForTest({flushResult:"pending"});
             var undecided:Object = MapChestStashService.open(box, kill);
             check(!undecided.success && undecided.error == "commit_pending" && box.killedCount == 0, "map pending preserves entity and candidate");
@@ -166,7 +174,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
                 sm._configureSaveFlowForTest({flushResult:true}); RewardStashService.resume(RewardStashService.pendingOperationId());
             }
             sm._configureSaveFlowForTest({flushResult:undefined, saveInFlight:false});
-            so.clear(); TaskUtil.tasks = tasksBefore; ItemUseService.setContextValidator(null); ItemUtil.itemDataDict = metadata; ItemUtil.equipmentDict = equipmentMetadata; ItemUtil.materialDict = material; ItemUtil.informationMaxValueDict = information;
+            TaskUtil.tasks = tasksBefore; ItemUseService.setContextValidator(null); ItemUtil.itemDataDict = metadata; ItemUtil.equipmentDict = equipmentMetadata; ItemUtil.materialDict = material; ItemUtil.informationMaxValueDict = information;
             for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = previous[keys[j]];
             RewardInboxService.resetForTests();
         }
@@ -190,15 +198,15 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var token:String = TaskRewardCommit.instanceToken(_root.tasks_to_do[0]);
         var count:Number = RewardStashService.peek().entries.length;
         sm._configureSaveFlowForTest({flushResult:false});
-        check(!TaskRewardCommit.finish(0, token) && _root.tasks_to_do.length == 1 && _root.tasks_finished.length == 0,
-            "task false keeps exact completion and consumption reversible");
-        check(_root.等级 == 1 && _root.经验值 == 0 && _root.技能点数 == 0 && _root.__stashGrowthNotices == 0
-            && RewardStashService.peek().entries.length == count, "task false restores growth and reward stock without notices");
+        check(!TaskRewardCommit.finish(0, token) && _root.tasks_to_do.length == 0 && _root.tasks_finished.length == 1,
+            "exposed task false keeps completion inside original candidate");
+        check(_root.等级 == 3 && _root.经验值 == 35 && _root.技能点数 == 8 && _root.__stashGrowthNotices == 0
+            && RewardStashService.peek().entries.length == count + 1,"exposed task keeps growth without premature notices");
         sm._configureSaveFlowForTest({flushResult:"pending"});
-        token = TaskRewardCommit.instanceToken(_root.tasks_to_do[0]);
         var attempts:Number = sm._getSavePhysicalStatsForTest().flushAttempt;
-        check(!TaskRewardCommit.finish(0, token) && _root._lastTaskFinishError == "commit_pending" && _root.__stashGrowthNotices == 0,
-            "full backpack task can prepare reward overflow and pending growth together");
+        var heldOperation:String = RewardStashService.pendingOperationId();
+        check(!TaskRewardCommit.finish(0, token) && RewardStashService.pendingOperationId() == heldOperation && _root.__stashGrowthNotices == 0,
+            "second task command cannot prepare another candidate");
         check(RewardInboxService.inboxSummary().remainingCount == count && RewardStashService.page(0).total == count,
             "pending badge and page expose committed stock only");
         sm._configureSaveFlowForTest({flushResult:true});
@@ -208,7 +216,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             "task growth is durable before a throwing optional projection");
         check(RewardStashService.peek().entries.length == count + 1 && bag.getItem(0).value.level == 5
             && bag.getItem(0).value.tier == "二阶", "turn-in freed slot receives full equipment and other reward is stashed");
-        check(sm._getSavePhysicalStatsForTest().flushAttempt == attempts + 2 && !TaskRewardCommit.finish(0, token),
+        check(sm._getSavePhysicalStatsForTest().flushAttempt == attempts + 1 && !TaskRewardCommit.finish(0, token),
             "task uses one candidate and one retry without repeat grant");
     }
 
@@ -228,13 +236,13 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var store:Object = RewardStashService.peek();
         var rev:Number = store.commitRevision; var id:String = store.storeId;
         sm._configureSaveFlowForTest({flushResult:false});
-        check(!RewardStashService.migrate("k.false", id, rev).success && _root.商城已购买物品.length == 45
-            && shop.purchasedToken == "k.before" && RewardStashService.peek().entries.length == before,
-            "K migration false restores stock, legacy source and token");
+        check(!RewardStashService.migrate("k.false", id, rev).success && _root.商城已购买物品.length == 5
+            && shop.purchasedToken == "k.before.next" && RewardStashService.peek().entries.length == before + 40,
+            "exposed K migration retains frozen moved rows and token");
         sm._configureSaveFlowForTest({flushResult:true});
-        check(RewardStashService.migrate("k.40", id, rev).success && _root.商城已购买物品.length == 5
+        check(RewardStashService.resume("k.false").success && _root.商城已购买物品.length == 5
             && RewardStashService.peek().entries.length == before + 40, "K migration bounds first commit to forty rows");
-        check(RewardStashService.migrate("k.40", id, rev).success && _root.商城已购买物品.length == 5,
+        check(RewardStashService.migrate("k.false", id, rev).success && _root.商城已购买物品.length == 5,
             "K committed operation replays without consuming next rows");
         check(RewardStashService.migrate("k.5", id, RewardStashService.peek().commitRevision).success
             && RewardStashService.peek().entries.length == before + 45, "K migration drains remaining rows without charging again");
@@ -297,13 +305,24 @@ class org.flashNight.arki.item.RewardStashServiceTest {
             var before:Object = PersistedSnapshot.clone(RewardStashService.peek());
             var req:Object = packRequest("fault."+f,3);
             var materialBefore:Number = _root.收集品栏.材料.getValue("暂存测试材料");
+            var assetsBefore:Object = ItemUtil.capturePlayerAssetSnapshot();
             ItemUseService.setOpenManyFaultForTests(faults[f],1);
             sm._configureSaveFlowForTest({flushResult:faults[f]=="false"?false:true,
                 beforeLocalCommit:faults[f]=="throw"?function():Void {throw new Error("preflush");}:null});
             var result:Object = ItemUseService.execute("stashOpenMany",req);
-            check(!result.success && bag.getItem(20).value == 64 && ObjectUtil.deepEquals(RewardStashService.peek(),before)
-                && RewardStashService.pendingOperationId() == "" && _root.收集品栏.材料.getValue("暂存测试材料") == materialBefore,
-                "v2 pack full rollback including directly admitted materials at "+faults[f]);
+            if (faults[f] == "false" || faults[f] == "throw") {
+                check(!result.success && result.error == "commit_pending" && bag.getItem(20).value == 61
+                    && RewardStashService.pendingOperationId() != "" && _root.收集品栏.材料.getValue("暂存测试材料") == materialBefore + 6,
+                    "exposed pack retains frozen rolls and source consumption at "+faults[f]);
+                sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
+                RewardStashService.resume(RewardStashService.pendingOperationId());
+                // Reset synthetic fixture data after its confirmed operation, for the next independent fault vector.
+                ItemUtil.restorePlayerAssetSnapshot(assetsBefore);_root._saveExt.rewardInbox=before;
+            } else {
+                check(!result.success && bag.getItem(20).value == 64 && ObjectUtil.deepEquals(RewardStashService.peek(),before)
+                    && RewardStashService.pendingOperationId() == "" && _root.收集品栏.材料.getValue("暂存测试材料") == materialBefore,
+                    "unexposed pack rollback including directly admitted materials at "+faults[f]);
+            }
         }
         ItemUseService.setOpenManyFaultForTests("",0);
         sm._configureSaveFlowForTest({flushResult:true,beforeLocalCommit:null});
@@ -341,13 +360,13 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         InventoryPanelService.invalidateExternalSlot("背包",20);
         var gearBefore:Number = RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备");
         sm._configureSaveFlowForTest({flushResult:false});
-        var split:Object = ItemUseService.execute("stashOpenMany", packRequest("packs.split.failed", 2));
-        check(!split.success && bag.getItem(20).name == "暂存测试礼包" && bag.getItem(20).value == 2
-            && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore,
-            "failed full-pack delivery restores consumed slot and stash together");
-        sm._configureSaveFlowForTest({flushResult:true});
         var splitRequest:Object = packRequest("packs.split", 2);
-        split = ItemUseService.execute("stashOpenMany", splitRequest);
+        var split:Object = ItemUseService.execute("stashOpenMany", splitRequest);
+        check(!split.success && split.error == "commit_pending" && bag.getItem(20).name == "暂存测试装备"
+            && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore + 1,
+            "exposed full-pack delivery retains consumed slot and frozen overflow");
+        sm._configureSaveFlowForTest({flushResult:true});
+        split = RewardStashService.resume("packs.split");
         check(split.success && bag.getItem(20).name == "暂存测试装备"
             && RewardStashStore.ownedQuantity(RewardStashService.peek(), "暂存测试装备") == gearBefore + 1,
             "consumed last pack frees a destination and only overflow enters stash");
@@ -379,7 +398,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var keys:Array = ["savePath", "允许存档", "角色名", "等级", "基础身价值", "身价", "存档系统", "mydata", "_saveExt", "暂停", "UpdateTaskProgress"];
         var before:Object = {};
         for (var i:Number = 0; i < keys.length; i++) before[keys[i]] = _root[keys[i]];
-        var slot:String = "CF7_RewardStashFence_Test";
+        var slot:String = fixtureSlot("fence");
         var so:SharedObject = SharedObject.getLocal(slot);
         so.clear(); so.data.proof = "before";
         _root.savePath = slot; _root.允许存档 = true; _root.角色名 = "RewardStashTest";
@@ -388,17 +407,21 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         _root.UpdateTaskProgress = function():Void {};
         sm._configureSaveFlowForTest({saveInFlight:false, flushResult:false});
         check(sm.beginRewardCommit("false", null, null), "candidate admitted before domain write");
-        so.data.proof = "candidate";
-        check(sm.commitRewardCandidate("false", "reward.stash_take") == "not_committed", "definite false classified");
-        check(so.data.proof == "before" && _root.mydata.proof == "root-before" && !sm.hasRewardCommitPending(), "false restores SO and root mydata together");
+        _root._saveExt.marker = "candidate";
+        check(sm.commitRewardCandidate("false", "reward.stash_take") == "pending", "exposed false is unconfirmed");
+        check(so.data.test.ext.marker == "candidate" && sm.hasRewardCommitPending() && !sm.cancelRewardCommit("false"),
+            "false cannot cancel an exposed after image");
+        sm._configureSaveFlowForTest({flushResult:true});
+        check(sm.resolveRewardCommit("false") == "committed","explicitly retry same after image before a new candidate");
+        _root.mydata = {proof:"root-before"};
         sm.beginRewardCommit("restore-image", null, null);
-        so.data.proof = "candidate-retained";
+        _root.mydata = {proof:"prepared-root"};
         var snapshots:Object = PersistedSnapshot;
-        var originalClone:Function = snapshots.clone;
-        snapshots.clone = function(value:Object):Object { throw new Error("synthetic restore allocation failure"); return null; };
+        var originalClone:Function = snapshots.cloneData;
+        snapshots.cloneData = function(value:Object):Object { throw new Error("synthetic restore allocation failure"); return null; };
         var cancelled:Boolean = sm.cancelRewardCommit("restore-image");
-        snapshots.clone = originalClone;
-        check(!cancelled && sm.hasRewardCommitPending() && so.data.proof == "candidate-retained",
+        snapshots.cloneData = originalClone;
+        check(!cancelled && sm.hasRewardCommitPending() && _root.mydata.proof == "prepared-root",
             "failed restore clone preserves SO data and keeps the candidate frozen");
         check(sm.resolveRewardCommit("restore-image") == "not_committed" && so.data.proof == "before"
             && _root.mydata.proof == "root-before" && !sm.hasRewardCommitPending(),
@@ -416,7 +439,6 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         check(sm._getSavePhysicalStatsForTest().packGameState == packed, "pending resolution never repacks");
         check(_root.暂停 === false, "resolved save restores requested pause value");
         sm._configureSaveFlowForTest({flushResult:undefined, saveInFlight:false});
-        so.clear();
         for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = before[keys[j]];
     }
 
@@ -429,7 +451,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
         var material:Object = ItemUtil.materialDict;
         var information:Object = ItemUtil.informationMaxValueDict;
         var sm:SaveManager = SaveManager.getInstance();
-        var slot:String = "CF7_RewardStash_Target_Test";
+        var slot:String = fixtureSlot("target");
         var so:SharedObject = SharedObject.getLocal(slot); so.clear();
         _root.savePath = slot; _root.允许存档 = true; _root.角色名 = "StashTargetTest";
         _root.等级 = 1; _root.基础身价值 = 1000; _root.金钱 = 0; _root.虚拟币 = 0;
@@ -661,7 +683,7 @@ class org.flashNight.arki.item.RewardStashServiceTest {
                 RewardStashService.resume(RewardStashService.pendingOperationId());
             }
             sm._configureSaveFlowForTest({flushResult:undefined, saveInFlight:false});
-            so.clear(); ItemUseService.setContextValidator(null);
+            ItemUseService.setContextValidator(null);
             ItemUtil.itemDataDict = metadata; ItemUtil.equipmentDict = equipmentMetadata;
             ItemUtil.materialDict = material; ItemUtil.informationMaxValueDict = information;
             for (var j:Number = 0; j < keys.length; j++) _root[keys[j]] = previous[keys[j]];

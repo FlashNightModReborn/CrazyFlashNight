@@ -23,6 +23,7 @@ namespace CF7Launcher.Save
         private readonly IArchiveStateProbe _archive;
         private readonly SolResolver _resolver;
         private readonly string _swfPath;
+        internal Func<string,bool> SettingsWriteAdmission;
 
         public LegacyPresetSlotSeeder(IArchiveStateProbe archive, SolResolver resolver, string swfPath)
         {
@@ -39,6 +40,7 @@ namespace CF7Launcher.Save
 
         public void SeedPresetSlotIfMissing(string slot)
         {
+            if(SettingsWriteAdmission!=null && !SettingsWriteAdmission(slot))return;
             if (!IsPresetSlot(slot) || _archive == null || _resolver == null || string.IsNullOrEmpty(_swfPath))
                 return;
 

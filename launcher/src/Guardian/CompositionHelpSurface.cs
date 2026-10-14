@@ -19,9 +19,8 @@ using Newtonsoft.Json.Linq;
 namespace CF7Launcher.Guardian
 {
     // 只读面板端点身份：面板名、虚拟主机、页面、ready 消息与日志标签。
-    // DelegateCloseToAuthority=true 的面板（intelligence）把页面 close 信封
-    // 经 CloseEnvelopeDelegated 交给既有 Web 关闭权威（返回装备/普通关闭），
-    // surface 本身不直接驱动 Host close；=false（help）沿用 CloseRequested 自闭。
+    // intelligence 经 Host 私有关闭上下文进入既有业务权威；help 也使用同一
+    // exact 关闭事务。页面业务 reason 与 Host 的原生 cause 分开保存。
     internal sealed class CompositionPanelProfile
     {
         internal string PanelName;
@@ -58,7 +57,7 @@ namespace CF7Launcher.Guardian
         };
     }
 
-    internal sealed class CompositionHelpSurface : Form
+    internal sealed partial class CompositionHelpSurface : Form
     {
         private const int WmMouseActivate = 0x0021;
         private const int WmMouseMove = 0x0200;
@@ -78,6 +77,7 @@ namespace CF7Launcher.Guardian
         private readonly string _webRoot;
         private readonly string _profileRoot;
         private readonly bool _transition;
+        private readonly SceneTransitionBackingForm? _transitionBacking;
         private readonly SceneTransitionPresentationPolicy _presentationPolicy = SceneTransitionPresentationPolicy.Interactive;
         private bool _backgroundTransition;
         private readonly CompositionPanelProfile _profile;
@@ -99,10 +99,6 @@ namespace CF7Launcher.Guardian
         private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
         internal string PanelName => _profile.PanelName;
-        internal event Action<string>? CloseRequested;
-        // DelegateCloseToAuthority 面板：物理按键释放后才上抛页面/Host 关闭信封，
-        // 由既有 Web 关闭权威（含返回装备 capability）裁决；surface 不自闭。
-        internal event Action<JObject>? CloseEnvelopeDelegated;
         // DelegateCloseToAuthority 面板的非 close 入站消息（只读查询、panel-toast）。
         internal event Action<JObject>? InboundPanelMessage;
         internal event Action<JObject>? TransitionMessage;
@@ -111,12 +107,16 @@ namespace CF7Launcher.Guardian
 
         internal CompositionHelpSurface(Form owner, string webRoot, string profileRoot,
             CompositionPanelProfile? profile = null, bool transition = false,
-            SceneTransitionPresentationPolicy? presentationPolicy = null)
+            SceneTransitionPresentationPolicy? presentationPolicy = null,
+            SceneTransitionBackingForm? transitionBacking = null)
         {
             _owner = owner ?? throw new ArgumentNullException(nameof(owner));
             _webRoot = webRoot ?? throw new ArgumentNullException(nameof(webRoot));
             _profileRoot = profileRoot ?? throw new ArgumentNullException(nameof(profileRoot));
             _transition = transition;
+            if (transitionBacking != null && !transition)
+                throw new ArgumentException("Only a transition endpoint can bind a transition backing", nameof(transitionBacking));
+            _transitionBacking = transitionBacking;
             _presentationPolicy = transition ? presentationPolicy ?? SceneTransitionPresentationPolicy.Interactive
                 : SceneTransitionPresentationPolicy.Interactive;
             _profile = profile ?? CompositionPanelProfile.Help;
@@ -129,7 +129,6 @@ namespace CF7Launcher.Guardian
             BackColor = Color.Black;
             ClientSizeChanged += (_, _) => SyncViewport();
             VisibleChanged += (_, _) => SyncViewport();
-            _closeTimer.Tick += (_, _) => TryDeliverClose();
         }
 
         protected override bool ShowWithoutActivation => true;
@@ -192,10 +191,10 @@ namespace CF7Launcher.Guardian
                 core.DownloadStarting += (_, args) => args.Cancel = true;
                 core.AddWebResourceRequestedFilter("*", CoreWebView2WebResourceContext.All);
                 core.WebResourceRequested += OnWebResourceRequested;
-                core.ProcessFailed += OnWebProcessFailed;
-                core.WebMessageReceived += OnWebMessage;
-                _web.AcceleratorKeyPressed += OnAcceleratorKey;
                 _readyTcs = new TaskCompletionSource<bool>(TaskCreationOptions.RunContinuationsAsynchronously);
+                _endpointCore=core;
+                if(System.Threading.Interlocked.Increment(ref _controllerGeneration)<=0)throw new InvalidOperationException("Controller generation exhausted");
+                RegisterEndpointCallbacks();
                 core.Navigate(_pageUrl);
                 var ready = _readyTcs.Task;
                 var timeout = Task.Delay(15000);
@@ -247,7 +246,7 @@ namespace CF7Launcher.Guardian
                 {
                     string? instance = message["initData"]?.Value<string>("panelInstanceId");
                     if (string.IsNullOrEmpty(instance)) return false;
-                    _panelInstance = instance;
+                    BindEndpointSession(instance);
                 }
             }
             else if (type == "tutorial_preference_result")
@@ -305,6 +304,10 @@ namespace CF7Launcher.Guardian
         internal void Retire()
         {
             if (_disposed) return;
+            System.Threading.Interlocked.Increment(ref _endpointSessionGeneration);
+            System.Threading.Interlocked.Increment(ref _controllerGeneration);
+            DetachEndpointCallbacks();
+            _pendingHostClose=null;
             unchecked { _prepareVersion++; }
             _ready = false; _active = false; _closePending = false; _committed = Rectangle.Empty;
             _closeTimer.Stop(); _panelInstance = ""; _pressedButtons = 0; _closeEnvelope = null;
@@ -355,8 +358,8 @@ namespace CF7Launcher.Guardian
         internal bool TransitionInputReleased => _pressedButtons == 0
             && (GetAsyncKeyState(0x01) | GetAsyncKeyState(0x02) | GetAsyncKeyState(0x0D) | GetAsyncKeyState(0x20)) >= 0;
 
-        // 当前前台是本窗（含 WebView 内部子窗口）或 owner 及其同进程窗口；
-        // 不按进程名猜测。
+        // 仅本窗、原 owner，或转场构造时绑定且仍由该 owner 持有的可见 backing。
+        // 不把其他同进程窗口当作游戏输入所有者。
         internal bool CanRestoreGameFocus => CaptureGameForeground()!=IntPtr.Zero;
         internal IntPtr CaptureGameForeground()
         {
@@ -365,16 +368,17 @@ namespace CF7Launcher.Guardian
             if (foreground == Handle || GetAncestor(foreground, 2) == Handle) return foreground;
             if (_owner != null && !_owner.IsDisposed
                 && (foreground == _owner.Handle || GetAncestor(foreground, 2) == _owner.Handle)) return foreground;
-            GetWindowThreadProcessId(foreground, out uint pid);
-            return pid == Environment.ProcessId ? foreground : IntPtr.Zero;
+            if (_transition && _transitionBacking != null && !_transitionBacking.IsDisposed
+                && _transitionBacking.IsHandleCreated && _transitionBacking.Visible
+                && ReferenceEquals(_transitionBacking.Owner, _owner)
+                && (foreground == _transitionBacking.Handle
+                    || GetAncestor(foreground, 2) == _transitionBacking.Handle)) return foreground;
+            return IntPtr.Zero;
         }
 
         private bool ForegroundIsSameProcess()
         {
-            IntPtr foreground = GetForegroundWindow();
-            if (foreground == IntPtr.Zero) return false;
-            GetWindowThreadProcessId(foreground, out uint pid);
-            return pid == Environment.ProcessId;
+            return CaptureGameForeground()!=IntPtr.Zero;
         }
 
         private Rectangle DeviceClientRectangle()
@@ -443,6 +447,15 @@ namespace CF7Launcher.Guardian
             JObject message;
             try { message = JObject.Parse(args.WebMessageAsJson); }
             catch { return; }
+            DispatchPanelEnvelope(message);
+        }
+#if CF7_TEST_SEAMS
+        internal void DispatchEnvelopeForRecheck(JObject message)
+            => DispatchPanelEnvelope(message);
+#endif
+        private void DispatchPanelEnvelope(JObject message)
+        {
+            if(message?["type"]?.Type!=JTokenType.String)return;
             string? type = message.Value<string>("type");
             if (type == (_transition ? "scene_transition_ready" : _profile.ReadyMessageType)) {
                 _readyTcs?.TrySetResult(true);
@@ -465,17 +478,18 @@ namespace CF7Launcher.Guardian
             }
             // 页面关闭请求：等物理鼠标键与 ESC 全部释放后才上抛关闭，
             // 避免在按下手势中途触发关闭重入。
-            if (type == "panel" && message.Value<string>("cmd") == "close"
-                && message.Value<string>("panel") == _profile.PanelName
-                && Active && _panelInstance.Length > 0
-                && message.Value<string>("panelInstanceId") == _panelInstance) {
-                RequestClose("page_close", message);
+            if(type=="panel" && message["cmd"]?.Type==JTokenType.String && (string)message["cmd"]=="close") {
+                if(message["panel"]?.Type==JTokenType.String && (string)message["panel"]==_profile.PanelName
+                    && message["panelInstanceId"]?.Type==JTokenType.String && (string)message["panelInstanceId"]==_panelInstance
+                    && Active && _panelInstance.Length>0 && message["nativeCause"]==null && message["hostCloseReason"]==null)
+                    RequestClose("page_close",message);
                 return;
             }
             // 委托面板（intelligence）的其余入站消息：只读查询与 panel-toast，
             // 绑定当前面板名与活跃会话后交给 controller 配置的既有 Web 权威。
             if (_profile.DelegateCloseToAuthority && Active && _panelInstance.Length > 0) {
-                if (type == "panel" && message.Value<string>("panel") == _profile.PanelName)
+                if (type == "panel" && message["panel"]?.Type==JTokenType.String && (string)message["panel"]==_profile.PanelName
+                    && message["cmd"]?.Type==JTokenType.String && IsIntelligenceQuery((string)message["cmd"]))
                     InboundPanelMessage?.Invoke(message);
                 else if (type == "panel-toast" && message["html"]?.Type == JTokenType.String
                     && message.Value<string>("html").Length <= 4096)
@@ -498,7 +512,7 @@ namespace CF7Launcher.Guardian
                 if(p.Value<string>("cmd")=="open") {
                     string instance=p["initData"]?.Value<string>("panelInstanceId");
                     if(string.IsNullOrEmpty(instance) || _panelInstance.Length>0 && _panelInstance!=instance) return false;
-                    _panelInstance=instance;
+                    BindEndpointSession(instance);
                 } else if(p.Value<string>("panelInstanceId")!=_panelInstance || _panelInstance.Length==0) return false;
             } else if(type is "panel_resp" or "scene_transition_report_restore") {
                 if(p.Value<string>("panelInstanceId")!=_panelInstance || _panelInstance.Length==0) return false;
@@ -508,7 +522,7 @@ namespace CF7Launcher.Guardian
             _web.CoreWebView2.PostWebMessageAsJson(json);
             return true;
         }
-        internal void ReleaseSettlementBinding() { if(_transition) _panelInstance=""; }
+        internal void ReleaseSettlementBinding() { if(_transition) { _panelInstance=""; Interlocked.Increment(ref _endpointSessionGeneration); RegisterEndpointCallbacks(); } }
         internal static bool IsSettlementMessage(JObject p,string instance) {
             if(p==null || string.IsNullOrEmpty(instance) || p["panelInstanceId"]?.Type!=JTokenType.String
                 || p.Value<string>("panelInstanceId")!=instance) return false;
@@ -548,16 +562,14 @@ namespace CF7Launcher.Guardian
         protected override void OnDeactivate(EventArgs e)
         {
             base.OnDeactivate(e);
-            // 不用同步 close：Deactivate 期间焦点归属仍在迁移，直接关闭会重入
-            // 激活路径。延迟到消息循环空闲再判定；WebView 内部子窗口取得前台
-            // （其进程不同但 HWND 是本窗后代）不算离开。
-            if (_disposed || IsDisposed || !IsHandleCreated) return;
+            // 普通阅读面板切到其他应用时保留当前会话和阅读位置，与地图一致。
+            // 不关闭、不重开，也不申请焦点；实际捕获丢失和进程故障仍走独立清理。
+            // 只有转场继续在前台归属稳定后抑制显示。
+            if (!_transition || _disposed || IsDisposed || !IsHandleCreated) return;
+            var lease=CaptureEndpointLease();
             BeginInvoke((Action)(() => {
-                if (_disposed || !_active || IsDisposed) return;
-                if (!ForegroundIsOurs()) {
-                    if (_transition) { if (!_backgroundTransition) { Hide(); SyncViewport(); } }
-                    else RequestClose("deactivated");
-                }
+                if (_disposed || !_active || IsDisposed || !IsLeaseCurrent(lease)) return;
+                if (!ForegroundIsOurs() && !_backgroundTransition) { Hide(); SyncViewport(); }
             }));
         }
 
@@ -579,37 +591,12 @@ namespace CF7Launcher.Guardian
             _closePending = true;
             _closeReason = reason;
             _closeEnvelope = envelope;
-            _closeTimer.Start();
-            // Never dispose a controller from inside its synchronous COM callback.
-            BeginInvoke((Action)TryDeliverClose);
+            QueueHostClose(reason,envelope);
         }
 
         private void TryDeliverClose()
         {
-            if (!_closePending || _disposed) return;
-            bool held = (GetAsyncKeyState(0x01) | GetAsyncKeyState(0x02)
-                | GetAsyncKeyState(0x04) | GetAsyncKeyState(VkEscape)) < 0;
-            if (held) return;
-            _closeTimer.Stop();
-            _closePending = false;
-            if (_profile.DelegateCloseToAuthority)
-            {
-                // 页面原信封（含 navigate_character_build reason）优先；
-                // Host 侧原因（esc/deactivated/capture_lost/process_failed）
-                // 合成普通 close 信封，复现旧路径 ESC→panel_esc→页面 close 的效果。
-                JObject envelope = _closeEnvelope ?? new JObject
-                {
-                    ["type"] = "panel",
-                    ["panel"] = _profile.PanelName,
-                    ["cmd"] = "close",
-                    ["panelInstanceId"] = _panelInstance
-                };
-                _closeEnvelope = null;
-                if (envelope.Value<string>("panelInstanceId")?.Length > 0)
-                    CloseEnvelopeDelegated?.Invoke(envelope);
-                return;
-            }
-            CloseRequested?.Invoke(_closeReason);
+            if(_pendingHostClose!=null)DeliverHostClose(_pendingHostClose);
         }
 
         protected override void WndProc(ref Message m)
@@ -647,6 +634,7 @@ namespace CF7Launcher.Guardian
                     bool left = m.Msg is WmLButtonDown or WmLButtonDoubleClick;
                     _pressedButtons |= left ? 1 : 2;
                     _capturedButton = true;
+                    _captureEndpointLease=CaptureEndpointLease();
                     Capture = true;
                     if (_web != null) _web.SendMouseInput(
                         left ? CoreWebView2MouseEventKind.LeftButtonDown : CoreWebView2MouseEventKind.RightButtonDown,
@@ -662,14 +650,17 @@ namespace CF7Launcher.Guardian
                         MouseKeys(m.WParam), 0, MousePoint(m.LParam));
                     _capturedButton = _pressedButtons != 0;
                     if (!_capturedButton) Capture = false;
-                    if (_closePending) BeginInvoke((Action)TryDeliverClose);
+                    if (_closePending) {
+                        var pending=_pendingHostClose;
+                        if(pending!=null)BeginInvoke((Action)(()=>DeliverHostClose(pending)));
+                    }
                     break;
                 case WmMouseWheel:
                     if (_web != null) _web.SendMouseInput(CoreWebView2MouseEventKind.Wheel,
                         MouseKeys(m.WParam), WheelDelta(m.WParam), PointToClient(MousePosition));
                     break;
                 case WmCaptureChanged:
-                    if (_capturedButton && !Capture) {
+                    if (_capturedButton && !Capture && IsLeaseCurrent(_captureEndpointLease)) {
                         // 捕获被外部夺走：不合成 up，直接请求关闭。
                         _capturedButton = false;
                         RequestClose("capture_lost");
@@ -715,6 +706,8 @@ namespace CF7Launcher.Guardian
 
         private void TearDownEndpoint()
         {
+            DetachEndpointCallbacks();
+            _endpointCore=null;
             _presentedViewport = _postedViewport = Rectangle.Empty;
             _postedViewportGeneration = -1;
             if (_web != null) {
@@ -763,7 +756,17 @@ namespace CF7Launcher.Guardian
         }
 
         [DllImport("user32.dll")] private static extern bool TrackMouseEvent(ref TRACKMOUSEEVENT value);
-        [DllImport("user32.dll")] private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll", EntryPoint="GetForegroundWindow")] private static extern IntPtr NativeGetForegroundWindow();
+#if CF7_TEST_SEAMS
+        internal Func<IntPtr>? ForegroundReaderForRecheck;
+#endif
+        private IntPtr GetForegroundWindow()
+        {
+#if CF7_TEST_SEAMS
+            if (ForegroundReaderForRecheck != null) return ForegroundReaderForRecheck();
+#endif
+            return NativeGetForegroundWindow();
+        }
         [DllImport("user32.dll")] private static extern IntPtr GetAncestor(IntPtr hwnd, uint flags);
         [DllImport("user32.dll")] private static extern uint GetWindowThreadProcessId(IntPtr hwnd, out uint pid);
         [DllImport("user32.dll")] private static extern short GetAsyncKeyState(int key);

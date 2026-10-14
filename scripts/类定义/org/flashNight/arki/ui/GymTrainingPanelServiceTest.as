@@ -17,6 +17,7 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
             testPendingSaveOnlyRetriesSave();
             testOtherStationsAndContext();
             testLiveAttributeProjection();
+            testNotificationSaveExceptionsAndOwnerReceipts();
         } catch (error:Error) {
             failed++;
             trace("[FAIL] GymTraining: unexpected exception: " + error.message);
@@ -404,6 +405,42 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         check(actor.空手攻击力 == beforeAttack + 6 && _root.__gymBuffSync == 7,
             "duplicate receipts never reproject live stats");
         actor.removeMovieClip();
+    }
+
+    private static function testNotificationSaveExceptionsAndOwnerReceipts():Void {
+        setup();
+        var running:Object = start(open("dummy"), "dummy.0");
+        GymTrainingPanelService._setNowForTests(11000);
+        _root.记录玩家货币变化 = function():Void { _root.__gymFeed++;throw new Error("owned notification failure"); };
+        var done:Object = invoke("finish",running.sessionToken);
+        check(done.saved && _root.__gymFlush == 1 && _root.__gymFeed == 1 && _root.金钱 == 4940000,
+            "currency notification failure still reaches training save");
+        invoke("finish",running.sessionToken);
+        check(_root.__gymFlush == 1 && _root.__gymFeed == 1,"duplicate after notification failure cannot repeat business");
+        _root.存档系统 = {markDirty:function():Void {},flushDurableNow:function():Boolean {return true;}};
+        check(invoke("query",running.sessionToken).error == "context_changed","same slot replacement owner rejects old training receipt");
+        setup();running = start(open("dummy"),"dummy.0");GymTrainingPanelService._setNowForTests(11000);
+        _root.存档系统.flushDurableNow = function():Boolean { _root.__gymFlush++;throw new Error("owned save failure");return false; };
+        done = invoke("finish",running.sessionToken);
+        check(done.phase == "save_pending" && _root.金钱 == 4940000 && _root.全局健身空攻加成 == 3,
+            "training save exception keeps applied authority");
+        _root.存档系统.flushDurableNow = function():Boolean { _root.__gymFlush++;return true; };
+        done = invoke("retrySave",running.sessionToken);
+        check(done.saved && _root.__gymFlush == 2 && _root.__gymFeed == 1 && _root.金钱 == 4940000
+            && _root.全局健身空攻加成 == 3,"exception retry never reapplies paid training");
+        setup();
+        _root.根据等级得升级所需经验 = function(level):Number {return level == 50 ? 10100 : 1000000000000;};
+        running = start(open("dummy"),"dummy.0");GymTrainingPanelService._setNowForTests(11000);
+        var replacement:Object;
+        var previousProjection:Function = _root.投影已提交任务成长;
+        _root.投影已提交任务成长 = function():Void {
+            replacement = start(open("squat"),"squat.0");throw new Error("owned projection failure after reentry");
+        };
+        done = invoke("finish",running.sessionToken);
+        _root.投影已提交任务成长 = previousProjection;
+        check(done.saved && replacement.phase == "running" && invoke("query",replacement.sessionToken).phase == "running",
+            "projection reentry cannot clear replacement training session");
+        check(invoke("finish",running.sessionToken).saved && _root.__gymFeed == 1,"old projection receipt remains idempotent");
     }
 
     private static function check(value:Boolean, message:String):Void {

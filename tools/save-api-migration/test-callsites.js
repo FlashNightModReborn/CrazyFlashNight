@@ -62,8 +62,8 @@ test('manifest reason 均由 SaveManager 注册，transition 只允许已登记�
     }
   }
   assert.deepEqual(manifest.callsites.filter(c => c.targetApi === 'flushBeforeTransition' || c.reasonId.includes('stage.return_base'))
-    .map(c => c.callsiteId).sort(), ['A1', 'A6', 'B2', 'U6.1', 'U6.2', 'U6.3']);
-  for (const id of ['U6.1', 'U6.2', 'U6.3']) {
+    .map(c => c.callsiteId).sort(), ['A1', 'A6', 'B2', 'U6.1', 'U6.2', 'U6.3', 'U6.4']);
+  for (const id of ['U6.1', 'U6.2', 'U6.3', 'U6.4']) {
     const record = manifest.callsites.find(c => c.callsiteId === id);
     assert.deepEqual(record.reasonId, ['bookshelf.switch']);
     assert.equal(record.returnConsumed, true, id + ': switch must consume the persistence fence result');

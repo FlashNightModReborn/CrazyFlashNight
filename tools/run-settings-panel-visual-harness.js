@@ -598,7 +598,7 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   await page.locator('[data-host-key="introEnabled"]').click();
   await page.waitForFunction(() => {
     const status = document.querySelector('.settings-status');
-    return status && status.textContent.includes('该权威快照早于未决写入终态');
+    return status && status.textContent.includes('写入保持锁定');
   }, {timeout:4000});
   assert.strictEqual(await page.locator('.settings-empty h2').textContent(), '写入状态等待权威核对');
   assert.strictEqual(await page.locator('.settings-empty button').isEnabled(), true);
@@ -610,6 +610,48 @@ async function runViewport(browser, baseUrl, viewport, screenshotDir) {
   assert.deepStrictEqual(failedRequests, []);
   await page.close();
   return 61 + performanceChecked;
+}
+
+async function runAuthorityViewport(browser,url,viewport,screenshotDir) {
+  const page=await browser.newPage({viewport});
+  try {
+    await page.goto(url+'?authority=2');
+    const persist=page.locator('.settings-persistence-status');
+    await page.waitForFunction(()=>document.querySelector('.settings-status[data-state="ready"]'));
+    assert(!(await persist.textContent()).includes('已保存'));
+    const changeVolume=async value=>page.locator('.settings-audio-grid input[type="range"]').first().evaluate((input,n)=> {
+      input.value=String(n);input.dispatchEvent(new Event('input',{bubbles:true}));input.dispatchEvent(new Event('change',{bubbles:true}));
+    },value);
+    await page.evaluate(()=>window.__settingsHarness.setDurable(false));
+    await changeVolume(42);await page.getByRole('button',{name:'应用并保存',exact:true}).click();
+    await page.getByRole('button',{name:'只重试保存',exact:true}).waitFor({state:'visible'});
+    assert((await persist.textContent()).includes('保存尚未确认'));
+    assert(await page.getByRole('button',{name:'应用并保存',exact:true}).isDisabled());
+    await page.evaluate(()=>window.__settingsHarness.reopen());
+    await page.getByRole('button',{name:'只重试保存',exact:true}).waitFor({state:'visible'});
+    await changeVolume(72);await page.evaluate(()=>window.__settingsHarness.setDurable(true));
+    await page.getByRole('button',{name:'只重试保存',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('.settings-persistence-status').textContent==='当前设置已保存。');
+    assert.equal(await page.locator('.settings-audio-grid input[type="range"]').first().inputValue(),'72');
+    assert.equal(await page.evaluate(()=>window.__settingsHarness.model.settings.setGlobalVolume),42);
+    assert.equal(await page.evaluate(()=>window.__settingsHarness.sent.filter(x=>x.cmd==='apply').length),1);
+    await page.evaluate(()=> {window.__settingsHarness.setMetadataBlocked(true);window.__settingsHarness.reopen();});
+    await page.waitForFunction(()=>document.querySelector('.settings-persistence-status').textContent.includes('状态通知尚未完成'));
+    assert(await page.getByRole('button',{name:'应用并保存',exact:true}).isDisabled());
+    await page.evaluate(()=>window.__settingsHarness.setMetadataBlocked(false));
+    await page.getByRole('button',{name:'核对状态',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('.settings-persistence-status').textContent==='当前设置已保存。');
+    await page.waitForFunction(()=>document.querySelector('.settings-status[data-state="ready"]'));
+    await page.evaluate(()=> {window.__settingsHarness.setDurable(false);window.__settingsHarness.dropNextResponse('apply');});
+    await changeVolume(30);await page.getByRole('button',{name:'应用并保存',exact:true}).click();
+    await page.waitForFunction(()=>document.querySelector('.settings-empty h2')?.textContent==='写入状态等待权威核对');
+    assert((await persist.textContent()).includes('尚未核对'));
+    await page.getByRole('button',{name:'核对状态',exact:true}).click();
+    await page.getByRole('button',{name:'只重试保存',exact:true}).waitFor({state:'visible'});
+    assert.equal(await page.evaluate(()=>window.__settingsHarness.sent.filter(x=>x.cmd==='apply').length),2);
+    if(screenshotDir)await page.screenshot({path:path.join(screenshotDir,viewport.width+'x'+viewport.height+'-authority-unconfirmed.png')});
+    return 15;
+  } finally { await page.close(); }
 }
 
 async function main() {
@@ -630,6 +672,9 @@ async function main() {
       const count = await runViewport(browser, url, viewport, screenshotDir);
       passed += count;
       process.stdout.write('[PASS] settings Edge ' + viewport.width + 'x' + viewport.height + ' (' + count + '/' + count + ')\n');
+      const authorityCount=await runAuthorityViewport(browser,url,viewport,screenshotDir);
+      passed+=authorityCount;
+      process.stdout.write('[PASS] settings v2 Edge '+viewport.width+'x'+viewport.height+' ('+authorityCount+'/'+authorityCount+')\n');
     }
   } finally {
     await browser.close();

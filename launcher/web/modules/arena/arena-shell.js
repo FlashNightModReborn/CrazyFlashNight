@@ -15,6 +15,7 @@
     }
 
     var S = ArenaCore.state; // 共享状态（原顶层 var _x）
+    var _closePanelInstanceId = '';
 
 
     // 竞技场模式（顶部 tab 条，视觉对齐战队界面 .team-tab）。
@@ -270,6 +271,7 @@
     // 生命周期
     // ════════════════════════════════════════════════════════════════════════════
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         if (S._scaleHandle) S._scaleHandle.detach();
         S._scaleHandle = (typeof PanelScale !== 'undefined') ? PanelScale.attach(S._shellEl, 1024, 576) : null;
         if (S._density && typeof Workbench !== 'undefined' && Workbench.ItemGrid) {
@@ -343,7 +345,7 @@
     function requestClose(options) {
         if (S._busy) return;
         Panels.close();
-        var msg = { type: 'panel', panel: 'arena', cmd: 'close' };
+        var msg = { type: 'panel', panel: 'arena', cmd: 'close', panelInstanceId: _closePanelInstanceId };
         if (options && options.dismissReturnStack) msg.dismissReturnStack = true;
         if (options && options.returnBase) msg.returnBase = true;
         Bridge.send(msg);

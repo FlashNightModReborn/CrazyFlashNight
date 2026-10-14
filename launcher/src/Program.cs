@@ -1686,6 +1686,8 @@ class Program
         // 实际 form.BindWindowManager / perfEngine.SetActivationState / OnKillFlash 还在后面统一装配。
         WindowManager windowManager = new WindowManager(allowForeground: workerPolicy == null);
         Func<bool> compositionHelpOwnsInput = () => false;
+        Func<bool> gameOwnsInput = () => true;
+        SettingsTask settingsInputAuthority = null;
         WebOverlayForm webOverlay;
         using (PerfTrace.Scope("web_overlay.construct"))
         {
@@ -1694,7 +1696,7 @@ class Program
             // 带 AttachThreadInput 兜底 + 前后 fg/pid 日志 + 校验，统一替代散落的裸 SetForegroundWindow。
             Func<string, bool> flashFocusRestorer = delegate(string reason)
             {
-                return !compositionHelpOwnsInput() && windowManager.RestoreFlashInputFocus(reason);
+                return gameOwnsInput() && windowManager.RestoreFlashInputFocus(reason, () => gameOwnsInput());
             };
             webOverlay = new WebOverlayForm(form, form.FlashHostPanel, webDir, projectRoot,
                 workerPolicy != null || config.WebOverlayLowEffects,
@@ -1711,7 +1713,7 @@ class Program
         }
         StartupDiagnostics.Mark("web_overlay.construct_ok");
         webOverlay.IdleFlashFocusRestorer = eligible => windowManager.RestoreFlashInputFocus(
-            "app_reactivated_idle", () => !compositionHelpOwnsInput() && eligible());
+            "app_reactivated_idle", () => gameOwnsInput() && eligible());
         CF7Launcher.Guardian.Hud.INativeCursor cursorOverlay = null;
         if (workerPolicy == null && config.NativeCursorOverlayEnabled)
         {
@@ -1932,11 +1934,18 @@ class Program
                 inputShield, hnOverlay, cursorOverlay, form.GetPanelEscapeSource(), flashHwndProvider,
                 panelHudCompanion);
             compositionHelpOwnsInput = () => panelHost.CompositionHelpOwnsInput;
+            gameOwnsInput = () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready" && panelHost.GameOwnsInput
+                && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false);
+            panelHost.NativeInputOwnerPresent=form.HasNativeEditFocus;
+            panelHost.ConfigureCloseFocus(windowManager,()=>!form.IsShutdownAdmissionClosed && launchFlow?.CurrentState=="Ready"
+                && !(settingsInputAuthority?.HasUnresolvedAuthority ?? false));
+            form.GameInputOwnerEligible = () => gameOwnsInput();
+            form.BindPanelEscapeCapture(panelHost.CaptureNativeEscapeAction);
             // Accepted help endpoint is now the normal path in both formal and dev runtimes.
             panelHost.ConfigureCompositionHelp(webDir,
                 Path.Combine(projectRoot, "tmp", "unified-live-entry", "web-profile"),
                 form.HandlePanelStateChanged,
-                reason => windowManager.RestoreFlashInputFocus(reason),
+                reason => gameOwnsInput() && windowManager.RestoreFlashInputFocus(reason, () => gameOwnsInput()),
                 deferPrewarm: form.BootstrapPanel != null);
             if (form.BootstrapPanel != null)
                 form.BootstrapPanel.InitialNavigationCompleted += () =>
@@ -2135,7 +2144,7 @@ class Program
             message => toastSink.AddMessage(message), projectRoot,
             () => launchFlow != null && (launchFlow.CurrentState == "Embedding"
                 || launchFlow.CurrentState == "WaitingGameReady" || launchFlow.CurrentState == "Ready"),
-            windowManager.SetFlashRenderHeight, () => windowManager.RestoreFlashInputFocus("world_pointer"),
+            windowManager.SetFlashRenderHeight, () => { if(gameOwnsInput())windowManager.RestoreFlashInputFocus("world_pointer", () => gameOwnsInput()); },
             bulletCatalog:bulletVisualCatalog,combatFxCatalog:combatFxCatalog,overlays:worldOverlays,
             opaqueHudEnabled:workerPolicy==null && playerInfoFixtureCase==null);
         hnOverlay.SetSharedPresentation(worldCompositor.DamagePresentation);
@@ -2179,11 +2188,12 @@ class Program
             wire => socketServer.IsClientReady && socketServer.TrySend(wire),
             () => !form.IsShutdownAdmissionClosed && launchFlow?.CurrentState == "Ready",
             worldCompositor.IsTransitionScenePresented,
-            foreground => windowManager.HandoffFlashFocusBeforePanelHide("scene_transition:before_hide",foreground),
-            worldOverlays, worldCompositor.HoldTransitionInput,
+            foreground => panelHost!=null && panelHost.HandoffTransitionToGame(windowManager,foreground),
+            worldOverlays, held => { panelHost?.SetTransitionInputHeld(held); worldCompositor.HoldTransitionInput(held); },
             presentationPolicy:workerPolicy==null ? SceneTransitionPresentationPolicy.Interactive
                 : SceneTransitionPresentationPolicy.ArenaWorker);
         // The returned character may render below the still-visible bookshelf.
+        sceneTransition.ConfigurePresentationFence(worldCompositor.RequireFreshTransitionFrame);
         // Repair its order in the same UI callback that shows the world HWND.
         worldCompositor.PresentationShown += sceneTransition.RestoreRetainedBookshelfOrder;
         socketServer.OnClientDisconnected += sceneTransition.Task.HandleTransportDisconnected;
@@ -2399,6 +2409,7 @@ class Program
         });
         NativeGuidanceTask nativeGuidanceTask = null;
         SettingsTask settingsTask = new SettingsTask(socketServer, userPrefs);
+        settingsInputAuthority=settingsTask;
         settingsTask.SetHitNumberLedgerProvider(frameTask.BuildHitNumberLedgerPage);
         settingsTask.SetHostPreferenceApplied(delegate(string key, JToken value)
         {
@@ -2716,6 +2727,24 @@ class Program
         {
             archiveTask = new ArchiveTask(projectRoot);
         }
+
+        CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
+        CF7Launcher.Save.SettingsWriteJournal settingsJournal = null;
+        string settingsMetadataError = null;
+        try {
+            settingsJournal = new CF7Launcher.Save.SettingsWriteJournal(Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CF7FlashNight", "SettingsWriteJournal",
+                CF7Launcher.Save.SettingsCanonical.Digest(Path.GetFullPath(projectRoot).ToUpperInvariant())));
+        } catch (Exception ex) {
+            settingsMetadataError = "settings_metadata_unavailable";
+            LogManager.Log("[SettingsRecovery] metadata admission blocked: " + ex.GetType().Name);
+        }
+        var settingsRecovery = new CF7Launcher.Save.SettingsRecoveryGate(settingsJournal,
+            new CF7Launcher.Save.SettingsRawSolReader(solLocator,new CF7Launcher.Save.NativeSolParser(),Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),"CF7FlashNight","SettingsWriteJournalRaw")),
+            projectRoot,config.SwfPath,settingsMetadataError);
+        archiveTask.SettingsWriteAdmission = settingsRecovery.MayWrite;
+        form.FormClosed += delegate { settingsJournal?.Dispose(); };
 
         // INV-2: 旧版反污染 gate. 检测玩家是否曾在 launcher 修复版之前用过本机.
         // 命中提示后立刻写回 marker, 让二次启动沉默. 不阻塞启动 (gate 失败仅丢日志).
@@ -3234,11 +3263,14 @@ class Program
 
         // Phase C: 存档决议依赖链。SolFileLocator 缓存 hash 子目录 + variant；SolResolver
         // 通过 ArchiveTask 的 sync API 读 tombstone / shadow。SaveResolutionContext 只是 DI 聚合。
-        CF7Launcher.Save.SolFileLocator solLocator = new CF7Launcher.Save.SolFileLocator();
+
         CF7Launcher.Save.SolResolver solResolver = new CF7Launcher.Save.SolResolver(
             solLocator, archiveTask, new CF7Launcher.Save.NativeSolParser(), archiveTask);
         CF7Launcher.Save.SaveResolutionContext saveCtx = new CF7Launcher.Save.SaveResolutionContext(
             solLocator, solResolver, archiveTask, config.SwfPath, projectRoot);
+        saveCtx.SettingsRecovery=settingsRecovery;
+        settingsTask.ConfigureAuthority(settingsJournal,settingsRecovery);
+
         bookshelfTask.SetSaveContext(saveCtx);
 
         // 注入诊断打包依赖：HttpApiServer 的 /diagnostic 端点需要 SOL 解析器复制原件
@@ -3328,6 +3360,11 @@ class Program
             frontdoorBgmLease);
 
         // Phase A Step A2: wire launchFlow 到 GuardianForm（OnFormClosing 状态分流 + 热键 state-aware guard）
+
+        launchFlow.SettingsSourceBound+=(admission,supported)=> {
+            if(admission!=null)settingsTask.BindAuthoritySource(admission,supported);
+        };
+        bookshelfTask.SetSettingsSourceApplied(admission=>settingsTask.BindAuthoritySource(admission,launchFlow.SettingsBackendV2));
         form.InitializeLaunchFlow(launchFlow);
         agentControlTask.SetLaunchFlow(launchFlow, useBootstrapLoad: workerPolicy != null);
         if (workerPolicy != null)

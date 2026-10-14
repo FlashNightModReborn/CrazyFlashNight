@@ -355,8 +355,9 @@ async function main(argv) {
         }
         report.candidate = { firstPid:first.identity.pid,
             buildIdentity:first.identity.buildIdentity,
-            payloadClosureSha256:first.identity.payloadClosureSha256,
-            executablePath:first.identity.executablePath };
+            payloadClosure:first.identity.payloadClosure,
+            processPath:first.identity.processPath,
+            coreSha256:first.identity.coreSha256 };
         await attach(first);
         const before = Ledger.capture(ROOT, Preflight.TARGET_SLOT);
         const beforeArtifacts = first.baseline;

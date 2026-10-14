@@ -26,7 +26,7 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Guardian
 {
-    public class GameLaunchFlow
+    public partial class GameLaunchFlow
     {
         public enum State
         {
@@ -611,8 +611,15 @@ namespace CF7Launcher.Guardian
             SolResolveResult resolvedOverride,
             bool useResolvedOverride,
             string frontdoorMode,
-            CharacterCreateOpenContext characterCreateContext)
+            CharacterCreateOpenContext characterCreateContext,
+            bool settingsRecoveryChecked=false)
         {
+            if(!settingsRecoveryChecked && _saveCtx?.SettingsRecovery!=null) {
+                lock(_stateLock)if(_state is State.Ready or State.Resetting) { LogManager.Log("[SettingsRecovery] ignored launch while runtime owns the context");return; }
+                BeginSettingsRecovery(slot,()=>StartGameInternal(slot,deferJsReveal,requireFlashReveal,resolvedOverride,
+                    useResolvedOverride,frontdoorMode,characterCreateContext,true),useResolvedOverride && resolvedOverride?.Kind==DecisionKind.Empty);
+                return;
+            }
             PerfTrace.Mark("launch.start_game",
                 "slot=" + slot
                 + " deferJsReveal=" + deferJsReveal
@@ -892,11 +899,14 @@ namespace CF7Launcher.Guardian
             string openRequestId,
             out string attemptId,
             out string slotKey,
-            out string error)
+            out string error,
+            bool settingsRecoveryChecked=false,
+            string generatedSlot=null)
         {
             attemptId = null;
             slotKey = null;
             error = null;
+            if(_saveCtx?.SettingsRecovery!=null && !settingsRecoveryChecked) { error="settings_recovery_required";return false; }
             string exactOpenRequestId;
             if (!TryValidateCharacterCreateOpenRequestId(
                     openRequestId,
@@ -937,7 +947,8 @@ namespace CF7Launcher.Guardian
                     error = "new_slot_key_must_be_host_generated";
                     return false;
                 }
-                if (!TryCreateUnusedSlotKey(out slotKey, out error))
+                if(generatedSlot!=null)slotKey=generatedSlot;
+                else if (!TryCreateUnusedSlotKey(out slotKey, out error))
                     return false;
             }
             else
@@ -969,6 +980,7 @@ namespace CF7Launcher.Guardian
                 }
 
                 SolResolveResult rebuildResolved;
+                if(!_saveCtx.CanMutate(slotKey)) { error="settings_recovery_required";return false; }
                 try
                 {
                     rebuildResolved = _saveCtx.Resolver.Resolve(
@@ -1092,7 +1104,8 @@ namespace CF7Launcher.Guardian
                 SolResolveResult.NewEmpty(),
                 true,
                 "create",
-                context);
+                context,
+                settingsRecoveryChecked);
 
             lock (_stateLock)
             {
@@ -2211,6 +2224,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void Reset(Action onIdle, string reason)
         {
+            NewSettingsRecoveryRequest();
             LogManager.Log("[LaunchFlow] Reset requested reason=" + (reason ?? "(none)"));
             CF7Launcher.Tasks.AudioTask.CancelBootstrapBgmGate();
             List<Action> idleFlushIfAlready = null;
@@ -3113,6 +3127,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         private void HandleBootstrapHandshakeAsync(JObject msg, Action<string> respond)
         {
+            ReadSettingsCapabilities(msg);
             string syncJsonToSend = null;
             // C2-β: 同步快路径下若 saveDecision="repairable", 锁外 push repair_required 给 BootstrapPanel JS,
             // 让前端打开修复卡片. 锁内 snapshot 字段, 锁外 PostToWeb (避免 reentrancy).
@@ -3196,6 +3211,13 @@ namespace CF7Launcher.Guardian
             resp["success"] = true;
             resp["attemptId"] = _currentAttemptId;
             resp["savePath"] = _pendingSlot != null ? _pendingSlot : "default";
+            if(_settingsAdmission!=null && _settingsBackendV2) {
+                resp["settingsProtocol"]=2;
+                resp["settingsAuthority"]=_settingsAdmission.BootstrapMetadata();
+            }
+            if(_settingsBoundAttempt!=_currentAttemptId) {
+                _settingsBoundAttempt=_currentAttemptId;SettingsSourceBound?.Invoke(_settingsAdmission,_settingsBackendV2);
+            }
 
             // Phase C protocol v2: 携带存档决议 + snapshot 下传给 Flash 侧 preload
             resp["protocol"] = 2;
@@ -3221,6 +3243,10 @@ namespace CF7Launcher.Guardian
 
         private string HandleBootstrapReady(JObject msg)
         {
+            if(_settingsAdmission!=null && (!_settingsAdmission.Allowed || !_saveCtx.SettingsRecovery.MayWriteCached(_settingsAdmission.Context.Slot))) {
+                lock(_stateLock)TransitionToError("settings_recovery_required");
+                return null;
+            }
             lock (_stateLock)
             {
                 // Flash 消息结构: {task, payload:{attemptId,...}, callId}; 从 payload 读
@@ -3293,6 +3319,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public bool PushRepairResolved(string taskJson)
         {
+            if(_saveCtx?.SettingsRecovery!=null && !_saveCtx.SettingsRecovery.MayWriteCached(_pendingSlot))return false;
             if (string.IsNullOrEmpty(taskJson)) return false;
             // 状态合法性检查 (snapshot, 锁外 write 容忍 _state 在两步之间 race; ReadLoop disconnect
             // 时 PushToClient 内部自检 client 已断 → 静默 false).

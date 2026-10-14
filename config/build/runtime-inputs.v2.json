@@ -219,6 +219,7 @@
         "tools/swf-metadata.js",
         "tools/test-swf-metadata.js",
         "tools/swf-function-sizes.js",
+        "tools/run-focus-sol-recheck.ps1",
         "automation/dev.ps1",
         "automation/start.ps1",
         "tools/run-focus-diagnostic.ps1",
@@ -235,6 +236,8 @@
         "本地开发启动.cmd",
         "launcher/build.ps1",
         "launcher/contracts/panel-contracts.v2.json",
+        "launcher/contracts/settings-authority.v2.json",
+        "tools/generate-settings-authority-schema.js",
         "launcher/src/AgentRuntime/Contracts/README.md",
         "launcher/src/Guardian/Hud/PlayerInfo/weapon-icons.md",
         "tools/assert-optimized.cs",
@@ -499,6 +502,24 @@
           "includeExtensions": [".cs", ".csproj", ".html"],
           "excludePaths": [],
           "excludePrefixes": ["tools/native-dialogue-webview2-smoke/bin/", "tools/native-dialogue-webview2-smoke/obj/"]
+        },
+        {
+          "path": "tools/panel-lifetime-smoke",
+          "includeExtensions": [".cs", ".csproj"],
+          "excludePaths": [],
+          "excludePrefixes": ["tools/panel-lifetime-smoke/bin/", "tools/panel-lifetime-smoke/obj/"]
+        },
+        {
+          "path": "tools/settings-recovery-smoke",
+          "includeExtensions": [".cs", ".csproj", ".js"],
+          "excludePaths": [],
+          "excludePrefixes": ["tools/settings-recovery-smoke/bin/", "tools/settings-recovery-smoke/obj/"]
+        },
+        {
+          "path": "tools/input-hook-diagnostic",
+          "includeExtensions": [".cs", ".csproj"],
+          "excludePaths": [],
+          "excludePrefixes": ["tools/input-hook-diagnostic/bin/", "tools/input-hook-diagnostic/obj/"]
         },
         {
           "path": "launcher/scripts",

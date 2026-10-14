@@ -278,7 +278,9 @@ var HairdresserPanel = (function() {
         return footer;
     }
 
-    function onOpen() {
+    var _closePanelInstanceId = '';
+    function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         _generation++;
         _snapshot = null;
         _selectedIndex = -1;
@@ -1279,7 +1281,7 @@ var HairdresserPanel = (function() {
         // audio: 关闭/取消；commit 成功路径传 silent（已播 success，一动作一声）
         if (!silent && window.BootstrapAudio) window.BootstrapAudio.cue('back');
         Panels.close();
-        Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser'});
+        Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser', panelInstanceId: _closePanelInstanceId});
         return true;
     }
 

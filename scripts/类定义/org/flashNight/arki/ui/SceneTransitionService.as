@@ -9,8 +9,75 @@ class org.flashNight.arki.ui.SceneTransitionService {
     private static var _session:Object = null;
     private static var _retired:Object = null;
     private static var _lastRetiredSend:Number = -1000;
+    private static var _background:Object = null;
     private static var _pump:MovieClip;
     public static var sendOverride:Function = null;
+
+    /** Visual readiness is separate from the business SceneReady event. */
+    public static function loadBackground(world:Object, url:String, target:Object):Void {
+        retireBackgroundListener(_background);
+        var ticket:Object = {world:world,identity:org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world),
+            scene:WorldLightingBridge.sceneNumber(),target:target,started:getTimer(),
+            bytesComplete:false,initialized:false,ready:false,failed:false,frames:0,loader:new MovieClipLoader()};
+        _background = ticket;
+        ticket.listener = {
+            ticket:ticket,
+            onLoadComplete:function(loaded:MovieClip):Void { SceneTransitionService.backgroundBytesLoaded(this.ticket,loaded); },
+            onLoadInit:function(loaded:MovieClip):Void { SceneTransitionService.backgroundLoaded(this.ticket,loaded,false); },
+            onLoadError:function(loaded:MovieClip, code:String, status:Number):Void { SceneTransitionService.backgroundLoaded(this.ticket,loaded,true); }
+        };
+        ticket.loader.addListener(ticket.listener);
+        if (!ticket.loader.loadClip(url,target)) backgroundLoaded(ticket,target,true);
+    }
+    private static function retireBackgroundListener(ticket:Object):Void {
+        if (ticket.loader != null) ticket.loader.removeListener(ticket.listener);
+        if (ticket != null) ticket.loader = null;
+    }
+    private static function currentBackground(ticket:Object):Boolean {
+        return ticket != null && ticket === _background && ticket.world === _root.gameworld
+            && ticket.identity === _root.gameworld.__stageReturnWorldIdentity
+            && ticket.scene == WorldLightingBridge.sceneNumber();
+    }
+    private static function backgroundLoaded(ticket:Object, target:Object, error:Boolean):Void {
+        if (!currentBackground(ticket) || target !== ticket.target || ticket.initialized || ticket.failed) return;
+        ticket.failed = error;
+        ticket.initialized = !error;
+        // The callback can share a frame with our tick. Two ticks cross a real frame boundary.
+        ticket.frames = error ? 0 : 2;
+        retireBackgroundListener(ticket);
+    }
+    private static function backgroundBytesLoaded(ticket:Object, target:Object):Void {
+        if (currentBackground(ticket) && target === ticket.target && !ticket.failed) ticket.bytesComplete = true;
+    }
+    /** Bitmap baking may unload the child before MovieClipLoader can deliver onLoadInit. */
+    public static function backgroundBaked(world:Object, background:Object):Void {
+        var ticket:Object = _background;
+        if (!currentBackground(ticket) || !ticket.bytesComplete || world !== ticket.world
+            || background !== world.背景 || background.外部动画加载壳mc !== ticket.target) return;
+        backgroundLoaded(ticket,ticket.target,false);
+    }
+    private static function advanceBackgroundFrame():Void {
+        var ticket:Object = _background;
+        if (!currentBackground(ticket)) return;
+        if (ticket.initialized && ticket.frames > 0 && --ticket.frames == 0) ticket.ready = true;
+        var now:Number = getTimer();
+        if (!ticket.initialized && !ticket.failed && (now < ticket.started || now-ticket.started >= 30000)) {
+            ticket.failed = true;
+            retireBackgroundListener(ticket);
+        }
+    }
+    private static function backgroundReady(s:Object):Boolean {
+        var ticket:Object = _background;
+        // Inline/base scenes have no external background load to wait for.
+        if (ticket == null || ticket.identity !== s.readyIdentity) return true;
+        if (!currentBackground(ticket)) return false;
+        if (ticket.failed) {
+            // Enter the existing loading-error timeline and its one-shot retry/return authority.
+            s.fade.gotoAndStop(37);
+            return false;
+        }
+        return ticket.ready === true;
+    }
 
     public static function install():Void {
         if (_installed) return;
@@ -188,9 +255,10 @@ class org.flashNight.arki.ui.SceneTransitionService {
         var s:Object = _session;
         if (s == null || !owns(s,s.fade) || !s.worldReady || s.fade._currentframe != 30
             || s.phase == "error" || s.phase == "reveal") return;
-        if (s.calibrationOwner != null && (s.readyWorld != _root.gameworld
+        if (s.readyWorld != _root.gameworld
                 || s.readyIdentity !== _root.gameworld.__stageReturnWorldIdentity
-                || s.targetScene != WorldLightingBridge.sceneNumber())) return;
+                || s.targetScene != WorldLightingBridge.sceneNumber()) return;
+        if (!backgroundReady(s)) return;
         org.flashNight.dev.PanelTiming.finish("transition.reveal_requested",s.timingStarted,_sequence);
         s.phase = "reveal"; s.revision++; publish();
     }
@@ -263,6 +331,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         // Unknown delivery / denied authority stays locked; no timer replays navigation.
     }
     public static function tick():Void {
+        advanceBackgroundFrame();
         var s:Object = _session;
         if (s == null) {
             if (_retired != null && getTimer()-_lastRetiredSend >= 1000) {

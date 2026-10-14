@@ -192,9 +192,10 @@ var HelpPanel = (function() {
     }
 
     function doClose() {
+        var instance = _instanceId;
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
-        Bridge.send({type:'panel', cmd:'close', panel:'help'});
+        Bridge.send({type:'panel', cmd:'close', panel:'help', panelInstanceId:instance});
     }
 
     function disposeTutorials() {

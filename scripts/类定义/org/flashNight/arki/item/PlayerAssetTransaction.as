@@ -21,6 +21,7 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
     private static var _lastCommittedReceipt:Object = null;
 
     public static function begin(context:Object):Object {
+        if (!org.flashNight.neur.Server.SaveManager.getInstance().settingsWriteAllowed()) throw new Error("settings_recovery_required");
         var normalized:Object = normalizeContext(context);
         var operationId:String = normalized.operationId;
         if (operationId.length == 0) operationId = nextOperationId();
@@ -86,6 +87,7 @@ class org.flashNight.arki.item.PlayerAssetTransaction {
      * 再写入并读回确认；任一失败都必须发生在玩家资产首写之前。
      */
     public static function markDirtyRequired(saveOwner:Object):Void {
+        if (!org.flashNight.neur.Server.SaveManager.getInstance().settingsWriteAllowed()) throw new Error("settings_recovery_required");
         if (saveOwner == undefined || saveOwner == null) {
             throw new Error("player_asset_save_owner_missing");
         }

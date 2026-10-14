@@ -1,5 +1,7 @@
 ﻿import org.flashNight.arki.key.KeyManager;
 import org.flashNight.neur.Server.SaveManager;
+import org.flashNight.neur.Server.SettingsAuthority;
+import org.flashNight.neur.Server.SettingsCanonical;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 /**
@@ -14,6 +16,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     private static var _revision:Number = 0;
     private static var _lastFingerprint:String;
     private static var _previewBaseline:Object;
+    private static var _previewLease:Object;
+    private static var _previewAuthority:SettingsAuthority;
     private static var _previewRestoreTimer:Number;
     private static var _keyRefreshPending:Boolean = false;
     private static var _returnBaseResponseEnvelope:Object;
@@ -24,6 +28,12 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         if (_root.gameCommands == undefined) _root.gameCommands = {};
         _root.gameCommands["settingsSnapshot"] = function(params):Void {
             org.flashNight.arki.ui.GameSettingsPanelService.handle("snapshot", params);
+        };
+        _root.gameCommands["settingsReconcile"] = function(params):Void {
+            org.flashNight.arki.ui.GameSettingsPanelService.handle("reconcile", params);
+        };
+        _root.gameCommands["settingsAuthorityGate"] = function(params):Void {
+            org.flashNight.arki.ui.GameSettingsPanelService.handle("authority_gate", params);
         };
         _root.gameCommands["settingsPreviewAudio"] = function(params):Void {
             org.flashNight.arki.ui.GameSettingsPanelService.handle("preview", params);
@@ -77,7 +87,18 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     public static function execute(commandName:String, params:Object):Object {
+        if (params != undefined && params.v === 2) {
+            if (!SaveManager.getInstance().settingsProtocolV2()) return fail("unsupported_version");
+            return executeAuthorityV2(commandName, params);
+        }
         if (params == undefined || params.v !== 1) return fail("unsupported_version");
+        if ((SaveManager.getInstance().settingsProtocolV2() || SaveManager.getInstance().settingsLegacyReadOnly()) && (commandName == "apply"
+                || commandName == "save" || commandName == "preview")) return fail("settings_protocol_required");
+        if (SaveManager.getInstance().settingsProtocolV2() && commandName == "snapshot") {
+            var compatibility:Object = buildSnapshot(true); compatibility.success = true; compatibility.v = 1;
+            compatibility.requiresReconcile = !SaveManager.getInstance().settingsWriteAllowed();
+            return compatibility;
+        }
         switch (commandName) {
             case "snapshot": return executeSnapshot();
             case "preview": return executePreview(params);
@@ -92,6 +113,180 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
         return fail("unsupported_cmd");
     }
 
+    private static function validOpaqueV2(value:Object):Boolean {
+        if (typeof value != "string" || value.length < 1 || value.length > 160) return false;
+        for (var i:Number = 0; i < value.length; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (!(code >= 48 && code <= 57 || code >= 65 && code <= 90 || code >= 97 && code <= 122
+                || code == 46 || code == 95 || code == 126 || code == 45)) return false;
+        }
+        return true;
+    }
+    private static function validDigestV2(value:Object):Boolean {
+        if (typeof value != "string" || value.length != 64) return false;
+        for (var i:Number = 0; i < 64; i++) {
+            var code:Number = value.charCodeAt(i);
+            if (!(code >= 48 && code <= 57 || code >= 97 && code <= 102)) return false;
+        }
+        return true;
+    }
+    private static function envelopeV2(command:String, authority:SettingsAuthority, success:Boolean, error:String, snapshot:Object, request:Object):Object {
+        var outcome:Object = command == "snapshot" || command == "preview" || command == "cancel" || command == "panel_closed"
+            ? authority.emptyOutcome() : authority.readOutcome();
+        if (request != null && command == "apply" && !success && error != "apply_ambiguous"
+                && validOpaqueV2(request.operationToken) && validOpaqueV2(request.saveAttemptId)
+                && validDigestV2(request.originMutationRequestDigest) && authority.matches(request)) {
+            outcome = authority.rejectBeforeEffect(request, error);
+        }
+        if (error != null && outcome.error == null) outcome.error = error;
+        var migration:Boolean = false;
+        try { migration = hasPendingMigration(); } catch (migrationError) {}
+        var response:Object = {v:2, operation:command, contextId:authority.contextId(), saveOwnerId:authority.ownerId(),
+            authorityEpoch:authority.epoch(), success:success, requiresReconcile:authority.isUnknown(),
+            writeAdmission:authority.writeAdmission(), state:authority.state(migration), outcome:outcome, snapshot:snapshot, warnings:[]};
+        response.holdActive = authority.hasHostHold();
+        if (snapshot == null && command != "save") { response.state = null; response.warnings.push("current_authority_unavailable"); }
+        return response;
+    }
+    private static function snapshotV2(authority:SettingsAuthority, readOnly:Boolean):Object {
+        try {
+            var snapshot:Object = buildSnapshot(true);
+            if (!authority.isUnknown()) {
+                var committed:Object = authority.readCommitted();
+                if (committed == null) { trace("[SettingsAuthority] committed projection unavailable"); return null; }
+                snapshot.settings = committed.settings;
+                for (var i:Number = 0; i < snapshot.keys.length; i++) snapshot.keys[i].keyCode = committed.keys[i][2];
+            }
+            if (SettingsCanonical.encode(snapshot.settings, snapshot.keys, false) == null) { trace("[SettingsAuthority] snapshot projection is not canonical"); return null; }
+            snapshot.revision = authority.revision();
+            snapshot.previewActive = authority.hasPreview();
+            return snapshot;
+        } catch (observationError) { trace("[SettingsAuthority] observation unavailable: " + observationError); return null; }
+    }
+    private static function authorityUnavailable(command:String, params:Object):Object {
+        return {v:2, operation:command, contextId:params.contextId, saveOwnerId:params.saveOwnerId,
+            authorityEpoch:params.authorityEpoch, success:false, requiresReconcile:true, writeAdmission:"blocked_by_context",
+            state:null, snapshot:null, warnings:["current_authority_unavailable"],
+            outcome:{operationToken:null, sourceAuthorityEpoch:null, originMutationRequestDigest:null, targetStateToken:null,
+                saveAttemptId:null, applyState:"none", applied:null, attemptState:"none", durable:false, confirmation:"none",
+                error:"settings_authority_unavailable", resolution:"none"}};
+    }
+    private static function validV2Fields(command:String, params:Object):Boolean {
+        var allowed:Object = {v:true, task:true, action:true, callId:true, contextId:true, saveOwnerId:true, authorityEpoch:true};
+        var fields:Array = command == "apply" ? ["operationToken","saveAttemptId","originMutationRequestDigest","settingsDigest",
+            "expectedRevision","baseStateToken","expectedCanonical","keySchemaVersion","settings","keys"]
+            : command == "save" ? ["operationToken","saveAttemptId","originMutationRequestDigest","settingsDigest",
+                "expectedRevision","stateToken","sourceAuthorityEpoch"]
+            : command == "reconcile" ? ["operationToken","saveAttemptId","originMutationRequestDigest","sourceAuthorityEpoch"]
+            : command == "authority_gate" ? ["operationToken","saveAttemptId","originMutationRequestDigest","sourceAuthorityEpoch","admission"]
+            : command == "preview" ? ["stateToken","globalVolume","bgmVolume","sample"] : [];
+        for (var i:Number = 0; i < fields.length; i++) allowed[fields[i]] = true;
+        for (var field:String in params) if (allowed[field] !== true) return false;
+        return validOpaqueV2(params.contextId) && validOpaqueV2(params.saveOwnerId) && validOpaqueV2(params.authorityEpoch);
+    }
+    private static function executeAuthorityV2(command:String, params:Object):Object {
+        var manager:SaveManager = SaveManager.getInstance();
+        var authority:SettingsAuthority = manager.getSettingsAuthority();
+        if (authority == null) return authorityUnavailable(command, params);
+        if (!validV2Fields(command, params)) return envelopeV2(command, authority, false, "invalid_payload", snapshotV2(authority, true), params);
+        if (command == "authority_gate") {
+            if (!validOpaqueV2(params.operationToken) || !validOpaqueV2(params.saveAttemptId)
+                    || !validOpaqueV2(params.sourceAuthorityEpoch) || !validDigestV2(params.originMutationRequestDigest))
+                return envelopeV2(command, authority, false, "invalid_payload", null, params);
+            var accepted:Boolean = authority.authorityGate(params);
+            return envelopeV2(command, authority, accepted, accepted ? null : "context_changed", null, params);
+        }
+        if (command == "reconcile") return executeReconcileReadOnly(params, authority);
+        if (!authority.matches(params)) return envelopeV2(command, authority, false, "context_changed", null, params);
+        if (command == "cancel" || command == "panel_closed") {
+            restoreAudioPreview();
+            return envelopeV2(command, authority, true, null, snapshotV2(authority, true), params);
+        }
+        if (command == "snapshot") {
+            if (!authority.isUnknown()) {
+                if (!manager.captureSettingsAuthority()) return envelopeV2(command, authority, false, "settings_authority_unavailable", null, params);
+            }
+            var currentSnapshot:Object = snapshotV2(authority, authority.isUnknown());
+            return envelopeV2(command, authority, currentSnapshot != null, currentSnapshot == null ? "settings_authority_unavailable" : null, currentSnapshot, params);
+        }
+        if (command == "preview") {
+            if (params.stateToken !== authority.stateToken() || !manager.captureSettingsAuthority())
+                return envelopeV2(command, authority, false, "stale_revision", null, params);
+            if (typeof params.globalVolume != "number" || typeof params.bgmVolume != "number"
+                || !isIntegerInRange(params.globalVolume, 0, 100) || !isIntegerInRange(params.bgmVolume, 0, 100)
+                || (params.sample != "none" && params.sample != "sfx"))
+                return envelopeV2(command, authority, false, "invalid_payload", null, params);
+            _previewLease = authority.beginPreview();
+            _previewAuthority = authority;
+            if (_previewLease == null) return envelopeV2(command, authority, false, "reconcile_required", null, params);
+            try {
+                armPreviewRestoreTimer();
+                _root.soundEffectManager.setGlobalVolume(params.globalVolume);
+                _root.soundEffectManager.setBGMVolume(params.bgmVolume);
+                if (params.sample == "sfx") _root.soundEffectManager.playSound("Button9.wav");
+            } catch (previewError) {
+                restoreAudioPreview();
+                return envelopeV2(command, authority, false, "audio_preview_failed", snapshotV2(authority, true), params);
+            }
+            return envelopeV2(command, authority, true, null, snapshotV2(authority, false), params);
+        }
+        if (command != "apply" && command != "save") return envelopeV2(command, authority, false, "unsupported_cmd", null, params);
+        if (!validOpaqueV2(params.operationToken) || !validOpaqueV2(params.saveAttemptId)
+            || !validDigestV2(params.originMutationRequestDigest) || !validDigestV2(params.settingsDigest)
+            || typeof params.expectedRevision != "number" || !isIntegerInRange(params.expectedRevision, 0, 9007199254740991))
+            return envelopeV2(command, authority, false, "invalid_payload", null, params);
+        if (_root.允许存档 !== true || !manager.canBeginSettingsWrite())
+            return envelopeV2(command, authority, false, "save_unavailable", null, params);
+        if (command == "apply") {
+            if (!manager.captureSettingsAuthority() || !validOpaqueV2(params.baseStateToken) || params.keySchemaVersion !== 2)
+                return envelopeV2(command, authority, false, "settings_unavailable", null, params);
+            var canonical:String = SettingsCanonical.encode(params.settings, params.keys, false);
+            var normalizedSettings:Object = validateSettings(params.settings);
+            var normalizedKeys:Object = validateKeyBindings(params.keys);
+            if (canonical == null || normalizedSettings == null || !normalizedKeys.success)
+                return envelopeV2(command, authority, false, "invalid_payload", null, params);
+            if (!authority.beginMutation(params, canonical)) return envelopeV2(command, authority, false, "stale_revision", snapshotV2(authority, false), params);
+            _previewLease = null; _previewAuthority = null; clearPreviewRestoreTimer();
+            try {
+                manager.applySettings(normalizedSettings);
+                _root.键值设定 = normalizedKeys.keys;
+                _root.刷新键值设定();
+                if (!authority.completeMutation(manager.ReadRuntimeSettingsRaw(), _root.键值设定)) throw new Error("settings_commit_incomplete");
+            } catch (mutationError) {
+                authority.failMutation();
+                return envelopeV2(command, authority, false, "apply_ambiguous", snapshotV2(authority, true), params);
+            }
+            try { markDirty(); } catch (dirtyNoticeError) {}
+        } else if (!manager.captureSettingsAuthority() || !authority.beginSave(params)) {
+            return envelopeV2(command, authority, false, "stale_save_target", null, params);
+        }
+        var confirmed:Boolean = false;
+        try { confirmed = manager.flushDurableNow(command == "apply" ? "settings.apply" : "settings.save") === true; }
+        catch (flushError) { confirmed = manager.settingsFlushWasConfirmed(params.operationToken, params.saveAttemptId); }
+        authority.finishSave(confirmed);
+        var result:Object = envelopeV2(command, authority, confirmed, confirmed ? null : "save_failed",
+            command == "save" ? null : snapshotV2(authority, false), params);
+        return result;
+    }
+    private static function executeReconcileReadOnly(params:Object, authority:SettingsAuthority):Object {
+        // No readiness/migration, setters, markDirty, key refresh or flush can run here.
+        var observation:Object = null;
+        try {
+            if (!authority.isUnknown()) SaveManager.getInstance().captureSettingsAuthority();
+            observation = snapshotV2(authority, true);
+        } catch (readError) {}
+        var result:Object = envelopeV2("reconcile", authority, true, null, observation, params);
+        var known:Object = authority.readRequestedOutcome(params);
+        if (!authority.matches(params) || known == null || known.operationToken !== params.operationToken
+                || known.sourceAuthorityEpoch !== params.sourceAuthorityEpoch
+                || known.originMutationRequestDigest !== params.originMutationRequestDigest
+                || known.saveAttemptId !== params.saveAttemptId) {
+            result.requiresReconcile = true;
+            result.writeAdmission = "blocked_by_operation";
+            result.warnings.push("operation_evidence_unavailable");
+        } else result.outcome = known;
+        return result;
+    }
     private static function executeSnapshot():Object {
         var readiness:Object = ensureAuthorityReady();
         if (!readiness.success) return readiness;
@@ -281,6 +476,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function executeCheat(params:Object):Object {
+        if (!SaveManager.getInstance().settingsWriteAllowed()) return fail("settings_recovery_required");
         if (!hasOnly(params, ["task", "action", "callId", "v", "command", "confirmed"])
                 || params.confirmed !== true || typeof params.command != "string") {
             return fail("invalid_payload");
@@ -331,6 +527,10 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function handleReturnBase(params:Object, callId:Number):Void {
+        if (!SaveManager.getInstance().settingsWriteAllowed()) {
+            var blocked:Object = fail("settings_recovery_required"); blocked.task = "settings_response"; blocked.callId = callId;
+            blocked.operation = "return_base"; sendResponse(blocked); return;
+        }
         // _root.返回基地 会进入真实淡出/切帧链。完整 correlation 必须在调用前放进
         // 类级封套；不能等返回后再从这一层调用帧补 task/callId。
         _returnBaseResponseEnvelope = {
@@ -408,6 +608,7 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function executeTryRevive(params:Object):Object {
+        if (!SaveManager.getInstance().settingsWriteAllowed()) return fail("settings_recovery_required");
         if (!hasOnly(params, ["task", "action", "callId", "v"])) return fail("invalid_payload");
         var result:Object = org.flashNight.arki.scene.StageRunSession.requestReviveLocal(
             "settings_recovery");
@@ -477,8 +678,8 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
             || SaveManager.getInstance().hasPendingSettingsMigration();
     }
 
-    private static function buildSnapshot():Object {
-        var settings:Object = readAuthoritySettings();
+    private static function buildSnapshot(readOnly:Boolean):Object {
+        var settings:Object = readOnly === true ? SaveManager.getInstance().ReadRuntimeSettingsRaw() : readAuthoritySettings();
         return {
             keySchemaVersion:2,
             revision:_revision,
@@ -643,6 +844,13 @@ class org.flashNight.arki.ui.GameSettingsPanelService {
     }
 
     private static function restoreAudioPreview():Boolean {
+        if (_previewAuthority != null && _previewLease != null) {
+            var restored:Boolean = _previewAuthority.restorePreview(_previewLease, _root.soundEffectManager);
+            if (restored || !_previewAuthority.hasPreview()) {
+                clearPreviewRestoreTimer(); _previewLease = null; _previewAuthority = null;
+            } else armPreviewRestoreTimer();
+            return restored;
+        }
         if (_previewBaseline == undefined) {
             clearPreviewRestoreTimer();
             return false;

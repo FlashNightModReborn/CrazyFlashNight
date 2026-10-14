@@ -51,7 +51,7 @@
 
   function closeLocally() {
     try { Panels.close(); } catch (e) {}
-    if (typeof Bridge !== 'undefined') Bridge.send({ type: 'panel', cmd: 'close', panel: 'cutscene-test' });
+    if (typeof Bridge !== 'undefined') Bridge.send({ type: 'panel', cmd: 'close', panel: 'cutscene-test', panelInstanceId: _closePanelInstanceId });
   }
 
   function loadRuffle() {
@@ -152,7 +152,9 @@
     return _el;
   }
 
-  function onOpen() {
+  var _closePanelInstanceId = '';
+  function onOpen(el, initData) {
+    _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
     // 列表静态，无需重建；播放区保持上次状态由 cleanup 复位。
   }
 

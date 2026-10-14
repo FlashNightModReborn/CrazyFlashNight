@@ -875,6 +875,36 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
+            ['session-close-envelope', 'button, enter and return close the exact Host instance', function() {
+                document.getElementById('stage-fixture-select').value = 'allUnlocked';
+                function checkClose(instance) {
+                    var closes = host.sentMessages.filter(function(message) {
+                        return message && message.panel === 'stage-select' && message.cmd === 'close';
+                    });
+                    api.assertEqual(closes[closes.length - 1].panelInstanceId, instance,
+                        'Host close carries the bound instance');
+                }
+                host.open({ panelInstanceId: 'qa-close-button' });
+                return waitRuntime(api).then(function() {
+                    api.assertEqual(StageSelectRenderer.requestClose('button'), true, 'button closes');
+                    checkClose('qa-close-button');
+                    host.open({ panelInstanceId: 'qa-close-enter' });
+                    return waitRuntime(api);
+                }).then(function() {
+                    StageSelectBridge.requestEnter('新手练习场', '简单', 'difficulty');
+                    return api.waitFor(function() { return !Panels.isOpen(); }, 2000, 'enter close');
+                }).then(function() {
+                    checkClose('qa-close-enter');
+                    host.open({ panelInstanceId: 'qa-close-return' });
+                    return waitRuntime(api);
+                }).then(function() {
+                    StageSelectBridge.requestReturnFrame('基地门口', null);
+                    return api.waitFor(function() { return !Panels.isOpen(); }, 2000, 'return close');
+                }).then(function() {
+                    checkClose('qa-close-return');
+                    return 'all close paths preserve the Host instance';
+                });
+            }],
             ['transport-close-failure-retryable', 'close waits for synchronous transport acceptance and stays retryable on false/throw', function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 host.open();

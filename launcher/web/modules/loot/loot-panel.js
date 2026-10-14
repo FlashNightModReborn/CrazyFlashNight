@@ -80,6 +80,7 @@ var LootPanel = (function() {
         var generation = reuse ? _generation : ++_generation;
         _emitDiagnostic.reset();
         _el = el;
+        _el.inert=false;
         _transportInstanceId = initData && typeof initData.panelInstanceId === 'string'
             && /^[A-Za-z0-9._~-]+$/.test(initData.panelInstanceId)
             && initData.panelInstanceId.length <= 128 ? initData.panelInstanceId : '';
@@ -894,7 +895,13 @@ var LootPanel = (function() {
             ||_init&&_init.panelInstanceId||_transportInstanceId||'';
         var preserveForRewardReturn=_init&&_init.sourceKind==='reward_inbox'
             &&(reason==='terminal'||reason==='suspended');
-        if (!preserveForRewardReturn) Panels.close();
+        var preserveForWorldResume=_runtimeConfig.externalScale && _init&&_init.sourceKind==='stage_settlement'
+            &&(reason==='terminal'||reason==='suspended');
+        if (preserveForWorldResume) {
+            _el.inert=true;
+            if (_view) _view.shell.setStatus('正在返回游戏…','busy');
+        }
+        if (!preserveForRewardReturn && !preserveForWorldResume) Panels.close();
         var message={type:'panel',cmd:'close',panel:'loot',reason:String(reason||'closed')};
         if (panelInstanceId) message.panelInstanceId=panelInstanceId;
         Bridge.send(message);

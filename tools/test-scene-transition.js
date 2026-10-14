@@ -319,6 +319,9 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
             if(mode==='close-before-ready') {
                 await p.locator('.loot-commit-bar button').click();
                 await p.waitForFunction(()=>outbox.some(m=>m.cmd==='close'&&m.task==='loot_request'));
+                await p.waitForFunction(()=>outbox.some(m=>m.type==='panel'&&m.cmd==='close'));
+                assert.equal(await p.evaluate(()=>Panels.getActive()),'loot','retain the closed report until Host hands back presentation');checks++;
+                await p.evaluate(()=>{const close=outbox.find(m=>m.type==='panel'&&m.cmd==='close');host({type:'panel_cmd',panel:'loot',cmd:'close',panelInstanceId:close.panelInstanceId});});
                 await p.waitForFunction(()=>Panels.getActive()===null);
                 assert.equal(await p.evaluate(()=>outbox.filter(m=>m.cmd==='close'&&m.task==='loot_request').length),1);checks++;
                 await project('loading',4,{reportVisible:false});
@@ -380,6 +383,12 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
                     }
                     assert.equal(await p.locator('.loot-commit-bar button').textContent(),'完成结算');checks++;
                     await p.locator('.loot-commit-bar button').click();
+                    await p.waitForFunction(()=>outbox.some(m=>m.type==='panel'&&m.cmd==='close'));
+                    assert.equal(await p.locator('.loot-stage-settlement').isVisible(),true,'full report remains until the fresh world is ready');checks++;
+                    assert.equal(await p.evaluate(()=>document.querySelector('.loot-scale-shell').inert),true,'retained report cannot accept another gesture');checks++;
+                    await p.evaluate(()=>{const close=outbox.find(m=>m.type==='panel'&&m.cmd==='close');host({type:'panel_cmd',panel:'loot',cmd:'close',panelInstanceId:'foreign'});});
+                    assert.equal(await p.evaluate(()=>Panels.getActive()),'loot','foreign retirement cannot remove the held view');checks++;
+                    await p.evaluate(()=>{const close=outbox.find(m=>m.type==='panel'&&m.cmd==='close');host({type:'panel_cmd',panel:'loot',cmd:'close',panelInstanceId:close.panelInstanceId});});
                     await p.waitForFunction(()=>Panels.getActive()===null);
                     assert.equal(await p.evaluate(()=>outbox.filter(m=>m.cmd==='close'&&m.task==='loot_request').length),1);checks++;
                     assert.equal(await p.locator('.loot-stage-settlement').isVisible(),false);checks++;

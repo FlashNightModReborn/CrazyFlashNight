@@ -341,7 +341,7 @@ test("three setting pages share the launcher header and annotations use PanelToo
   assert(!build.includes("'tools'"));
   assert(/header\.appendChild\(tabs\)[\s\S]*header\.appendChild\(_status\)/.test(build));
   assert(!build.includes("_root.appendChild(tabs)"));
-  assert(/grid-template-rows\s*:\s*62px\s+minmax\(0\s*,\s*1fr\)\s+52px/.test(css));
+  assert(/grid-template-rows\s*:\s*62px\s+minmax\(0\s*,\s*1fr\)\s+76px/.test(css));
   assert(panel.includes("PanelTooltip.createScope('settings', {profile:'simple-tooltip'})"));
   assert(panel.includes("_tooltipScope.bindAsync"));
   assert(panel.includes("target.removeAttribute('title')"));
@@ -431,4 +431,47 @@ test("aggregated preferences are re-read by long-lived panels on reopen", () => 
   assert(/function onOpen\(el, initData\)[\s\S]*?reloadPreference\(\)/.test(gobang));
 });
 
+function authorityResponse(overrides) {
+  return Object.assign({v:2,operation:'apply',contextId:'ctx.fixture',saveOwnerId:'owner.fixture',authorityEpoch:'vm.fixture.1',
+    success:false,requiresReconcile:false,writeAdmission:'allowed',warnings:[],snapshot:null,
+    state:{revision:8,stateToken:'op.1',persistenceState:'unconfirmed',durable:false,confirmation:'none',needsSaveRetry:true,migrationPending:false},
+    outcome:{operationToken:'op.1',sourceAuthorityEpoch:'vm.fixture.1',originMutationRequestDigest:'a'.repeat(64),targetStateToken:'op.1',saveAttemptId:'save.1',
+      applyState:'applied',applied:true,attemptState:'returned_unconfirmed',durable:false,confirmation:'none',error:'save_failed',resolution:'applied'}},overrides);
+}
+test('applied unconfirmed survives reopen and only save retry is admitted',()=> {
+  const state=runtime.reduceAuthority(null,authorityResponse());
+  const view=runtime.persistenceView(state);assert.equal(view.canApply,false);assert.equal(view.canSave,true);
+  assert(view.text.includes('只重试保存'));
+  const draft={volume:72};runtime.reduceAuthority(state,authorityResponse({operation:'save'}));assert.equal(draft.volume,72);
+});
+test('ordinary snapshot cannot clear unknown while exact reconcile can',()=> {
+  const blocked=authorityResponse({requiresReconcile:true,writeAdmission:'blocked_by_operation'});blocked.state.needsSaveRetry=false;
+  const unknown=runtime.reduceAuthority(null,blocked);
+  const snapshot=runtime.reduceAuthority(unknown,authorityResponse({operation:'snapshot'}));
+  assert.equal(snapshot.requiresReconcile,true);assert.equal(runtime.persistenceView(snapshot).canSave,false);
+  const query=runtime.reduceAuthority(snapshot,authorityResponse({operation:'reconcile'}));
+  assert.equal(query.requiresReconcile,false);assert.equal(runtime.persistenceView(query).canSave,true);
+});
+test('confirmation survives old false, metadata warning and historical target changes',()=> {
+  const confirmed=authorityResponse({success:true});confirmed.state.durable=true;confirmed.state.persistenceState='confirmed';
+  confirmed.state.confirmation='flush_true';confirmed.state.needsSaveRetry=false;confirmed.outcome.durable=true;
+  confirmed.outcome.confirmation='flush_true';confirmed.outcome.attemptState='confirmed';
+  let state=runtime.reduceAuthority(null,confirmed);state=runtime.reduceAuthority(state,authorityResponse());
+  assert.equal(state.state.durable,true);assert.equal(state.outcome.durable,true);
+  confirmed.writeAdmission='blocked_by_metadata';state=runtime.reduceAuthority(state,confirmed);
+  assert.equal(runtime.persistenceView(state).canSave,false);assert(runtime.persistenceView(state).text.includes('已保存'));
+  const later=runtime.copy(confirmed);later.state={revision:9,stateToken:'observe.2',persistenceState:'unconfirmed',durable:false,
+    confirmation:'none',needsSaveRetry:false,migrationPending:false};state=runtime.reduceAuthority(state,later);
+  assert.equal(state.state.durable,false);assert.equal(state.outcome.durable,true);
+});
+test('v2 control flags reject coercion and unknown observation is paired null',()=> {
+  const malformed=authorityResponse();malformed.state.durable='false';assert.equal(runtime.parseAuthority(malformed),null);
+  const missing=authorityResponse({state:null,warnings:['current_authority_unavailable']});assert(runtime.parseAuthority(missing));
+  missing.snapshot={};assert.equal(runtime.parseAuthority(missing),null);
+});
+test('v2 contradictory durability cannot admit a retry or a new intent',()=> {
+  const response=authorityResponse({requiresReconcile:true});assert.equal(runtime.parseAuthority(response),null);
+  response.requiresReconcile=false;response.outcome.durable=true;assert.equal(runtime.parseAuthority(response),null);
+  response.outcome.durable=false;response.outcome.confirmation='flush_true';assert.equal(runtime.parseAuthority(response),null);
+});
 process.stdout.write("Settings panel harness: " + passed + "/" + passed + " passed\n");

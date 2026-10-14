@@ -250,7 +250,9 @@ var GobangPanel = (function() {
         ].join("");
     }
 
+    var _closePanelInstanceId = '';
     function onOpen(el, initData) {
+        _closePanelInstanceId = initData && typeof initData.panelInstanceId === 'string' ? initData.panelInstanceId : '';
         _panelOpen = true;
         _sessionSequence += 1;
         _sessionId = "gobang-" + _sessionSequence + "-" + (Date.now() >>> 0);
@@ -1028,7 +1030,7 @@ var GobangPanel = (function() {
         notifyHost("close", buildSessionPayload({ result: buildResultPayload() }));
         cleanup();
         if (typeof Panels !== "undefined" && Panels.close) Panels.close();
-        Bridge.send({ type: "panel", cmd: "close", panel: "gobang" });
+        Bridge.send({ type: "panel", cmd: "close", panel: "gobang", panelInstanceId: _closePanelInstanceId });
     }
 
     function cleanup() {

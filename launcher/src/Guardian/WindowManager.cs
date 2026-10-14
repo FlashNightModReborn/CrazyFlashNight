@@ -193,7 +193,7 @@ namespace CF7Launcher.Guardian
         {
             _focusApi = focusApi
                 ?? throw new ArgumentNullException(nameof(focusApi));
-            _flashHwnd = initialFlashWindow;
+            SetTrackedFlashWindow(initialFlashWindow);
         }
 
         public IntPtr FlashHwnd { get { return _flashHwnd; } }
@@ -380,6 +380,7 @@ namespace CF7Launcher.Guardian
 
         public void TrackProcess(Process flashProcess)
         {
+            _registeredFocusProcess = flashProcess;
             if (flashProcess != null)
                 _flashProcessId = (uint)flashProcess.Id;
             _guardianProcessId = (uint)Process.GetCurrentProcess().Id;
@@ -396,7 +397,7 @@ namespace CF7Launcher.Guardian
             {
                 _currentFlashPid = 0;
                 _embedPhase = EmbedPhase.None;
-                _flashHwnd = IntPtr.Zero;
+                SetTrackedFlashWindow(IntPtr.Zero);
             }
             LogManager.Log("[WindowManager] EmbedState reset");
         }
@@ -512,7 +513,7 @@ namespace CF7Launcher.Guardian
                         if (_currentFlashPid != pid) return;                         // attempt 已换
                         if (_embedPhase != EmbedPhase.None) return;                  // EmbedFlashWindow 抢先 → 它全权处理
                         _embedPhase = EmbedPhase.EarlyHiddenClaimed;
-                        _flashHwnd = hwnd;
+                        SetTrackedFlashWindow(hwnd);
                         claimed = true;
                     }
 
@@ -564,7 +565,7 @@ namespace CF7Launcher.Guardian
                     // attempt 已换，脏句柄清零，走全量路径
                     _currentFlashPid = pid;
                     _embedPhase = EmbedPhase.None;
-                    _flashHwnd = IntPtr.Zero;
+                    SetTrackedFlashWindow(IntPtr.Zero);
                 }
 
                 if (_embedPhase == EmbedPhase.EarlyHiddenDone)
@@ -594,7 +595,7 @@ namespace CF7Launcher.Guardian
                     FireEmbedResult(false);
                     return;
                 }
-                lock (_embedClaimLock) { _flashHwnd = hwnd; }
+                lock (_embedClaimLock) { SetTrackedFlashWindow(hwnd); }
                 LogManager.Log("[WindowManager] Flash window found (full-embed path): 0x" + hwnd.ToString("X"));
             }
             else if (mustWaitForEarlyDone)
@@ -728,7 +729,7 @@ namespace CF7Launcher.Guardian
                 // 直接 return（见该方法的早退守卫），导致第二次及之后的嵌入失去脱嵌恢复保护.
                 if (!IsWindow(_flashHwnd))
                 {
-                    _flashHwnd = IntPtr.Zero;
+                    SetTrackedFlashWindow(IntPtr.Zero);
                     System.Windows.Forms.Timer dying = _watchdog;
                     _watchdog = null;
                     try { dying.Stop(); dying.Dispose(); } catch { }
@@ -802,7 +803,7 @@ namespace CF7Launcher.Guardian
                 }
             }
             catch (Exception ex) { LogManager.Log("[WindowManager] DetachFlash error: " + ex.Message); }
-            _flashHwnd = IntPtr.Zero;
+            SetTrackedFlashWindow(IntPtr.Zero);
         }
 
         /// <summary>
@@ -948,6 +949,9 @@ namespace CF7Launcher.Guardian
             PerfTrace.Mark("focus_restore.start", reason);
 
             IntPtr flashHwnd = expectedFlashHwnd;
+            bool Eligible() => IsCurrentFlashWindow(flashHwnd)
+                && (stillEligible == null || stillEligible())
+                && IsCurrentFlashWindow(flashHwnd);
             if (!IsCurrentFlashWindow(flashHwnd))
             {
                 LogManager.Log("[FocusRestore] " + reason + ": no flash hwnd, skip");
@@ -961,7 +965,7 @@ namespace CF7Launcher.Guardian
             double describeBeforeMs = ElapsedMs(describeStart);
             PerfTrace.Duration("focus_restore.describe_before", describeStart, reason);
 
-            if(stillEligible!=null && !stillEligible())return false;
+            if (!Eligible()) return false;
             // Pass 1：直接 SetForegroundWindow
             long pass1Start = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.pass1.start", reason);
@@ -976,7 +980,7 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[FocusRestore] " + reason + " pass1 SetForegroundWindow threw: " + ex.Message);
             }
-            if(stillEligible!=null && !stillEligible())return false;
+            if (!Eligible()) return false;
             try { using (PerfTrace.PanelScope("focus_restore.set_focus", reason)) _focusApi.SetFocus(flashHwnd); } catch { }
 
             IntPtr fgAfter1 =
@@ -992,7 +996,8 @@ namespace CF7Launcher.Guardian
             PerfTrace.Duration("focus_restore.pass1", pass1Start, reason);
             if ((!requireSetForegroundSuccess || sfwOk1)
                 && rootMatch1
-                && (!requireExactInnerFocus || innerMatch1))
+                && (!requireExactInnerFocus || innerMatch1)
+                && Eligible())
             {
                 describeStart = Stopwatch.GetTimestamp();
                 string fgAfter1Desc = DescribeWindow(fgAfter1);
@@ -1009,7 +1014,7 @@ namespace CF7Launcher.Guardian
                 return true;
             }
 
-            if(stillEligible!=null && !stillEligible())return false;
+            if (!Eligible()) return false;
             // Pass 2：AttachThreadInput hack
             long attachStart = Stopwatch.GetTimestamp();
             PerfTrace.Mark("focus_restore.attach.start", reason);
@@ -1019,37 +1024,36 @@ namespace CF7Launcher.Guardian
                 fgAfter1,
                 out fgPid2);
             bool attached = false;
-            if (fgTid != 0 && fgTid != myTid)
-            {
-                try
-                {
-                    attached = _focusApi.AttachThreadInput(
-                        myTid,
-                        fgTid,
-                        true);
-                }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw: " + ex.Message);
-                }
-            }
-            double attachMs = ElapsedMs(attachStart);
-            PerfTrace.Duration("focus_restore.attach", attachStart, reason + " attached=" + attached);
-
+            if (!Eligible()) return false;
+            double attachMs = 0;
             long pass2Start = Stopwatch.GetTimestamp();
-            PerfTrace.Mark("focus_restore.pass2.start", reason);
             bool sfwOk2 = false;
             try
             {
+                if (fgTid != 0 && fgTid != myTid)
+                {
+                    try { attached = _focusApi.AttachThreadInput(myTid, fgTid, true); }
+                    catch (Exception ex)
+                    {
+                        LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput attach threw; cleanup_unknown: " + ex.Message);
+                        return false;
+                    }
+                    if (!attached) return false;
+                }
+                // The compensation scope already exists before attach and all diagnostics.
+                attachMs = ElapsedMs(attachStart);
+                PerfTrace.Duration("focus_restore.attach", attachStart, reason + " attached=" + attached);
+                pass2Start = Stopwatch.GetTimestamp();
+                PerfTrace.Mark("focus_restore.pass2.start", reason);
+                if (!Eligible()) return false;
                 try
                 {
-                    if(stillEligible!=null && !stillEligible())return false;
                     sfwOk2 =
                         _focusApi.SetForegroundWindow(
                             flashHwnd);
                 }
                 catch { }
-                if(stillEligible!=null && !stillEligible())return false;
+                if (!Eligible()) return false;
                 try { _focusApi.SetFocus(flashHwnd); } catch { }
             }
             finally
@@ -1058,14 +1062,13 @@ namespace CF7Launcher.Guardian
                 {
                     try
                     {
-                        _focusApi.AttachThreadInput(
-                            myTid,
-                            fgTid,
-                            false);
+                        if (!_focusApi.AttachThreadInput(myTid, fgTid, false))
+                            LogManager.Log("[FocusRestore] " + reason
+                                + " pass2 AttachThreadInput detach returned false");
                     }
                     catch (Exception ex)
                     {
-                        // 这条若失败必须立刻报：输入队列绑死是进程级 bug，不会自愈
+                        // Preserve an unsuccessful cleanup result; it does not prove permanent attachment.
                         LogManager.Log("[FocusRestore] " + reason + " pass2 AttachThreadInput DETACH FAILED: " + ex.Message
                             + " (myTid=" + myTid + " fgTid=" + fgTid + ")");
                     }
@@ -1083,7 +1086,8 @@ namespace CF7Launcher.Guardian
             bool finalOk =
                 (!requireSetForegroundSuccess || sfwOk2)
                 && rootMatch2
-                && (!requireExactInnerFocus || innerMatch2);
+                && (!requireExactInnerFocus || innerMatch2)
+                && Eligible();
             describeStart = Stopwatch.GetTimestamp();
             string fgAfter1Desc2 = DescribeWindow(fgAfter1);
             string fgAfter2Desc = DescribeWindow(fgAfter2);

@@ -195,3 +195,11 @@ launcher/web/assets/cursor/native/review/
 
 # linkage_scanner 缓存输出 (跑一次 scan_linkage.py 即重新生成)
 tools/linkage_scanner/_last_output.txt
+
+# Rebuildable isolated panel lifecycle probe outputs; keep evidence on disk.
+tools/panel-lifetime-smoke/bin/
+tools/panel-lifetime-smoke/obj/
+tools/settings-recovery-smoke/bin/
+tools/settings-recovery-smoke/obj/
+tools/input-hook-diagnostic/bin/
+tools/input-hook-diagnostic/obj/

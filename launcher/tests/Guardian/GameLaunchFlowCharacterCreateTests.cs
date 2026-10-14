@@ -91,6 +91,57 @@ namespace CF7Launcher.Tests.Guardian
                 harness.Archive.SavesDir, slot + ".json")));
             Assert.True(File.Exists(solPath));
         }
+        [Fact]
+        public async System.Threading.Tasks.Task RecoveryAwareCreateWaitsForAdmissionAndKeepsSynchronousLaunchContract()
+        {
+            using var harness=new Harness();using var journal=harness.EnableSettingsRecovery();
+            harness.PreparePrewarmAttempt("attempt-recovery-create");
+            var result=await harness.Flow.OpenCharacterCreateWithRecoveryAsync("new",null,OpenRequestId);
+            Assert.True(result.ok,result.error);Assert.Equal("attempt-recovery-create",result.attempt);
+            Assert.True(SaveSlotKey.IsValid(result.slot));Assert.Equal("starting",harness.LastStatePhase());
+            var admission=GetPrivateField<SettingsRecoveryAdmission>(harness.Flow,"_settingsAdmission");
+            Assert.Equal(result.slot,admission.Context.Slot);Assert.True(admission.Allowed);
+        }
+        [Fact]
+        public async System.Threading.Tasks.Task RecoveryCreateResetCancelsDroppedUiCallbackWithoutLaunchingLater()
+        {
+            using var harness=new Harness();using var journal=harness.EnableSettingsRecovery();
+            harness.PreparePrewarmAttempt("attempt-cancelled-recovery");
+            Action queued=null;var dispatched=new System.Threading.Tasks.TaskCompletionSource<bool>(System.Threading.Tasks.TaskCreationOptions.RunContinuationsAsynchronously);
+            harness.Flow.SettingsRecoveryUiDispatchForTests=action=> { queued=action;dispatched.TrySetResult(true); };
+            var create=harness.Flow.OpenCharacterCreateWithRecoveryAsync("new",null,OpenRequestId);
+            await dispatched.Task.WaitAsync(TimeSpan.FromSeconds(5));
+            harness.Flow.Reset(null,"owned-recovery-cancel");
+            var result=await create.WaitAsync(TimeSpan.FromSeconds(5));
+            Assert.False(result.ok);Assert.Equal("launch_cancelled",result.error);
+            queued();Assert.Null(GetPrivateField<string>(harness.Flow,"_pendingSlot"));Assert.Empty(harness.As2);
+        }
+        [Fact]
+        public async System.Threading.Tasks.Task RecoveryCreateRefusesLiveContextBeforeColdReaderCanRetirePreparedJournal()
+        {
+            using var harness=new Harness();using var journal=harness.EnableSettingsRecovery();
+            const string slot="cf7_agent_live_settings";
+            var context=GetPrivateField<SaveResolutionContext>(harness.Flow,"_saveCtx").SettingsRecovery.Context(slot);
+            journal.Prepare(new SettingsWriteIntent(context,"owner","vm","op","base",7,new string('a',64)),"save.1");
+            harness.SetState(GameLaunchFlow.State.Ready);
+            var result=await harness.Flow.OpenCharacterCreateWithRecoveryAsync("rebuild",slot,OpenRequestId);
+            Assert.False(result.ok);Assert.Equal("not_idle",result.error);
+            Assert.Equal("Prepared",(string)journal.Read(context.ContextId)["rootOperationState"]);
+        }
+        [Fact]
+        public async System.Threading.Tasks.Task UnresolvedSettingsCannotRebuildOrLaunchLaterAfterRejection()
+        {
+            using var harness=new Harness();using var journal=harness.EnableSettingsRecovery();
+            const string slot="cf7_agent_rebuild_unknown";harness.SeedShadow(slot,"original",8);
+            var context=GetPrivateField<SaveResolutionContext>(harness.Flow,"_saveCtx").SettingsRecovery.Context(slot);
+            var record=journal.Prepare(new SettingsWriteIntent(context,"owner","vm","op","base",7,new string('a',64)),"save.1");
+            journal.ChangeAttempt(context.ContextId,"op","save.1",(long)record["sequence"],r=>r["currentAttempt"]["dispatchPhase"]="Dispatching");
+            harness.PreparePrewarmAttempt("attempt-blocked-create");
+            var result=await harness.Flow.OpenCharacterCreateWithRecoveryAsync("rebuild",slot,OpenRequestId);
+            Assert.False(result.ok);Assert.Equal("settings_operation_unresolved",result.error);
+            Assert.Null(GetPrivateField<string>(harness.Flow,"_pendingSlot"));Assert.Empty(harness.As2);
+            Assert.True(File.Exists(Path.Combine(harness.Archive.SavesDir,slot+".json")));
+        }
 
         [Fact]
         public void CreateFlow_LateDurableConvergesOnce_AndScenePacketIsFinalGate()
@@ -1441,6 +1492,15 @@ namespace CF7Launcher.Tests.Guardian
             }
 
             internal ArchiveTask Archive { get; }
+            internal SettingsWriteJournal EnableSettingsRecovery()
+            {
+                var journal=new SettingsWriteJournal(Path.Combine(_root,"owned-settings-journal"));
+                var saves=GetPrivateField<SaveResolutionContext>(Flow,"_saveCtx");
+                saves.SettingsRecovery=new SettingsRecoveryGate(journal,new SettingsRawSolReader(new SolFileLocator(_shareRoot),
+                    new NativeSolParser(),Path.Combine(_root,"raw-settings")),_root,_swfPath);
+                Flow.SettingsRecoveryUiDispatchForTests=action=>action();
+                return journal;
+            }
             internal GameLaunchFlow Flow { get; }
             internal List<JObject> Web { get; } = new List<JObject>();
             internal List<JObject> As2 { get; } = new List<JObject>();

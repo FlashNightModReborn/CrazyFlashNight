@@ -359,6 +359,7 @@
       ],
       "commands": [
         { "cmd": "snapshot", "action": "settingsSnapshot", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
+        { "cmd": "reconcile", "action": "settingsReconcile", "capability": "query", "access": "read", "businessDecisionOwner": "as2" },
         { "cmd": "preview", "action": "settingsPreviewAudio", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "apply", "action": "settingsApply", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },
         { "cmd": "cancel", "action": "settingsCancel", "capability": "transaction", "access": "write", "businessDecisionOwner": "as2" },

@@ -25,6 +25,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         testCount = 0;
         passedCount = 0;
         failedCount = 0;
+        TEST_SLOT = _root.__ownedSettingsSolConfig.slot ? _root.__ownedSettingsSolConfig.slot + "_storage"
+            : "cf7_env_storage_" + new Date().getTime() + "_" + Math.floor(Math.random()*1000000000);
 
         var itemCatalogReceipt:Object = beginDrugItemCatalogFixture();
         try {
@@ -1228,6 +1230,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             "drug_schema_v2_to_v3: seeds occupied affinity and strips session-only activeBank");
         assert(sm.initInventory().药剂栏.capacity == 8,
             "drug_schema_v2_to_v3: newly initialized drug inventory owns eight physical slots");
+        trace("[OWNED_FIXTURE_DIAG] drug capacity=" + sm.initInventory().药剂栏.capacity);
         assert(!sm.normalizeDrugLoadoutSchema(md).changed,
             "drug_schema_v2_to_v3: canonical v3 result remains stable on roundtrip");
     }
@@ -1478,6 +1481,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root.物品栏.装备栏.getItem("下装装备").name == "Andy工装裤"
                     && _root.物品栏.装备栏.getItem("脚部装备").name == "黑色板鞋",
                 "replace_context: starter equipment uses the real BaseItem and EquipmentInventory path");
+            trace("[OWNED_FIXTURE_DIAG] starter names=" + _root.物品栏.装备栏.getItem("上装装备").name
+                + "," + _root.物品栏.装备栏.getItem("下装装备").name + "," + _root.物品栏.装备栏.getItem("脚部装备").name);
             assert(_root.主角技能表.length == 80 && _root.主角技能表[0][0] == ""
                     && _root.商城购物车.length == 0 && _root.宠物信息[0].length == 0
                     && _root._saveExt.isolationProbe == undefined
@@ -1883,7 +1888,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
 
     // ── Phase 3: loadAll JSON+SO overlay 测试 helpers ──
 
-    private static var TEST_SLOT:String = "__sm_test__";
+    private static var TEST_SLOT:String;
 
     /**
      * seed 真实 SO 用于 loadAll 测试。

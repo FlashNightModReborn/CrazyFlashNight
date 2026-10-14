@@ -792,7 +792,7 @@ namespace CF7Launcher.Guardian
                     LogManager.Log("[FgWatchdog] foreground vacuum detected, reclaiming Flash foreground"
                         + " claim=" + _vacuumWatchdogPolicy.LastClaimSource);
                     _windowManager.RestoreFlashInputFocus("fg_watchdog:vacuum",
-                        ()=>_vacuumWatchdogPolicy.RecheckEligibility(_windowManager.GetForegroundOwnership()));
+                        ()=>GameInputOwnerEligible() && _vacuumWatchdogPolicy.RecheckEligibility(_windowManager.GetForegroundOwnership()));
                 }
                 else if (decision == ForegroundVacuumWatchdogPolicy.Decision.Observe)
                 {
@@ -847,13 +847,24 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        internal Func<bool> GameInputOwnerEligible = () => true;
+        internal void BindPanelEscapeCapture(Func<Action> capture) { if(_kbHook!=null)_kbHook.CapturePanelEscapeAction=capture; }
+        internal bool HasNativeEditFocus()
+        {
+            Form active=Form.ActiveForm;
+            if(active!=null && active!=this && active.Owner==this && active.Modal)return true;
+            Control control=active?.ActiveControl;
+            while(control is ContainerControl container && container.ActiveControl!=null)control=container.ActiveControl;
+            return control is TextBoxBase or ComboBox or NumericUpDown or DataGridView;
+        }
         public void SendKeyToFlash(Keys key)
         {
             // 经 RestoreFlashInputFocus primitive 拉回前台 + 焦点（带 AttachThreadInput 兜底 + verify + 日志）；
             // ctrl_combo 路径 keybd_event 是全局注入，必须先确认 Flash 真的在前台——否则按键命中
             // 当前 fg（可能是 launcher 主窗口 / 用户切走的其他应用），引发误操作。
             // primitive 内部已打 [FocusRestore] 详细日志，此处失败时只补一条 skip 摘要。
-            bool focusOk = (_windowManager != null) && _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key);
+            bool focusOk = GameInputOwnerEligible() && (_windowManager != null)
+                && _windowManager.RestoreFlashInputFocus("ctrl_combo:" + key, GameInputOwnerEligible);
             if (!focusOk)
             {
                 LogManager.Log("[Input] Skip Ctrl+" + key + " injection: focus restore failed");

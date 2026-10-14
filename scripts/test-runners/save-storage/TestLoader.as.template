@@ -1,3 +1,5 @@
-﻿trace("FocusedTestRunId save-storage Start: __FOCUSED_RUN_ID__");
+﻿// Resolve the shared BaseItem dependency before traversing derived inventory classes.
+var ownedItemDependency:Function = org.flashNight.arki.item.BaseItem;
+trace("FocusedTestRunId save-storage Start: __FOCUSED_RUN_ID__");
 org.flashNight.neur.Server.test.SaveManagerTest.runAllTests();
 trace("FocusedTestRunId save-storage Complete: __FOCUSED_RUN_ID__");

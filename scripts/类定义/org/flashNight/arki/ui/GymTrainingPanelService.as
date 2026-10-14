@@ -1,5 +1,7 @@
 ﻿import org.flashNight.arki.ui.GymPreviewProjection;
 
+import org.flashNight.neur.Server.SaveManager;
+
 /** 健身训练的 AS2 权威会话。未完成时只保留内存状态；完成时一次性扣费、发奖并严格保存。 */
 class org.flashNight.arki.ui.GymTrainingPanelService {
     private static var _installed:Boolean = false;
@@ -7,6 +9,8 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
     private static var _open:Object = null;
     private static var _session:Object = null;
     private static var _last:Object = null;
+    private static var _lastOwner:Object = null;
+    private static var _lastSlot:String = null;
     private static var _json:LiteJSON;
     private static var _testNow:Number = -1;
     private static var MAX_SAFE_INTEGER:Number = 9007199254740991;
@@ -76,6 +80,7 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
             return fail(operation, "invalid_payload", params);
         }
         if (_last != null && params.sessionToken === _last.sessionToken) {
+            if (_lastOwner !== _root.存档系统 || _lastSlot !== String(_root.savePath)) return fail(operation, "context_changed", params);
             return copyResult(_last, operation);
         }
         if (_session == null || params.sessionToken !== _session.token) {
@@ -223,17 +228,21 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
 
     private static function savePrepared(operation:String):Object {
         if (!sameSaveContext()) return fail(operation, "context_changed", {sessionToken:_session.token});
+        var s:Object = _session;
+        if (!SaveManager.getInstance().settingsWriteAllowed()) return resultFor(s, operation);
+        var serial:Number = SaveManager.getInstance().fullSaveSerial();
         var saved:Boolean = false;
-        try { saved = _root.存档系统.flushDurableNow("ui.gym_training_paid") === true; }
-        catch (saveError) { trace("[GymTraining] durable save pending"); }
+        try { saved = s.saveOwner.flushDurableNow("ui.gym_training_paid") === true; }
+        catch (saveError) { saved = SaveManager.getInstance().fullSaveConfirmedAfter(serial, s.saveOwner, s.slotKey); }
         if (saved) {
-            _session.phase = "applied";
-            projectSavedState(_session);
+            s.phase = "applied";
         }
-        var response:Object = resultFor(_session, operation);
+        var response:Object = resultFor(s, operation);
         if (saved) {
             _last = copyResult(response, "finish");
-            _session = null;
+            _lastOwner = s.saveOwner; _lastSlot = s.slotKey;
+            if (_session === s) _session = null;
+            projectSavedState(s);
         }
         return response;
     }
@@ -245,7 +254,8 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
                 _root.投影已提交任务成长(session.levelBefore);
             } else {
                 // 完成保存后，同场景的普通属性训练立即重算当前角色；升级已走成长投影。
-                if (session.award.kind == "stat" && sameSessionContext()) {
+                if (session.award.kind == "stat" && session.saveOwner === _root.存档系统
+                        && session.slotKey === String(_root.savePath) && session.world === _root.gameworld) {
                     var actor:MovieClip = session.actor;
                     if (actor != null && actor.hasDressup === true
                             && typeof actor.根据模式重新读取武器加成 == "function") {
@@ -395,7 +405,7 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
     }
 
     private static function saveAvailable():Boolean {
-        return _root.允许存档 === true && _root.存档系统 != undefined
+        return SaveManager.getInstance().settingsWriteAllowed() && _root.允许存档 === true && _root.存档系统 != undefined
             && typeof _root.存档系统.markDirty == "function"
             && typeof _root.存档系统.flushDurableNow == "function"
             && typeof _root.记录玩家货币变化 == "function";
@@ -465,6 +475,6 @@ class org.flashNight.arki.ui.GymTrainingPanelService {
 
     public static function _setNowForTests(value:Number):Void { _testNow = value; }
     public static function _resetForTests():Void {
-        _open = null; _session = null; _last = null; _testNow = -1;
+        _open = null; _session = null; _last = null; _lastOwner = null; _lastSlot = null; _testNow = -1;
     }
 }

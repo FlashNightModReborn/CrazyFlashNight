@@ -42,7 +42,7 @@ function staticAudit() {
         || !panel.includes("expectedCurrentHair: expectedCurrent")
         || !panel.includes('snapshot.currentHair === expected')
         || !panel.includes('refreshSnapshot(true)')
-        || !panel.includes("Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser'})")) {
+        || !panel.includes("Bridge.send({type: 'panel', cmd: 'close', panel: 'hairdresser', panelInstanceId: _closePanelInstanceId})")) {
         throw new Error('snapshot/local-preview/commit/reconcile/close flow missing');
     }
     if (!panel.includes("fitFields: _previewFields")

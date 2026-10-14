@@ -1200,9 +1200,10 @@ var IntelligencePanel = (function() {
     }
 
     function doClose() {
+        var instance = _panelInstanceId;
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
         Panels.close();
-        Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence' });
+        Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence', panelInstanceId: instance });
     }
 
     function requestCharacterBuild() {

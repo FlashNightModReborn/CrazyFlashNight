@@ -74,6 +74,7 @@ namespace CF7Launcher.Save
                 string slot = Path.GetFileNameWithoutExtension(files[i]);
                 SaveAutoRepairResult r = new SaveAutoRepairResult();
                 r.Slot = slot;
+                if(!archiveTask.CanMutateSlot(slot)) { r.Error="settings_recovery_required";results.Add(r);continue; }
                 try
                 {
                     RepairOneSlot(savesDir, slot, files[i], dict, r);

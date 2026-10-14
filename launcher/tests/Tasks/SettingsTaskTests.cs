@@ -1,3 +1,4 @@
+using CF7Launcher.Tests.Guardian;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,7 @@ using Xunit;
 
 namespace CF7Launcher.Tests.Tasks
 {
+    [ResourceCaseGuard]
     public sealed class SettingsTaskTests
     {
         private static readonly string[] KeyIds = new[]
@@ -487,6 +489,31 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void FailedApplySnapshotCannotBypassDurabilityContract(bool durable)
+        {
+            using (var h = new Harness())
+            {
+                JObject sent = h.Send("apply", ApplyPayload());
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response["operation"] = "apply";
+                response["success"] = false;
+                response["applied"] = true;
+                response["durable"] = durable;
+                response["needsSaveRetry"] = true;
+                response["error"] = "save_failed";
+                h.Task.HandleFlashResponse(response, delegate { });
+                JObject web = Assert.Single(h.Web);
+                Console.WriteLine("constructed apply contradiction: success=false durable=" + durable
+                    + " acceptedError=" + web.Value<string>("error")
+                    + " reconcile=" + web.Value<bool?>("requiresReconcile"));
+                Assert.Equal(durable ? "malformed_response" : "save_failed", web.Value<string>("error"));
+                if (durable) Assert.True(web.Value<bool>("requiresReconcile"));
+            }
+        }
+
         [Fact]
         public void MalformedSuccessfulApply_IsRejectedBeforeWebAdoption()
         {
@@ -816,6 +843,53 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
+        [Fact]
+        public void FailedStaleStateAuthoritySnapshotRemainsOrdinaryUnappliedFailure()
+        {
+            using (var h = new Harness())
+            {
+                JObject sent = h.Send("apply", ApplyPayload());
+                JObject response = SnapshotResponse(sent.Value<int>("callId"));
+                response["operation"] = "apply";
+                response["success"] = false;
+                response["applied"] = false;
+                response["revision"] = 7;
+                response["error"] = "stale_state";
+                h.Task.HandleFlashResponse(response, delegate { });
+                JObject web = Assert.Single(h.Web);
+                Assert.Equal("stale_state", web.Value<string>("error"));
+                Assert.False(web.Value<bool>("applied"));
+                Assert.Equal(7, web.Value<int>("revision"));
+                Assert.Null(web["requiresReconcile"]);
+                Assert.Equal(response["keys"], web["keys"]);
+            }
+        }
+
+        [Theory]
+        [InlineData(0)][InlineData(1)][InlineData(2)][InlineData(3)][InlineData(4)][InlineData(5)]
+        [InlineData(6)][InlineData(7)][InlineData(8)][InlineData(9)][InlineData(10)]
+        public void RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(int shape)
+        {
+            using(var h=new Harness()){
+                var sent=h.Send("apply",ApplyPayload());var r=SnapshotResponse(sent.Value<int>("callId"));
+                r["operation"]="apply";r["success"]=false;r["applied"]=false;r["error"]="stale_state";
+                bool malformed=shape>=3;
+                if(shape==1)r.Remove("applied");
+                if(shape==2){r=new JObject{["task"]="settings_response",["v"]=1,["callId"]=sent["callId"],["success"]=false,["operation"]="apply",["applied"]=false,["error"]="invalid_settings"};}
+                if(shape==3)r.Remove("revision");
+                if(shape==4)r["applied"]=new JObject{["bogus"]=true};
+                if(shape==5)r["keySchemaVersion"]="2";
+                if(shape==6)r["success"]="false";
+                if(shape==7)r["keys"]=new JArray();
+                if(shape==8){r["applied"]=true;r["durable"]=false;r["needsSaveRetry"]=true;r["error"]="save_failed";r.Remove("keys");r.Remove("keySchemaVersion");}
+                if(shape==9){r["applied"]=true;r["durable"]=true;r["needsSaveRetry"]=false;r["error"]="save_failed";}
+                if(shape==10)r["error"]=new JObject{["text"]="stale_state"};
+                Exception e=Record.Exception(()=>h.Task.HandleFlashResponse(r,delegate{}));Assert.Null(e);
+                var response=Assert.Single(h.Web);
+                Assert.Equal(malformed?"malformed_response":shape==2?"invalid_settings":"stale_state",response.Value<string>("error"));
+                if(malformed){Assert.True(response.Value<bool>("requiresReconcile"));h.Web.Clear();h.Send("save",new JObject{["v"]=1},"after.bad");Assert.Equal("reconcile_required",Assert.Single(h.Web).Value<string>("error"));}
+            }
+        }
         private static JObject ApplyPayload()
         {
             var keys = new JArray();

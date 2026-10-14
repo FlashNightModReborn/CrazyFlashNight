@@ -281,6 +281,9 @@ Settings 必须是 36 行、`keySchemaVersion=2`，保留历史占用 `6` 的动
 
 Settings 写锁存/迟到 snapshot 的持久写合同见 [持久写与恢复](#save)。
 
+**Settings authority v2 增量门**（最后核对代码基线：commit `80ec29beda236eb26de37885383e7c2e837cf8d8` 加本批未提交修复）：运行 `scripts/run-settings-authority-model-tests.ps1`、`scripts/run-settings-components-tests.ps1` 与 `scripts/run-settings-storage-boundary-tests.ps1`。存储入口依次使用独立 SaveManager、reward 与 native SOL TestLoader 闭包，按各 runner 的精确 suite 断言取证；不能把循环引用导致的组合闭包继承失败当成生产库存结论，也不能减断言绕过。独立自有 editor 由入口记录身份并通过既有编译协议关闭；原始失败 SWF、Compiler、Output/trace 和 SOL 不覆盖。
+Host 另覆盖 `SettingsAuthorityTaskTests`、`SettingsColdRecoveryTests`，检查 journal 先落盘再发业务、仅保存重试、晚到 exact 终态清理原回调且不触碰新 owner。真实 raw SOL 冷读与新旧候选矩阵使用 [settings recovery smoke](../tools/settings-recovery-smoke/README.md) 的自有槽；未来 schema/非整数等反例必须阻断，不合格旧版不得成为业务回滚候选。浏览器、冷读与候选启动分别记证，不代签真实 Bridge 的重开/重启或收费奖励旅程。
+
 新增或修改公开 Web 可写设置字段时，字段权威与白名单边界归 [运行时配置节](../launcher/README.md#运行时配置) 的用户偏好注册表：公开 Web 写入必须经 `config_set` 白名单，Host-only 字段不得因前端同名而获得写权限；注册表与面板注册的精确集合由文档巡检机器门核对，新增字段须同步登记。
 
 <a id="suite-character-build"></a>
@@ -436,9 +439,11 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 <a id="suite-scene-transition"></a>
 ### U12 游戏内过场
 
+显示就绪修正（最后核对代码基线：commit `b98b6303aa409e76086e50f24cb1cfed00408204` 加 2026-10-14 工作区）增加 `SceneTransitionResumeTests`。AS2 suite 覆盖背景未完成、成功烘焙先于原容器卸载、真实帧边界、错误目标、同路径新 ticket、世界身份替换、加载失败/同步拒绝/期限及迟到回调；Host 覆盖新揭幕捕获围栏、保留关闭画面、等待期间重复 close、foreign scene、新过场取代和唯一焦点尾部；浏览器验证报告在 exact Host close 前保留且 inert，旧/foreign close 不隐藏新视图。上述夹具不等于实际 Flash 背景加载或游戏物理像素验收。
+
 背景来源先运行 `node tools/generate-scene-transition-catalog.js --check`；AS2 运行 `scripts/run-scene-transition-tests.ps1`，时间轴/初始化交接另运行 `node tools/test-scene-transition-stage-entry.js` 执行生产第 17 帧和副本 admission 的公共控制流子集，该源码夹具不替代真实 AVM1 或游戏旅程。Host 定向 `SceneTransitionTaskTests`，Web 运行 `node tools/test-scene-transition.js`；并行报告追加 `node launcher/web/modules/loot/dev/run-harness.js`，核原完整 View/生产 CSS、预览零业务命令、covered 后既有 Loot/库存提前操作、exact 实例准入、原帮助/关闭和每请求只接通一次。加载结束须保持同一 DOM/Core/HWND、阅读状态和业务模型，仅更新就绪能力；不以四项状态复制替代共用页面。未知 claim/close、失败重试、场景编号变化及重复 hide 均须覆盖。共享合成窗口和世界指针路由变化追加 `launcher/tests/run_tests.ps1` 全量回归；实际合成使用 `tools/run-scene-transition-smoke.ps1 -OutputDirectory <新的 tmp 子目录> -CandidateRoot <隔离候选目录>`，先核完整性并绑定该候选 DLL，与 GUI 编译/其他窗口测试错开。
 
-结算预览须核大/小及非 16:9 窗口的首次显示、基地未就绪期间的同表面调整尺寸、关闭/双栏/底部操作位置；外层缩放只应用一次，不能只测比例为 1 的 1024×576。真实合成夹具分开记录 DOM 几何、屏幕像素和呈现回执，窗口最小化恢复与实际游戏交接观感仍留人验。
+结算预览须核大/小及非 16:9 窗口的首次显示、基地未就绪期间的同表面调整尺寸、关闭/双栏/底部操作位置；外层缩放只应用一次，不能只测比例为 1 的 1024×576。真实合成夹具分开记录 DOM 几何、屏幕像素和呈现回执；后台启动时可在初始 20 秒资格窗口内选中任务栏的 `U12 isolated composition probe`，未取得自身前台资格仍失败，不据 DOM 状态认定屏幕通过。窗口最小化恢复与实际游戏交接观感仍留人验。
 
 报告接通/关闭必须覆盖两段异步时序：真实 WebView2 已发出的自动意图先被夹具截留，Host 的 loading/reveal 显示前进后原样释放；真实 AVM1 则在 Host 形成意图后推进加载/提示再交付 AS2。接通与提前/就绪/exact 业务关闭均须首次迟到消息就生效，不能由第二次发送掩盖。已经接受的 covered 证明可在同请求内保留，foreign/generation/未来或畸形 revision、无 coverage 与未知锁仍拒绝，失败导航和世界呈现维持 exact revision。实际游戏另验同一进程连续至少三次返回，不由夹具次数代签。
 
@@ -630,7 +635,7 @@ AS2 覆盖三模式礼包、stale/满容量零写、回执查询、64-occurrence
 
 **书中返回与终战增援**：`scripts/run-bookshelf-tests.ps1` 覆盖旧世界销毁后换档、临时结算保存门、原角色 SP 单次回流、新编辑令牌、死亡升级/拾取保护及有限援军的间隔、上限、暂停、死亡取消和晚到加载；`scripts/run-map-loot-tests.ps1` 调用生产返回函数，区分书中直接换回原角色与普通关卡医务室路线。`node tools/run-bookshelf-flow-harness.js` 在三个视口验证核对后无需关窗重开、新快照失败重读、未知写仅查询与自动返回；与 `BookshelfTaskTests` 配合检查跨层回执。模拟存储和浏览器不代替实机完整旅程、保存重启或真人难度验收。
 
-**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。旧奖励回归：`scripts/run-reward-stash-tests.ps1`（机器钉死 114/114），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。
+**统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（当前机器钉值以 runner 为准，120/120），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
 Web/Host 入口、已替换的旧产品合同、20 样本的观测边界与候选验收状态见 [暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
 
 **Reward H-A 隔离测试档门**：人工跨重启验收只允许使用 `cf7_agent_reward_root_acceptance_v1` 等专用 `cf7_agent_*` 槽，玩家现役 `crazyflasher7_saves*` 只能作只读 seed。
@@ -826,7 +831,7 @@ cycle 必须从 AS2 源精确派生并收到 14 个 summary 与各自 raw sample
 
 ### Host/Web 权威与生命周期门
 
-Settings 必跑 `node tools/run-settings-panel-harness.js` 与 `SettingsTaskTests`，固定覆盖非 preview 写的 timeout、DeliveryUnknown、malformed success 均进入 reconcile，且 `ambiguous → close/rebind → 写仍拒绝 → 锁存后有效 snapshot 放行`；锁存前发出的迟到 snapshot 不得解锁，cancel 半恢复保留基线与可见重试，不得自动重放或显示确定未执行。
+Settings 必跑 `node tools/run-settings-panel-harness.js`、`SettingsTaskTests` 与 `SettingsAuthorityTaskTests`，固定覆盖非 preview 写的 timeout、DeliveryUnknown、malformed success 均进入 reconcile，且 `ambiguous → close/rebind → 写仍拒绝 → exact operation/owner/epoch/attempt 对账才可收束`。authority v2 的普通 snapshot、关窗或换会话均不得解除未知写锁；旧兼容协议的 snapshot 测试不能代签 v2。Prepared/Dispatching 必须先可靠落 journal，普通设置快照不构成 durable receipt；apply 已执行但保存未确认时仅保存同一目标，不重做 apply。锁存前发出的迟到 snapshot 不得解锁，cancel 半恢复保留基线与可见重试，不得自动重放或显示确定未执行；启动冷读缺记录/坏记录/未来 schema 均保守禁写。
 Team/Pet/Merc 必跑 `node tools/run-team-harness.js`、`node tools/test-panel-runtime.js`、`PetTaskTests`、`MercTaskTests` 与 `WebOverlayFormPanelCloseTests`；两域请求须携 active Team instance，回包须同时匹配 instance、pending callId 与 cmd，foreign/inactive/stale/错命令均拒绝，replacement 清旧 pending，迟到回包不可写新文档。
 Pet/Merc 的 exact mutation 在 `client_timeout / timeout / delivery_unknown` 后必须锁存同一因果 epoch、跨 close/rebind 拒绝继续写并自动读取 fresh snapshot；未知写之前的 snapshot、旧 instance 回包或失败 snapshot 均不得解锁，`not_sent / panel_instance_expired` 与普通业务失败则不得误锁或自动重放。Team/blackmarket/warlord close 等 Host exact acknowledgment；
 确认丢失 3 秒后只恢复重试，不本地关闭，迟到 A 不关闭 B；旧 `panel:pets|mercs/cmd:close` 必须 fail-closed。blackmarket 另跑 browser harness、`run-minigame-qa --game blackmarket` 与 panel-close tests，exact close 不改变 `shadowOnly`；

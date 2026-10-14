@@ -1,5 +1,6 @@
 ﻿import org.flashNight.arki.ui.PanelRequestEnvelope;
 import org.flashNight.arki.scene.StageReturnFlow;
+import org.flashNight.neur.Server.SaveManager;
 
 /** 车库一次性购车。沿用付费服务的 token 和待保存处理，AS2 保留扣费与基建权威。 */
 class org.flashNight.arki.ui.GaragePurchasePanelService {
@@ -87,6 +88,7 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
     }
 
     private static function contextError():String {
+        if (!SaveManager.getInstance().settingsWriteAllowed()) return "settings_recovery_required";
         if (_root.gameworld[_root.控制目标] == undefined) return "actor_unavailable";
         if (_root.基建系统.infrastructure == undefined) return "infrastructure_unavailable";
         if (typeof _root.金钱 != "number" || isNaN(_root.金钱) || _root.金钱 < 0
@@ -100,14 +102,17 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
         var level:Number = Number(_root.主角被动技能.驾驶.等级);
         return isNaN(level) || level < 0 || level > 9007199254740991 ? 0 : Math.floor(level);
     }
-    private static function owned():Boolean { return Number(_root.基建系统.infrastructure[_session.vehicle.name]) >= 1; }
+    private static function owned(session:Object):Boolean {
+        var source:Object = session == null ? _session : session;
+        return source != null && Number(_root.基建系统.infrastructure[source.vehicle.name]) >= 1;
+    }
     private static function sameContext():Boolean {
         return _session != null && _session.saveOwner === _root.存档系统 && _session.slotKey === String(_root.savePath)
-            && (_session.phase == "save_pending" || _session.worldIdentity === StageReturnFlow.worldIdentity(_root.gameworld));
+            && (_session.phase == "save_pending" || _session.phase == "apply_unknown" || _session.worldIdentity === StageReturnFlow.worldIdentity(_root.gameworld));
     }
 
     private static function snapshot(id:String):Object {
-        if (_session != null && _session.phase == "save_pending") {
+        if (_session != null && (_session.phase == "save_pending" || _session.phase == "apply_unknown")) {
             if (!sameContext()) return fail("context_changed");
             return state("snapshot");
         }
@@ -124,21 +129,25 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
         return state("snapshot");
     }
 
-    private static function state(operation:String):Object {
-        var vehicle:Object = _session.vehicle;
-        var hasVehicle:Boolean = owned();
-        if (hasVehicle && _session.phase == "editing") _session.phase = "owned";
-        var result:Object = {success:_session.phase != "save_pending", v:1, operation:operation,
-            token:_session.token, phase:_session.phase, vehicleId:vehicle.id, draft:{vehicleId:vehicle.id},
+    private static function state(operation:String, session:Object):Object {
+        var s:Object = session == null ? _session : session;
+        var vehicle:Object = s.vehicle;
+        var hasVehicle:Boolean = owned(s);
+        if (hasVehicle && s.phase == "editing") s.phase = "owned";
+        var result:Object = {success:s.phase != "save_pending" && s.phase != "apply_unknown", v:1, operation:operation,
+            token:s.token, phase:s.phase, vehicleId:vehicle.id, draft:{vehicleId:vehicle.id},
             name:vehicle.name, description:vehicle.description, cost:vehicle.cost, requiredDrivingLevel:vehicle.required,
             drivingLevel:drivingLevel(), balance:Number(_root.金钱), owned:hasVehicle,
             canPurchase:!hasVehicle && _root.金钱 >= vehicle.cost && drivingLevel() >= vehicle.required,
-            changed:_session.phase == "save_pending" || _session.phase == "applied", saved:_session.phase == "applied"};
-        if (_session.phase == "save_pending") result.error = "save_pending";
+            changed:s.phase == "save_pending" || s.phase == "applied" || s.phase == "apply_unknown", saved:s.phase == "applied"};
+        if (s.phase == "save_pending") result.error = "save_pending";
+        if (s.phase == "apply_unknown") { result.error = "apply_ambiguous"; result.applied = null; result.canPurchase = false; }
         return result;
     }
 
     private static function commit(params:Object):Object {
+        var s:Object = _session;
+        if (s.phase == "apply_unknown") return state("commit", s);
         if (params.draft.vehicleId !== _session.vehicle.id) return fail("token_conflict");
         if (_session.phase == "save_pending") return savePrepared();
         var invalid:String = contextError();
@@ -151,25 +160,35 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
         if (drivingLevel() < current.required) return fail("driving_required");
         if (_root.金钱 < current.cost) return fail("insufficient_funds");
         _root.存档系统.markDirty();
-        _session.phase = "save_pending";
-        _root.金钱 -= current.cost;
-        _root.基建系统.infrastructure[current.name] = 1;
+        s.phase = "apply_unknown";
+        try {
+            _root.金钱 -= current.cost;
+            _root.基建系统.infrastructure[current.name] = 1;
+            if (_session !== s || s.saveOwner !== _root.存档系统 || s.slotKey !== String(_root.savePath)) return fail("context_changed");
+            s.phase = "save_pending";
+        } catch (applyError) { return state("commit", s); }
         var reason:String = current.id == "bicycle" ? "buy_bicycle" : current.id == "motorcycle" ? "buy_motorcycle" : "buy_offroad";
-        _root.记录玩家货币变化(-current.cost, 0, {source:"vehicle_service", reason:reason, mergeScope:"operation", operationId:_session.token});
-        return savePrepared();
+        try { _root.记录玩家货币变化(-current.cost, 0, {source:"vehicle_service", reason:reason, mergeScope:"operation", operationId:s.token}); }
+        catch (feedError) { trace("[GaragePurchase] currency notification failed after authority write"); }
+        return savePrepared(s);
     }
 
-    private static function savePrepared():Object {
-        if (!sameContext() || !owned()) return fail("context_changed");
+    private static function savePrepared(session:Object):Object {
+        var s:Object = session == null ? _session : session;
+        if (s == null || s.saveOwner !== _root.存档系统 || s.slotKey !== String(_root.savePath) || !owned(s)) return fail("context_changed");
+        if (!SaveManager.getInstance().settingsWriteAllowed()) return state("commit", s);
+        var serial:Number = SaveManager.getInstance().fullSaveSerial();
         var saved:Boolean = false;
-        saved = _root.存档系统.flushDurableNow("ui.garage_purchase_paid") === true;
-        if (saved) { _session.phase = "applied"; return finish(); }
-        return state("commit");
+        try { saved = s.saveOwner.flushDurableNow("ui.garage_purchase_paid") === true; }
+        catch (saveError) { saved = SaveManager.getInstance().fullSaveConfirmedAfter(serial, s.saveOwner, s.slotKey); }
+        if (saved) { s.phase = "applied"; return finish(s); }
+        return state("commit", s);
     }
-    private static function finish():Object {
-        var result:Object = state("commit");
-        _last = copyResult(result, "commit"); _lastOwner = _session.saveOwner; _lastSlot = _session.slotKey;
-        _session = null;
+    private static function finish(session:Object):Object {
+        var s:Object = session == null ? _session : session;
+        var result:Object = state("commit", s);
+        _last = copyResult(result, "commit"); _lastOwner = s.saveOwner; _lastSlot = s.slotKey;
+        if (_session === s) _session = null;
         return result;
     }
     private static function copyResult(source:Object, operation:String):Object {

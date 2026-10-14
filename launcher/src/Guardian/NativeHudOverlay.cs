@@ -896,9 +896,14 @@ namespace CF7Launcher.Guardian
 
         protected override void WndProc(ref Message m)
         {
-            if (IsFocusMouseMessage(m.Msg) && HasQueuedPointerTimestamp())
+            bool pointer = IsFocusMouseMessage(m.Msg);
+            var traceLease = pointer ? FocusTrace.TryCaptureLease() : null;
+            _pointerSourceSucceeded = null; _pointerSourceDevice = _pointerSourceOrigin = null; _pointerSourceFailure = null;
+            bool queued = pointer && HasQueuedPointerTimestamp();
+            uint pointerTime = pointer ? (queued ? QueuedPointerMessageTime() : unchecked((uint)GetMessageTime())) : 0;
+            if (pointer && queued)
             {
-                uint messageTime = QueuedPointerMessageTime();
+                uint messageTime = pointerTime;
                 long packed = m.LParam.ToInt64();
                 Point point = PointToScreen(new Point((short)packed, (short)(packed >> 16)));
                 var decision = HitTestScreen(point) as RightContextWidget;
@@ -950,9 +955,11 @@ namespace CF7Launcher.Guardian
             if (FocusTrace.Enabled && IsFocusMouseMessage(m.Msg))
             {
                 long started = System.Diagnostics.Stopwatch.GetTimestamp();
-                TraceFocusNativeMouse(m, "enter", started);
-                try { base.WndProc(ref m); }
-                finally { TraceFocusNativeMouse(m, "exit", started); }
+                NativeMouseFocusSample sample = TraceFocusNativeMouse(m, "enter", started, lease: traceLease,
+                    available: queued, messageTime: pointerTime);
+                string dispatchOutcome = "threw";
+                try { base.WndProc(ref m); dispatchOutcome = "returned"; }
+                finally { TraceFocusNativeMouse(m, "exit", started, sample, outcome: dispatchOutcome); }
                 return;
             }
             base.WndProc(ref m);

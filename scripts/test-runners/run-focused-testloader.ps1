@@ -25,6 +25,8 @@ param(
     [switch]$SkipCompile,
     [switch]$AutoStopReadOnlyPlayer,
     [switch]$OwnedReadOnlyHost,
+    [switch]$OwnedDisposableSolHost,
+    [string]$SolFixtureConfigPath = '',
     [switch]$ExportAssetBitmaps
 )
 
@@ -169,6 +171,8 @@ if ($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost) {
         'infrastructure-debt' = 'org.flashNight.dev.InfrastructureDebtTest,org.flashNight.dev.InventorySortDebtTest,org.flashNight.dev.ProductionDomainDebtTest'
         'scheduler-debt' = 'org.flashNight.dev.SchedulerDebtTest'
         'scheduler-boundary' = 'org.flashNight.dev.SchedulerBoundaryTest'
+        'settings-authority-model' = 'org.flashNight.neur.Server.test.SettingsAuthorityModelTest'
+        'settings-components' = 'org.flashNight.arki.ui.GameSettingsPanelServiceTest,org.flashNight.arki.ui.GaragePurchasePanelServiceTest,org.flashNight.arki.ui.GymTrainingPanelServiceTest,org.flashNight.neur.Server.test.SettingsAuthorityComponentTest'
         'swf-authority-debt' = 'org.flashNight.dev.SWFAuthorityDebtTest'
         'student-load-probe' = 'org.flashNight.dev.StudentLoadProbeTest'
         'student-repair' = 'org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest'
@@ -182,6 +186,21 @@ if ($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost) {
         $CompileTargetRelativePath -or $AdditionalAsRelativePaths.Count -gt 0) {
         throw 'Automatic player cleanup is restricted to the reviewed read-only debt fixtures.'
     }
+}
+if ($OwnedDisposableSolHost) {
+    $ownedSolSuites=@{
+        'settings-sol-boundary'='org.flashNight.neur.Server.test.SettingsOwnedSolTest'
+        'settings-storage-boundary'='org.flashNight.arki.item.RewardStashServiceTest,org.flashNight.neur.Server.test.SaveManagerTest,org.flashNight.neur.Server.test.SettingsOwnedSolTest'
+    }
+    if($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost -or !$ownedSolSuites.ContainsKey($DomainId) `
+        -or ($SuiteFqns -join ',') -cne $ownedSolSuites[$DomainId] `
+        -or $TemplateRelativePath -cne ('scripts/test-runners/'+$DomainId+'/TestLoader.as.template') `
+        -or $CompileTargetRelativePath -or $AdditionalAsRelativePaths.Count -gt 0) { throw 'Owned SOL host is restricted to the reviewed unique-slot fixture.' }
+    if(@(Get-Process -Name Flash -ErrorAction SilentlyContinue).Count -gt 0) { throw 'Owned SOL host requires a fresh editor; existing editors are preserved.' }
+    $solFixtureJson=[IO.File]::ReadAllText((Resolve-Path -LiteralPath $SolFixtureConfigPath).Path,[Text.Encoding]::UTF8)
+    $solFixture=$solFixtureJson | ConvertFrom-Json
+    if($solFixture.slot -cnotmatch '^cf7_env_set_[0-9a-f]{20}$' -or $solFixture.metadata.slot -cne $solFixture.slot `
+        -or $solFixture.metadata.protocol -ne 2 -or $solFixtureJson.Length -gt 16384) { throw 'Invalid owned SOL fixture identity.' }
 }
 
 try {
@@ -215,6 +234,7 @@ try {
     Copy-Item -LiteralPath $templatePath -Destination $runnerPath -Force
     $runnerText = [System.IO.File]::ReadAllText(
         $runnerPath, [System.Text.Encoding]::UTF8)
+    if($OwnedDisposableSolHost) { $runnerText=$runnerText.Replace('__SETTINGS_SOL_CONFIG__',(ConvertTo-Json -InputObject $solFixtureJson -Compress)) }
     [System.IO.File]::WriteAllText(
         $runnerPath,
         $runnerText.Replace('__FOCUSED_RUN_ID__', $runId).Replace('__STUDENT_EXPORT_BITMAPS__', $ExportAssetBitmaps.IsPresent.ToString().ToLowerInvariant()),
@@ -225,7 +245,7 @@ try {
         Write-Host ("[OK] {0} tracked runner static validation passed; compile skipped." -f
             $DomainId)
     } else {
-        if ($OwnedReadOnlyHost) {
+        if ($OwnedReadOnlyHost -or $OwnedDisposableSolHost) {
             $ownedHostIdentity = Start-Cf7OwnedReadOnlyTestHost -ScriptsDirectory $scriptsDir
             $ownedSourceDirectory = Join-Path $projectDir ('tmp/focused-testloader-recovery/' + $runId + '/owned-source')
             [void](New-Item -ItemType Directory -Path $ownedSourceDirectory -Force)
@@ -378,6 +398,19 @@ try {
             $cleanupAttempted = $false
             try {
             if ($ownedHostIdentity) {
+                # Resource finality is separate from every suite passing. A failed companion suite
+                # does not revoke this run's explicit native-terminal proof; all failures remain failures.
+                $cleanupNativeTrace=$trace
+                if($OwnedDisposableSolHost -and (Test-Path -LiteralPath $outputPath) `
+                    -and (Get-Item -LiteralPath $outputPath).LastWriteTimeUtc -ge $started.AddSeconds(-1)) {
+                    $cleanupNativeTrace=[IO.File]::ReadAllText($outputPath,[Text.Encoding]::UTF8)
+                }
+                $nativeTerminal = $cleanupNativeTrace -match ('(?m)^SettingsOwnedSolTest NativeRawKnownTerminal: '+[regex]::Escape($solFixture.slot)+'\r?$') `
+                    -and $cleanupNativeTrace -match '(?m)^SettingsOwnedSolTest Tests Failed: 0\r?$' `
+                    -and $cleanupNativeTrace -match ('(?m)^FocusedTestRunId '+[regex]::Escape($DomainId)+' Complete: '+[regex]::Escape($runId)+'\r?$')
+                if($OwnedDisposableSolHost -and !$nativeTerminal) {
+                    throw 'Owned SOL boundary is not known terminal; preserve player, source and uncertainty evidence.'
+                }
                 $cleanupAttempted = $true
                 $archiveDirectory = Join-Path $projectDir ('tmp/focused-testloader-recovery/' + $runId)
                 [void](New-Item -ItemType Directory -Path $archiveDirectory -Force)

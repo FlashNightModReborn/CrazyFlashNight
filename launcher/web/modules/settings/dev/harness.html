@@ -112,8 +112,30 @@
     var output=document.getElementById('harness-log');
     output.textContent=(text+'\n'+output.textContent).slice(0,7000)
   }
+  var v2Mode=new URLSearchParams(location.search).get('authority')==='2';
+  var authorityReconcile=false,metadataBlocked=false,rootOperation=null,currentDurable=false,saveOrdinal=0;
+  function authorityEnvelope(message,response){
+    if(message.cmd==='apply' && response.applied===true){rootOperation='op.harness.'+model.revision;saveOrdinal++;currentDurable=response.durable===true;}
+    if(message.cmd==='save'){saveOrdinal++;currentDurable=response.durable===true;}
+    var token=rootOperation || 'observe.harness.1';
+    var targeted=/^(apply|save|reconcile)$/.test(message.cmd) && rootOperation;
+    var sourceSnapshot=message.cmd==='save'?null:snapshot();
+    return {v:2,operation:message.cmd,contextId:'ctx.harness',saveOwnerId:'owner.harness',authorityEpoch:'vm.harness.1',
+      success:message.cmd==='reconcile'?true:response.success===true,requiresReconcile:authorityReconcile,
+      writeAdmission:metadataBlocked?'blocked_by_metadata':authorityReconcile?'blocked_by_operation':'allowed',
+      state:{revision:model.revision,stateToken:token,persistenceState:currentDurable?'confirmed':'unconfirmed',durable:currentDurable,
+        confirmation:currentDurable?'flush_true':'none',needsSaveRetry:!!(rootOperation&&!currentDurable&&!authorityReconcile&&!metadataBlocked),migrationPending:false},
+      outcome:targeted?{operationToken:rootOperation,sourceAuthorityEpoch:'vm.harness.1',originMutationRequestDigest:'a'.repeat(64),
+        targetStateToken:rootOperation,saveAttemptId:'save.harness.'+saveOrdinal,applyState:'applied',applied:true,
+        attemptState:currentDurable?'confirmed':'returned_unconfirmed',durable:currentDurable,confirmation:currentDurable?'flush_true':'none',
+        error:currentDurable?null:'save_failed',resolution:'applied'}:
+        {operationToken:null,sourceAuthorityEpoch:null,originMutationRequestDigest:null,targetStateToken:null,saveAttemptId:null,
+          applyState:'none',applied:null,attemptState:'none',durable:false,confirmation:'none',error:null,resolution:'none'},
+      snapshot:sourceSnapshot,hostPrefs:clone(model.hostPrefs),warnings:metadataBlocked?['metadata_warning']:[]};
+  }
   function emit(message,response){
-    if(dropNextResponseFor===message.cmd){dropNextResponseFor='';return}
+    if(v2Mode && /^(snapshot|preview|apply|save|cancel|reconcile)$/.test(message.cmd))response=authorityEnvelope(message,response);
+    if(dropNextResponseFor===message.cmd){dropNextResponseFor='';if(v2Mode && /^(apply|save)$/.test(message.cmd))authorityReconcile=true;return}
     var data=Object.assign({type:'panel_resp',panel:'settings',domain:'settings',
       cmd:message.cmd,callId:message.callId,panelInstanceId:message.panelInstanceId},response);
     if(message.cmd==='host_set'&&malformNextPerformanceResponse
@@ -137,6 +159,9 @@
         if(failNextSnapshot){failNextSnapshot=false;emit(message,{success:false,v:1,error:'settings_unavailable'});}
         else if(holdNextSnapshotForReconcile){holdNextSnapshotForReconcile=false;emit(message,Object.assign(snapshot(),{requiresReconcile:true}));}
         else emit(message,snapshot());
+      }
+      else if(message.cmd==='reconcile'){
+        authorityReconcile=false;emit(message,snapshot());
       }
       else if(message.cmd==='preview'){
         if(previewBaseline===null)previewBaseline={global:model.settings.setGlobalVolume,bgm:model.settings.setBGMVolume};
@@ -210,6 +235,8 @@
     }
   })();
   window.__settingsHarness={model:model,sent:sent,reopen:function(){Panels.open('settings')},
+    setDurable:function(value){durable=value===true},
+    setMetadataBlocked:function(value){metadataBlocked=value===true},
     dropNextResponse:function(cmd){dropNextResponseFor=String(cmd||'')},
     failNextSnapshot:function(){failNextSnapshot=true},
     holdNextSnapshotForReconcile:function(){holdNextSnapshotForReconcile=true},

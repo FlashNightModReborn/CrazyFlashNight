@@ -625,6 +625,9 @@ function acquireCloneLock(options) {
   const slot = assertDedicatedSlot(options.slot);
   const runDir = assertOwnedRunDirectory(root, options.runDir,
     options.ownedBaseRelative || path.join("tmp", "workbench-live-e2e"), "clone_lock");
+  // The durable reader accepts only this canonical subtree. Reject an invalid
+  // caller-supplied owned base before creating a lock that cannot be released.
+  assertOwnedRunDirectory(root, runDir, path.join("tmp", "workbench-live-e2e"), "clone_lock");
   const recovery = readCloneRecovery(root, slot, true);
   if (recovery && options.recoveryMode !== true) {
     contractFail("clone_manual_recovery_required", "clone_lock",

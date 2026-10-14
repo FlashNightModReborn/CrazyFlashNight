@@ -1021,6 +1021,18 @@ async function runSelfTests() {
       CloneGuard.releaseCloneLock(lock);
     });
 
+    await test("noncanonical owned base is rejected before lock creation", async () => {
+      const targetSlot = "cf7_agent_bad_owned_base";
+      const badBase = path.join("tmp", "other-evidence");
+      const badRun = path.join(root, badBase, "run");
+      fs.mkdirSync(badRun, { recursive: true });
+      assert.throws(() => CloneGuard.acquireCloneLock({ root, slot: targetSlot,
+        runDir: badRun, ownedBaseRelative: badBase }));
+      const state = CloneGuard.inspectCloneLock({ root, slot: targetSlot });
+      assert.strictEqual(state.lockPresent, false);
+      assert.strictEqual(state.recoveryPresent, false);
+    });
+
     await test("target JSON changed after backup is never overwritten unbacked", async () => {
       const seedSlot = "fixture_target_compare_changed";
       const targetSlot = "cf7_agent_target_compare_changed";

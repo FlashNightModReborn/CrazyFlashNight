@@ -7,6 +7,8 @@ const SOURCE_FILES = Object.freeze([
     ['candidate_start','automation/start.ps1'],
     ['host_opener','launcher/src/Tasks/AgentControlTask.cs'],
     ['host_wiring','launcher/src/Program.cs'],
+    ['host_profile','launcher/src/FixedWebViewRuntime.cs'],
+    ['fixed_engine','launcher/webview2-runtime.lock.json'],
     ['host_route','launcher/src/Guardian/LauncherCommandRouter.cs'],
     ['host_open_contract','launcher/src/Tasks/GymPreviewOpenData.cs'],
     ['host_session','launcher/src/Tasks/GymTrainingTask.cs'],

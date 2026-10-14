@@ -45,7 +45,7 @@ internal sealed class Probe : Form
         this.root=root;this.output=output;this.candidate=candidate;
         Directory.CreateDirectory(output);
         ClientSize=new Size(1024,576);StartPosition=FormStartPosition.Manual;Location=new Point(60,70);
-        Text="U12 isolated composition probe";BackColor=source;ShowInTaskbar=false;
+        Text="U12 isolated composition probe";BackColor=source;ShowInTaskbar=true;
         Controls.Add(inputTarget);
         Shown+=async(_,_)=>await Run();
     }
@@ -161,13 +161,15 @@ internal sealed class Probe : Form
             NativeLibrary.SetDllImportResolver(assembly,(name,_,_)=>name=="FlashCompositorNative.dll"?NativeLibrary.Load(native):IntPtr.Zero);
             surfaceType=assembly.GetType("CF7Launcher.Guardian.CompositionHelpSurface",true);
             surface=Activator.CreateInstance(surfaceType,BindingFlags.Instance|BindingFlags.NonPublic,null,
-                new object[]{this,Path.Combine(root,"launcher","web"),Path.Combine(output,"profile"),true},null);
+                new object[]{this,Path.Combine(root,"launcher","web"),Path.Combine(output,"profile"),null,true,null,null},null);
             surfaceType.GetEvent("TransitionMessage",BindingFlags.Instance|BindingFlags.NonPublic).GetAddMethod(true)
                 .Invoke(surface,new object[]{(Action<JObject>)Message});
             await (Task)Call("PrepareAsync");checks.Add(new{label="real WebView2 endpoint ready",passed=true});
             SetForegroundWindow(Handle);BringToFront();Activate();inputTarget.Focus();
-            if(GetForegroundWindow()!=Handle)throw new Exception("fixture initial foreground was not admitted; visible="+IsWindowVisible(Handle)+" foreground="+GetForegroundWindow()+" owner="+Handle);
-            if(!(bool)Call("PresentTransition",RectangleToScreen(ClientRectangle)))throw new Exception("projection admission refused");
+            // A background-launched fixture may need the operator to select its own window.
+            // Preserve the exact foreground gate and its bounded deadline.
+            await Wait(()=>GetForegroundWindow()==Handle,"fixture initial foreground admitted");
+            if(!(bool)Call("PresentTransition",RectangleToScreen(ClientRectangle),false))throw new Exception("projection admission refused");
             Call("PostTransition",Snapshot("cover",1));
             await Wait(()=>messages.Exists(p=>p.Value<string>("kind")=="covered"),"decoded curtain receipt");
             Call("RaiseTransition");
@@ -188,7 +190,7 @@ internal sealed class Probe : Form
                 checks.Add(new{label="transparent DirectComposition reveals underlying HWND",passed=true});
             }
             Call("HideTransition");
-            Call("PresentTransition",RectangleToScreen(ClientRectangle));
+            Call("PresentTransition",RectangleToScreen(ClientRectangle),false);
             var error=Snapshot("error",3);error["requestId"]="tr:2";Call("PostTransition",error);await Task.Delay(450);
             using(var pixels=Capture("error.png"))checks.Add(new{label="warm endpoint reuse renders failure projection",passed=true});
             Activate();inputTarget.Focus();
@@ -196,7 +198,7 @@ internal sealed class Probe : Form
             // Exercise actual Host admission as well as the underlying composition surface.
             await StartPeer();int peerActivations=PeerActivations();
             var controllerType=assembly.GetType("CF7Launcher.Guardian.SceneTransitionController",true);
-            var wire=new List<JObject>();bool sceneReady=false,inputHeld=false,handoffDelivery=true;
+            var wire=new List<JObject>();bool sceneReady=false,inputHeld=false,handoffDelivery=true,resumeFrameHeld=false;
             int successfulReportHandoffs=0;
             var handoffs=new List<(bool Covered,bool OwnedForeground,bool InputHeld)>();
             var focusManager=new WindowManager();
@@ -210,7 +212,7 @@ internal sealed class Probe : Form
                 return (bool)typeof(WindowManager).GetMethod("HandoffFlashFocusBeforePanelHide",BindingFlags.Instance|BindingFlags.NonPublic)
                     .Invoke(focusManager,new object[]{"scene_transition_probe:before_hide",expected});
             };
-            // Also run this regression against the previous candidate, whose callback ran after Hide.
+            // Bind the candidate's exact focus callback contract.
             object focusCallback=controllerType.GetConstructors(BindingFlags.Instance|BindingFlags.NonPublic)[0]
                 .GetParameters()[7].ParameterType==typeof(Action)
                 ?(object)(Action)(()=>{handoff(GetForegroundWindow());focusManager.RestoreFlashInputFocus("scene_transition_probe:after_hide");})
@@ -223,9 +225,9 @@ internal sealed class Probe : Form
                         if(delivered && p.Value<string>("kind")=="handoff" && p.Value<string>("requestId")=="tr:4") successfulReportHandoffs++;
                         return delivered;
                     }),
-                    (Func<bool>)(()=>true),(Func<long,bool>)(_=>sceneReady),focusCallback,
+                    (Func<bool>)(()=>true),(Func<long,bool>)(_=>sceneReady && !resumeFrameHeld),focusCallback,
                     Array.CreateInstance(assembly.GetType("CF7Launcher.Guardian.OverlayBase",true),0),
-                    (Action<bool>)(held=>inputHeld=held),Path.Combine(output,"controller-profile")},null);
+                    (Action<bool>)(held=>inputHeld=held),Path.Combine(output,"controller-profile"),null},null);
             var task=(SceneTransitionTask)controllerType.GetField("Task",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
             var backing=(Form)controllerType.GetField("_fallback",BindingFlags.Instance|BindingFlags.NonPublic).GetValue(controller);
             Action<JObject> project=p=>{
@@ -301,8 +303,10 @@ internal sealed class Probe : Form
             report["omittedIndividualKills"]=0;report["totalAllyDowns"]=1;report["totalAllyLosses"]=1;
             report["heroDowns"]=0;report["omittedAllies"]=0;
             report["allies"]=new JArray(new JObject {
-                ["unitId"]="ally.smoke.1",["key"]="固定友军",["displayName"]="候选验收友军",["iconName"]="",
-                ["doll"]=JValue.CreateNull(),["eliteLevel"]=0,["level"]=24,["loadout"]=JValue.CreateNull(),
+                ["unitId"]="ally.smoke.1",["key"]="纸娃娃友军",["displayName"]="候选验收友军",["iconName"]="",
+                ["doll"]=JValue.CreateNull(),["eliteLevel"]=0,["level"]=24,
+                ["loadout"]=new JObject { ["head"]="",["body"]="",["leg"]="",["hand"]="",["foot"]="",["neck"]="",
+                    ["primary"]="",["secondary1"]="",["secondary2"]="",["melee"]="",["grenade"]="" },
                 ["status"]="dead",["downs"]=1,["isHero"]=false });
             JObject parallel(string id,string phase,int revision,bool opening=false) {
                 var p=Snapshot(phase,revision);p["version"]=2;p["requestId"]=id;p["report"]=report.DeepClone();
@@ -402,7 +406,7 @@ internal sealed class Probe : Form
             var repeatedPresentation=Stopwatch.StartNew();
             var present=surfaceType.GetMethod("PresentTransition",BindingFlags.Instance|BindingFlags.NonPublic);
             for(int repeat=0;repeat<40;repeat++)
-                if(!(bool)present.Invoke(reportSurface,new object[]{sameSurface.Bounds}))
+                if(!(bool)present.Invoke(reportSurface,new object[]{sameSurface.Bounds,false}))
                     throw new Exception("unchanged settlement presentation rejected");
             repeatedPresentation.Stop();
             await Task.Delay(120);
@@ -453,9 +457,28 @@ internal sealed class Probe : Form
             inputTarget.Focus();
             await Wait(()=>sameSurface.Visible,"reactivation actually restores the shared settlement window");
             await waitScript("sameReport===document.querySelector('.loot-settlement-report')","reactivation retains the same report node");
-            if(!post(new JObject{["type"]="panel_cmd",["cmd"]="close",["panel"]="loot",["panelInstanceId"]="loot.parallel.1"}))throw new Exception("exact settlement close failed");
-            controllerType.GetMethod("ReleaseSettlement",BindingFlags.Instance|BindingFlags.NonPublic).Invoke(controller,null);
+            int freshResumeRequests=0,resumeTails=0;
+            controllerType.GetMethod("ConfigurePresentationFence",BindingFlags.Instance|BindingFlags.NonPublic)
+                .Invoke(controller,new object[]{(Action<long>)(_=>{freshResumeRequests++;resumeFrameHeld=true;})});
+            // Simulate the accepted authority close and its already-completed root handoff;
+            // the production controller must retain the actual WebView pixels until fresh capture.
+            SetForegroundWindow(Handle);inputTarget.Focus();
+            string resumeClose=new JObject{["type"]="panel_cmd",["cmd"]="close",["panel"]="loot",["panelInstanceId"]="loot.parallel.1"}.ToString(Formatting.None);
+            var releaseSettlement=controllerType.GetMethod("ReleaseSettlement",BindingFlags.Instance|BindingFlags.NonPublic);
+            releaseSettlement.Invoke(controller,new object[]{resumeClose});
+            controllerType.GetMethod("DeferSettlementResumeTail",BindingFlags.Instance|BindingFlags.NonPublic)
+                .Invoke(controller,new object[]{(Action)(()=>resumeTails++)});
+            releaseSettlement.Invoke(controller,new object[]{resumeClose});
+            await Task.Delay(150);
+            if(!sameSurface.Visible || !inputHeld || freshResumeRequests!=1 || resumeTails!=0)
+                throw new Exception("settlement view or original close tail escaped before a fresh world frame");
+            await waitScript("sameReport===document.querySelector('.loot-settlement-report')&&Panels.getActive()==='loot'",
+                "accepted close keeps the same visible report until the replacement frame");
+            await CheckReportPixels(reportCore);
+            checks.Add(new{label="closed report pixels remain on screen during fresh-frame wait; duplicate close is inert",passed=true});
+            resumeFrameHeld=false;
             await Wait(()=>!sameSurface.Visible,"exact business retirement finally hides the shared endpoint");
+            if(inputHeld || resumeTails!=1)throw new Exception("fresh world did not release input and the original tail exactly once");
             sceneReady=false;
             int nextViewportBefore=int.Parse(await js("fixtureViewportMessages"));
             report["runId"]="run.parallel.2";
@@ -535,7 +558,7 @@ internal sealed class Probe : Form
         string previous=Environment.GetEnvironmentVariable("CF7_INPUT_LATENCY");
         object probe=null;
         try {
-            trace.GetMethod("Start",flags).Invoke(null,new object[]{(Action<string>)lines.Enqueue,true,false,null});
+            trace.GetMethod("Start",flags).Invoke(null,new object[]{(Action<string>)lines.Enqueue,true,false,null,null,null});
             Environment.SetEnvironmentVariable("CF7_INPUT_LATENCY","1");
             probe=probeType.GetMethod("StartConfigured",flags).Invoke(null,new object[]{this,"fixture"});
             probeType.GetMethod("BeginTransition",BindingFlags.Instance|BindingFlags.NonPublic)

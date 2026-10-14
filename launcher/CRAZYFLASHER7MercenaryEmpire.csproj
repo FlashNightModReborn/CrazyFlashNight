@@ -44,6 +44,12 @@
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(CF7TestSeams)' == 'true'">
+    <DefineConstants>$(DefineConstants);CF7_TEST_SEAMS</DefineConstants>
+    <OutputPath>bin/test-seams/$(Configuration)/</OutputPath>
+    <IntermediateOutputPath>obj/test-seams/$(Configuration)/</IntermediateOutputPath>
+  </PropertyGroup>
+
   <!-- 正式 runtime 不把 Portable PDB 嵌入 Core.dll：源码 EOL/checkout 路径不再进入受 manifest
        约束的发布字节。需要调试符号时由独立诊断构建产出，不进入 runtime bundle。 -->
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
