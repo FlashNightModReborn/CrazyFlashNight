@@ -6,13 +6,13 @@
 **决策日期**：2026-08-27
 **既有发布基线**：2026-08-27 A3 正式列车保留为历史基线；下述 2026-08-29 增量现已由独立 release source、双 signer / 双 faultDomain、原子 promotion、部署推送与远端 Audit 取代其“未部署”状态。两轮部署后的正式入口证据都没有重跑关卡业务，因此均不称本功能业务 `standard_entry_verified`。
 
-## 0G. 2026-10-14 本关收支与共享物品注释（本地施工）
+## 0G. 2026-10-14 本关收支与共享物品注释（已正式部署）
 
 结算左栏只承载关卡概况、击杀与友军记录；物资获得及消耗移入右栏。右栏顶部固定展示金币、K 点各自的获得与支出，以及不含两种货币的获得／消耗物资种类数；下方“所得／消耗／材料存量”分别显示明细，切页不移动左栏战报。所得保留战斗拾取、关卡奖励及其它来源标记；已暂存奖励不复制为第二份流水，也不重新领取。历史待领取奖励保留原权威网格与领取能力。摘要只投影冻结的 committed itemFlows；旧版 totalItemGains/totalItemLosses 仍为原协议汇总，不改写持久化版本或 fingerprint。存在 omittedItemFlowTypes 时明确标注“仅统计已展开明细”，不把缺失货币记录当作精确零值。大额货币可省略显示，但共享注释和 accessible name 保留完整整数。
 
 物资流水与材料存量使用共享 PanelTooltip 的 pointer/focus 检视；新只读 `reportTooltip → lootReportTooltip` 要求 exact loot identity、当前 authorityRevision 与封闭 reference。flow 引用只能是绑定战报中的非货币 index；material 引用必须在现役材料目录。AS2 复用 `_root.Web物品注释HTML`，Host 沿用 TooltipDocumentSanitizer 透传有效 COMMON document，并在 document 缺失或无效时保留原 HTML fallback。响应物品身份须匹配请求；该入口不读取当前库存槽位，不授予领取、装备、持久化或其它写能力。装备流水说明为物品基础资料，历史强化和配件仍以物品页的真实实例为准。金币、K 点与战斗记录说明仅消费冻结数据，不发物品查询。所有敌人卡片补共享注释；固定敌人可通过头像悬停或键盘聚焦查看名称、精英标记和击杀次数，人形／友军保留原冻结配置详情。
 
-本轮验证入口：`launcher/web/modules/loot/dev/test-loot-state.js`、`launcher/web/modules/loot/dev/run-harness.js --capture-settlement`、`launcher/tests/run_tests.ps1`、`scripts/run-map-loot-tests.ps1` 与工作台／跨层合同门。源码、隔离浏览器、真实 AVM1 行为和 asLoader 编译各自记录证据；本增量尚未执行新的 runtime promotion、标准入口关卡或真实存档重启验收。
+本轮验证入口：`launcher/web/modules/loot/dev/test-loot-state.js`、`launcher/web/modules/loot/dev/run-harness.js --capture-settlement`、`launcher/tests/run_tests.ps1`、`scripts/run-map-loot-tests.ps1` 与工作台／跨层合同门。Loot Node 104/104、1024×576 浏览器夹具 147/147、lazy-cancel 6/6、canonical Host 7216 passed / 27 skipped、真实 AVM1 1130/1130 与 asLoader fresh Compiler 0/0 均通过。源码 `e6bfcc0d7b` 与 source tag `runtime-build-v2/20261014-stage-settlement-income-v2` 已经本地 X509 / GitHub hosted 双 signer、双故障域一致性核对、production policy 47/47 和唯一 promotion writer 正式部署；部署提交 `888a15fb05` 已推送，远端 Runtime native audit 明确给出 `state=promoted / deploymentChanged=true`，AS2 产物归属检查确认 708 个 loader 类及完整闭包通过。具体身份、回执及审计链接见[本轮发布记录](evidence/stage-settlement-income-release-2026-10-14.json)。标准入口已核对启动页、Flash 预热握手及正常关窗，未进入玩家槽位；`saves/` 102 个文件中仅启动版本标记的时间戳更新，其余 101 个文件字节一致。本功能实际关卡结算与保存重启仍待单独复验，不由发布或启动事实代签。
 
 ## 0F. 2026-10-09 友军损失与人形个体战报（待人工验收）
 
