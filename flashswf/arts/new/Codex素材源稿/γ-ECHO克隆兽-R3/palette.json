@@ -1,0 +1,40 @@
+{
+  "name": "γ-ECHO 克隆兽完全体 / 骨刺同源配色",
+  "reference": "闪7现有骨刺僵尸，直接读取其头像矢量颜色；PNG 仅供视觉对照",
+  "referenceSvg": {
+    "path": "launcher\\web\\assets\\enemy-portraits\\subjects\\0fca7e4237540c977392250d.svg",
+    "sha256": "0fca7e4237540c977392250d467da91f78eb13ae6f9d22fb45026b0463bac36e"
+  },
+  "referencePng": {
+    "path": "launcher\\web\\assets\\enemy-portraits\\subjects\\1d2183ec3bfa6da7598e1d22.png",
+    "sha256": "1d2183ec3bfa6da7598e1d22b09b551ec745519207a1cf2350f77e53522e7ca1"
+  },
+  "currentReferenceSwf": {
+    "path": "flashswf\\arts\\new\\素材库-下水道怪物.swf",
+    "sha256": "3516b0c98bcf086e4dfc287b0fa4b7b7103721f4084f447d8b3a41c11efdd359"
+  },
+  "referenceScope": "颜色取自当前仓库头像 SVG；未将头像的历史验收延伸为本候选或当前 SWF 的验收。未复制骨刺几何。",
+  "skinBase": "#844a49",
+  "skinShadow": "#663333",
+  "skinDeepShadow": "#381f1e",
+  "skinHighlight": "#8b4e4c",
+  "skinPeakHighlight": "#ba8483",
+  "boneLight": "#f2f2f2",
+  "boneShadow": "#b2b2b2",
+  "eyeAndMouth": "#990000",
+  "mappingFromDarkR2": {
+    "#4c4242": "#844a49",
+    "#3b3333": "#663333",
+    "#241c1c": "#381f1e",
+    "#625050": "#8b4e4c",
+    "#777066": "#ba8483",
+    "#ffffff": "#f2f2f2",
+    "#f8f5f5": "#f2f2f2",
+    "#8aa0ab": "#b2b2b2",
+    "#7d1616": "#990000",
+    "#c69731": "#990000",
+    "#c36f27": "#c73e14",
+    "#efc070": "#de7344",
+    "#4a381f": "#381f1e"
+  }
+}

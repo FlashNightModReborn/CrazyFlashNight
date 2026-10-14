@@ -1,0 +1,171 @@
+{
+  "schema": "gamma-echo.death-evidence.v1",
+  "date": "2026-10-14",
+  "static": {
+    "schema": "gamma-echo.death-static.v1",
+    "aiSourceUnchanged": true,
+    "priorSwfSha256": "7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f",
+    "currentSwfSha256": "dba10efd3b9fc11833d77cc028ec655caad6250e6ae44773a6fc2ce2291bbe2e",
+    "variants": [
+      {
+        "variant": "延寿型",
+        "labels": {
+          "a0": 0,
+          "a1": 47,
+          "a2": 78
+        },
+        "callbacks": [
+          45,
+          76,
+          108
+        ],
+        "specialGoreParts": 6,
+        "replacedKeyframes": {
+          "小腿断件": 10,
+          "大腿残段": 10,
+          "断臂上段": 21,
+          "肩部裂口": 21
+        }
+      },
+      {
+        "variant": "完全体",
+        "labels": {
+          "a0": 0,
+          "a1": 47,
+          "a2": 78
+        },
+        "callbacks": [
+          45,
+          76,
+          108
+        ],
+        "specialGoreParts": 6,
+        "replacedKeyframes": {
+          "小腿断件": 10,
+          "大腿残段": 10,
+          "断臂上段": 21,
+          "肩部裂口": 21
+        }
+      }
+    ],
+    "newNativeSymbols": 28
+  },
+  "freshNative": {
+    "results": [
+      "GammaEchoAssetTest: 201 passed, 0 failed; 28 actual timeline cases"
+    ],
+    "runIds": [
+      "498a5e21be594a4ba6c7165cd92b79ec"
+    ],
+    "sourceSwfSha256": "dba10efd3b9fc11833d77cc028ec655caad6250e6ae44773a6fc2ce2291bbe2e"
+  },
+  "pixelCapture": {
+    "actualFrames": 76,
+    "sourceRunId": "b8e4c1e037934f8fa7ed3a0077a7adfd",
+    "originalRunHealthy": false,
+    "reason": "300-second export deadline; uniquely closed late output preserved separately",
+    "recoveryReviewed": true,
+    "freshBehaviorRunSeparate": true,
+    "traceSha256": "108a51b2bdf71fb7097e0ffca8d5ec84b3eaffbb57854b9625a51c117a8b6bb5",
+    "gifSha256": "0b302565918d2afac614bb3c5c9a2ba530ad4c4a8818f2f63a376f137f5b4d75"
+  },
+  "arena": {
+    "experimentId": "gamma-echo-death-smoke-20261014",
+    "qualified": true,
+    "summaries": [
+      {
+        "variant": "延寿型",
+        "level": 30,
+        "aiRevision": 4,
+        "comparison": "gamma-echo-vs-noah",
+        "observed": 2,
+        "statusCounts": {
+          "finished": 2
+        },
+        "qualifiedFinished": 2,
+        "wins": 2,
+        "losses": 0,
+        "draws": 0,
+        "meanHpDeltaPP": 73.92309308678293,
+        "bySide": {
+          "blue": {
+            "finished": 1,
+            "wins": 1
+          },
+          "red": {
+            "finished": 1,
+            "wins": 1
+          }
+        }
+      },
+      {
+        "variant": "完全体",
+        "level": 30,
+        "aiRevision": 4,
+        "comparison": "gamma-echo-vs-noah",
+        "observed": 2,
+        "statusCounts": {
+          "finished": 2
+        },
+        "qualifiedFinished": 2,
+        "wins": 2,
+        "losses": 0,
+        "draws": 0,
+        "meanHpDeltaPP": 74.68330497258461,
+        "bySide": {
+          "blue": {
+            "finished": 1,
+            "wins": 1
+          },
+          "red": {
+            "finished": 1,
+            "wins": 1
+          }
+        }
+      }
+    ],
+    "datasets": [
+      {
+        "file": "death-smoke-a.jsonl",
+        "sha256": "sha256:6fe9b16ea18c57cbc8b71f02a318764a71ca2187208ef408562442d965e727b7",
+        "receiptSha256": "sha256:0bee4c0e94c00e5a3a6875966bdce797a38273d6e2f0cab033a3231a006eec52",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1136865,
+          "sha256": "sha256:dba10efd3b9fc11833d77cc028ec655caad6250e6ae44773a6fc2ce2291bbe2e"
+        }
+      },
+      {
+        "file": "death-smoke-b.jsonl",
+        "sha256": "sha256:12c3d78bf908473d512234e4d91338a281e89fe9c6d98e5f97d320848ee1844a",
+        "receiptSha256": "sha256:f86dfefddb7f1a98a1be97ce11c67f0e424e3b320ae82332d699e51d6afca540",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1136865,
+          "sha256": "sha256:dba10efd3b9fc11833d77cc028ec655caad6250e6ae44773a6fc2ce2291bbe2e"
+        }
+      }
+    ],
+    "globalSavesUnchanged": true,
+    "cleanupVerified": true,
+    "resourcesVerified": true
+  },
+  "scope": "Visual death completion; no AI source, attack timelines or numerical balance changes",
+  "runtimePromotion": false,
+  "linkage": {
+    "regenerated": true,
+    "sourceMapByteUnchanged": true,
+    "sourceMapSha256": "772c9a45189bdbf8edb4370f0ada75339a87885c374b372fb4b7b7946cbe329b"
+  },
+  "audit": {
+    "newNamespaceUnresolvedReferences": 0,
+    "duplicateNames": 0,
+    "duplicateLinkages": 0,
+    "unpackedSymbols": 0,
+    "preexistingBitmapAuditFindings": [
+      "Codex/前治安官/原生/特效与子弹/幻影/位图 1",
+      "Codex/前治安官/原生/特效与子弹/幻影/位图 2"
+    ],
+    "bitmapEntriesPresentInDOMDocument": true
+  }
+}

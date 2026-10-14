@@ -1,0 +1,293 @@
+{
+  "kind": "color-only-svg-variant-pair",
+  "revision": "r3",
+  "baseRevision": "cf6-clone-beast-svg-pilot-20261013-r02",
+  "variants": [
+    {
+      "id": "full-power",
+      "label": "完全体",
+      "folder": "full-power-parts",
+      "palette": "骨刺红褐色"
+    },
+    {
+      "id": "stabilized",
+      "label": "延寿体",
+      "folder": "stabilized-parts",
+      "palette": "诺亚深褐灰；与 R2 字节一致"
+    }
+  ],
+  "partCountPerVariant": 13,
+  "parts": [
+    {
+      "id": 262,
+      "width": 57.0,
+      "height": 112.1,
+      "origin": [
+        28.8,
+        32.3
+      ],
+      "label": "上臂",
+      "sourceR2Sha256": "2998a8f5a28d144d55cfb1a2fa120616e8f0bdc929ab5e507dad84c735b7f5fc",
+      "stabilizedSha256": "2998a8f5a28d144d55cfb1a2fa120616e8f0bdc929ab5e507dad84c735b7f5fc",
+      "fullPowerSha256": "3b2df04d2463486238ea6f6d9402d91ea395778a84f18b1b484f4ef6fd131612",
+      "fullPowerBytes": 11516,
+      "pathCount": 13,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 263,
+      "width": 51.85,
+      "height": 105.35,
+      "origin": [
+        28.2,
+        12.9
+      ],
+      "label": "小腿",
+      "sourceR2Sha256": "6f4dd7c4a24b7be71e48722802eb1fce936120afc9f23f4bf908a8778cc395d3",
+      "stabilizedSha256": "6f4dd7c4a24b7be71e48722802eb1fce936120afc9f23f4bf908a8778cc395d3",
+      "fullPowerSha256": "e99b28595c7c887c69bcf33e9967cebee076d2e46e3531e458545cf78ba8a28e",
+      "fullPowerBytes": 11823,
+      "pathCount": 13,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 264,
+      "width": 59.0,
+      "height": 69.0,
+      "origin": [
+        40.3,
+        51.75
+      ],
+      "label": "膝部尖刺护片",
+      "sourceR2Sha256": "865bd748d0265bc7a51a6a1a29d7f3cc146f489b89e5650bbdfa97542f30fe32",
+      "stabilizedSha256": "865bd748d0265bc7a51a6a1a29d7f3cc146f489b89e5650bbdfa97542f30fe32",
+      "fullPowerSha256": "cdc5cdea340be7071005e1e0561c003a91556c53695a369d86b4eb3fbad0e65e",
+      "fullPowerBytes": 9445,
+      "pathCount": 13,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 265,
+      "width": 53.55,
+      "height": 117.2,
+      "origin": [
+        27.35,
+        13.65
+      ],
+      "label": "大腿",
+      "sourceR2Sha256": "6774682f8399351d2b381dc41f2e726d05adc622d104a5a8b2c0614f4d17bf7f",
+      "stabilizedSha256": "6774682f8399351d2b381dc41f2e726d05adc622d104a5a8b2c0614f4d17bf7f",
+      "fullPowerSha256": "89c02d43c14f65bc93dea08f91b701c91af1f3b42cc00c7576d9da442dc03863",
+      "fullPowerBytes": 12419,
+      "pathCount": 14,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 266,
+      "width": 127.15,
+      "height": 200.9,
+      "origin": [
+        64.55,
+        148.0
+      ],
+      "label": "躯干",
+      "sourceR2Sha256": "2635c5e040d17c8822828eb42b9449109faa762fe1dbeee6483f418ce905f8e8",
+      "stabilizedSha256": "2635c5e040d17c8822828eb42b9449109faa762fe1dbeee6483f418ce905f8e8",
+      "fullPowerSha256": "c25fa8e2f9c544fe490ec2319a62925161535abcb3ebdddb815cad0af7dd41e1",
+      "fullPowerBytes": 34740,
+      "pathCount": 26,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 267,
+      "width": 109.1,
+      "height": 93.9,
+      "origin": [
+        44.85,
+        75.7
+      ],
+      "label": "颈肩",
+      "sourceR2Sha256": "38dda5835671e3955fbbd6c7cb2a9d36457f850c8f6e8f2f23fa52174e98769d",
+      "stabilizedSha256": "38dda5835671e3955fbbd6c7cb2a9d36457f850c8f6e8f2f23fa52174e98769d",
+      "fullPowerSha256": "02541781e3fea697c0f5f64b0afceb81e418376673eabc4f70043e18b7e29d21",
+      "fullPowerBytes": 18658,
+      "pathCount": 16,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 268,
+      "width": 57.5,
+      "height": 48.0,
+      "origin": [
+        16.55,
+        7.25
+      ],
+      "label": "下颌",
+      "sourceR2Sha256": "f3207568b21b82a8602d58e36f713dbcf21405bcdb4e87ac5170e516b7a5c47f",
+      "stabilizedSha256": "f3207568b21b82a8602d58e36f713dbcf21405bcdb4e87ac5170e516b7a5c47f",
+      "fullPowerSha256": "425af0e0705a5e06cd3470c3014401d44a387537616f5c261d6fae301cc7f402",
+      "fullPowerBytes": 16569,
+      "pathCount": 15,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 269,
+      "width": 133.0,
+      "height": 103.1,
+      "origin": [
+        28.8,
+        51.3
+      ],
+      "label": "头部",
+      "sourceR2Sha256": "1e3a1a94e4ca0c06cded6f0bed79170b2f4aeea5743b13e2f33652c60ded92f3",
+      "stabilizedSha256": "1e3a1a94e4ca0c06cded6f0bed79170b2f4aeea5743b13e2f33652c60ded92f3",
+      "fullPowerSha256": "66f0d7eb6afd2d6d37e80366c0280ebbfacb00f769eed84f88f99ba1224bef1e",
+      "fullPowerBytes": 32403,
+      "pathCount": 31,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 270,
+      "width": 58.0,
+      "height": 96.9,
+      "origin": [
+        36.1,
+        22.8
+      ],
+      "label": "前臂一",
+      "sourceR2Sha256": "88787186d401788ac10cd4fc0e68d2951ddb902ca5bb005998dbf985723b13a3",
+      "stabilizedSha256": "88787186d401788ac10cd4fc0e68d2951ddb902ca5bb005998dbf985723b13a3",
+      "fullPowerSha256": "83df1163251daf8fad7389897256b99dd092012da08bbb2b76a01ebc7775d96d",
+      "fullPowerBytes": 12323,
+      "pathCount": 15,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 271,
+      "width": 48.35,
+      "height": 93.0,
+      "origin": [
+        30.05,
+        21.2
+      ],
+      "label": "前臂二",
+      "sourceR2Sha256": "614119e3ef96f7d3866255cedf5314ac605470f2e5ccc7ab351145ceba841ba1",
+      "stabilizedSha256": "614119e3ef96f7d3866255cedf5314ac605470f2e5ccc7ab351145ceba841ba1",
+      "fullPowerSha256": "2676db43ececbd047d77fdf88266cf3eefd1501ae10e4582e15b1f690abfbe6b",
+      "fullPowerBytes": 12731,
+      "pathCount": 14,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 272,
+      "width": 54.0,
+      "height": 91.9,
+      "origin": [
+        27.05,
+        11.65
+      ],
+      "label": "正向爪手",
+      "sourceR2Sha256": "d320fb0397df256cd3b44064850c32c1f1f952bac7ee16bc4e97381d1f63837e",
+      "stabilizedSha256": "d320fb0397df256cd3b44064850c32c1f1f952bac7ee16bc4e97381d1f63837e",
+      "fullPowerSha256": "c1d11048c918aa4a5507f011fa25f66a8a05e107388fce001256b265950b903a",
+      "fullPowerBytes": 12398,
+      "pathCount": 17,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 273,
+      "width": 86.0,
+      "height": 72.9,
+      "origin": [
+        18.8,
+        14.9
+      ],
+      "label": "侧向爪手",
+      "sourceR2Sha256": "53a2d33dd88fc2cd9f85bc9f9e274185e5d8da6443fdf22a8b01af9678ae89d5",
+      "stabilizedSha256": "53a2d33dd88fc2cd9f85bc9f9e274185e5d8da6443fdf22a8b01af9678ae89d5",
+      "fullPowerSha256": "29c59f7846fc500a8281137f4aa72fd8f54c0fd7c0412de2951c325a176e4c0d",
+      "fullPowerBytes": 13790,
+      "pathCount": 17,
+      "onlyColorsAndLabelsChanged": true
+    },
+    {
+      "id": 274,
+      "width": 82.85,
+      "height": 83.9,
+      "origin": [
+        34.7,
+        12.7
+      ],
+      "label": "脚掌",
+      "sourceR2Sha256": "37f499a08fa9914bd22fe6280fde8cbf9dfb96edfa333a94de814f5a12522eb4",
+      "stabilizedSha256": "37f499a08fa9914bd22fe6280fde8cbf9dfb96edfa333a94de814f5a12522eb4",
+      "fullPowerSha256": "6ef94b1a17d649871e9499591382aa03a79ac32d4e60d03d212c83f1ec9a5f8c",
+      "fullPowerBytes": 15377,
+      "pathCount": 18,
+      "onlyColorsAndLabelsChanged": true
+    }
+  ],
+  "sourceContoursAutoTraced": true,
+  "existingCf7VectorPathsCopied": false,
+  "rigSha256": "d5e892f579a795511cbf4a37169bfe7484009ef8e762f138ef4c0dabea4424f3",
+  "geometrySha256": "e05934d51a3a3a99704804bb383549b6610597e1e6b7b2660be3956db51c4bcd",
+  "geometryAndAnimationChanged": false,
+  "sequences": [
+    {
+      "name": "站立",
+      "frames": 40
+    },
+    {
+      "name": "行走",
+      "frames": 18
+    },
+    {
+      "name": "攻击一",
+      "frames": 87
+    },
+    {
+      "name": "攻击二",
+      "frames": 26
+    },
+    {
+      "name": "受击",
+      "frames": 25
+    },
+    {
+      "name": "被抓",
+      "frames": 28
+    },
+    {
+      "name": "击倒",
+      "frames": 116
+    }
+  ],
+  "evidence": {
+    "svgGeometryVerified": true,
+    "browserPreview": {
+      "errors": 0,
+      "sequences": 7,
+      "framesPerVariant": 340,
+      "motionFramesRendered": 108,
+      "controls": {
+        "playback": true,
+        "nextFrame": true,
+        "background": true,
+        "origins": true
+      },
+      "externalRequests": 0,
+      "scope": "offline SVG body timelines only"
+    },
+    "flashAssembled": false,
+    "flashCompiled": false,
+    "gameExecuted": false,
+    "humanArtAccepted": false
+  },
+  "remainingAssemblyWork": [
+    "原生分件回填与目标库归属",
+    "新 linkage 与动作/碰撞接口核对",
+    "死亡专用替换图形",
+    "目标 CS6 编译",
+    "游戏内动作与战斗验证"
+  ]
+}

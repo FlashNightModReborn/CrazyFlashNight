@@ -1,0 +1,526 @@
+{
+  "schema": "gamma-echo.connections-sustain-evidence.v1",
+  "date": "2026-10-14",
+  "static": {
+    "schema": "gamma-echo.connections-static.v1",
+    "nativeSymbolCount": 152,
+    "changedNativeFiles": 40,
+    "rootPlacementLabelsAndLinkagesUnchanged": true,
+    "attackAndDeathTimelinesByteUnchanged": true,
+    "noahAndCoreFilesByteUnchanged": [
+      "data/enemy_properties/诺亚新敌人.xml",
+      "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "scripts/asLoader.swf",
+      "CRAZYFLASHER7MercenaryEmpire.swf"
+    ],
+    "sourceSwfSha256": "e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d",
+    "displayNames": {
+      "459": "λ型克隆兽",
+      "460": "暴君克隆兽"
+    },
+    "innateLifeStealPercent": {
+      "459": 0,
+      "460": 5
+    },
+    "repairParts": [
+      {
+        "partId": 267,
+        "nativeShapesAdded": 3,
+        "tracedIslandContoursRemoved": 20
+      },
+      {
+        "partId": 268,
+        "nativeShapesAdded": 2,
+        "tracedIslandContoursRemoved": 0
+      },
+      {
+        "partId": 269,
+        "nativeShapesAdded": 2,
+        "tracedIslandContoursRemoved": 44
+      },
+      {
+        "partId": 271,
+        "nativeShapesAdded": 0,
+        "tracedIslandContoursRemoved": 4
+      },
+      {
+        "partId": 272,
+        "nativeShapesAdded": 3,
+        "tracedIslandContoursRemoved": 16
+      },
+      {
+        "partId": 273,
+        "nativeShapesAdded": 3,
+        "tracedIslandContoursRemoved": 16
+      },
+      {
+        "partId": 274,
+        "nativeShapesAdded": 4,
+        "tracedIslandContoursRemoved": 13
+      }
+    ],
+    "runtimePromotion": false
+  },
+  "freshNative": {
+    "runId": "616df066d62a4f44b3eb653861214bff",
+    "passed": 219,
+    "failed": 0,
+    "timelineCases": 28,
+    "traceSha256": "f1e8125e3f4a904438bbb97e1a945db77dd6f699c31bce7552d379a81d71becd",
+    "testSwfSha256": "3b2979337309d8364764468576d02a0a0c96018a557118c57548fa5deb0a41bf",
+    "sourceSwfSha256": "e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d",
+    "compilerErrors": 0,
+    "compilerWarnings": 0
+  },
+  "nativeConnections": {
+    "schema": "gamma-echo.native-connections.v1",
+    "alphaThreshold": 127,
+    "minimumPixels": 12,
+    "scope": "sampled intact native body poses; excludes attack trails and intentional death fragments",
+    "images": [
+      {
+        "image": "stabilized-native",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 38106,
+            "bounds": [
+              20,
+              36,
+              240,
+              397
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "full-power-native",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 38106,
+            "bounds": [
+              20,
+              36,
+              240,
+              397
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-idle",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 27166,
+            "bounds": [
+              20,
+              34,
+              205,
+              337
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-walk-a",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 25290,
+            "bounds": [
+              25,
+              34,
+              246,
+              333
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-walk-b",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 23159,
+            "bounds": [
+              28,
+              33,
+              195,
+              335
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-run-a",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 30376,
+            "bounds": [
+              39,
+              24,
+              318,
+              339
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-run-b",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 29572,
+            "bounds": [
+              25,
+              24,
+              391,
+              304
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-hit",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 26005,
+            "bounds": [
+              26,
+              33,
+              224,
+              338
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "lambda-fall",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 28316,
+            "bounds": [
+              35,
+              35,
+              267,
+              337
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-idle",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 27166,
+            "bounds": [
+              20,
+              34,
+              205,
+              337
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-walk-a",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 25290,
+            "bounds": [
+              25,
+              34,
+              246,
+              333
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-walk-b",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 23159,
+            "bounds": [
+              28,
+              33,
+              195,
+              335
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-run-a",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 30376,
+            "bounds": [
+              39,
+              24,
+              318,
+              339
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-run-b",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 29572,
+            "bounds": [
+              25,
+              24,
+              391,
+              304
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-hit",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 26005,
+            "bounds": [
+              26,
+              33,
+              224,
+              338
+            ]
+          }
+        ],
+        "passed": true
+      },
+      {
+        "image": "tyrant-fall",
+        "significantComponents": 1,
+        "components": [
+          {
+            "pixels": 28316,
+            "bounds": [
+              35,
+              35,
+              267,
+              337
+            ]
+          }
+        ],
+        "passed": true
+      }
+    ],
+    "passed": true
+  },
+  "nativePixelCapture": {
+    "runId": "a8fed44ce9ad470e8815cd5a7b2ec717",
+    "traceSha256": "256ec0a2038f08e491d116661163c5404a40ecf7148a7ff882d2698e527d6c5a",
+    "complete": true,
+    "behaviorComplete": true,
+    "partialDiagnostic": false,
+    "connectionFrames": 28,
+    "nativeStillFrames": 2,
+    "emptyFrames": [],
+    "imageNames": [
+      "full-power-native",
+      "lambda-basic",
+      "lambda-death-arm",
+      "lambda-death-leg",
+      "lambda-death-side",
+      "lambda-fall",
+      "lambda-hit",
+      "lambda-idle",
+      "lambda-leap",
+      "lambda-roar",
+      "lambda-run-a",
+      "lambda-run-b",
+      "lambda-rush",
+      "lambda-walk-a",
+      "lambda-walk-b",
+      "stabilized-native",
+      "tyrant-basic",
+      "tyrant-death-arm",
+      "tyrant-death-leg",
+      "tyrant-death-side",
+      "tyrant-fall",
+      "tyrant-hit",
+      "tyrant-idle",
+      "tyrant-leap",
+      "tyrant-roar",
+      "tyrant-run-a",
+      "tyrant-run-b",
+      "tyrant-rush",
+      "tyrant-walk-a",
+      "tyrant-walk-b"
+    ],
+    "originalRunnerPassed": false,
+    "deadlineSeconds": 600,
+    "lateUniqueClosureReviewed": true,
+    "latePlayerStopped": true,
+    "recoveryEvidenceSha256": "753ac81c7cc754da1f60b689a80eb66225cff01e44be0e7c2284aeec11b6fa14"
+  },
+  "excludedVisualAttempt": {
+    "runId": "016dcde07d9f4225bc426ec45610b951",
+    "emptyFrames": 8,
+    "behaviorPassed": 219,
+    "reason": "same-call state transition read an unsettled man instance; diagnostic rejected"
+  },
+  "arena": {
+    "experimentId": "gamma-echo-lifesteal-r1-20261014",
+    "qualified": true,
+    "comparison": "same Tyrant, same default AI and panels, innate life steal 5% versus 0%, mirrored sides",
+    "summaries": [
+      {
+        "variant": "完全体",
+        "level": 30,
+        "aiRevision": 5,
+        "comparison": "gamma-echo-lifesteal-ab",
+        "observed": 12,
+        "statusCounts": {
+          "finished": 12
+        },
+        "qualifiedFinished": 12,
+        "wins": 9,
+        "losses": 3,
+        "draws": 0,
+        "meanHpDeltaPP": 4.682674733724082,
+        "bySide": {
+          "blue": {
+            "finished": 6,
+            "wins": 6
+          },
+          "red": {
+            "finished": 6,
+            "wins": 3
+          }
+        }
+      },
+      {
+        "variant": "完全体",
+        "level": 99,
+        "aiRevision": 5,
+        "comparison": "gamma-echo-lifesteal-ab",
+        "observed": 12,
+        "statusCounts": {
+          "finished": 12
+        },
+        "qualifiedFinished": 12,
+        "wins": 10,
+        "losses": 2,
+        "draws": 0,
+        "meanHpDeltaPP": 3.6570190800995483,
+        "bySide": {
+          "blue": {
+            "finished": 6,
+            "wins": 5
+          },
+          "red": {
+            "finished": 6,
+            "wins": 5
+          }
+        }
+      }
+    ],
+    "rawResults": [
+      {
+        "file": "lifesteal-01.jsonl",
+        "sha256": "778550a19c5a02f90d13d71fa571eede7b7d1d999c5804d18b4bdb571ffdec0f",
+        "rows": 6,
+        "receiptSha256": "sha256:031d2175f2dae3d320a5eb3aece8130e30cd3bc482cc7f2884e590018054e976",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      },
+      {
+        "file": "lifesteal-02.jsonl",
+        "sha256": "b06a2954650a37de17f86810da1ed9ea65afc44e7ad79842b87f90b3fe3d607c",
+        "rows": 6,
+        "receiptSha256": "sha256:3248e1c327e9f737d1cec84db9fbbb2bb6a3d63377e81621212c47e25615354f",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      },
+      {
+        "file": "lifesteal-03.jsonl",
+        "sha256": "632166e2505ac7ce4711af1e7e5698f8f556a32957b63396c7a04219f59c319b",
+        "rows": 6,
+        "receiptSha256": "sha256:325b0a2c062776f55bb422517d5605737126efc62bf2da71c16d0d4ecd2767df",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      },
+      {
+        "file": "lifesteal-04.jsonl",
+        "sha256": "dc87c5de0ecc9201e7855a88c613f9aa65e5d3ad8cf6867336bf4f84cc4933ba",
+        "rows": 6,
+        "receiptSha256": "sha256:0a92e11b039c4e025068178f0e16c97106fe6ee463be71479f67336894627702",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      }
+    ],
+    "reportSha256": "sha256:ac4a71561f1e3ad9e0965f65498d717ae66cc1e800e5979a3ff2a3013f65e4a1"
+  },
+  "runtimePromotion": false
+}

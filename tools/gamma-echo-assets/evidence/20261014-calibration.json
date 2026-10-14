@@ -1,0 +1,611 @@
+{
+  "schema": "gamma-echo.integration-evidence.v1",
+  "date": "2026-10-14",
+  "baselineCommit": "311447565bba1966c146d5966079f41062661568",
+  "deployment": "resource integration in current working tree; isolated candidate execution; no RuntimeBundleV2 promotion",
+  "nativeFinal": {
+    "results": [
+      "GammaEchoAssetTest: 171 passed, 0 failed; 22 actual timeline cases"
+    ],
+    "runIds": [
+      "8751de7e506c40c3a41038dd2cbbaaaa"
+    ],
+    "sourceSwfSha256": "7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f"
+  },
+  "finalDecision": "Default enhanced below level 65; inherited Noah AI from level 65; explicit enhanced/baseline retained only for isolated comparisons. V3 observations are not relabeled as V4 reruns.",
+  "experiments": [
+    {
+      "experimentId": "gamma-echo-ai-v2-l60-20261014",
+      "qualified": true,
+      "reportSha256": "sha256:e85cb4ab6d3998e1b42e7c1ffa03405c5ba14331a02f695d8ea1cf50675521e9",
+      "localFullReport": "tmp/arena-worker-experiments/gamma-echo-ai-v2-l60-20261014/experiment-report.json",
+      "wallDurationMs": 519725,
+      "aggregateWorkerMs": 1014235,
+      "summaries": [
+        {
+          "variant": "延寿型",
+          "level": 60,
+          "aiRevision": 2,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 5,
+            "timeout": 1
+          },
+          "qualifiedFinished": 5,
+          "wins": 2,
+          "losses": 3,
+          "meanHpDeltaPP": -2.6415640839971037,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 2
+            },
+            "red": {
+              "finished": 2,
+              "wins": 0
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 60,
+          "aiRevision": 2,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 6
+          },
+          "qualifiedFinished": 6,
+          "wins": 1,
+          "losses": 5,
+          "meanHpDeltaPP": -1.5300936438936827,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 1
+            },
+            "red": {
+              "finished": 3,
+              "wins": 0
+            }
+          }
+        }
+      ],
+      "datasets": [
+        {
+          "file": "v2-ab-l60-gamma-a.jsonl",
+          "sha256": "sha256:04e937a5af26162edaf54425d9b92cdc4b58a02f46bc344a023fbbac16a73715",
+          "rows": 6,
+          "receiptSha256": "sha256:0b3470756c58ff5d314e432c36d8321740236464c40ac87dbbe5137bf4fec2fe",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053155,
+            "sha256": "sha256:23cdc79bec1127b4d102f29a86ec225083415085d1880958c7b2052d09f88403"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v2-ab-l60-gamma-b.jsonl",
+          "sha256": "sha256:bf3f5abac863ef4784f770aad677605ed04ee347f6a198754151b8c5c6477b6e",
+          "rows": 6,
+          "receiptSha256": "sha256:ae4f0d33e2a2ffcbbd58bb3ef51bfe28f4db401f32a142f2db423709c5099c0f",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053155,
+            "sha256": "sha256:23cdc79bec1127b4d102f29a86ec225083415085d1880958c7b2052d09f88403"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        }
+      ],
+      "globalSavesUnchanged": true,
+      "cleanupVerified": true,
+      "resourcesVerified": true
+    },
+    {
+      "experimentId": "gamma-echo-ai-v3-l60-20261014",
+      "qualified": true,
+      "reportSha256": "sha256:26c2a6a8702b61c765ae4d1b7630479441dff794c5cffa92a3b792c1180d8a21",
+      "localFullReport": "tmp/arena-worker-experiments/gamma-echo-ai-v3-l60-20261014/experiment-report.json",
+      "wallDurationMs": 467440,
+      "aggregateWorkerMs": 933204,
+      "summaries": [
+        {
+          "variant": "延寿型",
+          "level": 60,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 6
+          },
+          "qualifiedFinished": 6,
+          "wins": 6,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 14.634322954380883,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 3
+            },
+            "red": {
+              "finished": 3,
+              "wins": 3
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 60,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 6
+          },
+          "qualifiedFinished": 6,
+          "wins": 5,
+          "losses": 1,
+          "draws": 0,
+          "meanHpDeltaPP": 5.335322995739527,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 3
+            },
+            "red": {
+              "finished": 3,
+              "wins": 2
+            }
+          }
+        }
+      ],
+      "datasets": [
+        {
+          "file": "v3-ab-l60-gamma-a.jsonl",
+          "sha256": "sha256:e2300d8109f54fcd0cba0e8df650ee94a5d10aa67f34831bcae9825a7fa8dada",
+          "rows": 6,
+          "receiptSha256": "sha256:faf4f6791a9786dd683e291aad349aab992f2b2185d3896b47c4acff4da59edd",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v3-ab-l60-gamma-b.jsonl",
+          "sha256": "sha256:4d4aaae3bc708defb4b7f2c0bb385059968d63c0ee58ce8de478f9ab2da250cf",
+          "rows": 6,
+          "receiptSha256": "sha256:e84af3e8681b25bdd09bab50bde33f63dd6fd81a6ecfbfe1c09c6e22b0f8a022",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        }
+      ],
+      "globalSavesUnchanged": true,
+      "cleanupVerified": true,
+      "resourcesVerified": true
+    },
+    {
+      "experimentId": "gamma-echo-ai-v3-crosslevel-20261014",
+      "qualified": true,
+      "reportSha256": "sha256:4298dcd2c683a943a931516ba455447303e449f41e74e1d329306f9ada897b14",
+      "localFullReport": "tmp/arena-worker-experiments/gamma-echo-ai-v3-crosslevel-20261014/experiment-report.json",
+      "wallDurationMs": 933107,
+      "aggregateWorkerMs": 1842161,
+      "summaries": [
+        {
+          "variant": "延寿型",
+          "level": 30,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 6
+          },
+          "qualifiedFinished": 6,
+          "wins": 6,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 16.82426280030819,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 3
+            },
+            "red": {
+              "finished": 3,
+              "wins": 3
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 30,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 6
+          },
+          "qualifiedFinished": 6,
+          "wins": 6,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 19.835192537971892,
+          "bySide": {
+            "blue": {
+              "finished": 3,
+              "wins": 3
+            },
+            "red": {
+              "finished": 3,
+              "wins": 3
+            }
+          }
+        },
+        {
+          "variant": "延寿型",
+          "level": 99,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 4,
+            "timeout": 2
+          },
+          "qualifiedFinished": 4,
+          "wins": 2,
+          "losses": 2,
+          "draws": 0,
+          "meanHpDeltaPP": -1.0998504306565573,
+          "bySide": {
+            "blue": {
+              "finished": 2,
+              "wins": 1
+            },
+            "red": {
+              "finished": 2,
+              "wins": 1
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 99,
+          "aiRevision": 3,
+          "comparison": "gamma-echo-ai-ab",
+          "observed": 6,
+          "statusCounts": {
+            "finished": 5,
+            "timeout": 1
+          },
+          "qualifiedFinished": 5,
+          "wins": 1,
+          "losses": 4,
+          "draws": 0,
+          "meanHpDeltaPP": -5.505576550834179,
+          "bySide": {
+            "blue": {
+              "finished": 2,
+              "wins": 1
+            },
+            "red": {
+              "finished": 3,
+              "wins": 0
+            }
+          }
+        }
+      ],
+      "datasets": [
+        {
+          "file": "v3-ab-l30-gamma-a.jsonl",
+          "sha256": "sha256:d0c24d704f40c27ec56f9b3c627fc34d502c7cee70fe060f18647c659f28bb44",
+          "rows": 6,
+          "receiptSha256": "sha256:4477a8bcf7880c594b6a7aa88eaddcc9d9070df08ff98f83262091ff01e25807",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v3-ab-l30-gamma-b.jsonl",
+          "sha256": "sha256:38d8f6578f8e274c54b4ecf86ff11c6ab460ea7bab17f9daa44896589154888c",
+          "rows": 6,
+          "receiptSha256": "sha256:507496ab95be8a3d370ce66de071b3f0d69bb1fe016140a1716a1b32d44a74d6",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v3-ab-l99-gamma-a.jsonl",
+          "sha256": "sha256:4ffcf21ba590025cc06bcda7f48b467d9ce49f260c53b1eb20c0ef8a09200416",
+          "rows": 6,
+          "receiptSha256": "sha256:f273759c0a078a58b352a2a1aa60800c567cdcee3a655921e9f1779d1a4529f9",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v3-ab-l99-gamma-b.jsonl",
+          "sha256": "sha256:b8f000a52ff9e3bace692bb0c0543e38d6d250bba6f91070abbdd70596aa2b45",
+          "rows": 6,
+          "receiptSha256": "sha256:3b235856fef8606b776f2ba53a2b4ff753dd299c2937a523dca1e2b5f9105da7",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053038,
+            "sha256": "sha256:742d7cca39c953ecf64de91b90aab2c8a443aecbcc89cc4650ad25913e1e102e"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        }
+      ],
+      "globalSavesUnchanged": true,
+      "cleanupVerified": true,
+      "resourcesVerified": true
+    },
+    {
+      "experimentId": "gamma-echo-default-v4-final-20261014",
+      "qualified": true,
+      "reportSha256": "sha256:cb2d72c755d93dff929e4a9e5596fd5a1f18e3eabc787a346a08cdbc118f5c92",
+      "localFullReport": "tmp/arena-worker-experiments/gamma-echo-default-v4-final-20261014/experiment-report.json",
+      "wallDurationMs": 459228,
+      "aggregateWorkerMs": 898914,
+      "summaries": [
+        {
+          "variant": "延寿型",
+          "level": 99,
+          "aiRevision": 4,
+          "comparison": "gamma-echo-default-parity",
+          "observed": 2,
+          "statusCounts": {
+            "finished": 2
+          },
+          "qualifiedFinished": 2,
+          "wins": 0,
+          "losses": 2,
+          "draws": 0,
+          "meanHpDeltaPP": -10.802516891020682,
+          "bySide": {
+            "blue": {
+              "finished": 1,
+              "wins": 0
+            },
+            "red": {
+              "finished": 1,
+              "wins": 0
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 99,
+          "aiRevision": 4,
+          "comparison": "gamma-echo-default-parity",
+          "observed": 2,
+          "statusCounts": {
+            "finished": 2
+          },
+          "qualifiedFinished": 2,
+          "wins": 2,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 5.2078532583648265,
+          "bySide": {
+            "blue": {
+              "finished": 1,
+              "wins": 1
+            },
+            "red": {
+              "finished": 1,
+              "wins": 1
+            }
+          }
+        },
+        {
+          "variant": "延寿型",
+          "level": 30,
+          "aiRevision": 4,
+          "comparison": "gamma-echo-vs-noah",
+          "observed": 4,
+          "statusCounts": {
+            "finished": 4
+          },
+          "qualifiedFinished": 4,
+          "wins": 4,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 68.33631014919101,
+          "bySide": {
+            "blue": {
+              "finished": 2,
+              "wins": 2
+            },
+            "red": {
+              "finished": 2,
+              "wins": 2
+            }
+          }
+        },
+        {
+          "variant": "完全体",
+          "level": 30,
+          "aiRevision": 4,
+          "comparison": "gamma-echo-vs-noah",
+          "observed": 4,
+          "statusCounts": {
+            "finished": 4
+          },
+          "qualifiedFinished": 4,
+          "wins": 4,
+          "losses": 0,
+          "draws": 0,
+          "meanHpDeltaPP": 69.24513140480242,
+          "bySide": {
+            "blue": {
+              "finished": 2,
+              "wins": 2
+            },
+            "red": {
+              "finished": 2,
+              "wins": 2
+            }
+          }
+        }
+      ],
+      "datasets": [
+        {
+          "file": "v4-default-l99-gamma-a.jsonl",
+          "sha256": "sha256:640a5404fdfdf841c92bd18d01ec52df34f6b3f906a8abd2bb33b7d76907d122",
+          "rows": 2,
+          "receiptSha256": "sha256:4fbdedbcd8fe5b16bdd6acdc784455ca8d8fd20d980348f8e1df666d57e5191e",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053077,
+            "sha256": "sha256:7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v4-default-l99-gamma-b.jsonl",
+          "sha256": "sha256:34cc13b6dd84d8e2224fe8e1ba920c5a13bef5b32ec222e0e00e7fd190ccfe04",
+          "rows": 2,
+          "receiptSha256": "sha256:3f4a0838a0696065763b037e0a95ddb6559fefdf0882b1b56d5de5e8e441411d",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053077,
+            "sha256": "sha256:7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v4-noah-l30-gamma-a.jsonl",
+          "sha256": "sha256:007112f884d25430c50c5339daba13c87585b33af2eeac84e2976a4c23e24656",
+          "rows": 4,
+          "receiptSha256": "sha256:a154830b3b1e09aab5fd7f8687cf3091b4b7fa1bc86970e5985a8569915ee5e0",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053077,
+            "sha256": "sha256:7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        },
+        {
+          "file": "v4-noah-l30-gamma-b.jsonl",
+          "sha256": "sha256:f7bf88ab6e2a0db553ff42571066665aaa59558a1c1820af7186e820cf6540ad",
+          "rows": 4,
+          "receiptSha256": "sha256:bfddb09bd215e14c7741c5345c4c13fdbaba5f80ab95df1f489df24b6edb4d16",
+          "sourceSwf": {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "size": 1053077,
+            "sha256": "sha256:7b198619ba7b442d2a8ae0cb8c1283253e008646d84ae46654ba4f816cb9e90f"
+          },
+          "runtime": {
+            "runtimeMode": "isolated_candidate",
+            "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+            "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+            "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+            "verified": true
+          }
+        }
+      ],
+      "globalSavesUnchanged": true,
+      "cleanupVerified": true,
+      "resourcesVerified": true
+    }
+  ],
+  "excludedExperiments": [
+    {
+      "experimentId": "gamma-echo-ai-pilot-r1c-20261014",
+      "reason": "SourceId rejected before rows"
+    },
+    {
+      "experimentId": "gamma-echo-ai-pilot-r1d-20261014",
+      "reason": "Unequal actual health and invalid skillStateAudit fields; entire pilot excluded"
+    },
+    {
+      "experimentId": "gamma-echo-ai-confirm-r2-20261014",
+      "reason": "Worker wall budget exceeded; incomplete long batch excluded"
+    }
+  ],
+  "humanGameplayAcceptance": "not recorded",
+  "deathPresentation": "new whole-body fall; no new gore-only parts"
+}

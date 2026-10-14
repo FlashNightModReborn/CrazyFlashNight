@@ -1,0 +1,104 @@
+{
+  "source": "诺亚新敌人.xml/敌人-诺亚克隆兽",
+  "sourceFlags": {
+    "速度系数": 2.0,
+    "攻速系数": 4.0,
+    "攻击倍率": 1.0,
+    "段数系数": 3.7,
+    "阶段": 6.0,
+    "霸体系数": 1.0,
+    "档次系数": 7.5,
+    "成长系数": 1.0,
+    "高攻低血防系数": 1.8,
+    "高防低血系数": 5.6
+  },
+  "sourceStage": 6,
+  "requestedStages": [
+    8,
+    9
+  ],
+  "unitIds": [
+    459,
+    460
+  ],
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "rounding": "nearest integer",
+  "rows": [
+    {
+      "stage": 8,
+      "input": {
+        "speedFactor": 2,
+        "atkSpeedFactor": 4,
+        "atkMultiplier": 1,
+        "segmentFactor": 3.7,
+        "stage": 8,
+        "superArmorFactor": 1,
+        "tierFactor": 7.5,
+        "growthFactor": 1,
+        "highAtkFactor": 1.8,
+        "highDefFactor": 5.6
+      },
+      "output": {
+        "atkMin": 426.09894837712943,
+        "atkMax": 1155.1324003320278,
+        "hpMin": 5227.169943924256,
+        "hpMax": 13667.31382092775,
+        "defMin": 510.22222222222223,
+        "defMax": 987.7777777777777,
+        "expMin": 1471.662579854859,
+        "expMax": 8065.899042663083,
+        "goldPrice": 242000,
+        "kPointPrice": 6900
+      },
+      "linkage": "敌人-延寿克隆兽",
+      "integerPanel": {
+        "最小经验值": "1472",
+        "最大经验值": "8066",
+        "hp_min": "5227",
+        "hp_max": "13667",
+        "空手攻击力_min": "426",
+        "空手攻击力_max": "1155",
+        "基本防御力_min": "510",
+        "基本防御力_max": "988"
+      }
+    },
+    {
+      "stage": 9,
+      "input": {
+        "speedFactor": 2,
+        "atkSpeedFactor": 4,
+        "atkMultiplier": 1,
+        "segmentFactor": 3.7,
+        "stage": 9,
+        "superArmorFactor": 1,
+        "tierFactor": 7.5,
+        "growthFactor": 1,
+        "highAtkFactor": 1.8,
+        "highDefFactor": 5.6
+      },
+      "output": {
+        "atkMin": 478.7363169242706,
+        "atkMax": 1289.6501199524998,
+        "hpMin": 5743.066186914788,
+        "hpMax": 15251.978048543717,
+        "defMin": 533.5555555555555,
+        "defMax": 1011.1111111111111,
+        "expMin": 1685.130922153281,
+        "expMax": 9062.261422995967,
+        "goldPrice": 276000,
+        "kPointPrice": 7880
+      },
+      "linkage": "敌人-完全体克隆兽",
+      "integerPanel": {
+        "最小经验值": "1685",
+        "最大经验值": "9062",
+        "hp_min": "5743",
+        "hp_max": "15252",
+        "空手攻击力_min": "479",
+        "空手攻击力_max": "1290",
+        "基本防御力_min": "534",
+        "基本防御力_max": "1011"
+      }
+    }
+  ]
+}

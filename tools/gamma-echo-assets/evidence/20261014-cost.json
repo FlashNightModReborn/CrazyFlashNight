@@ -1,0 +1,92 @@
+{
+  "schema": "gamma-echo.task-cost.v1",
+  "scope": "2026-10-14 integration and arena calibration only; earlier SVG drawing excluded",
+  "startedAt": "2026-10-14T03:35:37.349556Z",
+  "sampledThrough": "2026-10-14T06:25:12.213Z",
+  "reportedAt": "2026-10-14T06:27:41.092064+00:00",
+  "agentWallMinutes": 172.06237513333332,
+  "models": [
+    "gpt-6-astra"
+  ],
+  "total": {
+    "tokens": {
+      "input_tokens": 31978751,
+      "cached_input_tokens": 31167232,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 225420,
+      "reasoning_output_tokens": 140890,
+      "total_tokens": 32204171
+    },
+    "standardEquivalentCredits": 1263.83555
+  },
+  "firstReadableNativeMilestone": {
+    "at": "2026-10-14T04:15:45.540065Z",
+    "wallMinutes": 40.13650848333334,
+    "tokens": {
+      "input_tokens": 8424398,
+      "cached_input_tokens": 7965696,
+      "cache_write_input_tokens": 0,
+      "output_tokens": 58776,
+      "reasoning_output_tokens": 31665,
+      "total_tokens": 8483174
+    },
+    "standardEquivalentCredits": 387.2879
+  },
+  "arenaMachineTime": {
+    "definition": "Sum of recorded coordinator group wall times, including failed attempts; parallel Worker durations are not CPU time or measured serial speedup",
+    "recordedMinutes": 62.53211666666667,
+    "experiments": [
+      {
+        "experimentId": "gamma-echo-ai-confirm-r2-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 990779
+      },
+      {
+        "experimentId": "gamma-echo-ai-pilot-r1c-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 188536
+      },
+      {
+        "experimentId": "gamma-echo-ai-pilot-r1d-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 193112
+      },
+      {
+        "experimentId": "gamma-echo-ai-v2-l60-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 519725
+      },
+      {
+        "experimentId": "gamma-echo-ai-v3-crosslevel-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 933107
+      },
+      {
+        "experimentId": "gamma-echo-ai-v3-l60-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 467440
+      },
+      {
+        "experimentId": "gamma-echo-default-v4-final-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 459228
+      }
+    ]
+  },
+  "rates": {
+    "source": "https://learn.chatgpt.com/docs/pricing",
+    "verifiedOn": "2026-10-14",
+    "model": "gpt-6-astra",
+    "standardCreditsPerMillion": {
+      "uncachedInput": 250,
+      "cachedInput": 25,
+      "output": 1250
+    }
+  },
+  "boundaries": [
+    "Standard-equivalent only, not actual account debit or subscription quota",
+    "Output includes reasoning tokens; reasoning is not charged a second time in this estimate",
+    "Includes first-time converter and fixture construction, configuration corrections, and AI iterations; not a steady per-monster unit cost",
+    "Token sample stops before this receipt and the final response"
+  ]
+}

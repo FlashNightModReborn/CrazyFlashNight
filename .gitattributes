@@ -148,3 +148,7 @@ launcher/app.manifest text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/e2bd9a476bae7cd36b44b397.svg text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/1b1ff7fd3a40686dd6d960e5.svg text eol=lf
 /launcher/web/assets/enemy-portraits/subjects/e4463541fce7e38c224d8a46.svg text eol=lf
+
+# Gamma-ECHO approved input, native recipes and immutable result rows bind exact bytes.
+/flashswf/arts/new/Codex素材源稿/γ-ECHO克隆兽-R3/** -text whitespace=cr-at-eol
+/tools/gamma-echo-assets/** -text whitespace=cr-at-eol

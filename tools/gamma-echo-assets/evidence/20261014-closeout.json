@@ -1,0 +1,144 @@
+{
+  "schema": "gamma-echo.closeout.v1",
+  "upstreamBase": "fcbc0ad04ad4c1ed8c83cb11987e2eb50eccbb61",
+  "sourceSwfSha256": "2bde94814468275ec833776341b12dd1b6548cff85c72c498317894b1f365fe3",
+  "asLoaderSha256": "e6f47e007dfaea85823e1ad677e5468ea74e9f1ef8e7ab0b2fb7c732c727f3ea",
+  "native": {
+    "runId": "2ae44d8d13b144d8b6d892e1e3676043",
+    "assertions": 219,
+    "failed": 0,
+    "timelineCases": 28,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "traceSha256": "06c0ee9a6da84b3a1cbb2a87a1d6d5995559661fbda4f1f91c5240f667767de4",
+    "testSwfSha256": "43185e246ee95950fb40acd4e22a495eea29e757c0de24a8b1761b9489f042e9",
+    "originalRunnerPassed": false,
+    "compileDeadlineSeconds": 240,
+    "lateUniqueClosureVerified": true,
+    "testHostExitVerified": true,
+    "recoverySha256": "0f21b77c77ac64de4a989fd12af87255d9416c35cc196ccafb1b8e324cebebee"
+  },
+  "productionSwfOwnership": {
+    "errors": [],
+    "files": 692,
+    "parsed": 2,
+    "cacheHits": 690,
+    "loaderClasses": 713,
+    "closureChecked": true,
+    "policy": "production",
+    "milliseconds": 28987.3152
+  },
+  "arena": {
+    "experimentId": "gamma-echo-closeout-smoke-20261014",
+    "qualified": true,
+    "finished": 4,
+    "rawResults": [
+      {
+        "file": "closeout-smoke-01.jsonl",
+        "sha256": "d4797d4f90c5ce7d71194002ce7ff1da2874d9237c58c41b2b6bd858d7bef911",
+        "receiptSha256": "sha256:190a8ab8d8f35dd65365694f14caaed01e5020d94dd500a35e584f53c7d7789f",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      },
+      {
+        "file": "closeout-smoke-02.jsonl",
+        "sha256": "ea59a8beabf8bc8fd58647853f9197abd8f3b9f0d73fe3392758d6954da51eee",
+        "receiptSha256": "sha256:bf5722bbd20d4c877c946ad681beb9eafd0efb96442b3365fb96ae6532968f70",
+        "sourceSwf": {
+          "path": "flashswf/arts/new/Codex专用素材.swf",
+          "size": 1134857,
+          "sha256": "sha256:e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+        },
+        "runtimeIdentity": {
+          "runtimeMode": "isolated_candidate",
+          "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+          "buildIdentity": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+          "payloadClosure": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+          "verified": true
+        }
+      }
+    ]
+  },
+  "visualSamples": {
+    "sourceRecord": "20261014-connections-sustain.json",
+    "files": [
+      {
+        "file": "native-final.png",
+        "bytes": 138667,
+        "sha256": "30a781639ff55c36a33fd4df1eb16cb99b5834a5e9e8427fc8e8e2ba7184d6c2"
+      },
+      {
+        "file": "feet-before-after.png",
+        "bytes": 40842,
+        "sha256": "fb1d7883393feb5a2641c4aa08f3be1ef7bcdc321adc10c9aecbf40093a05361"
+      }
+    ],
+    "feetComparison": {
+      "previousRecord": "20261014-calibration.json",
+      "cropRectangle": [
+        40,
+        310,
+        220,
+        410
+      ],
+      "scale": 3,
+      "resampling": "nearest",
+      "changes": "layout, labels and background only"
+    }
+  },
+  "scope": "Source/Flash resource closeout after upstream synchronization; no formal runtime promotion or new stage encounter.",
+  "earlierHealthyNative": {
+    "runId": "599422191742461281eebb2350a002ab",
+    "assertions": 219,
+    "failed": 0,
+    "timelineCases": 28,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "traceSha256": "ac93101336b6cae576362d1ead95379a2ce252036756ba50cb6d71837d0d6b39",
+    "testSwfSha256": "311de46a7aceb270f0a6aa8a84d01b7c1b060ba4192340857ec64c5e3ea5d610",
+    "sourceSwfSha256": "e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d"
+  },
+  "finalPackaging": {
+    "oldSha256": "e9e741339bc376e11cf818bfdadc28512cf49f3a85a863f2b31434e5b01a4c1d",
+    "newSha256": "2bde94814468275ec833776341b12dd1b6548cff85c72c498317894b1f365fe3",
+    "uncompressedBodyEqual": false,
+    "oldTagCount": 1134,
+    "newTagCount": 1134,
+    "changedTags": [
+      {
+        "tagIndex": 1,
+        "oldCode": 77,
+        "newCode": 77,
+        "oldBytes": 1161,
+        "newBytes": 1161,
+        "oldSha256": "a8966ecbb40660af53d499ac26ad9effb55427955ef162375dcf5b3372069b84",
+        "newSha256": "36b5c289213d55a0e3d3be612e60960513663ad9b7979ceb44d14d37094fbf1a"
+      }
+    ],
+    "nonMetadataTagsByteIdentical": true
+  },
+  "integrationParent": "67511b80a2298206d1216e8d7c4f6fc8c63d9334",
+  "excludedExtraAttempts": [
+    {
+      "reason": "resident document-open compile deadline",
+      "deadlineSeconds": 180,
+      "recoveryReviewed": true
+    },
+    {
+      "reason": "cold-start request was not consumed",
+      "deadlineSeconds": 300,
+      "compileExecuted": false,
+      "recoveryReviewed": true
+    }
+  ]
+}

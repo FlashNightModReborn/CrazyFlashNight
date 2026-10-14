@@ -1,0 +1,7 @@
+﻿_root.gammaEchoExportConnectionFrames = true;
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.gammaEchoAssetComplete = function():Void {
+    trace("FocusedTestRunId gamma-echo Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId gamma-echo Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.GammaEchoAssetTest.runAllTests();

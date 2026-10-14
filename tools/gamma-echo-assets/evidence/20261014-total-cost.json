@@ -1,0 +1,207 @@
+{
+  "schema": "gamma-echo.production-cost.v1",
+  "sampledThrough": "2026-10-14T10:54:25.579000+00:00",
+  "timezone": "Asia/Shanghai",
+  "model": "gpt-6-astra",
+  "usageSamples": 413,
+  "phaseRows": [
+    {
+      "id": "preparation",
+      "label": "选题与单位盘点",
+      "activeTaskWallMinutes": 25.859716666666667,
+      "tokens": {
+        "input_tokens": 6024808,
+        "cached_input_tokens": 5816192,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 41192,
+        "reasoning_output_tokens": 17986,
+        "total_tokens": 6066000
+      },
+      "standardEquivalentCredits": 249.0488,
+      "taskIntervals": 2,
+      "firstTaskStartedAt": "2026-10-13T04:05:54.886000+00:00",
+      "through": "2026-10-13T04:49:24.742000+00:00"
+    },
+    {
+      "id": "svg",
+      "label": "SVG 试作与质量、配色返修",
+      "activeTaskWallMinutes": 74.28266666666667,
+      "tokens": {
+        "input_tokens": 10997310,
+        "cached_input_tokens": 10672256,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 75614,
+        "reasoning_output_tokens": 35810,
+        "total_tokens": 11072924
+      },
+      "standardEquivalentCredits": 442.5874,
+      "taskIntervals": 1,
+      "firstTaskStartedAt": "2026-10-13T09:18:24.334000+00:00",
+      "through": "2026-10-13T10:32:41.294000+00:00"
+    },
+    {
+      "id": "variants",
+      "label": "双版本设定与完全体配色",
+      "activeTaskWallMinutes": 14.415683333333334,
+      "tokens": {
+        "input_tokens": 3354576,
+        "cached_input_tokens": 3249408,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 19658,
+        "reasoning_output_tokens": 4767,
+        "total_tokens": 3374234
+      },
+      "standardEquivalentCredits": 132.0997,
+      "taskIntervals": 2,
+      "firstTaskStartedAt": "2026-10-13T10:54:06.835000+00:00",
+      "through": "2026-10-13T11:11:43.644000+00:00"
+    },
+    {
+      "id": "integration",
+      "label": "游戏接入与 AI 标定",
+      "activeTaskWallMinutes": 178.59633333333335,
+      "tokens": {
+        "input_tokens": 32925374,
+        "cached_input_tokens": 32106240,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 234067,
+        "reasoning_output_tokens": 145425,
+        "total_tokens": 33159441
+      },
+      "standardEquivalentCredits": 1300.02325,
+      "taskIntervals": 1,
+      "firstTaskStartedAt": "2026-10-14T03:34:56.546000+00:00",
+      "through": "2026-10-14T06:33:32.326000+00:00"
+    },
+    {
+      "id": "death",
+      "label": "死亡动画与碎尸",
+      "activeTaskWallMinutes": 62.720800000000004,
+      "tokens": {
+        "input_tokens": 15341051,
+        "cached_input_tokens": 15217408,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 74863,
+        "reasoning_output_tokens": 47178,
+        "total_tokens": 15415914
+      },
+      "standardEquivalentCredits": 504.9247,
+      "taskIntervals": 6,
+      "firstTaskStartedAt": "2026-10-14T06:49:53.307000+00:00",
+      "through": "2026-10-14T07:55:51.868000+00:00"
+    },
+    {
+      "id": "repair_sustain",
+      "label": "连接修补、命名与吸血",
+      "activeTaskWallMinutes": 51.42466666666667,
+      "tokens": {
+        "input_tokens": 12916703,
+        "cached_input_tokens": 12707200,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 71318,
+        "reasoning_output_tokens": 31374,
+        "total_tokens": 12988021
+      },
+      "standardEquivalentCredits": 459.20325,
+      "taskIntervals": 1,
+      "firstTaskStartedAt": "2026-10-14T08:25:47.493000+00:00",
+      "through": "2026-10-14T09:17:12.973000+00:00"
+    },
+    {
+      "id": "closeout",
+      "label": "文档、主线同步、提交与推送收口",
+      "activeTaskWallMinutes": 74.98866666666666,
+      "tokens": {
+        "input_tokens": 27162359,
+        "cached_input_tokens": 26261760,
+        "cache_write_input_tokens": 0,
+        "output_tokens": 94032,
+        "reasoning_output_tokens": 64191,
+        "total_tokens": 27256391
+      },
+      "standardEquivalentCredits": 999.23375,
+      "taskIntervals": 1,
+      "firstTaskStartedAt": "2026-10-14T09:39:26.259000+00:00",
+      "through": "2026-10-14T10:54:25.579000+00:00"
+    }
+  ],
+  "productionTotal": {
+    "activeTaskWallMinutes": 456.4288166666667,
+    "standardEquivalentCredits": 3838.0720499999998
+  },
+  "includingPreparation": {
+    "activeTaskWallMinutes": 482.28853333333336,
+    "standardEquivalentCredits": 4087.12085
+  },
+  "arenaMachineTime": {
+    "recordedCoordinatorMinutes": 84.62243333333333,
+    "experiments": [
+      {
+        "experimentId": "gamma-echo-ai-confirm-r2-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 990779
+      },
+      {
+        "experimentId": "gamma-echo-ai-pilot-r1c-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 188536
+      },
+      {
+        "experimentId": "gamma-echo-ai-pilot-r1d-20261014",
+        "qualified": false,
+        "coordinatorWallMs": 193112
+      },
+      {
+        "experimentId": "gamma-echo-ai-v2-l60-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 519725
+      },
+      {
+        "experimentId": "gamma-echo-ai-v3-crosslevel-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 933107
+      },
+      {
+        "experimentId": "gamma-echo-ai-v3-l60-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 467440
+      },
+      {
+        "experimentId": "gamma-echo-closeout-smoke-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 180840
+      },
+      {
+        "experimentId": "gamma-echo-death-smoke-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 212793
+      },
+      {
+        "experimentId": "gamma-echo-default-v4-final-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 459228
+      },
+      {
+        "experimentId": "gamma-echo-lifesteal-r1-20261014",
+        "qualified": true,
+        "coordinatorWallMs": 931786
+      }
+    ]
+  },
+  "rates": {
+    "source": "https://learn.chatgpt.com/docs/pricing",
+    "verifiedOn": "2026-10-14",
+    "standardCreditsPerMillion": {
+      "uncachedInput": 250,
+      "cachedInput": 25,
+      "output": 1250
+    }
+  },
+  "method": [
+    "Cumulative own-chat token deltas; duplicate samples removed; reasoning remains included in output.",
+    "Active task wall intervals include tool waits, but exclude gaps between completed tasks and later user requests.",
+    "Arena coordinator wall time includes failures and parallel runs; it overlaps active task wall and must not be added to it.",
+    "Standard-equivalent only: not an account debit, subscription percentage, dollar charge or steady per-monster rate.",
+    "The current closeout is included only through the last recorded usage sample; later tools and final response are excluded."
+  ]
+}
