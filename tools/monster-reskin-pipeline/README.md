@@ -4,6 +4,8 @@
 
 现实原型尺寸、装备缩放与注册点的前置判断见 [美术资产装配](../../agentsDoc/art-asset-assembly.md)；需要换算厘米、测量元件或复算人模时调用 [asset-metrology](../asset-metrology/README.md)，随后复用本文的逐件与整机预览流程。
 
+Linux／dot 执行的阶段分工、当前 Windows 入口迁移项及跨机验证范围见[跨平台素材绘制管线](../../docs/跨平台素材绘制管线.md)；本工具仍只负责参考提取与组包。
+
 ## 边界
 
 - 输入：现有 XFL/SWF、linkage 对应的 SWF character ID、待导出的叶子 shape ID。
