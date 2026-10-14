@@ -25,6 +25,26 @@
                         <Interval>300</Interval>
                         <Quantity>1</Quantity>
                         <Level>20</Level>
+                        <x>850</x>
+                        <y>500</y>
+                    </Enemy>
+                    <Enemy id="1">
+                        <Type>兵种457</Type>
+                        <Interval>600</Interval>
+                        <Delay>300</Delay>
+                        <Quantity>2</Quantity>
+                        <Level>17</Level>
+                        <SpawnIndex>left</SpawnIndex>
+                        <DifficultyMin>地狱</DifficultyMin>
+                    </Enemy>
+                    <Enemy id="2">
+                        <Type>兵种457</Type>
+                        <Interval>600</Interval>
+                        <Delay>1200</Delay>
+                        <Quantity>2</Quantity>
+                        <Level>16</Level>
+                        <SpawnIndex>right</SpawnIndex>
+                        <DifficultyMin>地狱</DifficultyMin>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

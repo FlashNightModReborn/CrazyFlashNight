@@ -770,11 +770,9 @@
       "Kdeposit": 0,
 
       "rewards": [
-        "金币#5000",
-        "经验值#200000",
-        "拳击特制绷带#1",
-        "复活币#10",
-        "技能点#15"
+        "金币#1000",
+        "经验值#50000",
+        "复活币#2"
       ],
 
       "chain": "委托"
@@ -798,11 +796,10 @@
       
 
       "rewards": [
-        "金币#50000",
-        "经验值#500000",
-        "K点#1000",
-        "复活币#20",
-        "技能点#30"
+        "金币#8000",
+        "经验值#150000",
+        "K点#100",
+        "复活币#3"
       ],
 
       "challenge": {
@@ -831,10 +828,10 @@
       "Kdeposit": 0,
 
       "rewards": [
-        "金币#30000",
-        "经验值#300000",
-        "K点#500",
-        "复活币#20"
+        "金币#5000",
+        "经验值#150000",
+        "K点#250",
+        "复活币#3"
       ],
 
       "chain": "委托"
@@ -871,7 +868,7 @@
       "get_conversation": "$GEM_PK_Tomboy_GET",
       "get_npc": "Tomboy",
 
-      "finish_requirements": ["与Tomboy切磋#地狱"],
+      "finish_requirements": ["与Tomboy切磋#修罗"],
       "finish_conversation": "$GEM_PK_Tomboy_FINISH",
       "finish_npc": "Tomboy",
       "recommended_level": "15-20",
@@ -880,8 +877,16 @@
       "Kdeposit": 0,
 
       "rewards": [
-        "经验值#300000"
+        "经验值#150000"
       ],
+
+      "challenge": {
+        "difficulty":"地狱",
+        "limitations": ["DisableCompanion"],
+        "rewards": [
+          "经验值#150000"
+        ]
+      },
 
       "chain": "委托"
     },

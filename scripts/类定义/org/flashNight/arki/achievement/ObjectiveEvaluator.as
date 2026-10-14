@@ -59,6 +59,20 @@ class org.flashNight.arki.achievement.ObjectiveEvaluator {
             if (_root.tasks_finished == undefined) return 0;
             return (Number(_root.tasks_finished[String(p.taskId)]) >= 1) ? 1 : 0;
         }
+        if (type == "taskCount") {
+            // tasks_finished 实数计数（可重复委托每次交付 +1，通信_鸡蛋_任务系统.提交任务完成状态）；
+            // 终身口径不扣基线；作弊码删除任务会回落，unl 棘轮锁存兜底不回退解锁
+            if (_root.tasks_finished == undefined) return 0;
+            var tc:Number = Number(_root.tasks_finished[String(p.taskId)]);
+            return (isNaN(tc) || tc < 0) ? 0 : tc;
+        }
+        if (type == "achievementUnlocked") {
+            // 0/1 布尔型（target 必 1）：读成就解锁锁存位图 unl（scanTick/领取两写点，只加不减）。
+            // 注意读的是锁存值非现算——scanTick 10 秒轮询窗口内"刚达成未锁存"会暂读 0。
+            var auExt:Object = _root._saveExt;
+            if (auExt == undefined || auExt.成就 == undefined || auExt.成就.unl == undefined) return 0;
+            return (Number(auExt.成就.unl[String(p.achievementId)]) >= 1) ? 1 : 0;
+        }
         if (type == "chainProgress") {
             if (_root.task_chains_progress == undefined) return 0;
             var prog:Number = Number(_root.task_chains_progress[p.chain]);

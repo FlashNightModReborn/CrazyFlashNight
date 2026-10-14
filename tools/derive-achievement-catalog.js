@@ -18,8 +18,7 @@
 //      条目含 finish_remote 字段即 fail（成就域单一写法，防 AS2 raw / web catalog 双权威分叉）
 //   ⑦ title/description 非空且禁 '$' 前缀（成就文案字面量直写，不走 task_texts 间接层）
 //   ⑧ rewards "名#数" 可解析、数量>0、单条禁同名重复（ItemUtil.require 覆盖非累加）、
-//      黑名单 {经验值}（acquire 触发 _root.主角是否升级 升级弹窗链，ItemUtil.as:417-419；
-//      解禁 = 删 REWARD_BLACKLIST 条目，即显式决策点）
+//      黑名单 REWARD_BLACKLIST（2026-10-14 经验值经用户决策解禁，见脚本内注释决策记录）
 //
 // hidden 条目脱敏输出（防剧透第一层，从源头不泄）：
 //   title/description 置 "???"、rewards 置 []、objective 仅保留 {type,target}（params 含
@@ -46,9 +45,10 @@ let itemMetaByName = null;
 // 成就域启用新类型必须显式加 case（刻意的双重门，防"枚举放行但语义未评估"静默上架）。
 const { OBJECTIVE_TYPES } = require('./lib/objective-types.js');
 
-// rewards 黑名单：经验值 acquire 触发 _root.主角是否升级（ItemUtil.as:417-419），
-// 面板遮罩下升级弹窗/特效体验未评估（设计 §1.2）。解禁 = 删此条目（显式决策点）。
-const REWARD_BLACKLIST = { '经验值': true };
+// rewards 黑名单。经验值已于 2026-10-14 经用户显式决策解禁（面板遮罩下升级=静默
+// 生效但无视觉反馈，验收见切磋里程碑发放轮）。其余触发升级弹窗链/未评估副作用的
+// 键如再发现仍需在此显式拦截；解禁/加禁都必须落在本行注释的决策记录上。
+const REWARD_BLACKLIST = {};
 
 function fail(msg) {
     console.error('[derive-achievement-catalog] ' + msg);
@@ -209,8 +209,8 @@ function parseRewards(t, ctx) {
     return out;
 }
 
-// ④/⑤ objective 校验。
-function validateObjective(t, ctx, taskIndex, validCounters) {
+// ④/⑤ objective 校验。achIds：成就 id 全集（前置扫描，供 achievementUnlocked 跨域闭包）。
+function validateObjective(t, ctx, taskIndex, validCounters, achIds) {
     const o = t.objective;
     if (o == null || typeof o !== 'object') fail(ctx + ': missing objective object');
     if (OBJECTIVE_TYPES[o.type] !== true) fail(ctx + ': unknown objective.type "' + o.type + '"');
@@ -233,6 +233,22 @@ function validateObjective(t, ctx, taskIndex, validCounters) {
                 fail(ctx + ': taskFinished references missing task id "' + p.taskId + '" (cross-domain closure)');
             }
             if (o.target !== 1) fail(ctx + ': taskFinished target must be 1 (boolean-type objective)');
+            break;
+        case 'taskCount':
+            // 通关次数实数读数（rawOf 直接返回 tasks_finished[id]），target 任意 ≥1
+            if (p.taskId === undefined || p.taskId === null) fail(ctx + ': taskCount requires params.taskId');
+            if (taskIndex.ids[String(p.taskId)] !== true) {
+                fail(ctx + ': taskCount references missing task id "' + p.taskId + '" (cross-domain closure)');
+            }
+            break;
+        case 'achievementUnlocked':
+            if (p.achievementId === undefined || p.achievementId === null) fail(ctx + ': achievementUnlocked requires params.achievementId');
+            if (achIds[String(p.achievementId)] !== true) {
+                fail(ctx + ': achievementUnlocked references missing achievement id "' + p.achievementId + '" (cross-domain closure)');
+            }
+            if (String(p.achievementId) === String(t.id)) {
+                fail(ctx + ': achievementUnlocked self-reference (unl 只在自身解锁后落锁，自引用永不可达)');
+            }
             break;
         case 'chainProgress':
             needNonEmptyString(p.chain, ctx + ': chainProgress params.chain');
@@ -270,6 +286,14 @@ function buildCatalog(rawAchievements, taskIndex, validCounters) {
     const achievements = {};
     const categoriesSeqMap = {};
     const idSeen = {};
+
+    // achievementUnlocked 跨域闭包前置集合（允许前向引用）
+    const achIds = {};
+    for (let s = 0; s < rawAchievements.length; s += 1) {
+        if (rawAchievements[s] != null && typeof rawAchievements[s].id === 'number') {
+            achIds[String(rawAchievements[s].id)] = true;
+        }
+    }
 
     for (let i = 0; i < rawAchievements.length; i += 1) {
         const t = rawAchievements[i];
@@ -311,7 +335,7 @@ function buildCatalog(rawAchievements, taskIndex, validCounters) {
         const description = validateText(t.description, ctx + '.description');
         const hidden = t.hidden === true;
         const rewards = parseRewards(t, ctx);
-        validateObjective(t, ctx, taskIndex, validCounters);
+        validateObjective(t, ctx, taskIndex, validCounters, achIds);
 
         // hidden 脱敏投影：title/description→"???"、rewards→[]、objective 剔除 params（含物品名/任务 id 线索）。
         achievements[idKey] = {

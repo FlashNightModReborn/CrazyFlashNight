@@ -5851,6 +5851,8 @@
               "最小数量": 1,
               "概率": 100
             },
+            "死亡动画": "a1",
+            "登场动画": "a0",
             "称号": "翅虎堂司暗"
           }
         },
@@ -25836,14 +25838,36 @@
           "random": false,
           "isHostile": true,
           "humanoid": false
+        },
+        {
+          "type": "兵种457",
+          "id": 457,
+          "name": "黑仔",
+          "spritename": "敌人-Codex黑仔",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种457",
+          "id": 457,
+          "name": "黑仔",
+          "spritename": "敌人-Codex黑仔",
+          "level": 16,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
         }
       ],
-      "unitCount": 1,
-      "distinctTypes": 1,
-      "avgLevel": 20,
-      "levelMin": 20,
+      "unitCount": 5,
+      "distinctTypes": 3,
+      "avgLevel": 17.2,
+      "levelMin": 16,
       "levelMax": 20,
-      "powerRating": 20
+      "powerRating": 86
     },
     {
       "id": "副本任务/与体育老师切磋.xml#0.0",
@@ -134846,6 +134870,8 @@
               "最小数量": 1,
               "概率": 100
             },
+            "死亡动画": "a1",
+            "登场动画": "a0",
             "称号": "翅虎堂司暗"
           }
         },

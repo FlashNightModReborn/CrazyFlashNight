@@ -5990,7 +5990,7 @@
       <budgetBreakdown>
       </budgetBreakdown>
       <inputDigest>fnv1a32:da27fa78</inputDigest>
-      <sourceDigest>sha256:b2c14e37146f6853a0602263c2cb44ce4f739cc09912b2a28d5eeaef92728199</sourceDigest>
+      <sourceDigest>sha256:00671a85963ac6a1176aa2a37789292d358a7f70f648b779fa76406b18187f82</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -6854,7 +6854,7 @@
       <budgetBreakdown>
       </budgetBreakdown>
       <inputDigest>fnv1a32:0a05de7d</inputDigest>
-      <sourceDigest>sha256:7b467f1a9fdc609e6be53ccec22038e22cee95c94774f019be14ec37147ec92e</sourceDigest>
+      <sourceDigest>sha256:ef126b36f79b4a155bad6e0ffba3ca271ac2a56b7baea187ee7bec6c2825b26a</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -10672,11 +10672,11 @@
       <priceLayers>0</priceLayers>
       <category>1</category>
       <damageTypeFactor>1</damageTypeFactor>
-      <adoptedGoldPrice>0</adoptedGoldPrice>
+      <adoptedGoldPrice>78000</adoptedGoldPrice>
       <status>unresolved</status>
       <balanceMode>exception</balanceMode>
       <exceptionCode>legacy-off-formula</exceptionCode>
-      <marketPrice>25000</marketPrice>
+      <marketPrice>78000</marketPrice>
       <currentScore>1244</currentScore>
       <balanceScore>601</balanceScore>
       <weightedScore>601</weightedScore>
@@ -10687,9 +10687,9 @@
       <inputs level="30" defence="75" hp="0" mp="75" damage="0" weaponBonus="0" weight="0.1" punch="135" magicDefence="0" />
       <budgetBreakdown>
       </budgetBreakdown>
-      <inputDigest>fnv1a32:dd3567fb</inputDigest>
-      <sourceDigest>sha256:590df292290c9476408474ade0f119d4cff6e95e255b05f5fdaf592cc7db51e9</sourceDigest>
-      <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
+      <inputDigest>fnv1a32:66affc3c</inputDigest>
+      <sourceDigest>sha256:f3c5fa36ae608e3dfc3361bb37b700da8eb3cc3d37a63cdb9dbf41323ea34c03</sourceDigest>
+      <note>2026-10-14 维护者裁定：售价改按装备公式 30×2600=78000，进 Blue 商店；数值仍低于公式基线，待后续裁定改值或改层数口径</note>
     </record>
     <record>
       <auditRef>armor:隐匿帽蒙面</auditRef>
@@ -10877,7 +10877,7 @@
       <budgetBreakdown>
       </budgetBreakdown>
       <inputDigest>fnv1a32:bf0ac1d9</inputDigest>
-      <sourceDigest>sha256:7726e2fa6337ebab7d05d692ac06ca55ff06a0821c1be160c21ace7c3762e2db</sourceDigest>
+      <sourceDigest>sha256:8e88025965a88b7f9737fdcfd9801fd17f778c72a293fa5c245615cdd7a64197</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>
@@ -11687,7 +11687,7 @@
       <budgetBreakdown>
       </budgetBreakdown>
       <inputDigest>fnv1a32:493d1105</inputDigest>
-      <sourceDigest>sha256:ba57c6e5643e748584140cbeef22f17cc68d821b0573ab7bb93dcd37711c07d8</sourceDigest>
+      <sourceDigest>sha256:978f10569e70859ceb99c7e43a75ed414df30d2dc419be05d4a754aea1fea344</sourceDigest>
       <note>存量数值低于公式基线，待裁定改值或改层数口径</note>
     </record>
     <record>

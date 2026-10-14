@@ -9,6 +9,8 @@ const OBJECTIVE_TYPES = {
     infraBuiltCount: true,
     killTotal: true,
     taskFinished: true,
+    taskCount: true,     // 切磋/委托类可重复任务的通关次数（tasks_finished 实数，终身口径）
+    achievementUnlocked: true, // 成就解锁锁存位图 0/1（_saveExt.成就.unl，棘轮只加不减）
     chainProgress: true,
     skillLevel: true,
     itemOwned: true,
@@ -49,6 +51,15 @@ function validateCondition(cond, ctx, fail, economyCounters) {
             if (p.taskId === undefined || p.taskId === null || p.taskId === '') fail(ctx + ': taskFinished params.taskId required');
             // rawOf 对 taskFinished 显式返 0/1 布尔（完成次数不外露），target>1 = 永不可达静默上架
             if (target !== 1) fail(ctx + ': taskFinished target must be 1 (boolean-type, rawOf returns 0/1)');
+            break;
+        case 'taskCount':
+            if (p.taskId === undefined || p.taskId === null || p.taskId === '') fail(ctx + ': taskCount params.taskId required');
+            // 非单调（作弊码可删任务记录），禁 sinceAccept（MONOTONIC_TYPES 未含本类型已拦）
+            break;
+        case 'achievementUnlocked':
+            if (p.achievementId === undefined || p.achievementId === null || p.achievementId === '') fail(ctx + ': achievementUnlocked params.achievementId required');
+            // rawOf 返 unl 锁存位 0/1（棘轮单调但布尔型，target>1 = 永不可达）
+            if (target !== 1) fail(ctx + ': achievementUnlocked target must be 1 (boolean-type, rawOf returns 0/1)');
             break;
         case 'chainProgress':
             if (typeof p.chain !== 'string' || !p.chain) fail(ctx + ': chainProgress params.chain required');

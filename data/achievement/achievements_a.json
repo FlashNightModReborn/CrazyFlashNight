@@ -182,6 +182,114 @@
             "rewards": ["金币#5000"],
             "claim": { "mode": "remote" },
             "objective": { "type": "economyCount", "params": { "counter": "佣兵雇佣次数" }, "target": 1 }
+        },
+        {
+            "id": 700701,
+            "category": "切磋#1",
+            "title": "初战Blue",
+            "description": "累计通关「挑战Blue」1 次",
+            "rewards": ["金币#4000", "经验值#80000", "技能点#10", "拳击特制绷带#1"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 1 }
+        },
+        {
+            "id": 700702,
+            "category": "切磋#2",
+            "title": "三战Blue",
+            "description": "累计通关「挑战Blue」3 次",
+            "rewards": ["金币#9000", "经验值#220000", "技能点#25", "复活币#15"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 3 }
+        },
+        {
+            "id": 700703,
+            "category": "切磋#3",
+            "title": "五战Blue",
+            "description": "累计通关「挑战Blue」5 次",
+            "rewards": ["金币#14000", "经验值#400000", "技能点#45", "复活币#40"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 5 }
+        },
+        {
+            "id": 700704,
+            "category": "切磋#4",
+            "title": "初战Andy Law",
+            "description": "累计通关「挑战Andylaw」1 次",
+            "rewards": ["金币#40000", "经验值#200000", "技能点#20", "K点#800"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 1 }
+        },
+        {
+            "id": 700705,
+            "category": "切磋#5",
+            "title": "三战Andy Law",
+            "description": "累计通关「挑战Andylaw」3 次",
+            "rewards": ["金币#80000", "经验值#400000", "技能点#50", "K点#1500", "复活币#30"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 3 }
+        },
+        {
+            "id": 700706,
+            "category": "切磋#6",
+            "title": "五战Andy Law",
+            "description": "累计通关「挑战Andylaw」5 次",
+            "rewards": ["金币#150000", "经验值#600000", "技能点#90", "K点#3000", "复活币#75"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 5 }
+        },
+        {
+            "id": 700707,
+            "category": "切磋#7",
+            "title": "初战BPK",
+            "description": "累计通关「挑战BPK」1 次",
+            "rewards": ["金币#25000", "经验值#100000", "K点#400"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 1 }
+        },
+        {
+            "id": 700708,
+            "category": "切磋#8",
+            "title": "三战BPK",
+            "description": "累计通关「挑战BPK」3 次",
+            "rewards": ["金币#50000", "经验值#250000", "K点#800", "复活币#30"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 3 }
+        },
+        {
+            "id": 700709,
+            "category": "切磋#9",
+            "title": "五战BPK",
+            "description": "累计通关「挑战BPK」5 次",
+            "rewards": ["金币#90000", "经验值#450000", "K点#1500", "复活币#75"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 5 }
+        },
+        {
+            "id": 700710,
+            "category": "切磋#10",
+            "title": "初试Tomboy",
+            "description": "累计通关「与Tomboy切磋」1 次",
+            "rewards": ["经验值#40000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 1 }
+        },
+        {
+            "id": 700711,
+            "category": "切磋#11",
+            "title": "三试Tomboy",
+            "description": "累计通关「与Tomboy切磋」3 次",
+            "rewards": ["经验值#60000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 3 }
+        },
+        {
+            "id": 700712,
+            "category": "切磋#12",
+            "title": "五试Tomboy",
+            "description": "累计通关「与Tomboy切磋」5 次",
+            "rewards": ["经验值#100000"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 5 }
         }
     ]
 }
