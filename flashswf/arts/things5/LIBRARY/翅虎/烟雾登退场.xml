@@ -1,0 +1,47 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="翅虎/烟雾登退场" itemID="6aceda28-71000012">
+  <timeline>
+    <DOMTimeline name="烟雾登退场">
+      <layers>
+        <DOMLayer name="动画由翅虎控制器推进" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+              <Actionscript>
+                <script><![CDATA[stop();
+_root.翅虎烟雾动画加载(this);]]></script>
+              </Actionscript>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="烟雾" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾" name="smoke">
+                  <matrix>
+                    <Matrix a="0.7" d="0.7" ty="-20"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生站立人物" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements><DOMSymbolInstance libraryItemName="Symbol 591" name="body" centerPoint3DX="31.2" centerPoint3DY="24.1">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,250 @@
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="翅虎/烟雾" itemID="6aceda28-71000011" linkageExportForAS="true" linkageIdentifier="翅虎烟雾">
+  <timeline>
+    <DOMTimeline name="烟雾">
+      <layers><DOMLayer name="翅虎烟雾生命周期" color="#4FFF4F"><frames><DOMFrame index="0" keyMode="9728" duration="25"><elements/><Actionscript><script><![CDATA[this.onEnterFrame = function() {
+    if (_root.暂停 || this.__wingTigerManual) this.stop();
+    else this.play();
+};]]></script></Actionscript></DOMFrame><DOMFrame index="25" keyMode="9728"><elements/><Actionscript><script><![CDATA[if (this.__wingTigerManual) stop();
+else this.removeMovieClip();]]></script></Actionscript></DOMFrame></frames></DOMLayer><DOMLayer name="图层 3" color="#FF800A">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-33" centerPoint3DX="-4.05" centerPoint3DY="-21.05">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-97.7" ty="-91.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-36" centerPoint3DX="0.6" centerPoint3DY="-31.35">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-145.5" ty="-111.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-39" selected="true" centerPoint3DX="9.05" centerPoint3DY="-47.6">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-148.5" ty="-128.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-42" selected="true" centerPoint3DX="15.35" centerPoint3DY="-47.6">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-154.75" ty="-121.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-45" selected="true" centerPoint3DX="-57.3" centerPoint3DY="-29.05">
+                  <matrix>
+                    <Matrix a="0.45062255859375" d="0.45062255859375" tx="-159.55" ty="-115"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="14" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 4" color="#FF4FFF">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-30" centerPoint3DX="-8.9" centerPoint3DY="-9.35">
+                  <matrix>
+                    <Matrix a="0.474929809570313" d="0.474929809570313" tx="-136.7" ty="-70.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="10" blurY="10" color="#FF9900"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-31" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-34" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-37" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-40" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.687591552734375" d="0.687591552734375" tx="-34.85" ty="-33.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-43" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-46" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-47" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-48" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-49" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-50" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾素材/原烟雾-51" selected="true" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.652374267578125" d="0.652374267578125" tx="-45.75" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728" duration="1">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

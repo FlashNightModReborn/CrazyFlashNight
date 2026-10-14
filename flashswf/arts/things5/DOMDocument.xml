@@ -5,7 +5,9 @@
           <DOMFolderItem name="黑铁精英敌人/重锤" itemID="65a919c9-00001885" isExpanded="true"/>
           <DOMFolderItem name="音效" itemID="66ac7df9-000008b4"/>
           <DOMFolderItem name="重复项目文件夹" itemID="65a8d079-00001243"/>
-     </folders>
+     <DOMFolderItem name="翅虎" itemID="6aceda28-71000100" isExpanded="true"/>
+          <DOMFolderItem name="翅虎/烟雾素材" itemID="6aceda28-71000101" isExpanded="true"/>
+          </folders>
      <fonts>
           <DOMFontItem name="Font 31" itemID="6577efbc-000001d1" font="MicrosoftYaHei" size="0" id="31" embeddedCharacters=" .LV有种稀级"/>
      </fonts>
@@ -1766,7 +1768,26 @@
           <Include href="重复项目文件夹/Symbol 696.xml" itemIcon="1" loadImmediate="false" itemID="65a8d079-0000124f" lastModified="1705562347"/>
           <Include href="左拳残影.xml" loadImmediate="false" itemID="65a8d98a-0000128f" lastModified="1705564554"/>
           <Include href="左拳残影2.xml" loadImmediate="false" itemID="65a8dc15-000012ce" lastModified="1705565205"/>
-     </symbols>
+     <Include href="翅虎/烟雾素材/原烟雾-33.xml" itemID="6aceda28-71000001" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-36.xml" itemID="6aceda28-71000002" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-39.xml" itemID="6aceda28-71000003" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-42.xml" itemID="6aceda28-71000004" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-45.xml" itemID="6aceda28-71000005" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-31.xml" itemID="6aceda28-71000006" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-34.xml" itemID="6aceda28-71000007" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-37.xml" itemID="6aceda28-71000008" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-40.xml" itemID="6aceda28-71000009" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-43.xml" itemID="6aceda28-7100000a" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-46.xml" itemID="6aceda28-7100000b" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-47.xml" itemID="6aceda28-7100000c" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-48.xml" itemID="6aceda28-7100000d" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-49.xml" itemID="6aceda28-7100000e" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-50.xml" itemID="6aceda28-7100000f" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-51.xml" itemID="6aceda28-71000010" loadImmediate="false"/>
+          <Include href="翅虎/烟雾.xml" itemID="6aceda28-71000011" loadImmediate="false"/>
+          <Include href="翅虎/烟雾登退场.xml" itemID="6aceda28-71000012" loadImmediate="false"/>
+          <Include href="翅虎/烟雾素材/原烟雾-30.xml" itemID="6aceda28-71000110" loadImmediate="false"/>
+          </symbols>
      <timelines>
           <DOMTimeline name="Scene 1">
                <layers>

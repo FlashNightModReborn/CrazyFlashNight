@@ -872,3 +872,4 @@ _root.敌人二级函数.嘲讽 = function(target:MovieClip) {
 
 // 独立前治安官控制器只绑定自己的原生单位入口。
 org.flashNight.arki.unit.UnitAI.Custom.FormerSheriffController.install(_root);
+org.flashNight.arki.unit.UnitAI.Custom.WingTigerController.install(_root);

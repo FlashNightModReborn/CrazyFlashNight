@@ -85,10 +85,10 @@
             <DOMFrame index="105" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728" duration="7">
               <elements/>
             </DOMFrame>
-          </frames>
+          <DOMFrame index="127" keyMode="9728" name="登场" labelType="name"><elements/></DOMFrame><DOMFrame index="128" keyMode="9728" name="烟雾退场" labelType="name"><elements/></DOMFrame></frames>
         </DOMLayer>
         <DOMLayer name="Script Layer" color="#7772F9">
           <frames>
@@ -106,6 +106,7 @@
 
 初始化敌人模板=_root.初始化敌人模板;
 初始化敌人模板();
+_root.翅虎初始化(this);
 ]]></script>
               </Actionscript>
               <elements/>
@@ -598,7 +599,31 @@ onClipEvent(unload){
             </DOMFrame>
           </frames>
         </DOMLayer>
-      </layers>
+      <DOMLayer name="翅虎烟雾登退场" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="127">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="127" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="128" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="翅虎/烟雾登退场" name="man">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer></layers>
     </DOMTimeline>
   </timeline>
 </DOMSymbolItem>
