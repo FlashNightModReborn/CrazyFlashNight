@@ -1,6 +1,7 @@
-/* ── 调酒 · 堕落城酒吧吧台 ──
-   底：深夜蓝紫渐变 + 霓虹青/品红描边；左列酒品名录（筛选页签 + 当前调配 + 卡片），
-   右列吧台操作区（原料槽排 + 摇壶/冰陈化控制台 + 出杯按钮）。 */
+/* ── 调酒 · 堕落城酒吧吧台（VA-11 Hall-A 纯正调酒模式）──
+   底：深夜蓝紫渐变 + 霓虹青/品红描边；
+   左列：只读酒单手册 Drinktionary（按名称/按口味/按种类/瓶装饮品 + 配方与风味详情页）；
+   右列：吧台操作台（五色化学提取物分配器 + 栏位1/栏位2 双10格矩阵 + 5秒实时计时摇壶 + 出杯台/莫洛托夫酒手雷险情）。 */
 .bart-panel {
     position:relative;
     width:1024px; height:576px;
@@ -23,23 +24,68 @@
 .bart-panel ::-webkit-scrollbar { width:7px; }
 .bart-panel ::-webkit-scrollbar-track { background:var(--wb-bartending-bart-panel-webkit-scrollbar-track-background); }
 .bart-panel ::-webkit-scrollbar-thumb {
-    background:var(--wb-bartending-bart-panel-webkit-scrollbar-thumb-background); border:var(--wb-bartending-bart-panel-webkit-scrollbar-thumb-border); border-radius:3px;
+    background:var(--wb-bartending-bart-panel-webkit-scrollbar-thumb-background);
+    border:var(--wb-bartending-bart-panel-webkit-scrollbar-thumb-border);
+    border-radius:3px;
+}
+
+@keyframes bartShakeLight {
+    0%, 100% { transform:translate(0, 0) rotate(0deg); }
+    25% { transform:translate(-3px, -2px) rotate(-2.5deg); }
+    75% { transform:translate(3px, -1px) rotate(2.5deg); }
+}
+@keyframes bartShakeHard {
+    0%, 100% { transform:translate(0, 0) rotate(0deg); }
+    20% { transform:translate(-5px, -3px) rotate(-4.5deg); }
+    40% { transform:translate(5px, 2px) rotate(4.5deg); }
+    60% { transform:translate(-4px, 3px) rotate(-3.5deg); }
+    80% { transform:translate(4px, -2px) rotate(4deg); }
+}
+@keyframes bartHazardPulse {
+    0%, 100% { opacity:1; }
+    50% { opacity:.76; }
+}
+@keyframes bartCellIgnite {
+    0% { transform:scale(.78); opacity:.5; }
+    65% { transform:scale(1.08); opacity:1; }
+    100% { transform:scale(1); opacity:1; }
+}
+@keyframes bartSlotPump {
+    0% { transform:translateY(0); }
+    40% { transform:translateY(2px) scale(.98); }
+    100% { transform:translateY(0) scale(1); }
+}
+@keyframes bartPageTurn {
+    0% { opacity:.35; transform:translateX(6px); }
+    100% { opacity:1; transform:translateX(0); }
+}
+@keyframes bartRevealCard {
+    0% { opacity:.45; transform:translateY(4px) scale(.985); }
+    100% { opacity:1; transform:translateY(0) scale(1); }
+}
+@keyframes bartFlameFlicker {
+    0% { transform:scaleY(.94) rotate(-2deg); }
+    100% { transform:scaleY(1.06) rotate(2deg); }
+}
+@keyframes bartLiquidWave {
+    0% { transform:skewX(-4deg); }
+    100% { transform:skewX(4deg); }
 }
 
 /* ── 顶栏 ── */
 .bart-header {
     flex:0 0 auto;
     display:flex; align-items:center; gap:14px;
-    padding:12px 18px 10px;
+    padding:10px 18px 8px;
     border-bottom:var(--wb-bartending-bart-header-border-bottom);
 }
 .bart-brand { display:flex; flex-direction:column; gap:1px; }
-.bart-kicker { font-size:10px; letter-spacing:.35em; color:var(--bt-pink); }
+.bart-kicker { font-size:10px; letter-spacing:.28em; color:var(--bt-pink); }
 .bart-brand h1 {
-    margin:0; font:700 18px/1.2 "Microsoft YaHei",sans-serif;
+    margin:0; font:700 17px/1.2 "Microsoft YaHei",sans-serif;
     color:var(--wb-bartending-bart-brand-h1-color); letter-spacing:.08em;
 }
-.bart-status { font-size:10px; color:var(--bt-muted); letter-spacing:.05em; max-width:46%; }
+.bart-status { font-size:10px; color:var(--bt-muted); letter-spacing:.05em; max-width:44%; }
 .bart-status[data-state="ready"] { color:var(--wb-bartending-bart-status-data-state-ready-color); }
 .bart-status[data-state="error"] { color:var(--wb-bartending-bart-status-data-state-error-color); }
 .bart-metrics { margin-left:auto; display:flex; gap:14px; align-items:baseline; }
@@ -56,26 +102,42 @@
 }
 .bart-close:hover { color:var(--wb-bartending-bart-close-hover-color); border-color:var(--wb-bartending-bart-close-hover-border-color); }
 
-/* ── 两栏布局：名录 / 吧台 ── */
+/* ── 两栏布局：左侧只读酒单手册 / 右侧吧台操作区 ── */
 .bart-body {
     flex:1 1 auto; min-height:0;
-    display:grid; grid-template-columns:400px 1fr;
-    gap:12px; padding:12px 14px 14px;
+    display:grid; grid-template-columns:410px 1fr;
+    gap:12px; padding:10px 14px 12px;
 }
 
-/* 左：名录浏览器 */
+/* ── 左栏：Drinktionary 酒单手册 ── */
 .bart-browser {
     min-height:0;
-    display:flex; flex-direction:column; gap:8px;
+    display:flex; flex-direction:column; gap:7px;
+    padding:10px;
+    border:var(--wb-bartending-bart-card-border); border-radius:4px;
+    background:var(--wb-bartending-bart-card-background);
+    box-shadow:var(--wb-bartending-bart-card-box-shadow);
 }
-.bart-tabs { display:flex; gap:6px; }
+.bart-book-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding-bottom:4px;
+    border-bottom:1px solid var(--bt-line);
+}
+.bart-book-title {
+    font-size:11px; font-weight:700; letter-spacing:.18em;
+    color:var(--bt-neon);
+}
+.bart-book-sub {
+    font-size:10px; color:var(--bt-muted); letter-spacing:.06em;
+}
+.bart-tabs { display:flex; gap:5px; }
 .bart-tab {
     flex:1 1 auto;
-    padding:6px 4px;
+    padding:5px 4px;
     border:var(--wb-bartending-bart-tech-btn-border); border-radius:3px;
     background:var(--wb-bartending-bart-tech-btn-background);
     color:var(--bt-ink);
-    font-size:11px; letter-spacing:.1em; cursor:pointer;
+    font-size:11px; letter-spacing:.08em; cursor:pointer;
     transition:var(--wb-bartending-bart-tech-btn-transition);
 }
 .bart-tab:hover { border-color:var(--wb-bartending-bart-tech-btn-hover-border-color); }
@@ -102,32 +164,16 @@
     border-color:var(--wb-bartending-bart-tech-btn-active-border-color);
 }
 
-/* 当前调配（命中展示） */
-.bart-result {
-    flex:0 0 auto;
-    border:var(--wb-bartending-bart-spec-border); border-radius:4px;
-    background:var(--wb-bartending-bart-spec-background);
-    padding:7px 10px;
-}
-.bart-result.matched { border-color:var(--wb-bartending-bart-drink-active-border-color); }
-.bart-result-head { font-size:10px; letter-spacing:.2em; color:var(--bt-pink); }
-.bart-result-body { display:flex; align-items:center; gap:10px; padding-top:5px; min-height:44px; }
-.bart-result-info { display:flex; flex-direction:column; gap:2px; min-width:0; }
-.bart-result-info b { font-size:13px; color:var(--wb-bartending-bart-card-title-b-color); }
-.bart-result-info small { font-size:10px; color:var(--bt-muted); }
-.bart-result.matched .bart-result-info small { color:var(--bt-ready); }
-.bart-result-hint { font-size:11px; color:var(--bt-muted); }
-
-/* 酒品列表 */
+/* 酒单列表与只读详情视口 */
 .bart-list { flex:1 1 auto; min-height:0; overflow-y:auto; }
 .bart-drink-grid {
     display:grid; grid-template-columns:1fr 1fr;
-    gap:8px; align-content:start; padding:2px;
+    gap:7px; align-content:start; padding:2px;
 }
 .bart-empty { grid-column:1/-1; padding:20px 10px; color:var(--bt-muted); font-size:11px; text-align:center; }
 .bart-drink {
-    display:flex; flex-direction:column; align-items:center; gap:5px;
-    padding:9px 8px 8px;
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:8px 7px 7px;
     border:var(--wb-bartending-bart-drink-border); border-radius:4px;
     background:var(--wb-bartending-bart-drink-background);
     color:var(--bt-ink);
@@ -135,93 +181,301 @@
     transition:var(--wb-bartending-bart-drink-transition);
 }
 .bart-drink:hover { border-color:var(--wb-bartending-bart-drink-hover-border-color); }
+.bart-drink.active,
 .bart-drink.matched {
     border-color:var(--wb-bartending-bart-drink-active-border-color);
     box-shadow:var(--wb-bartending-bart-drink-active-box-shadow);
 }
-.bart-drink.is-blocked { opacity:.55; }
+.bart-drink.is-secret {
+    background:var(--bt-secret-bg);
+    border:var(--bt-secret-border);
+}
+.bart-drink.is-blocked { opacity:.68; }
 .bart-drink-thumb {
-    display:block; width:48px; height:48px;
+    display:flex; align-items:center; justify-content:center;
+    width:44px; height:44px;
     background:var(--wb-bartending-bart-drink-thumb-background);
     border:var(--wb-bartending-bart-drink-thumb-border); border-radius:4px;
-    overflow:hidden;
+    overflow:hidden; flex:0 0 auto;
+    font-size:16px; font-weight:700; color:var(--bt-pink);
 }
 .bart-drink-thumb img { width:100%; height:100%; object-fit:contain; display:block; }
 .bart-drink-name { font-size:12px; font-weight:700; color:var(--wb-bartending-bart-drink-name-color); }
-.bart-drink-spec { font-size:10px; line-height:1.45; color:var(--bt-muted); }
+.bart-drink-en {
+    font-size:10px; color:var(--bt-muted);
+    font-family:Consolas,monospace; letter-spacing:.05em;
+}
+.bart-drink-spec { font-size:10px; line-height:1.35; color:var(--bt-muted); }
+.bart-drink-pips {
+    display:flex; align-items:center; justify-content:center; gap:3px;
+    min-height:8px;
+}
+.bart-pip {
+    width:7px; height:7px; border-radius:2px;
+    background:var(--bt-line);
+}
+.bart-pip[data-tone="adl"] { background:var(--bt-tone-adl); }
+.bart-pip[data-tone="brn"] { background:var(--bt-tone-brn); }
+.bart-pip[data-tone="pwd"] { background:var(--bt-tone-pwd); }
+.bart-pip[data-tone="fln"] { background:var(--bt-tone-fln); }
+.bart-pip[data-tone="krm"] { background:var(--bt-tone-krm); }
 .bart-drink-state { font-size:10px; color:var(--bt-muted); }
 .bart-drink.is-ready .bart-drink-state { color:var(--bt-ready); }
 .bart-drink.matched .bart-drink-state { color:var(--bt-pink); }
 
-/* 右：吧台操作区 */
+/* ── Drinktionary 单页详情视图（纯只读翻阅）── */
+.bart-detail {
+    display:flex; flex-direction:column; gap:8px;
+    padding:4px 2px;
+    animation:var(--bt-anim-page-turn);
+}
+.bart-detail-nav {
+    display:flex; align-items:center; justify-content:space-between; gap:6px;
+}
+.bart-detail-btn {
+    padding:4px 9px;
+    border:var(--wb-bartending-bart-tech-btn-border); border-radius:3px;
+    background:var(--wb-bartending-bart-tech-btn-background);
+    color:var(--bt-ink); font-size:10px; cursor:pointer;
+    transition:var(--wb-bartending-bart-tech-btn-transition);
+}
+.bart-detail-btn:hover:not(:disabled) { border-color:var(--wb-bartending-bart-tech-btn-hover-border-color); }
+.bart-detail-btn:disabled { opacity:.4; cursor:default; }
+.bart-detail-page {
+    font-size:10px; color:var(--bt-muted);
+    font-family:Consolas,monospace; letter-spacing:.08em;
+}
+.bart-detail-hero {
+    display:flex; align-items:center; gap:10px;
+    padding:8px 10px;
+    border:var(--wb-bartending-bart-drink-border); border-radius:4px;
+    background:var(--bt-surface-elevated);
+}
+.bart-detail-thumb {
+    display:flex; align-items:center; justify-content:center;
+    width:52px; height:52px; flex:0 0 auto;
+    background:var(--wb-bartending-bart-drink-thumb-background);
+    border:var(--wb-bartending-bart-drink-thumb-border); border-radius:4px;
+    overflow:hidden; font-size:20px; font-weight:700; color:var(--bt-pink);
+}
+.bart-detail-thumb img { width:100%; height:100%; object-fit:contain; display:block; }
+.bart-detail-titles {
+    display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 1 auto;
+}
+.bart-detail-titles b { font-size:14px; color:var(--wb-bartending-bart-card-title-b-color); }
+.bart-detail-en {
+    font-size:10px; color:var(--bt-neon);
+    font-family:Consolas,monospace; letter-spacing:.1em;
+}
+.bart-detail-badges { display:flex; flex-wrap:wrap; gap:4px; margin-top:2px; }
+.bart-badge {
+    padding:1px 6px; border-radius:3px;
+    border:1px solid var(--bt-line);
+    background:var(--bt-panel-2);
+    font-size:10px; color:var(--bt-ink);
+}
+.bart-badge.is-ready { color:var(--bt-ready); border-color:var(--bt-ready); }
+.bart-badge.is-pink { color:var(--bt-pink); border-color:var(--bt-pink); }
+
+/* 详情页：五色原料条形图 */
+.bart-detail-section {
+    display:flex; flex-direction:column; gap:5px;
+    padding:7px 9px;
+    border:1px solid var(--bt-line); border-radius:4px;
+    background:var(--bt-panel-2);
+}
+.bart-detail-sec-title {
+    font-size:10px; font-weight:700; letter-spacing:.15em;
+    color:var(--bt-neon);
+}
+.bart-formula-rows { display:flex; flex-direction:column; gap:4px; }
+.bart-formula-row {
+    display:grid; grid-template-columns:92px 1fr auto;
+    align-items:center; gap:6px;
+    font-size:11px;
+}
+.bart-formula-name { color:var(--bt-ink); font-size:10px; }
+.bart-formula-bars { display:flex; flex-wrap:wrap; gap:3px; align-items:center; }
+.bart-formula-seg {
+    width:12px; height:9px; border-radius:2px;
+    background:var(--bt-line);
+}
+.bart-formula-seg[data-tone="adl"] { background:var(--bt-tone-adl); }
+.bart-formula-seg[data-tone="brn"] { background:var(--bt-tone-brn); }
+.bart-formula-seg[data-tone="pwd"] { background:var(--bt-tone-pwd); }
+.bart-formula-seg[data-tone="fln"] { background:var(--bt-tone-fln); }
+.bart-formula-seg[data-tone="krm"] { background:var(--bt-tone-krm); }
+.bart-formula-seg.is-optional {
+    background:transparent;
+    border:1px dashed var(--bt-tone-krm);
+}
+.bart-formula-count {
+    font-size:10px; font-family:Consolas,monospace;
+    color:var(--bt-muted);
+}
+.bart-formula-count.ok { color:var(--bt-ready); }
+.bart-formula-count.no { color:var(--bt-blocked); }
+
+/* 详情页：手法步骤与酒品故事 */
+.bart-tech-pills { display:grid; grid-template-columns:repeat(3, 1fr); gap:5px; }
+.bart-tech-pill {
+    padding:4px 6px; border-radius:3px;
+    border:1px solid var(--bt-line);
+    background:var(--bt-panel);
+    text-align:center; font-size:10px; color:var(--bt-muted);
+}
+.bart-tech-pill.on-ice {
+    color:var(--bt-ice-color); background:var(--bt-ice-bg); border-color:var(--bt-ice-border);
+}
+.bart-tech-pill.on-age {
+    color:var(--bt-age-color); background:var(--bt-age-bg); border-color:var(--bt-age-border);
+}
+.bart-tech-pill.on-shake {
+    color:var(--bt-ink); border-color:var(--bt-neon);
+}
+.bart-detail-lore {
+    font-size:11px; line-height:1.5; color:var(--bt-ink);
+    margin:0;
+}
+.bart-detail-effect {
+    font-size:10px; line-height:1.4; color:var(--bt-muted);
+    margin:0;
+}
+.bart-detail-readonly-note {
+    font-size:10px; color:var(--bt-pink); text-align:center;
+    letter-spacing:.05em; padding-top:2px;
+}
+
+/* ── 右栏：VA-11 吧台操作区 ── */
 .bart-station { min-height:0; overflow-y:auto; }
 .bart-board {
-    display:flex; flex-direction:column; gap:12px;
-    height:100%; padding:14px;
+    display:flex; flex-direction:column; gap:8px;
+    height:100%; padding:10px 12px;
     border:var(--wb-bartending-bart-card-border); border-radius:4px;
     background:var(--wb-bartending-bart-card-background);
     box-shadow:var(--wb-bartending-bart-card-box-shadow);
+    box-sizing:border-box;
 }
 
-/* 原料槽 */
+/* 1. 五色化学提取物分配器 */
 .bart-slots {
     display:grid; grid-template-columns:repeat(5, 1fr);
-    gap:8px;
+    gap:7px; flex:0 0 auto;
 }
 .bart-slot {
-    display:flex; flex-direction:column; align-items:center; gap:4px;
-    padding:8px 4px;
+    display:flex; flex-direction:column; align-items:center; gap:3px;
+    padding:6px 4px;
     border:var(--wb-bartending-bart-slip-border); border-radius:4px;
     background:var(--wb-bartending-bart-slip-background);
+    transition:var(--bt-transition-fast);
 }
-.bart-slot.filled { border-color:var(--wb-bartending-bart-slip-active-border-color); }
+.bart-slot.is-pumping { animation:var(--bt-anim-slot-pump); }
+.bart-slot[data-tone="adl"].filled { border-color:var(--bt-tone-adl-border); background:var(--bt-tone-adl-bg); }
+.bart-slot[data-tone="brn"].filled { border-color:var(--bt-tone-brn-border); background:var(--bt-tone-brn-bg); }
+.bart-slot[data-tone="pwd"].filled { border-color:var(--bt-tone-pwd-border); background:var(--bt-tone-pwd-bg); }
+.bart-slot[data-tone="fln"].filled { border-color:var(--bt-tone-fln-border); background:var(--bt-tone-fln-bg); }
+.bart-slot[data-tone="krm"].filled { border-color:var(--bt-tone-krm-border); background:var(--bt-tone-krm-bg); }
 .bart-slot.over { border-color:var(--bt-blocked); }
+.bart-slot-code {
+    font-size:10px; font-weight:700; font-family:Consolas,monospace;
+    letter-spacing:.12em; color:var(--bt-muted);
+}
+.bart-slot[data-tone="adl"] .bart-slot-code { color:var(--bt-tone-adl); }
+.bart-slot[data-tone="brn"] .bart-slot-code { color:var(--bt-tone-brn); }
+.bart-slot[data-tone="pwd"] .bart-slot-code { color:var(--bt-tone-pwd); }
+.bart-slot[data-tone="fln"] .bart-slot-code { color:var(--bt-tone-fln); }
+.bart-slot[data-tone="krm"] .bart-slot-code { color:var(--bt-tone-krm); }
 .bart-slot-icon {
-    display:block; width:40px; height:40px;
+    display:block; width:36px; height:36px;
     background:var(--wb-bartending-bart-drink-thumb-background);
     border:var(--wb-bartending-bart-drink-thumb-border); border-radius:4px;
-    overflow:hidden;
+    overflow:hidden; cursor:pointer;
 }
 .bart-slot-icon img { width:100%; height:100%; object-fit:contain; display:block; }
-.bart-slot-name { font-size:10px; color:var(--bt-ink); letter-spacing:.04em; }
+.bart-slot-name { font-size:10px; font-weight:700; color:var(--bt-ink); letter-spacing:.03em; }
+.bart-slot-flavor { font-size:10px; color:var(--bt-muted); }
 .bart-slot-stock { font-size:10px; color:var(--bt-muted); font-family:Consolas,monospace; }
-.bart-slot-count {
-    display:flex; align-items:center; gap:0;
-}
+.bart-slot-count { display:flex; align-items:center; gap:0; margin-top:1px; }
 .bart-slot-count button {
-    width:20px; height:20px; padding:0;
+    width:22px; height:20px; padding:0;
     border:var(--wb-bartending-bart-count-button-border);
     background:var(--wb-bartending-bart-count-button-background);
     color:var(--bt-ink); font-size:12px; cursor:pointer; line-height:1;
 }
 .bart-slot-count button:disabled { opacity:.4; cursor:default; }
 .bart-slot-value {
-    min-width:24px; text-align:center;
+    min-width:26px; text-align:center;
     border-top:var(--wb-bartending-bart-count-input-border);
     border-bottom:var(--wb-bartending-bart-count-input-border);
     background:var(--wb-bartending-bart-count-input-background);
-    color:var(--bt-ink); font-size:12px; line-height:19px;
+    color:var(--bt-ink); font-size:12px; line-height:18px;
     font-family:Consolas,monospace;
 }
-.bart-slot.filled .bart-slot-value { color:var(--bt-neon); }
+.bart-slot.filled .bart-slot-value { color:var(--bt-neon); font-weight:700; }
 .bart-slot.over .bart-slot-value { color:var(--bt-blocked); }
 
-/* 调制控制台：选项 + 摇壶 + 重做 */
+/* 2. 中央调酒台：左翼（栏位1 + 冰/陈化）+ 中央摇壶 + 右翼（栏位2 + 状态参数） */
 .bart-console {
-    flex:1 1 auto;
-    display:grid; grid-template-columns:auto 1fr auto;
-    align-items:center; gap:12px;
-    padding:10px 12px;
+    flex:1 1 auto; min-height:0;
+    display:grid; grid-template-columns:168px 1fr 168px;
+    align-items:stretch; gap:10px;
+    padding:8px 10px;
     border:var(--wb-bartending-bart-console-border); border-radius:4px;
     background:var(--wb-bartending-bart-console-background);
 }
-.bart-options { display:flex; flex-direction:column; gap:6px; }
+.bart-wing {
+    display:flex; flex-direction:column; justify-content:space-between; gap:6px;
+}
+.bart-matrix-box {
+    display:flex; flex-direction:column; gap:4px;
+    padding:6px 7px;
+    border:1px solid var(--bt-line); border-radius:4px;
+    background:var(--bt-surface-inset);
+}
+.bart-matrix-head {
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:10px; color:var(--bt-muted); font-family:Consolas,"Microsoft YaHei",monospace;
+}
+.bart-matrix-grid {
+    display:grid; grid-template-columns:repeat(5, 1fr);
+    grid-template-rows:repeat(2, 18px);
+    gap:4px;
+}
+.bart-cell {
+    display:flex; align-items:center; justify-content:center;
+    border:1px solid var(--bt-line); border-radius:2px;
+    background:var(--bt-panel-2);
+    font-size:10px; font-family:Consolas,monospace;
+    color:var(--bt-muted);
+    transition:var(--bt-transition-fast);
+}
+.bart-cell.is-newest {
+    box-shadow:var(--bt-cell-newest-shadow);
+    animation:var(--bt-anim-cell-ignite);
+}
+.bart-cell[data-tone="adl"] {
+    background:var(--bt-tone-adl-bg); border-color:var(--bt-tone-adl-border); color:var(--bt-tone-adl);
+}
+.bart-cell[data-tone="brn"] {
+    background:var(--bt-tone-brn-bg); border-color:var(--bt-tone-brn-border); color:var(--bt-tone-brn);
+}
+.bart-cell[data-tone="pwd"] {
+    background:var(--bt-tone-pwd-bg); border-color:var(--bt-tone-pwd-border); color:var(--bt-tone-pwd);
+}
+.bart-cell[data-tone="fln"] {
+    background:var(--bt-tone-fln-bg); border-color:var(--bt-tone-fln-border); color:var(--bt-tone-fln);
+}
+.bart-cell[data-tone="krm"] {
+    background:var(--bt-tone-krm-bg); border-color:var(--bt-tone-krm-border); color:var(--bt-tone-krm);
+}
+
+.bart-options { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
 .bart-tech-btn {
-    padding:7px 10px;
+    padding:6px 8px;
     border:var(--wb-bartending-bart-tech-btn-border); border-radius:3px;
     background:var(--wb-bartending-bart-tech-btn-background);
     color:var(--bt-ink);
-    font-size:12px; letter-spacing:.15em; cursor:pointer;
+    font-size:11px; letter-spacing:.1em; cursor:pointer;
     transition:var(--wb-bartending-bart-tech-btn-transition);
 }
 .bart-tech-btn:hover:not(:disabled) { border-color:var(--wb-bartending-bart-tech-btn-hover-border-color); }
@@ -231,14 +485,29 @@
     border-color:var(--wb-bartending-bart-tech-btn-active-border-color);
     box-shadow:var(--wb-bartending-bart-tech-btn-active-box-shadow);
 }
-.bart-tech-btn:disabled { opacity:.5; cursor:default; }
-.bart-tech-btn.redo { min-width:64px; }
+.bart-tech-btn.toggle-age.active {
+    background:var(--bt-age-bg);
+    color:var(--bt-age-color);
+    border-color:var(--bt-age-border);
+}
+.bart-tech-btn:disabled { opacity:.45; cursor:default; }
+.bart-wing-actions { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+.bart-tech-btn.redo.is-urgent {
+    border:var(--bt-hazard-pill-border);
+    background:var(--bt-hazard-pill-bg);
+    color:var(--bt-hazard-color);
+    animation:var(--bt-anim-hazard-pulse);
+}
 
-/* 摇壶：未摇制 → 轻摇 → 猛摇 → 轻摇… */
+/* 中央实时计时摇壶控制台 + VA-11 多层调酒壶视窗 */
+.bart-shaker-zone {
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    gap:6px; padding:2px 4px;
+}
 .bart-shaker {
-    justify-self:center;
-    display:flex; flex-direction:column; align-items:center; gap:4px;
-    min-width:180px; padding:16px 26px;
+    width:100%; flex:1 1 auto;
+    display:flex; flex-direction:row; align-items:center; justify-content:center; gap:10px;
+    padding:6px 10px;
     border:2px solid var(--bt-line); border-radius:6px;
     background:var(--wb-bartending-bart-slip-background);
     color:var(--bt-ink); cursor:pointer;
@@ -253,22 +522,204 @@
     border-color:var(--wb-bartending-bart-drink-active-border-color);
     background:var(--wb-bartending-bart-confirm-background);
 }
-.bart-shaker-state { font-size:16px; font-weight:700; letter-spacing:.3em; }
-.bart-shaker.state-light .bart-shaker-state { color:var(--wb-bartending-bart-tech-btn-active-color); }
-.bart-shaker.state-hard .bart-shaker-state { color:var(--wb-bartending-bart-confirm-color); }
-.bart-shaker-hint { font-size:10px; color:var(--bt-muted); letter-spacing:.15em; }
+.bart-shaker.is-shaking-light {
+    border-color:var(--wb-bartending-bart-tech-btn-active-border-color);
+    background:var(--wb-bartending-bart-tech-btn-active-background);
+    box-shadow:var(--bt-shaker-mix-glow);
+    animation:var(--bt-anim-shake-light);
+}
+.bart-shaker.is-shaking-hard {
+    border-color:var(--wb-bartending-bart-drink-active-border-color);
+    background:var(--wb-bartending-bart-confirm-background);
+    box-shadow:var(--bt-shaker-blend-glow);
+    animation:var(--bt-anim-shake-hard);
+}
+.bart-shaker.is-molotov {
+    border:var(--bt-hazard-border);
+    background:var(--bt-hazard-bg);
+    box-shadow:var(--bt-hazard-shadow);
+}
+
+/* 左侧：三段式赛博调酒壶（壶帽 + 滤网肩部 + 壶身五色液位观察窗） */
+.bart-shaker-vessel {
+    display:flex; flex-direction:column; align-items:center;
+    width:46px; flex:0 0 auto; position:relative;
+}
+.bart-shaker-cap {
+    width:18px; height:8px;
+    border:var(--bt-shaker-metal-border);
+    border-bottom:none;
+    border-radius:4px 4px 0 0;
+    background:var(--bt-shaker-metal-bg);
+}
+.bart-shaker.is-molotov .bart-shaker-cap {
+    border-color:var(--bt-hazard-color);
+    background:var(--bt-hazard-pill-bg);
+}
+.bart-shaker-neck {
+    width:30px; height:10px;
+    border:var(--bt-shaker-metal-border);
+    border-bottom:none;
+    border-radius:5px 5px 0 0;
+    background:var(--bt-shaker-metal-bg);
+    transition:var(--bt-transition-fast);
+}
+.bart-shaker-vessel.has-aged .bart-shaker-neck {
+    border-color:var(--bt-age-border);
+    background:var(--bt-age-bg);
+}
+.bart-shaker-body {
+    width:40px; height:58px;
+    border:var(--bt-shaker-metal-border);
+    border-radius:3px 3px 9px 9px;
+    background:var(--bt-shaker-metal-bg);
+    padding:4px 5px;
+    box-sizing:border-box;
+    display:flex; align-items:stretch; justify-content:center;
+    position:relative;
+}
+.bart-shaker-vessel.has-ice .bart-shaker-body {
+    border-color:var(--bt-ice-border);
+}
+.bart-shaker-window {
+    width:100%; height:100%;
+    border:1px solid var(--bt-line);
+    border-radius:2px 2px 6px 6px;
+    background:var(--bt-shaker-window-bg);
+    overflow:hidden;
+    display:flex; flex-direction:column; justify-content:flex-end;
+    position:relative;
+}
+.bart-liquid-stack {
+    width:100%; height:100%;
+    display:flex; flex-direction:column; justify-content:flex-end;
+}
+.bart-shaker.is-shaking-light .bart-liquid-stack,
+.bart-shaker.is-shaking-hard .bart-liquid-stack {
+    animation:var(--bt-anim-liquid-wave);
+}
+.bart-liquid-layer {
+    width:100%;
+    transition:var(--bt-transition-liquid);
+}
+.bart-liquid-layer[data-tone="adl"] { background:var(--bt-tone-adl); }
+.bart-liquid-layer[data-tone="brn"] { background:var(--bt-tone-brn); }
+.bart-liquid-layer[data-tone="pwd"] { background:var(--bt-tone-pwd); }
+.bart-liquid-layer[data-tone="fln"] { background:var(--bt-tone-fln); }
+.bart-liquid-layer[data-tone="krm"] { background:var(--bt-tone-krm); }
+
+/* 壶身微标：冰晶与陈化光印 */
+.bart-vessel-badges {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; align-items:center; justify-content:space-between;
+    padding:2px 0; pointer-events:none;
+}
+.bart-vessel-tag {
+    font-size:10px; line-height:1; font-family:Consolas,monospace;
+    padding:0 2px; border-radius:2px;
+}
+.bart-vessel-tag.is-ice { color:var(--bt-ice-color); background:var(--bt-ice-bg); }
+.bart-vessel-tag.is-age { color:var(--bt-age-color); background:var(--bt-age-bg); }
+.bart-vessel-tag.is-spark {
+    color:var(--bt-hazard-color); background:var(--bt-hazard-pill-bg);
+    animation:var(--bt-anim-flame-flicker);
+}
+
+/* 右侧：摇壶读数面板 */
+.bart-shaker-readout {
+    display:flex; flex-direction:column; align-items:flex-start; justify-content:center;
+    gap:3px; min-width:0; flex:1 1 auto; text-align:left;
+}
+.bart-shaker-kicker {
+    font-size:10px; font-family:Consolas,monospace;
+    letter-spacing:.12em; color:var(--bt-muted);
+}
+.bart-shaker-state { font-size:14px; font-weight:700; letter-spacing:.16em; }
+.bart-shaker.state-light .bart-shaker-state,
+.bart-shaker.is-shaking-light .bart-shaker-state { color:var(--wb-bartending-bart-tech-btn-active-color); }
+.bart-shaker.state-hard .bart-shaker-state,
+.bart-shaker.is-shaking-hard .bart-shaker-state { color:var(--wb-bartending-bart-confirm-color); }
+.bart-shaker.is-molotov .bart-shaker-state { color:var(--bt-hazard-color); }
+.bart-shaker-hint { font-size:10px; color:var(--bt-muted); letter-spacing:.04em; line-height:1.3; }
 .bart-shaker:disabled { opacity:.5; cursor:default; }
 
-/* 底部出杯栏 */
+/* 摇壶 5 秒计时进度条 */
+.bart-timer-track {
+    width:100%; height:6px;
+    border-radius:3px; overflow:hidden;
+    background:var(--bt-surface-inset);
+    border:1px solid var(--bt-line);
+    position:relative;
+}
+.bart-timer-fill {
+    height:100%; width:0%;
+    background:var(--bt-neon);
+    transition:var(--bt-transition-fast);
+}
+.bart-timer-fill.is-hard {
+    background:var(--bt-pink);
+}
+
+/* 3. 出杯揭晓台（正常酒品 vs 莫洛托夫酒手雷险情） */
+.bart-result {
+    flex:0 0 auto;
+    border:var(--wb-bartending-bart-spec-border); border-radius:4px;
+    background:var(--wb-bartending-bart-spec-background);
+    padding:7px 10px;
+    transition:var(--bt-transition-fast);
+}
+.bart-result.matched {
+    border:var(--bt-matched-border);
+    background:var(--bt-matched-bg);
+    box-shadow:var(--bt-matched-shadow);
+    animation:var(--bt-anim-reveal-card);
+}
+.bart-result.is-molotov {
+    border:var(--bt-hazard-border);
+    background:var(--bt-hazard-bg);
+    box-shadow:var(--bt-hazard-shadow);
+    animation:var(--bt-anim-reveal-card);
+}
+.bart-result-head {
+    display:flex; align-items:center; justify-content:space-between;
+    font-size:10px; letter-spacing:.16em; color:var(--bt-pink);
+}
+.bart-result.matched .bart-result-head { color:var(--bt-ready); }
+.bart-result.is-molotov .bart-result-head { color:var(--bt-hazard-color); font-weight:700; }
+.bart-result-body {
+    display:flex; align-items:center; gap:10px;
+    padding-top:5px; min-height:48px;
+}
+.bart-molotov-badge {
+    display:flex; align-items:center; justify-content:center;
+    width:46px; height:46px; flex:0 0 auto;
+    border:var(--bt-hazard-pill-border); border-radius:4px;
+    background:var(--bt-hazard-pill-bg);
+    color:var(--bt-hazard-color);
+}
+.bart-molotov-badge svg {
+    width:30px; height:30px; display:block;
+    animation:var(--bt-anim-flame-flicker);
+}
+.bart-result-info { display:flex; flex-direction:column; gap:2px; min-width:0; flex:1 1 auto; }
+.bart-result-info b { font-size:13px; color:var(--wb-bartending-bart-card-title-b-color); }
+.bart-result.is-molotov .bart-result-info b { color:var(--bt-hazard-color); }
+.bart-result-info small { font-size:10px; line-height:1.4; color:var(--bt-muted); }
+.bart-result.matched .bart-result-info small { color:var(--bt-ready); }
+.bart-result.is-molotov .bart-result-info small { color:var(--bt-ink); }
+.bart-result-hint { font-size:11px; line-height:1.45; color:var(--bt-muted); }
+
+/* 底部上酒出杯栏 */
 .bart-card-footer {
+    flex:0 0 auto;
     display:flex; align-items:center; gap:12px;
-    padding-top:10px;
+    padding-top:8px;
     border-top:var(--wb-bartending-bart-card-footer-border-top);
 }
 .bart-foot-note { flex:1 1 auto; font-size:11px; color:var(--bt-muted); }
 .bart-confirm {
     flex:0 0 auto;
-    padding:9px 26px;
+    padding:8px 24px;
     border:var(--wb-bartending-bart-confirm-border); border-radius:3px;
     background:var(--wb-bartending-bart-confirm-background);
     color:var(--wb-bartending-bart-confirm-color);
@@ -283,4 +734,21 @@
     color:var(--wb-bartending-bart-confirm-disabled-color);
     border-color:var(--wb-bartending-bart-confirm-disabled-border-color);
     box-shadow:none; cursor:default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .bart-detail,
+    .bart-slot.is-pumping,
+    .bart-cell.is-newest,
+    .bart-shaker.is-shaking-light,
+    .bart-shaker.is-shaking-hard,
+    .bart-shaker.is-shaking-light .bart-liquid-stack,
+    .bart-shaker.is-shaking-hard .bart-liquid-stack,
+    .bart-vessel-tag.is-spark,
+    .bart-result.matched,
+    .bart-result.is-molotov,
+    .bart-molotov-badge svg,
+    .bart-tech-btn.redo.is-urgent {
+        animation:none;
+    }
 }
