@@ -244,12 +244,41 @@
   overflow-y: auto;
 }
 .tablet-infra-req {
+  display: flex;
+  flex-direction: column;
   font-size: 11px;
   line-height: 1.6;
   color: var(--wb-semantic-tablet-strong-text);
-  white-space: pre-wrap;
+}
+.tablet-infra-req-head { flex: none; }
+/* 材料行超出烘焙浅色窗口时在窗口内滚动（原 XFL 无滚动，Web 化补齐） */
+.tablet-infra-req-list {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow-y: auto;
 }
+.tablet-infra-req-list::-webkit-scrollbar { width: 6px; }
+.tablet-infra-req-list::-webkit-scrollbar-track { background: var(--wb-scrollbar-track); }
+.tablet-infra-req-list::-webkit-scrollbar-thumb {
+  background: var(--wb-scrollbar-thumb);
+  border: 1px solid var(--wb-scrollbar-thumb-border);
+  border-radius: 3px;
+}
+.tablet-infra-cost {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.tablet-infra-cost-icon { width: 16px; height: 16px; object-fit: contain; flex: none; }
+.tablet-infra-cost-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.tablet-infra-cost-qty { margin-left: auto; flex: none; }
+.tablet-infra-cost.ok .tablet-infra-cost-qty { color: var(--wb-semantic-success); }
+.tablet-infra-cost.short .tablet-infra-cost-qty { color: var(--wb-semantic-danger); }
 
 .tablet-row {
   display: flex;

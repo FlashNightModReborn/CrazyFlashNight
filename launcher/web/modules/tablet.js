@@ -69,6 +69,12 @@
       if (p && typeof p.catch === 'function') p.catch(function () {});
     } catch (e) {}
   }
+  // 语义音效复用通用工作台合成层（BootstrapAudio.cue，与 crafting 同入口）：
+  // 平板 wav 只有按下/返回两声，悬停与错误音没有原版素材，统一走合成 cue
+  function cue(name) {
+    var A = window.BootstrapAudio;
+    if (A && typeof A.cue === 'function') A.cue(name);
+  }
 
   function vb(view) {
     var raw = manifest && manifest.viewBoxes && manifest.viewBoxes[view];
@@ -417,29 +423,58 @@
     }
   }
 
-  // 升级需求文本（原 XFL 打印基建升级需求：当前等级数据=Level[当前等级]，即升到下一级的成本）
-  // 附带 所需/拥有 显示（参考合成界面惯例），拥有数来自权威 assets 快照
-  function upgradeReqText(it, lv) {
-    var t = '当前等级：' + (lv == null ? 0 : lv);
-    if (lv == null || lv >= it.maxLevel) return t + '，已达到最大等级。';
+  // 升级需求行（原 XFL 打印基建升级需求：当前等级数据=Level[当前等级]，即升到下一级的成本）
+  // 金币/材料/技能逐行列出 所需/拥有，拥有数来自权威 assets 快照；未同步时 own=null
+  function infraCostRows(it, lv) {
     var d = it.levels[lv] || {};
-    t += '，升到下一级需要：';
+    var rows = [];
     if (d.price > 0) {
-      t += '\n金币 * ' + d.price;
-      if (infraAssets) t += '（拥有 ' + (infraAssets.money || 0) + '）';
+      rows.push({ label: '金币', icon: '金钱', need: d.price,
+        own: infraAssets ? (infraAssets.money || 0) : null });
     }
-    if (d.materials && d.materials.length) {
-      t += '\n' + d.materials.map(function (m) {
-        var own = infraAssets && infraAssets.materials ? (infraAssets.materials[m.name] || 0) : null;
-        return m.name + '#' + m.count + (own == null ? '' : '（拥有 ' + own + '）');
-      }).join(', ');
-    }
-    (d.skills || []).forEach(function (s) {
-      var cur = infraAssets && infraAssets.skills ? infraAssets.skills[s.name] : null;
-      t += '\n技能[' + s.name + ']达到 ' + s.level + ' 级'
-        + (cur == null ? '' : '（当前 ' + cur + ' 级）');
+    (d.materials || []).forEach(function (m) {
+      rows.push({ label: m.name, icon: m.name, need: m.count,
+        own: infraAssets && infraAssets.materials ? (infraAssets.materials[m.name] || 0) : null });
     });
-    return t;
+    (d.skills || []).forEach(function (s) {
+      rows.push({ skill: true, label: '技能[' + s.name + ']', need: s.level,
+        own: infraAssets && infraAssets.skills ? infraAssets.skills[s.name] : null });
+    });
+    return rows;
+  }
+  function infraRowsSatisfied(rows) {
+    if (!infraAssets) return false;
+    for (var i = 0; i < rows.length; i++) {
+      if (rows[i].own == null || rows[i].own < rows[i].need) return false;
+    }
+    return true;
+  }
+  function infraCostRowEl(r) {
+    var known = r.own != null;
+    var ok = known && r.own >= r.need;
+    var row = el('div', 'tablet-infra-cost' + (known ? (ok ? ' ok' : ' short') : ''));
+    if (r.icon) {
+      var ic = el('img', 'tablet-infra-cost-icon'); ic.alt = '';
+      var u = (typeof Icons !== 'undefined' && Icons.resolveStatic) ? Icons.resolveStatic(r.icon) : null;
+      if (u) ic.src = u; else ic.style.display = 'none';
+      row.appendChild(ic);
+    }
+    row.appendChild(el('span', 'tablet-infra-cost-name', r.label));
+    row.appendChild(el('span', 'tablet-infra-cost-qty',
+      r.need + (known ? '/' + r.own : '/?') + (r.skill ? '级' : '')));
+    return row;
+  }
+  function renderInfraReq(reqEl, it, lv) {
+    reqEl.textContent = '';
+    var head = '当前等级：' + (lv == null ? 0 : lv);
+    if (lv == null || lv >= it.maxLevel) {
+      reqEl.appendChild(el('div', 'tablet-infra-req-head', head + '，已达到最大等级。'));
+      return;
+    }
+    reqEl.appendChild(el('div', 'tablet-infra-req-head', head + '，升到下一级需要：'));
+    var list = el('div', 'tablet-infra-req-list');
+    infraCostRows(it, lv).forEach(function (r) { list.appendChild(infraCostRowEl(r)); });
+    reqEl.appendChild(list);
   }
   // 写权走 AS2 tabletInfraUpgrade 回环；unknown 结果不乐观显示
   function doUpgrade(it) {
@@ -458,6 +493,7 @@
         if (resp && resp.success) {
           status((resp.name || it.name) + ' 已升级' + (resp.level != null ? '至 LV ' + resp.level : ''));
         } else {
+          cue('illegal');
           status(resp && resp.unknown
             ? '升级结果未知——以基地实际状态为准'
             : '升级失败：' + respErrorText(resp));
@@ -547,15 +583,26 @@
     if (it) {
       var cur = it.levels[lv] || it.levels[0];
       descEl.textContent = (cur && cur.description) || '';
-      reqEl.textContent = upgradeReqText(it, lv);
+      renderInfraReq(reqEl, it, lv);
     } else {
       descEl.textContent = infraSynced ? '尚未发现任何基建项目' : '点击左侧列表查看基建内容';
     }
-    // 升级：透明热点盖烘焙的基建升级按钮；无快照/未解锁/满级/在途禁点
+    // 升级：透明热点盖烘焙的基建升级按钮；无快照/未解锁/满级/在途禁点。
+    // 音走通用工作台合成 cue：悬停 hover、可升级点击 toggle、
+    // 条件不足点击 illegal（本地按 assets 快照预判，不发请求）
     if (ib.upgrade) {
-      var canUp = !!(it && infraSynced && lv != null && lv < it.maxLevel && !upgradeBusy);
-      overlay.appendChild(hotspot('infrastructure', ib.upgrade, '升级',
-        function () { sfx('button_01.wav'); doUpgrade(it); }, !canUp));
+      var canAct = !!(it && infraSynced && lv != null && lv < it.maxLevel && !upgradeBusy);
+      var upHot = hotspot('infrastructure', ib.upgrade, '升级', function () {
+        if (!infraRowsSatisfied(infraCostRows(it, lv))) {
+          cue('illegal');
+          status('金币、材料或技能不足');
+          return;
+        }
+        cue('toggle');
+        doUpgrade(it);
+      }, !canAct);
+      if (canAct) listen(upHot, 'mouseenter', function () { cue('hover'); });
+      overlay.appendChild(upHot);
     }
   }
 
