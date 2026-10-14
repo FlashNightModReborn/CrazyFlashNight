@@ -89,14 +89,53 @@ async function answerQuery(page, cmd, respBody) {
     }, respBody));
 }
 
-async function openIntelligence(page, instanceId) {
+async function readIntelligenceCatalog(page) {
+    const xml = fs.readFileSync(path.join(ROOT, 'data', 'items', '收集品_情报.xml'), 'utf8');
+    return page.evaluate(source => {
+        const doc = new DOMParser().parseFromString(source, 'application/xml');
+        if (doc.querySelector('parsererror')) throw new Error('Invalid intelligence item XML');
+        return Array.from(doc.querySelectorAll('item')).map((item, index) => {
+            const text = tag => item.querySelector(tag)?.textContent || '';
+            const name = text('name');
+            const maxValue = Number(text('maxvalue')) || 99;
+            return {
+                name, iconName: text('icon'), index, maxValue,
+                displayName: name === '资料' ? '验收档案' : (text('displayname') || name),
+                value: Math.min(42, maxValue), pageCount: 1, unlockedCount: 1
+            };
+        });
+    }, xml);
+}
+
+async function checkItemIcons(page, label, expectedCount) {
+    await page.waitForFunction(count => {
+        const header = document.querySelector('.intel-icon');
+        const icons = Array.from(document.querySelectorAll('.intel-catalog-icon'));
+        return header && header.complete && header.naturalWidth > 0
+            && icons.length === count && icons.every(img => img.complete && img.naturalWidth > 0);
+    }, expectedCount, {timeout: 8000}).catch(async () => {
+        const detail = await page.evaluate(() => ({
+            loader: typeof Icons,
+            headerSrc: document.querySelector('.intel-icon')?.getAttribute('src'),
+            decoded: Array.from(document.querySelectorAll('.intel-catalog-icon')).filter(img => img.naturalWidth > 0).length,
+            placeholders: document.querySelectorAll('.intel-catalog-icon-placeholder').length
+        }));
+        check(false, label + ' real item icons decode', JSON.stringify(detail));
+    });
+    check(true, label + ' header real icon decoded');
+    check(true, label + ' all ' + expectedCount + ' catalog real icons decoded');
+    check(await page.evaluate(() => document.querySelectorAll('.intel-catalog-icon-placeholder').length === 0),
+        label + ' catalog has no missing-icon placeholders');
+}
+
+async function openIntelligence(page, instanceId, catalog) {
     await hostSend(page, {type: 'panel_cmd', cmd: 'open', panel: 'intelligence',
         initData: {panelInstanceId: instanceId, mode: 'prod', source: 'runtime', debug: false}});
     await page.waitForSelector('.intelligence-panel', {state: 'visible', timeout: 8000});
     // prod 模式：state → populateCatalog → snapshot + glossary_catalog
     await answerQuery(page, 'state', {
         decryptLevel: 3, pcName: '验收员',
-        items: [{name: '资料', value: 42, maxValue: 99, displayName: '验收档案'}]
+        items: catalog
     });
     await answerQuery(page, 'snapshot', {
         value: 42, maxValue: 99, decryptLevel: 3, pcName: '验收员', contentMode: 'legacy',
@@ -122,11 +161,25 @@ async function runViewport(browser, port, viewport, takeShot) {
         await waitOutbox(page, m => m.type === 'composition_intelligence_ready', 'ready ' + label);
         check(true, label + ' composition_intelligence_ready emitted');
 
-        await openIntelligence(page, 'intel-' + w + '-a');
+        const catalog = await readIntelligenceCatalog(page);
+        check(catalog.length > 0 && catalog.some(item => item.name === '资料'), label + ' canonical item metadata loaded');
+        await openIntelligence(page, 'intel-' + w + '-a', catalog);
         check(true, label + ' prod open renders catalog+snapshot from panel_resp');
+        await checkItemIcons(page, label + ' cold open', catalog.length);
 
         const meta = await page.evaluate(() => document.querySelector('.intel-meta').textContent);
         check(/已发现 1 \/ 1/.test(meta), label + ' unlocked page count renders', meta);
+
+        await page.locator('.intel-catalog-item[data-name="资料"]').hover();
+        await answerQuery(page, 'tooltip', {
+            itemName: '资料', introHTML: '<b>验收档案</b>', descHTML: '真实图标悬停回归'
+        });
+        await page.waitForFunction(() => {
+            const img = document.querySelector('#panel-tooltip .intel-tt-rich img');
+            return img && img.complete && img.naturalWidth > 0;
+        }, null, {timeout: 8000});
+        check(true, label + ' rich hover tooltip real icon decoded');
+        await page.mouse.move(0, 0);
 
         // 出站过滤：写业务/诊断/其他面板命令必须被丢弃
         await page.evaluate(() => {
@@ -168,7 +221,8 @@ async function runViewport(browser, port, viewport, takeShot) {
             label + ' close bound to current instance', JSON.stringify(closeA));
         check(closeA.reason === undefined, label + ' ordinary close carries no fabricated reason');
 
-        await openIntelligence(page, 'intel-' + w + '-b');
+        await openIntelligence(page, 'intel-' + w + '-b', catalog);
+        await checkItemIcons(page, label + ' reopen', catalog.length);
         if (takeShot) await page.screenshot({path: takeShot});
         await page.click('.intel-close-btn');
         box = await outbox(page);

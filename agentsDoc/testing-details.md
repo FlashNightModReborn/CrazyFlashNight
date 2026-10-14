@@ -263,7 +263,8 @@ AS2 必跑 `scripts/run-character-creation-tests.ps1`（机器钉死 40/40）、
 <a id="suite-intelligence"></a>
 ### 情报面板
 
-必跑：`powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1` + `node tools/validate-intelligence-h5.js --strict` + `node tools/run-intelligence-harness.js --browser edge`。
+必跑：`powershell -ExecutionPolicy Bypass -File launcher/build.ps1` + `powershell -ExecutionPolicy Bypass -File launcher/tests/run_tests.ps1` + `node tools/validate-intelligence-h5.js --strict` + `node tools/run-intelligence-harness.js --browser edge` + `node tools/qa-composition-intelligence.js`。
+生产情报入口为 `composition-intelligence.html`；组合页回归使用真实图标脚本、manifest 和图片，核对首次打开与重开后的标题、全部情报目录及悬停提示图标，并保留只读出站过滤与精确实例关闭检查。旧面板 harness 的图标 stub 不代替生产入口依赖验证。
 改 AS2 `intelligenceState/intelligenceTooltip` 或正式入口运行态联动时追加 Flash compile smoke；手测 Native HUD 与旧 Web notch 的主工具栏「情报」，以及 Native HUD「其他 → 测试 → 情报测试」。
 情报溢出先跑 `node tools/test-information-overflow.js`（文本记录扫描 59 个情报配置，待核：阈值来源为历史文本，未找到当前机器真源），再由 `scripts/run-item-panel-tests.ps1 -TimeoutSeconds 240` 取得 Inventory/NPC/Crafting 的 fresh Output Panel/trace 与 Compiler Errors 0/0；静态脚本不能替代后者。Intelligence exact admission 合同见 [跨层协议与权威](#cross-layer) 的 B4–B6 段。
 

@@ -22,8 +22,9 @@
      1. bridge.js 提供 Bridge；
      2. composition-intelligence.js 必须在 panels.js 之前执行——它要先注册 panel_cmd 监听
         （记录 open 的 initData.panelInstanceId）并装好出站过滤，再让 Panels 绑自己的 handler；
-     3. intelligence-panel.js 在加载时直接 Panels.register('intelligence')，不走 LazyLoader/registry；
-     4. font-pack-banner.js 故意不加载：其字体包下载是写业务，只读端点结构性排除。 -->
+     3. asset-timeline.js 必须先于 icons.js，供情报标题、目录与悬停提示加载真实物品图标；
+     4. intelligence-panel.js 在加载时直接 Panels.register('intelligence')，不走 LazyLoader/registry；
+     5. font-pack-banner.js 故意不加载：其字体包下载是写业务，只读端点结构性排除。 -->
 <script src="generated/font-catalog.js"></script>
 <script src="modules/bridge.js"></script>
 <script src="modules/composition-intelligence.js"></script>
@@ -31,6 +32,8 @@
 <script src="modules/panel-scale.js"></script>
 <script src="modules/toast.js"></script>
 <script src="modules/tooltip.js"></script>
+<script src="modules/asset-timeline.js"></script>
+<script src="modules/icons.js"></script>
 <script src="modules/intelligence-components.js"></script>
 <script src="modules/intelligence-panel.js"></script>
 </body>
