@@ -187,6 +187,8 @@ Actions artifact 只是短期交接介质：unsigned candidate/envelope 保留 1
 
 在与 request tree 完全一致、tracked 内容干净的工作树中运行。正式 receipt / X509 proof / promotion 链固定由 Windows PowerShell 5.1（`$env:SystemRoot\System32\WindowsPowerShell\v1.0\powershell.exe`）承载：当前 `pwsh` 7 的 `ConvertFrom-Json` 会把 attestation 的 ISO `createdAtUtc` 字符串自动解析成 `DateTime`，若在该宿主内直接调用 promotion，会改变 canonical payload 复算字节并按预期 fail closed。新机经 winget 安装 GitHub CLI 后，先用同一 5.1 进程确认 `Get-Command gh`；若旧父进程尚未继承新的用户级 `PATH`，重启父进程或只给本次发布进程显式补入已核验的安装目录，不复制 token、证明或私钥来绕过环境门。
 
+由辅助进程启动时，编码与模块环境须在实际执行发布的 5.1 子进程内固定：先 `chcp.com 65001`，使用无 BOM 的 UTF-8 `Console.InputEncoding` / `Console.OutputEncoding` / `$OutputEncoding`，并按根目录 `本地开发启动.cmd` 隔离 Windows PowerShell 的 `PSModulePath`。父进程的设置不能替代新控制台的设置，否则 `Get-FileHash` 可能加载错误模块，中文 Git 路径也可能被误解码。外层脚本应分别保存 stdout/stderr，并检查实际子进程退出码与官方结果；普通 Git 克隆进度写入 stderr 不代表 worker 失败。失败原件和过期租约由现有队列合同处理，不删除现场或降低校验来恢复。
+
 ```powershell
 .\tools\prepare-launcher-release-assets.ps1 -ReleaseTreeOid <full-commit>
 # 若生成物变化：审阅、提交，再用新 commit 建 request；不得对旧 request 继续发布。
@@ -327,6 +329,19 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 ## 历史发布记录
 
 **阅读口径**：以下各节是按对象 / 日期 / 范围留存的历史证据快照，记录各列车当时的身份、证明与验收边界。节标题与正文中的「当前正式发布」「上一正式发布」「顶部当前段」等字样均为该次发布当时的相对称呼，不代表当前部署状态；查询当前部署身份与状态一律以上文「当前机器真值读取说明」列出的机器真源为准。本节内容由原文件前部整体迁移至此，历史记录未删改。
+
+## 2026-10-14 焦点、持久化与转场修复正式发布
+
+维护者复验显示就绪修正后明确授权完整发布列车。冻结源 `827a8a044576fb94bd2bd79318a3f02dbc2f5d89`
+合入上游 `44e258c673` 的库存和结算收支更新，使用一次性 tag `runtime-build-v2/20261014-focus-persistence-transition-v1`。
+本地 `builder-local-c / physical-host-c` 与 [GitHub hosted 构建 38502486334](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38502486334)
+独立生成一致的 43 文件闭包；production policy 47/47，实际 CAS 的 WebView2 / DirectComposition 检查 65/65。
+2026-10-14T02:54:53.8805206Z 完成原子 promotion，strict consensus 确认 2 signer / 2 faultDomain。
+具体 identity、closure、回退位置、标准前门、部署推送和远端审计见[完整发布回执](evidence/focus-persistence-transition-release-2026-10-14.json)。
+
+合并后的 Host 为 7391 PASS / 30 条件 SKIP / 0 FAIL；真实 CS6 五组专项共 1977 项通过，最终 asLoader 本轮 Compiler 0/0，
+692 个生产 SWF 与 711 个 loader 类的完整归属闭包通过。保留输入资格取消、前台资格超时、外层启动环境失败和云端状态查询 EOF；
+云端通过同一 run 的恢复入口完成验真。正式部署与启动冒烟不代签物理输入、完整战斗与保存失败旅程；独立动态分辨率闪变仍待归因。
 
 ## 2026-10-10 共享 HUD 绘制成本优化正式发布
 

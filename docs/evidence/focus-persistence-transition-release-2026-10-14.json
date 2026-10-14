@@ -1,0 +1,424 @@
+{
+  "schema": "cf7-focus-persistence-transition-release-evidence.v1",
+  "recordedAtUtc": "2026-10-14T03:09:20.870Z",
+  "state": "promoted",
+  "authorization": "那就走完整的发布列车吧",
+  "source": {
+    "commit": "827a8a044576fb94bd2bd79318a3f02dbc2f5d89",
+    "tree": "b2b2185c3bc9b01dee8ed950cc48abe20b3b4406",
+    "tag": "refs/tags/runtime-build-v2/20261014-focus-persistence-transition-v1",
+    "implementationCommit": "fea191a68e",
+    "mergedUpstream": "44e258c673"
+  },
+  "request": {
+    "schema": "cf7-runtime-build-request.v2",
+    "requestId": "016C6F55322BBD640991341D1A9F3010D9D3F4AA74377AEFF67DAF5756E65BA3",
+    "sourceKind": "Treeish",
+    "releaseTreeOid": "b2b2185c3bc9b01dee8ed950cc48abe20b3b4406",
+    "sourceCommitOid": "827a8a044576fb94bd2bd79318a3f02dbc2f5d89",
+    "requestCommitOid": "c32bc8e7e97aca3907465c8e0a51adbc09400b9b",
+    "bundleTreeOid": "a39841599d7077d7be3bfbb4f4b515fa522ef90a",
+    "artifactSourceHash": "688DF5927D74BA3E664E1923AEEACFA12220329D9F1D38788F35300559A44DDA",
+    "producerRecipeHash": "EFB73DFFFDE36C213250576D2EFEF9180889139291CD9554C89F038D9616975D",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "61A50489C9D574413E29BA5B2B2542ABB92D9A93C1994AC64B04938F05A24A56",
+    "buildIdentityHash": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+    "bundleFile": "source.bundle",
+    "bundleSha256": "05A383CE7BEAC33CF593890A81D97591FC80680CF8131189ECFD14F9773BE792",
+    "requiredQuorum": 2,
+    "createdAtUtc": "2026-10-14T02:22:40.1866504Z"
+  },
+  "payload": {
+    "buildIdentityHash": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+    "payloadClosureHash": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+    "files": 43,
+    "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+    "manifestSha256": "7BE8DA89F961B5ACF9B2A56E8A8F9086968852E32FF901BF7AD7AE20D8CF9970"
+  },
+  "localBuild": {
+    "workerId": "builder-local-c",
+    "builderKeyId": "CFB70E2D339ACB25E9B6C2873DF4F1AEEBA8EA75AD23B825724B27FCA70C0B86",
+    "faultDomain": "physical-host-c",
+    "resultSha256": "F2808B1705AD16AA469BCF2D84F5C58E64E8D06EBF14A659511688128AFFEC99",
+    "attestationSha256": "AB443163BAC02EF8C06E5631422BCE9CBD48B44E109DB54CA46D34FF7BF6059F"
+  },
+  "cloudBuild": {
+    "runId": 38502486334,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38502486334",
+    "sourceCommit": "827a8a044576fb94bd2bd79318a3f02dbc2f5d89",
+    "artifactScope": "attestation-only",
+    "artifactId": 11866588837,
+    "archiveBytes": 10784,
+    "archiveSha256": "a848b6d1a2dafcee80cc314c225eb29653ad33a9d1cd38d47b0ee4a49c05d76c",
+    "verifiedProof": {
+      "path": "tmp/release-focus-persistence-20261014/cloud-v1/run-38502486334/verified-github-proof.v2.json",
+      "sha256": "2390C2768256673EF84D47FEDF4FC6EF78950073F91D9DDA34CC8F78C58B56A0",
+      "bytes": 42257
+    },
+    "result": {
+      "path": "tmp/release-focus-persistence-20261014/cloud-v1/run-38502486334/runtime-github-build-result.v2.json",
+      "sha256": "C4CA479D05E263E4BC23AA491861917BC9C005E2C9C094CC8784F2A90D118177",
+      "bytes": 2213
+    }
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "receipt": {
+      "path": "tmp/release-focus-persistence-20261014/policy-v1.json",
+      "sha256": "B2312199528B7C47F1105524977F24D8477BDAFA09FF374C8E19D716FEE49644",
+      "bytes": 26317
+    }
+  },
+  "promotion": {
+    "promotedAtUtc": "2026-10-14T02:54:53.8805206Z",
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "signers": 2,
+    "faultDomains": 2,
+    "consensus": {
+      "path": "config/build/runtime-release-consensus.json",
+      "sha256": "FB1137C5D6111AC7CB5291BEAAF5245C16A0CCF95E202801A0E16FBE57EED58B",
+      "bytes": 106700
+    },
+    "receipt": {
+      "path": "tmp/release-focus-persistence-20261014/promotion-v1.log",
+      "sha256": "5BA915CA77EF89A4AA259F4495C2EF10A62FD74715E37844D45A1878230D9B01",
+      "bytes": 1320
+    },
+    "recoverablePreviousRoot": "tmp/runtime-promotions/20261014T025416456Z-80eba9b7aeb44de4976c3e25c76fdd78/previous",
+    "previousManifest": {
+      "path": "tmp/runtime-promotions/20261014T025416456Z-80eba9b7aeb44de4976c3e25c76fdd78/previous/runtime/cf7-runtime-manifest.tsv",
+      "sha256": "26B1DA4DC511D3DA876FB818A7A3147296E3ED796E6659C89DA9062CF470A460",
+      "bytes": 5167
+    }
+  },
+  "verification": {
+    "host": {
+      "total": 7421,
+      "passed": 7391,
+      "skipped": 30,
+      "failed": 0,
+      "receipt": {
+        "path": "tmp/focus-sol-20261013/integration-20261014T020516910Z/recheck.trx",
+        "sha256": "9681795CB47DCCBA40F4B0D4AC9146130E2EFEC9B324E466969433122809DED2",
+        "bytes": 11378906
+      }
+    },
+    "as2": [
+      {
+        "name": "inventory-shared",
+        "passed": 253,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/release-focus-persistence-20261014/as2-merged-20261014T012449502Z/inventory-shared/run.log",
+          "sha256": "F125126FA1F170856E7B8B4DA512B508F789ED25B275A5731EC90DD503588B4C",
+          "bytes": 22550
+        },
+        "trace": {
+          "path": "tmp/release-focus-persistence-20261014/as2-merged-20261014T012449502Z/inventory-shared/flashlog.txt",
+          "sha256": "A656EF70DE9045182CE4211E3BD3F1B662D390BD0C3B439BB23016BE433C4E9E",
+          "bytes": 20472
+        },
+        "compiler": {
+          "path": "tmp/release-focus-persistence-20261014/as2-merged-20261014T012449502Z/inventory-shared/compiler_errors.txt",
+          "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+          "bytes": 27
+        }
+      },
+      {
+        "name": "map-loot",
+        "passed": 1130,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/map-loot/run.log",
+          "sha256": "24CBB864D31A9EA3CE819FB3CEEF588855EC81B1DBF1D3F1D2ED3054FF0EC006",
+          "bytes": 106520
+        },
+        "trace": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/map-loot/flashlog.txt",
+          "sha256": "50DDE620613928F5573FD4159F4AC83CC2BDD848253B2C1F2E797B4EADA65CB0",
+          "bytes": 103931
+        },
+        "compiler": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/map-loot/compiler_errors.txt",
+          "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+          "bytes": 27
+        }
+      },
+      {
+        "name": "save-storage",
+        "passed": 373,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/save-storage/run.log",
+          "sha256": "6DECCA8BD7D8FB474AE870CEF99935529CC353DE2099ECBFBC379A5FBBBE732E",
+          "bytes": 32464
+        },
+        "trace": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/save-storage/flashlog.txt",
+          "sha256": "60B9DBD63FC3F3E76BACE77BD692DB475C95FF7BE0BC81DBE38C331C938B265C",
+          "bytes": 30417
+        },
+        "compiler": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/save-storage/compiler_errors.txt",
+          "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+          "bytes": 27
+        }
+      },
+      {
+        "name": "reward-stash",
+        "passed": 120,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/reward-stash/run.log",
+          "sha256": "A511BA32C5822EEE19D19F68E7C928B887B4663076A600374DF7EE6335CC9E2A",
+          "bytes": 10331
+        },
+        "trace": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/reward-stash/flashlog.txt",
+          "sha256": "33941C39EEBFAC9F284E1E168F3447B6C34DD23A8B8CE7048314D913386AF3B7",
+          "bytes": 8337
+        },
+        "compiler": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/reward-stash/compiler_errors.txt",
+          "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+          "bytes": 27
+        }
+      },
+      {
+        "name": "scene-transition",
+        "passed": 101,
+        "failed": 0,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "log": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/scene-transition/run.log",
+          "sha256": "484660D042985CBC25689DCE762D1B4FCA7F107B52473B89F2F0B0A17A23675C",
+          "bytes": 3082
+        },
+        "trace": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/scene-transition/flashlog.txt",
+          "sha256": "9360F1886AA473671E9FDEDB9CC94B186F6D6A3F194DB908B240D5E918955A52",
+          "bytes": 1025
+        },
+        "compiler": {
+          "path": "tmp/release-focus-persistence-20261014/as2-final-20261014T014856607Z/scene-transition/compiler_errors.txt",
+          "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+          "bytes": 27
+        }
+      }
+    ],
+    "asLoader": {
+      "artifact": {
+        "path": "scripts/asLoader.swf",
+        "sha256": "3E28A10BBB29F9C498D95BE78A06373B0041EEBDFD15936D27FB9BC19A9B95A9",
+        "bytes": 5940084
+      },
+      "compiler": {
+        "path": "tmp/release-focus-persistence-20261014/asloader-20261014T015517297Z/compiler_errors.txt",
+        "sha256": "6D64657E843CFA06C243B6B51F8732C1B5910EBD29940AA7F6F9342B38034FD3",
+        "bytes": 27
+      },
+      "ownership": {
+        "errors": [],
+        "files": 692,
+        "parsed": 0,
+        "cacheHits": 692,
+        "loaderClasses": 711,
+        "closureChecked": true,
+        "policy": "production",
+        "milliseconds": 5347.0483
+      }
+    },
+    "web": {
+      "scene": 381,
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/web-recheck-20261014T013611866Z/browser-results.json",
+        "sha256": "EB5BD8655DE79A14B1F091BD7FFD75870A35761E7DC8E481D5F3690AB2E71375",
+        "bytes": 300
+      }
+    },
+    "native": {
+      "state": "fixture_executed",
+      "checks": 65,
+      "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+      "reportPixelsVerified": true,
+      "gameE2e": false,
+      "slotsTouched": false,
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/native-smoke-v3/result.json",
+        "sha256": "B554B295F2F084797670301A6D26CBB727AE4A151A13E8EF679FE5ACF23BBFFB",
+        "bytes": 9227
+      }
+    }
+  },
+  "formalEntry": {
+    "entry": "automation/start.ps1",
+    "candidateArgumentUsed": false,
+    "runtimeMode": "formal_runtime",
+    "processPath": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712",
+    "buildIdentityHash": "BCD51521D2F6DFFC82E45556E85DE6CE244C358A6349064292CB3065B226A042",
+    "payloadClosureHash": "EC18987C70B577B10ED76D2AF227211950B02DE74CFA42E1D701517E41036B6D",
+    "startupPageObserved": true,
+    "prewarmHandshakeHeldObserved": true,
+    "prewarmDeadlineResetObserved": true,
+    "normalTitlebarClose": true,
+    "shutdownComplete": true,
+    "exitCode": 0,
+    "forceTerminated": false,
+    "playerSlotEntered": false,
+    "businessJourneyExecuted": false,
+    "physicalInputAttestation": false,
+    "startup": {
+      "path": "tmp/release-focus-persistence-20261014/formal-v2-entry.log",
+      "sha256": "8B33760B83A8B1BF758A121EDD9A3A92C8D7368E33B10693A7226E513344955A",
+      "bytes": 1430
+    },
+    "process": {
+      "path": "tmp/release-focus-persistence-20261014/formal-v2-process-observation.json",
+      "sha256": "87F9AC9286D21A0CB140A92FCB6AA3CA3155A6EDD59216D4C9548AAAACDD43F1",
+      "bytes": 325
+    },
+    "exit": {
+      "path": "tmp/release-focus-persistence-20261014/formal-v2-exit.json",
+      "sha256": "DE1986AF18D05E72ECAC2248D7205F897A9A78E630DBB35F37BA75FF97DEC5F2",
+      "bytes": 186
+    },
+    "logs": [
+      {
+        "source": "logs/launcher.log",
+        "originalPrefixPreserved": true,
+        "rotated": false,
+        "output": "tmp/release-focus-persistence-20261014/formal-v2-launcher.log-append.log",
+        "bytes": 26973,
+        "sha256": "D9257CA9955404DAE59BB07B8486957E20D5B161FBA279A69D3BE87776FFA7A9"
+      },
+      {
+        "source": "logs/bootstrap.log",
+        "originalPrefixPreserved": true,
+        "rotated": true,
+        "output": "tmp/release-focus-persistence-20261014/formal-v2-bootstrap.log-append.log",
+        "bytes": 28662,
+        "sha256": "89DA9373E61264C3BC01D3BFD456AFD2652B61B748902BA7A56960EBEA29CC7C"
+      }
+    ],
+    "saveGuard": {
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/formal-v2-saves-result.json",
+        "sha256": "EC60DF1A036ED916C848B3BC82AA826B7334F6EDB461838E245D88A9BC9963F0",
+        "bytes": 557
+      },
+      "protectedJsonSolFiles": 49,
+      "allSaveFiles": 43,
+      "changed": [
+        "saves/.launcher-version-marker.json"
+      ],
+      "added": [],
+      "removed": [],
+      "originalSaveUniverseUnchanged": true,
+      "restoredOverPlayerFiles": false
+    }
+  },
+  "retainedFailures": {
+    "hostCancellation": {
+      "path": "tmp/release-focus-persistence-20261014/host-cancelled-run.json",
+      "sha256": "1A8E8C0ADDDB7E6E40EC487CBCB632A44CD862DD2D1A3349933766B8ADA51C2F",
+      "bytes": 490
+    },
+    "native": [
+      {
+        "receipt": {
+          "path": "tmp/release-focus-persistence-20261014/native-smoke-v1/result.json",
+          "sha256": "1E5CB6B3CCE246EE29B045AF218EBD49A2E877157E434F383B5EA7CB65397B37",
+          "bytes": 2276
+        },
+        "state": "failed",
+        "completedChecks": 2,
+        "reason": "fixture initial foreground admission timed out",
+        "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712"
+      },
+      {
+        "receipt": {
+          "path": "tmp/release-focus-persistence-20261014/native-smoke-v2/result.json",
+          "sha256": "1E5CB6B3CCE246EE29B045AF218EBD49A2E877157E434F383B5EA7CB65397B37",
+          "bytes": 2276
+        },
+        "state": "failed",
+        "completedChecks": 2,
+        "reason": "fixture initial foreground admission timed out",
+        "coreSha256": "ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712"
+      }
+    ],
+    "wrapperFailure": {
+      "path": "tmp/release-focus-persistence-20261014/wrapper-failure-20261014T022242Z/failure.json",
+      "sha256": "05E8521ADF1CA423847B91AB6D9D005BCB426B8E035A0974320E82ECDB05E846",
+      "bytes": 764
+    },
+    "workerUtf8FailureRetainedInQueue": true,
+    "skippedWorkerEnvironmentLog": {
+      "path": "tmp/release-focus-persistence-20261014/local-worker-retry.stdout.log",
+      "sha256": "2353D8639A22C9DF82FB0CFFE47C914309DBDC43D5798FB7306A4AD50701BE63",
+      "bytes": 245
+    },
+    "cloudPollingEof": {
+      "path": "tmp/release-focus-persistence-20261014/cloud-v1.log",
+      "sha256": "7784DA5717D868C586AE70C2E5910806906BFA03AA5B43AC262276F0871F9586",
+      "bytes": 2678
+    },
+    "sameCloudRunResumed": true,
+    "firstFormalExitObservation": {
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/formal-exit.json",
+        "sha256": "29C2CDC7527FAD10E90250D75AF589A98C5E87BD43ABA499536AFBD3FBB06593",
+        "bytes": 154
+      },
+      "exitCode": null,
+      "normalShutdownLogObserved": true,
+      "classification": "exit code unavailable from the unpinned observer; fresh pinned-handle recheck exited zero"
+    }
+  },
+  "sourceAudit": {
+    "runId": 38499666486,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38499666486",
+    "state": "source-ahead",
+    "deploymentChanged": false,
+    "receipt": {
+      "path": "tmp/release-focus-persistence-20261014/source-native-audit.log",
+      "sha256": "99F698F6239A9EB7B11F98682556A6701E5B8A217494A15A2194497146DE99D4",
+      "bytes": 80789
+    }
+  },
+  "deployment": {
+    "commit": null,
+    "pushed": false,
+    "audit": {
+      "status": "pending"
+    }
+  },
+  "boundaries": {
+    "compiled": true,
+    "candidate_built": true,
+    "candidate_executed": true,
+    "promoted": true,
+    "standardEntryStartupShutdownSmoke": true,
+    "standard_entry_verified": false,
+    "fullGameE2eForReleasedTree": false,
+    "priorCandidateAcceptanceRecord": "docs/evidence/scene-presentation-readiness-fix-2026-10-14.json",
+    "limitations": [
+      "此前人验和克隆槽真实旅程保留原候选身份，不能代签合并后发布树的完整业务验收。",
+      "标准入口只观察启动页、预热握手、期限回 Idle 与正常关窗，未进入玩家槽位。",
+      "独立动态分辨率闪变、偶发长帧、通讯终端超时、物理输入和完整原生保存失败旅程保留原边界。",
+      "所有失败、取消与未知观察结果保留；后续绿灯来自独立的新回执。"
+    ]
+  }
+}
