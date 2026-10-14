@@ -1,0 +1,9 @@
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.*;
+import org.flashNight.gesh.depth.*;
+import org.flashNight.neur.ScheduleTimer.*;
+#include "逻辑/战斗系统/战斗系统_fs_联弹管理.as"
+_root.shotgunCalibrationComplete = function():Void {
+    trace("FocusedTestRunId shotgun-calibration Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId shotgun-calibration Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunCalibrationTest.runAllTests();

@@ -13,6 +13,7 @@ if ($Lifecycle) {
    'scripts/类定义/org/flashNight/arki/render/ChainVisualBridge.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitManager.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainGroup.as',
+   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ShotgunPattern.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitData.as'
   )
   ExpectedTracePatterns=@(
@@ -36,6 +37,7 @@ if ($Lifecycle) {
    'scripts/类定义/org/flashNight/arki/render/ChainVisualBridge.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitManager.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainGroup.as',
+   'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ShotgunPattern.as',
    'scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Chain/ChainUnitData.as'
   )
   ExpectedTracePatterns=@(

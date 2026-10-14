@@ -641,6 +641,9 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         var weaponDataKey:String = weaponType + "数据";
         var weaponTypeTag:String = parentRef[weaponDataKey] ? parentRef[weaponDataKey].weapontype : null;
 
+        // 仅非敌方霰弹枪登记组级分配；最终弹种仍由横向组装排除穿刺/透明弹。
+        bulletProps.霰弹分配模式 = (!isEnemy && weaponTypeTag == "霰弹枪") ? 1 : 0;
+
         // 计算击倒率（使用统一的武器冲击力计算函数）
         bulletProps.击倒率 = calculateWeaponImpact(parentRef, weaponType, wd.击倒率, weaponTypeTag);
 

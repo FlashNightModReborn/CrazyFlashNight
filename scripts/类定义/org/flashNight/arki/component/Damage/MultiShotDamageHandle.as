@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.bullet.BulletComponent.Chain.*;
 import org.flashNight.arki.component.StatHandler.*;
 import org.flashNight.naki.RandomNumberEngine.*;
 
@@ -96,7 +97,8 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var EXPECTED_STATE:Number = FLAG_NORMAL;
 
         var overlapRatio:Number = manager.overlapRatio;
-        var isNormalNonTransparent:Boolean = (bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE;
+        var pattern:ShotgunPattern = bullet.chainGroup.shotgun;
+        var isNormalNonTransparent:Boolean = (bullet.flags & RELEVANT_BITS_MASK) == EXPECTED_STATE || pattern != null;
 
         // 影子记账检测：原位位编码方案
         // 编码格式：bullet.霰弹值 = -((S₀ << 16) | available)
@@ -211,8 +213,18 @@ class org.flashNight.arki.component.Damage.MultiShotDamageHandle extends BaseDam
         var availableScatter:Number = isShadow ? available : currentScatter;
         var actualScatterUsed:Number = availableScatter < ceilC ? availableScatter : ceilC;
 
-        // 向上取整避免0段
-        if (actualScatterUsed < 1) actualScatterUsed = 1;
+        // 新霰弹按组级覆盖限制单体；旧弹保持最低一段的历史合同。
+        if (pattern != null && actualScatterUsed > pattern.hitCap) actualScatterUsed = pattern.hitCap;
+        if (actualScatterUsed < 1) {
+            if (pattern != null) {
+                target.损伤值 = 0;
+                result.actualScatterUsed = 0;
+                result.finalScatterValue = availableScatter;
+                result.dodgeStatus = "MISS";
+                return;
+            }
+            actualScatterUsed = 1;
+        }
 
         // 更新霰弹值
         if (isShadow && isNormalNonTransparent) {

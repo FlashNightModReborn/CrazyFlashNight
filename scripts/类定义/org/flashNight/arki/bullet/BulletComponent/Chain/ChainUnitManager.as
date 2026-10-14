@@ -99,6 +99,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         for (var i:Number = 0; i < gn; i++) {
             g = gs[i];
             g.__removed = true;
+            if (g.shotgun != null) g.shotgun.dispose();
+            g.shotgun = null;
+            pn = pool.length;
             list = g.单元体列表;
             n = list.length;
             for (var u:Number = 0; u < n; u++) {
@@ -216,6 +219,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (group == null || group.__removed) return;
         org.flashNight.arki.render.ChainVisualBridge.releaseGroup(group);
         group.__removed = true;
+        if (group.shotgun != null) group.shotgun.dispose();
+        group.shotgun = null;
         var list:Array = group.单元体列表;
         var pool:Array = dataPool;
         var n:Number = list.length;
@@ -283,6 +288,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
                 }
                 f = g.update;
                 f(g);
+                if (b.__chainDead) continue;
 
                 // 与 MC 子弹预检查同构：越界标记击中地图（由队列单出口收尾处理）
                 var x:Number = b._x;
@@ -381,7 +387,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
 
     /** 每次实际游戏更新递增一次；暂停和 FrameBroadcaster 重发不推进。 */
     public static function beginNativeStep(group:ChainGroup, advance:Number, advanceX:Boolean):Void {
-        if (!group.nativeGroupOwned) return;
+        if (!group.nativeGroupOwned && !group.isDecayReference) return;
         if (group.aggregate) {
             var existing:Array = group.aggregateRuns;
             var previous:Object = existing[existing.length - 1];
@@ -484,6 +490,18 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         group.aggregateMax = sorted[count - 1];
     }
 
+    /** 正数预算提交后才回收视觉单元；零预算由队列单出口整组退场，不发送空的 G。 */
+    public static function commitShotgunBudget(group:ChainGroup):Void {
+        if (group == null || group.__removed || group.shotgun == null) return;
+        var budget:Number = group.bullet.霰弹值;
+        if (!(budget > 0)) return;
+        var list:Array = group.单元体列表;
+        while (list.length > budget) {
+            if (group.aggregate) removeAggregateUnit(group, list[list.length - 1]);
+            else _root.联弹系统.回收单元体于(group, list.length - 1);
+        }
+    }
+
     private static function compareIndexDescending(a:ChainUnitData, b:ChainUnitData):Number {
         return b.aggregateIndex - a.aggregateIndex;
     }
@@ -522,9 +540,13 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (list.length == 0) return false;
         var sv:Number = b.霰弹值;
         var originalSv:Number = sv;
-        var decay:Number = group.衰竭计数器 + (sv + b.子弹散射度) / 25;
-        group.衰竭计数器 = decay;
-        while (list.length > 1 && decay >= -sv) {
+        var shotgunMode:Boolean = group.shotgun != null;
+        var decay:Number = group.衰竭计数器;
+        if (!shotgunMode) {
+            decay += (sv + b.子弹散射度) / 25;
+            group.衰竭计数器 = decay;
+        }
+        while (!shotgunMode && list.length > 1 && decay >= -sv) {
             removeAggregateUnit(group, list[list.length - 1]);
             sv--;
         }
@@ -536,7 +558,7 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         var py:Number = b._y;
         var hitZ:Number = b.Z轴坐标;
         var unit:ChainUnitData = cosV < 0 ? minUnit : maxUnit;
-        if (list.length > 1 && unit.y * cosV + py > hitZ) {
+        if ((list.length > 1 || shotgunMode) && unit.y * cosV + py > hitZ) {
             // 重用 scratch；只枚举真正触地的成员与一个边界失败者。
             var victims:Array = group.aggregateSorted;
             victims.length = 0;
@@ -547,11 +569,17 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
                 unit = cosV < 0 ? unit.aggregateNext : unit.aggregatePrev;
             }
             victims.sort(compareIndexDescending);
-            for (var i:Number = 0; i < victims.length && list.length > 1; i++) {
+            for (var i:Number = 0; i < victims.length && (list.length > 1 || shotgunMode); i++) {
                 removeAggregateUnit(group, victims[i]);
                 sv--;
             }
             victims.length = 0;
+            if (shotgunMode && list.length == 0) {
+                b.霰弹值 = 0;
+                removeGroup(group);
+                b.removeMovieClip();
+                return true;
+            }
             minUnit = group.aggregateMin;
             maxUnit = group.aggregateMax;
             materializeUnit(group, minUnit);
@@ -560,6 +588,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager {
         if (sv != originalSv) b.霰弹值 = sv;
         group.盒y = minUnit.y;
         var height:Number = maxUnit.y - minUnit.y;
+        // 旧单颗参照自 y 起仍有最小盒高。实际多颗外包围必须涵盖其厚度，
+        // 否则边界目标在宽相被删掉，单体段数虽相同却降低了旧命中概率。
+        if (shotgunMode) height += group.最小盒高;
         group.盒高 = height > group.最小盒高 ? height : group.最小盒高;
         return true;
     }

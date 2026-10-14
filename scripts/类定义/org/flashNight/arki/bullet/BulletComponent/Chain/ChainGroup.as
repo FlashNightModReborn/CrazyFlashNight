@@ -1,4 +1,6 @@
-﻿// ChainGroup —— 联弹组状态对象（P5 class 化）
+﻿import org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern;
+
+// ChainGroup —— 联弹组状态对象（P5 class 化）
 //
 // 取代帧脚本中的 {} 字面量组对象：非 dynamic 类，全部字段静态声明，
 // 经 ChainGroup 类型引用的字段名拼写错误在编译期即报错——这是 class 化的主要目的
@@ -19,6 +21,9 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
     public var bullet;
     // 单元体数据对象列表（元素为 ChainUnitData）
     public var 单元体列表:Array;
+    public var shotgun:ShotgunPattern;
+    // 仅旧衰减参照：不注册、不渲染、不占原生预留。
+    public var isDecayReference:Boolean;
     // 每帧模拟函数（ChainUnitManager.tick 以 f(group) 形态调用，不依赖 this）
     public var update:Function;
     // 渲染函数引用（联弹系统.渲染组；落组避免每帧链式查找）
@@ -132,6 +137,8 @@ class org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup {
         update = updateFn;
         render = renderFn;
         单元体列表 = [];
+        shotgun = null;
+        isDecayReference = false;
         武器扩散倍率 = 1;
         rVer = 0;
         nativeGroupOwned = false;

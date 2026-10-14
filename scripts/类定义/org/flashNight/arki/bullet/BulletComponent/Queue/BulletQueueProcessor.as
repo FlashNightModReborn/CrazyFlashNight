@@ -38,6 +38,7 @@
  */
 
 import org.flashNight.arki.bullet.BulletComponent.Queue.*;
+import org.flashNight.arki.bullet.BulletComponent.Chain.*;
 import org.flashNight.arki.component.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig;
@@ -665,6 +666,25 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         } catch (mapHookError) {
             trace("[BulletQueueProcessor] map hit hook failed: " + mapHookError);
         }
+    }
+
+    /** 新模式专用入口：预算/几何/身份守门先于 RNG、伤害与任何命中副作用。 */
+    private static function settleShotgunHit(ctx:Object, hitTarget:MovieClip,
+            collisionResult:Object, unitArea:Object, zOffset:Number):Object {
+        var bullet:Object = ctx.bullet;
+        var group:ChainGroup = bullet.chainGroup;
+        if (!group.shotgun.prepareContact(group, hitTarget, unitArea, zOffset)) {
+            ctx.actualHit = false;
+            return null;
+        }
+        bullet.附加层伤害计算 = 0;
+        bullet.hitTarget = hitTarget;
+        bullet.命中对象 = hitTarget;
+        var Dodge:Object = ctx.Dodge;
+        var dodgeState:String = bullet.伤害类型 == "真伤" ? "未躲闪" :
+            Dodge.calculateDodgeState(hitTarget,
+                Dodge.calcDodgeResult(ctx.shooter, hitTarget, bullet.命中率), bullet);
+        return settleHit(ctx, hitTarget, collisionResult, 1, dodgeState, true);
     }
 
     /**
@@ -2862,6 +2882,8 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
         var REASON_UNIT_HIT:Number = KF_REASON_UNIT_HIT;  // 缓存命中单位的原因标志
 
         // 外部静态系统引用缓存（AS2中减少作用域链查找）
+        var shotgunGroup:ChainGroup;
+        var isShotgunPattern:Boolean;
         var Dodge:Object = DodgeHandler;
         var Damage:Object = DamageCalculator;
         var FX:Object = EffectSystem;
@@ -3183,6 +3205,9 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     rot = bullet._rotation;
                     isPointSet = rot != 0 && rot != 180;
                 }
+                shotgunGroup = bullet.chainGroup;
+                isShotgunPattern = shotgunGroup.shotgun != null;
+                if (isShotgunPattern) isPointSet = false;
                 bulletZOffset = bullet.Z轴坐标;          // 子弹Z轴坐标
                 bulletZRange = bullet.Z轴攻击范围;       // Z轴攻击范围
                 killFlags = 0;
@@ -3281,6 +3306,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                     _hitCtx.bullet = bullet;
                     _hitCtx.shooter = shooter;
                     _hitCtx.Damage = Damage;
+                    if (isShotgunPattern) _hitCtx.Dodge = Dodge;
                     _hitCtx.flags = flags;
                     _hitCtx.meleeMask = MELEE_EXPLOSIVE_MASK;
                     // 近战硬直：近战类型 && 非硬直免疫（STATE_NO_STUN 位为0）
@@ -3402,25 +3428,30 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                             // ---------- 命中后的业务处理（完全内联展开） ----------
                             // 使用预声明的局部变量，减少内存分配
 
-                            // --- 上下文填充（hitCount移至伤害计算后） ---
-                            bullet.附加层伤害计算 = 0;
-                            bullet.命中对象 = hitTarget;
+                            if (isShotgunPattern) {
+                                settlementResult = settleShotgunHit(_hitCtx, hitTarget, collisionResult, unitArea, zOffset);
+                                if (settlementResult == null) continue;
+                            } else {
+                                // --- 上下文填充（hitCount移至伤害计算后） ---
+                                bullet.附加层伤害计算 = 0;
+                                bullet.命中对象 = hitTarget;
 
-                            // --- 闪避/命中状态（使用预声明变量） ---
-                            dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
-                                Dodge.calculateDodgeState(
-                                    hitTarget,
-                                    Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
-                                    bullet
-                                );
+                                // --- 闪避/命中状态（使用预声明变量） ---
+                                dodgeState = (bullet.伤害类型 == "真伤") ? "未躲闪" :
+                                    Dodge.calculateDodgeState(
+                                        hitTarget,
+                                        Dodge.calcDodgeResult(shooter, hitTarget, bullet.命中率),
+                                        bullet
+                                    );
 
-                            // --- 统一伤害结算（§4.0 (a)）---
-                            // 闪避(上方)→伤害→actual-only 旧钩子→事件；MISS 只保留数字。
-                            // dmgMult = collisionResult.overlapRatio（AABB 命中恒为 1，polygon 为真实重叠比，§1.4）。
-                            // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
-                            //                → kill/death(_killed 守卫) → triggerDisplay。
-                            settlementResult = settleHit(_hitCtx, hitTarget, collisionResult,
-                                collisionResult.overlapRatio, dodgeState, true);
+                                // --- 统一伤害结算（§4.0 (a)）---
+                                // 闪避(上方)→伤害→actual-only 旧钩子→事件；MISS 只保留数字。
+                                // dmgMult = collisionResult.overlapRatio（AABB 命中恒为 1，polygon 为真实重叠比，§1.4）。
+                                // settleHit 内含：命中对象同步(幂等) → calculateDamage → hitCount+= → publish("hit")
+                                //                → kill/death(_killed 守卫) → triggerDisplay。
+                                settlementResult = settleHit(_hitCtx, hitTarget, collisionResult,
+                                    collisionResult.overlapRatio, dodgeState, true);
+                            }
                             if (_hitCtx.actualHit || settlementResult === DamageResult.NULL) {
                                 hasUnitHitFx = true;
                             }
@@ -3432,6 +3463,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
                                 }
                                 killFlags |= (REASON_UNIT_HIT | MODE_VANISH);  // 使用缓存的常量
                             }
+                            if (isShotgunPattern && !ShotgunPattern.hasBudget(bullet)) break;
                         }
 
                         
@@ -3694,6 +3726,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor {
             // 提取低16位 = 最终剩余可用值，回写为正数
             bullet.霰弹值 = (-sc) & 0xFFFF;
         }
+        if (bullet.chainGroup.shotgun != null) ChainUnitManager.commitShotgunBudget(bullet.chainGroup);
     }
     // ------------------------------------------------------------------------
     // 调试辅助：单位池预检与清洗（仅调试模式调用）

@@ -244,7 +244,9 @@ _root.联弹系统.联弹消失 = function(clip:MovieClip):Void {
     clip.flag = true;
 
     // 判断条件：如果霰弹值小于等于1，或者已经击中地图，则直接移除该 MovieClip
-    if (clip.霰弹值 <= 1 || (clip.stateFlags & STATE_HIT_MAP) != 0) {
+    var group:ChainGroup = ChainUnitManager.findGroupByBullet(clip);
+    var exhausted:Boolean = group.shotgun != null ? !(clip.霰弹值 > 0) : clip.霰弹值 <= 1;
+    if (exhausted || (clip.stateFlags & STATE_HIT_MAP) != 0) {
         // 先显式回收单元体组，再移除子弹本体
         ChainUnitManager.removeGroupByBullet(clip);
         clip.removeMovieClip();
@@ -307,12 +309,16 @@ _root.联弹系统.爆炸联弹消失 = function(clip:MovieClip):Void {
 
 _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     var parentMC:MovieClip = group.bullet;
-    if (group.nativeGroupOwned) {
+    var shotgunMode:Boolean = group.shotgun != null;
+    if (shotgunMode && !group.shotgun.advance(group)) return;
+    if (group.nativeGroupOwned || group.isDecayReference) {
         var nativeAdvance:Number = parentMC.xmov * group.运动方向系数;
         ChainUnitManager.beginNativeStep(group, nativeAdvance, false);
         if (group.aggregate && ChainUnitManager.updateHorizontalAggregate(group, nativeAdvance)) {
-            var nativeRender:Function = group.render;
-            nativeRender(group);
+            if (!group.__removed && !group.isDecayReference) {
+                var nativeRender:Function = group.render;
+                nativeRender(group);
+            }
             return;
         }
     }
@@ -321,8 +327,11 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
     // 每帧不变量上提（H01/H02）；衰竭计数内联（原 _root.子弹衰竭计数，省每帧一次函数调用）
     var sv:Number = parentMC.霰弹值;
     var sv0:Number = sv;
-    var 衰竭:Number = group.衰竭计数器 + (sv + parentMC.子弹散射度) / 25;
-    group.衰竭计数器 = 衰竭;
+    var 衰竭:Number = group.衰竭计数器;
+    if (!shotgunMode) {
+        衰竭 += (sv + parentMC.子弹散射度) / 25;
+        group.衰竭计数器 = 衰竭;
+    }
     var A:Number = parentMC.xmov * group.运动方向系数;   // 带方向轴速；u.sin 为生成时缓存
     var cosV:Number = group.余弦值;
     var py:Number = parentMC._y;
@@ -342,7 +351,7 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
 
         // 回收条件：衰竭计数到点 或 超出 Z 轴坐标限制；列表至少保留一个单元体
         // （thr 随 sv 递减实时抬升，保持旧实现"回收级联"语义，勿提为循环外常量）
-        if ((衰竭 >= thr || uy * cosV + py > hitZ) && len > 1) {
+        if (((!shotgunMode && 衰竭 >= thr) || uy * cosV + py > hitZ) && (len > 1 || shotgunMode)) {
             org.flashNight.arki.render.ChainVisualBridge.removeUnit(group, u);
             ChainUnitManager.releaseUnit(u.mc);
             ChainUnitManager.releaseUnitData(u);
@@ -358,11 +367,17 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         if (uy < y_min) y_min = uy;
     }
     if (sv != sv0) parentMC.霰弹值 = sv;
+    if (shotgunMode && len == 0) {
+        ChainUnitManager.removeGroup(group);
+        parentMC.removeMovieClip();
+        return;
+    }
 
     // 更新碰撞盒（本地坐标，公式与旧实现一致）；对象化联弹由碰撞器直接读取组字段
     group.盒y = y_min;
     var h:Number = y_max - y_min;
     var minH:Number = group.最小盒高;
+    if (shotgunMode) h += minH; // 包含旧有效单颗的厚度，避免宽相先丢失参照命中
     group.盒高 = (h > minH) ? h : minH;
     var area:MovieClip = group.area;
     if (area != null) {
@@ -370,13 +385,16 @@ _root.联弹系统.横向联弹更新 = function(group:ChainGroup):Void {
         area._height = group.盒高;
     }
 
-    var render:Function = group.render;
-    render(group);
+    if (!group.isDecayReference) {
+        var render:Function = group.render;
+        render(group);
+    }
 };
 
 // 横向联弹组装核心（MC / 对象双模共用；调用前组的 盒x/盒y/盒宽/盒高 须已初始化）
 _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     var b = group.bullet;
+    ShotgunPattern.bind(group);
 
     // 初始化衰竭计数器（衰竭值由霰弹值与子弹衰竭计数综合决定）
     group.衰竭计数器 = b.霰弹值 * -1 - _root.子弹衰竭计数(b) * 3;
@@ -395,6 +413,7 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     }
     ChainUnitManager.prepareHorizontalAggregate(group);
     _root.联弹系统.渲染组(group);
+    if (group.shotgun != null) group.shotgun.captureReference(group);
 };
 
 // 从 area 子剪辑捕获碰撞盒初值（MC 模式；载入时即 FLA 授权矩形）
@@ -1074,7 +1093,8 @@ _root.联弹系统.对象联弹消失 = function(bullet:Object):Void {
     // === 宏展开：实例状态标志位 ===
     #include "../macros/STATE_HIT_MAP.as"
     bullet.flag = true;
-    if (bullet.霰弹值 <= 1 || (bullet.stateFlags & STATE_HIT_MAP) != 0) {
+    var exhausted:Boolean = bullet.chainGroup.shotgun != null ? !(bullet.霰弹值 > 0) : bullet.霰弹值 <= 1;
+    if (exhausted || (bullet.stateFlags & STATE_HIT_MAP) != 0) {
         bullet.removeMovieClip();
     }
 };

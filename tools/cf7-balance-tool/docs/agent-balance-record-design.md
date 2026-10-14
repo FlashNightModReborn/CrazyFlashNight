@@ -14,6 +14,7 @@
 - 只接受 `formulaFamily=weapon + schemaVersion=1`。不存在旧结构读取、自动升级、缺 profile 回退或 `legacy` 状态。
 - AS2 战斗逻辑不消费 balance。AS2 只从 compact runtime profile 生成最小玩家摘要；完整证据不进入游戏常驻物品树和 Web 消息。
 - `tools/cf7-balance-tool` 是工作簿的派生实现和辅助门禁。若工具与当前工作簿冲突，以工作簿为准，并修工具，禁止反向调整判据迎合工具。
+- 霰弹枪压制候选把弱项的原生 `impact` 分母上限收敛到 15，机械摘要由 `balance-sync` 同步。横向分配保留近距离最大段数，`WBR-SHOT-002` 的 split 口径不因远距离覆盖率变化而改写；作用域与人工验收边界见 [霰弹枪压制与横向联弹分配](../../../docs/霰弹枪压制与横向联弹分配-2026-10-14.md)。
 
 ## 1. 两层记录模型
 
