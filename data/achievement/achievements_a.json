@@ -186,110 +186,137 @@
         {
             "id": 700701,
             "category": "切磋#1",
-            "title": "初战Blue",
-            "description": "累计通关「挑战Blue」1 次",
-            "rewards": ["金币#4000", "经验值#80000", "技能点#10", "拳击特制绷带#1"],
+            "title": "初战Tomboy",
+            "description": "累计通关「与Tomboy切磋」1 次",
+            "rewards": ["金币#16000", "经验值#100000", "技能点#30", "K点#280", "复活币#9"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 1 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 1 }
         },
         {
             "id": 700702,
             "category": "切磋#2",
-            "title": "三战Blue",
-            "description": "累计通关「挑战Blue」3 次",
-            "rewards": ["金币#9000", "经验值#220000", "技能点#25", "复活币#15"],
+            "title": "初战Blue",
+            "description": "累计通关「挑战Blue」1 次",
+            "rewards": ["金币#25000", "经验值#150000", "技能点#50", "K点#440", "复活币#14", "拳击特制绷带#1"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 3 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 1 }
         },
         {
             "id": 700703,
             "category": "切磋#3",
-            "title": "五战Blue",
-            "description": "累计通关「挑战Blue」5 次",
-            "rewards": ["金币#14000", "经验值#400000", "技能点#45", "复活币#40"],
+            "title": "初战BPK",
+            "description": "累计通关「挑战BPK」1 次",
+            "rewards": ["金币#31000", "经验值#200000", "技能点#70", "K点#540", "复活币#18"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20050 }, "target": 5 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 1 }
         },
         {
             "id": 700704,
             "category": "切磋#4",
             "title": "初战Andy Law",
             "description": "累计通关「挑战Andylaw」1 次",
-            "rewards": ["金币#40000", "经验值#200000", "技能点#20", "K点#800"],
+            "rewards": ["金币#40000", "经验值#250000", "技能点#90", "K点#700", "复活币#23"],
             "claim": { "mode": "remote" },
             "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 1 }
         },
         {
             "id": 700705,
-            "category": "切磋#5",
-            "title": "三战Andy Law",
-            "description": "累计通关「挑战Andylaw」3 次",
-            "rewards": ["金币#80000", "经验值#400000", "技能点#50", "K点#1500", "复活币#30"],
+            "category": "委托#1",
+            "title": "首通僵尸逆袭",
+            "description": "累计通关「僵尸逆袭」1 次",
+            "rewards": ["金币#15000", "经验值#90000", "K点#260", "复活币#9"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 3 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20035 }, "target": 1 }
         },
         {
             "id": 700706,
-            "category": "切磋#6",
-            "title": "五战Andy Law",
-            "description": "累计通关「挑战Andylaw」5 次",
-            "rewards": ["金币#150000", "经验值#600000", "技能点#90", "K点#3000", "复活币#75"],
+            "category": "委托#2",
+            "title": "首通AVP",
+            "description": "累计通关「AVP」1 次",
+            "rewards": ["金币#18000", "经验值#110000", "K点#320", "复活币#10"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20051 }, "target": 5 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20033 }, "target": 1 }
         },
         {
             "id": 700707,
-            "category": "切磋#7",
-            "title": "初战BPK",
-            "description": "累计通关「挑战BPK」1 次",
-            "rewards": ["金币#25000", "经验值#100000", "K点#400"],
+            "category": "委托#3",
+            "title": "首通生存战",
+            "description": "累计通关「生存战」1 次",
+            "rewards": ["金币#23000", "经验值#160000", "K点#400", "复活币#13"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 1 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20034 }, "target": 1 }
         },
         {
             "id": 700708,
-            "category": "切磋#8",
-            "title": "三战BPK",
-            "description": "累计通关「挑战BPK」3 次",
-            "rewards": ["金币#50000", "经验值#250000", "K点#800", "复活币#30"],
+            "category": "委托#4",
+            "title": "首通剑圣的叹息",
+            "description": "累计通关「剑圣的叹息」1 次",
+            "rewards": ["金币#26000", "经验值#160000", "K点#460", "复活币#15"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 3 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20043 }, "target": 1 }
         },
         {
             "id": 700709,
-            "category": "切磋#9",
-            "title": "五战BPK",
-            "description": "累计通关「挑战BPK」5 次",
-            "rewards": ["金币#90000", "经验值#450000", "K点#1500", "复活币#75"],
+            "category": "委托#5",
+            "title": "首通夺取材料",
+            "description": "累计通关「夺取材料」1 次",
+            "rewards": ["金币#29000", "经验值#180000", "K点#500", "复活币#17"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20052 }, "target": 5 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20038 }, "target": 1 }
         },
         {
             "id": 700710,
-            "category": "切磋#10",
-            "title": "初试Tomboy",
-            "description": "累计通关「与Tomboy切磋」1 次",
-            "rewards": ["经验值#40000"],
+            "category": "委托#6",
+            "title": "首通堕落城的骚动",
+            "description": "累计通关「堕落城的骚动」1 次",
+            "rewards": ["金币#32000", "经验值#200000", "K点#560", "复活币#18"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 1 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20037 }, "target": 1 }
         },
         {
             "id": 700711,
-            "category": "切磋#11",
-            "title": "三试Tomboy",
-            "description": "累计通关「与Tomboy切磋」3 次",
-            "rewards": ["经验值#60000"],
+            "category": "委托#7",
+            "title": "首通92式装甲",
+            "description": "累计通关「92式装甲副本」1 次",
+            "rewards": ["金币#35000", "经验值#220000", "K点#600", "复活币#20"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 3 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20045 }, "target": 1 }
         },
         {
             "id": 700712,
-            "category": "切磋#12",
-            "title": "五试Tomboy",
-            "description": "累计通关「与Tomboy切磋」5 次",
-            "rewards": ["经验值#100000"],
+            "category": "委托#8",
+            "title": "首通古战场",
+            "description": "累计通关「古战场」1 次",
+            "rewards": ["金币#38000", "经验值#240000", "K点#660", "复活币#22"],
             "claim": { "mode": "remote" },
-            "objective": { "type": "taskCount", "params": { "taskId": 20054 }, "target": 5 }
+            "objective": { "type": "taskCount", "params": { "taskId": 20041 }, "target": 1 }
+        },
+        {
+            "id": 700713,
+            "category": "委托#9",
+            "title": "首通制霸黑铁会",
+            "description": "累计通关「制霸黑铁会」1 次",
+            "rewards": ["金币#41000", "经验值#260000", "K点#720", "复活币#23"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20039 }, "target": 1 }
+        },
+        {
+            "id": 700714,
+            "category": "委托#10",
+            "title": "首通诺亚前线补给",
+            "description": "累计通关「搜寻诺亚前线战场补给」1 次",
+            "rewards": ["金币#35000", "经验值#220000", "K点#600", "复活币#20"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20032 }, "target": 1 }
+        },
+        {
+            "id": 700715,
+            "category": "委托#11",
+            "title": "首通铁血乱舞",
+            "description": "累计通关「铁血乱舞」1 次",
+            "rewards": ["金币#58000", "经验值#360000", "K点#960", "复活币#34"],
+            "claim": { "mode": "remote" },
+            "objective": { "type": "taskCount", "params": { "taskId": 20042 }, "target": 1 }
         }
     ]
 }
