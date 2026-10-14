@@ -385,6 +385,14 @@
       "exitCode": null,
       "normalShutdownLogObserved": true,
       "classification": "exit code unavailable from the unpinned observer; fresh pinned-handle recheck exited zero"
+    },
+    "deploymentAuditWatchEof": {
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/deployment-audit-watch.log",
+        "sha256": "E93191366ECE8757D27CB7B26217A2448FB57824905D06821F3676F8BBC03EC8",
+        "bytes": 3728
+      },
+      "classification": "status-watching transport failure; same remote run independently completed successfully"
     }
   },
   "sourceAudit": {
@@ -399,10 +407,30 @@
     }
   },
   "deployment": {
-    "commit": null,
-    "pushed": false,
+    "commit": "556097f836223e339ae5ffbe9b48ace1645bed99",
+    "pushed": true,
     "audit": {
-      "status": "pending"
+      "runId": 38504963613,
+      "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38504963613",
+      "headSha": "556097f836223e339ae5ffbe9b48ace1645bed99",
+      "status": "completed",
+      "conclusion": "success",
+      "state": "promoted",
+      "mode": "Audit",
+      "deploymentChanged": true,
+      "forcedDeploymentVerification": false,
+      "signers": 2,
+      "faultDomains": 2,
+      "receipt": {
+        "path": "tmp/release-focus-persistence-20261014/deployment-native-audit.log",
+        "sha256": "0552604EFA65F37A2CAD270A60784DE447BA05524945C670B7173CA890448F38",
+        "bytes": 82419
+      },
+      "statusReceipt": {
+        "path": "tmp/release-focus-persistence-20261014/deployment-audit-status.json",
+        "sha256": "E3A3C9E862494DE38380097D2946601995B26D7E056669EBDA6C7F919568CBCE",
+        "bytes": 1362
+      }
     }
   },
   "boundaries": {
@@ -420,5 +448,6 @@
       "独立动态分辨率闪变、偶发长帧、通讯终端超时、物理输入和完整原生保存失败旅程保留原边界。",
       "所有失败、取消与未知观察结果保留；后续绿灯来自独立的新回执。"
     ]
-  }
+  },
+  "closeoutRecordedAtUtc": "2026-10-14T03:22:13.475Z"
 }

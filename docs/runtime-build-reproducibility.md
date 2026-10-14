@@ -339,6 +339,11 @@ push 红灯发生时提交已经进入 `main`；workflow 只能报警，不能�
 2026-10-14T02:54:53.8805206Z 完成原子 promotion，strict consensus 确认 2 signer / 2 faultDomain。
 具体 identity、closure、回退位置、标准前门、部署推送和远端审计见[完整发布回执](evidence/focus-persistence-transition-release-2026-10-14.json)。
 
+部署提交 `556097f836` 已推送 `main`；[远端审计 38504963613](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38504963613)
+成功重放 Index 中的双故障域证明，明确给出 `state=promoted / deploymentChanged=true`。普通入口核对实际正式 Core、启动页、
+Flash 预热握手与正常关窗，补轮取得退出码 0；49 份 JSON/SOL 文件保持一致，存档目录仅启动版本标记更新。
+两轮前门记录及首次观察器未取得退出码的未知结果均保留；启动页停留后的预热期限回 Idle 也如实记录。
+
 合并后的 Host 为 7391 PASS / 30 条件 SKIP / 0 FAIL；真实 CS6 五组专项共 1977 项通过，最终 asLoader 本轮 Compiler 0/0，
 692 个生产 SWF 与 711 个 loader 类的完整归属闭包通过。保留输入资格取消、前台资格超时、外层启动环境失败和云端状态查询 EOF；
 云端通过同一 run 的恢复入口完成验真。正式部署与启动冒烟不代签物理输入、完整战斗与保存失败旅程；独立动态分辨率闪变仍待归因。
