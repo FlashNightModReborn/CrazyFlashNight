@@ -274,7 +274,7 @@
         </BasicInformation>
         <Instances>
             <Instance id="0">
-                <x>1275</x>
+                <x>1260</x>
                 <y>390</y>
                 <url>flashswf/movies/月面暗道控制拉杆.swf</url>
             </Instance>
@@ -535,6 +535,60 @@
                         <Level>28</Level>
                         <SpawnIndex>3</SpawnIndex>
                         <IsHostile>null</IsHostile>
+                    </Enemy>
+                </EnemyGroup>
+            </SubWave>
+        </Wave>
+    </SubStage>
+    <SubStage id="4">
+        <BasicInformation>
+            <Background>flashswf/backgrounds/据点M-控制室.swf</Background>
+            <PlayerX>100</PlayerX>
+            <PlayerY>400</PlayerY>
+        </BasicInformation>
+        <Instances>
+            <Instance id="0">
+                <x>1323</x>
+                <y>408</y>
+                <url>flashswf/movies/nyx.swf</url>
+            </Instance>
+        </Instances>
+        <SpawnPoint>
+            <Point id="0">
+                <x>1055</x>
+                <y>390</y>
+                <NoCount>true</NoCount>
+            </Point>
+        </SpawnPoint>
+        <Event>
+            <EventName>TriggerPressed</EventName>
+            <Parameter>0</Parameter>
+            <Dialogue id="0">
+                <Name>$PC</Name>
+                <Title>$PC_TITLE</Title>
+                <Char>$PC_CHAR#严肃</Char>
+                <Text> </Text>
+            </Dialogue>
+        </Event>
+        <Wave>
+            <SubWave id="0">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+            </SubWave>
+            <SubWave id="1">
+                <WaveInformation>
+                    <Duration>0</Duration>
+                    <FinishRequirement>-1</FinishRequirement>
+                </WaveInformation>
+                <EnemyGroup>
+                    <Enemy id="1">
+                        <Type>兵种367</Type>
+                        <Interval>3000</Interval>
+                        <Quantity>2</Quantity>
+                        <Level>20</Level>
+                        <SpawnIndex>0</SpawnIndex>
                     </Enemy>
                 </EnemyGroup>
             </SubWave>

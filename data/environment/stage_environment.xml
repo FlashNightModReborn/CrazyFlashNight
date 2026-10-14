@@ -3303,6 +3303,37 @@
             <Point>1435,580</Point>
             <Point>1435,370</Point>
         </Collision>
+        <Instances>
+            <Instance>
+                <url>flashswf/backgrounds/elements/据点M大门.swf</url>
+                <x>1371</x>
+                <y>461</y>
+            </Instance>
+        </Instances>
+    </Environment>
+    <Environment>
+        <BackgroundURL>据点M-控制室.swf</BackgroundURL>
+        <Alignment>true</Alignment>
+        <Xmin>20</Xmin>
+        <Xmax>1365</Xmax>
+        <Ymin>330</Ymin>
+        <Ymax>510</Ymax>
+        <Width>1400</Width>
+        <Height>512</Height>
+        <SpaceCondition>室内</SpaceCondition>
+        <MaxIllumination>7</MaxIllumination>
+        <MinIllumination>7</MinIllumination>
+        <Collision>
+            <Point>600,325</Point>
+            <Point>600,385</Point>
+            <Point>1370,385</Point>
+            <Point>1370,325</Point>
+        </Collision>
+        <Collision>
+            <Point>10,510</Point>
+            <Point>110,325</Point>
+            <Point>10,325</Point>
+        </Collision>
     </Environment>
 
     <Environment>
