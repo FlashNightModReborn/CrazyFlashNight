@@ -77,6 +77,24 @@ internal sealed class Probe : Form
         ["type"]="scene_transition",["version"]=1,["requestId"]="tr:1",["revision"]=revision,
         ["phase"]=phase,["imageId"]="Andy",["tip"]="合成窗口自动检查",["targetScene"]=2,
         ["generation"]=0,["connected"]=true,["actionPending"]=false,["revealAllowed"]=phase=="reveal" };
+    private JObject ReadCandidateIdentity() {
+        // Both signed CAS and development candidates carry this verified manifest.
+        // The producer's auxiliary development metadata is deliberately absent from CAS.
+        var manifest=Path.Combine(candidate,"runtime","cf7-runtime-manifest.tsv");
+        var lines=File.ReadAllLines(manifest);
+        if(lines.Length==0||lines[0]!="cf7-runtime-manifest-v2")throw new InvalidDataException("Unexpected candidate manifest.");
+        var identity=new JObject { ["schema"]="cf7-runtime-manifest-identity.v2",
+            ["manifestSha256"]=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(manifest))) };
+        foreach(var line in lines.Skip(1)) {
+            var fields=line.Split('\t');
+            if(fields.Length!=2||fields[0]=="file")continue;
+            if(identity.Property(fields[0])!=null)throw new InvalidDataException("Duplicate candidate identity field.");
+            identity[fields[0]]=fields[1];
+        }
+        foreach(var key in new[]{"artifactSourceHash","producerRecipeHash","toolchainLockHash","buildIdentityHash","payloadClosureHash"})
+            if(string.IsNullOrWhiteSpace(identity.Value<string>(key)))throw new InvalidDataException("Missing candidate identity: "+key);
+        return identity;
+    }
     private new Bitmap Capture(string file) {
         var rect=RectangleToScreen(ClientRectangle);var pixels=new Bitmap(rect.Width,rect.Height,PixelFormat.Format32bppArgb);
         using(var g=Graphics.FromImage(pixels))g.CopyFromScreen(rect.Location,Point.Empty,rect.Size);
@@ -361,7 +379,7 @@ internal sealed class Probe : Form
             await Wait(()=>wire.Exists(p=>p.Value<string>("requestId")=="tr:4"&&p.Value<string>("kind")=="covered"),"parallel frozen report paints before base readiness");
             await CheckReportGeometry(reportCore,"report-first-1600x900");await Task.Delay(300);await CheckReportPixels(reportCore);
             await js("window.sameReport=document.querySelector('.loot-settlement-report');window.sameShell=document.querySelector('.loot-stage-settlement');");
-            await waitScript("LootPanel.reportPresentation().density==='compact'&&document.querySelectorAll('[data-settlement-stashed-rewards] .loot-settlement-flow-card').length===1&&document.querySelector('[data-settlement-stashed-rewards] strong').textContent==='+2'",
+            await waitScript("LootPanel.reportPresentation().density==='compact'&&document.querySelectorAll('[data-settlement-flows] .loot-settlement-flow-card').length===1&&document.querySelector('[data-settlement-flows] strong').textContent==='+2'",
                 "isolated profile starts compact and shows committed rewards without another claim");
             using(var pixels=Capture("parallel-report-compact-rewards.png")) { }
             await waitScript("(function(){var card=document.querySelector('[data-unit-id=\"ally.smoke.1\"]');var style=getComputedStyle(card);return parseFloat(style.width)===48&&parseFloat(style.height)===48&&card.querySelector('.loot-settlement-unit-badge').textContent==='亡';})()",
@@ -392,7 +410,7 @@ internal sealed class Probe : Form
             await waitScript("LootPanel.debugState().phase==='active'","production Loot session binds while scene is still loading");
             await waitScript("document.querySelector('[data-settlement-ally-loss]').textContent==='1'&&document.querySelectorAll('[data-settlement-allies] [data-ally-state=dead]').length===1",
                 "candidate Host and production WebView2 render the same v2 allied loss during return");
-            await waitScript("LootPanel.debugState().remainingCount===0&&document.querySelector('[data-settlement-stashed-rewards] strong').textContent==='+2'&&!document.querySelector('.loot-source-grid')",
+            await waitScript("LootPanel.debugState().remainingCount===0&&document.querySelector('[data-settlement-flows] strong').textContent==='+2'&&!document.querySelector('.loot-source-grid')",
                 "bound authority stays empty while committed reward history remains visible");
             await waitScript("sameReport===document.querySelector('.loot-settlement-report')&&sameShell===document.querySelector('.loot-stage-settlement')&&LootPanel.reportPresentation().density==='full'&&LootPanel.reportPresentation().materialSearch==='金属'",
                 "reward binding preserves the same report nodes, density and search");
@@ -506,7 +524,7 @@ internal sealed class Probe : Form
                 kind="isolated-composition-fixture",state=failure==null?"fixture_executed":"failed",checks,
                 core=typeof(SceneTransitionTask).Assembly.Location,native=Path.Combine(candidate,"runtime","FlashCompositorNative.dll"),
                 candidate,coreSha256=Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(File.ReadAllBytes(typeof(SceneTransitionTask).Assembly.Location))),
-                identity=JObject.Parse(File.ReadAllText(Path.Combine(candidate,"runtime-build-metadata.v2.json"))),
+                identity=ReadCandidateIdentity(),
                 reportPixelsVerified,gameE2e=false,slotsTouched=false,failure },Formatting.Indented));
             Close();
         }

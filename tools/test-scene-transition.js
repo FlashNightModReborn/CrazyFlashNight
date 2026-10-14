@@ -96,16 +96,16 @@ const snapshot=(phase='cover',revision=1,extra={})=>({type:'scene_transition',ve
             assert.equal(await p.locator('#transition-report').isVisible(),true);checks++;
             assert.equal(await p.locator('[data-settlement-stage]').textContent(),frozen.stageName);checks++;
             assert.equal(await p.evaluate(()=>LootPanel.reportPresentation().density),'compact');checks++;
-            assert.equal(await p.locator('[data-settlement-stashed-rewards] .loot-settlement-flow-card').count(),1);checks++;
-            assert.equal(await p.locator('[data-settlement-stashed-rewards] strong').textContent(),'+3');checks++;
+            assert.equal(await p.locator('[data-settlement-flows] .loot-settlement-flow-card').count(),1);checks++;
+            assert.equal(await p.locator('[data-settlement-flows] strong').textContent(),'+3');checks++;
             const sectionsDoNotOverlap=()=>{
                 const lastKill=document.querySelector('.loot-settlement-kill-card:last-child').getBoundingClientRect();
                 const flow=document.querySelector('.loot-settlement-flow-section').getBoundingClientRect();
-                return flow.top>=lastKill.bottom;
+                return flow.top>=lastKill.bottom||flow.left>=lastKill.right||flow.right<=lastKill.left;
             };
             assert.equal(await p.evaluate(sectionsDoNotOverlap),true,'compact records must not overlap');checks++;
             await p.screenshot({path:path.join(artifacts,reduced?'report-compact-rewards-reduced.png':'report-compact-rewards.png')});
-            assert.equal(await p.locator('[data-settlement-side-tab=rewards]').textContent(),'本轮关卡奖励');checks++;
+            assert.equal(await p.locator('[data-settlement-side-tab=rewards]').textContent(),'所得');checks++;
             assert.equal(await p.locator('.loot-source-view').count(),0);checks++;
             assert.equal(await p.locator('[data-transition-action=manageReport]').count(),0);checks++;
             assert.equal(await p.locator('.loot-close-btn').isEnabled(),true);checks++;

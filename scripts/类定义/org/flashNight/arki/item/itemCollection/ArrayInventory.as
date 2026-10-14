@@ -10,9 +10,11 @@ import org.flashNight.gesh.object.ObjectUtil;
 class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     
     public var capacity:Number; //总格数
-    private var indexes:TreeSet; //索引TreeSet
+    private var indexes:TreeSet; //仅供增量写维护的私有索引树
+    private var indexArrayCache:Array; //内部升序快照；写入采用新数组，不能对外暴露
+    private var indexArrayCapacity:Number; //公开 capacity 变化也使快照失效
     private var indexesDirty:Boolean; //索引树是否需要重建（索引树异常时标记，避免空位判断误判）
-    private var occupiedCount:Number; //当前占用格子数（与 items 对齐，用于快速校验 indexes 完整性）
+    private var occupiedCount:Number; //物理范围内的占用数量，与内部升序快照同步维护
     private var mutationRevision:Number; //每次成功写入后单调递增，供只读投影缓存做 O(1) 失效判断
     private var transactionWriteFaultHookForTests:Function; //仅供 focused TestLoader 注入同步提交异常
     private var indexRebuildCountForTests:Number; //仅供 focused TestLoader 钉住批量事务的确定性复杂度
@@ -22,7 +24,9 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         mutationRevision = 1;
         if(_capacity < 1) _capacity = 8;
         this.capacity = _capacity;
-        // 建立索引TreeSet（强制使用 WAVL：性能更优；并配合索引自修复避免长时间运行后的索引失真）
+        indexArrayCache = null;
+        indexArrayCapacity = _capacity;
+        // 保留现有 WAVL 增量写结构；查询使用同步维护的内部升序快照。
         indexes = new TreeSet(null, TreeSet.TYPE_WAVL);
         indexesDirty = true;
         occupiedCount = 0;
@@ -41,63 +45,48 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     public function add(key:Number, item:Object):Boolean {
         if(item == null || item.name == undefined || item.name == "" || item.value == undefined || item.value == null) return false;
         if(typeof item.value == "number" && (isNaN(item.value) || item.value <= 0)) return false;
-
-        if (key == -1) {
-            key = getFirstVacancy();
-        }
+        if (key == -1) key = getFirstVacancy();
         if (isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return false;
-        bumpMutationRevision();
-        if (!super.add(String(key), item)) {
-            mutationRevision--;
-            return false;
-        }
+        if (!isEmpty(key) || !isAddable(String(key), item)) return false;
 
-        // 增量维护索引树；若索引树异常则回退为全量重建
-        if (this.indexes == null || this.indexesDirty) {
-            rebuildIndexesFromItems();
-            return true;
-        }
+        var beforeIndexes:Array = getValidatedIndexes();
+        var nextIndexes:Array = beforeIndexes.concat();
+        nextIndexes.splice(indexPosition(beforeIndexes, key), 0, key);
+        items[key] = item;
+        indexArrayCache = nextIndexes;
+        indexArrayCapacity = capacity;
+        occupiedCount = nextIndexes.length;
+        // 派生状态和版本必须先完成，再向同步监听器发布。
+        // 监听器抛错仍向外传播；它不能把已经完成的真实写入变成未执行。
         try {
-            // 若索引树已经包含该key，则说明索引树已失真（items是空格但indexes认为被占用）
-            if (this.indexes.contains(key)) {
-                rebuildIndexesFromItems();
-                return true;
-            }
-            this.indexes.add(key);
-            this.occupiedCount++;
-        } catch (e) {
+            if (indexes == null || indexesDirty || indexes.contains(key)) rebuildIndexesFromItems();
+            else indexes.add(key);
+        } catch (indexError) {
             rebuildIndexesFromItems();
         }
+        bumpMutationRevision();
+        publishTransactionChange(key, "added");
         return true;
     }
 
 
-    public function remove(key:Number):Void{
-        if(isNaN(key) || Math.floor(key) != key) return;
-        if(key < 0 || key >= capacity) return;
+    public function remove(key:Number):Void {
+        if(isNaN(key) || Math.floor(key) != key || key < 0 || key >= capacity) return;
         if(items[key] == null) return;
-        bumpMutationRevision();
-        super.remove(String(key));
-
-        // 增量维护索引树；若索引树异常则回退为全量重建
-        if (this.indexes == null || this.indexesDirty) {
-            rebuildIndexesFromItems();
-            return;
-        }
+        var beforeIndexes:Array = getValidatedIndexes();
+        var nextIndexes:Array = beforeIndexes.concat();
+        nextIndexes.splice(indexPosition(beforeIndexes, key), 1);
+        delete items[key];
+        indexArrayCache = nextIndexes;
+        indexArrayCapacity = capacity;
+        occupiedCount = nextIndexes.length;
         try {
-            var removed:Boolean = this.indexes.remove(key);
-            if (!removed) {
-                rebuildIndexesFromItems();
-                return;
-            }
-            if (this.occupiedCount > 0) {
-                this.occupiedCount--;
-            } else {
-                rebuildIndexesFromItems();
-            }
-        } catch (e) {
+            if (indexes == null || indexesDirty || !indexes.remove(key)) rebuildIndexesFromItems();
+        } catch (indexError) {
             rebuildIndexesFromItems();
         }
+        bumpMutationRevision();
+        publishTransactionChange(key, "removed");
     }
 
     /**
@@ -165,6 +154,9 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         var slotKey:String = String(key);
         var hadOwnSlot:Boolean = previousItems.hasOwnProperty(slotKey);
         var previousItem:Object = previousItems[key];
+        getValidatedIndexes();
+        var previousIndexArray:Array = this.indexArrayCache;
+        var previousIndexCapacity:Number = this.indexArrayCapacity;
         var previousIndexes:TreeSet = this.indexes;
         var previousIndexesDirty:Boolean = this.indexesDirty;
         var previousOccupiedCount:Number = this.occupiedCount;
@@ -187,6 +179,8 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             if (hadOwnSlot) previousItems[key] = previousItem;
             else delete previousItems[key];
             this.indexes = previousIndexes;
+            this.indexArrayCache = previousIndexArray;
+            this.indexArrayCapacity = previousIndexCapacity;
             this.indexesDirty = previousIndexesDirty;
             this.occupiedCount = previousOccupiedCount;
             this.mutationRevision = previousRevision;
@@ -229,6 +223,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     }
 
     private function buildSlotTransactionReceipt(changes:Array):Object {
+        getValidatedIndexes();
         var receiptChanges:Array = [];
         for (var i:Number = 0; i < changes.length; i++) {
             var change:Object = changes[i];
@@ -248,6 +243,8 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             owner:this,
             beforeRevision:mutationRevision,
             previousIndexes:indexes,
+            previousIndexArray:indexArrayCache,
+            previousIndexCapacity:indexArrayCapacity,
             previousIndexesDirty:indexesDirty,
             previousOccupiedCount:occupiedCount,
             changes:receiptChanges
@@ -307,6 +304,8 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             else delete items[change.slot];
         }
         indexes = receipt.previousIndexes;
+        indexArrayCache = receipt.previousIndexArray;
+        indexArrayCapacity = Number(receipt.previousIndexCapacity);
         indexesDirty = receipt.previousIndexesDirty;
         occupiedCount = Number(receipt.previousOccupiedCount);
         mutationRevision = Number(receipt.beforeRevision);
@@ -545,15 +544,15 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
     }
 
-    //返回索引TreeSet的数组形式
-    public function getIndexes():Array{
-        return getValidatedIndexes();
+    //返回独立的升序槽位索引快照
+    public function getIndexes():Array {
+        return getValidatedIndexes().concat();
     }
 
-    //返回索引TreeSet
-    public function getTreeSet():TreeSet{
-        getValidatedIndexes(); // 对外暴露 TreeSet 前先保证其可用
-        return indexes;
+    //返回兼容旧调用的独立 TreeSet 视图
+    public function getTreeSet():TreeSet {
+        // 兼容旧调试/排序调用；外部修改视图不能修改容器的私有树或数组。
+        return TreeSet.buildFromArray(getValidatedIndexes().concat(), null, TreeSet.TYPE_WAVL);
     }
 
     //覆写setItems，批量替换items后索引需要重建
@@ -567,51 +566,54 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     
 
     // 外部直接设置TreeSet
-    public function setIndexes(indexes:TreeSet):Void
-    {
-        if (indexes == null) {
-            this.indexes = new TreeSet(null, TreeSet.TYPE_WAVL);
-            this.indexesDirty = true;
-            rebuildIndexesFromItems();
-            return;
-        }
+    public function setIndexes(legacyIndexes:TreeSet):Void {
+        // items 是槽位权威。旧 setter 仅保留为无事件重建的兼容适配器，
+        // 不从外部树导入成员或比较器。
+        rebuildIndexes();
+    }
 
-        // 强制使用 WAVL（性能更优），同时保留原有比较函数
-        var cmpFn:Function = indexes.getCompareFunction();
-        var arr:Array = null;
-        try {
-            arr = indexes.toArray();
-        } catch (e) {
-            arr = null;
-        }
-        if (arr == null) {
-            this.indexes = new TreeSet(cmpFn, TreeSet.TYPE_WAVL);
-            this.indexesDirty = true;
-            rebuildIndexesFromItems();
-            return;
-        }
+    public function rebuildIndexes():Void {
+        indexesDirty = true;
+        rebuildIndexesFromItems();
+    }
 
-        this.indexes = TreeSet.buildFromArray(arr, cmpFn, TreeSet.TYPE_WAVL);
-        this.indexesDirty = false;
+    // 槽位映射是只读快照；物品引用仍保持原身份，业务修改走现有写入口。
+    public function getItems():Object {
+        var snapshot:Object = {};
+        for (var key:String in items) snapshot[key] = items[key];
+        return snapshot;
+    }
+
+    private function indexPosition(indexArray:Array, key:Number):Number {
+        var left:Number = 0;
+        var right:Number = indexArray.length;
+        while (left < right) {
+            var middle:Number = (left + right) >> 1;
+            if (indexArray[middle] < key) left = middle + 1;
+            else right = middle;
+        }
+        return left;
     }
 
     //以数字索引顺序返回物品数组
-    public function getItemArray():Array{
+    public function getItemArray():Array {
         var indexArr:Array = getValidatedIndexes();
-        var list = [];
-        for(var i = 0; i<indexArr.length; i++){
-            list.push(this.items[indexArr[i]]);
-        }
+        var count:Number = indexArr.length;
+        var slotItems:Object = items;
+        var list:Array = [];
+        for (var i:Number = 0; i < count; i++) list.push(slotItems[indexArr[i]]);
         return list;
     }
 
     // 覆写修改 searchFirstKey 方法以获得顺序支持
     public function searchFirstKey(name:String):String {
-        if(name == null || name == undefined || name == "") return undefined;
+        if(name == null || name == "") return undefined;
         var indexArr:Array = getValidatedIndexes();
-        for(var i:Number = 0; i < indexArr.length; i++){
-            var index:Number = Number(indexArr[i]);
-            var item:Object = this.items[index];
+        var count:Number = indexArr.length;
+        var slotItems:Object = items;
+        for(var i:Number = 0; i < count; i++) {
+            var index:Number = indexArr[i];
+            var item:Object = slotItems[index];
             if(item != null && item.name == name) return String(index);
         }
         return undefined;
@@ -625,7 +627,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         var currentVacancy:Number = 0;  // 当前要检查的索引
 
         for(var i:Number = 0; i < indexArr.length; i++){
-            var occupiedIndex:Number = Number(indexArr[i]);
+            var occupiedIndex:Number = indexArr[i];
             if (occupiedIndex > currentVacancy) {
                 return currentVacancy < this.capacity ? currentVacancy : -1;
             }
@@ -645,7 +647,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
         // 遍历已占用的位置并寻找空位
         for (var i:Number = 0; i < indexArr.length && vacancies.length < amount; i++) {
-            var occupiedIndex:Number = Number(indexArr[i]);
+            var occupiedIndex:Number = indexArr[i];
             
             // 如果当前占用位置大于当前检查的位置，则计算空位区间
             if (occupiedIndex > currentVacancy) {
@@ -673,7 +675,8 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
 
     //返回物品栏占用格子数
     public function size():Number {
-        return this.occupiedCount;
+        getValidatedIndexes();
+        return occupiedCount;
     }
 
     
@@ -682,9 +685,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     public function find(callback:Function) {
         if(typeof callback !== "function") return null;
         var indexArr:Array = getValidatedIndexes();
-        for(var i:Number = 0; i < indexArr.length; i++){
-            var index:Number = Number(indexArr[i]);
-            var item:Object = this.items[index];
+        var count:Number = indexArr.length;
+        for(var i:Number = 0; i < count; i++) {
+            // 回调可能写入或替换 items，保持旧实现每次读取当前槽位的语义；
+            // 进入时的索引数组则因写时复制而保持不变。
+            var item:Object = this.items[indexArr[i]];
             if(callback(item)) return item;
         }
         return null;
@@ -694,8 +699,9 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
     public function findIndex(callback:Function):Number {
         if(typeof callback !== "function") return -1;
         var indexArr:Array = getValidatedIndexes();
-        for(var i:Number = 0; i < indexArr.length; i++){
-            var index:Number = Number(indexArr[i]);
+        var count:Number = indexArr.length;
+        for(var i:Number = 0; i < count; i++) {
+            var index:Number = indexArr[i];
             var item:Object = this.items[index];
             if(callback(item)) return index;
         }
@@ -750,7 +756,7 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         // 4.1 直接替换索引树
         this.indexes = TreeSet.buildFromArray(
             newIndexes, 
-            this.indexes.getCompareFunction(), // 保持原有比较函数
+            null, // 槽位索引始终保持数字升序
             TreeSet.TYPE_WAVL // 强制使用 WAVL：性能更优
         );
         
@@ -760,8 +766,11 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
             newItems[String(i)] = oldItems[i]; // 直接写入无需检查
         }
         this.items = newItems;
+        this.indexArrayCache = newIndexes;
+        this.indexArrayCapacity = capacity;
         this.occupiedCount = maxItems;
         this.indexesDirty = false;
+        bumpMutationRevision();
         
         /*
         // 阶段5：处理溢出物品（如果有?）
@@ -793,52 +802,25 @@ class org.flashNight.arki.item.itemCollection.ArrayInventory extends Inventory {
         }
         indexArr.sort(Array.NUMERIC);
 
-        var cmpFn:Function = (this.indexes != null) ? this.indexes.getCompareFunction() : null;
+        var cmpFn:Function = null; // 数字槽位只使用升序比较
         this.indexes = TreeSet.buildFromArray(indexArr, cmpFn, TreeSet.TYPE_WAVL);
+        this.indexArrayCache = indexArr;
+        this.indexArrayCapacity = capacity;
         this.occupiedCount = indexArr.length;
         this.indexesDirty = false;
         return indexArr;
     }
 
     /**
-     * 获取可靠的索引数组：优先使用现有 indexes，异常/脏标记时自动重建。
+     * 获取内部只读索引快照：纯读复用，脏标记或容量变化时从 items 重建。
      */
     private function getValidatedIndexes():Array {
-        if (this.indexes == null || this.indexesDirty) {
+        // 所有结构写入口同步维护快照，外部拿到的映射/树/数组均不能改成员。
+        // 因而纯读无需重复物化树或全量校验；公开 capacity 的改变仍需重建。
+        if (indexArrayCache == null || indexArrayCapacity != capacity || indexes == null || indexesDirty) {
             return rebuildIndexesFromItems();
         }
-
-        var indexArr:Array = null;
-        try {
-            indexArr = this.indexes.toArray();
-        } catch (e) {
-            indexArr = null;
-        }
-
-        if (!isIndexArrayValid(indexArr)) {
-            return rebuildIndexesFromItems();
-        }
-        return indexArr;
+        return indexArrayCache;
     }
 
-    /**
-     * 校验 indexes.toArray() 是否与 items 一致，避免空位判断误判。
-     */
-    private function isIndexArrayValid(indexArr:Array):Boolean {
-        if (indexArr == null) return false;
-
-        // 完整性检查：索引数量必须与 items 的占用格子数量一致
-        if (indexArr.length != this.occupiedCount) return false;
-
-        var last:Number = -1;
-        for (var i:Number = 0; i < indexArr.length; i++) {
-            var idx:Number = Number(indexArr[i]);
-            if (isNaN(idx) || Math.floor(idx) != idx) return false;
-            if (idx < 0 || idx >= this.capacity) return false;
-            if (idx <= last) return false;
-            if (this.items[idx] == null) return false;
-            last = idx;
-        }
-        return true;
-    }
 }

@@ -1473,7 +1473,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             if (_root.__returnRetryFault == "prepare") return {success:false, error:"audit_prepare"};
             return persisted;
         };
-        var kinds:Array = ["prepare", "flush", "fade"];
+        var kinds:Array = ["prepare", "pack", "fade"];
         var reasons:Array = ["settlement_prepare_failed", "save_failed", "transition_failed"];
         try {
             for (var i:Number = 0; i < kinds.length; i++) {
@@ -1493,9 +1493,6 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                     this.__returnFadeActive = true;
                     return true;
                 }};
-                _root.存档系统.flushBeforeTransition = function(reason:String):Boolean {
-                    return _root.__returnRetryFault != "flush";
-                };
                 _root.server = {isSocketConnected:true,
                     sendTaskToNode:function(task:String, payload:Object):Void {
                         if (task == "stage_outcome") _root.__returnRetryProjection = payload;
@@ -1513,7 +1510,15 @@ class org.flashNight.arki.scene.StageRunSessionTest {
                         && _root.__returnRetryProjection.returnFailure === "",
                     "v2 Host negotiates explicit return failure projection");
                 var before:Object = StageRunSession.testOnlySnapshot();
-                var failed:Object = StageRunSession.requestReturnBaseLocal("retry-test");
+                // HUD 可重试的是暴露前的确定失败；已暴露的 flush=false 由专用 unknown 用例验证。
+                var saveWriter:Object = SaveManager.getInstance();
+                var originalPack:Function = saveWriter.packGameState;
+                if (kinds[i] == "pack") saveWriter.packGameState = function() {
+                    throw new Error("return_retry_pack_failed");
+                };
+                var failed:Object;
+                try { failed = StageRunSession.requestReturnBaseLocal("retry-test"); }
+                finally { saveWriter.packGameState = originalPack; }
                 var prepared:Object = StageRunSession.testOnlySnapshot();
                 assertTrue(failed.success === false && failed.error === reasons[i]
                         && prepared.returnFailure === reasons[i] && prepared.canRetryReturn,
@@ -3451,10 +3456,9 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             assertEquals(0, RewardStashStore.ownedQuantity(RewardStashService.committedFeature(), REWARD),
                 "failed or unknown save exposes no committed reward " + saveResult);
             _root.__reportSaveResult = true;
-            if (saveResult === "pending") {
-                SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
-                RewardStashService.resume(RewardStashService.pendingOperationId());
-            }
+            // false 与 pending 都发生在冻结映像已暴露之后，只确认同一候选，不能重开事务。
+            SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
+            RewardStashService.resume(RewardStashService.pendingOperationId());
             StageRunSession.onReturnBaseStarted();
         }
         var report:Object = StageRunSession.testOnlySnapshot().report;
@@ -3872,6 +3876,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(StageRunSession.begin("持久化退场门", "困难"),
             "durable return fixture begins from an ordinary stage run");
         StageRunSession.finish("victory");
+        var flushBefore:Number = SaveManager.getInstance()._getSavePhysicalStatsForTest().flushAttempt;
         assertFalse(StageRunSession.onReturnBaseStarted(),
             "return is denied when the first durable save reports false");
         var first:Object = StageRunSession.testOnlySnapshot();
@@ -3879,14 +3884,18 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         var settlementId:String = String(first.settlementId);
         assertTrue(first.returnRequested === false && inventory != null
                 && inventory.size() == 1
-                && _root._saveExt.stageSettlement.pending.settlementId == settlementId,
-            "failed flush preserves the exact prepared and pending settlement before transition");
+                && RewardStashService.pendingOperationId() == settlementId + ".stash"
+                && RewardStashStore.ownedQuantity(RewardStashService.committedFeature(), REWARD) == 0,
+            "unconfirmed flush preserves the exact prepared reward and held save before transition");
 
         _root.关卡可获得奖励品 = [];
+        SaveManager.getInstance()._configureSaveFlowForTest({flushResult:true});
+        RewardStashService.resume(RewardStashService.pendingOperationId());
         assertTrue(StageRunSession.onReturnBaseStarted(),
             "same return request succeeds after the durable save retry reports true");
         var second:Object = StageRunSession.testOnlySnapshot();
-        assertTrue(_root.__stageRunSessionTestFlushCalls == 2
+        assertTrue(_root.__stageRunSessionTestFlushCalls == 1
+                && SaveManager.getInstance()._getSavePhysicalStatsForTest().flushAttempt == flushBefore + 2
                 && second.returnRequested === true
                 && second.inventory == null && inventory.size() == 1
                 && String(second.settlementId) == settlementId
@@ -4164,13 +4173,19 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         resetWorld(0);
         _root.关卡可获得奖励品 = [[REWARD, 1, 1]];
         StageRunSession._captureSettlementDiagForTest();
-        _root.强制存盘 = function() { return false; };
-        _root.存档系统.flushBeforeTransition = _root.强制存盘;
+        // 真正的 not_committed 必须发生在 SO 曝露之前；flush=false 已属于 unknown。
+        var saveWriter:Object = SaveManager.getInstance();
+        var originalPack:Function = saveWriter.packGameState;
+        saveWriter.packGameState = function() { throw new Error("stage_stash_pack_failed"); };
         assertTrue(StageRunSession.begin("存盘失败保权", "困难"),
             "failed-save fixture begins an ordinary stage run");
         StageRunSession.finish("victory");
-        assertFalse(StageRunSession.onReturnBaseStarted(),
-            "definitely failed stash save still denies the return transition");
+        try {
+            assertFalse(StageRunSession.onReturnBaseStarted(),
+                "unexposed pack failure still denies the return transition");
+        } finally {
+            saveWriter.packGameState = originalPack;
+        }
         var state:Object = StageRunSession.testOnlySnapshot();
         var settlementId:String = String(state.settlementId);
         assertEquals("prepared", state.settlement,

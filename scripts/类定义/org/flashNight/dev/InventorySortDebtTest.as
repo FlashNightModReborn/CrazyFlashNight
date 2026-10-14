@@ -48,7 +48,7 @@ class org.flashNight.dev.InventorySortDebtTest {
                 for(var i:Number=0;i<oldResult.items.length;i++) {
                     check(oldResult.items[i].name==nextResult.items[i].name&&oldResult.items[i].value==nextResult.items[i].value,"item value/order "+c+"/"+m+"/"+i);
                 }
-                check(nextResult.calls==oldResult.calls-2,"two redundant tree builds removed "+c+"/"+m);
+                check(nextResult.calls==oldResult.calls-3,"legacy tree view plus two redundant tree builds avoided "+c+"/"+m);
             }
         }
         trace("InventorySortDebtTest passed="+passed+" failed="+failed);

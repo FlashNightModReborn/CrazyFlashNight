@@ -10,7 +10,7 @@
     'use strict';
     if (!PanelRuntime || !PanelRuntime.PanelRequestMux) throw new Error('PanelRuntime is required');
 
-    var COMMANDS = {snapshot:true, tooltip:true, claim:true, claimBatch:true, close:true, query:true,
+    var COMMANDS = {snapshot:true, tooltip:true, reportTooltip:true, claim:true, claimBatch:true, close:true, query:true,
         materials:true};
     var RESERVED = {
         type:true, task:true, domain:true, panel:true, v:true, cmd:true, callId:true,
@@ -46,7 +46,7 @@
         transform_failed:true, host_error:true, other:true
     };
     var DIAGNOSTIC_COMMANDS = {
-        '':true, snapshot:true, tooltip:true, claim:true, claimBatch:true,
+        '':true, snapshot:true, tooltip:true, reportTooltip:true, claim:true, claimBatch:true,
         close:true, query:true, materials:true
     };
     var DIAGNOSTIC_ERRORS = {

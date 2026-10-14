@@ -466,6 +466,13 @@
           "businessDecisionOwner": "as2"
         },
         {
+          "cmd": "reportTooltip",
+          "action": "lootReportTooltip",
+          "capability": "query",
+          "access": "read",
+          "businessDecisionOwner": "as2"
+        },
+        {
           "cmd": "claim",
           "action": "lootClaim",
           "capability": "transaction",

@@ -1,6 +1,6 @@
 # 测试正文：按需验证细节
 
-**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；其他专题保留各节既有基线。
+**文档角色**：验证规范层正文（由选择矩阵 `agentsDoc/testing-guide.md` 路由进入）。**最后核对代码基线**：commit `5f6ea4135319cecfb0da433ae09ecf34504a07a7` 加 2026-09-28 世界面/HUD 层级验证增量；库存索引专题核对至 `b98b6303aa409e76086e50f24cb1cfed00408204` + 2026-10-13 索引快照与 31 项专项回归，其他专题保留各节既有基线。
 
 本页是验证矩阵的规范层正文：按主题分节，读者只读命中章节即可，不要求回头全量读 AGENTS.md、`agentsDoc/testing-guide.md` 选择矩阵或迁移回包。任务到门的触发与选择规则在矩阵页；本页承接命中主题后的完整 runner、工作目录、参数、成功判据、失败恢复条件与证据边界。
 
@@ -149,6 +149,7 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 
 **tracked AS2 入口与机器钉死阈值**（`scripts/run-item-panel-tests.ps1`，`-Suite Shared|Crafting|Npc` 分域，缺省 `All` 全套；`-TimeoutSeconds 240`）：
 
+- `ArrayInventoryIndexTest` 31/31（All/Shared，机器钉死；同步通知、可变视图隔离、callback 快照与 rollback）。
 - `EquipmentInventoryTest` 28/28（机器钉死）。
 - `InventoryPanelServiceTest` 194/194（机器钉死；取代文本中 131/138/142/144/147/170 等旧计数，旧值见归档）。
 - `CraftingPanelServiceTest` 168/168 + `SynthesisIndexTest` 18/18（机器钉死）。
@@ -637,6 +638,11 @@ AS2 覆盖三模式礼包、stale/满容量零写、回执查询、64-occurrence
 
 **统一奖励暂存回归**：共享收纳工作树定向 Web/DOM/Host/AS2 入口与证据层级见 [本轮回归矩阵](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#103-定向回归与证据)。奖励回归：`scripts/run-reward-stash-tests.ps1`（当前机器钉值以 runner 为准，120/120），加 `-RunScale` 测隔离 SOL 的 0/64/256/1024/4096 条与实际字节/P95/P99/pack/flush/保存分段耗时；旧 root N+1/terminal ACK 和关卡继续跑 `scripts/run-map-loot-tests.ps1`。曝光后 false/pending/throw 保留同一候选；before/candidate/曝光副本须保留可序列化未知字段并切断别名；finalizer throw/重入不得再次 flush 或把已确认候选回滚。
 Web/Host 入口、已替换的旧产品合同、20 样本的观测边界与候选验收状态见 [暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。
+
+保存故障夹具须明确曝光边界：验证 `not_committed` / HUD 原操作可重试时，在组包等曝光前步骤注入确定失败；
+`flush=false`、`pending` 或曝光后的异常则应断言旧 committed 投影、同一 operationId 和写锁仍在，随后经 query/resume 确认冻结映像。
+重试应只增加物理 flush 次数，不能重新组包、重抽奖励或再发资产播报。独立用例结束前通过原权威收敛自己的候选，
+不得靠下一用例换 root / 清状态掩盖未决写，也不得为适配旧夹具把生产合同改回 false 即回滚。
 
 **Reward H-A 隔离测试档门**：人工跨重启验收只允许使用 `cf7_agent_reward_root_acceptance_v1` 等专用 `cf7_agent_*` 槽，玩家现役 `crazyflasher7_saves*` 只能作只读 seed。
 运行 `node tools/prepare-loot-target-full-save.js --seed-slot crazyflasher7_saves --slot cf7_agent_reward_root_acceptance_v1 --fixture reward-root-partial-v1` 后，再以相同 `--slot/--fixture` 加 `--verify-only`；

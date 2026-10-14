@@ -216,7 +216,7 @@ namespace CF7Launcher.Tests.Tasks
                 ["activeFrames"] = 5432,
                 ["totalKills"] = 4,
                 ["omittedKillTypes"] = 0,
-                ["totalItemGains"] = 0,
+                ["totalItemGains"] = 7,
                 ["totalItemLosses"] = 0,
                 ["omittedItemFlowTypes"] = 0,
                 ["rewardRollOmissions"] = 0,
@@ -232,7 +232,9 @@ namespace CF7Launcher.Tests.Tasks
                         ["count"] = 4
                     }
                 },
-                ["itemFlows"] = new JArray()
+                ["itemFlows"] = new JArray {new JObject {
+                    ["direction"]="gain",["kind"]="material",["itemKey"]="强化石",["displayName"]="强化石",
+                    ["iconName"]="强化石",["tier"]="",["source"]="pickup",["reason"]="",["count"]=7}}
             };
             return request;
         }
@@ -1489,6 +1491,90 @@ namespace CF7Launcher.Tests.Tasks
             Assert.DoesNotContain(harness.Sent, value =>
                 value.Value<string>("action") == "lootClaim"
                 || value.Value<string>("action") == "lootClaimBatch");
+        }
+
+        private static JObject ReportTooltipRequest(string callId, JObject reference)
+        {
+            JObject request=Request("reportTooltip",callId);
+            request["expectedAuthorityRevision"]=0;request["reference"]=reference;
+            return request;
+        }
+
+        private static JObject ReportTooltipResponse(JObject sent, string itemName="强化石")
+        {
+            JObject response=ActiveResponse(sent);response["snapshots"]=new JArray();
+            response["tooltip"]=new JObject { ["itemName"]=itemName,["displayname"]="强化石",["iconName"]="强化石",
+                ["itemType"]="材料",["descHTML"]="完整说明",["introHTML"]="物品介绍",
+                ["document"]=new JObject {["version"]=1,["title"]="强化石",
+                    ["sections"]=new JArray {new JObject {["role"]="body",["runs"]=new JArray {"提升装备属性"}}}}};
+            return response;
+        }
+
+        [Fact]
+        public void StageReportTooltip_UsesFrozenReferenceAndSharedSanitizedDocument()
+        {
+            using var harness=new Harness(stageSettlement:true);
+            harness.Task.HandleWebRequest(ReportTooltipRequest("report.tooltip.1",new JObject {["kind"]="flow",["index"]=0}));
+            JObject sent=Assert.Single(harness.Sent);
+            Assert.Equal("lootReportTooltip",sent.Value<string>("action"));
+            AssertExactKeys(sent,"task","action","callId","v","chestSessionId","lootContainerId","containerEpoch","expectedAuthorityRevision","reference");
+            harness.Task.HandleFlashResponse(ReportTooltipResponse(sent),null);
+            JObject posted=harness.PostedAt(0);Assert.True(posted.Value<bool>("success"));
+            Assert.Equal("强化石",posted["tooltip"]["document"].Value<string>("title"));
+            Assert.Equal("提升装备属性",posted["tooltip"]["document"]["sections"][0]["runs"][0].Value<string>("text"));
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(1)]
+        public void StageReportTooltip_RejectsIndexesOutsideTheBoundReport(int index)
+        {
+            using var harness=new Harness(stageSettlement:true);
+            harness.Task.HandleWebRequest(ReportTooltipRequest("report.bad-index",new JObject {["kind"]="flow",["index"]=index}));
+            Assert.Empty(harness.Sent);Assert.False(harness.PostedAt(0).Value<bool>("success"));
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void ReportTooltip_RejectsMapAndRewardInboxOwners(bool inbox)
+        {
+            using var harness=new Harness(rewardInbox:inbox);
+            JObject request=ReportTooltipRequest("report.wrong-owner",new JObject {["kind"]="material",["name"]="强化石"});
+            if(inbox) {request["sourceKind"]=LootPanelCoordinator.RewardInboxSource;
+                request["chestSessionId"]=RewardChestSessionId;request["lootContainerId"]=RewardLootContainerId;
+                request["containerEpoch"]=RewardContainerEpoch;}
+            harness.Task.HandleWebRequest(request);
+            Assert.Empty(harness.Sent);Assert.False(harness.PostedAt(0).Value<bool>("success"));
+        }
+
+        [Fact]
+        public void StageReportTooltip_RejectsAResponseForAnotherItem()
+        {
+            using var harness=new Harness(stageSettlement:true);
+            harness.Task.HandleWebRequest(ReportTooltipRequest("report.wrong-item",new JObject {["kind"]="flow",["index"]=0}));
+            harness.Task.HandleFlashResponse(ReportTooltipResponse(Assert.Single(harness.Sent),"急救针"),null);
+            Assert.False(harness.PostedAt(0).Value<bool>("success"));Assert.Equal(JTokenType.Null,harness.PostedAt(0)["tooltip"].Type);
+        }
+
+        [Fact]
+        public void StageReportTooltip_InvalidOptionalDocumentKeepsTheSharedHtmlFallback()
+        {
+            using var harness=new Harness(stageSettlement:true);
+            harness.Task.HandleWebRequest(ReportTooltipRequest("report.invalid-document",new JObject {["kind"]="material",["name"]="强化石"}));
+            JObject response=ReportTooltipResponse(Assert.Single(harness.Sent));response["tooltip"]["document"]="invalid";
+            harness.Task.HandleFlashResponse(response,null);
+            JObject posted=harness.PostedAt(0);Assert.True(posted.Value<bool>("success"));
+            Assert.Null(posted["tooltip"]["document"]);Assert.Equal("完整说明",posted["tooltip"].Value<string>("descHTML"));
+        }
+
+        [Fact]
+        public void StageReportTooltip_RejectsInventedWriteFieldsAndReferenceKeys()
+        {
+            using var harness=new Harness(stageSettlement:true);
+            JObject request=ReportTooltipRequest("report.extra-fields",new JObject {["kind"]="flow",["index"]=0,["itemName"]="急救针"});
+            request["operationId"]="invented.write";harness.Task.HandleWebRequest(request);
+            Assert.Empty(harness.Sent);Assert.False(harness.PostedAt(0).Value<bool>("success"));
         }
 
         [Fact]

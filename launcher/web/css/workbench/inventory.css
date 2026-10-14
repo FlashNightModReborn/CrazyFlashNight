@@ -291,7 +291,7 @@
     scrollbar-color:var(--wb-scrollbar-thumb) var(--wb-scrollbar-track);
 }
 .loot-settlement-side {
-    display:grid; grid-template-rows:32px minmax(0,1fr); min-width:0;
+    display:grid; grid-template-rows:auto 32px minmax(0,1fr); min-width:0;
     border:1px solid var(--wb-line-soft);
     background:color-mix(in srgb,var(--wb-bg) 82%,transparent);
 }
@@ -299,7 +299,29 @@
     display:grid; grid-template-columns:repeat(3,1fr); gap:2px; padding:3px;
     border-bottom:1px solid var(--wb-line-soft); background:var(--wb-bg);
 }
-.loot-settlement-side-tabs { grid-template-columns:repeat(2,1fr); }
+.loot-settlement-side-tabs { grid-template-columns:repeat(3,1fr); }
+.loot-settlement-asset-summary {
+    display:grid; grid-template-columns:1fr 1fr; gap:5px; padding:7px;
+    border-bottom:1px solid var(--wb-line-soft);
+}
+.loot-settlement-currency {
+    display:grid; grid-template-columns:auto minmax(0,1fr) minmax(0,1fr); align-items:center; gap:5px;
+    min-height:30px; padding:4px 6px; box-sizing:border-box;
+    border:1px solid var(--wb-line-soft); background:var(--wb-card-surface);
+}
+.loot-settlement-currency b { color:var(--wb-text); font-size:11px; }
+.loot-settlement-currency span {
+    min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font:700 11px/1.3 Consolas,monospace; text-align:right;
+}
+.loot-settlement-currency [data-currency-gain] { color:var(--wb-semantic-success); }
+.loot-settlement-currency [data-currency-loss] { color:var(--wb-semantic-danger); }
+.loot-settlement-item-summary {
+    grid-column:1 / -1; display:flex; justify-content:space-between; gap:6px;
+    color:var(--wb-muted); font-size:10px;
+}
+.loot-settlement-item-summary b { color:var(--wb-text); }
+.loot-settlement-item-summary small { font-size:10px; }
 .loot-settlement-tabs button {
     min-width:0; border:1px solid transparent; color:var(--wb-muted); background:transparent;
     font:600 11px/1 "Microsoft YaHei",sans-serif; cursor:pointer;
@@ -313,8 +335,14 @@
     box-shadow:inset 0 -2px var(--wb-accent);
 }
 .loot-settlement-side-body { min-height:0; overflow:hidden; }
-.loot-settlement-reward-section { height:100%; min-height:0; }
-.loot-settlement-stashed-report { overflow:auto; padding:10px; box-sizing:border-box; }
+.loot-settlement-reward-section,.loot-settlement-loss-section {
+    height:100%; min-height:0; overflow-y:auto; overflow-x:hidden;
+    padding:7px; box-sizing:border-box;
+}
+.loot-settlement-loss-section { display:grid; grid-template-rows:auto auto minmax(0,1fr); gap:7px; }
+.loot-settlement-pending-rewards { height:180px; min-height:0; margin-bottom:7px; }
+.loot-settlement-flow-note { margin:0; color:var(--wb-muted); font-size:10px; line-height:1.4; }
+.loot-settlement-side .loot-settlement-flow-section { padding-top:0; border-top:0; }
 .loot-settlement-report-section {
     flex:0 0 auto;
     display:grid; grid-template-rows:auto auto auto auto; gap:8px;
@@ -511,15 +539,6 @@
 .loot-settlement-flow-toolbar span {
     color:var(--wb-muted); font:10px/1.35 "Microsoft YaHei",sans-serif; text-align:right;
 }
-.loot-settlement-flow-metrics { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
-.loot-settlement-flow-metrics > div {
-    display:flex; align-items:center; justify-content:space-between; gap:8px;
-    min-height:32px; padding:4px 8px; border:1px solid var(--wb-line-soft);
-    background:var(--wb-card-surface);
-}
-.loot-settlement-flow-metrics small { color:var(--wb-muted); font-size:10px; }
-.loot-settlement-flow-metrics b { color:var(--wb-semantic-success); font:700 15px/1 Consolas,monospace; }
-.loot-settlement-flow-metrics > div:last-child b { color:var(--wb-semantic-danger); }
 .loot-settlement-flows {
     display:grid; grid-template-columns:repeat(auto-fill,minmax(142px,1fr));
     grid-auto-rows:min-content; align-content:start; gap:5px; min-height:0;
@@ -547,24 +566,21 @@
 }
 .loot-settlement-flow-card > strong { color:var(--wb-semantic-success); font:700 12px/1 Consolas,monospace; }
 .loot-settlement-flow-card[data-direction="loss"] > strong { color:var(--wb-semantic-danger); }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-section { gap:5px; padding-top:7px; }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-toolbar h2 { font-size:13px; }
-.loot-settlement-report.loot-settlement-compact .loot-settlement-flow-metrics > div {
-    min-height:27px; padding:3px 6px;
-}
-:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flows {
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-section { gap:5px; }
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-toolbar h2 { font-size:13px; }
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flows {
     grid-template-columns:repeat(auto-fill,48px); grid-auto-rows:48px;
     justify-content:start; gap:4px;
 }
-:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-card {
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-card {
     display:block; box-sizing:border-box; width:48px; min-width:48px;
     height:48px; min-height:48px; padding:5px;
 }
-:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-icon {
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-icon {
     width:36px; height:36px;
 }
-:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-copy { display:none; }
-:is(.loot-settlement-report,.loot-settlement-stashed-report).loot-settlement-compact .loot-settlement-flow-card > strong {
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-copy { display:none; }
+.loot-settlement-side.loot-settlement-compact .loot-settlement-flow-card > strong {
     position:absolute; z-index:2; right:0; bottom:0; padding:1px 2px;
     border:1px solid currentColor; background:color-mix(in srgb,var(--wb-bg) 92%,transparent);
     font-size:10px;

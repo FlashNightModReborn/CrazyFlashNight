@@ -12,6 +12,9 @@ class org.flashNight.arki.item.LootContainerValidation {
         } else if (commandName == "tooltip") {
             expectedAction = "lootTooltip";
             allowed.push("expectedAuthorityRevision"); allowed.push("source");
+        } else if (commandName == "reportTooltip") {
+            expectedAction = "lootReportTooltip";
+            allowed.push("expectedAuthorityRevision"); allowed.push("reference");
         } else if (commandName == "claim") {
             expectedAction = "lootClaim";
             allowed.push("expectedAuthorityRevision"); allowed.push("operationId");
@@ -38,7 +41,7 @@ class org.flashNight.arki.item.LootContainerValidation {
         if (!hasOnlyKeys(params, allowed) || !hasOwnField(params, "v")) return false;
         if (hasOwnField(params, "sourceKind")
                 && (params.sourceKind !== "reward_inbox"
-                    || commandName == "materials")) return false;
+                    || commandName == "materials" || commandName == "reportTooltip")) return false;
         if (params.sourceKind === "reward_inbox") {
             if ((commandName == "claim" || commandName == "claimBatch")
                     && !hasOwnField(params, "previousTerminalRootOperationId")) return false;

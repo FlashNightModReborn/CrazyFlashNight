@@ -129,6 +129,13 @@ function activeResponse(message){var response=common(message);response.snapshots
     return response
   }
   function respond(message){
+  if(message.cmd==='reportTooltip'){
+    var reportTip=common(message),record=message.reference;
+    var itemName=record.kind==='material'?record.name:__currentReport.itemFlows[record.index].itemKey;
+    reportTip.tooltip={itemName:itemName,iconName:'强化石',itemType:'材料',introHTML:'完整物品介绍',descHTML:'通用权威物品说明',
+      document:{version:1,title:'强化石完整注释',sections:[{role:'body',runs:[{text:'强化所需材料，可用于提升装备属性。'}]}]}};
+    emit(reportTip);return;
+  }
   if(message.cmd==='materials'){var materialResponse=common(message);materialResponse.materials=materialStock.map(function(row){return Object.assign({},row)});emit(materialResponse);return}
     if(message.cmd==='snapshot'){
       if(__failNextLootSnapshot){__failNextLootSnapshot=false;var failed=common(message);failed.success=false;failed.error='snapshot_failed';emit(failed);return}
@@ -287,6 +294,7 @@ function activeResponse(message){var response=common(message);response.snapshots
     recoverableRootOperationId:'',recoverableRootStatus:'not_started',
     recoveryRequired:false,recoveryOnly:false,rootAdmissionEnabled:true
   })}
+  var __currentReport=null;
   function settlementInit(id){return Object.assign(init(id),{
     displayName:'关卡结算',capacity:3,columns:3,sourceKind:'stage_settlement',
     report:{v:1,runId:'run.harness.1',stageName:'废弃都市 · 夜战',difficulty:'挑战',outcome:'victory',
@@ -1258,16 +1266,21 @@ function activeResponse(message){var response=common(message);response.snapshots
           'errors','timeouts','fallbacks','detail'].sort().join('|');
       }));
     var flowCards=document.querySelectorAll('.loot-settlement-flow-card');
-    ok('one scrollable action report keeps kill and asset facts together',
+    ok('right income and expense records are separate from the combat scroll',
       flowCards.length===2
       &&!document.querySelector('.loot-settlement-flow-section').hidden
-      &&document.querySelector('[data-settlement-flow-gain]').textContent==='+7'
-      &&document.querySelector('[data-settlement-flow-loss]').textContent==='−2'
+      &&document.querySelector('[data-settlement-flow-gain]').textContent==='+1 种'
+      &&document.querySelector('[data-settlement-flow-loss]').textContent==='−1 种'
       &&flowCards[0].getAttribute('data-direction')==='gain'
       &&flowCards[0].querySelector('.loot-settlement-flow-copy b').textContent==='强化石'
       &&flowCards[1].getAttribute('data-direction')==='loss'
       &&flowCards[1].querySelector('.loot-settlement-flow-copy b').textContent==='急救针'
-      &&document.querySelector('[data-settlement-flow-status]').textContent.indexOf('另有 1 类物资事实未展开')>=0);
+      &&document.querySelector('[data-settlement-flow-status]').textContent.indexOf('另有 1 类明细未展开')>=0);
+    ok('supply records live in the right pane and the cash summary remains above all three tabs',
+      document.querySelector('.loot-settlement-side').contains(flowCards[0])
+      &&!document.querySelector('.loot-settlement-report-scroll').querySelector('.loot-settlement-flow-card')
+      &&document.querySelectorAll('[data-settlement-side-tab]').length===3
+      &&document.querySelector('[data-settlement-summary-status]').textContent==='仅统计已展开明细');
     var materialRequest=tasks('materials').slice(-1)[0];
     ok('settlement alone requests the exact material read at the active authority revision',
       tasks('materials').length===settlementMaterialsBefore+1
@@ -1584,6 +1597,87 @@ function activeResponse(message){var response=common(message);response.snapshots
       !PanelTooltip.isVisible()&&PanelTooltip.debugState().bindingCount===0);
     Panels.open('loot',groupedInit);await waitFor(function(){return document.querySelectorAll('[data-settlement-allies] article').length===3});
     window.__qaGroupedAllyInit=groupedInit;
+    var fiscal=JSON.parse(JSON.stringify(groupedInit));fiscal.report.runId='run.cash.inspection';
+    fiscal.report.omittedItemFlowTypes=0;fiscal.report.totalItemGains=1037;fiscal.report.totalItemLosses=207;
+    fiscal.report.itemFlows=[
+      {direction:'gain',kind:'money',itemKey:'money',displayName:'金币',iconName:'金币',tier:'',source:'pickup',reason:'',count:1000},
+      {direction:'loss',kind:'money',itemKey:'money',displayName:'金币',iconName:'金币',tier:'',source:'player_revive',reason:'',count:200},
+      {direction:'gain',kind:'kpoint',itemKey:'kpoint',displayName:'K 点',iconName:'K点',tier:'',source:'stage_settlement',reason:'stage_reward_stashed',count:30},
+      {direction:'loss',kind:'kpoint',itemKey:'kpoint',displayName:'K 点',iconName:'K点',tier:'',source:'skill_cost',reason:'',count:5},
+      {direction:'gain',kind:'material',itemKey:'强化石',displayName:'强化石',iconName:'强化石',tier:'',source:'stage_settlement',reason:'stage_reward_stashed',count:7},
+      {direction:'loss',kind:'item',itemKey:'急救针',displayName:'急救针',iconName:'急救针',tier:'',source:'item_use',reason:'consume',count:2}];
+    Panels.forceClose();await delay();__currentReport=fiscal.report;
+    Panels.open('loot',fiscal);await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    var fiscalRoot=document.querySelector('.loot-workbench'),money=fiscalRoot.querySelector('[data-currency="money"]'),kp=fiscalRoot.querySelector('[data-currency="kpoint"]');
+    await waitFor(function(){return fiscalRoot.getAnimations().every(function(animation){return animation.playState!=='running';})});
+    ok('cash gains and expenses remain independent of seven materials and two consumables',
+      money.querySelector('[data-currency-gain]').textContent==='+1,000'
+      &&money.querySelector('[data-currency-loss]').textContent==='−200'
+      &&kp.querySelector('[data-currency-gain]').textContent==='+30'
+      &&kp.querySelector('[data-currency-loss]').textContent==='−5'
+      &&fiscalRoot.querySelector('[data-settlement-flow-gain]').textContent==='+1 种');
+    var fiscalSide=fiscalRoot.querySelector('.loot-settlement-side'),incomeCard=fiscalSide.querySelector('[data-settlement-flows] .loot-settlement-flow-card:last-child');
+    var cashRect=money.getBoundingClientRect(),incomeRect=incomeCard.getBoundingClientRect(),sideRect=fiscalSide.getBoundingClientRect();
+    ok('currency summary and first income items are visible at 1024x576 without scrolling enemy records',
+      cashRect.top>=sideRect.top&&incomeRect.top>=cashRect.bottom&&incomeRect.bottom<=sideRect.bottom
+      &&fiscalRoot.querySelector('.loot-settlement-report-scroll').scrollTop===0);
+    var cashQueries=tasks('reportTooltip').length;
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));kp.focus();
+    await waitFor(function(){return PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('获得 +30')>=0});
+    ok('K point summary exposes both exact amounts without an inventory or definition request',
+      PanelTooltip.getElement().textContent.indexOf('消耗 −5')>=0&&tasks('reportTooltip').length===cashQueries);
+    kp.blur();PanelTooltip.hide();
+    var inspectionWrites=tasks('claim').length+tasks('claimBatch').length+tasks('close').length;
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));incomeCard.focus();
+    await waitFor(function(){return PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('强化所需材料')>=0});
+    ok('stashed reward card reads the shared structured item document by frozen report index',
+      PanelTooltip.getElement().textContent.indexOf('强化石完整注释')>=0
+      &&tasks('reportTooltip').slice(-1)[0].reference.kind==='flow'
+      &&tasks('reportTooltip').slice(-1)[0].reference.index===4
+      &&inspectionWrites===tasks('claim').length+tasks('claimBatch').length+tasks('close').length);
+    incomeCard.blur();PanelTooltip.hide();
+    fiscalRoot.querySelector('[data-settlement-side-tab="losses"]').click();
+    ok('expense tab reveals losses immediately and leaves cash and combat scroll in place',
+      !fiscalRoot.querySelector('[data-settlement-side-section="losses"]').hidden
+      &&fiscalRoot.querySelector('[data-settlement-side-section="rewards"]').hidden
+      &&Math.abs(money.getBoundingClientRect().top-cashRect.top)<1&&fiscalRoot.querySelector('.loot-settlement-report-scroll').scrollTop===0,
+      JSON.stringify({lossHidden:fiscalRoot.querySelector('[data-settlement-side-section="losses"]').hidden,
+        gainHidden:fiscalRoot.querySelector('[data-settlement-side-section="rewards"]').hidden,
+        cashTop:money.getBoundingClientRect().top,before:cashRect.top,scroll:fiscalRoot.querySelector('.loot-settlement-report-scroll').scrollTop}));
+    var fixedEnemy=fiscalRoot.querySelector('[data-settlement-kills] article:not([data-unit-id])');
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));fixedEnemy.focus();
+    await waitFor(function(){return PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('荒原掠夺者')>=0});
+    ok('fixed enemy portrait exposes its name and kill count using the shared tooltip',
+      PanelTooltip.getElement().textContent.indexOf('击杀 ×4')>=0&&!fixedEnemy.hasAttribute('title'));
+    fixedEnemy.blur();PanelTooltip.hide();
+    fiscalRoot.querySelector('[data-settlement-side-tab="materials"]').click();
+    var materialCard=fiscalRoot.querySelector('.loot-settlement-material-card');
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));materialCard.focus();
+    await waitFor(function(){return PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('强化所需材料')>=0});
+    ok('material stock uses the same definition inspection and readonly tooltip profile',
+      tasks('reportTooltip').slice(-1)[0].reference.kind==='material'
+      &&PanelTooltip.getElement().textContent.indexOf('当前持有')>=0);
+    materialCard.blur();PanelTooltip.hide();
+    fiscalRoot.querySelector('[data-settlement-side-tab="losses"]').focus();
+    fiscalRoot.querySelector('[role="tablist"]').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true,cancelable:true}));
+    ok('all three asset tabs support arrow keyboard navigation',LootPanel.reportPresentation().rightTab==='losses');
+    Panels.forceClose();await delay();
+    ok('new report and material annotations release every owner on close',PanelTooltip.debugState().bindingCount===0);
+    var hugeFiscal=JSON.parse(JSON.stringify(fiscal));hugeFiscal.report.runId='run.cash.maximum';
+    hugeFiscal.report.itemFlows[0].count=Number.MAX_SAFE_INTEGER-37;
+    hugeFiscal.report.totalItemGains=Number.MAX_SAFE_INTEGER;__currentReport=hugeFiscal.report;
+    Panels.open('loot',hugeFiscal);await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    var hugeMoney=document.querySelector('[data-currency="money"]');
+    ok('maximum cash values stay inside the currency track and do not widen the logical canvas',
+      getComputedStyle(hugeMoney.querySelector('[data-currency-gain]')).textOverflow==='ellipsis'
+      &&document.documentElement.scrollWidth<=1024&&hugeMoney.getBoundingClientRect().right<=1024);
+    document.dispatchEvent(new KeyboardEvent('keydown',{key:'Tab',bubbles:true}));hugeMoney.focus();
+    await waitFor(function(){return PanelTooltip.isVisible()&&PanelTooltip.getElement().textContent.indexOf('9,007,199,254,740,954')>=0});
+    ok('clipped maximum cash remains available as the full exact integer in the shared explanation',
+      PanelTooltip.getElement().textContent.indexOf('9,007,199,254,740,954')>=0);
+    Panels.forceClose();await delay();
+    __currentReport=fiscal.report;Panels.open('loot',fiscal);await waitFor(function(){return LootPanel.debugState().phase==='active'});
+    window.__qaFiscalInit=fiscal;
     var result={passed:checks.filter(function(x){return x.ok}).length,total:checks.length,checks:checks};window.__qaResult=result;window.__qaDone=true;document.getElementById('qa-output').textContent=JSON.stringify(result,null,2)
   }catch(error){window.__qaError=error.stack||String(error);window.__qaDone=true;document.getElementById('qa-output').textContent=window.__qaError}
 })();

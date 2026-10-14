@@ -45,6 +45,7 @@ namespace CF7Launcher.Tasks
             public int TransportGeneration;
             public string RecoveryNonce;
             public bool IsSocketDetachProof;
+            public string ReportTooltipItemName;
             public int ExpectedAuthorityRevision;
             public LootPanelCoordinator.Binding Binding;
         }
@@ -356,6 +357,8 @@ namespace CF7Launcher.Tasks
                     ? normalized["source"].Value<int>("expectedContainerVersion") : -1,
                 CloseAbandon = cmd == "close" && normalized.Value<bool>("abandon"),
                 CloseLease = cmd == "close" ? normalized.Value<string>("closeLease") : null,
+                ReportTooltipItemName = cmd == "reportTooltip"
+                    ? ReportTooltipItemName(normalized["reference"] as JObject, binding) : null,
                 ExpectedAuthorityRevision = expectedRevision,
                 Binding = binding
             };
@@ -1790,6 +1793,7 @@ namespace CF7Launcher.Tasks
             {
                 case "snapshot": action = "lootSnapshot"; return true;
                 case "tooltip": action = "lootTooltip"; return true;
+                case "reportTooltip": action = "lootReportTooltip"; return true;
                 case "claim": action = "lootClaim"; isWrite = true; return true;
                 case "claimBatch": action = "lootClaimBatch"; isWrite = true; return true;
                 case "close": action = "lootClose"; isWrite = true; return true;
@@ -1818,6 +1822,11 @@ namespace CF7Launcher.Tasks
             {
                 expected.Add("expectedAuthorityRevision");
                 expected.Add("source");
+            }
+            else if (cmd == "reportTooltip")
+            {
+                expected.Add("expectedAuthorityRevision");
+                expected.Add("reference");
             }
             else if (cmd == "materials")
             {
@@ -1907,6 +1916,15 @@ namespace CF7Launcher.Tasks
             normalized["expectedAuthorityRevision"] = expectedRevision;
             if (cmd == "materials")
                 return binding.SourceKind == LootPanelCoordinator.StageSettlementSource;
+            if (cmd == "reportTooltip")
+            {
+                JObject reference;
+                if (binding.SourceKind != LootPanelCoordinator.StageSettlementSource
+                    || !TryNormalizeReportTooltipReference(parsed["reference"] as JObject, binding, out reference))
+                    return false;
+                normalized["reference"] = reference;
+                return true;
+            }
             if (cmd == "tooltip" || cmd == "claim")
             {
                 JObject source;
@@ -2025,6 +2043,36 @@ namespace CF7Launcher.Tasks
             return true;
         }
 
+        private static bool TryNormalizeReportTooltipReference(JObject input,
+            LootPanelCoordinator.Binding binding, out JObject normalized)
+        {
+            normalized = null;
+            if (input == null || binding.SettlementReport == null) return false;
+            string kind = ReadString(input["kind"]);
+            if (kind == "flow")
+            {
+                var flows = binding.SettlementReport["itemFlows"] as JArray;
+                int index;
+                if (!HasExactKeys(input, Set("kind", "index")) || flows == null
+                    || !TryReadInteger(input["index"], 0, flows.Count - 1, out index)) return false;
+                string assetKind = ReadString(flows[index]["kind"]);
+                if (assetKind == "money" || assetKind == "kpoint") return false;
+                normalized = new JObject { ["kind"] = kind, ["index"] = index };
+                return true;
+            }
+            string name;
+            if (kind != "material" || !HasExactKeys(input, Set("kind", "name"))
+                || !TryReadBoundedText(input["name"], 128, false, out name) || !IsIdentityText(name)) return false;
+            normalized = new JObject { ["kind"] = kind, ["name"] = name };
+            return true;
+        }
+
+        private static string ReportTooltipItemName(JObject reference, LootPanelCoordinator.Binding binding)
+        {
+            return reference.Value<string>("kind") == "material" ? reference.Value<string>("name")
+                : binding.SettlementReport["itemFlows"][reference.Value<int>("index")].Value<string>("itemKey");
+        }
+
         private bool TryReadExactResponseRevisionLocked(JObject msg, PendingRequest entry,
             out int revision)
         {
@@ -2108,6 +2156,8 @@ namespace CF7Launcher.Tasks
                 return false;
             JObject tooltip;
             if (!TrySanitizeTooltip(msg["tooltip"], out tooltip)) return false;
+            if (success && entry.WebCmd == "reportTooltip"
+                && (tooltip == null || tooltip.Value<string>("itemName") != entry.ReportTooltipItemName)) return false;
             JArray materials;
             if (!TrySanitizeMaterials(msg["materials"], out materials)) return false;
             JObject terminal;
@@ -2495,7 +2545,7 @@ namespace CF7Launcher.Tasks
                     && snapshots.Count == 0 && tooltip == null && materials == null;
             }
             if (string.IsNullOrEmpty(closeLease)) return false;
-            if (cmd == "tooltip")
+            if (cmd == "tooltip" || cmd == "reportTooltip")
                 return snapshots.Count == 0 && tooltip != null && materials == null;
             if (cmd == "materials")
                 return snapshots.Count == 0 && tooltip == null && materials != null;
@@ -2907,7 +2957,8 @@ namespace CF7Launcher.Tasks
             JObject input = token as JObject;
             HashSet<string> keys = Set("itemName", "displayname", "iconName", "itemType",
                 "descHTML", "introHTML");
-            if (!HasExactKeys(input, keys)) return false;
+            if (!TooltipDocumentSanitizer.HasExactKeysAllowingOptionalDocument(input,
+                    "itemName", "displayname", "iconName", "itemType", "descHTML", "introHTML")) return false;
             JObject clean = new JObject();
             foreach (string key in keys)
             {
@@ -2916,6 +2967,7 @@ namespace CF7Launcher.Tasks
                 if (!TryReadBoundedText(input[key], max, true, out value)) return false;
                 clean[key] = value;
             }
+            TooltipDocumentSanitizer.ApplyTo(input["document"], clean);
             output = clean;
             return true;
         }

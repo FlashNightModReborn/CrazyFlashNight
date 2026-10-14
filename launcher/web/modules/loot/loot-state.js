@@ -1191,6 +1191,16 @@
             {kind:'tooltip', latestWins:true}, callback);
     };
 
+    /** Definition inspection is bound to a frozen report or the material catalogue, never a live slot. */
+    Coordinator.prototype.reportTooltip = function(reference, callback) {
+        if (this.identity.source !== 'stage_settlement' || !reference
+                || (this._phase !== 'active' && this._phase !== 'reconcile_required')) return false;
+        return !!this._request('reportTooltip', {
+            expectedAuthorityRevision:this._projection ? this._projection.authorityRevision : 0,
+            reference:reference
+        }, {kind:'tooltip', latestWins:true}, callback);
+    };
+
     Coordinator.prototype.forceDetach = function() {
         if (this._detached) return false;
         this._detached = true; this._generation++;

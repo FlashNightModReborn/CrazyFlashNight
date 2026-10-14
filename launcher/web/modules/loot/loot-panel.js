@@ -181,6 +181,7 @@ var LootPanel = (function() {
             onReconcile:reconcile,
             onOpenOrganizer:function() { openOrganizer(true); },
             requestTooltip:requestTooltip,
+            requestReportTooltip:requestReportTooltip,
             diagnostic:function(record) {
                 emitDiagnostic(record, _identity, generation, _init && _init.report);
             }
@@ -342,6 +343,15 @@ var LootPanel = (function() {
     function requestTooltip(slot, callback) {
         if (!_model) return false;
         return _model.tooltip(slot, callback);
+    }
+
+    function requestReportTooltip(reference, callback) {
+        if (!_model || !_init || _init.sourceKind !== 'stage_settlement') return false;
+        var generation=_generation, model=_model;
+        return model.reportTooltip(reference,function(response) {
+            if (generation!==_generation || model!==_model || !isOpen()) return;
+            callback(response);
+        });
     }
 
     function requestMaterials() {

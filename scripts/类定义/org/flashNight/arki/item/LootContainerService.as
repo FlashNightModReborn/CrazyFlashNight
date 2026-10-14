@@ -69,6 +69,9 @@ class org.flashNight.arki.item.LootContainerService {
         _root.gameCommands["lootTooltip"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handle("tooltip", params);
         };
+        _root.gameCommands["lootReportTooltip"] = function(params) {
+            org.flashNight.arki.item.LootContainerService.handle("reportTooltip", params);
+        };
         _root.gameCommands["lootClaim"] = function(params) {
             org.flashNight.arki.item.LootContainerService.handle("claim", params);
         };
@@ -109,6 +112,7 @@ class org.flashNight.arki.item.LootContainerService {
         if (_busy) return emptyFailure(params, "busy");
         if (commandName == "snapshot") return executeSnapshot(params);
         if (commandName == "tooltip") return executeTooltip(params);
+        if (commandName == "reportTooltip") return executeReportTooltip(params);
         if (commandName == "claim") return executeClaim(params);
         if (commandName == "claimBatch") return executeClaimBatch(params);
         if (commandName == "close") return executeClose(params);
@@ -1657,6 +1661,45 @@ class org.flashNight.arki.item.LootContainerService {
         if (tooltip == null) return failureFor(record, "tooltip_failed");
         var response:Object = recordResponse(record, true, "");
         response.tooltip = tooltip;
+        return response;
+    }
+
+    /** 结算定义检视：引用冻结流水或当前材料目录，复用全站 COMMON 物品注释。 */
+    private static function executeReportTooltip(params:Object):Object {
+        var checked:Object = validateActiveIdentity(params);
+        if (!checked.success) return checked.response;
+        var record:Object = checked.record;
+        if (record.panelSource != STAGE_SETTLEMENT_SOURCE || record.report == null)
+            return failureFor(record, "transfer_forbidden");
+        if (!validExpectedAuthority(params, record)) return failureFor(record, "stale_state");
+        var reference:Object = params.reference;
+        var itemName:String = "";
+        if (reference.kind === "flow" && hasOnlyKeys(reference, ["kind", "index"])
+                && isWhole(reference.index) && Number(reference.index) >= 0
+                && Number(reference.index) < record.report.itemFlows.length) {
+            var flow:Object = record.report.itemFlows[Number(reference.index)];
+            if (flow.kind == "money" || flow.kind == "kpoint")
+                return failureFor(record, "invalid_payload");
+            itemName = String(flow.itemKey);
+        } else if (reference.kind === "material" && hasOnlyKeys(reference, ["kind", "name"])
+                && typeof reference.name == "string" && String(reference.name).length > 0 && isSafeText(String(reference.name),128)) {
+            // 与存量页同一目录，不能把 name 变成任意物品读取入口。
+            var stocks:Object = MaterialArchiveProjector.executeMaterialStocks();
+            if (stocks == null || stocks.success !== true) return failureFor(record, "authority_unavailable");
+            for (var i:Number = 0; i < stocks.materials.length; i++) {
+                if (stocks.materials[i].name === reference.name) itemName = String(reference.name);
+            }
+        } else return failureFor(record, "invalid_payload");
+        if (itemName == "" || !ItemUtil.isItem(itemName)) return failureFor(record, "invalid_payload");
+        if (typeof _root.Web物品注释HTML != "function") return failureFor(record, "tooltip_failed");
+        var tooltip:Object = _root.Web物品注释HTML(itemName);
+        if (tooltip == null || typeof tooltip.descHTML != "string" || typeof tooltip.introHTML != "string")
+            return failureFor(record, "tooltip_failed");
+        var itemData:Object = ItemUtil.getItemData(itemName);
+        var response:Object = recordResponse(record, true, "");
+        response.tooltip = {itemName:itemName, displayname:String(tooltip.displayname || itemName),
+            iconName:String(itemData.icon || itemName), itemType:String(itemData.type || "物品"),
+            descHTML:tooltip.descHTML, introHTML:tooltip.introHTML, document:tooltip.document};
         return response;
     }
 

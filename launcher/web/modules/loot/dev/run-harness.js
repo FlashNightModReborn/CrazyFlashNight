@@ -67,6 +67,8 @@ function server(){return new Promise(resolve=>{const instance=http.createServer(
           await page.evaluate(()=>{document.querySelector('.loot-settlement-report-scroll').scrollTop=0;});
           await page.click('.item-grid-mode-toggle[aria-label="关卡结算布局"] [data-layout-mode="compact"]');
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-action-report-1024x576.png')});
+          await page.click('[data-settlement-side-tab="losses"]');
+          await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-expenses-1024x576.png')});
           await page.click('[data-settlement-side-tab="materials"]');
           await page.fill('.loot-settlement-material-toolbar input[type="search"]','');
           await page.screenshot({path:path.join(CAPTURE_DIR,'web-settlement-materials-compact-1024x576.png')});

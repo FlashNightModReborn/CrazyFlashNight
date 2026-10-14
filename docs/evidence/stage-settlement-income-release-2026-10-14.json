@@ -1,0 +1,193 @@
+{
+  "schema": "cf7-stage-settlement-release-evidence.v1",
+  "state": "promoted",
+  "authorization": "可行，走完整的发布列车",
+  "source": {
+    "commit": "e6bfcc0d7b967fa65435e7eb29d89526df2ce925",
+    "implementationCommit": "8b040c4c8d00ca5ea527554999215a6260fc484e",
+    "tree": "a17d7a58b85ef7e845667949c0707a882297cd12",
+    "tag": "refs/tags/runtime-build-v2/20261014-stage-settlement-income-v2",
+    "deploymentCommit": "888a15fb0539eab6afcff303e37fb3c0dea1f143"
+  },
+  "request": {
+    "requestId": "B0C14C100702B2550BEB2594173206207A294893CD37C400732E6F31B785AC8F",
+    "supersededRequestId": "677F5676771E704CAA149730E63192CDDA922A767758170B56E4CDDA1FC53E4C",
+    "artifactSourceHash": "5AE85D6956F3F4F1A2D323531B3509F2A782629B531CD88F7C0ED993F7B129B9",
+    "producerRecipeHash": "EFB73DFFFDE36C213250576D2EFEF9180889139291CD9554C89F038D9616975D",
+    "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash": "C5924951DDD798511EDAED3E5FCE6C15899EE301AF8F471EF6B8253C0418708E",
+    "buildIdentityHash": "F2B61AF412AB0FC1963044CA1C8EF1891C456AB90CFF3B81E57F3BE7DC0F75E3",
+    "payloadClosureHash": "09B528979FE1AF39647DEFFC3C01D7F583F559927EA09BA867D4A84B1B4146E5",
+    "rawSha256": "B5556EF5278785337090BF6A890377F61EEF83C540EBD46C02F3163BFB5E1D70"
+  },
+  "localBuild": {
+    "workerId": "builder-local-b",
+    "builderKeyId": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+    "faultDomain": "physical-host-b",
+    "sameArtifactIdentityReused": true
+  },
+  "cloudBuild": {
+    "runId": 38491094064,
+    "runUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38491094064",
+    "completed": true
+  },
+  "policy": {
+    "profile": "production",
+    "passed": true,
+    "checks": 47,
+    "failures": 0,
+    "receiptSha256": "A3C1BDDC89C071B93EDA1110A6AF6EA66ED5EC6EECC1FE031D8C5E3A05517F9B"
+  },
+  "validation": {
+    "host": {
+      "passed": 7216,
+      "skipped": 27,
+      "total": 7243,
+      "serialPolicyConfirmed": true
+    },
+    "lootNode": {
+      "passed": 104,
+      "failed": 0
+    },
+    "browserFixture": {
+      "width": 1024,
+      "height": 576,
+      "passed": 147,
+      "failed": 0,
+      "lazyCancelPassed": 6
+    },
+    "avm1": {
+      "passed": 1130,
+      "failed": 0,
+      "retry32k": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0
+    },
+    "asLoader": {
+      "compiled": true,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "sha256": "7211DEBF67A85AD2D110DD44F50E587D2A24F9C01D4D528B77521088B63FCE03",
+      "bytes": 5899625
+    },
+    "documentationGovernancePassed": true
+  },
+  "saves": {
+    "beforeFileCount": 102,
+    "beforeManifestSha256": "8792CD9E3A208168F6186A67E317CAD87E1E452633C073EF4333EF8F78BE8995",
+    "restoredOverPlayerFiles": false,
+    "afterFileCount": 102,
+    "unchangedFilesExcludingMarker": 101,
+    "changedFiles": [
+      ".launcher-version-marker.json"
+    ],
+    "addedFiles": [],
+    "removedFiles": [],
+    "markerExplanation": "Only writtenAt changed; version remained 1. All other 101 saves/ files retained their exact SHA-256.",
+    "autoRepair": {
+      "slots": 49,
+      "corrupted": 0,
+      "applied": 0,
+      "drops": 0
+    },
+    "externalSolHashBaselineCaptured": false
+  },
+  "acceptance": {
+    "formalStartupPassed": true,
+    "fullBusinessStandardEntryVerified": false,
+    "fullSaveRestartE2eVerified": false
+  },
+  "recordedAtUtc": "2026-10-14T01:05:08.4849626Z",
+  "builds": [
+    {
+      "schema": "cf7-runtime-github-build-attestation.v2",
+      "signerIdentity": "67E22BD2FB78E70CC0570B3744F19217B02F1AF97E57D0C8AB344D01A4D8ED54",
+      "faultDomain": "github-hosted-windows",
+      "buildIdentityHash": "F2B61AF412AB0FC1963044CA1C8EF1891C456AB90CFF3B81E57F3BE7DC0F75E3",
+      "payloadClosureHash": "09B528979FE1AF39647DEFFC3C01D7F583F559927EA09BA867D4A84B1B4146E5"
+    },
+    {
+      "schema": "cf7-runtime-build-attestation.v2",
+      "signerIdentity": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+      "faultDomain": "physical-host-b",
+      "buildIdentityHash": "F2B61AF412AB0FC1963044CA1C8EF1891C456AB90CFF3B81E57F3BE7DC0F75E3",
+      "payloadClosureHash": "09B528979FE1AF39647DEFFC3C01D7F583F559927EA09BA867D4A84B1B4146E5"
+    }
+  ],
+  "promotion": {
+    "passed": true,
+    "promotedAtUtc": "2026-10-14T00:48:01.659613Z",
+    "writer": "tools/promote-runtime-bundle.ps1",
+    "verifiedFiles": 43,
+    "bootstrapVerifyOnlyExitCode": 0,
+    "coreSha256": "EB808128941E8E17F581B1C08AAB0BB5E0C7F3DEE18D538D97630BBF631C6350",
+    "manifestSha256": "26B1DA4DC511D3DA876FB818A7A3147296E3ED796E6659C89DA9062CF470A460",
+    "previousBundle": "tmp/runtime-promotions/20261014T004734344Z-28c1dd7ff0ec4fc79b55f7507e987a6b/previous",
+    "log": "tmp/stage-settlement-release-20261014/release-promotion.log",
+    "logSha256": "5EE70993CB33535905F1148159A789B75CB6F0F063187CC38084CB7DEA1F75EF"
+  },
+  "formalStartup": {
+    "passed": true,
+    "entry": "automation/start.ps1 without CandidateRoot",
+    "entryScriptExitCode": 0,
+    "runtimeMode": "formal_runtime",
+    "guardianPid": 12360,
+    "flashPid": 16740,
+    "identityAndClosureMatch": true,
+    "bootstrapWindowObserved": true,
+    "flashPrewarmHandshakeObserved": true,
+    "enteredPlayerSlot": false,
+    "prewarmRetiredAtDeadlineWithoutSlot": true,
+    "flashPrewarmExitCode": 0,
+    "closeAction": "observed title-bar close button through computer-use",
+    "coreShutdownObserved": true,
+    "residualGameProcesses": 0,
+    "observedAtLocal": "2026-10-14 08:50:29-08:52:19 Asia/Shanghai",
+    "entryLog": "tmp/stage-settlement-release-20261014/release-formal-start.log",
+    "entryLogSha256": "BC7240B18310189785A807792F853B2C2344CB1A21D0762551F45C5657ABF854",
+    "launcherLog": "tmp/stage-settlement-release-20261014/release-formal-launcher.log",
+    "launcherLogSha256": "46B69CD33CE212305610D4D7C5FA550EB4E8B588B98EC9C4D2BD4AD52AE6FB73"
+  },
+  "remoteAudit": {
+    "passed": true,
+    "pending": false,
+    "runId": 38492944113,
+    "runUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38492944113",
+    "headCommit": "888a15fb0539eab6afcff303e37fb3c0dea1f143",
+    "attempt": 1,
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "log": "tmp/stage-settlement-release-20261014/release-native-audit-ci.log",
+    "logSha256": "3592B4ACA983CC69A5187EEB562FF86C08B9E98CA6A36682F5103D08F574C1CE"
+  },
+  "artifactOwnershipAudit": {
+    "passed": true,
+    "pending": false,
+    "runId": 38492944040,
+    "runUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38492944040",
+    "headCommit": "888a15fb0539eab6afcff303e37fb3c0dea1f143",
+    "conclusion": "success",
+    "loaderClasses": 708,
+    "closureChecked": true,
+    "errors": 0,
+    "log": "tmp/stage-settlement-release-20261014/release-as2-ownership-ci.log",
+    "logSha256": "9E268066DF80FEBDC309B51CE06FF6F4E9ED9481CB1FBF74CDB2B9F7BECAAD38"
+  },
+  "limitations": [
+    "正式入口本轮停留启动页并关闭；未进入玩家槽位、战斗或关卡结算。",
+    "正式发布、安装核验及启动握手不代签本功能完整业务旅程或保存重启 E2E。",
+    "存档字节比较范围为 saves/ 内全部 102 个文件；未捕获外部 SharedObject SOL 基线。"
+  ],
+  "preparationRecovery": {
+    "supersededRequestId": "677F5676771E704CAA149730E63192CDDA922A767758170B56E4CDDA1FC53E4C",
+    "failedCheck": "material-catalog-current",
+    "reason": "上游弹夹数据的来源 SHA 摘要过期，由 canonical 材料生成器重建 sidecar 后另冻第二版 request。",
+    "materialProjectionSha256": "012D1415B7DA4E78F05E06D5728B1F33EF6E767A627DB35993E91A8EAEC3DDC8",
+    "materialProjectionBytesUnchanged": true,
+    "firstFailedReceipt": "tmp/runtime-policy-receipts/stage-settlement-income-20261014.v2.json",
+    "productionReceipt": "tmp/runtime-policy-receipts/stage-settlement-income-20261014-v2.v2.json",
+    "productionPolicyBypass": false,
+    "protocolVersionFallback": false
+  }
+}

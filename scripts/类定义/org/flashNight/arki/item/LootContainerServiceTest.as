@@ -91,6 +91,7 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         testMaterialAndInformationClaims();
         testCurrencyClaims();
         testEmptyStageSettlementReportRecovery();
+        testReportTooltipReadonlyReferences();
         testInitialOpenSynchronousFailureSuspendsSameInventory();
         testReliablePanelOpenCallbacks();
         testRecoveryProofStrictShapeAndNonce();
@@ -154,12 +155,14 @@ class org.flashNight.arki.item.LootContainerServiceTest {
                     var params:Object=closeParams(snap,"legacy.stash.close",String(snap.closeLease),false);
                     sm._configureSaveFlowForTest({flushResult:false});
                     var denied:Object=LootContainerService.execute("close",params);
-                    check(!denied.success && flow.inventory.getItem(0).value==3 && RewardStashService.peek()==null,
-                        "legacy map close false preserves exact source and does not publish stock");
+                    var heldOperation:String=RewardStashService.pendingOperationId();
+                    check(!denied.success && denied.error=="commit_pending" && flow.inventory.getItem(0).value==3
+                        && heldOperation!="" && RewardStashStore.ownedQuantity(RewardStashService.committedFeature(),STACK)==0,
+                        "legacy map close false retains the exposed candidate without publishing committed stock");
                     sm._configureSaveFlowForTest({flushResult:"pending"});
-                    var pending:Object=LootContainerService.execute("close",params);
-                    check(!pending.success && pending.error=="commit_pending" && RewardStashService.pendingOperationId()!="",
-                        "legacy map close pending retains one candidate");
+                    var pending:Object=LootContainerService.execute("query",queryParams(snap));
+                    check(!pending.success && pending.error=="commit_pending" && RewardStashService.pendingOperationId()==heldOperation,
+                        "legacy map query pending retains the exact original candidate");
                     sm._configureSaveFlowForTest({flushResult:true});
                     var query:Object=LootContainerService.execute("query",queryParams(snap));
                     check(query.success && query.remainingCount==0 && RewardStashStore.ownedQuantity(RewardStashService.peek(),STACK)==3,
@@ -2830,6 +2833,46 @@ class org.flashNight.arki.item.LootContainerServiceTest {
         } finally {
             _root.server = previousServer;
         }
+    }
+
+    private static function testReportTooltipReadonlyReferences():Void {
+        var previousServer:Object=_root.server, previousTooltip:Object=_root.Web物品注释HTML;
+        try {
+            resetWorld();LootContainerService.testOnlyAllowUnpersistedStageSettlement();
+            var sent:Array=[], callbacks:Array=[];installPanelTransport(sent,callbacks);
+            var report:Object=makeSettlementReport("victory","report-tooltip");report.totalItemGains=13;
+            report.itemFlows=[{direction:"gain",kind:"item",itemKey:STACK,displayName:STACK,iconName:STACK,tier:"",source:"pickup",reason:"",count:3},
+                {direction:"gain",kind:"money",itemKey:"金币",displayName:"金币",iconName:"金币",tier:"",source:"pickup",reason:"",count:10}];
+            var begun:Object=LootContainerService.beginStageSettlement(makeInventory([]),report);
+            LootContainerService.requestOpenPanel();callbacks[0](panelOpenAcceptedAck());
+            var params:Object=queryParams(begun);params.expectedAuthorityRevision=1;params.reference={kind:"flow",index:0};
+            var calls:Number=0;
+            _root.Web物品注释HTML=function(itemName:String):Object {
+                calls++;return {displayname:itemName,descHTML:"通用完整说明",introHTML:"介绍",
+                    document:{version:1,title:itemName,sections:[{role:"body",runs:[{text:"物品属性"}]}]}};
+            };
+            var before:String=new LiteJSON().stringify({money:_root.金钱,kpoint:_root.虚拟币,bag:_root.物品栏.背包.toObject(),dirty:_root.存档系统.dirtyMark});
+            var inspected:Object=LootContainerService.execute("reportTooltip",params);
+            check(inspected.success && calls==1 && inspected.tooltip.itemName==STACK
+                && inspected.tooltip.descHTML=="通用完整说明" && inspected.tooltip.document.title==STACK,
+                "report tooltip reuses common HTML and semantic document for the frozen item");
+            check(before==new LiteJSON().stringify({money:_root.金钱,kpoint:_root.虚拟币,bag:_root.物品栏.背包.toObject(),dirty:_root.存档系统.dirtyMark})
+                && inspected.authorityRevision==1 && _root.__lootSaveCalls==0,
+                "report inspection does not mutate inventory currency authority dirty mark or saves");
+            params.reference.index=2;
+            check(!LootContainerService.execute("reportTooltip",params).success && calls==1,"report tooltip rejects indexes outside frozen flows");
+            params.reference.index=1;
+            check(!LootContainerService.execute("reportTooltip",params).success && calls==1,"report currency never masquerades as an item definition");
+            params.reference={kind:"flow",index:0,itemName:EQUIPMENT};
+            check(!LootContainerService.execute("reportTooltip",params).success && calls==1,"report tooltip rejects forged definition names");
+            params.reference={kind:"flow",index:0};params.expectedAuthorityRevision=2;
+            check(LootContainerService.execute("reportTooltip",params).error=="stale_state" && calls==1,"report tooltip retains exact revision fence");
+            params.expectedAuthorityRevision=1;params.operationId="forged.write";
+            check(LootContainerService.execute("reportTooltip",params).error=="invalid_payload" && calls==1,"report tooltip cannot receive write fields");
+            resetWorld();var mapFlow:Object=activate([stack(STACK,1,777)],"report.tooltip.map");
+            params=queryParams(mapFlow.active);params.expectedAuthorityRevision=1;params.reference={kind:"flow",index:0};
+            check(LootContainerService.execute("reportTooltip",params).error=="transfer_forbidden" && calls==1,"map loot cannot read settlement definitions");
+        } finally {_root.server=previousServer;_root.Web物品注释HTML=previousTooltip;LootContainerService.testOnlyReset();}
     }
 
     private static function testEmptyStageSettlementReportRecovery():Void {
