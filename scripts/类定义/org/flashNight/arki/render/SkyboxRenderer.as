@@ -49,6 +49,11 @@ class org.flashNight.arki.render.SkyboxRenderer {
     /** 地面 Y 坐标（root 空间），渐变层不绘制到此值以下，0 = 未设置 */
     private static var _groundY:Number = 0;
 
+    /** 上次绘制时的几何快照（缩放/舞台尺寸），逐帧标量比较，变化才置 _dirty */
+    private static var _lastScaleY:Number = -1;
+    private static var _lastStageW:Number = -1;
+    private static var _lastStageH:Number = -1;
+
     // ==================== 屏幕尺寸 ====================
 
     // 屏幕尺寸：不再硬编码，_redrawGradient 中直接读 Stage.width/height
@@ -95,6 +100,7 @@ class org.flashNight.arki.render.SkyboxRenderer {
         _targetR = 0; _targetG = 0; _targetB = 0; _targetAlpha = 0;
         _dirty = false;
         _groundY = 0;
+        _lastScaleY = -1; _lastStageW = -1; _lastStageH = -1;
         if (_gradientLayer) {
             _gradientLayer.clear();
             _gradientLayer._visible = false;
@@ -177,6 +183,17 @@ class org.flashNight.arki.render.SkyboxRenderer {
      */
     public static function update():Void {
         if (!_perfEnabled || !_skyEnabled) return;
+
+        // 几何变化检测：缩放或舞台尺寸变化会让已绘制的覆盖范围失效，需要重绘。
+        // 正常纵向滚屏不触发——绘制范围已覆盖相机全部行程（见 _redrawGradient），
+        // 逐帧成本仅为几个标量读取与比较。
+        if (!_dirty && _gradientLayer) {
+            var p:MovieClip = _gradientLayer._parent;
+            if (p && (p._yscale !== _lastScaleY || Stage.width !== _lastStageW || Stage.height !== _lastStageH)) {
+                _dirty = true;
+            }
+        }
+
         if (!_dirty) return;
 
         // lerp current → target
@@ -256,10 +273,14 @@ class org.flashNight.arki.render.SkyboxRenderer {
         var gl:MovieClip = _gradientLayer;
         if (!gl) return;
 
+        var parent:MovieClip = gl._parent;
+        if (!parent) return;
+
         var a:Number = _currentAlpha;
         if (a <= 0.5) {
             gl._visible = false;
             gl.clear();
+            _cacheGeometry(parent);
             return;
         }
 
@@ -275,25 +296,19 @@ class org.flashNight.arki.render.SkyboxRenderer {
         var sh:Number = Stage.height;
 
         // 天空盒有缩放和 _y 偏移，将屏幕矩形转换到天空盒本地坐标系
-        var parent:MovieClip = gl._parent;
         var skyScale:Number = parent._yscale / 100;
         if (skyScale < 0.01) skyScale = 1;
         var invScale:Number = 1 / skyScale;
 
+        // 覆盖范围取「全相机行程」而非当前屏幕：
+        //   天空盒._x 恒为 0、_y 随相机纵向移动，若只画当前屏幕矩形，
+        //   镜头平移后新露出的天空无染色、旧染色区又被下次 clear 抹掉。
+        //   纵向范围 = 默认天空 艺术边界（顶部）→ 地面裁切（底部），
+        //   相机可见区是它的子集，因此滚屏无需重绘。
         var drawTop:Number = -parent._y * invScale;
         var drawRight:Number = sw * invScale;
         var screenBottom:Number = (sh - parent._y) * invScale;
         var drawBottom:Number = screenBottom;
-
-        // 地面裁切：渐变不绘制到地面以下
-        // 推导：地面在天空盒本地空间的 Y = Ymax - 地平线高度
-        // （gameworld 和天空盒共享缩放比例，相机偏移抵消）
-        if (_groundY > 0) {
-            var horizonH:Number = parent.地平线高度;
-            if (isNaN(horizonH)) horizonH = 0;
-            var groundLocal:Number = _groundY - horizonH;
-            if (groundLocal < drawBottom) drawBottom = groundLocal;
-        }
 
         // 使用 默认天空 资产的实际边界确定渲染范围
         // 比 gameworld.背景长 推算更准确，直接反映需要遮挡的内容边界
@@ -304,17 +319,37 @@ class org.flashNight.arki.render.SkyboxRenderer {
             var rect:Object = sky.getRect(parent);
             if (rect.xMin > 0) skyLeft = rect.xMin;
             if (rect.xMax < drawRight) skyRight = rect.xMax;
+            if (rect.yMin < drawTop) drawTop = rect.yMin;
+        }
+
+        // 地面裁切：底边直接取地面线（天空盒本地空间 = Ymax - 地平线高度，
+        // 与缩放/相机位置无关），镜头向下平移露出的区域也已在覆盖内
+        if (_groundY > 0) {
+            var horizonH:Number = parent.地平线高度;
+            if (isNaN(horizonH)) horizonH = 0;
+            drawBottom = _groundY - horizonH;
         }
 
         // 天空区域：半透明色调叠加（仅覆盖 默认天空 范围内、地面以上）
         // 不需要额外的黑色遮挡层：默认天空 在未被渐变叠加时的自然外观是可接受的
         // （所有非天气地图已验证），色块的根因是渐变画到了不该画的区域
-        gl.beginFill(color, a);
-        gl.moveTo(skyLeft, drawTop);
-        gl.lineTo(skyRight, drawTop);
-        gl.lineTo(skyRight, drawBottom);
-        gl.lineTo(skyLeft, drawBottom);
-        gl.lineTo(skyLeft, drawTop);
-        gl.endFill();
+        if (drawBottom > drawTop) {
+            gl.beginFill(color, a);
+            gl.moveTo(skyLeft, drawTop);
+            gl.lineTo(skyRight, drawTop);
+            gl.lineTo(skyRight, drawBottom);
+            gl.lineTo(skyLeft, drawBottom);
+            gl.lineTo(skyLeft, drawTop);
+            gl.endFill();
+        }
+
+        _cacheGeometry(parent);
+    }
+
+    /** 记录本次绘制的几何快照，供 update() 逐帧标量比较 */
+    private static function _cacheGeometry(parent:MovieClip):Void {
+        _lastScaleY = parent._yscale;
+        _lastStageW = Stage.width;
+        _lastStageH = Stage.height;
     }
 }
