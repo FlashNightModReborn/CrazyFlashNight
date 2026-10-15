@@ -104,7 +104,7 @@
 
 **生产 SWF 类归属门**：`node tools/audit-as2-class-embedding.js`（`single-ownership` 为同义入口）按打包配置选取全部生产 SWF，以 ExportAssets 对应 sprite/DoInitAction 识别真实类定义。asLoader 之外的 `org.flashNight.*` 及与 loader 同名的默认包类均失败，字节相同也不放行；完整模式同时核对 RSL 依赖存在且唯一。历史副本和测试工程按实际打包配置排除，不能因扩展名为 SWF 就把非运行工程混入生产证明。
 单件编译后使用 `--swf <产物相对路径>`，只验证该产物与 main/asLoader 的类边界，报告明确标 `closureChecked=false`；最终打包消费实际复制文件清单，CI 对随仓发行闭包独立检查。`swf-metadata.js` 与函数尺寸门复用按内容哈希和解析版本缓存的元数据，缓存校验失败自动回读产物；缓存不存 verdict、不代替 fresh 编译或行为。首次建缓存/规则升级需完整解析，日常迭代不重复全仓解析。
-历史路径 `flashswf/gk-1-s.swf` 实际由 `LoadVars` 读取 UTF-16LE 文本配置。类型识别仅对该精确路径开放，要求 BOM、完整字节对、既有字段闭集且各出现一次、分号结束，并拒绝控制字符、其他路径文本及伪装成该配置的 SWF；不把某次文件长度固定为永久类型标记。这个结构检查不验证字段值的业务有效性，也不得输出配置正文。
+历史路径 `flashswf/gk-1-s.swf` 是主时间轴通过 `XML.load()` 读取的 UTF-16LE 文本配置。类型识别仅对该精确路径开放，要求 BOM、完整字节对、既有字段闭集且各出现一次、分号结束，并拒绝控制字符、其他路径文本及伪装成该配置的 SWF；不把某次文件长度固定为永久类型标记。这个结构检查不验证字段值的业务有效性，也不得输出配置正文。
 `--policy core-ownership` 仅作两件核心文件诊断；`child-only` / `dual-build` 是历史兼容诊断，不可代替生产归属验收。解析器/缓存/归属负例为 `node tools/test-swf-metadata.js`。原有 AVM1 64KB 能力边界继续成立。
 
 **对外表述边界**：可以说「已完成 Flash CS6 自动化 smoke 验证」/「已触发编译并拿到新鲜 trace」（TestLoader）/「asLoader 发布编译 0 错误、SWF 已重生成」（publish 模式）。缺少新鲜 trace、编译器错误面板或 IDE 复核时不得说「已编译通过」；但 asLoader publish 本就无 trace，以 `0 个错误` + SWF 刷新为准。若 AS2 逻辑改动选择 `main`，必须说明触及主 FLA / 资产 / linkage / 主时间轴，否则应使用 asLoader / TestLoader。
