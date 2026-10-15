@@ -61,7 +61,8 @@ namespace CF7Launcher.Guardian.Hud
                 new PreparationRoute("tuning", "装备调制", "EQUIPMENT_TUNING"),
                 new PreparationRoute("skills", "技能", "SKILLS"),
                 new PreparationRoute("materials", "材料", "MATERIALS"),
-                new PreparationRoute("intelligence", "情报", "INTELLIGENCE")
+                new PreparationRoute("intelligence", "情报", "INTELLIGENCE"),
+                new PreparationRoute("meridians", "经脉", "MERIDIANS")
             });
 
         internal static IReadOnlyList<PreparationRoute> FrozenRoutes

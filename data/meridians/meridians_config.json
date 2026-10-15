@@ -1,0 +1,108 @@
+{
+    "meridians": [
+        {
+            "id": "ren",
+            "name": "任脉",
+            "desc": "阴脉之海。θ-域耦合通道自会阴沿前正中线上行，主一身之阴。",
+            "requiredInfo": ["γ-ECHO病理摘要", "旧世残篇：西南自治区概况"],
+            "nodes": [
+                { "id": "ren-1", "name": "会阴", "cost": 2000,  "innerPower": 15 },
+                { "id": "ren-2", "name": "关元", "cost": 5000,  "innerPower": 25 },
+                { "id": "ren-3", "name": "中脘", "cost": 10000, "innerPower": 40 },
+                { "id": "ren-4", "name": "天突", "cost": 20000, "innerPower": 60 },
+                { "id": "ren-5", "name": "承浆", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "du",
+            "name": "督脉",
+            "desc": "阳脉之海。沿脊背上行至巅，主一身之阳。",
+            "requiredInfo": ["ECHO-034的加密日志", "方舟秘钥"],
+            "nodes": [
+                { "id": "du-1", "name": "长强", "cost": 2000,  "innerPower": 15 },
+                { "id": "du-2", "name": "命门", "cost": 5000,  "innerPower": 25 },
+                { "id": "du-3", "name": "大椎", "cost": 10000, "innerPower": 40 },
+                { "id": "du-4", "name": "风府", "cost": 20000, "innerPower": 60 },
+                { "id": "du-5", "name": "百会", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "chong",
+            "name": "冲脉",
+            "desc": "十二经之海，又称血海。并足少阴挟脐上行。",
+            "requiredInfo": ["《黑铁书》", "丽丽丝的芯片数据"],
+            "nodes": [
+                { "id": "chong-1", "name": "横骨", "cost": 2000,  "innerPower": 15 },
+                { "id": "chong-2", "name": "盲俞", "cost": 5000,  "innerPower": 25 },
+                { "id": "chong-3", "name": "幽门", "cost": 10000, "innerPower": 40 },
+                { "id": "chong-4", "name": "步廊", "cost": 20000, "innerPower": 60 },
+                { "id": "chong-5", "name": "神藏", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "dai",
+            "name": "带脉",
+            "desc": "束腰而圆，如一，总约诸脉。",
+            "requiredInfo": ["硬化僵尸情报", "超市求生笔记"],
+            "nodes": [
+                { "id": "dai-1", "name": "带脉", "cost": 2000,  "innerPower": 15 },
+                { "id": "dai-2", "name": "五枢", "cost": 5000,  "innerPower": 25 },
+                { "id": "dai-3", "name": "维道", "cost": 10000, "innerPower": 40 },
+                { "id": "dai-4", "name": "章门", "cost": 20000, "innerPower": 60 },
+                { "id": "dai-5", "name": "京门", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "yinwei",
+            "name": "阴维脉",
+            "desc": "维络诸阴，起于足少阴，循下肢内侧上行。",
+            "requiredInfo": ["Blue的纸条", "Andy档案"],
+            "nodes": [
+                { "id": "yinwei-1", "name": "筑宾", "cost": 2000,  "innerPower": 15 },
+                { "id": "yinwei-2", "name": "府舍", "cost": 5000,  "innerPower": 25 },
+                { "id": "yinwei-3", "name": "冲门", "cost": 10000, "innerPower": 40 },
+                { "id": "yinwei-4", "name": "大横", "cost": 20000, "innerPower": 60 },
+                { "id": "yinwei-5", "name": "腹哀", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "yangwei",
+            "name": "阳维脉",
+            "desc": "维络诸阳，起于足太阳，循下肢外侧上行。",
+            "requiredInfo": ["BPK档案", "翅虎堂徽章"],
+            "nodes": [
+                { "id": "yangwei-1", "name": "金门", "cost": 2000,  "innerPower": 15 },
+                { "id": "yangwei-2", "name": "阳交", "cost": 5000,  "innerPower": 25 },
+                { "id": "yangwei-3", "name": "绷阳", "cost": 10000, "innerPower": 40 },
+                { "id": "yangwei-4", "name": "本神", "cost": 20000, "innerPower": 60 },
+                { "id": "yangwei-5", "name": "脑空", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "yinqiao",
+            "name": "阴跷脉",
+            "desc": "司目之瞑与下肢之机动，起于然谷之后。",
+            "requiredInfo": ["镜之虎彻制作图纸", "符线溯源笔记"],
+            "nodes": [
+                { "id": "yinqiao-1", "name": "照海", "cost": 2000,  "innerPower": 15 },
+                { "id": "yinqiao-2", "name": "水泉", "cost": 5000,  "innerPower": 25 },
+                { "id": "yinqiao-3", "name": "交信", "cost": 10000, "innerPower": 40 },
+                { "id": "yinqiao-4", "name": "筑宾", "cost": 20000, "innerPower": 60 },
+                { "id": "yinqiao-5", "name": "阴郄", "cost": 40000, "innerPower": 100 }
+            ]
+        },
+        {
+            "id": "yangqiao",
+            "name": "阳跷脉",
+            "desc": "司目之瞑与轻身善走，起于跟中，循外踝上行。",
+            "requiredInfo": ["机密档案：幻影套装（Phantom Suit）研发日志残卷", "黑铁会信物"],
+            "nodes": [
+                { "id": "yangqiao-1", "name": "申脉", "cost": 2000,  "innerPower": 15 },
+                { "id": "yangqiao-2", "name": "仆参", "cost": 5000,  "innerPower": 25 },
+                { "id": "yangqiao-3", "name": "跗阳", "cost": 10000, "innerPower": 40 },
+                { "id": "yangqiao-4", "name": "居髎", "cost": 20000, "innerPower": 60 },
+                { "id": "yangqiao-5", "name": "肩髃", "cost": 40000, "innerPower": 100 }
+            ]
+        }
+    ]
+}

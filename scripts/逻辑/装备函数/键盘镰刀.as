@@ -1,6 +1,8 @@
 ﻿_root.装备生命周期函数.键盘镰刀初始化 = function(ref:Object, param:Object)
 {
     var target:MovieClip = ref.自机;
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "keyboard");
+    ref.rockBlade = param.rockBlade;
 
     // ===== 从XML参数对象读取配置 =====
     ref.animDuration = param.animDuration || 15;
@@ -217,7 +219,7 @@
     }
 
     // ===== 战技系统配置 =====
-    ref.skill_0 = param.skill_0; // 地面战技：瞬步斩
+    ref.skill_0 = param.skill_0; // 地面战技：旋镰横掠
     ref.skill_1 = param.skill_1; // 空中战技：镰刀追踪充能
     ref.当前装载战技 = null; // 当前已装载的战技
 
@@ -238,7 +240,7 @@
     ref.获取目标战技 = function():Object {
         if (ref.weaponMode != "镰刀") return null; // 键盘模式无战技
         if (_root.是否兵器跳(target)) return ref.skill_1; // 空中：追踪充能
-        return ref.skill_0; // 地面：瞬步斩
+        return ref.skill_0; // 地面：旋镰横掠
     };
 
     // 初始装载战技
@@ -259,6 +261,7 @@
 _root.装备生命周期函数.键盘镰刀周期 = function(ref:Object, param:Object)
 {
     EquipmentTick.cleanup(ref);
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.ownsCycle(ref)) return;
 
     var target:MovieClip = ref.自机;
 
@@ -348,6 +351,7 @@ _root.装备生命周期函数.键盘镰刀动画控制 = function(ref:Object)
 // ===== 动画更新函数 =====
 _root.装备生命周期函数.键盘镰刀动画更新 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var scythe:MovieClip = target.刀_引用;
 
@@ -359,6 +363,7 @@ _root.装备生命周期函数.键盘镰刀动画更新 = function(ref:Object)
 // ===== 刀口位置更新函数 =====
 _root.装备生命周期函数.键盘镰刀更新刀口位置 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var scythe:MovieClip = target.刀_引用;
 

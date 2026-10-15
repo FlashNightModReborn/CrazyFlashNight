@@ -1414,6 +1414,7 @@ namespace CF7Launcher.Guardian
         private MercTask _mercTask;
         private TaskTask _taskTask;
         private IntelligenceTask _intelligenceTask;
+        private MeridiansTask _meridiansTask;
         private BlackMarketTask _blackMarketTask;
         private const int BlackMarketObservationRecordLimit = 64;
         private string _blackMarketObservationPanelInstanceId;
@@ -5263,6 +5264,12 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetMeridiansTask(MeridiansTask task)
+        {
+            _meridiansTask = task;
+            if (task != null) task.SetPostToWeb(PostToWeb);
+        }
+
         // composition 只读端点（intelligence）的入站转发：surface 已按面板名+活跃会话
         // 绑定过滤，此处复用与本 overlay 自有文档完全相同的 HandlePanelMessage 权威，
         // 包括 preparation-child 返回装备 capability 的 arm/cancel 与 exact 关闭。
@@ -8776,6 +8783,7 @@ namespace CF7Launcher.Guardian
                 case "return_frame":
                 case "catalog":
                 case "state":
+                case "light":
                 case "bundle":
                 case "glossary_catalog":
                 case "glossary_snapshot":
@@ -8851,6 +8859,11 @@ namespace CF7Launcher.Guardian
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "meridians")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to MeridiansTask, _meridiansTask=" + (_meridiansTask != null ? "ok" : "NULL"));
+                            if (_meridiansTask != null) _meridiansTask.HandleWebRequest(cmd, parsed);
                         }
                         else if (panel == "arena")
                         {
@@ -9675,6 +9688,7 @@ namespace CF7Launcher.Guardian
             if (_mercTask != null) _mercTask.ClearPending();
             if (_taskTask != null) _taskTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
+            if (_meridiansTask != null) _meridiansTask.ClearPending();
             if (_blackMarketTask != null)
                 _blackMarketTask.RetireObservation();
         }

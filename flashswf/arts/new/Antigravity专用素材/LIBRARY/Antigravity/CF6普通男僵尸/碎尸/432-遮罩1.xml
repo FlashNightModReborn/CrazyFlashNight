@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/432-遮罩1" itemID="6af00000-67ad32c9" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="432-遮罩1">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-1309 914|-1329 924|-1333 927|-1338 930|-1352 939|-1356 942|-1353 948|-1352 950|-1354 956|-1357 975[-1326 962 -1292 956|-1308 913|-1309 914" fillStyle0="1"/>
+                    <Edge edges="!-1171 1156|-1182 1117[-1256 1109 -1324 1072|-1325 1075[-1285 1088 -1246 1123|-1180 1176|-1177 1181|-1172 1172|-1176 1165|-1171 1156" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/393-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.118254" b="0.191286" c="-0.191286" d="0.118254" tx="-57.171522" ty="46.63644"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

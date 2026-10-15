@@ -462,6 +462,10 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.空手攻击力 += _root.全局健身空攻加成;
             target.内力 += _root.全局健身内力加成;
             target.防御力 += _root.全局健身防御加成;
+            // 经脉点亮加成：_root.经脉内力加成 是 MeridianPanelService 安装的 getter，
+            // 每次读取按当前配置与点亮集重算，改 meridians_config.json 后即以新值生效。
+            var 经脉内力:Number = Number(_root.经脉内力加成);
+            if (isFinite(经脉内力)) target.内力 += 经脉内力;
         }
 
         if(isNaN(target.hp)) target.hp = target.hp满血值;

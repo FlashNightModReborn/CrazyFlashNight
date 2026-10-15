@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1635-遮罩3" itemID="6af00000-575d8ee1" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1635-遮罩3">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-585 -1093|-551 -1104|-546 -1104[-522 -1103 -501 -1116|-466 -1116|-458 -1122[-431 -1134 -419 -1159[-416 -1169 -420 -1176|-434 -1201|-436 -1200[-442 -1203 -444 -1209|-446 -1208[-506 -1210 -562 -1230|-581 -1216|-645 -1215|-669 -1204|-662 -1181|-651 -1156|-640 -1138[-624 -1115 -611 -1086|-613 -1083|-593 -1090|-592 -1095|-596 -1104|-598 -1107|-596 -1105|-585 -1093" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.183777" b="-0.064224" c="0.064224" d="0.183777" tx="-69.55" ty="-75.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

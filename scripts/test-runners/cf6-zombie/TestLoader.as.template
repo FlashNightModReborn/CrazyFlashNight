@@ -1,0 +1,6 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.cf6ZombieAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-zombie Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-zombie Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6ZombieAssetTest.runAllTests();

@@ -415,6 +415,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `blackmarket` | minigame | `modules/minigames/blackmarket/blackmarket-panel.js` |
 | `warlord` | minigame | `modules/minigames/warlord/warlord-panel.js` |
 | `intelligence` | 业务 Panel | `modules/intelligence-panel.js` |
+| `meridians` | 业务 Panel | `modules/meridians-panel.js` |
 | `arena` | 工作台 | `modules/arena-panel.js` |
 | `team` | 工作台 | `modules/team/team-panel.js` |
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |

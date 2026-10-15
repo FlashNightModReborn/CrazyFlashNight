@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/438-遮罩0" itemID="6af00000-c81b0c02" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="438-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-1257 1073|-1263 1076|-1292 1093|-1277 1100[-1231 1127 -1185 1131[-1169 1108 -1133 1111|-1114 1119|-1115 1099|-1115 1096|-1132 1080[-1166 1055 -1203 1042|-1257 1073" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/394-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.105489" b="-0.198814" c="0.198815" d="-0.105489" tx="-64.158445" ty="59.575158"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

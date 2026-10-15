@@ -149,6 +149,13 @@
     &lt;font color="#FFCC00"&gt;【话筒模式】&lt;/font&gt;在这歌声的激昂中，力量逐层增强，最多叠加至24层。
     每当力量达到12层之境，就会随机召唤一位主唱的伙伴，&lt;BR&gt;&lt;font color="#FFCC00"&gt;【光剑模式】&lt;/font&gt;贴身交战之时，激光切割的威力尽展无遗。
     而在力量的极致释放时，它化作激光突刺，穿透一切抵抗。</description>
+    <skill>
+      <skillname>主唱突刺</skillname>
+      <description>光剑形态快速起手连续突刺，可用左右方向键转向。三段刀伤继承兵器属性，仅地面使用。</description>
+      <cd>5000</cd>
+      <mp>30</mp>
+      <skillLocked>true</skillLocked>
+    </skill>
     <data>
       <level>13</level>
       <weight>5</weight>
@@ -165,10 +172,21 @@
       【话筒支架模式】自动释放红色音符，攻击力逐层增强最多24层，每12层召唤伙伴。
       两种模式均可释放猩红增幅范围治疗。</description>
       <attr_0>
-        <skillInteraction>independent</skillInteraction>
+        <skillInteraction>bound</skillInteraction>
         <init>
           <initRoutines>主唱光剑初始化</initRoutines>
           <initParam>
+            <!-- 专属刀子弹配给：保留旧战技刀伤预算与装备附加伤害。 -->
+            <rockBlade>
+              <bullet>近战联弹</bullet>
+              <pellets>3</pellets>
+              <legacySkill>突刺</legacySkill>
+              <unarmed>0.1</unarmed>
+              <level>25</level>
+              <weapon>4</weapon>
+              <hits>3</hits>
+              <bonusBudget>3</bonusBudget>
+            </rockBlade>
             <animDuration>15</animDuration>
             <transformInterval>1000</transformInterval>
             <mpCostRatio>1</mpCostRatio>

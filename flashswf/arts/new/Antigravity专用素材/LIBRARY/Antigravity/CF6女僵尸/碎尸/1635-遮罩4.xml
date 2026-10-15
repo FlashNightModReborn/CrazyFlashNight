@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1635-遮罩4" itemID="6af00000-07d04de6" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1635-遮罩4">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-238 -1102|-232 -1109|-225 -1124|-223 -1145|-224 -1150|-225 -1153|-226 -1157|-226 -1170|-223 -1178[-207 -1156 -198 -1121[-192 -1094 -198 -1071[-189 -1067 -184 -1079|-181 -1081|-178 -1101|-177 -1107|-176 -1108|-173 -1117[-163 -1104 -156 -1082|-152 -1067|-148 -1078|-146 -1086[-145 -1104 -147 -1118[-152 -1143 -170 -1168|-182 -1185|-196 -1210|-199 -1215|-200 -1226|-201 -1248|-268 -1255|-269 -1255|-289 -1248|-296 -1237|-294 -1238|-286 -1229|-284 -1230|-270 -1205[-266 -1198 -269 -1188[-277 -1171 -292 -1160|-291 -1158|-279 -1150[-260 -1132 -254 -1105|-246 -1098|-245 -1096|-238 -1102" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.183777" b="-0.064224" c="0.064224" d="0.183777" tx="-62.05" ty="-77"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

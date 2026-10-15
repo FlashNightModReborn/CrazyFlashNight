@@ -1,0 +1,183 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Tactical Map Shared Vocabulary (Map Panel & Stage Select)
+   ───────────────────────────────────────────────────────────────────────────
+   跨面板共用战术沙盘语汇层（单一来源）：
+   1. 主副色分离架构：
+      - 主色（--tactical-primary-*）：跨区域恒定为地图标志性毒绿，负责悬停/键盘焦点、
+        选中态、激活页签与展开菜单；
+      - 副色（由各面板自身的 --map-accent-* / --ss-accent-* 按区域驱动）：负责舞台氛围、
+        四角框标、顶栏渐变与 180px 下划线、闲置控件边框及卡片框体装饰。
+   2. 跨区域恒定节点与状态语义（--tactical-combat-rgb / --tactical-task-* /
+      --tactical-diplomacy-rgb / --tactical-locked-rgb / --tactical-current-cyan-rgb）。
+   3. 跨面板共用组件：
+      - 任务计数切角徽章（.map-page-tab-badge / .map-filter-hotspot-badge /
+        .stage-select-frame-toggle-task-badge / .stage-select-tab-task-badge）及入场动效；
+      - 顶栏 180px 发光下划线；
+      - 战术舞台四角框标（overview 舞台与关卡详情视口共用，详情展开时自动收起外层框标避免侵入顶栏）。
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+#panel-container[data-panel="map"],
+.map-panel,
+#panel-container[data-panel="stage-select"],
+.stage-select-panel[data-workbench-skin="stage-select"] {
+    /* 1. 跨区域恒定主色（地图标志性毒绿） */
+    --tactical-primary-rgb: 200,255,76;
+    --tactical-primary-hi-rgb: 220,255,128;
+    --tactical-primary-lo-rgb: 162,230,56;
+    --tactical-primary-ink-rgb: 16,21,5;
+
+    /* 2. 跨区域恒定节点与状态语义色 */
+    --tactical-current-cyan-rgb: 114,230,255;
+    --tactical-combat-rgb: 217,36,41;
+    --tactical-task-gold-rgb: 255,210,74;
+    --tactical-task-red-rgb: 255,74,58;
+    --tactical-task-border-rgb: 255,94,74;
+    --tactical-task-hot-rgb: 255,146,98;
+    --tactical-task-badge-text-rgb: 255,216,194;
+    --tactical-task-badge-active-text-rgb: 255,242,210;
+    --tactical-task-badge-bg-rgb: 48,13,15;
+    --tactical-task-badge-active-bg-rgb: 72,18,16;
+    --tactical-diplomacy-rgb: 46,204,113;
+    --tactical-locked-rgb: 109,116,125;
+    --tactical-black-rgb: 0,0,0;
+    --tactical-white-rgb: 255,255,255;
+
+    /* 3. 共用几何与动效通道 */
+    --tactical-chamfer-sm: 4px;
+    --tactical-chamfer-md: 5px;
+    --tactical-chamfer-lg: 10px;
+    --tactical-font-badge: 9px;
+    --tactical-motion-fast: 120ms;
+    --tactical-motion-reticle: 140ms;
+    --tactical-motion-normal: 150ms;
+    --tactical-motion-badge-enter: 250ms;
+    --tactical-ease-default: ease;
+    --tactical-ease-out: cubic-bezier(0, 0, 0.2, 1);
+    --tactical-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.map-panel {
+    --tactical-header-line-rgb: var(--map-accent-rgb);
+    --tactical-bracket-rgb: var(--map-accent-rgb);
+}
+
+.stage-select-panel[data-workbench-skin="stage-select"] {
+    --tactical-header-line-rgb: var(--ss-accent-rgb);
+    --tactical-bracket-rgb: var(--ss-accent-rgb);
+}
+
+/* ─── 共用顶栏 180px 发光下划线 ─── */
+.map-panel-header::after,
+.stage-select-panel.is-runtime .stage-select-header::after,
+.stage-focus-surface > .workbench-header::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 180px;
+    height: 1px;
+    pointer-events: none;
+    background: rgb(var(--tactical-header-line-rgb));
+    box-shadow: 0 0 10px rgba(var(--tactical-header-line-rgb), 0.5);
+}
+
+.stage-select-panel.is-runtime .stage-select-header::after {
+    bottom: 3px;
+}
+
+/* ─── 共用战术舞台四角框标（总览舞台与关卡详情视口共用，详情展开时收起外层避免侵入顶栏） ─── */
+.stage-select-panel.is-runtime .stage-select-stage-shell::after,
+.stage-focus-viewport::after {
+    content: "";
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    top: 46px;
+    bottom: 8px;
+    z-index: 3;
+    pointer-events: none;
+    opacity: 0.78;
+    background:
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) left top / 14px 2px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) left top / 2px 14px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) right top / 14px 2px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) right top / 2px 14px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) left bottom / 14px 2px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) left bottom / 2px 14px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) right bottom / 14px 2px no-repeat,
+        linear-gradient(rgb(var(--tactical-bracket-rgb)), rgb(var(--tactical-bracket-rgb))) right bottom / 2px 14px no-repeat;
+}
+
+.stage-focus-viewport::after {
+    top: 8px;
+    z-index: 2;
+}
+
+.stage-select-panel.is-runtime.is-stage-focused .stage-select-stage-shell::after {
+    display: none;
+}
+
+/* ─── 共用任务计数切角徽章（Map page tab / Map filter / Stage Select 区域入口与菜单项） ─── */
+.map-page-tab-badge,
+.map-filter-hotspot-badge,
+.stage-select-frame-toggle-task-badge,
+.stage-select-tab-task-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    padding: 0 6px;
+    min-width: 18px;
+    height: 14px;
+    line-height: 14px;
+    font-size: var(--tactical-font-badge);
+    font-weight: 700;
+    text-align: center;
+    color: rgb(var(--tactical-task-badge-text-rgb));
+    background:
+        linear-gradient(90deg, rgba(var(--tactical-task-red-rgb), 0.34) 0, rgba(var(--tactical-task-red-rgb), 0.34) 3px, transparent 3px),
+        rgba(var(--tactical-task-badge-bg-rgb), 0.92);
+    border: 1px solid rgba(var(--tactical-task-border-rgb), 0.62);
+    border-radius: 0;
+    clip-path: polygon(0 0, calc(100% - var(--tactical-chamfer-sm)) 0, 100% var(--tactical-chamfer-sm), 100% 100%, var(--tactical-chamfer-sm) 100%, 0 calc(100% - var(--tactical-chamfer-sm)));
+    letter-spacing: 0;
+    font-family: Consolas, "Microsoft YaHei", monospace;
+    animation: mapQuestBadgeEnter var(--tactical-motion-badge-enter) var(--tactical-ease-spring);
+}
+
+.map-page-tab-badge {
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+.map-filter-hotspot-badge {
+    position: relative;
+    z-index: 1;
+    margin: 0 4px;
+}
+
+.map-page-tab.is-active .map-page-tab-badge,
+.map-filter-hotspot.is-active .map-filter-hotspot-badge,
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle-task-badge,
+.stage-select-panel.is-runtime .stage-select-tab.is-active .stage-select-tab-task-badge {
+    color: rgb(var(--tactical-task-badge-active-text-rgb));
+    background:
+        linear-gradient(90deg, rgba(var(--tactical-task-hot-rgb), 0.42) 0, rgba(var(--tactical-task-hot-rgb), 0.42) 3px, transparent 3px),
+        rgba(var(--tactical-task-badge-active-bg-rgb), 0.95);
+}
+
+@keyframes mapQuestBadgeEnter {
+    0%   { transform: scale(0);   opacity: 0; }
+    60%  { transform: scale(1.2); opacity: 1; }
+    100% { transform: scale(1);   opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .map-page-tab-badge,
+    .map-filter-hotspot-badge,
+    .map-rail-scene-quest,
+    .stage-select-frame-toggle-task-badge,
+    .stage-select-tab-task-badge {
+        animation: none;
+    }
+}
