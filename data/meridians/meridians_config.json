@@ -1,4 +1,5 @@
 {
+    "innerPowerCap": 115,
     "meridians": [
         {
             "id": "ren",
@@ -6,11 +7,29 @@
             "desc": "阴脉之海。θ-域耦合通道自会阴沿前正中线上行，主一身之阴。",
             "requiredInfo": ["γ-ECHO病理摘要", "旧世残篇：西南自治区概况"],
             "nodes": [
-                { "id": "ren-1", "name": "会阴", "cost": 2000,  "innerPower": 15 },
-                { "id": "ren-2", "name": "关元", "cost": 5000,  "innerPower": 25 },
-                { "id": "ren-3", "name": "中脘", "cost": 10000, "innerPower": 40 },
-                { "id": "ren-4", "name": "天突", "cost": 20000, "innerPower": 60 },
-                { "id": "ren-5", "name": "承浆", "cost": 40000, "innerPower": 100 }
+                { "id": "ren-1", "name": "会阴", "cost": 2000, "innerPower": 1 },
+                { "id": "ren-101", "name": "曲骨", "cost": 2700, "innerPower": 1 },
+                { "id": "ren-102", "name": "中极", "cost": 3700, "innerPower": 1 },
+                { "id": "ren-2", "name": "关元", "cost": 5000, "innerPower": 1 },
+                { "id": "ren-105", "name": "石门", "cost": 5500, "innerPower": 1 },
+                { "id": "ren-104", "name": "气海", "cost": 6100, "innerPower": 1 },
+                { "id": "ren-106", "name": "阴交", "cost": 6700, "innerPower": 1 },
+                { "id": "ren-107", "name": "神阙", "cost": 7400, "innerPower": 1 },
+                { "id": "ren-108", "name": "水分", "cost": 8200, "innerPower": 1 },
+                { "id": "ren-109", "name": "下脘", "cost": 9100, "innerPower": 1 },
+                { "id": "ren-3", "name": "中脘", "cost": 10000, "innerPower": 1 },
+                { "id": "ren-111", "name": "上脘", "cost": 10700, "innerPower": 1 },
+                { "id": "ren-112", "name": "巨阙", "cost": 11500, "innerPower": 1 },
+                { "id": "ren-113", "name": "鸠尾", "cost": 12300, "innerPower": 1 },
+                { "id": "ren-114", "name": "中庭", "cost": 13200, "innerPower": 1 },
+                { "id": "ren-115", "name": "膻中", "cost": 14100, "innerPower": 1 },
+                { "id": "ren-116", "name": "玉堂", "cost": 15200, "innerPower": 1 },
+                { "id": "ren-117", "name": "紫宫", "cost": 16200, "innerPower": 1 },
+                { "id": "ren-118", "name": "华盖", "cost": 17400, "innerPower": 1 },
+                { "id": "ren-119", "name": "璇玑", "cost": 18700, "innerPower": 1 },
+                { "id": "ren-4", "name": "天突", "cost": 20000, "innerPower": 1 },
+                { "id": "ren-121", "name": "廉泉", "cost": 28300, "innerPower": 1 },
+                { "id": "ren-5", "name": "承浆", "cost": 40000, "innerPower": 1 }
             ]
         },
         {
@@ -19,11 +38,33 @@
             "desc": "阳脉之海。沿脊背上行至巅，主一身之阳。",
             "requiredInfo": ["ECHO-034的加密日志", "方舟秘钥"],
             "nodes": [
-                { "id": "du-1", "name": "长强", "cost": 2000,  "innerPower": 15 },
-                { "id": "du-2", "name": "命门", "cost": 5000,  "innerPower": 25 },
-                { "id": "du-3", "name": "大椎", "cost": 10000, "innerPower": 40 },
-                { "id": "du-4", "name": "风府", "cost": 20000, "innerPower": 60 },
-                { "id": "du-5", "name": "百会", "cost": 40000, "innerPower": 100 }
+                { "id": "du-1", "name": "长强", "cost": 2000, "innerPower": 1 },
+                { "id": "du-101", "name": "腰俞", "cost": 2300, "innerPower": 1 },
+                { "id": "du-102", "name": "腰阳关", "cost": 2600, "innerPower": 1 },
+                { "id": "du-103", "name": "悬枢", "cost": 3000, "innerPower": 1 },
+                { "id": "du-104", "name": "脊中", "cost": 3400, "innerPower": 1 },
+                { "id": "du-105", "name": "中枢", "cost": 3900, "innerPower": 1 },
+                { "id": "du-106", "name": "筋缩", "cost": 4500, "innerPower": 1 },
+                { "id": "du-107", "name": "至阳", "cost": 5100, "innerPower": 1 },
+                { "id": "du-108", "name": "灵台", "cost": 5800, "innerPower": 1 },
+                { "id": "du-109", "name": "神道", "cost": 6700, "innerPower": 1 },
+                { "id": "du-110", "name": "身柱", "cost": 7600, "innerPower": 1 },
+                { "id": "du-111", "name": "陶道", "cost": 8700, "innerPower": 1 },
+                { "id": "du-3", "name": "大椎", "cost": 10000, "innerPower": 1 },
+                { "id": "du-113", "name": "哑门", "cost": 14100, "innerPower": 1 },
+                { "id": "du-4", "name": "风府", "cost": 20000, "innerPower": 1 },
+                { "id": "du-115", "name": "脑户", "cost": 23800, "innerPower": 1 },
+                { "id": "du-116", "name": "强间", "cost": 28300, "innerPower": 1 },
+                { "id": "du-117", "name": "后顶", "cost": 33600, "innerPower": 1 },
+                { "id": "du-5", "name": "百会", "cost": 40000, "innerPower": 1 },
+                { "id": "du-119", "name": "前顶", "cost": 42100, "innerPower": 1 },
+                { "id": "du-120", "name": "囟会", "cost": 44300, "innerPower": 1 },
+                { "id": "du-121", "name": "上星", "cost": 46600, "innerPower": 1 },
+                { "id": "du-122", "name": "神庭", "cost": 49000, "innerPower": 1 },
+                { "id": "du-123", "name": "印堂", "cost": 51500, "innerPower": 1 },
+                { "id": "du-124", "name": "素髎", "cost": 54200, "innerPower": 1 },
+                { "id": "du-125", "name": "水沟", "cost": 57000, "innerPower": 1 },
+                { "id": "du-126", "name": "龈交", "cost": 60000, "innerPower": 1 }
             ]
         },
         {
@@ -32,11 +73,23 @@
             "desc": "十二经之海，又称血海。并足少阴挟脐上行。",
             "requiredInfo": ["《黑铁书》", "丽丽丝的芯片数据"],
             "nodes": [
-                { "id": "chong-1", "name": "横骨", "cost": 2000,  "innerPower": 15 },
-                { "id": "chong-2", "name": "盲俞", "cost": 5000,  "innerPower": 25 },
-                { "id": "chong-3", "name": "幽门", "cost": 10000, "innerPower": 40 },
-                { "id": "chong-4", "name": "步廊", "cost": 20000, "innerPower": 60 },
-                { "id": "chong-5", "name": "神藏", "cost": 40000, "innerPower": 100 }
+                { "id": "chong-1", "name": "横骨", "cost": 2000, "innerPower": 1 },
+                { "id": "chong-101", "name": "大赫", "cost": 2400, "innerPower": 1 },
+                { "id": "chong-102", "name": "气穴", "cost": 2900, "innerPower": 1 },
+                { "id": "chong-103", "name": "四满", "cost": 3500, "innerPower": 1 },
+                { "id": "chong-104", "name": "中注", "cost": 4200, "innerPower": 1 },
+                { "id": "chong-2", "name": "盲俞", "cost": 5000, "innerPower": 1 },
+                { "id": "chong-106", "name": "商曲", "cost": 5700, "innerPower": 1 },
+                { "id": "chong-107", "name": "石关", "cost": 6600, "innerPower": 1 },
+                { "id": "chong-108", "name": "阴都", "cost": 7600, "innerPower": 1 },
+                { "id": "chong-109", "name": "腹通谷", "cost": 8700, "innerPower": 1 },
+                { "id": "chong-3", "name": "幽门", "cost": 10000, "innerPower": 1 },
+                { "id": "chong-4", "name": "步廊", "cost": 20000, "innerPower": 1 },
+                { "id": "chong-112", "name": "神封", "cost": 25200, "innerPower": 1 },
+                { "id": "chong-113", "name": "灵墟", "cost": 31700, "innerPower": 1 },
+                { "id": "chong-5", "name": "神藏", "cost": 40000, "innerPower": 1 },
+                { "id": "chong-115", "name": "彧中", "cost": 49000, "innerPower": 1 },
+                { "id": "chong-116", "name": "俞府", "cost": 60000, "innerPower": 1 }
             ]
         },
         {
@@ -45,11 +98,12 @@
             "desc": "束腰而圆，如一，总约诸脉。",
             "requiredInfo": ["硬化僵尸情报", "超市求生笔记"],
             "nodes": [
-                { "id": "dai-1", "name": "带脉", "cost": 2000,  "innerPower": 15 },
-                { "id": "dai-2", "name": "五枢", "cost": 5000,  "innerPower": 25 },
-                { "id": "dai-3", "name": "维道", "cost": 10000, "innerPower": 40 },
-                { "id": "dai-4", "name": "章门", "cost": 20000, "innerPower": 60 },
-                { "id": "dai-5", "name": "京门", "cost": 40000, "innerPower": 100 }
+                { "id": "dai-4", "name": "章门", "cost": 20000, "innerPower": 1 },
+                { "id": "dai-5", "name": "京门", "cost": 40000, "innerPower": 1 },
+                { "id": "dai-1", "name": "带脉", "cost": 2000, "innerPower": 1 },
+                { "id": "dai-2", "name": "五枢", "cost": 5000, "innerPower": 1 },
+                { "id": "dai-3", "name": "维道", "cost": 10000, "innerPower": 1 },
+                { "id": "dai-105", "name": "居髎", "cost": 60000, "innerPower": 1 }
             ]
         },
         {
@@ -58,11 +112,16 @@
             "desc": "维络诸阴，起于足少阴，循下肢内侧上行。",
             "requiredInfo": ["Blue的纸条", "Andy档案"],
             "nodes": [
-                { "id": "yinwei-1", "name": "筑宾", "cost": 2000,  "innerPower": 15 },
-                { "id": "yinwei-2", "name": "府舍", "cost": 5000,  "innerPower": 25 },
-                { "id": "yinwei-3", "name": "冲门", "cost": 10000, "innerPower": 40 },
-                { "id": "yinwei-4", "name": "大横", "cost": 20000, "innerPower": 60 },
-                { "id": "yinwei-5", "name": "腹哀", "cost": 40000, "innerPower": 100 }
+                { "id": "yinwei-1", "name": "筑宾", "cost": 2000, "innerPower": 1 },
+                { "id": "yinwei-101", "name": "蠡沟", "cost": 3400, "innerPower": 1 },
+                { "id": "yinwei-102", "name": "急脉", "cost": 5800, "innerPower": 1 },
+                { "id": "yinwei-3", "name": "冲门", "cost": 10000, "innerPower": 1 },
+                { "id": "yinwei-2", "name": "府舍", "cost": 5000, "innerPower": 1 },
+                { "id": "yinwei-4", "name": "大横", "cost": 20000, "innerPower": 1 },
+                { "id": "yinwei-5", "name": "腹哀", "cost": 40000, "innerPower": 1 },
+                { "id": "yinwei-107", "name": "期门", "cost": 45800, "innerPower": 1 },
+                { "id": "yinwei-108", "name": "天突", "cost": 52400, "innerPower": 1 },
+                { "id": "yinwei-109", "name": "廉泉", "cost": 60000, "innerPower": 1 }
             ]
         },
         {
@@ -71,11 +130,16 @@
             "desc": "维络诸阳，起于足太阳，循下肢外侧上行。",
             "requiredInfo": ["BPK档案", "翅虎堂徽章"],
             "nodes": [
-                { "id": "yangwei-1", "name": "金门", "cost": 2000,  "innerPower": 15 },
-                { "id": "yangwei-2", "name": "阳交", "cost": 5000,  "innerPower": 25 },
-                { "id": "yangwei-3", "name": "绷阳", "cost": 10000, "innerPower": 40 },
-                { "id": "yangwei-4", "name": "本神", "cost": 20000, "innerPower": 60 },
-                { "id": "yangwei-5", "name": "脑空", "cost": 40000, "innerPower": 100 }
+                { "id": "yangwei-1", "name": "金门", "cost": 2000, "innerPower": 1 },
+                { "id": "yangwei-2", "name": "阳交", "cost": 5000, "innerPower": 1 },
+                { "id": "yangwei-3", "name": "绷阳", "cost": 10000, "innerPower": 1 },
+                { "id": "yangwei-103", "name": "膝阳关", "cost": 11200, "innerPower": 1 },
+                { "id": "yangwei-104", "name": "居髎", "cost": 12600, "innerPower": 1 },
+                { "id": "yangwei-105", "name": "五枢", "cost": 14100, "innerPower": 1 },
+                { "id": "yangwei-106", "name": "天髎", "cost": 15900, "innerPower": 1 },
+                { "id": "yangwei-107", "name": "肩井", "cost": 17800, "innerPower": 1 },
+                { "id": "yangwei-4", "name": "本神", "cost": 20000, "innerPower": 1 },
+                { "id": "yangwei-5", "name": "脑空", "cost": 40000, "innerPower": 1 }
             ]
         },
         {
@@ -84,11 +148,14 @@
             "desc": "司目之瞑与下肢之机动，起于然谷之后。",
             "requiredInfo": ["镜之虎彻制作图纸", "符线溯源笔记"],
             "nodes": [
-                { "id": "yinqiao-1", "name": "照海", "cost": 2000,  "innerPower": 15 },
-                { "id": "yinqiao-2", "name": "水泉", "cost": 5000,  "innerPower": 25 },
-                { "id": "yinqiao-3", "name": "交信", "cost": 10000, "innerPower": 40 },
-                { "id": "yinqiao-4", "name": "筑宾", "cost": 20000, "innerPower": 60 },
-                { "id": "yinqiao-5", "name": "阴郄", "cost": 40000, "innerPower": 100 }
+                { "id": "yinqiao-1", "name": "照海", "cost": 2000, "innerPower": 1 },
+                { "id": "yinqiao-2", "name": "水泉", "cost": 5000, "innerPower": 1 },
+                { "id": "yinqiao-3", "name": "交信", "cost": 10000, "innerPower": 1 },
+                { "id": "yinqiao-4", "name": "筑宾", "cost": 20000, "innerPower": 1 },
+                { "id": "yinqiao-5", "name": "阴郄", "cost": 40000, "innerPower": 1 },
+                { "id": "yinqiao-105", "name": "内关", "cost": 45800, "innerPower": 1 },
+                { "id": "yinqiao-106", "name": "廉泉", "cost": 52400, "innerPower": 1 },
+                { "id": "yinqiao-107", "name": "睛明", "cost": 60000, "innerPower": 1 }
             ]
         },
         {
@@ -97,11 +164,20 @@
             "desc": "司目之瞑与轻身善走，起于跟中，循外踝上行。",
             "requiredInfo": ["机密档案：幻影套装（Phantom Suit）研发日志残卷", "黑铁会信物"],
             "nodes": [
-                { "id": "yangqiao-1", "name": "申脉", "cost": 2000,  "innerPower": 15 },
-                { "id": "yangqiao-2", "name": "仆参", "cost": 5000,  "innerPower": 25 },
-                { "id": "yangqiao-3", "name": "跗阳", "cost": 10000, "innerPower": 40 },
-                { "id": "yangqiao-4", "name": "居髎", "cost": 20000, "innerPower": 60 },
-                { "id": "yangqiao-5", "name": "肩髃", "cost": 40000, "innerPower": 100 }
+                { "id": "yangqiao-1", "name": "申脉", "cost": 2000, "innerPower": 1 },
+                { "id": "yangqiao-2", "name": "仆参", "cost": 5000, "innerPower": 1 },
+                { "id": "yangqiao-3", "name": "跗阳", "cost": 10000, "innerPower": 1 },
+                { "id": "yangqiao-103", "name": "承山", "cost": 12600, "innerPower": 1 },
+                { "id": "yangqiao-104", "name": "膝阳关", "cost": 15900, "innerPower": 1 },
+                { "id": "yangqiao-4", "name": "居髎", "cost": 20000, "innerPower": 1 },
+                { "id": "yangqiao-106", "name": "五枢", "cost": 23000, "innerPower": 1 },
+                { "id": "yangqiao-107", "name": "京门", "cost": 26400, "innerPower": 1 },
+                { "id": "yangqiao-108", "name": "天髎", "cost": 30300, "innerPower": 1 },
+                { "id": "yangqiao-109", "name": "肩贞", "cost": 34800, "innerPower": 1 },
+                { "id": "yangqiao-5", "name": "肩髃", "cost": 40000, "innerPower": 1 },
+                { "id": "yangqiao-111", "name": "巨骨", "cost": 45800, "innerPower": 1 },
+                { "id": "yangqiao-112", "name": "风池", "cost": 52400, "innerPower": 1 },
+                { "id": "yangqiao-113", "name": "睛明", "cost": 60000, "innerPower": 1 }
             ]
         }
     ]

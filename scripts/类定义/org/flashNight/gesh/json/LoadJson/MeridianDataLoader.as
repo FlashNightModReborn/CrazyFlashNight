@@ -3,12 +3,14 @@ import org.flashNight.gesh.json.LoadJson.BaseJSONLoader;
 import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.aven.Promise.ListLoader;
 
-// 经脉系统配置加载器：先读 data/meridians/list.xml，再并行加载子 JSON 并合并 meridians 数组。
-// 与 AchievementDataLoader 同构；数据真源见 data/meridians/meridians_config.json。
+// 经脉系统配置加载器：先读 data/meridians/list.xml，再并行加载子 JSON 并合并。
+// 合并结果是 {meridians, innerPowerCap} 对象，不是裸数组：根级 innerPowerCap 承载内力总预算，
+// ListLoader.concatField 只会串接数组字段、会丢弃根级标量，故本类自带 mergeConfig。
+// 数据真源见 data/meridians/meridians_config.json。
 class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader {
     private static var instance:MeridianDataLoader = null;
     private static var path:String = "data/meridians/";
-    private var combinedData:Array = null;
+    private var combinedData:Object = null;
 
     /**
      * 获取单例实例。
@@ -39,7 +41,7 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
 
     /**
      * 解析 list.xml 文件，根据其中内容，并行加载并合并子 JSON 数据。
-     * @param onLoadHandler 加载成功后的回调函数，接收合并后的 meridians 数组。
+     * @param onLoadHandler 加载成功后的回调函数，接收 {meridians, innerPowerCap} 合并结果。
      * @param onErrorHandler 加载失败时的回调函数。
      */
     public function loadMeridianData(onLoadHandler:Function, onErrorHandler:Function):Void {
@@ -60,11 +62,10 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
                 entries:      entries,
                 basePath:     path,
                 childType:    "json",
-                mergeFn:      ListLoader.concatField("meridians"),
-                initialValue: []
+                mergeFn:      org.flashNight.gesh.json.LoadJson.MeridianDataLoader.mergeConfig,
+                initialValue: {meridians: [], innerPowerCap: 0}
             }).then(function(result:Object):Void {
-                var arr = result;
-                self.combinedData = arr;
+                self.combinedData = result;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
             }).onCatch(function(reason:Object):Void {
                 trace("[MeridianDataLoader] " + reason);
@@ -73,6 +74,27 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
         }, function():Void {
             if (onErrorHandler != null) onErrorHandler();
         });
+    }
+
+    /**
+     * 子 JSON 合并函数：按加载顺序串接 meridians，根级 innerPowerCap 取第一个合法值。
+     * 由 ListLoader 以裸函数回调调用，禁止依赖 this。
+     */
+    public static function mergeConfig(acc:Object, childData:Object, index:Number, entry:String):Object {
+        if (childData == null) return acc;
+        var list = childData.meridians;
+        if (list != null) {
+            if (list instanceof Array) {
+                acc.meridians = acc.meridians.concat(list);
+            } else {
+                acc.meridians.push(list);
+            }
+        }
+        if (acc.innerPowerCap <= 0) {
+            var cap:Number = Number(childData.innerPowerCap);
+            if (isFinite(cap) && cap > 0) acc.innerPowerCap = cap;
+        }
+        return acc;
     }
 
     /**

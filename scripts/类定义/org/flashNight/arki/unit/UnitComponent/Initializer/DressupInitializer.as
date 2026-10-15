@@ -460,12 +460,18 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             target.hp满血值 += _root.全局健身HP加成;
             target.mp满血值 += _root.全局健身MP加成;
             target.空手攻击力 += _root.全局健身空攻加成;
-            target.内力 += _root.全局健身内力加成;
             target.防御力 += _root.全局健身防御加成;
-            // 经脉点亮加成：_root.经脉内力加成 是 MeridianPanelService 安装的 getter，
-            // 每次读取按当前配置与点亮集重算，改 meridians_config.json 后即以新值生效。
+            // 内力只发一份：健身旧档加成与经脉加成取较大者，不叠加。
+            // 健身房已移除内力训练项，练过内力的存档改走经脉时先补回原值——
+            // 点亮累加超过旧值之前内力不增长，之后只补差值，避免同一份收益重复发放。
+            // _root.经脉内力加成 是 MeridianPanelService 安装的 getter，每次读取按当前配置与点亮集重算，
+            // 改 meridians_config.json 后即以新值生效。
+            var 健身内力:Number = Number(_root.全局健身内力加成);
+            if (!isFinite(健身内力)) 健身内力 = 0;
             var 经脉内力:Number = Number(_root.经脉内力加成);
-            if (isFinite(经脉内力)) target.内力 += 经脉内力;
+            if (!isFinite(经脉内力)) 经脉内力 = 0;
+            var 内力加成:Number = 健身内力 > 经脉内力 ? 健身内力 : 经脉内力;
+            target.内力 += 内力加成;
         }
 
         if(isNaN(target.hp)) target.hp = target.hp满血值;
