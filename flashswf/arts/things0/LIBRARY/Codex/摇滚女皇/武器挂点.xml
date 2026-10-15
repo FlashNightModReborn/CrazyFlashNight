@@ -1,16 +1,12 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/武器挂点" itemID="71340000-469550d6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/武器挂点" itemID="71340000-469550d6">
   <timeline>
     <DOMTimeline name="武器挂点">
       <layers>
-        <DOMLayer name="动态装扮" color="#A84FFF">
+        <DOMLayer name="动态装扮" color="#A84FFF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="1" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/空挂点" name="placement">
-                  <matrix>
-                    <Matrix tx="0" ty="0"/>
-                  </matrix>
                   <Actionscript>
                     <script><![CDATA[onClipEvent (load) {
     _root.摇滚女皇战技.bindWeapon(this);

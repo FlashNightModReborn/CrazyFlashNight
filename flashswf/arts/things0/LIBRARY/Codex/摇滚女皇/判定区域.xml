@@ -1,11 +1,10 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/判定区域" itemID="71340000-8a3ff8e0">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/判定区域" itemID="71340000-7fffffff">
   <timeline>
     <DOMTimeline name="判定区域">
       <layers>
-        <DOMLayer name="范围" color="#A84FFF">
+        <DOMLayer name="范围" color="#A84FFF" current="true" isSelected="true">
           <frames>
-            <DOMFrame index="0" duration="1" keyMode="9728">
+            <DOMFrame index="0" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!0 0|200 0|200 200|0 200|0 0"/>
+                    <Edge fillStyle1="1" edges="!0 0|200 0!200 0|200 200!200 200|0 200!0 200|0 0"/>
                   </edges>
                 </DOMShape>
               </elements>

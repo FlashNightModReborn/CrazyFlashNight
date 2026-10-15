@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/演出/keyboard-jump" itemID="71340000-7887acd6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/演出/keyboard-jump" itemID="71340000-7887acd6">
   <timeline>
     <DOMTimeline name="keyboard-jump">
       <layers>
-        <DOMLayer name="18-原生特效-blade" color="#6688CC">
+        <DOMLayer name="18-原生特效-blade" color="#6688CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -111,13 +110,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/3b61366fdf79f03d">
                   <matrix>
-                    <Matrix a="-4.3279676048" b="1.8049836309e-16" c="3.3902711879e-17" d="4.3279676048" tx="575.87375881" ty="-148.56832847"/>
+                    <Matrix a="-4.32795715332031" d="4.32795715332031" tx="575.85" ty="-148.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="64.61548295888177" blurY="64.61548295888177" color="#E34AED" strength="2"/>
+                    <GlowFilter blurX="64.6154861450195" blurY="64.6154861450195" color="#E34AED" strength="2"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -126,13 +125,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/14ae2b623bda2d5b">
                   <matrix>
-                    <Matrix a="-4.3279676048" b="7.8922498613e-17" c="4.0157842986e-16" d="4.3279676048" tx="237.65332835" ty="-577.36803132"/>
+                    <Matrix a="-4.32795715332031" d="4.32795715332031" tx="237.65" ty="-577.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="64.80990555664322" blurY="64.80990555664322" color="#E34AED" strength="2"/>
+                    <GlowFilter blurX="64.8099060058594" blurY="64.8099060058594" color="#E34AED" strength="2"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -183,13 +182,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/9549c0649be539fa">
                   <matrix>
-                    <Matrix a="-4.3279676048" b="3.2605121617e-16" c="-1.1400089277e-16" d="4.3279676048" tx="385.28321753" ty="-1103.5703852"/>
+                    <Matrix a="-4.32795715332031" d="4.32795715332031" tx="385.25" ty="-1103.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="65.315008915228" blurY="65.315008915228" color="#E34AED" strength="2"/>
+                    <GlowFilter blurX="65.3150100708008" blurY="65.3150100708008" color="#E34AED" strength="2"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -198,13 +197,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/9b43c945bfe6c718">
                   <matrix>
-                    <Matrix a="-4.3279676048" b="-4.3938716495e-16" c="-6.332757598e-16" d="4.3279676048" tx="755.26881649" ty="-827.03195157"/>
+                    <Matrix a="-4.32795715332031" d="4.32795715332031" tx="755.25" ty="-827"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="65.7691254027146" blurY="65.7691254027146" color="#E34AED" strength="2"/>
+                    <GlowFilter blurX="65.7691268920898" blurY="65.7691268920898" color="#E34AED" strength="2"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
@@ -213,13 +212,13 @@
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/a379419f7f965cee">
                   <matrix>
-                    <Matrix a="-4.3279676048" b="-4.3938716495e-16" c="-6.332757598e-16" d="4.3279676048" tx="744.66529586" ty="-498.48271123"/>
+                    <Matrix a="-4.32795715332031" d="4.32795715332031" tx="744.65" ty="-498.45"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
                   <filters>
-                    <GlowFilter blurX="65.7691254027146" blurY="65.7691254027146" color="#E34AED" strength="2"/>
+                    <GlowFilter blurX="65.7691268920898" blurY="65.7691268920898" color="#E34AED" strength="2"/>
                   </filters>
                 </DOMSymbolInstance>
               </elements>
