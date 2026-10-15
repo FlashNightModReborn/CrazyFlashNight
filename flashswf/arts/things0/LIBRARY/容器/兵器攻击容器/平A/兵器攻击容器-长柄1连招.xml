@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招" itemID="6964628b-00000a7b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长柄1连招" lastModified="1792059253" lastUniqueIdentifier="4">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招" itemID="6964628b-00000a7b" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长柄1连招" lastModified="1792061044" lastUniqueIdentifier="4">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长柄1连招" currentFrame="180">
+    <DOMTimeline name="兵器攻击容器-长柄1连招" currentFrame="100">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -3098,8 +3098,8 @@ Z轴攻击范围 = 30;
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!4783 -2292S2[790 -1559 -2923 -3213!-2923 -3213[-6750 -4922 -8033 -8178!-8033 -8178[-9312 -11434 -7292 -14328!-7292 -14328[-5275 -17225 -1141 -18061!-1141 -18061[2993 -18901 6823 -17194!6823 -17194[8951 -16243 10290 -14814!10290 -14814
-|5630 -6744!5630 -6744|9663 -4415!9663 -4415[8642 -3573 7319 -3024!7319 -3024[6273 -2592 5039 -2342!5039 -2342[4910 -2317 4783 -2292"/>
+                    <Edge fillStyle1="1" edges="!6823 -17194S2[8951 -16243 10290 -14814!10290 -14814|5630 -6744!5630 -6744|9663 -4415!9663 -4415[8642 -3573 7319 -3024!7319 -3024[6273 -2592 5039 -2342!5039 -2342[4910 -2317 4783 -2292!4783 -2292[790 -1559 -2923 -3213!-2923 -3213[-6750
+ -4922 -8033 -8178!-8033 -8178[-9312 -11434 -7292 -14328!-7292 -14328[-5275 -17225 -1141 -18061!-1141 -18061[2993 -18901 6823 -17194"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -3742,28 +3742,30 @@ Z轴攻击范围 = 30;
             <DOMFrame index="168" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="175" duration="5" keyMode="9728">
+            <DOMFrame index="175" duration="3" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="180" duration="5" keyMode="9728">
+            <DOMFrame index="178" duration="7" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("僵尸巨斧_1.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="185" duration="6" keyMode="9728">
+            <DOMFrame index="185" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("僵尸巨斧_2.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="191" keyMode="9728">
+            <DOMFrame index="189" duration="3" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_root.播放音效("僵尸巨斧_4.wav");]]></script>
+              </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="192" duration="4" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_root.播放音效("僵尸巨斧_4.wav");
-_root.播放音效("地震3.wav");]]></script>
+                <script><![CDATA[_root.播放音效("地震3.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -22127,7 +22129,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="1.27926635742188" b="0.746749877929688" c="0.99981689453125" d="0.018096923828125" tx="57.75" ty="-19.9"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.35"/>
+                    <Point x="2.75" y="275.3"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="20" blurY="4"/>
@@ -22340,7 +22342,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="287.15" ty="-47.35"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.4"/>
+                    <Point x="2.75" y="275.35"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="20" blurY="4"/>
@@ -22553,7 +22555,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.4"/>
+                    <Point x="2.75" y="275.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -22709,7 +22711,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.35"/>
+                    <Point x="2.75" y="275.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -22865,7 +22867,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.35"/>
+                    <Point x="2.75" y="275.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -23021,7 +23023,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.35"/>
+                    <Point x="2.75" y="275.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -23177,7 +23179,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.35"/>
+                    <Point x="2.75" y="275.3"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -23333,7 +23335,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.27926635742188" b="0.746749877929688" c="-0.99981689453125" d="0.018096923828125" tx="313.15" ty="-23.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.4"/>
+                    <Point x="2.75" y="275.35"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="159.1" centerPoint3DY="77.2">
@@ -23489,7 +23491,7 @@ _root.播放音效("地震3.wav");]]></script>
                     <Matrix a="-1.26251220703125" b="0.774627685546875" c="-0.9991455078125" d="0.0400543212890625" tx="320.05" ty="-100.85"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="275.6"/>
+                    <Point x="2.7" y="275.65"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="98.95" centerPoint3DY="-21.1">
