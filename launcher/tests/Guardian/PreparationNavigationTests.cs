@@ -23,7 +23,8 @@ namespace CF7Launcher.Tests.Guardian
                     "tuning",
                     "skills",
                     "materials",
-                    "intelligence"
+                    "intelligence",
+                    "meridians"
                 },
                 routes.Select(x => x.Identity).ToArray());
             Assert.Equal(
@@ -34,7 +35,8 @@ namespace CF7Launcher.Tests.Guardian
                     "装备调制",
                     "技能",
                     "材料",
-                    "情报"
+                    "情报",
+                    "经脉"
                 },
                 routes.Select(x => x.Label).ToArray());
             Assert.Equal(
@@ -45,7 +47,8 @@ namespace CF7Launcher.Tests.Guardian
                     "EQUIPMENT_TUNING",
                     "SKILLS",
                     "MATERIALS",
-                    "INTELLIGENCE"
+                    "INTELLIGENCE",
+                    "MERIDIANS"
                 },
                 routes.Select(x => x.CommandKey).ToArray());
         }

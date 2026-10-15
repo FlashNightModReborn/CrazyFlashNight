@@ -1014,6 +1014,16 @@ namespace CF7Launcher.Guardian
             };
         }
 
+        internal static JObject BuildMeridiansProductionInitData()
+        {
+            return new JObject
+            {
+                ["mode"] = "prod",
+                ["source"] = "runtime",
+                ["debug"] = false
+            };
+        }
+
         internal static bool TryNormalizeCharacterBuildReturnFocusAction(
             string value,
             out string normalized)
@@ -3076,6 +3086,12 @@ namespace CF7Launcher.Guardian
                     OpenPanel(
                         "intelligence",
                         BuildIntelligenceProductionInitData()
+                            .ToString(Formatting.None));
+                    break;
+                case "MERIDIANS":
+                    OpenPanel(
+                        "meridians",
+                        BuildMeridiansProductionInitData()
                             .ToString(Formatting.None));
                     break;
                 case "SKILLS":

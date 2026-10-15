@@ -5236,3 +5236,162 @@ html.perf-low-effects .map-panel-close-btn::before {
 }
 
 /* Arena Panel (角斗场) 样式已迁至 css/workbench/arena.css（双栏工作台迁移 P1c，2026-08-07）。线性历史见 git。 */
+
+/* ── 经脉面板 meridians（archive 配色沿用 intel 同色系）── */
+.meridians-panel {
+    width: min(1404px, calc(100vw - 34px));
+    height: min(790px, calc(100vh - 28px));
+    min-width: 900px;
+    min-height: 560px;
+    color: #ece7dc;
+    background: #151412;
+    border: 1px solid rgba(191, 170, 124, 0.28);
+    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.54);
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    overflow: hidden;
+}
+
+.mer-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: auto 1fr auto;
+    width: 100%;
+    height: 100%;
+}
+
+.mer-header {
+    grid-column: 1 / 3;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    background: #201e1a;
+    border-bottom: 1px solid rgba(191, 170, 124, 0.2);
+}
+
+.mer-heading { display: grid; gap: 3px; margin-right: auto; }
+.mer-title { font-size: 22px; font-weight: 700; }
+.mer-subtitle { font-size: 11px; color: #cfc2aa; }
+
+.mer-total-box,
+.mer-kpoint-box {
+    display: grid;
+    gap: 2px;
+    min-width: 96px;
+    padding: 6px 14px;
+    background: #11100e;
+    border: 1px solid rgba(191, 170, 124, 0.27);
+}
+
+.mer-total-label,
+.mer-kpoint-label { font-size: 10px; color: #c3a55d; text-transform: uppercase; }
+.mer-total-value,
+.mer-kpoint-value { font-size: 18px; font-weight: 700; }
+
+.mer-close-btn {
+    width: 30px;
+    height: 30px;
+    color: #f5efe3;
+    background: #2b2822;
+    border: 1px solid rgba(191, 170, 124, 0.27);
+    cursor: pointer;
+}
+
+.mer-close-btn::before { content: "\00d7"; font-size: 18px; }
+
+.mer-catalog {
+    min-height: 0;
+    padding: 14px 12px;
+    overflow-y: auto;
+    background: #1b1917;
+    border-right: 1px solid rgba(191, 170, 124, 0.18);
+}
+
+.mer-catalog-list { display: grid; gap: 8px; }
+
+.mer-catalog-item {
+    display: grid;
+    gap: 3px;
+    padding: 9px 12px;
+    text-align: left;
+    color: #f5efe3;
+    background: #242019;
+    border: 1px solid rgba(191, 170, 124, 0.22);
+    cursor: pointer;
+}
+
+.mer-catalog-item.active { background: #332c1e; border-color: #c3a55d; }
+.mer-catalog-name { font-size: 15px; font-weight: 700; }
+.mer-catalog-meta { font-size: 11px; color: #9c8f78; }
+.mer-catalog-meta.is-locked { color: #c05a48; }
+
+.mer-reader {
+    display: grid;
+    align-content: start;
+    gap: 12px;
+    min-width: 0;
+    padding: 16px 18px;
+    overflow-y: auto;
+}
+
+.mer-status { font-size: 13px; color: #cfc2aa; }
+.mer-meridian-head { display: grid; gap: 6px; }
+.mer-meridian-name { font-size: 19px; font-weight: 700; color: #e8d9a8; }
+.mer-meridian-desc { font-size: 12px; color: #cfc2aa; }
+
+.mer-require-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+
+.mer-require-chip {
+    padding: 3px 9px;
+    font-size: 11px;
+    background: #1b1917;
+    border: 1px solid rgba(191, 170, 124, 0.27);
+}
+
+.mer-require-chip.is-held { color: #9fd19a; border-color: rgba(120, 190, 120, 0.4); }
+.mer-require-chip.is-missing { color: #d98878; border-color: rgba(190, 110, 90, 0.4); }
+
+.mer-node-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    gap: 12px;
+}
+
+.mer-node {
+    display: grid;
+    gap: 6px;
+    padding: 12px 14px;
+    background: #201e1a;
+    border: 1px solid rgba(191, 170, 124, 0.24);
+}
+
+.mer-node.is-lit { background: #2a2517; border-color: #c3a55d; }
+.mer-node.is-locked,
+.mer-node.is-poor { opacity: 0.72; }
+.mer-node-name { font-size: 15px; font-weight: 700; }
+.mer-node-gain { font-size: 12px; color: #9fd19a; }
+.mer-node-cost { font-size: 12px; color: #cfc2aa; }
+
+.mer-node-btn {
+    margin-top: 4px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #f5efe3;
+    background: #2b2822;
+    border: 1px solid rgba(191, 170, 124, 0.27);
+    cursor: pointer;
+}
+
+.mer-node-btn:hover:enabled { background: #3a352b; }
+.mer-node-btn:disabled { color: #8a8070; background: #1d1b18; cursor: default; }
+
+.mer-footer {
+    grid-column: 1 / 3;
+    padding: 8px 18px;
+    background: #201e1a;
+    border-top: 1px solid rgba(191, 170, 124, 0.18);
+}
+
+.mer-error { min-height: 16px; font-size: 12px; color: #e2a06a; }
+.mer-error[hidden],
+.mer-status[hidden] { display: none; }
