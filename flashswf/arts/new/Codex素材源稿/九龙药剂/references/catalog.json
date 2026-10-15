@@ -1,0 +1,839 @@
+{
+  "revision": "r06",
+  "family_order": [
+    "qiuniu",
+    "yazi",
+    "chaofeng",
+    "pulao",
+    "suanni",
+    "bixi",
+    "bian",
+    "fuxi",
+    "chiwen"
+  ],
+  "families": {
+    "qiuniu": {
+      "name": "囚牛",
+      "role": "精力缓释",
+      "color": "#37adeb",
+      "color_name": "澄蓝",
+      "emblem": "The selected graceful RIGHT-FACING dragon head with long swept horns and a flowing S-shaped neck. Copy the established Qiuniu crest exactly.",
+      "retained_crest": true
+    },
+    "yazi": {
+      "name": "睚眦",
+      "role": "伤害",
+      "color": "#f56d30",
+      "color_name": "朱橙",
+      "emblem": "A fierce LEFT-FACING jackal-dragon head, tall pointed ears and sharply swept-back horns, an angular open jaw with ONE bold fang, strong knife-like cheek cuts, and a short hooked neck. The overall crest is narrow and vertical with an aggressive zigzag silhouette. Evoke the traditional weapon-guard dragon through the sharp head itself; no separate sword, no tiger face, no flowing S-neck.",
+      "retained_crest": false
+    },
+    "chaofeng": {
+      "name": "嘲风",
+      "role": "移动速度",
+      "color": "#afd347",
+      "color_name": "风竹绿",
+      "emblem": "An alert elevated-head roof-ridge dragon-beast, looking UP and RIGHT, a pointed long snout, two swept horns and THREE broad wind-feather lobes flowing down the left rear of its neck, ending in a compact curled tail. A brisk rising silhouette; bird-derived wing rhythm but clearly a Chinese dragon-beast, not a simple eagle, not a side-facing S-neck.",
+      "retained_crest": false
+    },
+    "pulao": {
+      "name": "蒲牢",
+      "role": "空手攻击",
+      "color": "#9e70e9",
+      "color_name": "鸣紫",
+      "emblem": "A FRONT-FACING roaring small dragon, two heavy curled horns joining a compact coiled outer neck, flared cheek fins, a wide dark open mouth and ONE simple ivory tongue or lower fang. The circular coil and broad lower arch subtly recall a bell suspension dragon. Focus on the roaring dragon itself, with no separate bell or fist symbol. No lion cloud mane, no tiger stripes.",
+      "retained_crest": false
+    },
+    "suanni": {
+      "name": "狻猊",
+      "role": "生命缓释",
+      "color": "#ed4945",
+      "color_name": "朱红",
+      "emblem": "The selected FRONT-FACING guardian lion with broad cheek lobes, focused eyes and rounded cloud-curl mane, ending in a pointed lower beard. Copy the established Suanni crest exactly.",
+      "retained_crest": true
+    },
+    "bixi": {
+      "name": "赑屃",
+      "role": "防御",
+      "color": "#35b38a",
+      "color_name": "玄玉绿",
+      "emblem": "A powerful dragon-tortoise seen from ABOVE, a short horned dragon head at the top, a broad hexagonal domed carapace with only a FEW large charcoal shell divisions, four compact clawed legs and a small pointed tail. The turtle-shell silhouette is the main identifier. Heavy, grounded and dignified; no human shield, no letters, no extra monument hiding the animal.",
+      "retained_crest": false
+    },
+    "bian": {
+      "name": "狴犴",
+      "role": "韧性",
+      "color": "#efa92d",
+      "color_name": "琥珀",
+      "emblem": "The selected FRONT-FACING angular tiger seal with pointed ears, jagged brow, striped cheeks, paired polygonal muzzle and a small lower chin mark. Copy the established Bian crest exactly.",
+      "retained_crest": true
+    },
+    "fuxi": {
+      "name": "负屃",
+      "role": "预留产品线",
+      "color": "#db62b9",
+      "color_name": "玫紫",
+      "emblem": "A literary coiling dragon encircling a SMALL UPRIGHT BLANK STELE: the upright slab is a simple central charcoal negative shape, a horned dragon head curls over its upper right, and a thick ivory dragon body forms a dignified U-shaped frame around the sides and bottom. A clear dragon silhouette with broad flowing curves and only a few cuts, no writing on the slab, no turtle shell.",
+      "retained_crest": false,
+      "reserved": true
+    },
+    "chiwen": {
+      "name": "螭吻",
+      "role": "七属性全抗",
+      "color": "#43d5d2",
+      "color_name": "冰青",
+      "emblem": "A fish-bodied roof-ridge dragon in an upright C-curve, a WIDE OPEN upward-facing swallowing mouth at the top right, a compact horned dragon head, ONE large flared fan tail on the left lower side, and two broad fin cuts along the back. The broad fish tail and open swallowing silhouette distinguish it from all other crests. No water-drop icon, no S-neck dragon, no separate building.",
+      "retained_crest": false
+    }
+  },
+  "icons": [
+    {
+      "id": "bian-m0",
+      "family": "bian",
+      "name": "狴犴·零型",
+      "type": 0,
+      "role": "韧性",
+      "color": "#efa92d",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bian-m0.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "44e0110b4c8c2ef0544146f0a3ec7148af3f373fcc3d396f7bbd24a64e41dec5",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 35,
+        "triangles": 695,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "qiuniu-m1",
+      "family": "qiuniu",
+      "name": "囚牛·一型",
+      "type": 1,
+      "role": "精力缓释",
+      "color": "#37adeb",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/qiuniu-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 30,
+        "triangles": 798,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "qiuniu-m2",
+      "family": "qiuniu",
+      "name": "囚牛·二型",
+      "type": 2,
+      "role": "精力缓释",
+      "color": "#37adeb",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/qiuniu-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 34,
+        "triangles": 894,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "qiuniu-m3",
+      "family": "qiuniu",
+      "name": "囚牛·三型",
+      "type": 3,
+      "role": "精力缓释",
+      "color": "#37adeb",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/qiuniu-m3.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 49,
+        "triangles": 1520,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "yazi-m1",
+      "family": "yazi",
+      "name": "睚眦·一型",
+      "type": 1,
+      "role": "伤害",
+      "color": "#f56d30",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/yazi-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 29,
+        "triangles": 771,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "yazi-m2",
+      "family": "yazi",
+      "name": "睚眦·二型",
+      "type": 2,
+      "role": "伤害",
+      "color": "#f56d30",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/yazi-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 33,
+        "triangles": 867,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "yazi-m3",
+      "family": "yazi",
+      "name": "睚眦·三型",
+      "type": 3,
+      "role": "伤害",
+      "color": "#f56d30",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/yazi-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 48,
+        "triangles": 1493,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "chaofeng-m1",
+      "family": "chaofeng",
+      "name": "嘲风·一型",
+      "type": 1,
+      "role": "移动速度",
+      "color": "#afd347",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chaofeng-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 29,
+        "triangles": 777,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "chaofeng-m2",
+      "family": "chaofeng",
+      "name": "嘲风·二型",
+      "type": 2,
+      "role": "移动速度",
+      "color": "#afd347",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chaofeng-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 33,
+        "triangles": 873,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "chaofeng-m3",
+      "family": "chaofeng",
+      "name": "嘲风·三型",
+      "type": 3,
+      "role": "移动速度",
+      "color": "#afd347",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chaofeng-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 48,
+        "triangles": 1499,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "pulao-m1",
+      "family": "pulao",
+      "name": "蒲牢·一型",
+      "type": 1,
+      "role": "空手攻击",
+      "color": "#9e70e9",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/pulao-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 32,
+        "triangles": 810,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "pulao-m2",
+      "family": "pulao",
+      "name": "蒲牢·二型",
+      "type": 2,
+      "role": "空手攻击",
+      "color": "#9e70e9",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/pulao-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 36,
+        "triangles": 906,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "pulao-m3",
+      "family": "pulao",
+      "name": "蒲牢·三型",
+      "type": 3,
+      "role": "空手攻击",
+      "color": "#9e70e9",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/pulao-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 51,
+        "triangles": 1532,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "suanni-m1",
+      "family": "suanni",
+      "name": "狻猊·一型",
+      "type": 1,
+      "role": "生命缓释",
+      "color": "#ed4945",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/suanni-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 33,
+        "triangles": 812,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "suanni-m2",
+      "family": "suanni",
+      "name": "狻猊·二型",
+      "type": 2,
+      "role": "生命缓释",
+      "color": "#ed4945",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/suanni-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 37,
+        "triangles": 908,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "suanni-m3",
+      "family": "suanni",
+      "name": "狻猊·三型",
+      "type": 3,
+      "role": "生命缓释",
+      "color": "#ed4945",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/suanni-m3.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 52,
+        "triangles": 1534,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "bixi-m1",
+      "family": "bixi",
+      "name": "赑屃·一型",
+      "type": 1,
+      "role": "防御",
+      "color": "#35b38a",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bixi-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 36,
+        "triangles": 791,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "bixi-m2",
+      "family": "bixi",
+      "name": "赑屃·二型",
+      "type": 2,
+      "role": "防御",
+      "color": "#35b38a",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bixi-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 40,
+        "triangles": 887,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "bixi-m3",
+      "family": "bixi",
+      "name": "赑屃·三型",
+      "type": 3,
+      "role": "防御",
+      "color": "#35b38a",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bixi-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 55,
+        "triangles": 1513,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "bian-m1",
+      "family": "bian",
+      "name": "狴犴·一型",
+      "type": 1,
+      "role": "韧性",
+      "color": "#efa92d",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bian-m1.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 38,
+        "triangles": 815,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "bian-m2",
+      "family": "bian",
+      "name": "狴犴·二型",
+      "type": 2,
+      "role": "韧性",
+      "color": "#efa92d",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bian-m2.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 42,
+        "triangles": 911,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "bian-m3",
+      "family": "bian",
+      "name": "狴犴·三型",
+      "type": 3,
+      "role": "韧性",
+      "color": "#efa92d",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/bian-m3.png",
+      "retained_r05": true,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 57,
+        "triangles": 1537,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "fuxi-m1",
+      "family": "fuxi",
+      "name": "负屃·一型",
+      "type": 1,
+      "role": "预留产品线",
+      "color": "#db62b9",
+      "reserved": true,
+      "configured_item": false,
+      "native_path": "native/fuxi-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 29,
+        "triangles": 779,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "fuxi-m2",
+      "family": "fuxi",
+      "name": "负屃·二型",
+      "type": 2,
+      "role": "预留产品线",
+      "color": "#db62b9",
+      "reserved": true,
+      "configured_item": false,
+      "native_path": "native/fuxi-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 33,
+        "triangles": 875,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "fuxi-m3",
+      "family": "fuxi",
+      "name": "负屃·三型",
+      "type": 3,
+      "role": "预留产品线",
+      "color": "#db62b9",
+      "reserved": true,
+      "configured_item": false,
+      "native_path": "native/fuxi-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 48,
+        "triangles": 1501,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    },
+    {
+      "id": "chiwen-m1",
+      "family": "chiwen",
+      "name": "螭吻·一型",
+      "type": 1,
+      "role": "七属性全抗",
+      "color": "#43d5d2",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chiwen-m1.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "13257ae6b4cf8176d2d6cd6eacc8a9c3908b3e6e984d59b9a5023fb29f0d625d",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 29,
+        "triangles": 784,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "chiwen-m2",
+      "family": "chiwen",
+      "name": "螭吻·二型",
+      "type": 2,
+      "role": "七属性全抗",
+      "color": "#43d5d2",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chiwen-m2.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "56adcae4f0b2f56b4851d0cf10e68b4bd0f39900018aa1315f9bb8846c0d24f8",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 33,
+        "triangles": 880,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": null
+    },
+    {
+      "id": "chiwen-m3",
+      "family": "chiwen",
+      "name": "螭吻·三型",
+      "type": 3,
+      "role": "七属性全抗",
+      "color": "#43d5d2",
+      "reserved": false,
+      "configured_item": true,
+      "native_path": "native/chiwen-m3.png",
+      "retained_r05": false,
+      "shell_sha256_rounded_7dp": "2f2956b5409066e0553d84f8e0e8e9f71238043dc7dbaadf2ca3ee0d9a0a7930",
+      "checks": {
+        "finite": true,
+        "degenerate_triangles": 0,
+        "unique_names": true,
+        "node_count": 48,
+        "triangles": 1506,
+        "scope": "Mesh integrity only; visible layout and possible collisions require independent review."
+      },
+      "type_III_source_mirror": [
+        {
+          "band": 1,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 2,
+          "vertices_mirror_across_x_zero": true
+        },
+        {
+          "band": 3,
+          "vertices_mirror_across_x_zero": true
+        }
+      ]
+    }
+  ],
+  "configured_items": 25,
+  "reserved_art": 3,
+  "total_icons": 28,
+  "retained_r05": 6,
+  "new_images_required": 22,
+  "shared_shells_per_type": true,
+  "model_crest_warning": "Model crest SVGs are silhouette studies. Accepted native raster crests are the artwork masters; final vector tracing remains separate.",
+  "sources": {
+    "item_xml": "references/items-snapshot.xml",
+    "game_authority": "data/items/消耗品_药剂_九龙.xml",
+    "roles": "tools/cf7-balance-tool/docs/potion-balance-rulebook.md",
+    "mythology": "https://www.szdag.gov.cn/gzdt/gzdt/content/post_1127890.html",
+    "issue": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/67"
+  },
+  "palette_status": "Existing amber/red/blue retained; six additional family colors are this iteration art-direction choices."
+}

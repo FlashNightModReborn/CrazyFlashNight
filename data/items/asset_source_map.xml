@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5744 unique assets -->
+  <!-- 5772 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -723,6 +723,34 @@
   <asset id="图标-COLT PYTHON" swf="flashswf/arts/things.swf" symbolName="1.枪械相关/手枪/图标-COLT PYTHON" />
   <asset id="图标-Codex-Andy工装裤" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/Andy工装裤/图标-Codex-Andy工装裤" />
   <asset id="图标-Codex-QJZ171" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/QJZ171/图标-Codex-QJZ171" />
+  <asset id="图标-Codex-九龙-嘲风·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-嘲风·一型" />
+  <asset id="图标-Codex-九龙-嘲风·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-嘲风·三型" />
+  <asset id="图标-Codex-九龙-嘲风·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-嘲风·二型" />
+  <asset id="图标-Codex-九龙-囚牛·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-囚牛·一型" />
+  <asset id="图标-Codex-九龙-囚牛·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-囚牛·三型" />
+  <asset id="图标-Codex-九龙-囚牛·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-囚牛·二型" />
+  <asset id="图标-Codex-九龙-狴犴·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狴犴·一型" />
+  <asset id="图标-Codex-九龙-狴犴·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狴犴·三型" />
+  <asset id="图标-Codex-九龙-狴犴·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狴犴·二型" />
+  <asset id="图标-Codex-九龙-狴犴·零型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狴犴·零型" />
+  <asset id="图标-Codex-九龙-狻猊·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狻猊·一型" />
+  <asset id="图标-Codex-九龙-狻猊·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狻猊·三型" />
+  <asset id="图标-Codex-九龙-狻猊·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-狻猊·二型" />
+  <asset id="图标-Codex-九龙-睚眦·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-睚眦·一型" />
+  <asset id="图标-Codex-九龙-睚眦·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-睚眦·三型" />
+  <asset id="图标-Codex-九龙-睚眦·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-睚眦·二型" />
+  <asset id="图标-Codex-九龙-蒲牢·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-蒲牢·一型" />
+  <asset id="图标-Codex-九龙-蒲牢·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-蒲牢·三型" />
+  <asset id="图标-Codex-九龙-蒲牢·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-蒲牢·二型" />
+  <asset id="图标-Codex-九龙-螭吻·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-螭吻·一型" />
+  <asset id="图标-Codex-九龙-螭吻·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-螭吻·三型" />
+  <asset id="图标-Codex-九龙-螭吻·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-螭吻·二型" />
+  <asset id="图标-Codex-九龙-负屃·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-负屃·一型" />
+  <asset id="图标-Codex-九龙-负屃·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-负屃·三型" />
+  <asset id="图标-Codex-九龙-负屃·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-负屃·二型" />
+  <asset id="图标-Codex-九龙-赑屃·一型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-赑屃·一型" />
+  <asset id="图标-Codex-九龙-赑屃·三型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-赑屃·三型" />
+  <asset id="图标-Codex-九龙-赑屃·二型" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/九龙药剂/图标-Codex-九龙-赑屃·二型" />
   <asset id="图标-Codex-打桩机M7" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/打桩机-M7/Icon" />
   <asset id="图标-Codex-特勤沙鹰" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-特勤沙鹰" />
   <asset id="图标-Codex-特勤警棍" swf="flashswf/arts/new/Codex专用素材.swf" symbolName="Codex/重装特勤/图标-Codex-特勤警棍" />

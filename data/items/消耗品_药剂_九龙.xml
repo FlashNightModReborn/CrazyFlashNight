@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
   九龙药业战斗强化剂预配置。
-  图标暂借用既有药剂 linkage；医院投放、美术替换与实机验收见延期测试备忘。
+  图标由 Codex 专用素材库提供；医院投放与药效实机验收见延期测试备忘。
   同一时间只保留一个 enhancer 域效果，但可与一个 meal 域食品效果并存。
 -->
 <root>
@@ -9,7 +9,7 @@
   <item>
     <name>狻猊·一型</name>
     <displayname>狻猊·一型</displayname>
-    <icon>普通hp药剂</icon>
+    <icon>Codex-九龙-狻猊·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1700</price>
@@ -40,7 +40,7 @@
   <item>
     <name>狻猊·二型</name>
     <displayname>狻猊·二型</displayname>
-    <icon>普通hp药剂</icon>
+    <icon>Codex-九龙-狻猊·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>2950</price>
@@ -71,7 +71,7 @@
   <item>
     <name>狻猊·三型</name>
     <displayname>狻猊·三型</displayname>
-    <icon>普通hp药剂</icon>
+    <icon>Codex-九龙-狻猊·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>3800</price>
@@ -104,7 +104,7 @@
   <item>
     <name>囚牛·一型</name>
     <displayname>囚牛·一型</displayname>
-    <icon>普通mp药剂</icon>
+    <icon>Codex-九龙-囚牛·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1700</price>
@@ -135,7 +135,7 @@
   <item>
     <name>囚牛·二型</name>
     <displayname>囚牛·二型</displayname>
-    <icon>普通mp药剂</icon>
+    <icon>Codex-九龙-囚牛·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>2950</price>
@@ -166,7 +166,7 @@
   <item>
     <name>囚牛·三型</name>
     <displayname>囚牛·三型</displayname>
-    <icon>普通mp药剂</icon>
+    <icon>Codex-九龙-囚牛·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>3800</price>
@@ -199,7 +199,7 @@
   <item>
     <name>赑屃·一型</name>
     <displayname>赑屃·一型</displayname>
-    <icon>抗生素</icon>
+    <icon>Codex-九龙-赑屃·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1850</price>
@@ -230,7 +230,7 @@
   <item>
     <name>赑屃·二型</name>
     <displayname>赑屃·二型</displayname>
-    <icon>抗生素</icon>
+    <icon>Codex-九龙-赑屃·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>7400</price>
@@ -261,7 +261,7 @@
   <item>
     <name>赑屃·三型</name>
     <displayname>赑屃·三型</displayname>
-    <icon>抗生素</icon>
+    <icon>Codex-九龙-赑屃·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>17100</price>
@@ -294,7 +294,7 @@
   <item>
     <name>螭吻·一型</name>
     <displayname>螭吻·一型</displayname>
-    <icon>净化药剂</icon>
+    <icon>Codex-九龙-螭吻·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1600</price>
@@ -325,7 +325,7 @@
   <item>
     <name>螭吻·二型</name>
     <displayname>螭吻·二型</displayname>
-    <icon>净化药剂</icon>
+    <icon>Codex-九龙-螭吻·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>7800</price>
@@ -356,7 +356,7 @@
   <item>
     <name>螭吻·三型</name>
     <displayname>螭吻·三型</displayname>
-    <icon>净化药剂</icon>
+    <icon>Codex-九龙-螭吻·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>17100</price>
@@ -389,7 +389,7 @@
   <item>
     <name>睚眦·一型</name>
     <displayname>睚眦·一型</displayname>
-    <icon>肾上腺素</icon>
+    <icon>Codex-九龙-睚眦·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1800</price>
@@ -420,7 +420,7 @@
   <item>
     <name>睚眦·二型</name>
     <displayname>睚眦·二型</displayname>
-    <icon>肾上腺素</icon>
+    <icon>Codex-九龙-睚眦·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>7300</price>
@@ -451,7 +451,7 @@
   <item>
     <name>睚眦·三型</name>
     <displayname>睚眦·三型</displayname>
-    <icon>肾上腺素</icon>
+    <icon>Codex-九龙-睚眦·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>16950</price>
@@ -484,7 +484,7 @@
   <item>
     <name>蒲牢·一型</name>
     <displayname>蒲牢·一型</displayname>
-    <icon>加强抗生素药剂</icon>
+    <icon>Codex-九龙-蒲牢·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1850</price>
@@ -515,7 +515,7 @@
   <item>
     <name>蒲牢·二型</name>
     <displayname>蒲牢·二型</displayname>
-    <icon>加强抗生素药剂</icon>
+    <icon>Codex-九龙-蒲牢·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>7450</price>
@@ -546,7 +546,7 @@
   <item>
     <name>蒲牢·三型</name>
     <displayname>蒲牢·三型</displayname>
-    <icon>加强抗生素药剂</icon>
+    <icon>Codex-九龙-蒲牢·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>17100</price>
@@ -579,7 +579,7 @@
   <item>
     <name>嘲风·一型</name>
     <displayname>嘲风·一型</displayname>
-    <icon>加强MP药剂</icon>
+    <icon>Codex-九龙-嘲风·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1350</price>
@@ -610,7 +610,7 @@
   <item>
     <name>嘲风·二型</name>
     <displayname>嘲风·二型</displayname>
-    <icon>加强MP药剂</icon>
+    <icon>Codex-九龙-嘲风·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>4700</price>
@@ -641,7 +641,7 @@
   <item>
     <name>嘲风·三型</name>
     <displayname>嘲风·三型</displayname>
-    <icon>加强MP药剂</icon>
+    <icon>Codex-九龙-嘲风·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>13950</price>
@@ -674,7 +674,7 @@
   <item>
     <name>狴犴·一型</name>
     <displayname>狴犴·一型</displayname>
-    <icon>战队药箱</icon>
+    <icon>Codex-九龙-狴犴·一型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>1850</price>
@@ -705,7 +705,7 @@
   <item>
     <name>狴犴·二型</name>
     <displayname>狴犴·二型</displayname>
-    <icon>战队药箱</icon>
+    <icon>Codex-九龙-狴犴·二型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>7400</price>
@@ -736,7 +736,7 @@
   <item>
     <name>狴犴·三型</name>
     <displayname>狴犴·三型</displayname>
-    <icon>战队药箱</icon>
+    <icon>Codex-九龙-狴犴·三型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>17100</price>
@@ -769,7 +769,7 @@
   <item>
     <name>狴犴·零型</name>
     <displayname>狴犴·零型</displayname>
-    <icon>净化药剂</icon>
+    <icon>Codex-九龙-狴犴·零型</icon>
     <type>消耗品</type>
     <use>药剂</use>
     <price>100</price>
