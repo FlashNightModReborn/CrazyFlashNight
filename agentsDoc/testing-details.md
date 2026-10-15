@@ -1151,6 +1151,7 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 
 ### 启动、Flash smoke 与离线专项工具（美术相关）
 
+- 蛮斧刽子手（CF6 蛮蛮）：`python -X utf8 -B tools/cf6-manman-assets/verify.py`、`scripts/run-cf6-manman-asset-tests.ps1`；包含左右死亡切换的同坐标尺寸回归，`-Capture` 固定比例保留父层矩阵。真实伤害与 AI 换边比较走隔离 Worker。装配、受击中断、捕获及实战边界见 [接入工具](../tools/cf6-manman-assets/README.md)。
 - 犀牛静态地图摆件：`python -X utf8 tools/rhino-map-assets/build.py --check`、三张 XFL 治理与显式 CS6 publish；车号、坐标与原生/实机边界见 [rhino-map-assets](../tools/rhino-map-assets/README.md)。
 - 武器分件动画：`python -X utf8 -B tools/weapon-animation/test_xfl_recoil.py`、`scripts/run-weapon-animation-tests.ps1`（机器钉死 AS2 37 项逻辑 + 15 项真实 XML/物品/素材与生产生命周期装卸集成）；原生逐帧矩阵、独立 SWF 导出与体验边界见 [动画工具](../tools/weapon-animation/README.md)。
 - 素材工作台：`python -X utf8 -B tools/asset-workbench/test_core.py`、原生 `AssetWorkbenchTaskTests`，真实 GUI / 三件 3XD 实测见 [工作台验证](../tools/asset-workbench/README.md#验证与本地体验)。

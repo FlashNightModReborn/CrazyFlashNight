@@ -1,0 +1,709 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/蛮蛮/敌人-CF6蛮蛮" itemID="6af00000-b50a05e6" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6蛮蛮">
+  <timeline>
+    <DOMTimeline name="敌人-CF6蛮蛮">
+      <layers>
+        <DOMLayer name="私有行为" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="127">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/行为驱动" name="manmanDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){ _parent.manmanTick(); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Labels Layer" color="#FB7597">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" duration="3" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="96" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#6CE8D7">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[攻击欲望 = 1;
+
+男_攻击呐喊_库 = ["11_kda_a_1-22.wav","23_kda_sy_1-22.wav","01_kyn_a_2-22.wav","25_kyo_sb-22.wav","20_kyn_h_9-22.wav"];
+男_中招呐喊_库 = ["男-主角-0.wav","男-主角-1.wav","男-主角-2.wav","主角中招0.wav","主角中招1.wav","主角中招2.wav"];
+男_击倒呐喊_库 = ["08_kyo_d_f-22.wav","07_ben_d_f-22.wav","06_cla_d_f-22.wav","04_and_df1-22.wav"];
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+
+// 蛮蛮私有控制：借用不死兽人动作与正式近战判定，限定本单位的追击和收招节奏。
+// baseline 只供隔离对照：保留通用近身攻击及兽人的前方重击触发方式。
+if (_arenaCalibrationUnit !== true || (蛮蛮AI模式 != "baseline" && 蛮蛮AI模式 != "enhanced")) {
+    蛮蛮AI模式 = "enhanced";
+}
+manmanClock = 0;
+manmanReadyAt = 8;
+manmanNextAdvance = 0;
+manmanTargetName = "";
+manmanAttackOwner = null;
+manmanDecisionCount = 0;
+manmanAttackCount = 0;
+manmanHitCount = 0;
+manmanTuning = {cleaveRange:100, advanceRange:200, laneRange:22, keepDistance:75,
+    reactionFrames:8, recoveryFrames:0, advanceCooldown:40, maximumTargetHeight:65,
+    crumblePercent:0.25};
+// 仅隔离实战允许关闭击溃，以保持动作、AI 和面板不变地做对照。
+manmanCrumblePercent = (_arenaCalibrationUnit === true && 蛮蛮击溃模式 == "off")
+    ? 0 : manmanTuning.crumblePercent;
+
+manmanCancelAttack = function():Void {
+    var owner:Object = this.manmanAttackOwner;
+    if (owner == null) return;
+    owner.active = false;
+    if (owner.ownsRigid) this.刚体 = owner.previousRigid;
+    this.manmanAttackOwner = null;
+};
+
+manmanBeginAttack = function(body:MovieClip, action:String):Void {
+    this.manmanCancelAttack();
+    if (!(this.hp > 0)) { body.stop(); return; }
+    var token:Object = {};
+    body.manmanToken = token;
+    this.manmanAttackOwner = {token:token, action:action, active:true,
+        previousRigid:this.刚体 === true, ownsRigid:false};
+    this.manmanAttackCount++;
+    if (action == "advance") this.manmanNextAdvance = this.manmanClock + this.manmanTuning.advanceCooldown;
+};
+
+manmanCanHit = function(token:Object):Boolean {
+    var owner:Object = this.manmanAttackOwner;
+    return !_root.暂停 && this.hp > 0 && owner != null && owner.active && owner.token === token
+        && this.man.manmanToken === token
+        && this.状态 == (owner.action == "advance" ? "近战" : "空手攻击");
+};
+
+manmanAnimationDone = function(body:MovieClip):Void {
+    var owner:Object = this.manmanAttackOwner;
+    if (owner == null || owner.token !== body.manmanToken) return;
+    this.manmanCancelAttack();
+    this.manmanReadyAt = this.manmanClock + this.manmanTuning.recoveryFrames;
+    this.动画完毕();
+};
+
+manmanChooseAttack = function(dx:Number, dz:Number, height:Number):String {
+    if (isNaN(dx) || isNaN(dz) || isNaN(height) || dx < 0 || dz < 0) return "none";
+    var tune:Object = this.manmanTuning;
+    if (dz > tune.laneRange || height > tune.maximumTargetHeight || this.manmanClock < this.manmanReadyAt) return "none";
+    if (dx <= tune.cleaveRange) return "cleave";
+    if (dx <= tune.advanceRange && this.manmanClock >= this.manmanNextAdvance) return "advance";
+    return "none";
+};
+
+manmanTick = function():Void {
+    if (_root.暂停) return;
+    this.manmanClock++;
+    // 致死伤害可能发生在发力前；取消攻击后仍必须进入死亡流程。
+    if (!isNaN(this.hp) && this.hp <= 0) {
+        this.manmanCancelAttack();
+        if (this.状态 != "血腥死" && this.状态 != "消失") this.状态改变("血腥死");
+        return;
+    }
+    var owner:Object = this.manmanAttackOwner;
+    if (owner != null) {
+        var expected:String = owner.action == "advance" ? "近战" : "空手攻击";
+        if (!(this.hp > 0) || this.状态 != expected || this.man.manmanToken !== owner.token) {
+            this.manmanCancelAttack();
+        } else {
+            // 只在发力段持有刚体；保留起手与收招的反击窗口。
+            var active:Boolean = this.man._currentframe >= 8 && this.man._currentframe <= 17;
+            if (active && !owner.ownsRigid) {
+                owner.previousRigid = this.刚体 === true;
+                owner.ownsRigid = true;
+                this.刚体 = true;
+            } else if (!active && owner.ownsRigid) {
+                this.刚体 = owner.previousRigid;
+                owner.ownsRigid = false;
+            }
+        }
+    }
+    if (!(this.hp > 0) || this.倒地 || this.浮空 || this.硬直中) return;
+    if (_root.控制目标 == this._name && _root.控制目标全自动 == false) return;
+    if (this.状态 != "空手站立" && this.状态 != "空手行走" && this.状态 != "空手跑") return;
+    if ((this.manmanClock & 3) != 0) return;
+    var target:MovieClip = _root.gameworld[this.攻击目标];
+    if (!(target.hp > 0) || target == this || target.area == null) return;
+    var dx:Number = target._x - this._x;
+    var dz:Number = target.Z轴坐标 - this.Z轴坐标;
+    var height:Number = target.Z轴坐标 - target._y;
+    if (isNaN(dx) || isNaN(dz) || isNaN(height)) return;
+    this.manmanDecisionCount++;
+    if (this.蛮蛮AI模式 == "baseline") {
+        if (Math.abs(dz) <= this.y轴攻击范围 && this.manmanSensor.hitTest(target.area)
+            && this.manmanClock >= this.manmanReadyAt) {
+            this.近战招式 = "a0";
+            this.状态改变("近战");
+        }
+        return;
+    }
+    // 通用 AI 继续管理仇恨；本单位独占自动攻击，且同步其缓存的距离参数。
+    this.x轴攻击范围 = 0;
+    this.y轴攻击范围 = this.manmanTuning.laneRange;
+    this.x轴保持距离 = this.manmanTuning.keepDistance;
+    if (this.unitAI.data != null) {
+        this.unitAI.data.xrange = 0;
+        this.unitAI.data.zrange = this.y轴攻击范围;
+        this.unitAI.data.xdistance = this.x轴保持距离;
+    }
+    if (this.manmanTargetName != target._name) {
+        this.manmanTargetName = target._name;
+        this.manmanReadyAt = this.manmanClock + this.manmanTuning.reactionFrames;
+    }
+    var move:String = this.manmanChooseAttack(Math.abs(dx), Math.abs(dz), height);
+    if (move == "none") {
+        // 纵深未对齐或突进仍冷却时继续接近，避免停在自己打不到的位置。
+        this.上行 = dz < -6;
+        this.下行 = dz > 6;
+        this.左行 = dx < -this.manmanTuning.keepDistance;
+        this.右行 = dx > this.manmanTuning.keepDistance;
+        if (Math.abs(dx) > 230 && this.状态 != "空手跑") this.状态改变("空手跑");
+        return;
+    }
+    this.左行 = this.右行 = this.上行 = this.下行 = false;
+    if (dx < 0) this.方向改变("左");
+    else if (dx > 0) this.方向改变("右");
+    this.近战招式 = "a0";
+    this.状态改变(move == "advance" ? "近战" : "空手攻击");
+};
+
+if (蛮蛮AI模式 == "enhanced") {
+    x轴攻击范围 = 0;
+    y轴攻击范围 = manmanTuning.laneRange;
+    x轴保持距离 = manmanTuning.keepDistance;
+    if (unitAI.data != null) {
+        unitAI.data.xrange = 0;
+        unitAI.data.zrange = y轴攻击范围;
+        unitAI.data.xdistance = x轴保持距离;
+    }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" duration="118" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#84FF25">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 50" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-195.4">
+                  <matrix>
+                    <Matrix tx="1" ty="-224.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#E9954A">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1111" symbolType="button">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[on(press){
+   if(_root.控制目标 == this._name and this.hp > 0)
+   {
+      gotoAndStop("被击");
+   }
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.gameworld[_root.控制目标].攻击目标 = this._name;
+      _root.控制目标全自动 = true;
+   }
+}
+on(press, release, rollOver){
+   if(是否为敌人 == true and _root.全鼠标控制 == true and this.hp > 0)
+   {
+      _root.鼠标.gotoAndStop("手型攻击");
+   }
+}
+on(rollOut){
+   _root.鼠标.gotoAndStop("手型普通");
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#C223F8">
+          <frames>
+            <DOMFrame index="0" duration="95" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 37" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="32" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#71EAAC">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 377" centerPoint3DX="111.6" centerPoint3DY="-39.05" name="manmanSensor">
+                  <matrix>
+                    <Matrix a="2.81114196777344" d="0.72247314453125" tx="81.6" ty="-120.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ stop(); this._visible=false; }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#197EFC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/思考标签" selected="true" centerPoint3DX="3.05" centerPoint3DY="3.05">
+                  <matrix>
+                    <Matrix tx="0.55" ty="0.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#3CB9C0">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 31" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="98" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#C8F646">
+          <frames>
+            <DOMFrame index="0" duration="95" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 491" name="area" centerPoint3DX="12.5" centerPoint3DY="12.5">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48651123046875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._rotation = _parent.man._rotation;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="23" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#58EA4F">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1110" name="man" centerPoint3DX="53.45" centerPoint3DY="51.2">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1112" name="man" centerPoint3DX="68.05" centerPoint3DY="53.55">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1113" name="man" centerPoint3DX="68.05" centerPoint3DY="53.55">
+                  <matrix>
+                    <Matrix tx="-18.05" ty="-58.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1116" name="man" centerPoint3DX="324.45" centerPoint3DY="-19.4">
+                  <matrix>
+                    <Matrix a="-1" tx="88.6" ty="-170.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent.manmanBeginAttack(this,"advance"); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1117" name="man" centerPoint3DX="156.2" centerPoint3DY="78.65">
+                  <matrix>
+                    <Matrix tx="6.45" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent.manmanBeginAttack(this,"cleave"); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1110" name="man" centerPoint3DX="53.45" centerPoint3DY="51.2">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1118" name="man" centerPoint3DX="106.45" centerPoint3DY="50.65">
+                  <matrix>
+                    <Matrix tx="10.5" ty="-62"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ gotoAndPlay("a"+random(2)); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1119" name="man" centerPoint3DX="84.75" centerPoint3DY="87.85">
+                  <matrix>
+                    <Matrix tx="0.4" ty="-1.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent.状态改变("倒地"); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1120" name="man" centerPoint3DX="516.45" centerPoint3DY="295.1">
+                  <matrix>
+                    <Matrix tx="409.1" ty="177.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent._y=_parent.Z轴坐标; _parent.倒地=true; _parent.格斗架势=true; }
+onClipEvent(unload){ _parent.倒地=false; }
+onClipEvent(enterFrame){ if(_parent.hp<=0) _parent.状态改变("血腥死"); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/CF7/Symbol 1121" name="man" centerPoint3DX="72.5" centerPoint3DY="109.05">
+                  <matrix>
+                    <Matrix d="1.00039672851563"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndStop("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/动作/血腥死" centerPoint3DX="204.55" centerPoint3DY="99.05" name="man">
+                  <matrix>
+                    <Matrix a="1.312347" b="0" c="0" d="1.312347" tx="9.76137" ty="-85.926527"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent.manmanCancelAttack(); gotoAndPlay("a0"); }
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -94,6 +94,10 @@ data/arena/meta_teams.json    → 从 data/stages/** 派生的 roster/merc 生�
 data/arena/arena_calibrated_rosters.json → 已完成人机门的精确怪物组合到标准卡档位目录
 ```
 
+### CF6 重制敌人属性归组
+
+CF6 重制单位按系列归入 `data/enemy_properties/CF6重制敌人.xml`，由 `list.xml` 登记一次；不随每个新角色增加单独属性文件。现有 CF7 单位仍按原内容归属保留，不能仅因原型来自 CF6 就迁走或覆盖。属性表合并不合并美术编辑源：各角色继续拥有独立源稿、XFL、装配工具和验证。角色配表工具只能更新自己的唯一敌人节点，保留其他节点、注释和格式；历史实战回执继续保留当时文件路径与身份，不回填成新文件。
+
 ### 敌人战报外观
 
 `data/enemy_properties/*.xml` 的敌人类型可声明 `<battleRecordAppearance>fixed</battleRecordAppearance>`，明确其使用固定模板外观。`UnitBattleRecord` 优先读取该声明，生成固定头像引用和按类型聚合的击杀记录；友军仍保留逐单位死亡事实，由 Web 按状态归并展示。该字段不改变 `hasDressup`、装备数值、武器、技能或单位初始化。

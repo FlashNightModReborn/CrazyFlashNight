@@ -160,3 +160,8 @@ launcher/app.manifest text eol=lf
 /flashswf/arts/new/Antigravity专用素材/** -text whitespace=cr-at-eol
 /flashswf/arts/new/Antigravity素材源稿/** -text whitespace=cr-at-eol
 /tools/cf6-zombie-assets/*.json text eol=lf
+
+# Manman frozen delivery and native identity must survive checkout byte-for-byte.
+/flashswf/arts/new/Codex素材源稿/CF6蛮蛮-R2/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex蛮蛮素材/** -text whitespace=cr-at-eol
+/tools/cf6-manman-assets/** -text whitespace=cr-at-eol

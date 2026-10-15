@@ -1,0 +1,213 @@
+{
+  "schema": "cfn-manman-death-scale-review-v1",
+  "date": "2026-10-15",
+  "displayName": "蛮斧刽子手",
+  "developmentName": "蛮蛮",
+  "unitId": 463,
+  "scope": "Death outer placement and display name; combat tuning retained",
+  "originalSwf": {
+    "sha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+    "bytes": 86402
+  },
+  "fixedSwf": {
+    "sha256": "74616617a2655c31b17652f334e8bca681b42e2941c19b094a356ff43124109f",
+    "bytes": 86412
+  },
+  "geometry": {
+    "cf6BakedScale": 0.761993408203125,
+    "newDeathOuterMatrix": {
+      "a": "1.312347",
+      "b": "0",
+      "c": "0",
+      "d": "1.312347",
+      "tx": "9.76137",
+      "ty": "-85.926527"
+    },
+    "before": {
+      "standHeight": 254.95,
+      "deathHeight": 194.25,
+      "groundDelta": 2.1,
+      "failedChecks": 8
+    },
+    "after": {
+      "bothOrientations": true,
+      "standHeight": 254.95,
+      "deathHeight": 254.95,
+      "groundDelta": 0,
+      "widthHeightGroundHorizontalTolerancePixels": 0.25
+    }
+  },
+  "validation": {
+    "runId": "d1201798775948c4a30e5352b75747dc",
+    "passed": 169,
+    "failed": 0,
+    "actualTimelineCases": 22,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "images": "Fixed parent-space scale; actual published Flash MovieClips",
+    "firstCaptureDiagnostic": "168 passed, 1 failed: random dodge terminal frame sampled before visible recovery; changed fixture to observe state/recovery over frames 3..10; no production dodge change"
+  },
+  "fullTraces": [
+    {
+      "attempt": "before-tests",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-scale-20261015\\before-tests\\flashlog.txt",
+      "sha256": "545e7950b71112663682fb20723d80cba605d19cd501a611faa99a4052797cba",
+      "bytes": 829
+    },
+    {
+      "attempt": "after-tests",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-scale-20261015\\after-tests\\flashlog.txt",
+      "sha256": "8dcbf91de4130540fffc108c79f91accf4bbcf0c25b478dfcc7b6c421a08949a",
+      "bytes": 763757
+    },
+    {
+      "attempt": "final-tests",
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-scale-20261015\\final-tests\\flashlog.txt",
+      "sha256": "3caf1b6f8e86fcdb2c02f3e3a98d01b1b49a6d0e105a02e7812b9ee2da5c342e",
+      "bytes": 763702
+    }
+  ],
+  "sources": [
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb",
+      "bytes": 21471
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "sha256": "f0694c9f523bd935f3a79ff694b8bd38532152cc50e584274049a8e5f34a7f37",
+      "bytes": 24944
+    },
+    {
+      "path": "tools/cf6-manman-assets/balance.py",
+      "sha256": "8cbf458dd10de08b7e729afe378bd767341a08ddf53197e05d1fd67ad832ad13",
+      "bytes": 6205
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+      "bytes": 6739
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ManmanAssetTest.as",
+      "sha256": "6956e48ba028b284dde65b327a2ac5f7dd5c85a2d7bcb11bac49476659783875",
+      "bytes": 18152
+    },
+    {
+      "path": "data/enemy_properties/CF6蛮蛮.xml",
+      "sha256": "b0befd0cc00b82021b4e22358738cd478d92e2076f690396fd3db509293b96dc",
+      "bytes": 1533
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "713198458b0b2f4226cf05c06313841f0c975e9a109a0251a48b554c91fa517a",
+      "bytes": 151312
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "74616617a2655c31b17652f334e8bca681b42e2941c19b094a356ff43124109f",
+      "bytes": 86412
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "91f1a27b31e7f6b07d4df3ff3056343547bb23f80d7ade0e158f84347221b204",
+      "bytes": 113793
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "bytes": 5992490
+    }
+  ],
+  "files": [
+    {
+      "path": "images/cleave-impact.png",
+      "sha256": "dcd1a6c88de6c16805cd74b6695664adf48a8c8dea03a463ea08e3195110f2e4",
+      "bytes": 29467
+    },
+    {
+      "path": "images/death-late.png",
+      "sha256": "a4261e5862e36787a4ccde6c47a2c4d00a9b7d325d5e23843bddc8830580b836",
+      "bytes": 29945
+    },
+    {
+      "path": "images/death-start.png",
+      "sha256": "f0f95195f98e12ccdb4e535398b0acf7006db96da00194d658934826b3652d94",
+      "bytes": 32696
+    },
+    {
+      "path": "images/death-transition.png",
+      "sha256": "4a9d9cb40224378a277a115476f0fb4a246e041a6ab9508474fb9653ae1d575f",
+      "bytes": 44039
+    },
+    {
+      "path": "images/stand.png",
+      "sha256": "fb8748567c2fb6d6a0b24223851c997ae502255f0d3849ee8e6751e11c945824",
+      "bytes": 33100
+    },
+    {
+      "path": "logs/native-publish.log",
+      "sha256": "ad3a888c346faa82b98dd03ca72417c2cf59c410388a85360360fd0a1cf0b0eb",
+      "bytes": 1303
+    },
+    {
+      "path": "logs/native-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/regression-before.log",
+      "sha256": "4b03f648e76266e031f1c1e819649fbe5a7498304f713c2e05870654cd2d75d3",
+      "bytes": 3329
+    },
+    {
+      "path": "logs/regression-before-trace.txt",
+      "sha256": "545e7950b71112663682fb20723d80cba605d19cd501a611faa99a4052797cba",
+      "bytes": 829
+    },
+    {
+      "path": "logs/capture-first-failed.log",
+      "sha256": "965cd59487a136efc475b7fcad3394cb399dabf92875555ff8066380fa601766",
+      "bytes": 2773
+    },
+    {
+      "path": "logs/capture-final.log",
+      "sha256": "73a92a6e6b5666d3c0158d8dc6674aea57b2623684e3fc22e43e96e3f15de35b",
+      "bytes": 2203
+    },
+    {
+      "path": "logs/capture-final-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/verify.log",
+      "sha256": "cf3b59fa56e9d2b1df5229e6099adf2a32fc8897897055df768f633ea0cae5bd",
+      "bytes": 914
+    },
+    {
+      "path": "logs/xfl-audit.log",
+      "sha256": "f340bdf9b0fb6770ea5910358a7c33a1ab49bac18c4edd81057dac4e3efb1553",
+      "bytes": 587
+    },
+    {
+      "path": "logs/capture-first-diagnostic-trace-summary.txt",
+      "sha256": "fb07782b98067a451e8ccd02f4513724d16d4553459f7e2c474beb3d7bc89679",
+      "bytes": 780,
+      "derived": "Image pixel rows omitted; full trace identity listed separately"
+    },
+    {
+      "path": "logs/capture-final-trace-summary.txt",
+      "sha256": "5bcd0c6afc39fdbd9c16ca8a7542cbafad88012d1e80e61acb2bee8fae0b9e27",
+      "bytes": 726,
+      "derived": "Image pixel rows omitted; full trace identity listed separately"
+    }
+  ],
+  "limits": [
+    "No new arena campaign for the visual matrix and name-only change",
+    "Earlier combat results bind their historical SWF, not this new binary",
+    "Human full-motion acceptance after game restart remains open",
+    "No formal runtime promotion or commit/push in this revision"
+  ]
+}

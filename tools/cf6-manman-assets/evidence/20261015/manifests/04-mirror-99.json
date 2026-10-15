@@ -1,0 +1,105 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "manman-isolated99-r2-20261015-mirror-99",
+  "createdAt": "2026-10-15T09:26:59.398Z",
+  "buildCommit": "88c53b13271111cd99a253ba2fe6d690f964734c",
+  "planner": {
+    "name": "cf6-manman-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "mirror-99-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-enhanced-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-baseline-99",
+          "parameters": {
+            "蛮蛮AI模式": "baseline"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 8100,
+      "tags": [
+        "manman",
+        "mirror",
+        "blue"
+      ],
+      "plannerReason": "同兵种、同等级和面板，仅切换私有 AI；交换红蓝，实际 startMaxHp 必须相等。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "d5628323cb0a0ceefb3eaefa735fddf7b0f4219377ac9f43eeb22581597ea849",
+        "candidateSide": "blue",
+        "comparison": "mirror",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "ai",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:9d280a27f041f8411a6068dad47a48161ff8d185c377a0faa3620cac02eadedf"
+    },
+    {
+      "caseId": "mirror-99-red",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-baseline-99",
+          "parameters": {
+            "蛮蛮AI模式": "baseline"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-enhanced-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 8100,
+      "tags": [
+        "manman",
+        "mirror",
+        "red"
+      ],
+      "plannerReason": "同兵种、同等级和面板，仅切换私有 AI；交换红蓝，实际 startMaxHp 必须相等。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "d5628323cb0a0ceefb3eaefa735fddf7b0f4219377ac9f43eeb22581597ea849",
+        "candidateSide": "red",
+        "comparison": "mirror",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "ai",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:d31db8b25fe84086bddb5e2336559b6ad1990f66070babfcd19e3d6d635961d1"
+    }
+  ],
+  "manifestHash": "sha256:35a9a49f670dc4ff81adb7b6bedc125fe4d16538b81cca059fd16de5bfa99f77"
+}
