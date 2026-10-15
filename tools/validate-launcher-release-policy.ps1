@@ -1,4 +1,4 @@
-﻿# Read-only product-policy validation for a prepared Launcher release tree.
+# Read-only product-policy validation for a prepared Launcher release tree.
 # Binary producers must not run these checks as part of the payload identity: policy
 # evolves independently and is bound to the validation receipt by policyHash.
 
@@ -241,7 +241,7 @@ function Get-Cf7ProductionChecks {
         'css\bootstrap.css', 'css\game-ui-behavior.css', 'css\welcome.css', 'css\overlay.css',
         'css\panels.css', 'css\panels\foundation-top.css', 'css\workbench\tokens.css',
         'css\panels\foundation-rest.css', 'css\workbench\core.css', 'css\workbench\profiles.css',
-        'css\panels\features.css',
+        'css\panels\features.css', 'css\panels\tactical-map-shared.css', 'css\panels\map.css',
         'css\workbench\inventory.css', 'css\workbench\skins.css', 'css\workbench\entities.css',
         'css\workbench\crafting.css', 'css\workbench\skills.css', 'css\workbench\equipment-tuning.css',
         'css\workbench\components.css', 'css\workbench\character-build.css',

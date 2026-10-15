@@ -1,0 +1,712 @@
+{
+  "schema": "cf6-manman.native-import.v1",
+  "owner": "flashswf/arts/new/Codex蛮蛮素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6蛮蛮-R2",
+  "nativeSymbolCount": 106,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    }
+  ],
+  "donor": {
+    "path": "flashswf/arts/things7.fla",
+    "sha256": "a57f772ff6b7336d2577d2fe8e9e0113652105a7450841c86185b2b8ace9d455",
+    "members": [
+      {
+        "member": "LIBRARY/敌人-不死兽人.xml",
+        "sha256": "9c2b22366762bd4304a9b1a6ccf74fcf46ac65d53f8bf00794e1027da235daa6"
+      },
+      {
+        "member": "LIBRARY/Symbol 1121.xml",
+        "sha256": "8043c8c0dff4917a88e6fd6869444dbb553c6f7d2270be16d2ac62c5104d6147"
+      },
+      {
+        "member": "LIBRARY/Symbol 2.xml",
+        "sha256": "d246d96b18c74d09aa86e8016cfb22ea4e11255c1c9bca73348108791ddfee22"
+      },
+      {
+        "member": "LIBRARY/Symbol 1.xml",
+        "sha256": "5c9147d8dce704f0dd3973d37867c3134cae3cb4971d22f5baddf449b1b031bf"
+      },
+      {
+        "member": "LIBRARY/Symbol 1120.xml",
+        "sha256": "71f41d71c1e73c1ad17bb453abb930c51b9a0ecb7b0a53d30642ef9174ad1272"
+      },
+      {
+        "member": "LIBRARY/Symbol 95.xml",
+        "sha256": "e65efab402d14f74d3bcce0b216901c6b1e758999e97f90ef13dfb6dd06c0f39"
+      },
+      {
+        "member": "LIBRARY/Symbol 1119.xml",
+        "sha256": "5cfc7e6d285c9d707948874a3d895c02c81d68ab8e28a9d2719926581ea0e3fe"
+      },
+      {
+        "member": "LIBRARY/Symbol 1118.xml",
+        "sha256": "4ccec15c23e782e9b48d0eeaeb0171b2c0654e6e2fdfe5b30104307d7fd3d6ef"
+      },
+      {
+        "member": "LIBRARY/Symbol 1110.xml",
+        "sha256": "2ec939d66fd3f9d34be407087a1fddfddf9ba7caad2961f7d5e761b9a054de9c"
+      },
+      {
+        "member": "LIBRARY/Symbol 1117.xml",
+        "sha256": "c329eb321e6c60313f5f920d5eea6b825f0d1085e747add81f03dd75e2a6a93a"
+      },
+      {
+        "member": "LIBRARY/Symbol 1115.xml",
+        "sha256": "8b803b2b82aeee181677959be0cd175ef0bcb0d85a6045372da1041ad1acf1b4"
+      },
+      {
+        "member": "LIBRARY/Symbol 1114.xml",
+        "sha256": "db0af0b584d6bd58a50f70960d85d0ef86eb39485861def039a16e45dee6c24b"
+      },
+      {
+        "member": "LIBRARY/Symbol 57.xml",
+        "sha256": "8aa91ffdc4ab0a81e0fa9c4c882e9493ac24a2b243442f22cda049224632b868"
+      },
+      {
+        "member": "LIBRARY/Symbol 37.xml",
+        "sha256": "d50dbd46c99315633b013c11347bd5bba375f5bec9f18d8389d7e8dd6b346dd2"
+      },
+      {
+        "member": "LIBRARY/Symbol 36.xml",
+        "sha256": "2e1a3ebc7c8d66607b4205983da85749726b806021e7b47e6549d7a5be0646c0"
+      },
+      {
+        "member": "LIBRARY/Symbol 1116.xml",
+        "sha256": "eb6f4f8b93ecbaa79c0196b21939bb32477a603af62e9c230cd9206c6a8ba82c"
+      },
+      {
+        "member": "LIBRARY/Symbol 1113.xml",
+        "sha256": "c4394a30c9cbb4a4ec7181a262810c6d13b3ab4d3089715187618917d4e9a1ae"
+      },
+      {
+        "member": "LIBRARY/Symbol 1112.xml",
+        "sha256": "60bb8ba325982a8ddbfa7b1ebe277aac472489d0797882e3b932b055d18c54c1"
+      },
+      {
+        "member": "LIBRARY/Symbol 491.xml",
+        "sha256": "428b9d83ec5de61d4ae529174b3c7b23c5486ceac53d1c79ed6be66c17bbbfa7"
+      },
+      {
+        "member": "LIBRARY/Symbol 31.xml",
+        "sha256": "63cb74f8b77d54b65419619b4413dcae2177c534d062c5ba17ed3de773b8da9a"
+      },
+      {
+        "member": "LIBRARY/思考标签.xml",
+        "sha256": "c22ae5fd71de66558d528c5bfed468c371aea2eec14d6745bc10dc7d814ba328"
+      },
+      {
+        "member": "LIBRARY/Symbol 377.xml",
+        "sha256": "420efe08f15621c51a67aaef48b2e0e7e9c86de43b54754d081947268bcda043"
+      },
+      {
+        "member": "LIBRARY/Symbol 32.xml",
+        "sha256": "f1d38f3dc0357bca02d3533f71a884cf2ad2fca8467e5bc23d017a79b26f186f"
+      },
+      {
+        "member": "LIBRARY/Symbol 1111.xml",
+        "sha256": "37b687fc2891c5deb68fc8e2d1edba3e1e2ad38d88bacb9937e91b94e05ffe15"
+      },
+      {
+        "member": "LIBRARY/Symbol 50.xml",
+        "sha256": "28be0d387389b44d69aa98cf3e759fe74fbcf7618c9702f33b7b4043dd0e78a0"
+      },
+      {
+        "member": "LIBRARY/Symbol 44.xml",
+        "sha256": "9a7b5e8e2a490155dcc88fe264c77a975ba7f100c4fbb1d50fb937b168eed023"
+      },
+      {
+        "member": "LIBRARY/Symbol 41.xml",
+        "sha256": "84a328ab92176f005e4ea9c37a17266fdfb9ab20a2df0e63e5ff6de265d45de9"
+      },
+      {
+        "member": "LIBRARY/Symbol 42.xml",
+        "sha256": "2b468159b549da6864cc3869df1caa64d7c7c72f36a9de2380c0f5744d64832b"
+      },
+      {
+        "member": "LIBRARY/Symbol 39.xml",
+        "sha256": "609642777619e833c0553155cad0e4ec33500c826aa11acc938ebb69eba09894"
+      }
+    ]
+  },
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1.xml",
+      "sha256": "0ed642dfc333c8fb15da5f35f881ce1f8e40f7b54f12e617f49a079f2a82b447",
+      "bytes": 1565
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1110.xml",
+      "sha256": "a353f4dace92380a915dc1081425987b54708ba0b9c6c45184d7050c5ddf70da",
+      "bytes": 13747
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1111.xml",
+      "sha256": "82a3abd546c1e9758fe83f8a23fa111fcefeafc71534648149127501c2224284",
+      "bytes": 2459
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1112.xml",
+      "sha256": "4e6f099917bb528857253b504a7d490243c7b898d63a1fb48955d0ba877f5a6c",
+      "bytes": 71060
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1113.xml",
+      "sha256": "b506537fa2813b4f931bbd809dc4fcb1931e9c28a62915875c96d07391043e29",
+      "bytes": 71071
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1114.xml",
+      "sha256": "fc1be7582ff697fd3368dae288ae1de8f2360c7f137c9f827685cc68742d22d4",
+      "bytes": 1074
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1115.xml",
+      "sha256": "1b0b78c2d19361d9db4cb702b93d2f395fae0e18209a7106348723592730f444",
+      "bytes": 1067
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1116.xml",
+      "sha256": "906690329d0fafcc7630507d09845b7f7576ece801460bdb9f24faebacc3c67f",
+      "bytes": 89168
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1117.xml",
+      "sha256": "b3f9b5b15c10f057ba7295288270e96eb56577cb8367c56cd82960ad290384c3",
+      "bytes": 87382
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1118.xml",
+      "sha256": "1f976c7e0b70486f0cd13fae52c4a085b25b3d4d4432df6590c75c96aac681ca",
+      "bytes": 25175
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1119.xml",
+      "sha256": "2ba8675b58678be06dcd0d5c2c268cfb6ddd56b4ca66b7f2d41c27569afdc33e",
+      "bytes": 16996
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1120.xml",
+      "sha256": "f347b3e8025da22e1951f60b1353ab07b7c7e5c967f161c6487b96c89d6676d2",
+      "bytes": 55945
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1121.xml",
+      "sha256": "132b2c4ad5c687d643cad831f2fa8f8aa78b3f04d6d603760f1b90c8853f0904",
+      "bytes": 14552
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 2.xml",
+      "sha256": "dae3f16a08bce4c7d23f9486c7ef13f1568aba5f650a19eef69b0bb526a5e8fc",
+      "bytes": 1011
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 31.xml",
+      "sha256": "a1a6d85fb845422ae544d85cb67c59fad9a1b029fa2a970051231e8fced756eb",
+      "bytes": 1048
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 32.xml",
+      "sha256": "a455e1f8adf0f68c971c28ef9a3794230b2f0ab6ed623afe8add0e276d426812",
+      "bytes": 1062
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 36.xml",
+      "sha256": "97279bdd9aab68a307e895ce619ea74b7ae29a6f939f299d0d3bc3abd9510d69",
+      "bytes": 1084
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 37.xml",
+      "sha256": "44071b63bd2aee13704fac46c7f285f6d9907a3c21f1a7e7cb9fc74fd75c9cf0",
+      "bytes": 968
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 377.xml",
+      "sha256": "fcfac4d010a315a047c4febb14e8239a30a74d61e6de64ec68231a17c590b7c3",
+      "bytes": 1204
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 39.xml",
+      "sha256": "2dc7e7987c793a5ab6a765f8df28f26d1868a63e19f4223d9fc3ff388f43ac30",
+      "bytes": 1054
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 41.xml",
+      "sha256": "d1398b9568dd98f3428f2eeafab782b073d9acc32081270fe38b8543b2d9a283",
+      "bytes": 1008
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 42.xml",
+      "sha256": "8cf004ea0407fbc3425637c006edea5fd5389a52f7b79b1042608f14e621b7f7",
+      "bytes": 863
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 44.xml",
+      "sha256": "b0fddbd6cc2334af39ad6d1c8ced03b51477564405ed931516d502ace7f9eb96",
+      "bytes": 4909
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 491.xml",
+      "sha256": "0578f370838e82b7289012061ae79ccd84026f23a95bbfba5da7d5126aaf3928",
+      "bytes": 865
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 50.xml",
+      "sha256": "899e10deb83f54f636639cbb3f7ff9689c4a94bb34bb85cf660833e4747beb55",
+      "bytes": 6626
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 57.xml",
+      "sha256": "f0420c0946320b0d0d3005729d3754f897e634fa4083ae54dc06e8f58cedd355",
+      "bytes": 1534
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 95.xml",
+      "sha256": "60e25ce89f3cdd9ccf96c7ff58a367c3681e0906ac282984001cfa703514710c",
+      "bytes": 1753
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/CF7/思考标签.xml",
+      "sha256": "86f7ecb68609b6898f3de605c0d7788680e2c07e4b96a72614dcfa0af26292db",
+      "bytes": 1477
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/632.xml",
+      "sha256": "556b65d82596f1bfe7a02bc8e64435fe5d1fae88ab0e51e25bd3b2d98e961f4a",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/632-遮罩0.xml",
+      "sha256": "2f9e7545e5e8acf8ce1994d3e88b75027f036dde2b7f90232f7c0fe68b038737",
+      "bytes": 2149
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/632-遮罩1.xml",
+      "sha256": "76a1779ebf6aa906bd44328075d71e7065e47c49c4ca34b81d806a9109d27a70",
+      "bytes": 7279
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/633.xml",
+      "sha256": "d126656a5da8080a79c821bda18a058e5aa3f0ba118a1b8cbd3f0179fe639f37",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/633-遮罩0.xml",
+      "sha256": "a9a39335710a1805e701c9b624506fbd5fe5c91a2556f4ab438da8e7836ee86b",
+      "bytes": 2053
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/633-遮罩1.xml",
+      "sha256": "ddcd1c4e9b574cc7de7e78021ea13854184bef2470a5b6b70b9821c9eead4a13",
+      "bytes": 36077
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/634.xml",
+      "sha256": "73a8bdf4b37aca28806b41d05952b69ce10f524baf6426c0dc78c558f33f6471",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/634-遮罩0.xml",
+      "sha256": "00dfa8d7c6aa232bf7c931673b7c1ba06d07a9723d0a3075d49ba896892e8ffc",
+      "bytes": 2374
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/634-遮罩1.xml",
+      "sha256": "39acb7abd206dc5892e53d964ff373848f1048da5861ce85934aea9d2586c40c",
+      "bytes": 77169
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/635.xml",
+      "sha256": "0149630df87a4ef0aec6c4e68bc61044bf31c65f13056fdab4a682f065c268a6",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/635-遮罩0.xml",
+      "sha256": "c65b322b5cf00d4de5d5ec49ab4c9987697c111d4fedafe72edb29a3be3fec59",
+      "bytes": 1992
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/635-遮罩1.xml",
+      "sha256": "491bea21b8bee58e500ee2dfe771680379f58f154c95a3f35b7dc3396892bb83",
+      "bytes": 55620
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/636.xml",
+      "sha256": "fe7dcdbb7ee0a6a13b757d224383b8739e194fb3f32246881560a57d0ac4b8f9",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/636-遮罩0.xml",
+      "sha256": "aa4f4207e95c43caf81f2665ddf71e334ddacfb0bf2cb0b6181c2a1eea7f583b",
+      "bytes": 1834
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/636-遮罩1.xml",
+      "sha256": "887514224685db39bd83b5883f0e9667d7575db791c63a2345e6e558adef45e5",
+      "bytes": 36135
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/637.xml",
+      "sha256": "fe5c4f90af6a26cde4660c89ec8045816357ea34b833a350126164fd819cf3e5",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/637-遮罩0.xml",
+      "sha256": "7215ca5fc6e7a4389dde63fbceec46bcba70eeb649b64c73c86b1de6c79a1347",
+      "bytes": 1876
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/637-遮罩1.xml",
+      "sha256": "b161c932352599269c8d5f88c378b43c1dca72477f1a1d4a6642fe1a7ab7e2ef",
+      "bytes": 39805
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638.xml",
+      "sha256": "dc3960493de3940c2bf02b52f140ce52af89e314d9340d3c61b53ad0cf9f92f2",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638-遮罩0.xml",
+      "sha256": "2e27cb209b60f4f95db67d45942f9a639994b9ecb85c3a04f35ba89172ff1646",
+      "bytes": 2626
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638-遮罩1.xml",
+      "sha256": "9591a03a5a8f86beb697201e1c6abde3565d2ec944b3e1538559f736170634ab",
+      "bytes": 124306
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638-遮罩2.xml",
+      "sha256": "05a59a1c441ba850edeb63d9fd853a7edbb200a9efaeaac0efd43e353d481f4e",
+      "bytes": 64300
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638-遮罩3.xml",
+      "sha256": "5b88181f9fd5246939f9ce0aaa4e15da3507d0c02e9a3ef566023be62b24ed10",
+      "bytes": 48424
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/638-遮罩4.xml",
+      "sha256": "c77ffae915df6137f06dbb3065b1c7deb9af9ea96718e807b71c4d931f285008",
+      "bytes": 23219
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/639.xml",
+      "sha256": "294994ec4de3e64500f14aa90bc933ede4988667d7bc295f69293d422db4abd3",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/639-遮罩0.xml",
+      "sha256": "8106033831d939b81319948a5c26037e66c360785a3f1d5fbd1c146ead87f86d",
+      "bytes": 2260
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/639-遮罩1.xml",
+      "sha256": "bdc528eb4f13248afe3ad050d8f7d3bcd4d3056ddf38d386c6a421488901de84",
+      "bytes": 41978
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/640.xml",
+      "sha256": "1b617906dd0b77c2209e2b55b4e43a01945b642461f204d24a484eac39d374fe",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/640-遮罩0.xml",
+      "sha256": "2742c6c082d18a7e7f7f1e1ac4f4392bc76a37e4fe1a6073ffd7182f61609088",
+      "bytes": 2013
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/640-遮罩1.xml",
+      "sha256": "3468171363abd7553080f6a458d9f4724385a1b57fd6ca4da2baa0625fac5d71",
+      "bytes": 45890
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/642.xml",
+      "sha256": "378443858158bf7bd1374ea302775f9a5d4b84dab6a39c531567fde9dfffc1a5",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/642-遮罩0.xml",
+      "sha256": "cc58ae51ade0ae94dc4f81460e445484927a11f6d321e5162d22d383f685d492",
+      "bytes": 3074
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/642-遮罩1.xml",
+      "sha256": "3055357c6b4b54696b3976feb6cc34a9e06add1d4da86866533df3ac36cc2aef",
+      "bytes": 199998
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/643.xml",
+      "sha256": "d03966861947bbf25cec7d51a19fec543cf982eb28297807224971ba2bd832df",
+      "bytes": 959
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/643-遮罩0.xml",
+      "sha256": "aca1226811aeff498874540e9a2a805e470d8f9404bbbec5c4ba266161ac24d4",
+      "bytes": 2140
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/643-遮罩1.xml",
+      "sha256": "c69254748c01193567055e3f19addc4e8bd8278c2079944f416e34725666306f",
+      "bytes": 32270
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646.xml",
+      "sha256": "beac9cd739d4ccf317a4fe5f2a200800e80e63bee22e7328aaaa32f201ccd03d",
+      "bytes": 1783
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩0.xml",
+      "sha256": "97818bcaef3abd6b4ce427aa79176493e7223d6ff64858994a6870cb102635c4",
+      "bytes": 1782
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩1.xml",
+      "sha256": "7a9b0ffd9cc065ea89d05d81ffebe3bae12c4c3c7f9606ee704b8f84cf217886",
+      "bytes": 7576
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩2.xml",
+      "sha256": "e2862f9e6b604a2b24ce45c743247d61948a192bf4161edab754cbdfa5bcb931",
+      "bytes": 2085
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩3.xml",
+      "sha256": "4d350e9fb645feb181691ceadac487372e923b638de140b6937f37627b37bf1e",
+      "bytes": 79336
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩4.xml",
+      "sha256": "8f87c1cd54c186883f44b3e74b11c15d333c2af0f2abb7c8f7f83172407d14e1",
+      "bytes": 1717
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/分件/646-遮罩5.xml",
+      "sha256": "f29bc1df0dc457934f8b6258393df22131fef1a96785fc857739b3a4d0ee7e4e",
+      "bytes": 183736
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/动作/血腥死.xml",
+      "sha256": "12314059c140c27cc616d4ccf085e4af6f1d877eae99c2d2ef57f7845c0f4209",
+      "bytes": 105410
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
+      "sha256": "fa3a5ba4b3b7b7a424383d7d95068fe28e9a129dc84ee9ec8623eca2740512c3",
+      "bytes": 28980
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/660.xml",
+      "sha256": "f21a3f89aa8253e384f34919e2842f32095c709c15e26abce387dbfea98db265",
+      "bytes": 3168
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/661.xml",
+      "sha256": "fee7234403e10a32e2ac059b399adcdf70afbadcd650d2c513abdda6fd3a36b0",
+      "bytes": 9004
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/662.xml",
+      "sha256": "4804d7540e24485819eaead34184366cb5db354a1f8c0d3d977c120be11d74f2",
+      "bytes": 9923
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/663.xml",
+      "sha256": "124ec129b8324665216cf2a3493edc039d42388ef602d3cbdf540cf7dccfb757",
+      "bytes": 8432
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/664.xml",
+      "sha256": "eabd39b82f62dcc734d606ae8f0309cc789b7825b8d26fe408123e4c92ff2d45",
+      "bytes": 5025
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/665.xml",
+      "sha256": "0b245889a2df7bb1314dad77bc5cab1bace9343b8cf5ac29816c971957164486",
+      "bytes": 10374
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/666.xml",
+      "sha256": "3b615a784d13b32d00349a975c5374c90e25ab1ef23995e944a8db3f475ce38d",
+      "bytes": 13343
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/667.xml",
+      "sha256": "13bf943da2775341ae072d6ec74bcb0c33c0f3823e7cda042fb65bf41d42203a",
+      "bytes": 10961
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/668.xml",
+      "sha256": "0551f6aa7d15bb04699a7c942b0a6c6b5a40422c54f871d8c6fc9600fd5aaf80",
+      "bytes": 7824
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/669.xml",
+      "sha256": "bb06b71ec83ef45617b257195bde7af6c9efcba055280ceca598984f327bb394",
+      "bytes": 4361
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/670.xml",
+      "sha256": "5337d69ee886a38cf9cf4304a39f6a4270e88d6752496c6615cfdfedac2163dd",
+      "bytes": 4742
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/671.xml",
+      "sha256": "b08e2308d91f6799ba725c005d10d13d9681218ee62899624eccf8fdac654bbf",
+      "bytes": 4704
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/672.xml",
+      "sha256": "ebd797a4dc10b64b6419d7bf0fd006d5df30b0831778689209cc7fd464fa7d93",
+      "bytes": 4118
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/673.xml",
+      "sha256": "9114739a13c87886e38a893ee616fa1700b455f6713241bb6b7cc451e6724d59",
+      "bytes": 3285
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/674.xml",
+      "sha256": "8ac90ad690c7e0eeec912116bd41a00bde8ccb9143f37f8405edd56fa309f865",
+      "bytes": 4269
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/675.xml",
+      "sha256": "c92ba82c41ba35237400f7cd6128ce3e9c3d1b586f3f74eaa668d0dc9d3c5505",
+      "bytes": 4923
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/676.xml",
+      "sha256": "b2245cbe4e1e3dfa8505eb11db475f4ef4baa49ee70735bb22d4cec90822a01d",
+      "bytes": 1377
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/677.xml",
+      "sha256": "9eb6621399ba5487a378a8009f9aff7c02408970c08ab3379b1172bfb5fbb38d",
+      "bytes": 4898
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/678.xml",
+      "sha256": "085f785202676837ef9a8b6c168d6a6c2dd4955d9c3d233e55df01edb585a4b7",
+      "bytes": 1883
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/679.xml",
+      "sha256": "c80c3b93594a0942c99cdd15f84970ba6850a7f1920c9f4f01538d87d4eff3ee",
+      "bytes": 3420
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/680.xml",
+      "sha256": "a6eb4db8b1257e15dc49c40f8532b7202cc7a9378603ee2a9726f4083d32a03c",
+      "bytes": 2949
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/681.xml",
+      "sha256": "8a433d0b02765d7ddf87ee7efa90e9dcfce5591fc5d0aecdcaec9798fc54c726",
+      "bytes": 2225
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/682.xml",
+      "sha256": "0b7b65d2eba69e367db3355abb10899223cfa653f3b438933199549f9fd87d77",
+      "bytes": 1726
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/683.xml",
+      "sha256": "8c70630fe7dad7197759738e203d4729247be10aae326852edb23b67cdfe9fe5",
+      "bytes": 1745
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/684.xml",
+      "sha256": "2b220ec0d9ad9e9b1572f92cfc2b4daafc11f6e6e0be195dd61683d3d1887d97",
+      "bytes": 2252
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/685.xml",
+      "sha256": "560bb04e48fbb5679c944e572dea88ea7573be7d8b9cd85a45eb2247fdfcc3ce",
+      "bytes": 2252
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/686.xml",
+      "sha256": "183f7a3bb155d720ac5c5b144e7eafd9c368677cd84d5d1564922463fdfbe0e9",
+      "bytes": 2810
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/687.xml",
+      "sha256": "52f370bdf4355617d9e4eaef7e87cf94fb73ba81d92ba623fc62c20e6d661a6d",
+      "bytes": 2746
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/688.xml",
+      "sha256": "76d5ad6d2dfef574f4adc40133e805cf30c8ae35b0b8a3ed947f3df6a5f68d25",
+      "bytes": 2285
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/689.xml",
+      "sha256": "f5a1c50be86d5aac0482ef98b5f16ac20207f822785676423e0878785d9bc003",
+      "bytes": 2255
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/死亡血肉/690.xml",
+      "sha256": "ffb373c06f92704096f7dab293ac6059b1633b5fc61d35c484f9cfe4c4102314",
+      "bytes": 2772
+    },
+    {
+      "path": "LIBRARY/Codex/蛮蛮/行为驱动.xml",
+      "sha256": "d65a5d869d6eaf0962786b03a1c244f83ef4f7ddc71ef5d8d8557eaeacd8ad69",
+      "bytes": 657
+    },
+    {
+      "path": "LIBRARY/Codex蛮蛮素材.xml",
+      "sha256": "b09e91a270a5cad826396da1b5bd8230e0836e36dbd1a1c50f335198025cf44f",
+      "bytes": 1138
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "385033fd68503424185fb2cc8b361a6dbb7578b302ff03bc2e9b86415372bd7b",
+      "bytes": 12651
+    },
+    {
+      "path": "Codex蛮蛮素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "a364d82957956a396a6d74b7c91dad0f02168ab203c15f5e1aa1a4abb6127919",
+      "bytes": 7911
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

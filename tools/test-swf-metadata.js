@@ -69,6 +69,50 @@ check("missing RSL fails full closure", () => assert(auditOwnership(tmp, [loader
 check("changed-file check explicitly omits closure", () => { const r=auditOwnership(tmp, [loader,main], cache,{checkImports:false}); assert.deepStrictEqual(r.errors, []); assert.strictEqual(r.closureChecked,false); });
 check("missing loader rejected", () => assert.throws(()=>auditOwnership(tmp,[main,asset],cache),/requires/));
 check("path outside root rejected", () => assert.throws(()=>auditOwnership(tmp,[loader,main,"../bad.swf"],cache),/escapes/));
+const legacy = "flashswf/gk-1-s.swf";
+const configBytes = text => Buffer.from("\ufeff" + text, "utf16le");
+const configText = name => "SteamID=1;steamName=" + name + ";myKey=fixture;myDLC=fixture;";
+function auditLegacy(bytes) { write(legacy, bytes); return auditOwnership(tmp, [loader,main,asset,legacy], cache); }
+check("historical text config accepts variable field lengths", () => {
+    for (const size of [192,214]) {
+        const chars = (size - configBytes(configText("")).length) / 2;
+        const bytes = configBytes(configText("x".repeat(chars)));
+        assert.strictEqual(bytes.length,size);
+        const result = auditLegacy(bytes);
+        assert.deepStrictEqual(result.errors,[]);
+        assert.strictEqual(result.files,3);
+    }
+    assert.deepStrictEqual(auditLegacy(configBytes(configText("合成测试🙂"))).errors,[]);
+});
+check("historical text config rejects wrong encoding and truncated code unit", () => {
+    const bytes = configBytes(configText("fixture"));
+    for (const bad of [Buffer.from(configText("fixture")), bytes.subarray(2), bytes.subarray(0,bytes.length-1)]) {
+        assert.throws(()=>auditLegacy(bad),/Unexpected non-SWF asset type/);
+    }
+});
+check("historical text config requires unique known fields and complete framing", () => {
+    const text = configText("fixture");
+    for (const bad of [text.replace("myDLC=fixture;",""),text.replace("myDLC=","myKey="),
+        text.replace("myDLC=","unknown="),text.slice(0,-1),text+"extra=value;",text.replace("steamName=","steamName=\u0000")]) {
+        assert.throws(()=>auditLegacy(configBytes(bad)),/Unexpected non-SWF asset type/);
+    }
+});
+check("actual SWF cannot use the historical text-config exception", () => {
+    assert.throws(()=>auditLegacy(swf(["org.flashNight.Hidden"])),/Unexpected non-SWF asset type/);
+});
+check("text config at another asset path is not exempt", () => {
+    write(asset,configBytes(configText("fixture")));
+    assert.throws(()=>auditOwnership(tmp,[loader,main,asset],cache),/Unsupported/);
+    write(asset,swf());
+});
+check("invalid text-config diagnostics never include field values", () => {
+    const sentinel="synthetic-private-value";
+    let failure;
+    try { auditLegacy(configBytes(configText(sentinel)+"unknown=value;")); } catch (error) { failure=error; }
+    assert(failure);
+    assert.strictEqual(failure.message,"Unexpected non-SWF asset type: "+legacy);
+    assert(!failure.message.includes(sentinel));
+});
 console.log("SWF metadata tests: " + tests + " passed");
 // Keep the tiny fixture directory on failure; successful fixtures need no cleanup gate.
 const resolvedFixture = path.resolve(tmp);

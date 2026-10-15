@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1789832012" lastUniqueIdentifier="14">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1792044274" lastUniqueIdentifier="14">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招">
+    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="76">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -37,7 +37,7 @@
           </frames>
         </DOMLayer>
         <DOMLayer name="代码相关" color="#9933CC" locked="true" autoNamed="false" layerType="folder"/>
-        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="攻击as" color="#FF800A" parentLayerIndex="1" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
@@ -1031,7 +1031,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="72" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-8.95" centerPoint3DY="308.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
                     <Matrix tx="-21.45" ty="296.05"/>
                   </matrix>
@@ -1475,7 +1475,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="虚空子弹" color="#9933CC" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements/>
@@ -1485,7 +1485,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="76" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="696.25" centerPoint3DY="241.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="696.25" centerPoint3DY="241.5">
                   <matrix>
                     <Matrix a="35.6163787841797" d="19.1306762695313" tx="236.6" ty="-2.9"/>
                   </matrix>
@@ -1552,7 +1552,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="92" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="770.45" centerPoint3DY="381.5">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="770.45" centerPoint3DY="381.5">
                   <matrix>
                     <Matrix a="33.4082946777344" d="22.1759643554688" tx="284.1" ty="97.7"/>
                   </matrix>
@@ -3673,8 +3673,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!15904 3410[14746 5460 10351 5587!10351 5587[5957 5716 904 3847!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051!6511 -6051[11562 -4181 14315 -1410
-!14315 -1410[17066 1360 15904 3410"/>
+!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051!6511 -6051[11562 -4181 14315 -1410!14315 -1410[17066 1360 15904 3410!15904 3410[14746 5460 10351
+ 5587!10351 5587[5957 5716 904 3847"/>
                   </edges>
                 </DOMShape>
               </elements>

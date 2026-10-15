@@ -170,6 +170,9 @@ _root.UI系统.初始化玩家信息界面 = function()
                 玩家必要信息界面.战技控制器._visible = false;
             }
             org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore.updateAmmoDisplay(控制对象);
+        } else if (攻击模式 == "手雷") {
+            var 手雷数 = (_root.物品栏 && _root.物品栏.装备栏) ? _root.物品栏.装备栏.getValue("手雷") : undefined;
+            玩家必要信息界面.弹夹数 = (手雷数 != undefined) ? 手雷数 : "";
         }
     };
 

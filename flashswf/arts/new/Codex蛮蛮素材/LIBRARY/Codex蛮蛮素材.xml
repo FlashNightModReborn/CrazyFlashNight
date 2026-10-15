@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex蛮蛮素材" itemID="6af00000-a883fe82" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="Codex蛮蛮素材" linkageURL="flashswf/arts/new/Codex蛮蛮素材.swf">
+  <timeline>
+    <DOMTimeline name="Codex蛮蛮素材">
+      <layers>
+        <DOMLayer name="入口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/敌人-CF6蛮蛮">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

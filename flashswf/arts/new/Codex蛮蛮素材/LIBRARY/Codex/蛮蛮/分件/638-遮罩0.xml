@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/蛮蛮/分件/638-遮罩0" itemID="6aa00000-b4f6382e" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="638-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2248 -9205|-2498 -9138[-2655 -9093 -2799 -9022[-2982 -8945 -3165 -8881[-3399 -8811 -3578 -8660|-3892 -8385[-4126 -8157 -4293 -7891[-4351 -7795 -4399 -7695[-4463 -7567 -4552 -7429|-4524 -6077[-4107 -4900 -3536 -3759[-3463 -3609 -3431 -3448[-3389 -3253 -3370 -3051[-3341 -2734 -3296 -2416[-3235 -1980 -3091 -1561[-3046 -1426 -2992 -1298[-2825 -891 -2629 -506[-2123 -214 -1575 10[-1277 135 -956 196|-610 250[-334 289 -49 286|150 286|768 263[896 129 1050 -12[2204 -1077 2275 -2686[2291 -3022 2281 -3362|2275 -3724[2268 -3984 2223 -4250[2211 -4317 2188 -4381[2150 -4509 2121 -4634[2124 -4647 2134 -4654[2246 -4766 2316 -4884[2352 -4936 2380 -4990[2413 -5048 2438 -5106|2483 -5227[2525 -5362 2554 -5497|2579 -5641|2598 -5737[2621 -5862 2691 -5955|2672 -6000|2666 -6022[2637 -7394 1688 -8356[1480 -8564 1223 -8711|1005 -8824[829 -8904 646 -8961|521 -9000[307 -9026 191 -9128|156 -9128|156 -9186|-129 -9192[15 -9192 156 -9195|156 -9215|-2245 -9208[-2245 -9205 -2248 -9205" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/638-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

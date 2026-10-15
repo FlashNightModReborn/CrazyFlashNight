@@ -65,7 +65,7 @@ var StageSelectFocus = (function() {
         var label = document.createElement('div'); label.className = 'stage-focus-section-title'; label.textContent = '出战难度';
         var enter = button('出发', null, 'stage-focus-enter'); enter.id = 'stage-focus-enter'; enter.dataset.audioCue = '';
         enter.addEventListener('click', function() {
-            if (current) StageSelectInspector.requestStageActivation(current.button, mode, enter);
+            if (current) StageSelectInspector.requestStageActivation(current.button, current.button.entryKind === 'map' ? '' : mode, enter);
         });
         footer.append(label, S._inspectorDiffEl, enter);
         S._inspectorDiffEl.setAttribute('aria-label','出战难度');
@@ -95,12 +95,17 @@ var StageSelectFocus = (function() {
     }
     function renderContent() {
         if (!current) return;
-        var state=current.state, info=historyFor(state);
+        var state=current.state, info=historyFor(state), isMap=current.button && current.button.entryKind==='map';
+        var stageTypeText=state.stageType || current.button.stageType || (isMap ? '外交地图' : '普通关卡');
         releaseContent();var generation=contentGeneration;
         tooltipScope=PanelTooltip.createScope('stage-focus',{profile:'dense-inspect'});
         S._inspectorNameEl.tabIndex=0;history.tabIndex=0;
-        tip(S._inspectorNameEl,current.button.stageName+' · '+(state.stageType || '普通关卡'));
-        tip(history,info ? '已通关 · '+state.clearHistory.difficulties.join(' / ') : '暂无通关记录');
+        tip(S._inspectorNameEl,current.button.stageName+' · '+stageTypeText);
+        if (isMap) {
+            tip(history,'非交战安全区域 · 可直接前往交互');
+        } else {
+            tip(history,info ? '已通关 · '+state.clearHistory.difficulties.join(' / ') : '暂无通关记录');
+        }
         tabs.querySelectorAll('button').forEach(function(el) {
             var active = el.dataset.focusTab === tab;
             el.setAttribute('aria-selected', String(active)); el.tabIndex = active ? 0 : -1;
@@ -108,10 +113,16 @@ var StageSelectFocus = (function() {
         content.setAttribute('aria-labelledby','stage-focus-tab-'+tab);
         content.replaceChildren();
         if (tab === 'brief') {
+            var previewAsset = StageSelectViewModel.getPreviewAsset(current.button);
+            var resolvedPreview = StageSelectCore.resolveAssetUrl(previewAsset.url || current.button.previewUrl || '');
             var preview = document.createElement('div'); preview.className='stage-focus-preview';
+            preview.setAttribute('data-preview-tier', previewAsset.tier);
+            preview.style.setProperty('--stage-preview-bg', 'url("' + StageSelectCore.escapeAttr(resolvedPreview) + '")');
             preview.appendChild(S._inspectorPreviewEl.parentElement);
             content.appendChild(preview);
             content.appendChild(S._inspectorDetailEl);
+        } else if (isMap) {
+            content.innerHTML='<p class="stage-focus-empty">该地点为外交据点与非交战安全区域，无敌方编制与通关掉落情报。</p><p class="stage-focus-muted">前往地点后可与驻地 NPC 交互、交易补给或推进支线任务。</p>';
         } else if (!info) {
             content.innerHTML='<p class="stage-focus-empty">通关后解锁奖励与敌人情报。</p><p class="stage-focus-muted">暂无通关记录。早期存档中的通关经历需要再完成一次才能记入。</p>';
         } else {
@@ -143,23 +154,32 @@ var StageSelectFocus = (function() {
     }
     function pickDifficulty(difficulty) {
         if (!current) return;
-        mode = difficulty;
+        var isMap = current.button && current.button.entryKind === 'map';
+        mode = isMap ? '' : difficulty;
         S._inspectorDiffEl.querySelectorAll('button').forEach(function(el) {
-            var active=el.dataset.difficulty === mode;
+            var active=!isMap && el.dataset.difficulty === mode;
             el.setAttribute('aria-pressed',String(active)); el.classList.toggle('is-chosen',active);
         });
-        var enter=footer.querySelector('.stage-focus-enter'); enter.textContent='以'+mode+'难度出发';
+        var sectionTitle=footer.querySelector('.stage-focus-section-title');
+        if (sectionTitle) sectionTitle.textContent = isMap ? '地点行动' : '出战难度';
+        var enter=footer.querySelector('.stage-focus-enter'); enter.textContent=isMap ? '前往地点' : ('以'+mode+'难度出发');
         enter.disabled=!current.state.unlocked || !!S._busyStageName;
     }
     function render(buttonData, state) {
         ensure();
         var changed=selected !== buttonData.id;
+        var isMap=buttonData.entryKind === 'map';
         selected=buttonData.id; current={button:buttonData,state:state};
-        if (changed) { tab='brief'; mode=state.task ? state.highestDifficulty : '简单'; }
-        if (StageSelectViewModel.isChallengeMode()) mode='地狱';
+        if (changed) { tab='brief'; mode=isMap ? '' : (state.task ? state.highestDifficulty : '简单'); }
+        if (!isMap && StageSelectViewModel.isChallengeMode()) mode='地狱';
         S._el.classList.add('is-stage-focused'); surface.hidden=false;
-        history.textContent=historyFor(state) ? '已通关·'+(state.clearHistory.difficulties.length===1 ? state.clearHistory.difficulties[0] : state.clearHistory.difficulties.length+'难度') : '暂无记录';
-        history.setAttribute('aria-label',historyFor(state) ? '已通关 · '+state.clearHistory.difficulties.join(' / ') : '暂无通关记录');
+        if (isMap) {
+            history.textContent='外交据点';
+            history.setAttribute('aria-label','外交据点 · 非交战安全区域');
+        } else {
+            history.textContent=historyFor(state) ? '已通关·'+(state.clearHistory.difficulties.length===1 ? state.clearHistory.difficulties[0] : state.clearHistory.difficulties.length+'难度') : '暂无记录';
+            history.setAttribute('aria-label',historyFor(state) ? '已通关 · '+state.clearHistory.difficulties.join(' / ') : '暂无通关记录');
+        }
         S._inspectorDiffEl.querySelectorAll('button').forEach(function(el) { el.dataset.focusDifficulty='true'; });
         footer.hidden=!state.unlocked;
         var scroll=changed ? 0 : content.scrollTop;
@@ -175,7 +195,11 @@ var StageSelectFocus = (function() {
             var bg=S._backgroundEl.style, rect={x:parseFloat(bg.left)||0,y:parseFloat(bg.top)||0,w:parseFloat(bg.width)||1024,h:parseFloat(bg.height)||576};
             var fallback=StageSelectDiorama.fallbackMap(buttonData.id),src=S._backgroundEl.src;
             if(fallback){rect=fallback;src=fallback.src;if(fallback.point)point=fallback.point;}
-            map.innerHTML='<svg viewBox="0 0 1024 576" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".65"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(buttonData.stageName)+'</div>';
+            var zoomW=540, zoomH=340;
+            var vx=Math.max(0, Math.min(1024 - zoomW, Math.round(point.x - zoomW * 0.5)));
+            var vy=Math.max(0, Math.min(576 - zoomH, Math.round(point.y - zoomH * 0.5)));
+            var reticlePath='M '+(point.x-36)+' '+point.y+' L '+(point.x-12)+' '+point.y+' M '+(point.x+12)+' '+point.y+' L '+(point.x+36)+' '+point.y+' M '+point.x+' '+(point.y-36)+' L '+point.x+' '+(point.y-12)+' M '+point.x+' '+(point.y+12)+' L '+point.x+' '+(point.y+36);
+            map.innerHTML='<svg viewBox="'+vx+' '+vy+' '+zoomW+' '+zoomH+'" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".78"/><path d="'+reticlePath+'" class="stage-focus-map-reticle"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(buttonData.stageName)+'</div>';
         }
         if(window.StageSelectCameraEditor)StageSelectCameraEditor.refreshButtons();
     }

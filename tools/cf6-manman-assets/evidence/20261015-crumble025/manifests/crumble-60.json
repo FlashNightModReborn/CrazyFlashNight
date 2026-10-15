@@ -1,0 +1,119 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "manman-crumble-r3b-20261015-crumble-60",
+  "createdAt": "2026-10-15T10:11:39.305Z",
+  "buildCommit": "88c53b13271111cd99a253ba2fe6d690f964734c",
+  "planner": {
+    "name": "cf6-manman-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "crumble-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 60,
+          "sourceId": "candidate-on-60",
+          "parameters": {
+            "蛮蛮击溃模式": "on"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 60,
+          "sourceId": "reference-off-60",
+          "parameters": {
+            "蛮蛮击溃模式": "off"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 8100,
+      "tags": [
+        "manman",
+        "crumble-evaluation",
+        "crumble",
+        "blue"
+      ],
+      "plannerReason": "双方同素材、同 enhanced AI、同面板；control 双方关闭击溃，crumble 仅候选开启，交换红蓝。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+        "candidateCrumblePercent": 0.25,
+        "candidateSide": "blue",
+        "comparison": "crumble",
+        "crumblePercent": 0.25,
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "crumble",
+        "referenceCrumblePercent": 0,
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:eb6fd720a6f94cb067868260d513c6b9b301c64456a0668ccfef6190a360451d"
+    },
+    {
+      "caseId": "crumble-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 60,
+          "sourceId": "reference-off-60",
+          "parameters": {
+            "蛮蛮击溃模式": "off"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 60,
+          "sourceId": "candidate-on-60",
+          "parameters": {
+            "蛮蛮击溃模式": "on"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 8100,
+      "tags": [
+        "manman",
+        "crumble-evaluation",
+        "crumble",
+        "red"
+      ],
+      "plannerReason": "双方同素材、同 enhanced AI、同面板；control 双方关闭击溃，crumble 仅候选开启，交换红蓝。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+        "candidateCrumblePercent": 0.25,
+        "candidateSide": "red",
+        "comparison": "crumble",
+        "crumblePercent": 0.25,
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "crumble",
+        "referenceCrumblePercent": 0,
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:11d5d541239d52686620ae7ecb95bba9204793518ba5a3a474a0bb426b05d4fa"
+    }
+  ],
+  "manifestHash": "sha256:c2fa04a3988070ee43a92519a6d0493ba0246140b06f4b931edb41e7e69b1101"
+}

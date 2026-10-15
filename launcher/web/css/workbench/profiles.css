@@ -7,6 +7,12 @@
     gap:12px;
 }
 .workbench-shell[data-profile="stage-focus"] > .workbench-body > .workbench-flow-rail { display:none; }
+.stage-select-panel.is-camera-editing .workbench-shell[data-profile="stage-focus"] > .workbench-body {
+    grid-template-columns:minmax(0,1fr);
+}
+.stage-select-panel.is-camera-editing .workbench-shell[data-profile="stage-focus"] > .workbench-body > .workbench-slot[data-slot="R"] {
+    display:none;
+}
 .workbench-shell[data-profile="canvas-editor"],
 .workbench-shell[data-profile="canvas-editor-focus"] {
     grid-template-rows:var(--wb-header-height) minmax(0,1fr);

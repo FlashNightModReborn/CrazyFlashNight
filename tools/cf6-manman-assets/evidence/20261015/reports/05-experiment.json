@@ -1,0 +1,129 @@
+{
+  "schema": "arena-worker.experiment-report.v1",
+  "experimentId": "manman-integration-r2-20261015",
+  "frozenPlanHash": "sha256:2f3d31aee7aff3898acfd98e82f309c600dd2d104d9e3c87c7f2d8c6fb0884ae",
+  "completedAt": "2026-10-15T09:48:49.977Z",
+  "stopped": false,
+  "expectedGroups": 3,
+  "completedGroups": 3,
+  "groups": [
+    {
+      "groupId": "orc-30",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "orc-30",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-34e59e0f9be04946aa574aa456264086\\assignment-34e59e0f9be04946aa574aa456264086\\attempt-34e59e0f9be04946aa574aa456264086\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:d2a91b9e5d36ba2e50ab28b725a1e09f45127121422374bd6a6e7b8fd5d61a39",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "manman",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-integration-r2-20261015\\groups\\orc-30\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-15T09:37:07.988Z",
+      "completedAt": "2026-10-15T09:40:09.084Z",
+      "wallDurationMs": 181096
+    },
+    {
+      "groupId": "orc-99",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "orc-99",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8e98f7f1fc3c472299dc72081e74bb61\\assignment-8e98f7f1fc3c472299dc72081e74bb61\\attempt-8e98f7f1fc3c472299dc72081e74bb61\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:0ed33caa0845c46082031bb84ca74e3e92626b94a074ac8b5987d48c8b37f908",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "manman",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-integration-r2-20261015\\groups\\orc-99\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-15T09:40:09.086Z",
+      "completedAt": "2026-10-15T09:43:28.685Z",
+      "wallDurationMs": 199599
+    },
+    {
+      "groupId": "mixed-30",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "mixed-30",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b8e6e15786294582995e994c5eaa3a4c\\assignment-b8e6e15786294582995e994c5eaa3a4c\\attempt-b8e6e15786294582995e994c5eaa3a4c\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:69b3dbf63fb9501fbc3756b0c50a5f59e326829d204fc44bf5295085a3f41462",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "manman",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-integration-r2-20261015\\groups\\mixed-30\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-15T09:43:28.686Z",
+      "completedAt": "2026-10-15T09:48:49.907Z",
+      "wallDurationMs": 321221
+    }
+  ],
+  "errors": [],
+  "seedSources": [
+    {
+      "workerId": "manman",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "measurementPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-integration-r2-20261015\\measurement.json",
+  "qualified": true,
+  "status": "completed"
+}

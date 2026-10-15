@@ -1,0 +1,7 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.manmanCapture = false;
+_root.cf6ManmanAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-manman Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-manman Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest.runAllTests();

@@ -1299,3 +1299,37 @@
        合成器只在步进边界重绘，压 iGPU 上的持续重绘率。 */
     --wb-tablet-drone-wiggle-capped: tablet-drone-wiggle 1.7s steps(12, end) infinite alternate;
 }
+
+/* 经脉档案的文本、材质与状态角色；沿用原始色值和阴影几何。 */
+:root {
+    --wb-semantic-meridian-text: #ece7dc;
+    --wb-semantic-meridian-surface: #151412;
+    --wb-semantic-meridian-border-panel: rgba(191, 170, 124, 0.28);
+    --wb-semantic-meridian-shadow: 0 22px 70px rgba(0, 0, 0, 0.54);
+    --wb-semantic-meridian-raised-surface: #201e1a;
+    --wb-semantic-meridian-border-divider: rgba(191, 170, 124, 0.2);
+    --wb-semantic-meridian-secondary-text: #cfc2aa;
+    --wb-semantic-meridian-counter-surface: #11100e;
+    --wb-semantic-meridian-border-control: rgba(191, 170, 124, 0.27);
+    --wb-semantic-meridian-accent: #c3a55d;
+    --wb-semantic-meridian-control-text: #f5efe3;
+    --wb-semantic-meridian-control-surface: #2b2822;
+    --wb-semantic-meridian-recessed-surface: #1b1917;
+    --wb-semantic-meridian-border-divider-soft: rgba(191, 170, 124, 0.18);
+    --wb-semantic-meridian-choice-surface: #242019;
+    --wb-semantic-meridian-border-choice: rgba(191, 170, 124, 0.22);
+    --wb-semantic-meridian-selected-surface: #332c1e;
+    --wb-semantic-meridian-muted-text: #9c8f78;
+    --wb-semantic-meridian-locked-text: #c05a48;
+    --wb-semantic-meridian-heading-text: #e8d9a8;
+    --wb-semantic-meridian-positive-text: #9fd19a;
+    --wb-semantic-meridian-positive-border: rgba(120, 190, 120, 0.4);
+    --wb-semantic-meridian-missing-text: #d98878;
+    --wb-semantic-meridian-missing-border: rgba(190, 110, 90, 0.4);
+    --wb-semantic-meridian-border-node: rgba(191, 170, 124, 0.24);
+    --wb-semantic-meridian-lit-surface: #2a2517;
+    --wb-semantic-meridian-control-hover: #3a352b;
+    --wb-semantic-meridian-disabled-text: #8a8070;
+    --wb-semantic-meridian-disabled-surface: #1d1b18;
+    --wb-semantic-meridian-error-text: #e2a06a;
+}

@@ -633,6 +633,13 @@ authority gate 与 commit 后分别复核；提交抛错保留 Unknown，只清�
 输入归属同时占位 Opening、Closing、settlement/loading、native edit 与不可用状态；清理失败不能发布 Game。
 source/focused 与候选实机是不同证据，收口记录见 [本批施工](../docs/焦点输入与持久化修复施工-2026-10-13.md)。
 
+普通技能页、地图维护工作台和美术维护工作台退出统一经 `TryCloseOrdinaryPanelExact`，
+把通用暂停释放登记到 exact close 的执行期 commit；专用消息入口不能仅隐藏窗口后返回。
+导航、Loot/构筑未知写恢复及 Warlord Action admission 继续按各自合同交接暂停，不能借普通退出清除其他责任。
+`PanelOrdinaryClosePauseTests` 通过真实消息处理器和无窗口 Host 队列验证普通关闭、重复关闭、foreign 实例与后继替换，
+只证明 Host 释放命令的配对，不代签 Flash 接纳或测试员现场复验。2026-10-15 核对基线为 `1dd794e17d` 加本批修复，
+触发链与验证见[暂停遗漏补修](../docs/焦点输入与持久化修复施工-2026-10-13.md#20261015-panel-close-pause)。
+
 默认规则：Web panel close 不应触发旧 Flash UI 重排。尤其不要在 close、hire success、save success 这类回调里调用旧 UI 的：
 
 - `gotoAndStop`

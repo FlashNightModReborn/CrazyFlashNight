@@ -12,7 +12,7 @@ export async function createScene(config,onLost,onChange,onSelect,signal) {
     config=Object.assign({},config,{pins:config.pins});
     const started=performance.now(), abort=new AbortController(), listeners=[];
     const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'low-power'});
-    renderer.setPixelRatio(1);renderer.setSize(1024,576);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
+    renderer.setPixelRatio(1);renderer.setSize(1024,576,false);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.NoToneMapping;
     const canvas=renderer.domElement;canvas.className='stage-select-diorama-canvas';canvas.setAttribute('aria-hidden','true');
     const scene=new THREE.Scene();scene.background=new THREE.Color('#211e21');scene.fog=new THREE.Fog('#292123',225,400);
     const environment=createBlackironEnvironment();scene.add(environment);

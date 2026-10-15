@@ -128,6 +128,11 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
      * @return Void
      */
     public static function applyAimingLogic(owner, weaponType:String, bulletProps:Object):Void {
+        // 原生演出已固定枪管方向的战技仍走正常弹药/枪口提交，但不追踪自瞄目标。
+        if (bulletProps.固定枪口方向 === true) {
+            resetAimingProperties(bulletProps);
+            return;
+        }
         // 只有长枪且处于自瞄模式时才应用自动瞄准逻辑
         if (weaponType == "长枪" && owner.自瞄中) {
             var target = _root.gameworld[owner.攻击目标];

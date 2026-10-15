@@ -1,0 +1,32 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/72e6e5bb08140d6a" itemID="71340000-054910a4" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="72e6e5bb08140d6a">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/bb2444107f5d6240">
+                  <transformationPoint>
+                    <Point x="75.45" y="47.85"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/bb2444107f5d6240">
+                  <matrix>
+                    <Matrix a="0.87811279296875" d="0.245895385742188" tx="0.2" ty="36.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.25" y="48.8"/>
+                  </transformationPoint>
+                  <color>
+                    <Color tintMultiplier="1" tintColor="#FFFFFF"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

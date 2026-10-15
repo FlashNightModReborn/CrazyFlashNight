@@ -66,7 +66,7 @@ async function main() {
             detail: '军警为阻止蜂拥而来的僵尸所设立的第一道防线，现在已经变成僵尸游荡的场所了', limitDetail: ''
         } } }));
         // 实际悬停并检查重叠区域的命中层级，防止地点名称/标记穿到卡片正文上。
-        const ordinaryIds = await page.locator('.stage-select-card-anchor').evaluateAll(els => els.map(el => el.dataset.stageId));
+        const ordinaryIds = await page.locator('.stage-select-card-anchor:not(.is-map-entry)').evaluateAll(els => els.map(el => el.dataset.stageId));
         let coveredLocations = 0;
         for (const id of ordinaryIds) {
             await page.mouse.move(1000, 560);
@@ -109,16 +109,24 @@ async function main() {
         await page.waitForFunction(() => Panels.getActive() === null);
         assert.equal(await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1).stageName), '新手练习场');
         report.checks.push('real mouse selects ordinary entry; difficulty sends existing payload and closes');
-        for (const id of ['stage_0_10', 'stage_0_15']) {
-            await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
-            await ready();
-            await page.locator('[data-stage-id="'+id+'"] > .stage-select-stage-name').click();
-            await page.waitForFunction(() => Panels.getActive() === null);
-            const msg = await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1));
-            assert.equal(msg.entryKind, 'map');
-            assert.ok(!msg.difficulty);
-        }
-        report.checks.push('both diplomacy entries remain one-click map actions');
+        await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
+        await ready();
+        await page.locator('[data-stage-id="stage_0_10"] > .stage-select-stage-name').hover();
+        await page.locator('.stage-select-card-anchor[data-stage-id="stage_0_10"] .stage-select-map-action').click();
+        await page.waitForFunction(() => Panels.getActive() === null);
+        let msg = await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1));
+        assert.equal(msg.entryKind, 'map');
+        assert.ok(!msg.difficulty);
+        await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
+        await ready();
+        await page.locator('[data-stage-id="stage_0_15"] > .stage-select-stage-name').click();
+        await page.waitForFunction(() => StageSelectPanel._debugGetState().selectedStageId === 'stage_0_15');
+        await page.locator('#stage-focus-enter').click();
+        await page.waitForFunction(() => Panels.getActive() === null);
+        msg = await page.evaluate(() => StageSelectHarnessHost.enterMessages.at(-1));
+        assert.equal(msg.entryKind, 'map');
+        assert.ok(!msg.difficulty);
+        report.checks.push('both diplomacy entries support hover card action and focus view entry');
         await page.evaluate(() => StageSelectHarnessHost.open({ mode: 'runtime', frameLabel: '基地门口' }));
         await ready();
         const beforeIdle = await page.evaluate(() => StageSelectDiorama.stats());

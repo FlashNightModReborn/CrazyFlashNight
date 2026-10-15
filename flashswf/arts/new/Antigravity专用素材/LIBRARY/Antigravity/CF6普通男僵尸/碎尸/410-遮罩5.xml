@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/碎尸/410-遮罩5" itemID="6af00000-8deb213b" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="410-遮罩5">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-819 -1489|-875 -1461|-876 -1461|-882 -1465|-885 -1465|-886 -1464|-887 -1462|-882 -1462|-883 -1453|-883 -1452|-884 -1450|-886 -1448|-888 -1446|-895 -1443|-895 -1432|-894 -1428|-898 -1425|-900 -1424|-902 -1423|-904 -1411[-891 -1395 -874 -1383|-852 -1365[-839 -1367 -828 -1372|-822 -1372[-777 -1375 -760 -1411|-764 -1413[-789 -1430 -804 -1452|-805 -1456|-819 -1489" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/401-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.199093" b="-0.143311" c="0.143311" d="0.199093" tx="-35.757217" ty="-60.095517"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -16,7 +16,7 @@
     尸横遍野之上，大漠孤烟之中,死神的琴声在回响着......
     &lt;font color="#FFCC00"&gt;【键盘模式】&lt;/font&gt;琴声激烈悠扬，演奏者宛如脱离了重力束缚，身姿轻盈若燕，精力源源不断涌动。
     在这旋律的引导下，镰刀的能量也随之增强，仿佛吸收了音符中的力量，变得更为锋利、狂野&lt;BR&gt;&lt;font color="#FFCC00"&gt;【镰刀模式】&lt;/font&gt;挥砍间激光切割的力量被释放，空中时跳砍消耗追踪强度，自动锁定并追踪敌人，如死神索命。</description>
-    <skill>&lt;font color="#FFCC00"&gt;【地面战技】&lt;/font&gt;镰刀模式下可强行进入瞬步斩状态，并释放威力巨大的回旋风车斩，冷却时间较长。每次主动发动瞬步斩，都会伴随着回旋风车斩的威势。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【空中战技】&lt;/font&gt;主动为镰刀补充追踪强度。</skill>
+    <skill>&lt;font color="#FFCC00"&gt;【地面战技】&lt;/font&gt;镰刀模式下释放专属风车斩连段，接收尾横掠；仅地面使用。&lt;BR&gt;&lt;font color="#FFCC00"&gt;【空中战技】&lt;/font&gt;主动为镰刀补充追踪强度。</skill>
     <data>
       <level>13</level>
       <weight>6</weight>
@@ -33,6 +33,19 @@
         <init>
           <initRoutines>键盘镰刀初始化</initRoutines>
           <initParam>
+            <!-- 专属刀子弹配给：保留旧战技刀伤预算与装备附加伤害。 -->
+            <rockBlade>
+              <bullet>近战联弹</bullet>
+              <pellets>3</pellets>
+              <legacySkill>瞬步斩</legacySkill>
+              <unarmed>0.1</unarmed>
+              <level>15</level>
+              <weapon>1.5</weapon>
+              <hits>9</hits>
+              <bonusBudget>30</bonusBudget>
+              <legacyPointHits>3</legacyPointHits>
+              <legacyMpCoefficient>1.8</legacyMpCoefficient>
+            </rockBlade>
             <!-- 基础配置 -->
             <animDuration>15</animDuration>
             <transformInterval>1000</transformInterval>
@@ -106,7 +119,8 @@
             <trackingWarningThreshold20>0.2</trackingWarningThreshold20>
             <!-- 地面战技配置 -->
             <skill_0>
-              <skillname>瞬步斩</skillname>
+              <skillname>旋镰横掠</skillname>
+              <description>地面风车斩接横掠，分两次快速穿行；方向键可调整路径。九段刀伤继承兵器属性。</description>
               <cd>10000</cd>
               <mp>30</mp>
               <skillLocked>true</skillLocked>

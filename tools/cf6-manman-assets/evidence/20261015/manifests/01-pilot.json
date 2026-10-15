@@ -1,0 +1,187 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "manman-pilot-r1-20261015-pilot",
+  "createdAt": "2026-10-15T08:45:38.723Z",
+  "buildCommit": "88c53b13271111cd99a253ba2fe6d690f964734c",
+  "planner": {
+    "name": "cf6-manman-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "mirror-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-enhanced-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-baseline-30",
+          "parameters": {
+            "蛮蛮AI模式": "baseline"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "manman",
+        "mirror",
+        "blue"
+      ],
+      "plannerReason": "同兵种、同等级和面板，仅切换私有 AI；交换红蓝，实际 startMaxHp 必须相等。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "cc7e09d3fdf713a1a6ee355d71169f72fde95f73e803f3e70264066ac8eaef87",
+        "candidateSide": "blue",
+        "comparison": "mirror",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "pilot",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "a11e80c0bb168a31cb4f345605c8ade5f4870a402521a059e0ad4f150bb2b8c5",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:70d76fa5a6730eacff7d57f096b6139415f3c1c43b3f5ff78a5c738607a2737b"
+    },
+    {
+      "caseId": "mirror-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-baseline-30",
+          "parameters": {
+            "蛮蛮AI模式": "baseline"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-enhanced-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "manman",
+        "mirror",
+        "red"
+      ],
+      "plannerReason": "同兵种、同等级和面板，仅切换私有 AI；交换红蓝，实际 startMaxHp 必须相等。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "cc7e09d3fdf713a1a6ee355d71169f72fde95f73e803f3e70264066ac8eaef87",
+        "candidateSide": "red",
+        "comparison": "mirror",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "pilot",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "a11e80c0bb168a31cb4f345605c8ade5f4870a402521a059e0ad4f150bb2b8c5",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:ed6de0657b2b14269cc1ea7c3b8f175d97d43475495e8d018dc21f81b5c239e8"
+    },
+    {
+      "caseId": "orc-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-enhanced-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "manman",
+        "orc",
+        "blue"
+      ],
+      "plannerReason": "与不死兽人同等级换边对照；包含阶段和档次差异，只检验整体行为，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "cc7e09d3fdf713a1a6ee355d71169f72fde95f73e803f3e70264066ac8eaef87",
+        "candidateSide": "blue",
+        "comparison": "orc",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "pilot",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "a11e80c0bb168a31cb4f345605c8ade5f4870a402521a059e0ad4f150bb2b8c5",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:3a5f09dfb6240d991ca5ebda0714b796c88814d3e5743e602caeaa034fe9c765"
+    },
+    {
+      "caseId": "orc-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "manman-enhanced-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "manman",
+        "orc",
+        "red"
+      ],
+      "plannerReason": "与不死兽人同等级换边对照；包含阶段和档次差异，只检验整体行为，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "cc7e09d3fdf713a1a6ee355d71169f72fde95f73e803f3e70264066ac8eaef87",
+        "candidateSide": "red",
+        "comparison": "orc",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "pilot",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "a11e80c0bb168a31cb4f345605c8ade5f4870a402521a059e0ad4f150bb2b8c5",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:eb1a321226f348d6b8a3b7a8a6540da459d3c118bd5d68997d84bb113174b613"
+    }
+  ],
+  "manifestHash": "sha256:e9a0f77d5f215b2d9bd7c6cb6d7d1a988896b2aac9909019fac091be705dab83"
+}

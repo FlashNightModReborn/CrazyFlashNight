@@ -1,6 +1,8 @@
 ﻿_root.装备生命周期函数.吉他喷火初始化 = function(ref:Object, param:Object)
 {
     var target:MovieClip = ref.自机;
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "guitar");
+    ref.rockBlade = param.rockBlade;
 
     // ===== 从XML参数对象读取配置 =====
     // 变形键 edge-trigger seed：避免过图/复活/重装备时按着键被误判为新按下
@@ -177,7 +179,10 @@
     ref.灯光增幅子弹属性 = ref.子弹配置 ? ref.子弹配置.bullet_3 : null;
 
     // ===== 战技系统配置 =====
-    ref.skill_0 = param.skill_0; // 地面战技：凶斩
+    ref.skill_0 = org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.slamSkill(ref, param.skill_0);
+    ref.skill_1 = param.skill_1; // 喷火器
+    ref.skill_2 = param.skill_2; // 机枪
+    ref.当前长枪战技 = null;
     ref.当前装载战技 = null;
 
     // 装载主动战技函数
@@ -200,12 +205,14 @@
 
     // 初始装载战技；纯长枪 AI 不触碰兵器槽。
     if (ref.支持复合枪械) ref.装载战技(ref.获取目标战技());
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.syncGunSkill(ref);
 };
 
 // ===== 周期函数 =====
 _root.装备生命周期函数.吉他喷火周期 = function(ref:Object, param:Object)
 {
     EquipmentTick.cleanup(ref);
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.ownsCycle(ref)) return;
 
     var target:MovieClip = ref.自机;
 
@@ -235,7 +242,10 @@ _root.装备生命周期函数.吉他喷火周期 = function(ref:Object, param:O
         ref.weaponValue.machineGunShot = target.长枪.value.shot;
     }
 
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.syncGunSkill(ref);
+
     // 战技系统（刀形态）
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.resumeGun(ref);
     if (ref.是否刀枪复用) {
         _root.装备生命周期函数.吉他喷火战技系统(ref);
     }
@@ -392,6 +402,7 @@ _root.装备生命周期函数.吉他喷火过热检测 = function(ref:Object)
 // ===== 刷新机枪弹容 =====
 _root.装备生命周期函数.吉他喷火刷新机枪弹容 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
 
@@ -416,6 +427,7 @@ _root.装备生命周期函数.吉他喷火刷新机枪弹容 = function(ref:Obj
 // ===== 动画控制 =====
 _root.装备生命周期函数.吉他喷火动画控制 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
 
@@ -469,6 +481,7 @@ _root.装备生命周期函数.吉他喷火获得动画时长 = function(ref:Obj
 // ===== 刀枪隐藏显示控制 =====
 _root.装备生命周期函数.吉他喷火刀枪显示控制 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
     var blade:MovieClip = target.刀_引用;
@@ -497,6 +510,7 @@ _root.装备生命周期函数.吉他喷火刀枪显示控制 = function(ref:Obj
 // ===== 更新枪口位置 =====
 _root.装备生命周期函数.吉他喷火更新枪口位置 = function(ref:Object)
 {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
     var target:MovieClip = ref.自机;
     var gun:MovieClip = target.长枪_引用;
 

@@ -44,7 +44,7 @@ namespace CF7Launcher.Guardian
                 || origin.Scheme != "https" || origin.Host != "overlay.local" || !origin.IsDefaultPort
                 || !MapWorkbenchTask.TryReadRequest(json, _panelHost.ActivePanelName, _panelHost.ActivePanelInstanceId, out var message, out var request)) return;
             string instance = (string)message["panelInstanceId"];
-            if ((string)message["cmd"] == "close") { _panelHost.TryClosePanelExact(MapWorkbenchTask.Panel, instance, null); return; }
+            if ((string)message["cmd"] == "close") { TryCloseOrdinaryPanelExact(MapWorkbenchTask.Panel, instance); return; }
             _mapWorkbenchTask ??= new MapWorkbenchTask(_projectRoot);
             JObject response;
             if ((string)message["cmd"] == "asset-pick")
@@ -77,7 +77,7 @@ namespace CF7Launcher.Guardian
             string instance = message.Value<string>("panelInstanceId");
             if (message.Value<string>("cmd") == "close")
             {
-                _panelHost.TryClosePanelExact(AssetWorkbenchTask.Panel, instance, null);
+                TryCloseOrdinaryPanelExact(AssetWorkbenchTask.Panel, instance);
                 return;
             }
             _assetWorkbenchTask ??= new AssetWorkbenchTask(_projectRoot);
@@ -1414,6 +1414,7 @@ namespace CF7Launcher.Guardian
         private MercTask _mercTask;
         private TaskTask _taskTask;
         private IntelligenceTask _intelligenceTask;
+        private MeridiansTask _meridiansTask;
         private BlackMarketTask _blackMarketTask;
         private const int BlackMarketObservationRecordLimit = 64;
         private string _blackMarketObservationPanelInstanceId;
@@ -5263,6 +5264,12 @@ namespace CF7Launcher.Guardian
             task.SetInvoker(delegate(Action a) { try { this.BeginInvoke(a); } catch {} });
         }
 
+        public void SetMeridiansTask(MeridiansTask task)
+        {
+            _meridiansTask = task;
+            if (task != null) task.SetPostToWeb(PostToWeb);
+        }
+
         // composition 只读端点（intelligence）的入站转发：surface 已按面板名+活跃会话
         // 绑定过滤，此处复用与本 overlay 自有文档完全相同的 HandlePanelMessage 权威，
         // 包括 preparation-child 返回装备 capability 的 arm/cancel 与 exact 关闭。
@@ -8531,11 +8538,10 @@ namespace CF7Launcher.Guardian
                                 else
                                 {
                                     closeQueued =
-                                        _panelHost
-                                            .TryClosePanelExact(
-                                                "skills",
-                                                closeInstance,
-                                                null);
+                                        TryCloseOrdinaryPanelExact(
+                                            "skills",
+                                            closeInstance,
+                                            dismissReturnStack);
                                 }
                                 if (!closeQueued)
                                 {
@@ -8776,6 +8782,7 @@ namespace CF7Launcher.Guardian
                 case "return_frame":
                 case "catalog":
                 case "state":
+                case "light":
                 case "bundle":
                 case "glossary_catalog":
                 case "glossary_snapshot":
@@ -8851,6 +8858,11 @@ namespace CF7Launcher.Guardian
                         {
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
+                        }
+                        else if (panel == "meridians")
+                        {
+                            LogManager.Log("[Panel] Routing cmd=" + cmd + " to MeridiansTask, _meridiansTask=" + (_meridiansTask != null ? "ok" : "NULL"));
+                            if (_meridiansTask != null) _meridiansTask.HandleWebRequest(cmd, parsed);
                         }
                         else if (panel == "arena")
                         {
@@ -9153,9 +9165,16 @@ namespace CF7Launcher.Guardian
 
         private bool TrySendGameCommand(string action)
         {
+#if CF7_TEST_SEAMS
+            if (GameCommandSenderForTests != null) return GameCommandSenderForTests(action);
+#endif
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
             return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
+
+#if CF7_TEST_SEAMS
+        internal Func<string, bool> GameCommandSenderForTests;
+#endif
 
         internal bool TryOpenKShopForMaterialNavigation()
         {
@@ -9171,6 +9190,21 @@ namespace CF7Launcher.Guardian
         private bool TryReleaseGenericWebPanelPause()
         {
             return TrySendGameCommand("webPanelUnpause");
+        }
+
+        // Ordinary exits own the generic pause; navigation and business recovery use
+        // their existing handoff protocols instead. Commit only for the exact source.
+        private bool TryCloseOrdinaryPanelExact(string panel, string instance,
+            bool dismissReturnStack = false)
+        {
+            PanelHostController host = _panelHost;
+            return host != null && host.TryClosePanelExact(
+                panel, instance, dismissReturnStack,
+                () => ReferenceEquals(_panelHost, host)
+                    && host.ActivePanelName == panel
+                    && host.ActivePanelInstanceId == instance,
+                () => CommitAcceptedPanelCloseEffects(panel, false, false),
+                null);
         }
 
         private void CommitAcceptedPanelCloseEffects(
@@ -9675,6 +9709,7 @@ namespace CF7Launcher.Guardian
             if (_mercTask != null) _mercTask.ClearPending();
             if (_taskTask != null) _taskTask.ClearPending();
             if (_intelligenceTask != null) _intelligenceTask.ClearPending();
+            if (_meridiansTask != null) _meridiansTask.ClearPending();
             if (_blackMarketTask != null)
                 _blackMarketTask.RetireObservation();
         }

@@ -21,6 +21,6 @@ const boxes=[];for(const [id,p] of Object.entries(c.pins)){
  const x=p.x+p.labelX,y=p.y+p.labelY;boxes.push({id,x:x-p.labelWidth/2,y:y-16,w:p.labelWidth,h:32});
  if(id.startsWith('stage'))boxes.push({id,x:p.x-20,y:p.y-20,w:40,h:40});
 }
-for(let i=0;i<boxes.length;i++){const a=boxes[i];assert.ok(a.x>=0&&a.y>=54&&a.x+a.w<=1024&&a.y+a.h<=576,a.id+' outside');for(let j=i+1;j<boxes.length;j++){const b=boxes[j];if(a.id!==b.id)assert.ok(!(a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h),a.id+' overlaps '+b.id);}}
+for(let i=0;i<boxes.length;i++){const a=boxes[i];assert.ok(a.x>=0&&a.y>=54&&a.x+a.w<=1024&&a.y+a.h<=576,a.id+' outside');for(let j=i+1;j<boxes.length;j++){const b=boxes[j];assert.ok(!(a.x<b.x+b.w&&b.x<a.x+a.w&&a.y<b.y+b.h&&b.y<a.y+a.h),a.id+' overlaps '+b.id);}}
 const registry=fs.readFileSync(path.join(root,'launcher/web/modules/panels-lazy-registry.js'),'utf8');assert.ok(registry.includes('stage-select-fallen-data.js'));
 console.log(JSON.stringify({pass:true,stages:c.entries.length,units:units.size,worldPins:Object.keys(c.pins).length,layoutBoxes:boxes.length,checks:['current game identities','AS01 partition contract','campaign extent','default label/marker bounds','production script registration']}));

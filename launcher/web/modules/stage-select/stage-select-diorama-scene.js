@@ -8,7 +8,7 @@ export async function createScene(config, onLost, onChange) {
     const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'low-power' });
     // 固定逻辑分辨率，避免高 DPI 平板按物理像素倍增 GPU 工作。
     renderer.setPixelRatio(1);
-    renderer.setSize(1024, 576);
+    renderer.setSize(1024, 576, false);
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.NoToneMapping;
     const canvas = renderer.domElement;

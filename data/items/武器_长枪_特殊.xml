@@ -199,7 +199,7 @@
     &lt;BR&gt;&lt;font color="#FFCC00"&gt;【机枪模式】&lt;/font&gt;火焰弹化为密集的机枪子弹，如暴雨般射向敌人。
     转化的过程中，喷火器的负载持续增加，过热之后会自动回归至喷火模式。
     &lt;BR&gt;&lt;font color="#FFCC00"&gt;【吉他模式】&lt;/font&gt;未装备冷兵器时，可将吉他作为近战武器使用，旋律能够加持自己的力量与防御。</description>
-    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;吉他模式下可强行进入凶斩状态，并释放威力巨大的吉他震地。每次主动发动凶斩，都会伴随着这股强大的震地力量。</skill>
+    <skill>&lt;font color="#FFCC00"&gt;【主动战技】&lt;/font&gt;冷兵器模式高举吉他砸地；喷火器模式持续喷火；机枪模式连续扫射。三种战技均在地面释放，枪形态沿用当前弹药与过热。</skill>
     <data>
       <level>13</level>
       <weight>19</weight>
@@ -246,6 +246,17 @@
         <init>
           <initRoutines>吉他喷火初始化</initRoutines>
           <initParam>
+            <!-- 专属刀子弹配给：保留旧战技刀伤预算与装备附加伤害。 -->
+            <rockBlade>
+              <bullet>近战联弹</bullet>
+              <pellets>3</pellets>
+              <legacySkill>凶斩</legacySkill>
+              <unarmed>0.1</unarmed>
+              <level>25</level>
+              <weapon>3</weapon>
+              <hits>4</hits>
+              <bonusBudget>1</bonusBudget>
+            </rockBlade>
             <!-- 动画配置 -->
             <animDuration>15</animDuration>
             <machineGunFrameLimit>13</machineGunFrameLimit>
@@ -290,11 +301,26 @@
             <lightBoostPowerMultiplier>30</lightBoostPowerMultiplier>
             <!-- 地面战技配置 -->
             <skill_0>
-              <skillname>凶斩</skillname>
+              <skillname>吉他震地</skillname>
+              <description>高举吉他砸地，冲击产生四段刀伤并继承兵器属性。消耗30MP及5%最大MP。</description>
               <cd>5000</cd>
               <mp>30</mp>
               <skillLocked>true</skillLocked>
             </skill_0>
+            <skill_1>
+              <skillname>吉他持续喷火</skillname>
+              <description>持续喷出长距离火舌，每段消耗燃料；射击中可快速接入，按住射击键可接回普通喷火。仅地面使用。</description>
+              <cd>5000</cd>
+              <mp>30</mp>
+              <skillLocked>true</skillLocked>
+            </skill_1>
+            <skill_2>
+              <skillname>吉他机枪扫射</skillname>
+              <description>机枪连续八次三发扫射，消耗弹药并积累过热；射击中可快速接入，按住射击键可接回普通射击。仅地面使用。</description>
+              <cd>5000</cd>
+              <mp>30</mp>
+              <skillLocked>true</skillLocked>
+            </skill_2>
           </initParam>
         </init>
         <cycle>

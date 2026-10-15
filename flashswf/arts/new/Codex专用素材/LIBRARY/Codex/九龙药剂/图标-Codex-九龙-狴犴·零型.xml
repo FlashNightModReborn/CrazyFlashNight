@@ -1,0 +1,46 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/九龙药剂/图标-Codex-九龙-狴犴·零型" itemID="6b3f0000-393cf266" linkageExportForAS="true" linkageIdentifier="图标-Codex-九龙-狴犴·零型">
+  <timeline>
+    <DOMTimeline name="图标-Codex-九龙-狴犴·零型">
+      <layers>
+        <DOMLayer name="停止" color="#4FFF4F" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="24像素完整图标与掉落展示" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/九龙药剂/原生画稿/bian-m0" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.02166748046875" d="0.02166748046875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/九龙药剂/原生画稿/bian-m0" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.02166748046875" d="0.02166748046875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

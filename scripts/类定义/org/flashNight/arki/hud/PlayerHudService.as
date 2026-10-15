@@ -358,6 +358,10 @@ class org.flashNight.arki.hud.PlayerHudService {
         var secondary:Object = mode == "双枪" ? unit.手枪2 : (mode == "长枪" ? unit.长枪副武器状态 : null);
         if (mode != ammoMode || primary !== primaryOwner) {
             ammo[0] = ammo[1] = ammo[2] = ammo[3] = "";
+            if (mode == "手雷" && primary != null && _root.物品栏 != null && _root.物品栏.装备栏 != null) {
+                var grenadeCount = _root.物品栏.装备栏.getValue("手雷");
+                if (grenadeCount != undefined) ammo[1] = grenadeCount;
+            }
         } else if (secondary !== secondaryOwner) {
             ammo[2] = ammo[3] = "";
         }
@@ -613,7 +617,13 @@ class org.flashNight.arki.hud.PlayerHudService {
         info.刷新 = info.gotoAndStop;
         var value:Object = {玩家必要信息界面:info, 刷新hp显示:noRender, 刷新mp显示:noRender,
             刷新经验值显示:noRender, 刷新技能等级显示:noRender, 刷新韧性显示:noRender};
-        value.刷新攻击模式 = function(mode:String):Void { this.玩家必要信息界面.mode = mode; };
+        value.刷新攻击模式 = function(mode:String):Void {
+            this.玩家必要信息界面.mode = mode;
+            if (mode == "手雷" && _root.物品栏 != null && _root.物品栏.装备栏 != null) {
+                var grenadeCount = _root.物品栏.装备栏.getValue("手雷");
+                this.玩家必要信息界面.弹夹数 = grenadeCount != undefined ? grenadeCount : "";
+            }
+        };
         return value;
     }
 }

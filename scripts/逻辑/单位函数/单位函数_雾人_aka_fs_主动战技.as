@@ -2174,3 +2174,6 @@ _root.主动战技函数.长枪.天启大封印.撤法阵 = function(引用:Movi
 
 // 特勤霰弹枪：F 按住蓄力、松开盾冲，沿标准战技容器收尾。
 org.flashNight.arki.unit.Action.Skill.SheriffShieldRush.install(_root);
+
+// 摇滚女皇只注册已开放的五个玩家默认战技。
+org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.install(_root);

@@ -123,6 +123,19 @@ function scanSwf(file, cacheDir) {
     return { ...data, cacheHit: false };
 }
 
+function isLegacyTextConfig(raw) {
+    if (raw.length < 2 || raw.length % 2 !== 0 || raw[0] !== 255 || raw[1] !== 254) return false;
+    const text = raw.toString("utf16le", 2);
+    if (/[\u0000-\u001f\u007f]/.test(text)) return false;
+    const fields = text.split(";"), remaining = new Set(["SteamID", "steamName", "myKey", "myDLC"]);
+    if (fields.pop() !== "" || fields.length !== remaining.size) return false;
+    for (const field of fields) {
+        const separator = field.indexOf("=");
+        if (separator < 1 || !remaining.delete(field.slice(0, separator))) return false;
+    }
+    return remaining.size === 0;
+}
+
 function auditOwnership(root, files, cacheDir, options = {}) {
     const loader = "scripts/asLoader.swf", main = "CRAZYFLASHER7MercenaryEmpire.swf";
     const paths = [...new Set(files.map(f => f.replace(/\\/g, "/")))].filter(f => /\.swf$/i.test(f));
@@ -134,7 +147,7 @@ function auditOwnership(root, files, cacheDir, options = {}) {
         // Historical .swf-suffix UTF-16 configuration, not an AVM1 artifact. Never emit its body.
         if (rel === "flashswf/gk-1-s.swf") {
             const raw = fs.readFileSync(full);
-            if (raw.length !== 192 || raw[0] !== 255 || raw[1] !== 254) throw new Error("Unexpected non-SWF asset type: " + rel);
+            if (!isLegacyTextConfig(raw)) throw new Error("Unexpected non-SWF asset type: " + rel);
             continue;
         }
         const data = scanSwf(full, cacheDir); rows.set(rel, data);

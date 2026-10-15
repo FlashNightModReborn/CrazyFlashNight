@@ -10,6 +10,9 @@
           <DOMFolderItem name="Codex/Ti61-血剑战技/图标素材" itemID="6aa415d2-00000be0"/>
           <DOMFolderItem name="Codex/Ti61-血剑战技/雾人血浪素材" itemID="6aa415d2-00000bd7"/>
           <DOMFolderItem name="Codex/Ti61-血剑战技/血浪素材" itemID="6aa415d2-00000bd5"/>
+          <DOMFolderItem name="Codex/摇滚女皇" itemID="6ad09ed8-00000c87"/>
+          <DOMFolderItem name="Codex/摇滚女皇/特效" itemID="6ad09eda-00000ca8"/>
+          <DOMFolderItem name="Codex/摇滚女皇/演出" itemID="6ad09ed8-00000c8a"/>
           <DOMFolderItem name="Graphic" itemID="669baccc-0000152d"/>
           <DOMFolderItem name="image" itemID="65a6bb64-00001381"/>
           <DOMFolderItem name="MovieClip" itemID="68404178-00000b93"/>
@@ -228,8 +231,8 @@
           <Include href="Codex/Ti61-血剑战技/图标素材/2e3c27cfd7fb.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c65"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/3a4539a88123.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c75"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/4a37a0ab0f4b.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c6d"/>
-          <Include href="Codex/Ti61-血剑战技/图标素材/08bf63784f0a.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-45081aa5"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/8a5dd4928612.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c6c"/>
+          <Include href="Codex/Ti61-血剑战技/图标素材/08bf63784f0a.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-45081aa5"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/9b51e03e2194.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-78946156"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/16ac7b952bd8.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-05f99d85"/>
           <Include href="Codex/Ti61-血剑战技/图标素材/022e36114ccf.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c6e"/>
@@ -358,6 +361,131 @@
           <Include href="Codex/Ti61-血剑战技/血浪素材/血爆.xml" itemIcon="1" loadImmediate="false" itemID="6aa415d4-00000c62" lastModified="1721578718"/>
           <Include href="Codex/Ti61-血剑战技/血浪素材/血滴.xml" itemIcon="1" loadImmediate="false" itemID="61b10000-7fffffff" lastModified="1761489952"/>
           <Include href="Codex/Ti61-血剑战技/战技容器-猩红天秤.xml" itemID="61b10000-29a90711" lastModified="1769694922"/>
+          <Include href="Codex/摇滚女皇/空挂点.xml" loadImmediate="false" itemID="6ad09edb-00000d15"/>
+          <Include href="Codex/摇滚女皇/判定区域.xml" loadImmediate="false" itemID="71340000-7fffffff"/>
+          <Include href="Codex/摇滚女皇/特效/0bc03fef1417a66d.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d24"/>
+          <Include href="Codex/摇滚女皇/特效/0d1985a7c860c0a6.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d36"/>
+          <Include href="Codex/摇滚女皇/特效/0f4a0bfd22251447.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d17"/>
+          <Include href="Codex/摇滚女皇/特效/0f125fcabc961a64.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d37"/>
+          <Include href="Codex/摇滚女皇/特效/1ac77f51f5eaa1ed.xml" itemIcon="1" loadImmediate="false" itemID="71340000-17d4c3da"/>
+          <Include href="Codex/摇滚女皇/特效/1c2b49311db86692.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1a8b27c7"/>
+          <Include href="Codex/摇滚女皇/特效/1ca324c7771aad44.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d38"/>
+          <Include href="Codex/摇滚女皇/特效/1e9f22dba8ac1533.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d22"/>
+          <Include href="Codex/摇滚女皇/特效/1e66ff2b5c1d1e0e.xml" itemIcon="1" loadImmediate="false" itemID="71340000-2f4c0273"/>
+          <Include href="Codex/摇滚女皇/特效/1fb86bcc2f002131.xml" itemIcon="1" loadImmediate="false" itemID="71340000-4d0b26a2"/>
+          <Include href="Codex/摇滚女皇/特效/2c5cb8fe3505126c.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1ecb7901"/>
+          <Include href="Codex/摇滚女皇/特效/2c1775b87384715e.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3b"/>
+          <Include href="Codex/摇滚女皇/特效/2c9286cb76316225.xml" itemIcon="1" loadImmediate="false" itemID="71340000-63e27228"/>
+          <Include href="Codex/摇滚女皇/特效/2cabcbee978acf1e.xml" itemIcon="1" loadImmediate="false" itemID="71340000-63f09855"/>
+          <Include href="Codex/摇滚女皇/特效/2cd245e6c84670a1.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1e"/>
+          <Include href="Codex/摇滚女皇/特效/2d35f8266cfab848.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1de45a97"/>
+          <Include href="Codex/摇滚女皇/特效/2ed7cf3ea056ec8d.xml" itemIcon="1" loadImmediate="false" itemID="71340000-5a46f658"/>
+          <Include href="Codex/摇滚女皇/特效/2f94bce39efcdebb.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3c"/>
+          <Include href="Codex/摇滚女皇/特效/3af3344b0de72e16.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d27"/>
+          <Include href="Codex/摇滚女皇/特效/3b61366fdf79f03d.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2b"/>
+          <Include href="Codex/摇滚女皇/特效/3bb8d19a9e2552f0.xml" itemIcon="1" loadImmediate="false" itemID="71340000-79febe81"/>
+          <Include href="Codex/摇滚女皇/特效/3f93cb09d37c3772.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2f"/>
+          <Include href="Codex/摇滚女皇/特效/4f001d402ba06ae1.xml" itemIcon="1" loadImmediate="false" itemID="71340000-6543ddab"/>
+          <Include href="Codex/摇滚女皇/特效/5d5d449985301f37.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d35"/>
+          <Include href="Codex/摇滚女皇/特效/6af869fc11716aa7.xml" itemIcon="1" loadImmediate="false" itemID="71340000-6a80ff5c"/>
+          <Include href="Codex/摇滚女皇/特效/6e271cbc24cd4a98.xml" itemIcon="1" loadImmediate="false" itemID="71340000-08e175ff"/>
+          <Include href="Codex/摇滚女皇/特效/6ecfca12322a2be5.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d32"/>
+          <Include href="Codex/摇滚女皇/特效/6ee0dfc405d6d357.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3e"/>
+          <Include href="Codex/摇滚女皇/特效/07a155ba46836007.xml" itemIcon="1" loadImmediate="false" itemID="71340000-40196b90"/>
+          <Include href="Codex/摇滚女皇/特效/7da003c59f7c7baa.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d25"/>
+          <Include href="Codex/摇滚女皇/特效/8ca2992bb99802d9.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1c"/>
+          <Include href="Codex/摇滚女皇/特效/9b3e8373971cdf49.xml" itemIcon="1" loadImmediate="false" itemID="71340000-3864cb92"/>
+          <Include href="Codex/摇滚女皇/特效/9b43c945bfe6c718.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2e"/>
+          <Include href="Codex/摇滚女皇/特效/9c1a45c2974b2003.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d20"/>
+          <Include href="Codex/摇滚女皇/特效/9c8d20b66e200679.xml" itemIcon="1" loadImmediate="false" itemID="71340000-38df5985"/>
+          <Include href="Codex/摇滚女皇/特效/9cf5d85ad6ab1d8e.xml" itemIcon="1" loadImmediate="false" itemID="71340000-4c74f007"/>
+          <Include href="Codex/摇滚女皇/特效/14ae2b623bda2d5b.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2c"/>
+          <Include href="Codex/摇滚女皇/特效/019ed122fc5ebe42.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d18"/>
+          <Include href="Codex/摇滚女皇/特效/24f873a2bcd45293.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d39"/>
+          <Include href="Codex/摇滚女皇/特效/55ad9f41842809b0.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d28"/>
+          <Include href="Codex/摇滚女皇/特效/059c1e4e2e66644c.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1b"/>
+          <Include href="Codex/摇滚女皇/特效/60eed0b18de67e07.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3f"/>
+          <Include href="Codex/摇滚女皇/特效/65c63ed4bd811da2.xml" itemIcon="1" loadImmediate="false" itemID="71340000-0984ccd6"/>
+          <Include href="Codex/摇滚女皇/特效/68f7a658443f9078.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d26"/>
+          <Include href="Codex/摇滚女皇/特效/071eda0ee73f1fd9.xml" itemIcon="1" loadImmediate="false" itemID="71340000-047c368a"/>
+          <Include href="Codex/摇滚女皇/特效/72e6e5bb08140d6a.xml" itemIcon="1" loadImmediate="false" itemID="71340000-054910a4"/>
+          <Include href="Codex/摇滚女皇/特效/75fe566d47e0a73d.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1e6407c3"/>
+          <Include href="Codex/摇滚女皇/特效/81a7d23b98b4f265.xml" itemIcon="1" loadImmediate="false" itemID="71340000-30e18b78"/>
+          <Include href="Codex/摇滚女皇/特效/87af3829d304d3a6.xml" itemIcon="1" loadImmediate="false" itemID="71340000-440ccb6f"/>
+          <Include href="Codex/摇滚女皇/特效/98e5eaeac59e52db.xml" itemIcon="1" loadImmediate="false" itemID="71340000-48e0f494"/>
+          <Include href="Codex/摇滚女皇/特效/325ce7eb712f61a7.xml" itemIcon="1" loadImmediate="false" itemID="71340000-6b707189"/>
+          <Include href="Codex/摇滚女皇/特效/587bd9a8cd2d24dd.xml" itemIcon="1" loadImmediate="false" itemID="71340000-7b2cddca"/>
+          <Include href="Codex/摇滚女皇/特效/601ea1ff7f932b5b.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1d"/>
+          <Include href="Codex/摇滚女皇/特效/3607b3dfb889ca34.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2a"/>
+          <Include href="Codex/摇滚女皇/特效/3635fb1fd90352b2.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d34"/>
+          <Include href="Codex/摇滚女皇/特效/5850aa725aa0b28a.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d19"/>
+          <Include href="Codex/摇滚女皇/特效/7430fc25ad748eb9.xml" itemIcon="1" loadImmediate="false" itemID="71340000-0c524a77"/>
+          <Include href="Codex/摇滚女皇/特效/07992eb8f6a94ad6.xml" itemIcon="1" loadImmediate="false" itemID="71340000-4cf0a1a6"/>
+          <Include href="Codex/摇滚女皇/特效/8565d5d183b265c5.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d21"/>
+          <Include href="Codex/摇滚女皇/特效/9549c0649be539fa.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d2d"/>
+          <Include href="Codex/摇滚女皇/特效/9675d130413b8643.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d30"/>
+          <Include href="Codex/摇滚女皇/特效/40158aa38cd49c56.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3d"/>
+          <Include href="Codex/摇滚女皇/特效/0066294f092ff8e3.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d33"/>
+          <Include href="Codex/摇滚女皇/特效/70855a4e48ab4c55.xml" itemIcon="1" loadImmediate="false" itemID="71340000-0ea1dd29"/>
+          <Include href="Codex/摇滚女皇/特效/259380f1e0eb6aab.xml" itemIcon="1" loadImmediate="false" itemID="71340000-03bad036"/>
+          <Include href="Codex/摇滚女皇/特效/67000428bee81cf2.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d31"/>
+          <Include href="Codex/摇滚女皇/特效/3490933136d6f599.xml" itemIcon="1" loadImmediate="false" itemID="71340000-756dfa75"/>
+          <Include href="Codex/摇滚女皇/特效/a38fd7e7e0593eee.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1767bf05"/>
+          <Include href="Codex/摇滚女皇/特效/a379419f7f965cee.xml" itemIcon="1" loadImmediate="false" itemID="71340000-32d4f712"/>
+          <Include href="Codex/摇滚女皇/特效/af2cd604ed79b432.xml" itemIcon="1" loadImmediate="false" itemID="71340000-6fa0958e"/>
+          <Include href="Codex/摇滚女皇/特效/af4d1dd17564fcc2.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1f"/>
+          <Include href="Codex/摇滚女皇/特效/b8d02ba31678100a.xml" itemIcon="1" loadImmediate="false" itemID="71340000-2d12ec94"/>
+          <Include href="Codex/摇滚女皇/特效/bac62031169bd704.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d29"/>
+          <Include href="Codex/摇滚女皇/特效/bb2444107f5d6240.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d40"/>
+          <Include href="Codex/摇滚女皇/特效/c514d1c913ffb789.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d41"/>
+          <Include href="Codex/摇滚女皇/特效/cb626a15b6aeef56.xml" itemIcon="1" loadImmediate="false" itemID="71340000-25b87789"/>
+          <Include href="Codex/摇滚女皇/特效/cd4ac1e338e32089.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d23"/>
+          <Include href="Codex/摇滚女皇/特效/cdbf0e0c5b0e2a90.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d1a"/>
+          <Include href="Codex/摇滚女皇/特效/cf8e6661c63c15cb.xml" itemIcon="1" loadImmediate="false" itemID="71340000-16ca68be"/>
+          <Include href="Codex/摇滚女皇/特效/d0d77303f8acff71.xml" itemIcon="1" loadImmediate="false" itemID="71340000-0049f1e9"/>
+          <Include href="Codex/摇滚女皇/特效/d8b75e2d25f3ec81.xml" itemIcon="1" loadImmediate="false" itemID="71340000-130e926f"/>
+          <Include href="Codex/摇滚女皇/特效/d93588994b899c50.xml" itemIcon="1" loadImmediate="false" itemID="71340000-62868223"/>
+          <Include href="Codex/摇滚女皇/特效/db3c7f221475b88e.xml" itemIcon="1" loadImmediate="false" itemID="71340000-42762d0c"/>
+          <Include href="Codex/摇滚女皇/特效/db9fac897cf32325.xml" itemIcon="1" loadImmediate="false" itemID="71340000-575ce9a4"/>
+          <Include href="Codex/摇滚女皇/特效/dbd033ecd7ea587e.xml" itemIcon="1" loadImmediate="false" itemID="71340000-47a34866"/>
+          <Include href="Codex/摇滚女皇/特效/dcd5944e16cc1063.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d3a"/>
+          <Include href="Codex/摇滚女皇/特效/dea8457a28475583.xml" itemIcon="1" loadImmediate="false" itemID="71340000-1bb0bcb4"/>
+          <Include href="Codex/摇滚女皇/特效/dfaf495c28100e54.xml" itemIcon="1" loadImmediate="false" itemID="71340000-12932caa"/>
+          <Include href="Codex/摇滚女皇/特效/e1bf22a433602e4c.xml" itemIcon="1" loadImmediate="false" itemID="71340000-0432c199"/>
+          <Include href="Codex/摇滚女皇/特效/e160fd8f07c99b84.xml" itemIcon="1" loadImmediate="false" itemID="71340000-634d9f4a"/>
+          <Include href="Codex/摇滚女皇/特效/e7190c7c7a975cac.xml" itemIcon="1" loadImmediate="false" itemID="71340000-516f94d2"/>
+          <Include href="Codex/摇滚女皇/特效/ed6153ba8a387753.xml" itemIcon="1" loadImmediate="false" itemID="6ad09edb-00000d16"/>
+          <Include href="Codex/摇滚女皇/特效/f5affe00802f7309.xml" itemIcon="1" loadImmediate="false" itemID="71340000-2f612762"/>
+          <Include href="Codex/摇滚女皇/特效/fe0a2c4e676ddc99.xml" itemIcon="1" loadImmediate="false" itemID="71340000-704d5ac1"/>
+          <Include href="Codex/摇滚女皇/武器挂点.xml" loadImmediate="false" itemID="71340000-469550d6"/>
+          <Include href="Codex/摇滚女皇/演出/guitar.xml" loadImmediate="false" itemID="6ad09edb-00000d14"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-cannon.xml" loadImmediate="false" itemID="6ad09edb-00000d12"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-combo.xml" loadImmediate="false" itemID="6ad09edb-00000d11"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-flame.xml" loadImmediate="false" itemID="71340000-42ce719a"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-gun.xml" loadImmediate="false" itemID="71340000-009fb532"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-missile.xml" loadImmediate="false" itemID="6ad09edb-00000d0f"/>
+          <Include href="Codex/摇滚女皇/演出/guitar-wide.xml" loadImmediate="false" itemID="71340000-600a0056"/>
+          <Include href="Codex/摇滚女皇/演出/keyboard.xml" loadImmediate="false" itemID="71340000-0b448be7"/>
+          <Include href="Codex/摇滚女皇/演出/keyboard-arc.xml" loadImmediate="false" itemID="71340000-4db1c187"/>
+          <Include href="Codex/摇滚女皇/演出/keyboard-jump.xml" loadImmediate="false" itemID="71340000-7887acd6"/>
+          <Include href="Codex/摇滚女皇/演出/vocal.xml" loadImmediate="false" itemID="6ad09edb-00000d0d"/>
+          <Include href="Codex/摇滚女皇/演出/vocal-cross.xml" loadImmediate="false" itemID="6ad09edb-00000d0b"/>
+          <Include href="Codex/摇滚女皇/演出/vocal-draw.xml" loadImmediate="false" itemID="71340000-2304a57c"/>
+          <Include href="Codex/摇滚女皇/演出/vocal-wide.xml" loadImmediate="false" itemID="71340000-48587ab6"/>
+          <Include href="Codex/摇滚女皇/战技容器-弹射弧光斩.xml" itemID="71340000-3c6eeadb"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他持续喷火.xml" itemID="71340000-746a84fb"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他导弹烈炎炮.xml" itemID="6ad09edb-00000d10"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他导弹炮.xml" itemID="6ad09edb-00000d0e"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他广域喷火.xml" itemID="71340000-2c299b5b"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他机枪扫射.xml" itemID="71340000-727064c8"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他烈炎炮.xml" itemID="71340000-7ad4916a"/>
+          <Include href="Codex/摇滚女皇/战技容器-吉他震地.xml" itemID="6ad09edb-00000d13"/>
+          <Include href="Codex/摇滚女皇/战技容器-跳跃镰刀斩.xml" itemID="71340000-0b7d79c2"/>
+          <Include href="Codex/摇滚女皇/战技容器-旋镰横掠.xml" itemID="71340000-68ba73e4"/>
+          <Include href="Codex/摇滚女皇/战技容器-主唱拔刀裂空斩.xml" itemID="6ad09edb-00000d09"/>
+          <Include href="Codex/摇滚女皇/战技容器-主唱广域裂空斩.xml" itemID="6ad09edb-00000d08"/>
+          <Include href="Codex/摇滚女皇/战技容器-主唱横向裂空斩.xml" itemID="6ad09edb-00000d0a"/>
+          <Include href="Codex/摇滚女皇/战技容器-主唱突刺.xml" itemID="6ad09edb-00000d0c"/>
           <Include href="Graphic/shape 65.xml" itemIcon="1" loadImmediate="false" itemID="58132c1b-00000041" lastModified="1477651483"/>
           <Include href="Graphic/shape 66.xml" itemIcon="1" loadImmediate="false" itemID="58132c1b-00000042" lastModified="1477651483"/>
           <Include href="Graphic/shape 67.xml" itemIcon="1" loadImmediate="false" itemID="58132c1b-00000043" lastModified="1477651483"/>
@@ -1515,16 +1643,16 @@
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml" itemID="697b6555-00003229" lastModified="1785147087"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml" itemID="699e0c20-00001dff" lastModified="1777470439"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml" itemID="698642fe-00000b06" lastModified="1777471697"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1789892967"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml" itemID="69eff1b8-00000ac4" lastModified="1792044265"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml" itemID="696464e8-00000b46" lastModified="1782004691"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml" itemID="696493ce-00000e0e" lastModified="1770225044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml" itemID="6974a6b3-00001f9d" lastModified="1785626163"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml" itemID="69875871-00000a1a" lastModified="1789830245"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1782004683"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml" itemID="6964628b-00000a7b" lastModified="1792061044"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml" itemID="696c6d20-0000139b" lastModified="1785147368"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1789926670"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml" itemID="69647138-00000e5c" lastModified="1792058445"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml" itemID="69646d02-00000da3" lastModified="1789890548"/>
-          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1789832012"/>
+          <Include href="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml" itemID="696a8b8f-00001638" lastModified="1792044274"/>
           <Include href="容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml" itemID="696a8950-00001434" lastModified="1789926562"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本.xml" loadImmediate="false" itemID="69949a8d-00003587" lastModified="1706272572"/>
           <Include href="容器/兵器攻击容器/平A/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13 副本.xml" itemIcon="1" loadImmediate="false" itemID="69949a8d-00003589" lastModified="1706271675"/>
@@ -3253,6 +3381,7 @@
      </persistentData>
      <PrinterSettings/>
      <publishHistory>
+          <PublishItem publishSize="5394638" publishTime="1792059110"/>
           <PublishItem publishSize="5080322" publishTime="1789926779"/>
           <PublishItem publishSize="5080057" publishTime="1789925740"/>
           <PublishItem publishSize="5052542" publishTime="1789892853"/>
@@ -3272,6 +3401,5 @@
           <PublishItem publishSize="4868987" publishTime="1789401845"/>
           <PublishItem publishSize="4869065" publishTime="1789398203"/>
           <PublishItem publishSize="4865879" publishTime="1789202737"/>
-          <PublishItem publishSize="4683786" publishTime="1788971308"/>
      </publishHistory>
 </DOMDocument>
