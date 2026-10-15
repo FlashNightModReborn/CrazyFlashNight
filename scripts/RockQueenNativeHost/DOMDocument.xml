@@ -1,0 +1,130 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="500" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows">
+  <symbols>
+    <Include href="RockImport0.xml"/>
+    <Include href="RockImport1.xml"/>
+    <Include href="RockImport2.xml"/>
+    <Include href="RockImport3.xml"/>
+    <Include href="RockImport4.xml"/>
+    <Include href="RockImport5.xml"/>
+    <Include href="RockImport6.xml"/>
+    <Include href="RockImport7.xml"/>
+    <Include href="RockImport8.xml"/>
+    <Include href="RockImport9.xml"/>
+    <Include href="RockImport10.xml"/>
+    <Include href="RockImport11.xml"/>
+    <Include href="RockImport12.xml"/>
+    <Include href="RockImport13.xml"/>
+    <Include href="RockImport14.xml"/>
+    <Include href="RockImport15.xml"/>
+    <Include href="RockImport16.xml"/>
+    <Include href="RockImport17.xml"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="摇滚女皇原生接入测试">
+      <layers>
+        <DOMLayer name="测试与共享库">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+#include "../TestLoader.as"]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="RockImport0">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport1">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport2">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport3">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport4">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport5">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport6">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport7">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport8">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport9">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport10">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport11">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport12">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport13">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport14">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport15">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport16">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RockImport17">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

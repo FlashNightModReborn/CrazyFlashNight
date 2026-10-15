@@ -152,3 +152,6 @@ launcher/app.manifest text eol=lf
 # Gamma-ECHO approved input, native recipes and immutable result rows bind exact bytes.
 /flashswf/arts/new/Codex素材源稿/γ-ECHO克隆兽-R3/** -text whitespace=cr-at-eol
 /tools/gamma-echo-assets/** -text whitespace=cr-at-eol
+
+# Rock Queen generated manifest is verified byte-for-byte after checkout.
+/tools/rock-queen-assets/manifest.json text eol=lf

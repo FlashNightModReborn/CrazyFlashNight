@@ -2,6 +2,8 @@
 {
     EquipmentEmissionState.bind(ref, "vocalist");
    var target:MovieClip = ref.自机;
+    org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.bindEquipment(ref, "vocal");
+    ref.rockBlade = param.rockBlade;
 
    // ===== 从XML参数对象读取配置 =====
    ref.animDuration = param.animDuration || 15;
@@ -100,6 +102,7 @@
    //   / ② stale → 上次 snapshot；③ 都失败返 null 由本地 bootstrap 兜底。
    //   详见 StaleRefCache.as / DressupSubscriber.as 类头【stale-ref window】。
    target.dispatcher.subscribe("主唱光剑光刃", function(状态名:String) {
+       if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(target)) return;
        if (ref.weaponMode != "光剑") return;
        if (target.mp < ref.主唱光刃耗蓝量) return;
 
@@ -157,6 +160,7 @@
 
 _root.装备生命周期函数.主唱光剑周期 = function(ref:Object, param:Object) {
    if (!EquipmentTick.open(ref)) return;
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.ownsCycle(ref)) return;
 
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
@@ -232,6 +236,7 @@ _root.装备生命周期函数.主唱光剑动画控制 = function(ref:Object) {
 
 // 动画更新函数 - 负责实际更新动画显示（包括动画帧和刀口位置）
 _root.装备生命周期函数.主唱光剑动画更新 = function(ref:Object) {
+    if (org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill.isActive(ref.自机)) return;
    var target:MovieClip = ref.自机;
    var saber:MovieClip = target.刀_引用;
 
@@ -328,6 +333,17 @@ _root.装备生命周期函数.主唱光剑释放猩红增幅 = function(ref:Obj
    target.mp -= ref.猩红增幅耗蓝量;
 };
 
+// 普攻周期与主唱突刺共用同一冷却/耗蓝；战技接管武器演出时仍保留范围治疗。
+_root.装备生命周期函数.主唱光剑治疗周期 = function(ref:Object) {
+   var target:MovieClip = ref.自机;
+   if (_root.暂停 || !(target.hp > 0)) return;
+   if (target.mp >= ref.猩红增幅耗蓝量) {
+       if (_root.更新时间间隔(target, ref.猩红增幅时间戳名, ref.猩红增幅时间间隔)) {
+           _root.装备生命周期函数.主唱光剑释放猩红增幅(ref);
+       }
+   }
+};
+
 // ===== 模块E：战斗主循环 =====
 _root.装备生命周期函数.主唱光剑战斗周期 = function(ref:Object) {
    var target:MovieClip = ref.自机;
@@ -354,11 +370,7 @@ _root.装备生命周期函数.主唱光剑战斗周期 = function(ref:Object) {
    }
 
    // 猩红增幅（两种模式通用）
-   if (target.mp >= ref.猩红增幅耗蓝量) {
-       if (_root.更新时间间隔(target, ref.猩红增幅时间戳名, ref.猩红增幅时间间隔)) {
-           _root.装备生命周期函数.主唱光剑释放猩红增幅(ref);
-       }
-   }
+   _root.装备生命周期函数.主唱光剑治疗周期(ref);
 };
 
 /*
