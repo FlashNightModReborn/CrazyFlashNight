@@ -48,6 +48,15 @@
     ],
     "semantics": "best-effort and idempotent; single POST, never launches the exe, exe offline silently skipped, failures log-only and never toast back to AS2"
   },
+  "taskCompleted": {
+    "event": "agentTaskCompleted",
+    "task": "rag_task_completed",
+    "transport": "json_sync, AS2->C#, httpCallable=false, fire-and-forget",
+    "payload": "{savePath, taskId: integer, npc?: string} — Host whitelist TryParseRagTaskCompleted rejects unknown keys; npc is a fallback name only (the terminal treats the task record's get_npc as authoritative)",
+    "sendPoint": "_root.提交任务完成状态 (the single authoritative tasks_finished write, reached from TaskRewardCommit.finish); AS2 gates on the Agent commission id range 200001-300000, so main-line/side/dungeon completions never reach the wire",
+    "hostForward": "RagTerminalService.NotifyTaskCompletedAsync -> POST http://127.0.0.1:7077/api/integration/task-completed with {slot_key, task_id, npc}",
+    "semantics": "query; changes no game state and awaits no reply. Best-effort: single POST with no retry (the terminal owns idempotency per (slot_key, task_id)), never launches the exe, exe offline silently skipped, malformed payload / unwired service / post failure all log-only and never toast back to AS2. Response is always 200 with {ok, accepted, detail, job_id}; accepted=false is normal (slot mismatch, no rewrite marker, rate limit) and the Host only logs it"
+  },
   "webCommands": {},
   "hostClose": {
     "message": "{type:'panel',cmd:'close',panel:'ragchat'}",

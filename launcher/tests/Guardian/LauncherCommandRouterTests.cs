@@ -9394,6 +9394,114 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RAGCHAT_TaskCompleted_ForwardsEventWithoutPanelOrToast()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json(
+                    "{\"ok\":true,\"accepted\":true,\"detail\":\"已受理\",\"job_id\":\"job-1\"}"));
+            using var service = new RagTerminalService(
+                @"C:\games\project\CrazyFlashNight", null, handler, path => { });
+            r.SetRagTerminalService(service);
+
+            r.HandleRagTaskCompleted(JObject.Parse(
+                "{\"savePath\":\"save1\",\"taskId\":213501,\"npc\":\"Andy Law\"}"));
+
+            Assert.True(SpinWait.SpinUntil(() => handler.Requests.Count >= 2, TimeSpan.FromSeconds(5)));
+            Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
+            Assert.Equal("/api/integration/task-completed", handler.Requests[1].RequestUri.AbsolutePath);
+            Assert.Equal("{\"slot_key\":\"save1\",\"task_id\":213501,\"npc\":\"Andy Law\"}",
+                handler.Bodies[1]);
+            Assert.False(harnessR.Host.IsPanelOpen);
+            Assert.Empty(commands);
+        }
+
+        [Fact]
+        public void RAGCHAT_TaskCompleted_MalformedOrOfflineStaysSilent()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"status\":\"booting\"}"));
+            using var service = new RagTerminalService(
+                @"C:\games\project\CrazyFlashNight", null, handler, path => { });
+            r.SetRagTerminalService(service);
+
+            // 形状违规一律整包拒收：缺 savePath／savePath 非字符串／taskId 缺失或非整数／
+            // taskId 越界／npc 非字符串／未知键／null 载荷。
+            r.HandleRagTaskCompleted(null);
+            r.HandleRagTaskCompleted(JObject.Parse("{\"taskId\":213501}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":123,\"taskId\":213501}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\"}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":\"213501\"}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":0}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":-213501}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501,\"npc\":7}"));
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501,\"extra\":1}"));
+            // 形状合法但 exe 不在线：只探健康，不发事件、不拉 exe。
+            r.HandleRagTaskCompleted(JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501}"));
+
+            Assert.True(SpinWait.SpinUntil(() => handler.Requests.Count >= 1, TimeSpan.FromSeconds(5)));
+            Assert.All(handler.Requests, probe =>
+                Assert.Equal("/api/health", probe.RequestUri.AbsolutePath));
+            Assert.False(harnessR.Host.IsPanelOpen);
+            Assert.Empty(commands);
+        }
+
+        [Fact]
+        public void RAGCHAT_TaskCompleted_MissingNpcBecomesEmptyString()
+        {
+            string slotKey;
+            int taskId;
+            string npc;
+            string rejectReason;
+
+            Assert.True(LauncherCommandRouter.TryParseRagTaskCompleted(
+                JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501}"),
+                out slotKey, out taskId, out npc, out rejectReason));
+            Assert.Equal("save1", slotKey);
+            Assert.Equal(213501, taskId);
+            Assert.Equal("", npc);
+            Assert.Null(rejectReason);
+
+            Assert.True(LauncherCommandRouter.TryParseRagTaskCompleted(
+                JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501,\"npc\":null}"),
+                out slotKey, out taskId, out npc, out rejectReason));
+            Assert.Equal("", npc);
+        }
+
+        [Fact]
+        public void RAGCHAT_TaskCompleted_FloatFormTaskIdAcceptedOnlyWhenIntegral()
+        {
+            string slotKey;
+            int taskId;
+            string npc;
+            string rejectReason;
+
+            Assert.True(LauncherCommandRouter.TryParseRagTaskCompleted(
+                JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501.0}"),
+                out slotKey, out taskId, out npc, out rejectReason));
+            Assert.Equal(213501, taskId);
+
+            Assert.False(LauncherCommandRouter.TryParseRagTaskCompleted(
+                JObject.Parse("{\"savePath\":\"save1\",\"taskId\":213501.5}"),
+                out slotKey, out taskId, out npc, out rejectReason));
+            Assert.Equal("taskId_out_of_range", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagTaskCompleted(
+                JObject.Parse("{\"savePath\":\"save1\",\"taskId\":1e30}"),
+                out slotKey, out taskId, out npc, out rejectReason));
+            Assert.Equal("taskId_out_of_range", rejectReason);
+        }
+
+        [Fact]
         public void RAGCHAT_ServiceNotWired_ToastsUnavailable()
         {
             Capture c = new Capture();
