@@ -1,0 +1,884 @@
+{
+  "schema": "cf6-wings.combat-evidence.v1",
+  "experiments": [
+    "wings-pilot-20261015",
+    "wings-ai-20261015",
+    "wings-integration-20261015",
+    "wings-distance360-20261015"
+  ],
+  "groups": [
+    {
+      "experimentId": "wings-pilot-20261015",
+      "groupId": "pilot",
+      "rows": 4,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "groupId": "mirror-60",
+      "rows": 2,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "groupId": "mirror-99",
+      "rows": 2,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "groupId": "donor-60",
+      "rows": 2,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "groupId": "mixed-30",
+      "rows": 2,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    },
+    {
+      "experimentId": "wings-distance360-20261015",
+      "groupId": "pilot",
+      "rows": 4,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "verified": true
+      },
+      "resourceClosureHash": "sha256:1ebf1f474eba3f419459aa0be52a997dec70a8ba7664ed5b105e3e7e731908d7",
+      "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "asLoaderSha256": "sha256:5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "resourcesUnchanged": true,
+      "nonTargetSavesUnchanged": true,
+      "hostAndFlashExited": true
+    }
+  ],
+  "results": [
+    {
+      "experimentId": "wings-pilot-20261015",
+      "caseId": "mirror-30-blue",
+      "runId": "mirror-30-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 125.0,
+      "durationMs": 4148.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 6204.0
+    },
+    {
+      "experimentId": "wings-pilot-20261015",
+      "caseId": "mirror-30-red",
+      "runId": "mirror-30-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 109.0,
+      "durationMs": 3575.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 6204.0
+    },
+    {
+      "experimentId": "wings-pilot-20261015",
+      "caseId": "donor-30-blue",
+      "runId": "donor-30-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 124.0,
+      "durationMs": 4103.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 5042.0
+    },
+    {
+      "experimentId": "wings-pilot-20261015",
+      "caseId": "donor-30-red",
+      "runId": "donor-30-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 108.0,
+      "durationMs": 3554.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 5042.0,
+      "redStartMaxHp": 6204.0
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "caseId": "mirror-60-blue",
+      "runId": "mirror-60-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 112.0,
+      "durationMs": 3824.0,
+      "candidateLevel": 60,
+      "candidateStartMaxHp": 8742.0,
+      "candidateRemainHp": 8742.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 8742.0,
+      "redStartMaxHp": 8742.0
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "caseId": "mirror-60-red",
+      "runId": "mirror-60-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 131.0,
+      "durationMs": 4318.0,
+      "candidateLevel": 60,
+      "candidateStartMaxHp": 8742.0,
+      "candidateRemainHp": 8742.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 8742.0,
+      "redStartMaxHp": 8742.0
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "caseId": "mirror-99-blue",
+      "runId": "mirror-99-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 135.0,
+      "durationMs": 4783.0,
+      "candidateLevel": 99,
+      "candidateStartMaxHp": 12041.0,
+      "candidateRemainHp": 12041.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 12041.0,
+      "redStartMaxHp": 12041.0
+    },
+    {
+      "experimentId": "wings-ai-20261015",
+      "caseId": "mirror-99-red",
+      "runId": "mirror-99-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 164.0,
+      "durationMs": 5427.0,
+      "candidateLevel": 99,
+      "candidateStartMaxHp": 12041.0,
+      "candidateRemainHp": 12041.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 12041.0,
+      "redStartMaxHp": 12041.0
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "caseId": "donor-60-blue",
+      "runId": "donor-60-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 101.0,
+      "durationMs": 3355.0,
+      "candidateLevel": 60,
+      "candidateStartMaxHp": 8742.0,
+      "candidateRemainHp": 8742.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 8742.0,
+      "redStartMaxHp": 7584.0
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "caseId": "donor-60-red",
+      "runId": "donor-60-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 103.0,
+      "durationMs": 3403.0,
+      "candidateLevel": 60,
+      "candidateStartMaxHp": 8742.0,
+      "candidateRemainHp": 8742.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 7584.0,
+      "redStartMaxHp": 8742.0
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "caseId": "mixed-30-blue",
+      "runId": "mixed-30-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 199.0,
+      "durationMs": 6609.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 11246.0,
+      "redStartMaxHp": 11246.0
+    },
+    {
+      "experimentId": "wings-integration-20261015",
+      "caseId": "mixed-30-red",
+      "runId": "mixed-30-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 650.0,
+      "frames": 309.0,
+      "durationMs": 10263.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 459.0,
+      "candidateHpPermille": 74,
+      "blueStartMaxHp": 11246.0,
+      "redStartMaxHp": 11246.0
+    },
+    {
+      "experimentId": "wings-distance360-20261015",
+      "caseId": "mirror-30-blue",
+      "runId": "mirror-30-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 360.0,
+      "frames": 120.0,
+      "durationMs": 3990.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 5537.0,
+      "candidateHpPermille": 892,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 6204.0
+    },
+    {
+      "experimentId": "wings-distance360-20261015",
+      "caseId": "mirror-30-red",
+      "runId": "mirror-30-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 360.0,
+      "frames": 133.0,
+      "durationMs": 4391.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 4913.0,
+      "candidateHpPermille": 792,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 6204.0
+    },
+    {
+      "experimentId": "wings-distance360-20261015",
+      "caseId": "donor-30-blue",
+      "runId": "donor-30-blue-r001",
+      "status": "finished",
+      "winner": "blue",
+      "candidateSide": "blue",
+      "candidateWon": true,
+      "spawnDistance": 360.0,
+      "frames": 146.0,
+      "durationMs": 4801.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 6204.0,
+      "candidateHpPermille": 1000,
+      "blueStartMaxHp": 6204.0,
+      "redStartMaxHp": 5042.0
+    },
+    {
+      "experimentId": "wings-distance360-20261015",
+      "caseId": "donor-30-red",
+      "runId": "donor-30-red-r001",
+      "status": "finished",
+      "winner": "red",
+      "candidateSide": "red",
+      "candidateWon": true,
+      "spawnDistance": 360.0,
+      "frames": 147.0,
+      "durationMs": 4864.0,
+      "candidateLevel": 30,
+      "candidateStartMaxHp": 6204.0,
+      "candidateRemainHp": 5212.0,
+      "candidateHpPermille": 840,
+      "blueStartMaxHp": 5042.0,
+      "redStartMaxHp": 6204.0
+    }
+  ],
+  "completedBattles": 16,
+  "naturalFinishes": 16,
+  "combatTimeouts": 0,
+  "machineQualification": "all four isolated experiments qualified",
+  "files": [
+    {
+      "path": "combat/wings-pilot-20261015/experiment-report.json",
+      "sha256": "2c15e6071fd81a4b4987186cd4f415fd8a1ae8c5afdacd6ae540e96e222aeda2",
+      "bytes": 2787,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\experiment-report.json",
+      "originalSha256": "2c15e6071fd81a4b4987186cd4f415fd8a1ae8c5afdacd6ae540e96e222aeda2",
+      "originalBytes": 2787,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/measurement.json.gz",
+      "sha256": "4c5ea7842f3761d2863fe5b8ea4ba6237cf655f9bdd7bd41d24bb676261fbb3e",
+      "bytes": 2461,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\measurement.json",
+      "originalSha256": "4e6eb5531bfbfb60b1973dec1efd7132c40fdf2051bee7bb56f6cb215286de66",
+      "originalBytes": 13628,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/frozen-plan.json.gz",
+      "sha256": "f4615d96e939dbb6eca1a9b7917e79d8564a039990a977cb26f4cd6702ea9abd",
+      "bytes": 19625,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\frozen-plan.json",
+      "originalSha256": "a5786cf5b9e694a3ccd2d02f7da8eeaee2fa6bb195fcd7d2acbd26d3b07491d0",
+      "originalBytes": 156973,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/expected-receipts.json",
+      "sha256": "ad2a29d7b8dc6273872b06e938a9b5337e79575e6213aca76291604ae4dec0b2",
+      "bytes": 679,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\expected-receipts.json",
+      "originalSha256": "ad2a29d7b8dc6273872b06e938a9b5337e79575e6213aca76291604ae4dec0b2",
+      "originalBytes": 679,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/group-report.json",
+      "sha256": "ebeb8540affa5ea476272293af25c5cb19d012a79a1d32a29f2ffdeffa62b828",
+      "bytes": 1618,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\groups\\pilot\\group-report.json",
+      "originalSha256": "ebeb8540affa5ea476272293af25c5cb19d012a79a1d32a29f2ffdeffa62b828",
+      "originalBytes": 1618,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/save-protection.json.gz",
+      "sha256": "2636b1d575fb343f4f0071ca99f1df6e41d7b78eee870ae2fb79015593e483cc",
+      "bytes": 19722,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\groups\\pilot\\save-protection.json",
+      "originalSha256": "a2e901c1527565ca419a333b8d45982cf3baeddd34486fb26d42a5ba29a9d9a2",
+      "originalBytes": 90571,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/shard-receipt.json.gz",
+      "sha256": "1b8b9a4708e4a6ee75f64445c85762114c9965b53eeda32f1e37a48ee2ec6eea",
+      "bytes": 178874,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-625437d978634a23a10b1b6d0bd9490a\\assignment-625437d978634a23a10b1b6d0bd9490a\\attempt-625437d978634a23a10b1b6d0bd9490a\\shard-receipt.json",
+      "originalSha256": "52abb9e069f14a3bed76e242f02a8e4c522104e3ac30cd77e848846e801c5f3f",
+      "originalBytes": 694905,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/results.jsonl",
+      "sha256": "27c6dfd16121506f6d24ae774bb55c30339d6d1d56330778a6f14a87e2f48710",
+      "bytes": 12990,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-625437d978634a23a10b1b6d0bd9490a\\assignment-625437d978634a23a10b1b6d0bd9490a\\attempt-625437d978634a23a10b1b6d0bd9490a\\raw\\27c6dfd16121506f6d24ae774bb55c30339d6d1d56330778a6f14a87e2f48710.jsonl",
+      "originalSha256": "27c6dfd16121506f6d24ae774bb55c30339d6d1d56330778a6f14a87e2f48710",
+      "originalBytes": 12990,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/manifest.json",
+      "sha256": "1e4a9209eeea82774fe0e1939cb00274371eea81784be07831c512d133ca1300",
+      "bytes": 6121,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-625437d978634a23a10b1b6d0bd9490a\\assignment-625437d978634a23a10b1b6d0bd9490a\\attempt-625437d978634a23a10b1b6d0bd9490a\\manifest.json",
+      "originalSha256": "1e4a9209eeea82774fe0e1939cb00274371eea81784be07831c512d133ca1300",
+      "originalBytes": 6121,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/experiment-report.json",
+      "sha256": "396016ce51eef4aad842d812ae6ec41c28a224e7da13e7d92fc48a3cc53ae2a6",
+      "bytes": 4558,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\experiment-report.json",
+      "originalSha256": "396016ce51eef4aad842d812ae6ec41c28a224e7da13e7d92fc48a3cc53ae2a6",
+      "originalBytes": 4558,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/measurement.json.gz",
+      "sha256": "f846f83a27243ab3a7ebe7536f838716c43781b8cd209a05e84457f0c0f023b0",
+      "bytes": 2964,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\measurement.json",
+      "originalSha256": "3eedcf9d02aa84fc56b591f7bf3b170e431e8d7a6da15caace0f95bd142dc53b",
+      "originalBytes": 20202,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/frozen-plan.json.gz",
+      "sha256": "d2779e5932f798c7df552b5125e695883c908830d199ecffa42530ef64335a00",
+      "bytes": 19965,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\frozen-plan.json",
+      "originalSha256": "fc913e8acb62caffc288b1a20cc49f0684e567468a77316357d66d38047ced57",
+      "originalBytes": 161482,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/expected-receipts.json",
+      "sha256": "e779ec9805cdb09e98d2cd78b56fd975bae52abb198a326fdc56a6c195488a5c",
+      "bytes": 1256,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\expected-receipts.json",
+      "originalSha256": "e779ec9805cdb09e98d2cd78b56fd975bae52abb198a326fdc56a6c195488a5c",
+      "originalBytes": 1256,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/group-report.json",
+      "sha256": "d71cee880e835b9bbe0446a554366c875dd8b1c1b4b403b7b4d1d1557f421949",
+      "bytes": 1627,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\groups\\mirror-60\\group-report.json",
+      "originalSha256": "d71cee880e835b9bbe0446a554366c875dd8b1c1b4b403b7b4d1d1557f421949",
+      "originalBytes": 1627,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/save-protection.json.gz",
+      "sha256": "9b89a6cb59ca1cc72a6812032893669cb0e18140ab21eaa04a89b2d31038eb9a",
+      "bytes": 20000,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\groups\\mirror-60\\save-protection.json",
+      "originalSha256": "8364506973e54ad081a4125637284b808a2908a45742e1881308215e914b0c68",
+      "originalBytes": 92175,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/shard-receipt.json.gz",
+      "sha256": "a7c237cf134d035cb65ac526f2a7181893d7cd4be05d6b76164d7d0b16b2b2a7",
+      "bytes": 178750,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4318d5663df64faa9225e1449b91a512\\assignment-4318d5663df64faa9225e1449b91a512\\attempt-4318d5663df64faa9225e1449b91a512\\shard-receipt.json",
+      "originalSha256": "74c6f87323b3e9c9b85329c98338487108ca8a7726644a9c964c29de0a51f87a",
+      "originalBytes": 690277,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/results.jsonl",
+      "sha256": "68d096dfb477a710d2788289544bbab64a9f9346cc560f3f213cd7563364b4e7",
+      "bytes": 6504,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4318d5663df64faa9225e1449b91a512\\assignment-4318d5663df64faa9225e1449b91a512\\attempt-4318d5663df64faa9225e1449b91a512\\raw\\68d096dfb477a710d2788289544bbab64a9f9346cc560f3f213cd7563364b4e7.jsonl",
+      "originalSha256": "68d096dfb477a710d2788289544bbab64a9f9346cc560f3f213cd7563364b4e7",
+      "originalBytes": 6504,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/manifest.json",
+      "sha256": "3e3d73658cea3d03738c80832831e4637afb724a4c01ed9dece0dfd0ae7ae361",
+      "bytes": 3375,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4318d5663df64faa9225e1449b91a512\\assignment-4318d5663df64faa9225e1449b91a512\\attempt-4318d5663df64faa9225e1449b91a512\\manifest.json",
+      "originalSha256": "3e3d73658cea3d03738c80832831e4637afb724a4c01ed9dece0dfd0ae7ae361",
+      "originalBytes": 3375,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/group-report.json",
+      "sha256": "62b204c35ee34c35d7b005c5b5070e56c67db3cfc92476bc2d06f485b137ad43",
+      "bytes": 1627,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\groups\\mirror-99\\group-report.json",
+      "originalSha256": "62b204c35ee34c35d7b005c5b5070e56c67db3cfc92476bc2d06f485b137ad43",
+      "originalBytes": 1627,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/save-protection.json.gz",
+      "sha256": "b9f5b8ff369859f51325ba66cb602af713ea25910a8b98069c8628371995b1aa",
+      "bytes": 20083,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-ai-20261015\\groups\\mirror-99\\save-protection.json",
+      "originalSha256": "b17fdb3fb744b2a0f08836eb4a21d868e9d7c3f06a4b2446d4acd22857290b5e",
+      "originalBytes": 92175,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/shard-receipt.json.gz",
+      "sha256": "9241e973eb4f5c0f5356b3a204a6fa9e1a7707c83e5f75381650809aab530872",
+      "bytes": 178787,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-47d75fa93aa3426ab4d4005f6067fb6b\\assignment-47d75fa93aa3426ab4d4005f6067fb6b\\attempt-47d75fa93aa3426ab4d4005f6067fb6b\\shard-receipt.json",
+      "originalSha256": "5ece65635d47efa2c3783995cade5eb7617ad51a9bce5fcbb694efe89e6f9874",
+      "originalBytes": 690282,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/results.jsonl",
+      "sha256": "e5cee263ce3a11bfe3d32fda4bf84ac6a7e7d6727d2876b66b3dd16c6d1dbde5",
+      "bytes": 6520,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-47d75fa93aa3426ab4d4005f6067fb6b\\assignment-47d75fa93aa3426ab4d4005f6067fb6b\\attempt-47d75fa93aa3426ab4d4005f6067fb6b\\raw\\e5cee263ce3a11bfe3d32fda4bf84ac6a7e7d6727d2876b66b3dd16c6d1dbde5.jsonl",
+      "originalSha256": "e5cee263ce3a11bfe3d32fda4bf84ac6a7e7d6727d2876b66b3dd16c6d1dbde5",
+      "originalBytes": 6520,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/manifest.json",
+      "sha256": "4489ede65770e3eb4fc64764b7bb7f62f370184a51e970c6c80bd13f570773e8",
+      "bytes": 3375,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-47d75fa93aa3426ab4d4005f6067fb6b\\assignment-47d75fa93aa3426ab4d4005f6067fb6b\\attempt-47d75fa93aa3426ab4d4005f6067fb6b\\manifest.json",
+      "originalSha256": "4489ede65770e3eb4fc64764b7bb7f62f370184a51e970c6c80bd13f570773e8",
+      "originalBytes": 3375,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/experiment-report.json",
+      "sha256": "c3b2cabd37e0c9a169734da187e09c7b29f4dc1ee5f05cb5d6caf1b64546dc2d",
+      "bytes": 4587,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\experiment-report.json",
+      "originalSha256": "c3b2cabd37e0c9a169734da187e09c7b29f4dc1ee5f05cb5d6caf1b64546dc2d",
+      "originalBytes": 4587,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/measurement.json.gz",
+      "sha256": "a796c94fb2501112c7ce4c89af26457f725b7cfba4f67e5efe0fe15d0d6ad39c",
+      "bytes": 3045,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\measurement.json",
+      "originalSha256": "bb7051d792001728cc745203d3d3e9c1b579b4f4e991541b62fca9442058bfb6",
+      "originalBytes": 21307,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/frozen-plan.json.gz",
+      "sha256": "0f426aa11217b65ef73bd6bc0ba1ed8516103ea58deb30d8594db2e9cf8ed1af",
+      "bytes": 19985,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\frozen-plan.json",
+      "originalSha256": "5c7b023e5e4fcc214489167caea0e2d42c254d418083aaa6ea09744e34ebe637",
+      "originalBytes": 161622,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/expected-receipts.json",
+      "sha256": "9c3239f47cb5f973bcb99a418ccdaf86681403b97de7f3f8f2ee6c62e5b03a2d",
+      "bytes": 1252,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\expected-receipts.json",
+      "originalSha256": "9c3239f47cb5f973bcb99a418ccdaf86681403b97de7f3f8f2ee6c62e5b03a2d",
+      "originalBytes": 1252,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/group-report.json",
+      "sha256": "0fd483e751ee97de3b2f049753c4b130dbbf10de4841080609e119ed7e4b36df",
+      "bytes": 1632,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\groups\\donor-60\\group-report.json",
+      "originalSha256": "0fd483e751ee97de3b2f049753c4b130dbbf10de4841080609e119ed7e4b36df",
+      "originalBytes": 1632,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/save-protection.json.gz",
+      "sha256": "82a1d7ee25029e7e873979451dd847b47f4ce2502596b23b98441ba92a8a10c5",
+      "bytes": 20365,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\groups\\donor-60\\save-protection.json",
+      "originalSha256": "454e1b8ab8ffa5dda5c364448fe8b90a68013b92cd241ee8c9d7e90ae94916fa",
+      "originalBytes": 93779,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/shard-receipt.json.gz",
+      "sha256": "108d3eb46634d11a42ed4b0e4b8cc143b9fe171f3dee8e123a7fdbbb21cb1bf4",
+      "bytes": 178934,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b6518a0bab1540c5b5014cd8af8e273e\\assignment-b6518a0bab1540c5b5014cd8af8e273e\\attempt-b6518a0bab1540c5b5014cd8af8e273e\\shard-receipt.json",
+      "originalSha256": "c304948b9fefda95999449c8a6218fa7f75ae5b270a56d1d9a5222e81fefd73e",
+      "originalBytes": 689860,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/results.jsonl",
+      "sha256": "fec0afc52fbd556dd0f7e9275f314553ba64d2dd2df2434008fa6a78eceffced",
+      "bytes": 6512,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b6518a0bab1540c5b5014cd8af8e273e\\assignment-b6518a0bab1540c5b5014cd8af8e273e\\attempt-b6518a0bab1540c5b5014cd8af8e273e\\raw\\fec0afc52fbd556dd0f7e9275f314553ba64d2dd2df2434008fa6a78eceffced.jsonl",
+      "originalSha256": "fec0afc52fbd556dd0f7e9275f314553ba64d2dd2df2434008fa6a78eceffced",
+      "originalBytes": 6512,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/manifest.json",
+      "sha256": "aed5ef0ca3481ee74c9537dd0514a68a633741f72b5f309bff9e32511a26d1ae",
+      "bytes": 3237,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b6518a0bab1540c5b5014cd8af8e273e\\assignment-b6518a0bab1540c5b5014cd8af8e273e\\attempt-b6518a0bab1540c5b5014cd8af8e273e\\manifest.json",
+      "originalSha256": "aed5ef0ca3481ee74c9537dd0514a68a633741f72b5f309bff9e32511a26d1ae",
+      "originalBytes": 3237,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/group-report.json",
+      "sha256": "eeada40f70caf25742426e336997853bb951eece590df7f83bc52c5aa73285e5",
+      "bytes": 1633,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\groups\\mixed-30\\group-report.json",
+      "originalSha256": "eeada40f70caf25742426e336997853bb951eece590df7f83bc52c5aa73285e5",
+      "originalBytes": 1633,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/save-protection.json.gz",
+      "sha256": "0a4aa6e5ebd11ebb20d068f28074b10b3ffa303689c693fd0fa6c47e50a6423e",
+      "bytes": 20443,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-integration-20261015\\groups\\mixed-30\\save-protection.json",
+      "originalSha256": "5c148a45c5aeee1ae4515ea4d61eb7e3eac973e9ffae6ac9c7088bc198e00a9d",
+      "originalBytes": 93779,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/shard-receipt.json.gz",
+      "sha256": "951f29ed9a373c2946664e47bf24c98c04f722c418b6e5e086878fa799ca066f",
+      "bytes": 179228,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ba87a6694ecc4a4d85a3fa07d2051949\\assignment-ba87a6694ecc4a4d85a3fa07d2051949\\attempt-ba87a6694ecc4a4d85a3fa07d2051949\\shard-receipt.json",
+      "originalSha256": "8875e043ab52ae1035171e7c98a9dc3fa4c8cf09ff57266d18eb2c1f09fcc576",
+      "originalBytes": 697847,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/results.jsonl",
+      "sha256": "564289c5f92122544aba703ed6c8e8640328bc68e95391634b28c1bf43bef225",
+      "bytes": 8419,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ba87a6694ecc4a4d85a3fa07d2051949\\assignment-ba87a6694ecc4a4d85a3fa07d2051949\\attempt-ba87a6694ecc4a4d85a3fa07d2051949\\raw\\564289c5f92122544aba703ed6c8e8640328bc68e95391634b28c1bf43bef225.jsonl",
+      "originalSha256": "564289c5f92122544aba703ed6c8e8640328bc68e95391634b28c1bf43bef225",
+      "originalBytes": 8419,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/manifest.json",
+      "sha256": "fbe2af12968bce6662d9f0267d976b218479f7c6df2b45c2380d3cb08ba4d969",
+      "bytes": 3749,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ba87a6694ecc4a4d85a3fa07d2051949\\assignment-ba87a6694ecc4a4d85a3fa07d2051949\\attempt-ba87a6694ecc4a4d85a3fa07d2051949\\manifest.json",
+      "originalSha256": "fbe2af12968bce6662d9f0267d976b218479f7c6df2b45c2380d3cb08ba4d969",
+      "originalBytes": 3749,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/experiment-report.json",
+      "sha256": "b838e48f33e6712a337741e60afc74d6ab1fefa837f851928c5c53f0d505b871",
+      "bytes": 2804,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\experiment-report.json",
+      "originalSha256": "b838e48f33e6712a337741e60afc74d6ab1fefa837f851928c5c53f0d505b871",
+      "originalBytes": 2804,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/measurement.json.gz",
+      "sha256": "f7072b391b13492d91f1e2d76448f004d12f0ff296eb0a49056022042cba4b72",
+      "bytes": 2466,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\measurement.json",
+      "originalSha256": "da185c0353d9d9c9ca8e114b50f32caff2a8a1e9644efd08c9dee83ab803bd3f",
+      "originalBytes": 13640,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/frozen-plan.json.gz",
+      "sha256": "68f20370b833abd5d3a1f4c499901751abbae518d3b068de13ee9f08fb1eebf9",
+      "bytes": 19640,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\frozen-plan.json",
+      "originalSha256": "7c7977aaebe57ad6dfc1464c05f16319517f09c37fd040d368c202034716f01b",
+      "originalBytes": 157027,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/expected-receipts.json",
+      "sha256": "713023056d6936e7b96d8186d44f2dbef4aa7dbeb783a822604d58c303a28e6e",
+      "bytes": 679,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\expected-receipts.json",
+      "originalSha256": "713023056d6936e7b96d8186d44f2dbef4aa7dbeb783a822604d58c303a28e6e",
+      "originalBytes": 679,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/group-report.json",
+      "sha256": "c4b6a918fb44e76d4d7e2c7fb33a039c23f527b5576511ae1a862d8fb50cc650",
+      "bytes": 1623,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\groups\\pilot\\group-report.json",
+      "originalSha256": "c4b6a918fb44e76d4d7e2c7fb33a039c23f527b5576511ae1a862d8fb50cc650",
+      "originalBytes": 1623,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/save-protection.json.gz",
+      "sha256": "bfbb61f39db03abf90d4aeb603ea6d2ff0a17bd2aa03e494c00545132a7ad65e",
+      "bytes": 20612,
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-distance360-20261015\\groups\\pilot\\save-protection.json",
+      "originalSha256": "22c730a0477b5eda34f08b9e7f726421c06e0971b6fc4bb098f25c370daf206b",
+      "originalBytes": 94581,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/shard-receipt.json.gz",
+      "sha256": "a2a23a666a3389d5c5a1179770c886eb25a50e7090149840ba78ae70aa6b2d64",
+      "bytes": 179282,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c5886b15333a4d7382259e64eed5eb2a\\assignment-c5886b15333a4d7382259e64eed5eb2a\\attempt-c5886b15333a4d7382259e64eed5eb2a\\shard-receipt.json",
+      "originalSha256": "c34409a38c0cf52776bd82f39dd33d2054e2b41c03453e042f8cb7975ca5f654",
+      "originalBytes": 697107,
+      "compression": "gzip"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/results.jsonl",
+      "sha256": "b5ac8ed18bd74eed4baadedf09688aa6ced8e30ef819fede351e69342e3c7bf4",
+      "bytes": 13011,
+      "originalPath": "\\\\?\\C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c5886b15333a4d7382259e64eed5eb2a\\assignment-c5886b15333a4d7382259e64eed5eb2a\\attempt-c5886b15333a4d7382259e64eed5eb2a\\raw\\b5ac8ed18bd74eed4baadedf09688aa6ced8e30ef819fede351e69342e3c7bf4.jsonl",
+      "originalSha256": "b5ac8ed18bd74eed4baadedf09688aa6ced8e30ef819fede351e69342e3c7bf4",
+      "originalBytes": 13011,
+      "compression": "none"
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/manifest.json",
+      "sha256": "b52c076bdb985ac5654a1df5c15081a6e56f114baf3cf648efa0aa1886a98be0",
+      "bytes": 6127,
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c5886b15333a4d7382259e64eed5eb2a\\assignment-c5886b15333a4d7382259e64eed5eb2a\\attempt-c5886b15333a4d7382259e64eed5eb2a\\manifest.json",
+      "originalSha256": "b52c076bdb985ac5654a1df5c15081a6e56f114baf3cf648efa0aa1886a98be0",
+      "originalBytes": 6127,
+      "compression": "none"
+    }
+  ],
+  "privateFrozenInputs": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sha256": "e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "bytes": 207353
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "bytes": 5992490
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "150357086a3705dee730c33723ea90d7e05aa4f9851af52613c26c07ec7f27ec",
+      "bytes": 113810
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+      "bytes": 97297
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "edcd5bf3dcb6118b87f38c93625eaaa0b205f1164783747110d42f54747500e5",
+      "bytes": 6040
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "cd551e1d3b04307b2b8ebbeb87a855945ebf38057a710e70227350f00960dfd8",
+      "bytes": 151568
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "d0aab0ad4d0dfd9f0d10ce88615b8c14de4c5af09eb426ec1f526f96508a3107",
+      "bytes": 868685
+    },
+    {
+      "path": "tools/cf6-wings-assets/WingsAI.as",
+      "sha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2",
+      "bytes": 9567
+    }
+  ],
+  "limitations": [
+    "small development sample, not strength certification",
+    "no 80/180 spacing run: schema rejected before launch",
+    "private AI counters and per-frame action choices were not emitted by the arena reporter",
+    "human visuals and combat feel remain open",
+    "no formal runtime promotion performed by this task"
+  ]
+}

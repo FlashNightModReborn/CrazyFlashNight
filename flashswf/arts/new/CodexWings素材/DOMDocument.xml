@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="550" height="400" frameRate="30" xflVersion="2.2" backgroundColor="#E5E3DF" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481">
+  <folders>
+    <DOMFolderItem name="Codex" itemID="6af20000-2c5d5b88"/>
+    <DOMFolderItem name="Codex/Wings" itemID="6af20000-50dac52f"/>
+    <DOMFolderItem name="Codex/Wings/CF7" itemID="6af20000-c05dcfdf"/>
+    <DOMFolderItem name="Codex/Wings/CF7/area框" itemID="6af20000-fd308537"/>
+    <DOMFolderItem name="Codex/Wings/CF7/怪物通用模板" itemID="6af20000-518cad05"/>
+    <DOMFolderItem name="Codex/Wings/CF7/怪物通用模板/新近战子弹定位元件" itemID="6af20000-6c579069"/>
+    <DOMFolderItem name="Codex/Wings/CF7/怪物通用模板/新近战子弹定位元件/子弹素材" itemID="6af20000-35547632"/>
+    <DOMFolderItem name="Codex/Wings/CF7/怪物通用模板/血条与名称" itemID="6af20000-3f07e9f7"/>
+    <DOMFolderItem name="Codex/Wings/CF7/方舟指挥官" itemID="6af20000-56bfcbea"/>
+    <DOMFolderItem name="Codex/Wings/CF7/诺亚克隆兽" itemID="6af20000-77c98497"/>
+    <DOMFolderItem name="Codex/Wings/CF7/通用ai元件" itemID="6af20000-a96af6da"/>
+    <DOMFolderItem name="Codex/Wings/CF7/闪6特工" itemID="6af20000-15ebc10e"/>
+    <DOMFolderItem name="Codex/Wings/CF7/闪6特工/MovieClip" itemID="6af20000-f19e10ea"/>
+    <DOMFolderItem name="Codex/Wings/CF7/闪6特工/人物服装" itemID="6af20000-de6e84e6"/>
+    <DOMFolderItem name="Codex/Wings/分件" itemID="6af20000-fafdc8e5"/>
+    <DOMFolderItem name="Codex/Wings/动作" itemID="6af20000-d86322d7"/>
+    <DOMFolderItem name="Codex/Wings/武器" itemID="6af20000-c00aadfd"/>
+  </folders>
+  <symbols>
+    <Include href="Codex/Wings/CF7/area框/hitbox-area框载体.xml" itemID="6af00000-2bdd3099" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/area框/索敌框载体.xml" itemID="6af00000-00972ffe" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/思考标签.xml" itemID="6af00000-8a2c5740" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml" itemID="6af00000-3f11bfe5" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/怪物通用模板/血条与名称/新版血条位置示意.xml" itemID="6af00000-b82d0066" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/方舟指挥官/透明控件.xml" itemID="6af00000-ad8f667e" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/诺亚克隆兽/阴影.xml" itemID="6af00000-d3b425ce" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/通用ai元件/行走ai载体.xml" itemID="6af00000-1da7653e" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/sprite 855.xml" itemID="6af00000-640b3c9f" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/sprite 856.xml" itemID="6af00000-b88f2ab9" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/sprite 861.xml" itemID="6af00000-e6d65a5d" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/sprite 862.xml" itemID="6af00000-9c7a40ad" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/sprite 863.xml" itemID="6af00000-8f807861" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/起身.xml" itemID="6af00000-9f868960" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/MovieClip/跑步.xml" itemID="6af00000-b8453a10" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/人物服装/元件 2.xml" itemID="6af00000-68d52114" loadImmediate="false"/>
+    <Include href="Codex/Wings/CF7/闪6特工/人物服装/元件 3.xml" itemID="6af00000-3708c610" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/847.xml" itemID="6af00000-7d33e2c0" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/847-遮罩0.xml" itemID="6af00000-34109e04" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/847-遮罩1.xml" itemID="6af00000-03938cf2" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/848.xml" itemID="6af00000-ddda0e90" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/848-遮罩0.xml" itemID="6af00000-c067dd59" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/848-遮罩1.xml" itemID="6af00000-198c2488" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/849.xml" itemID="6af00000-83671761" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/849-遮罩0.xml" itemID="6af00000-f47ca0fa" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/849-遮罩1.xml" itemID="6af00000-ab532f49" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/850.xml" itemID="6af00000-02f9e344" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/850-遮罩0.xml" itemID="6af00000-a8a46147" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/850-遮罩1.xml" itemID="6af00000-e3618a08" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/851.xml" itemID="6af00000-79f083b6" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/851-遮罩0.xml" itemID="6af00000-8f68e8a6" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/851-遮罩1.xml" itemID="6af00000-57794f4d" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/852.xml" itemID="6af00000-ff6d688a" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/852-遮罩0.xml" itemID="6af00000-ae75e451" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/852-遮罩1.xml" itemID="6af00000-3dc9fcbb" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/854.xml" itemID="6af00000-a1f2c7f1" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/854-遮罩0.xml" itemID="6af00000-934f07ee" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/854-遮罩1.xml" itemID="6af00000-b75a2294" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/855.xml" itemID="6af00000-d757182e" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/855-遮罩0.xml" itemID="6af00000-3ba020b8" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/855-遮罩1.xml" itemID="6af00000-c607237b" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/857.xml" itemID="6af00000-4fc18101" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/857-遮罩0.xml" itemID="6af00000-30e8552f" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/857-遮罩1.xml" itemID="6af00000-ba68cc24" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/858.xml" itemID="6af00000-82832ab5" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/858-遮罩0.xml" itemID="6af00000-644dea4e" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/858-遮罩1.xml" itemID="6af00000-b294c230" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/859.xml" itemID="6af00000-a5e3876e" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/859-遮罩0.xml" itemID="6af00000-1c268eed" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/859-遮罩1.xml" itemID="6af00000-b4e84c6d" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/860.xml" itemID="6af00000-857d94a0" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/860-遮罩0.xml" itemID="6af00000-935717e2" loadImmediate="false"/>
+    <Include href="Codex/Wings/分件/860-遮罩1.xml" itemID="6af00000-c70c56b1" loadImmediate="false"/>
+    <Include href="Codex/Wings/动作/死亡.xml" itemID="6af00000-9c4164ff" loadImmediate="false"/>
+    <Include href="Codex/Wings/动作/站立.xml" itemID="6af00000-18cc577e" loadImmediate="false"/>
+    <Include href="Codex/Wings/敌人-CF6Wings.xml" itemID="6af00000-bc90b518" loadImmediate="false"/>
+    <Include href="Codex/Wings/武器/双枪刃.xml" itemID="6af00000-051ce801" loadImmediate="false"/>
+    <Include href="Codex/Wings/武器/枪口定位.xml" itemID="6af00000-4eb4c89a" loadImmediate="false"/>
+    <Include href="Codex/Wings/行为驱动.xml" itemID="6af00000-85ffaf27" loadImmediate="false"/>
+    <Include href="CodexWings素材.xml" itemID="6af00000-de868031" loadImmediate="false"/>
+  </symbols>
+  <media/>
+  <timelines>
+    <DOMTimeline name="场景 1">
+      <layers>
+        <DOMLayer name="共享入口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="CodexWings素材">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

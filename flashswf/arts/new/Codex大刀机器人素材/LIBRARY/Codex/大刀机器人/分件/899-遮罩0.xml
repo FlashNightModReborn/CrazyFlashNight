@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/分件/899-遮罩0" itemID="6aa00000-87351290" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="899-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!3422 -494[3340 -433 3256 -375|3241 -370|3233 -364|3136 -335|3097 -314[2946 -228 2776 -255[2796 -255 2812 -263|2820 -267[2937 -334 3000 -453|3016 -475|3016 -494|2016 -494|2016 -475|2016 -275|2016 -255|2015 -245[1581 -180 1356 -335[1336 -335 1320 -343|1313 -346[1211 -380 1156 -455|1141 -450|1134 -445|936 -415|921 -410|912 -397[878 -333 876 -235|861 -230|856 -225|-7176 -185|-7176 25[-3150 55 876 65[881 140 905 202|916 205[984 287 1156 265[1225 194 1336 165[1582 -11 2016 65[1926 226 1867 422|1856 425[1915 449 1996 405[2023 352 2071 318|2076 305[2165 284 2216 225[2322 197 2396 225[2413 438 2596 485[2726 585 2856 485[2997 436 3056 305[3056 234 3073 184|3076 165[4502 429 6316 465|6496 365[6554 363 6576 325[7003 132 7163 -327|7163 -494|3422 -494" fillStyle0="1"/>
+                    <Edge edges="!2676 285|2661 280|2651 270|2616 245|2616 225|2616 205|2616 145[2807 4 2845 163|2856 165|2856 185|2852 202[2829 238 2816 285|2780 293|2776 295|2676 285" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/899-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

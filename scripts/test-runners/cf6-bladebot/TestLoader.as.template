@@ -1,0 +1,7 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.bladebotCapture = false;
+_root.cf6BladebotAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-bladebot Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-bladebot Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6BladebotAssetTest.runAllTests();

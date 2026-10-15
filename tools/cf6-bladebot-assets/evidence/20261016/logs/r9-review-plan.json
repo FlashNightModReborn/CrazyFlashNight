@@ -1,0 +1,50 @@
+{
+  "purpose": "Frozen final candidate: 12 Black Iron and 6 Ark Claw natural fights, all levels30/60/99 swapped. R8 native behavior unchanged, only free attack-defense distribution tuned.",
+  "supersedesUnexecuted": [
+    "r7b",
+    "r7c",
+    "r8b",
+    "r8c"
+  ],
+  "batches": [
+    {
+      "id": "r9a",
+      "batchId": "bladebot-front-r9a-20261016",
+      "manifestHash": "sha256:f051483a46e346181602b46618ace494d204a5f4d206101f7d2c0c353d6f3eb3",
+      "cases": [
+        "blackiron-30-blue",
+        "blackiron-30-red",
+        "arkclaw-30-blue",
+        "arkclaw-30-red",
+        "blackiron-60-blue",
+        "blackiron-60-red"
+      ]
+    },
+    {
+      "id": "r9b",
+      "batchId": "bladebot-front-r9b-20261016",
+      "manifestHash": "sha256:4abc6112bbfa57099b7af645cef8e8bb5eaed325b793584659d4b1934bd23bfd",
+      "cases": [
+        "blackiron-30-blue",
+        "blackiron-30-red",
+        "blackiron-60-blue",
+        "blackiron-60-red",
+        "blackiron-99-blue",
+        "blackiron-99-red"
+      ]
+    },
+    {
+      "id": "r9c",
+      "batchId": "bladebot-front-r9c-20261016",
+      "manifestHash": "sha256:0736af41141ab4907756af7c1703151fe0f5a9fc73986decf98eced067f3baf4",
+      "cases": [
+        "blackiron-99-blue",
+        "blackiron-99-red",
+        "arkclaw-60-blue",
+        "arkclaw-60-red",
+        "arkclaw-99-blue",
+        "arkclaw-99-red"
+      ]
+    }
+  ]
+}

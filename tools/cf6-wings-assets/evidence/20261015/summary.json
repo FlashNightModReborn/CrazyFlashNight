@@ -1,0 +1,625 @@
+{
+  "schema": "cf6-wings.delivery-evidence.v1",
+  "sourceBaselineCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "unitId": 464,
+  "name": "Wings",
+  "stage": 7,
+  "tier": 8,
+  "linkage": "敌人-CF6Wings",
+  "sourceZipSha256": "cc611fe75fa6e219aa8d469279b59503438b68a2ee1e9c388f09957009d7d61b",
+  "native": {
+    "path": "flashswf/arts/new/CodexWings素材.swf",
+    "sha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+    "bytes": 97297,
+    "nativeSymbols": 60,
+    "projectFiles": 4,
+    "shapes": 86,
+    "sprites": 23,
+    "bitmaps": 0,
+    "buildState": "compiled"
+  },
+  "focused": {
+    "runId": "93c98ed3da5c4f46855a148d2fa2e18f",
+    "passed": 216,
+    "failed": 0,
+    "actualTimelineCases": 32,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "capture": {
+    "runId": "b88b0fd166fa4c74968b6d2545bba806",
+    "passed": 216,
+    "failed": 0,
+    "actualTimelineCases": 32,
+    "images": 8,
+    "fixedScale": 2,
+    "width": 640,
+    "height": 400,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "standHeight": 145.7,
+    "deathFirstFrameHeight": 145.7,
+    "groundDeltaBothDirections": 0,
+    "allImagesInspected": true
+  },
+  "combat": {
+    "summary": "combat-summary.json",
+    "runtimeState": "candidate_executed",
+    "experiments": 4,
+    "groups": 6,
+    "battles": 16,
+    "naturalFinishes": 16,
+    "combatTimeouts": 0,
+    "candidateWins": 16,
+    "allExperimentsQualified": true
+  },
+  "preservedFailures": [
+    {
+      "event": "R1 asset tests",
+      "record": "logs/asset-tests-r1.log",
+      "resolution": "Fix the first-frame nested pose muzzle lookup and the alignment fixture; R2 passed."
+    },
+    {
+      "event": "R2 capture runner timeout",
+      "runId": "ac7982c6ee4942298a418974f367e359",
+      "record": "logs/native-capture-r2.log",
+      "lateDiagnostic": "216 passed and eight images; original wrapper failure retained",
+      "recovery": "capture-r2-recovery.json",
+      "resolution": "R3 increased capture wait, then completed with an exact runId block."
+    },
+    {
+      "event": "main worktree candidate build rejected formal closure change",
+      "record": "logs/candidate-build-r1.log",
+      "resolution": "Fresh candidate built and verified in the owned Wings worktree; no formal deployment restored or overwritten by this task."
+    },
+    {
+      "event": "80/180 spawn distance plans rejected before physical execution",
+      "record": "rejected-close-plan.json",
+      "resolution": "A new supported 360-distance plan completed; no schema gate changed."
+    }
+  ],
+  "boundaries": {
+    "humanVisualAcceptance": "pending",
+    "humanCombatFeelAcceptance": "pending",
+    "formalRuntimePromotionByThisTask": false,
+    "commitOrPushByThisTask": false,
+    "privateActionCountersInArenaReport": "not observed"
+  },
+  "sourceBindings": [
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "sha256": "0df2c1222d8c9b2debcb0b06647b587c32fe23ebde8a0e5ffb135bc0efb5b471"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-wings-assets/WingsAI.as",
+      "sha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2"
+    },
+    {
+      "path": "scripts/run-cf6-wings-asset-tests.ps1",
+      "sha256": "633f11f7b17c85b2a989295202407f95e69d62920d87401421b49bdcecb67536"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6WingsAssetTest.as",
+      "sha256": "2d82f1ad46b0be7f4031d9316cc0f9ffd5834b02f02662d99851a2e1124e4385"
+    },
+    {
+      "path": "tools/cf6-wings-assets/native-manifest.json",
+      "sha256": "74951f68443cffc4c29acea9000b7b54fda35526af94aa3801f0fe986161123e"
+    }
+  ],
+  "privateRawCaptures": [
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\capture-r2-raw-late.log",
+      "sha256": "4fc01b419b6563b5a4b12d9611c3c527b44fb9cac8ed28d9ef1d517348654dce",
+      "bytes": 1731413
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\capture-r2-complete-late.txt",
+      "sha256": "93985c034953251b494dbb69b6eab19c711d21595bcc2a95eed8c623e2e45b54",
+      "bytes": 1728192
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\capture-r3-raw-flashlog.txt",
+      "sha256": "87af3baf060394f2861a17dfeca90dfd4b1d5fdbd8369740b5fcedca29146ffa",
+      "bytes": 1731413
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\capture-r3-flashlog.txt",
+      "sha256": "87af3baf060394f2861a17dfeca90dfd4b1d5fdbd8369740b5fcedca29146ffa",
+      "bytes": 1731413
+    }
+  ],
+  "files": [
+    {
+      "path": "candidate-identity.json",
+      "sha256": "33ba23a9e3969e76092826e96318741692f5f56d9b3ce2c2f949451830065fca",
+      "bytes": 804
+    },
+    {
+      "path": "candidate-main-failure-deployment-observation.json",
+      "sha256": "38ae7a9d3cc611fc533ef1f98da187124640274f0855a14ddb05956762b63caf",
+      "bytes": 791
+    },
+    {
+      "path": "capture-r2-recovery.json",
+      "sha256": "9d6a2bc0884d2d52362eb0f5bb61e9ebd6284d5d1b38e201de08dd15fe0c15d5",
+      "bytes": 1154
+    },
+    {
+      "path": "combat/wings-ai-20261015/expected-receipts.json",
+      "sha256": "e779ec9805cdb09e98d2cd78b56fd975bae52abb198a326fdc56a6c195488a5c",
+      "bytes": 1256
+    },
+    {
+      "path": "combat/wings-ai-20261015/experiment-report.json",
+      "sha256": "396016ce51eef4aad842d812ae6ec41c28a224e7da13e7d92fc48a3cc53ae2a6",
+      "bytes": 4558
+    },
+    {
+      "path": "combat/wings-ai-20261015/frozen-plan.json.gz",
+      "sha256": "d2779e5932f798c7df552b5125e695883c908830d199ecffa42530ef64335a00",
+      "bytes": 19965
+    },
+    {
+      "path": "combat/wings-ai-20261015/measurement.json.gz",
+      "sha256": "f846f83a27243ab3a7ebe7536f838716c43781b8cd209a05e84457f0c0f023b0",
+      "bytes": 2964
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/group-report.json",
+      "sha256": "d71cee880e835b9bbe0446a554366c875dd8b1c1b4b403b7b4d1d1557f421949",
+      "bytes": 1627
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/manifest.json",
+      "sha256": "3e3d73658cea3d03738c80832831e4637afb724a4c01ed9dece0dfd0ae7ae361",
+      "bytes": 3375
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/results.jsonl",
+      "sha256": "68d096dfb477a710d2788289544bbab64a9f9346cc560f3f213cd7563364b4e7",
+      "bytes": 6504
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/save-protection.json.gz",
+      "sha256": "9b89a6cb59ca1cc72a6812032893669cb0e18140ab21eaa04a89b2d31038eb9a",
+      "bytes": 20000
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-60/shard-receipt.json.gz",
+      "sha256": "a7c237cf134d035cb65ac526f2a7181893d7cd4be05d6b76164d7d0b16b2b2a7",
+      "bytes": 178750
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/group-report.json",
+      "sha256": "62b204c35ee34c35d7b005c5b5070e56c67db3cfc92476bc2d06f485b137ad43",
+      "bytes": 1627
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/manifest.json",
+      "sha256": "4489ede65770e3eb4fc64764b7bb7f62f370184a51e970c6c80bd13f570773e8",
+      "bytes": 3375
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/results.jsonl",
+      "sha256": "e5cee263ce3a11bfe3d32fda4bf84ac6a7e7d6727d2876b66b3dd16c6d1dbde5",
+      "bytes": 6520
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/save-protection.json.gz",
+      "sha256": "b9f5b8ff369859f51325ba66cb602af713ea25910a8b98069c8628371995b1aa",
+      "bytes": 20083
+    },
+    {
+      "path": "combat/wings-ai-20261015/mirror-99/shard-receipt.json.gz",
+      "sha256": "9241e973eb4f5c0f5356b3a204a6fa9e1a7707c83e5f75381650809aab530872",
+      "bytes": 178787
+    },
+    {
+      "path": "combat/wings-distance360-20261015/expected-receipts.json",
+      "sha256": "713023056d6936e7b96d8186d44f2dbef4aa7dbeb783a822604d58c303a28e6e",
+      "bytes": 679
+    },
+    {
+      "path": "combat/wings-distance360-20261015/experiment-report.json",
+      "sha256": "b838e48f33e6712a337741e60afc74d6ab1fefa837f851928c5c53f0d505b871",
+      "bytes": 2804
+    },
+    {
+      "path": "combat/wings-distance360-20261015/frozen-plan.json.gz",
+      "sha256": "68f20370b833abd5d3a1f4c499901751abbae518d3b068de13ee9f08fb1eebf9",
+      "bytes": 19640
+    },
+    {
+      "path": "combat/wings-distance360-20261015/measurement.json.gz",
+      "sha256": "f7072b391b13492d91f1e2d76448f004d12f0ff296eb0a49056022042cba4b72",
+      "bytes": 2466
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/group-report.json",
+      "sha256": "c4b6a918fb44e76d4d7e2c7fb33a039c23f527b5576511ae1a862d8fb50cc650",
+      "bytes": 1623
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/manifest.json",
+      "sha256": "b52c076bdb985ac5654a1df5c15081a6e56f114baf3cf648efa0aa1886a98be0",
+      "bytes": 6127
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/results.jsonl",
+      "sha256": "b5ac8ed18bd74eed4baadedf09688aa6ced8e30ef819fede351e69342e3c7bf4",
+      "bytes": 13011
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/save-protection.json.gz",
+      "sha256": "bfbb61f39db03abf90d4aeb603ea6d2ff0a17bd2aa03e494c00545132a7ad65e",
+      "bytes": 20612
+    },
+    {
+      "path": "combat/wings-distance360-20261015/pilot/shard-receipt.json.gz",
+      "sha256": "a2a23a666a3389d5c5a1179770c886eb25a50e7090149840ba78ae70aa6b2d64",
+      "bytes": 179282
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/group-report.json",
+      "sha256": "0fd483e751ee97de3b2f049753c4b130dbbf10de4841080609e119ed7e4b36df",
+      "bytes": 1632
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/manifest.json",
+      "sha256": "aed5ef0ca3481ee74c9537dd0514a68a633741f72b5f309bff9e32511a26d1ae",
+      "bytes": 3237
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/results.jsonl",
+      "sha256": "fec0afc52fbd556dd0f7e9275f314553ba64d2dd2df2434008fa6a78eceffced",
+      "bytes": 6512
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/save-protection.json.gz",
+      "sha256": "82a1d7ee25029e7e873979451dd847b47f4ce2502596b23b98441ba92a8a10c5",
+      "bytes": 20365
+    },
+    {
+      "path": "combat/wings-integration-20261015/donor-60/shard-receipt.json.gz",
+      "sha256": "108d3eb46634d11a42ed4b0e4b8cc143b9fe171f3dee8e123a7fdbbb21cb1bf4",
+      "bytes": 178934
+    },
+    {
+      "path": "combat/wings-integration-20261015/expected-receipts.json",
+      "sha256": "9c3239f47cb5f973bcb99a418ccdaf86681403b97de7f3f8f2ee6c62e5b03a2d",
+      "bytes": 1252
+    },
+    {
+      "path": "combat/wings-integration-20261015/experiment-report.json",
+      "sha256": "c3b2cabd37e0c9a169734da187e09c7b29f4dc1ee5f05cb5d6caf1b64546dc2d",
+      "bytes": 4587
+    },
+    {
+      "path": "combat/wings-integration-20261015/frozen-plan.json.gz",
+      "sha256": "0f426aa11217b65ef73bd6bc0ba1ed8516103ea58deb30d8594db2e9cf8ed1af",
+      "bytes": 19985
+    },
+    {
+      "path": "combat/wings-integration-20261015/measurement.json.gz",
+      "sha256": "a796c94fb2501112c7ce4c89af26457f725b7cfba4f67e5efe0fe15d0d6ad39c",
+      "bytes": 3045
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/group-report.json",
+      "sha256": "eeada40f70caf25742426e336997853bb951eece590df7f83bc52c5aa73285e5",
+      "bytes": 1633
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/manifest.json",
+      "sha256": "fbe2af12968bce6662d9f0267d976b218479f7c6df2b45c2380d3cb08ba4d969",
+      "bytes": 3749
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/results.jsonl",
+      "sha256": "564289c5f92122544aba703ed6c8e8640328bc68e95391634b28c1bf43bef225",
+      "bytes": 8419
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/save-protection.json.gz",
+      "sha256": "0a4aa6e5ebd11ebb20d068f28074b10b3ffa303689c693fd0fa6c47e50a6423e",
+      "bytes": 20443
+    },
+    {
+      "path": "combat/wings-integration-20261015/mixed-30/shard-receipt.json.gz",
+      "sha256": "951f29ed9a373c2946664e47bf24c98c04f722c418b6e5e086878fa799ca066f",
+      "bytes": 179228
+    },
+    {
+      "path": "combat/wings-pilot-20261015/expected-receipts.json",
+      "sha256": "ad2a29d7b8dc6273872b06e938a9b5337e79575e6213aca76291604ae4dec0b2",
+      "bytes": 679
+    },
+    {
+      "path": "combat/wings-pilot-20261015/experiment-report.json",
+      "sha256": "2c15e6071fd81a4b4987186cd4f415fd8a1ae8c5afdacd6ae540e96e222aeda2",
+      "bytes": 2787
+    },
+    {
+      "path": "combat/wings-pilot-20261015/frozen-plan.json.gz",
+      "sha256": "f4615d96e939dbb6eca1a9b7917e79d8564a039990a977cb26f4cd6702ea9abd",
+      "bytes": 19625
+    },
+    {
+      "path": "combat/wings-pilot-20261015/measurement.json.gz",
+      "sha256": "4c5ea7842f3761d2863fe5b8ea4ba6237cf655f9bdd7bd41d24bb676261fbb3e",
+      "bytes": 2461
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/group-report.json",
+      "sha256": "ebeb8540affa5ea476272293af25c5cb19d012a79a1d32a29f2ffdeffa62b828",
+      "bytes": 1618
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/manifest.json",
+      "sha256": "1e4a9209eeea82774fe0e1939cb00274371eea81784be07831c512d133ca1300",
+      "bytes": 6121
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/results.jsonl",
+      "sha256": "27c6dfd16121506f6d24ae774bb55c30339d6d1d56330778a6f14a87e2f48710",
+      "bytes": 12990
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/save-protection.json.gz",
+      "sha256": "2636b1d575fb343f4f0071ca99f1df6e41d7b78eee870ae2fb79015593e483cc",
+      "bytes": 19722
+    },
+    {
+      "path": "combat/wings-pilot-20261015/pilot/shard-receipt.json.gz",
+      "sha256": "1b8b9a4708e4a6ee75f64445c85762114c9965b53eeda32f1e37a48ee2ec6eea",
+      "bytes": 178874
+    },
+    {
+      "path": "combat-summary.json",
+      "sha256": "8f85c5080f65a62aefcbc2c6841e331761f035fe1a8ee3ab16d8de96eb8f546c",
+      "bytes": 44493
+    },
+    {
+      "path": "frozen-worktree-inputs.json",
+      "sha256": "445d0e9be2b93834ec6ae80e1fbc27fd65f5d77772314bf14b6e4965fb21d530",
+      "bytes": 1593
+    },
+    {
+      "path": "images/combo.png",
+      "sha256": "ce72b1e7014d9e2b66a7ee69d9cd59da013535a298b0584633366b259e57e858",
+      "bytes": 52432
+    },
+    {
+      "path": "images/death-a0-late.png",
+      "sha256": "ad883f1c1f4569de13eb4ff2fd499d5c84d068c157c018586689ea642ca2561c",
+      "bytes": 32944
+    },
+    {
+      "path": "images/death-a1-late.png",
+      "sha256": "4394759d48b4858338718d7f509b3f6a4151365ca098715ed65262bc2a2caf23",
+      "bytes": 44079
+    },
+    {
+      "path": "images/death-a2-late.png",
+      "sha256": "4394759d48b4858338718d7f509b3f6a4151365ca098715ed65262bc2a2caf23",
+      "bytes": 44079
+    },
+    {
+      "path": "images/death-start.png",
+      "sha256": "e6eb889ea06bc4903dd15e24abb43700698d6db1157c4c43b09db74dbc7fcd82",
+      "bytes": 49118
+    },
+    {
+      "path": "images/flip.png",
+      "sha256": "b291425e0a322011d08bc9ad4172d3cc86e5595fc670ced18da4c946512f4c79",
+      "bytes": 68718
+    },
+    {
+      "path": "images/shoot.png",
+      "sha256": "174e72000d76490c2ebb1062c1c092ead4ba23ca6b022f12da4737a8652be290",
+      "bytes": 44806
+    },
+    {
+      "path": "images/stand.png",
+      "sha256": "705782f27fb3cf5b67606ead76c1641f9a076fb5a41186fe2f732be20122d664",
+      "bytes": 49151
+    },
+    {
+      "path": "logs/ai-run.log",
+      "sha256": "332348736a154f8a3de8d3e300c9e8bac4a4fdcd9dbfb972e4ce7dc939efc6ef",
+      "bytes": 271
+    },
+    {
+      "path": "logs/asset-r1-compile_output.txt",
+      "sha256": "ec2d3baf19c46975885b66393d15680235d002922174b633f563a8a655780289",
+      "bytes": 87
+    },
+    {
+      "path": "logs/asset-r1-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/asset-r1-flashlog.txt",
+      "sha256": "f6e31ed6073ae72012c2e69076c478cff25005133e6a972ff6e20835ce12e27c",
+      "bytes": 1253
+    },
+    {
+      "path": "logs/asset-r2-compile_output.txt",
+      "sha256": "05d02d3b2374b1ed92c247c0489a30799e7d287d6879e62cc285d91501a9e159",
+      "bytes": 87
+    },
+    {
+      "path": "logs/asset-r2-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/asset-r2-flashlog.txt",
+      "sha256": "7ad80a635c3e53f30b4b6139659cbebc7ed41b7785cd96a88eb1c1c7dac8cedf",
+      "bytes": 362
+    },
+    {
+      "path": "logs/asset-tests-r1.log",
+      "sha256": "b4af8ebd394e6c8782d8f67463e201ae0e65b8de57cac7948a5844d72c2fb9e4",
+      "bytes": 2773
+    },
+    {
+      "path": "logs/asset-tests-r2.log",
+      "sha256": "2567580f3fb9b0736c51fa2feb64a91bd5c6db3c608bb790fe25e386998c7877",
+      "bytes": 2197
+    },
+    {
+      "path": "logs/candidate-build-r1.log",
+      "sha256": "d1c53bc45fd8188b57cf7e2ae6ca4dfb269b0f2360f82816183c518037a9a60b",
+      "bytes": 2745
+    },
+    {
+      "path": "logs/candidate-worktree-build-r1.log",
+      "sha256": "9fb04a36cbbaa218ca9d9ce68cd679f9d973e39fb7e91351e0675b0ac619d173",
+      "bytes": 5343
+    },
+    {
+      "path": "logs/capture-r2-compile_output.txt",
+      "sha256": "6e00292e6bc48f5f3a055dfa369a45c39bac81f21d52668cf7c6e2a7a171a181",
+      "bytes": 87
+    },
+    {
+      "path": "logs/capture-r2-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/capture-r2-stop-player.log",
+      "sha256": "a501afac48302f7f3f959be6105b125305a75d3a3c60378a3a669ebacd16b3fd",
+      "bytes": 228
+    },
+    {
+      "path": "logs/capture-r2-uncertain-marker.txt",
+      "sha256": "41d4e4034c57b2e065a2166d4edf329c06cee7e68d04aad3354010eb398bab3c",
+      "bytes": 228
+    },
+    {
+      "path": "logs/capture-r3-behavior.txt",
+      "sha256": "6fc1deef2166131ce28d547fd9409a298a619f4580486b4063c4972993a637a2",
+      "bytes": 900
+    },
+    {
+      "path": "logs/capture-r3-compile_output.txt",
+      "sha256": "24b1d1c27c99eefd14cdcb361dbb95bfe8f827726931e0ca033c1c8ad2b8da52",
+      "bytes": 87
+    },
+    {
+      "path": "logs/capture-r3-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/capture-r3-stop-phase-0.receipt",
+      "sha256": "20bfc38d372877664529b1158b075f43a4dff1deeb6d88d99ceb8d4af94d0d5b",
+      "bytes": 197
+    },
+    {
+      "path": "logs/capture-r3-stop-phase-1.receipt",
+      "sha256": "71bb40f3a4a62116790f629fbf048f4fd6dc794067add696ee230d931839b192",
+      "bytes": 198
+    },
+    {
+      "path": "logs/capture-r3-stop-player.log",
+      "sha256": "0a8a1222979fd1a252a3b993f4c793c88ba8d7f94ca90778511a58d88a3f605d",
+      "bytes": 228
+    },
+    {
+      "path": "logs/distance360-run.log",
+      "sha256": "4fc643014fcf6484a0805ecf790b8dc551cebec127ef2d5364bea5c93a30851f",
+      "bytes": 280
+    },
+    {
+      "path": "logs/doc-governance.log",
+      "sha256": "54f6d7d2f3e91a2a3408f0554461153ee1fa2f167f7d2939f3a44fd4c3eb8d86",
+      "bytes": 3614
+    },
+    {
+      "path": "logs/integration-run.log",
+      "sha256": "ec861d5f9caaa8dc26d0ea78674e6f2ae34525f47e60df8ac659fe774e06ffd4",
+      "bytes": 280
+    },
+    {
+      "path": "logs/native-capture-r2.log",
+      "sha256": "dff99f0cb249929c7a359001aa4612a0ead5fc942b17bec27624b293cda39837",
+      "bytes": 2650
+    },
+    {
+      "path": "logs/native-capture-r3.log",
+      "sha256": "26c0832a071dfead0b79fa35e3e0de6cdc8aec2315c20a6fadacddf2f94c7f23",
+      "bytes": 2198
+    },
+    {
+      "path": "logs/native-publish-r1.log",
+      "sha256": "ab77c7f1fa483eb3d1908bff8eed4d915225e5a908ba9539a1f5f55ff696df49",
+      "bytes": 1308
+    },
+    {
+      "path": "logs/native-publish-r2.log",
+      "sha256": "06413a6588e2cdcedcd71302ebacefcb0b5a7519590c0ce054986ca860e4b88c",
+      "bytes": 1297
+    },
+    {
+      "path": "logs/native-r1-compile_output.txt",
+      "sha256": "ce7869fa55bb74191b60c5f774d1ff6dbe9026ebcd2a9562fb4239b210fb57aa",
+      "bytes": 71
+    },
+    {
+      "path": "logs/native-r1-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/pilot-run.log",
+      "sha256": "d2e53c35054fdd6cc889061f6acda98c69653cba36ad54376f8b5696c6db58b6",
+      "bytes": 274
+    },
+    {
+      "path": "logs/shared-compile_output.txt",
+      "sha256": "17d15493877566200ffc214c7e0dfae95911496ef7c0461dc29b25bfc88694e4",
+      "bytes": 65
+    },
+    {
+      "path": "logs/shared-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/shared-publish.log",
+      "sha256": "dbf0b4171d6419dece8e9f0056bb0a4e5efe364a1545b869555e3d6e20245f85",
+      "bytes": 1225
+    },
+    {
+      "path": "logs/worker-class-ownership.log",
+      "sha256": "5e4c9760fd858fbd55a735e3b806a01311d8ef830f4942865cda72281313fd24",
+      "bytes": 164
+    },
+    {
+      "path": "rejected-close-plan.json",
+      "sha256": "b60e3cd44cf0cb8bf06245335a48c9c828dddac88251b19568f286472b9bcded",
+      "bytes": 325
+    },
+    {
+      "path": "retained-candidate-copy.json",
+      "sha256": "025ce73aed5281474ad39b5d34d3348a6ccbf119091fd92232bcb6faf692203f",
+      "bytes": 8265
+    },
+    {
+      "path": "tested-native-manifest.json",
+      "sha256": "74951f68443cffc4c29acea9000b7b54fda35526af94aa3801f0fe986161123e",
+      "bytes": 16894
+    }
+  ]
+}

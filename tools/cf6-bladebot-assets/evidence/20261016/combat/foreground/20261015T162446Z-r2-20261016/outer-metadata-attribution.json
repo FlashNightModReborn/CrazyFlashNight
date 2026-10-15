@@ -1,0 +1,14 @@
+{
+  "globalSnapshotUnchanged": false,
+  "playerSaveFilesUnchanged": true,
+  "changedPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\saves\\.launcher-version-marker.json",
+  "reason": "Normal Launcher writes its own version/timestamp marker at every startup. Arena Worker explicitly suppresses this write.",
+  "source": "launcher/src/Program.cs:2758",
+  "sourceSha256": "8d0c518bac762e477b705d5d8663cc4ba3f6af8ed9af2c75d94f2ae23158914b",
+  "sourceGate": "launcher/src/Save/LauncherVersionGate.cs",
+  "observedMarker": {
+    "version": 1,
+    "writtenAt": "2026-10-15T16:30:10Z"
+  },
+  "originalGlobalFailurePreserved": true
+}
