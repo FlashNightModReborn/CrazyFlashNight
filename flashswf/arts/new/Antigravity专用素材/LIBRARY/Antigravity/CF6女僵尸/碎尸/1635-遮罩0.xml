@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/碎尸/1635-遮罩0" itemID="6af00000-b65990b6" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1635-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-493 -1368|-442 -1343|-440 -1338|-437 -1325|-438 -1338|-437 -1385|-435 -1403|-425 -1410|-458 -1400|-474 -1395|-493 -1368" fillStyle0="1"/>
+                    <Edge edges="!-419 -1263|-425 -1255|-427 -1252|-428 -1251|-430 -1250|-432 -1240|-442 -1235|-450 -1233|-463 -1224[-407 -1204 -347 -1202|-340 -1213|-320 -1220|-370 -1235|-375 -1238|-407 -1266|-412 -1271|-412 -1270|-419 -1263" fillStyle0="1"/>
+                    <Edge edges="!-519 -1053[-497 -1058 -494 -1084|-514 -1077|-517 -1063|-519 -1053" fillStyle0="1"/>
+                    <Edge edges="!-356 -1057[-352 -1067 -342 -1059|-335 -1056[-312 -1051 -296 -1061|-297 -1063|-305 -1070[-311 -1097 -330 -1115|-342 -1123|-343 -1125|-359 -1116|-367 -1110|-402 -1110[-423 -1097 -447 -1098|-452 -1098|-486 -1087|-469 -1068|-454 -1055|-444 -1029|-441 -1005|-439 -966|-433 -950|-425 -938|-421 -948|-421 -952|-423 -967|-425 -973|-427 -978|-426 -981|-422 -991|-423 -1002|-424 -1004|-423 -1004[-404 -994 -392 -962|-381 -928|-377 -935|-377 -939|-378 -966|-387 -1005[-372 -995 -365 -967|-360 -952|-356 -959|-355 -964|-354 -979|-357 -994|-357 -1002|-354 -1004|-341 -994|-337 -981|-334 -992|-334 -1002|-340 -1024|-342 -1029|-344 -1032|-355 -1054|-356 -1057" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部母版" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.183777" b="-0.064224" c="0.064224" d="0.183777" tx="-64.6" ty="-75.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
