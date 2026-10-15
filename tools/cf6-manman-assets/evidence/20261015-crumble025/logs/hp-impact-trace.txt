@@ -1,0 +1,170 @@
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId combat-hp-impact Start: bfca96cd39dd475a8be30ba67706f40f
+=== ToughnessVulnerabilityPipelineTest start ===
+[PASS] 无配置子弹不挂控制器
+[PASS] MISS 不挂控制器
+[PASS] 联弹全部 MISS/直感不挂控制器
+[PASS] 全 MISS 后不存在残留 primer
+[PASS] 联弹至少一段命中可挂控制器
+[PASS] 可按 stackGroup ID 取得聚合控制器
+[PASS] 首次有效命中沉积一格 actual=1 expected=1
+[PASS] 每格提供1%易伤 actual=1.01 expected=1.01
+[PASS] 聚合控制器只注入一个最终 Pod
+[PASS] 重复命中推进同一候选
+[PASS] 刷新不创建重复控制器
+[PASS] 第二次命中推进至两格 actual=2 expected=2
+[PASS] 其他来源破韧被过滤 actual=2 expected=2
+[PASS] 刚体阈值事件即使被误发也不会追加层数 actual=2 expected=2
+[PASS] 真实破韧追加一次枪种等价命中 actual=3 expected=3
+[PASS] 第六格命中预配一次0.1%击溃 actual=0.1 expected=0.1
+[PASS] 节点属性配给后重选伤害处理器
+[PASS] 第六格命中后到达首节点 actual=6 expected=6
+[PASS] 六格易伤为6% actual=1.06 expected=1.06
+[PASS] 第十八格命中结算第三次击溃 actual=0.1 expected=0.1
+[PASS] 第十八格命中解锁5%斩杀 actual=5 expected=5
+[PASS] 命中层数封顶18格 actual=18 expected=18
+[PASS] 满层易伤为18% actual=1.18 expected=1.18
+[PASS] 满层续时不替换或重分配最终 Pod
+[PASS] 衰减宽限内保持满层 actual=18 expected=18
+[PASS] 宽限结束后按间隔逐格衰减 actual=17 expected=17
+[PASS] 5层后预测第六格击溃节点 actual=10 expected=10
+[PASS] 普通 MISS 不兑现节点击溃 actual=100 expected=100
+[PASS] 普通 MISS 不触发斩杀 actual=100 expected=100
+[PASS] 普通 MISS 不消费预测节点
+[PASS] 普通 MISS 后仍停留在5格 actual=5 expected=5
+[PASS] 普通 MISS 后第六格节点仍保持武装 actual=10 expected=10
+[PASS] 17层后预测第十八格击溃节点 actual=10 expected=10
+[PASS] 17层后预测满层斩杀 actual=50 expected=50
+[PASS] 17层普通 MISS 不兑现节点击溃 actual=100 expected=100
+[PASS] 17层普通 MISS 不触发满层斩杀 actual=40 expected=40
+[PASS] 17层普通 MISS 不消费满层节点
+[PASS] 17层普通 MISS 后层数保持不变 actual=17 expected=17
+[PASS] 17层普通 MISS 后击溃节点仍保持武装 actual=10 expected=10
+[PASS] 17层普通 MISS 后斩杀仍等待真实命中 actual=50 expected=50
+[PASS] 联弹全段 MISS 不兑现节点击溃 actual=100 expected=100
+[PASS] 联弹全段 MISS 不触发满层斩杀 actual=40 expected=40
+[PASS] 联弹全段 MISS 不消费预测节点
+[PASS] 联弹全段 MISS 后仍停留在17格 actual=17 expected=17
+[PASS] 全段 MISS 后第十八格击溃节点仍保持武装 actual=10 expected=10
+[PASS] 全段 MISS 后满层斩杀仍等待真实命中 actual=50 expected=50
+[PASS] 弱→强时基础 profile 独立按1格命中/破韧推进 actual=2 expected=2
+[PASS] 弱→强时手枪 profile 独立按3格命中/破韧推进 actual=6 expected=6
+[PASS] 弱→强只输出完整候选中的强值 actual=1.06 expected=1.06
+[PASS] 同来源不同 profile 共享一个聚合控制器 actual=2 expected=2
+[PASS] 强→弱结果与弱→强一致，不受第一发配置影响 actual=1.06 expected=1.06
+[PASS] 反向命中仍只创建两个轻量候选 actual=2 expected=2
+[PASS] 短时强 profile 覆盖长时弱 profile actual=1.06 expected=1.06
+[PASS] 刷新弱 profile 只推进自身层数 actual=3 expected=3
+[PASS] 刷新弱 profile 不推进强 profile actual=6 expected=6
+[PASS] 短时强 profile 开始逐格衰减 actual=1.05 expected=1.05
+[PASS] 赢家切换原位更新同一个 Pod
+[PASS] 强 profile 退尽后回落到仍存活的弱 profile actual=1.03 expected=1.03
+[PASS] 来源 A 破韧不覆盖来源 B 的更强候选 actual=1.03 expected=1.03
+[PASS] 多来源/多 profile 取 MAX，不把2%与6%相加 actual=1.06 expected=1.06
+[PASS] resolved MISS 与 DamageResult.NULL 的几何命中合同严格分离
+[PASS] 普通 MISS 只输出数字：不发事件/旧钩子/后效，并精确回滚命中前参数投影
+[PASS] 联弹全段 MISS 同样不进 hit/旧钩子，并回滚 scoped 参数后只保留分段数字
+[PASS] 真实命中按 damage→旧钩子→hit→kill 顺序提交参数与 force-kill，再输出数字
+[PASS] DamageResult.NULL 保留射线几何 hit/命中 FX，但不冒充 actual 消费旧钩子
+[PASS] FLAG_CHAIN 影子窗口忽略霰弹值投影，MISS 后仍保留 MultiShot 消费账本
+[PASS] DamageCalculator 抛错时命中前参数投影同步回滚，不污染后续目标或帧
+[PASS] 地图碰撞只调用 map-only hook，清空单位 MISS 引用且不触发目标副作用
+[PASS] 生产爆炸弹撞墙保留弹体爆炸，且不复用目标型单位钩子
+[PASS] 未显式声明地图能力的旧单位 hook 不再由撞墙收尾隐式调用
+[BulletQueueProcessor] map hit hook failed: mock map hook failure
+[PASS] 地图弹体钩子异常被隔离，统一消弹收尾仍可继续
+[PASS] 普通 MISS 不累加 nanoToxic、不改目标损伤也不消耗射手淬毒
+[PASS] 联弹全段 MISS 不把 additionalEffectDamage 泄漏到同一子弹的后续目标
+[PASS] 穿刺首目标 MISS 后第二目标的部分真实命中只累加本次 nanoToxic 一次
+[PASS] actualTerminal XML 能力在 MovieClip 创建前投影到结算子弹
+[PASS] 天使铳 actual 由专用分类 manager 终结：保留 hit/FX 身份且跳过数字、盾、毒、吸血与上限伤害
+[PASS] 天使铳 MISS 不强杀且不进入毒/吸血/击溃/斩杀；盾的0伤回调为性能取舍边界
+[PASS] 天使铳只终结伤害系统确认的实际命中，无敌目标的 NULL 几何命中不被强杀
+[PASS] 天使铳不越过 NPC 的 NULL 几何命中边界
+[PASS] 同帧六次 updater 对 180 帧窗口只投影一次 0.4 系数 actual=40 expected=40
+[PASS] 周期衰减不推进真实命中时间锚点 actual=820 expected=820
+[PASS] 衰减窗口保留真实命中后的绝对基线 actual=100 expected=100
+[PASS] 四帧 updater 从原始基线投影 184 帧位置 actual=38.6666666666667 expected=38.6666666666667
+[PASS] 同一 updater 帧重复调用保持幂等 actual=38.6666666666667 expected=38.6666666666667
+[PASS] 下一四帧位置仍按绝对线性曲线而非复利衰减 actual=37.3333333333333 expected=37.3333333333333
+[PASS] 真实新命中开启新的时间窗口 actual=1008 expected=1008
+[PASS] 真实新命中以旧残量加本次冲击建立新基线 actual=47.3333333333333 expected=47.3333333333333
+[PASS] 新命中后的 150 帧宽限保持完整基线 actual=47.3333333333333 expected=47.3333333333333
+[PASS] 破韧等外部归零会重建基线，不会让旧冲击复活 actual=0 expected=0
+[PASS] 外部归零同时清除唯一衰减基线 actual=0 expected=0
+[PASS] 窗口到达 300 帧时冲击残量精确归零 actual=0 expected=0
+[PASS] NULL 几何命中前韧性已进入既有恢复曲线 actual=40 expected=40
+[PASS] 无敌位移 NULL 几何命中不改变韧性残量 actual=40 expected=40
+[PASS] 无敌位移 NULL 几何命中不重置韧性恢复时间锚点 actual=820 expected=820
+[PASS] 无敌位移 NULL 几何命中不重建韧性恢复基线 actual=100 expected=100
+[PASS] 无敌位移 NULL 几何命中不触发被击移动或状态切换
+[PASS] NULL 几何命中后继续沿原时间窗恢复而非重新装填 actual=38.6666666666667 expected=38.6666666666667
+[PASS] 合法 1.5 倍治疗溢出比例完整保留 actual=1.5 expected=1.5
+[PASS] 无治疗 provenance 的 5 倍 HP 比例回退到普通满血边界 actual=1 expected=1
+[PASS] 正常受伤比例保持原值 actual=0.75 expected=0.75
+[PASS] 超过 2^31 的 HP 承伤后不发生 signed-int32 回绕 actual=2147483657 expected=2147483657
+[PASS] 致死伤害仍把 HP 安全夹到 0 actual=0 expected=0
+[PASS] NaN 损伤不再借位运算把健康目标归零 actual=100 expected=100
+[PASS] 正无穷污染 HP 不得被认证为临时生命 actual=1 expected=1
+[PASS] 超过 2^31 的满血值击溃取整不发生 signed-int32 回绕 actual=1 expected=1
+[PASS] 大数击溃仍把实际扣减放入本次命中配对槽 actual=2147483657 expected=2147483657
+[PASS] 击溃不再创建跨换装/复活的绝对债务字段
+[PASS] 同上限换装保留已有合法临时生命的绝对点数 actual=149 expected=149
+[PASS] 换高上限保留绝对临时 HP，不按比例复制 actual=149 expected=149
+[PASS] 换低上限把已有临时生命夹到新治疗溢出上界 actual=75 expected=75
+[PASS] 普通受伤值或高 HP 套满血都不会在换装后制造临时生命
+[PASS] 污染的 5 倍旧值在换装边界夹到 live 上限 actual=100 expected=100
+[PASS] 换高 MP 装备不按比例回蓝 actual=75 expected=75
+[PASS] 换低 MP 装备只按新上限夹取绝对当前值 actual=50 expected=50
+[PASS] 显式硬封顶治疗真实增加玩家 HP
+[PASS] 显式治疗成功后请求 HUD 刷新但不在吸血热路径重绘
+[PASS] 吸血通过 HealApplier 产生合法临时生命
+[PASS] 治疗与吸血同帧合并为一次 HUD 刷新并呈现最终 HP
+[PASS] 非玩家单位治疗不承担主 HUD 刷新 actual=1 expected=1
+[PASS] 首次击溃即时降低满血值 actual=90 expected=90
+[PASS] 首次击溃写入本次命中配对槽 actual=10 expected=10
+[PASS] 首次击溃不创建跨生命周期债务或投影字段
+[PASS] 连续击溃继续基于当前上限结算 actual=81 expected=81
+[PASS] 同一 DamageResult 只累计本次命中的多个击溃分量 actual=19 expected=19
+[PASS] MISS 不降低 live 满血值 actual=81 expected=81
+[PASS] MISS 不写击溃配对槽 actual=0 expected=0
+[PASS] 击溃通过盾强门槛后仍按比例降低满血值 actual=1 expected=1
+[PASS] 容量盾不再吸收与 max-loss 配对的当前 HP 损失 actual=1 expected=1
+[PASS] 普通满血目标经击溃与护盾结算后保持有限 HP 比例 actual=1 expected=1
+[PASS] 容量盾只消费一点评估为普通伤害的部分 actual=9 expected=9
+[PASS] 完整伤害管线不创建跨生命周期击溃债务
+[PASS] DamageResult 携带通过盾强门槛的配对伤害 actual=99 expected=99
+[PASS] 子弹威力未超过盾强时击溃不降低满血值 actual=100 expected=100
+[PASS] 盾强门控失败时普通一点伤害仍可由容量盾吸收 actual=100 expected=100
+[PASS] 未触发击溃不改变既有容量盾消费语义 actual=9 expected=9
+[PASS] 盾强门控失败不遗留伪击溃配对槽 actual=0 expected=0
+[PASS] 合法溢出目标仍正常承担击溃上限损伤 actual=90 expected=90
+[PASS] 击溃后保留 HealApplier 允许的 1.5 倍溢出比例 actual=135 expected=135
+[PASS] 击溃不得把合法溢出放大成超过治疗上界的血条 actual=1.5 expected=1.5
+[PASS] 越界污染目标仍正常承担本次击溃上限损伤 actual=90 expected=90
+[PASS] 击溃边界不把 5 倍污染认证为临时血且普通穿透仍独立扣除 actual=89 expected=89
+[PASS] 无容量盾时击溃仍只降低本次 live 上限 actual=90 expected=90
+[PASS] 先结算击溃比例边界后仍独立扣除一点普通穿透伤害 actual=134 expected=134
+[PASS] 普通穿透伤害不会被击溃比例 clamp 吞掉 actual=1.48888888888889 expected=1.48888888888889
+[PASS] 无击溃且普通伤害被盾吸收时不粗暴截断合法溢出 HP actual=150 expected=150
+[PASS] 纯物理伤害不改变满血值 actual=100 expected=100
+[PASS] 非击溃路径继续完整保留 HealApplier 合法溢出语义 actual=1.5 expected=1.5
+[PASS] 无盾纯物理通用伤害使 HP 单调下降 actual=99 expected=99
+[PASS] 无盾纯物理命中不改最大 HP actual=100 expected=100
+[PASS] 连续纯物理命中继续单调扣除当前 HP actual=98 expected=98
+[PASS] 连续纯物理命中仍不改最大 HP actual=100 expected=100
+[PASS] 已有临时生命也会被纯物理通用伤害正常扣除 actual=149 expected=149
+[PASS] 纯物理受击不会制造或重建临时生命上限 actual=100 expected=100
+[PASS] 纯物理受击本身只降低临时生命比例 actual=1.49 expected=1.49
+[PASS] 跨过韧性上限只发布一次事件 actual=1 expected=1
+[PASS] 破韧事件透传子弹 shooter
+[PASS] 发布后仍执行原有韧性归零 actual=0 expected=0
+[PASS] 刚体阈值溢出不发布真实破韧事件 actual=1 expected=1
+[PASS] 刚体阈值溢出仍归零韧性槽 actual=0 expected=0
+=== ToughnessVulnerabilityPipelineTest result: passed=159 failed=0 ===
+FocusedTestRunId combat-hp-impact Complete: bfca96cd39dd475a8be30ba67706f40f

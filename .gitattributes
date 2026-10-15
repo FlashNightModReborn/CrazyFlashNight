@@ -165,3 +165,5 @@ launcher/app.manifest text eol=lf
 /flashswf/arts/new/Codex素材源稿/CF6蛮蛮-R2/** -text whitespace=cr-at-eol
 /flashswf/arts/new/Codex蛮蛮素材/** -text whitespace=cr-at-eol
 /tools/cf6-manman-assets/** -text whitespace=cr-at-eol
+# Preserve hash-bound diagnostic output, including PowerShell's trailing spaces.
+/tools/cf6-manman-assets/evidence/**/logs/** -text whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol
