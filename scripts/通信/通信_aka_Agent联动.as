@@ -15,6 +15,10 @@ _root.agent.KEY_TASK_PUBLISH_VERSION = "task_publish_version";
 // 槽位目录同步（G2-3②）：已对齐槽位与防重入。null＝从未对齐。
 _root.agent.slot_catalog_aligned = null;
 _root.agent.slot_catalog_busy = false;
+// Agent 委托 id 区间（与终端 TaskRegistry.list_agent_tasks、dialogue.view.AGENT_TASK_ID_RANGE 同口径）：
+// 只有落在区间内的完成才推事件，主线/支线/副本完成不打扰终端。
+_root.agent.AGENT_TASK_ID_MIN = 200001;
+_root.agent.AGENT_TASK_ID_MAX = 300000;
 
 _root.agent.读取任务发布版本号 = function(raw:String):Number {
     if (raw == undefined || raw.length == 0) {
@@ -576,6 +580,32 @@ _root.agent.推送绑定刷新 = function():Void {
     var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
     if (savePath == "") return;
     _root.server.sendTaskToNode("rag_bind_refresh", _root.agent.构建存档投影(savePath), null);
+};
+
+// G4-1：Agent 委托完成事件（纯通知，query 语义——不改任何游戏状态、不等 exe 应答）。
+// 经 Host 的 rag_task_completed 转发到终端 POST /api/integration/task-completed，终端只对
+// 发布时挂了对话重写标记的委托自动派对话修改子 Agent；同存档同任务的幂等由终端侧保证，
+// 可重复委托每次交付都推一次也无害。exe 不在线由 Host 静默跳过，本函数不弹任何提示。
+_root.agent.推送任务完成 = function(taskId):Void {
+    var id:Number = Number(taskId);
+    if (!isFinite(id) || id != Math.floor(id)) return;
+    if (id < _root.agent.AGENT_TASK_ID_MIN || id > _root.agent.AGENT_TASK_ID_MAX) return;
+    if (_root.server == undefined || _root.server == null) return;
+    if (typeof _root.server.sendTaskToNode != "function") return;
+    if (_root.server.isSocketConnected !== true) return;
+    var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (savePath == "") return;
+    _root.server.sendTaskToNode("rag_task_completed",
+        {savePath: savePath, taskId: id, npc: _root.agent.任务发布NPC(String(id))}, null);
+};
+
+// 事件里的 npc 只作终端侧的兜底名字（终端以任务记录里的 get_npc 为权威）；读不到给空串。
+_root.agent.任务发布NPC = function(taskId:String):String {
+    if (org.flashNight.arki.task.TaskUtil.tasks == null) return "";
+    var taskData:Object = org.flashNight.arki.task.TaskUtil.getRawTaskData(taskId);
+    if (taskData == undefined || taskData == null
+            || taskData.get_npc == undefined || taskData.get_npc == null) return "";
+    return String(taskData.get_npc);
 };
 
 // G2-3②：换槽位后的任务目录对齐。宿主按新 savePath 重读覆盖层并回变化清单，

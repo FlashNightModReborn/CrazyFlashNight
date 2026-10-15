@@ -44,7 +44,7 @@ namespace CF7Launcher.Guardian
                 || origin.Scheme != "https" || origin.Host != "overlay.local" || !origin.IsDefaultPort
                 || !MapWorkbenchTask.TryReadRequest(json, _panelHost.ActivePanelName, _panelHost.ActivePanelInstanceId, out var message, out var request)) return;
             string instance = (string)message["panelInstanceId"];
-            if ((string)message["cmd"] == "close") { _panelHost.TryClosePanelExact(MapWorkbenchTask.Panel, instance, null); return; }
+            if ((string)message["cmd"] == "close") { TryCloseOrdinaryPanelExact(MapWorkbenchTask.Panel, instance); return; }
             _mapWorkbenchTask ??= new MapWorkbenchTask(_projectRoot);
             JObject response;
             if ((string)message["cmd"] == "asset-pick")
@@ -77,7 +77,7 @@ namespace CF7Launcher.Guardian
             string instance = message.Value<string>("panelInstanceId");
             if (message.Value<string>("cmd") == "close")
             {
-                _panelHost.TryClosePanelExact(AssetWorkbenchTask.Panel, instance, null);
+                TryCloseOrdinaryPanelExact(AssetWorkbenchTask.Panel, instance);
                 return;
             }
             _assetWorkbenchTask ??= new AssetWorkbenchTask(_projectRoot);
@@ -8538,11 +8538,10 @@ namespace CF7Launcher.Guardian
                                 else
                                 {
                                     closeQueued =
-                                        _panelHost
-                                            .TryClosePanelExact(
-                                                "skills",
-                                                closeInstance,
-                                                null);
+                                        TryCloseOrdinaryPanelExact(
+                                            "skills",
+                                            closeInstance,
+                                            dismissReturnStack);
                                 }
                                 if (!closeQueued)
                                 {
@@ -9166,9 +9165,16 @@ namespace CF7Launcher.Guardian
 
         private bool TrySendGameCommand(string action)
         {
+#if CF7_TEST_SEAMS
+            if (GameCommandSenderForTests != null) return GameCommandSenderForTests(action);
+#endif
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
             return _socketServer.TrySend("{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0");
         }
+
+#if CF7_TEST_SEAMS
+        internal Func<string, bool> GameCommandSenderForTests;
+#endif
 
         internal bool TryOpenKShopForMaterialNavigation()
         {
@@ -9184,6 +9190,21 @@ namespace CF7Launcher.Guardian
         private bool TryReleaseGenericWebPanelPause()
         {
             return TrySendGameCommand("webPanelUnpause");
+        }
+
+        // Ordinary exits own the generic pause; navigation and business recovery use
+        // their existing handoff protocols instead. Commit only for the exact source.
+        private bool TryCloseOrdinaryPanelExact(string panel, string instance,
+            bool dismissReturnStack = false)
+        {
+            PanelHostController host = _panelHost;
+            return host != null && host.TryClosePanelExact(
+                panel, instance, dismissReturnStack,
+                () => ReferenceEquals(_panelHost, host)
+                    && host.ActivePanelName == panel
+                    && host.ActivePanelInstanceId == instance,
+                () => CommitAcceptedPanelCloseEffects(panel, false, false),
+                null);
         }
 
         private void CommitAcceptedPanelCloseEffects(

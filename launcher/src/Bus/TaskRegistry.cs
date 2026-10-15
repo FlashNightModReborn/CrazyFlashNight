@@ -819,6 +819,16 @@ namespace CF7Launcher.Bus
                     commandRouter.HandleRagBindRefresh(callbackPayload ?? msg);
                     return null;
                 });
+
+                // AS2 → C# Agent 委托完成事件（G4-1／G4-2）：Host 转发到终端
+                // POST /api/integration/task-completed，由终端自动委派对话修改子 Agent。
+                // 纯通知（query）：不改游戏状态、不回包、exe 不在线静默跳过。
+                router.RegisterSync("rag_task_completed", delegate(JObject msg)
+                {
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    commandRouter.HandleRagTaskCompleted(callbackPayload ?? msg);
+                    return null;
+                });
             }
 
             // 存档 shadow 备份
@@ -975,6 +985,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "book_comic_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "rag_bind_refresh","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "rag_task_completed","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);

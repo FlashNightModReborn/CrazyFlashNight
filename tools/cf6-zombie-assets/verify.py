@@ -24,11 +24,11 @@ def main():
     args = parser.parse_args()
 
     enemy_base = E.parse(ROOT / 'data/enemy_properties/原版敌人 2011-2012.xml').getroot()
-    variants = E.parse(ROOT / 'data/enemy_properties/CF6僵尸.xml').getroot()
+    variants = E.parse(ROOT / 'data/enemy_properties/CF6重制敌人.xml').getroot()
     registrations = json.loads((ROOT / 'data/units/units.json').read_text(encoding='utf-8-sig'))
     source_map = E.parse(ROOT / 'data/items/asset_source_map.xml').getroot()
     properties_list = E.parse(ROOT / 'data/enemy_properties/list.xml').getroot()
-    assert sum(e.text == 'CF6僵尸.xml' for e in properties_list) == 1
+    assert sum(e.text == 'CF6重制敌人.xml' for e in properties_list) == 1
 
     ledger = json.loads((HERE / 'balance-inputs.json').read_text(encoding='utf-8'))
     js = (

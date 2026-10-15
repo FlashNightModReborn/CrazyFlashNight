@@ -4,13 +4,13 @@
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 216,
   "stagesWithTeams": 198,
-  "teamCount": 2093,
+  "teamCount": 2094,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
     "unknown": 103,
     "亡灵/僵尸": 607,
-    "天网": 233,
+    "天网": 234,
     "异形": 262,
     "联合大学": 1,
     "黑铁会": 71,
@@ -2205,7 +2205,7 @@
       "unitCount": 185
     },
     "天网": {
-      "teamCount": 233,
+      "teamCount": 234,
       "units": [
         {
           "type": "兵种108",
@@ -3284,6 +3284,15 @@
           }
         },
         {
+          "type": "兵种367",
+          "name": "旧型号机器人",
+          "spritename": "敌人-旧型号机器人",
+          "isHostile": true,
+          "minLevel": 20,
+          "maxLevel": 20,
+          "weight": 2
+        },
+        {
           "type": "兵种378",
           "name": "浮士德兄弟",
           "spritename": "敌人-黑白无常",
@@ -3917,7 +3926,7 @@
           }
         }
       ],
-      "unitCount": 141
+      "unitCount": 142
     },
     "异形": {
       "teamCount": 262,
@@ -66099,6 +66108,33 @@
       "levelMin": 28,
       "levelMax": 28,
       "powerRating": 84
+    },
+    {
+      "id": "基地车库/据点M.xml#4.1",
+      "sourceStage": "基地车库/据点M.xml",
+      "sourceName": "据点M",
+      "group": "4.1",
+      "faction": "天网",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种367",
+          "id": 367,
+          "name": "旧型号机器人",
+          "spritename": "敌人-旧型号机器人",
+          "level": 20,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 2,
+      "distinctTypes": 1,
+      "avgLevel": 20,
+      "levelMin": 20,
+      "levelMax": 20,
+      "powerRating": 40
     },
     {
       "id": "基地车库/摇滚公园.xml#0.0",

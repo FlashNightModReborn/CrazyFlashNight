@@ -716,6 +716,8 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
                 是否卸下装备 = true;
             else if (旧攻击模式 == "兵器" && !target.刀)
                 是否卸下装备 = true;
+            else if (旧攻击模式 == "手雷" && !target.手雷)
+                是否卸下装备 = true;
             //
             if (是否卸下装备) {
                 target.状态 = "空手站立";

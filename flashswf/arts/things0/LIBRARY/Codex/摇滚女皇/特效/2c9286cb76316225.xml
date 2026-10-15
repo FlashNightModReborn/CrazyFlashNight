@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/2c9286cb76316225" itemID="71340000-63e27228" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/2c9286cb76316225" itemID="71340000-63e27228" symbolType="graphic">
   <timeline>
     <DOMTimeline name="2c9286cb76316225">
       <layers>
-        <DOMLayer name="Layer 1" color="#F92CAB">
+        <DOMLayer name="Layer 1" color="#F92CAB" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,7 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle1="1" edges="!261 -11[451 149 684 229!684 229[842 281 1004 276!1004 276[667 387 359 387!359 387[-217 387 -735 150!-735 150[-881 83 -1004 6!-1004 6|-34 -387!-34 -387[76 -167 261 -11"/>
+                    <Edge fillStyle1="1" edges="!359 387[-217 387 -735 150!-735 150[-881 83 -1004 6!-1004 6|-34 -387!-34 -387[76 -167 261 -11!261 -11[451 149 684 229!684 229[842 281 1004 276!1004 276[667 387 359 387"/>
                   </edges>
                 </DOMShape>
               </elements>

@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/演出/guitar-cannon" itemID="71340000-d018ecf3">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/演出/guitar-cannon" itemID="6ad09edb-00000d12">
   <timeline>
     <DOMTimeline name="guitar-cannon">
       <layers>
-        <DOMLayer name="18-原生枪火" color="#6688CC">
+        <DOMLayer name="18-原生枪火" color="#6688CC" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -91,9 +90,9 @@
             </DOMFrame>
             <DOMFrame index="28" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" loop="single frame" firstFrame="0">
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" loop="single frame">
                   <matrix>
-                    <Matrix a="6.830165905" b="-0.5909205684" c="1.595492761" d="18.44139013" tx="275.22439819" ty="-54.750371775"/>
+                    <Matrix a="6.83015441894531" b="-0.590911865234375" c="1.59548950195313" d="18.4413757324219" tx="275.2" ty="-54.75"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.45" y="-0.1"/>
@@ -106,9 +105,9 @@
             </DOMFrame>
             <DOMFrame index="29" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" loop="single frame" firstFrame="1">
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" firstFrame="1" loop="single frame">
                   <matrix>
-                    <Matrix a="6.830409619" b="-0.5909416537" c="1.595549692" d="18.44204816" tx="314.35990098" ty="-138.80971306"/>
+                    <Matrix a="6.83039855957031" b="-0.590927124023438" c="1.59553527832031" d="18.4420471191406" tx="314.35" ty="-138.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.45" y="-0.1"/>
@@ -121,9 +120,9 @@
             </DOMFrame>
             <DOMFrame index="30" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" loop="single frame" firstFrame="2">
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" firstFrame="2" loop="single frame">
                   <matrix>
-                    <Matrix a="6.832586754" b="-0.5911300113" c="1.59605826" d="18.4479264" tx="261.04090602" ty="-163.96411359"/>
+                    <Matrix a="6.83258056640625" b="-0.59112548828125" c="1.59605407714844" d="18.4479217529297" tx="261" ty="-163.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.45" y="-0.1"/>
@@ -136,9 +135,9 @@
             </DOMFrame>
             <DOMFrame index="31" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" loop="single frame" firstFrame="3">
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/75fe566d47e0a73d" symbolType="graphic" firstFrame="3" loop="single frame">
                   <matrix>
-                    <Matrix a="6.835869326" b="-0.5914140072" c="1.596825052" d="18.45678932" tx="247.73536347" ty="-212.61552212"/>
+                    <Matrix a="6.83586120605469" b="-0.591400146484375" c="1.59681701660156" d="18.456787109375" tx="247.7" ty="-212.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="11.45" y="-0.1"/>

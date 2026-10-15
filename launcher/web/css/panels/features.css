@@ -3603,10 +3603,10 @@
     height: min(790px, calc(100vh - 28px));
     min-width: 900px;
     min-height: 560px;
-    color: #ece7dc;
-    background: #151412;
-    border: 1px solid rgba(191, 170, 124, 0.28);
-    box-shadow: 0 22px 70px rgba(0, 0, 0, 0.54);
+    color: var(--wb-semantic-meridian-text);
+    background: var(--wb-semantic-meridian-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-panel);
+    box-shadow: var(--wb-semantic-meridian-shadow);
     font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
     overflow: hidden;
 }
@@ -3625,13 +3625,13 @@
     align-items: center;
     gap: 18px;
     padding: 14px 18px;
-    background: #201e1a;
-    border-bottom: 1px solid rgba(191, 170, 124, 0.2);
+    background: var(--wb-semantic-meridian-raised-surface);
+    border-bottom: 1px solid var(--wb-semantic-meridian-border-divider);
 }
 
 .mer-heading { display: grid; gap: 3px; margin-right: auto; }
 .mer-title { font-size: 22px; font-weight: 700; }
-.mer-subtitle { font-size: 11px; color: #cfc2aa; }
+.mer-subtitle { font-size: 11px; color: var(--wb-semantic-meridian-secondary-text); }
 
 .mer-total-box,
 .mer-kpoint-box {
@@ -3639,21 +3639,21 @@
     gap: 2px;
     min-width: 96px;
     padding: 6px 14px;
-    background: #11100e;
-    border: 1px solid rgba(191, 170, 124, 0.27);
+    background: var(--wb-semantic-meridian-counter-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
 }
 
 .mer-total-label,
-.mer-kpoint-label { font-size: 10px; color: #c3a55d; text-transform: uppercase; }
+.mer-kpoint-label { font-size: 10px; color: var(--wb-semantic-meridian-accent); text-transform: uppercase; }
 .mer-total-value,
 .mer-kpoint-value { font-size: 18px; font-weight: 700; }
 
 .mer-close-btn {
     width: 30px;
     height: 30px;
-    color: #f5efe3;
-    background: #2b2822;
-    border: 1px solid rgba(191, 170, 124, 0.27);
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-control-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
     cursor: pointer;
 }
 
@@ -3663,8 +3663,8 @@
     min-height: 0;
     padding: 14px 12px;
     overflow-y: auto;
-    background: #1b1917;
-    border-right: 1px solid rgba(191, 170, 124, 0.18);
+    background: var(--wb-semantic-meridian-recessed-surface);
+    border-right: 1px solid var(--wb-semantic-meridian-border-divider-soft);
 }
 
 .mer-catalog-list { display: grid; gap: 8px; }
@@ -3674,16 +3674,16 @@
     gap: 3px;
     padding: 9px 12px;
     text-align: left;
-    color: #f5efe3;
-    background: #242019;
-    border: 1px solid rgba(191, 170, 124, 0.22);
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-choice-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-choice);
     cursor: pointer;
 }
 
-.mer-catalog-item.active { background: #332c1e; border-color: #c3a55d; }
+.mer-catalog-item.active { background: var(--wb-semantic-meridian-selected-surface); border-color: var(--wb-semantic-meridian-accent); }
 .mer-catalog-name { font-size: 15px; font-weight: 700; }
-.mer-catalog-meta { font-size: 11px; color: #9c8f78; }
-.mer-catalog-meta.is-locked { color: #c05a48; }
+.mer-catalog-meta { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
+.mer-catalog-meta.is-locked { color: var(--wb-semantic-meridian-locked-text); }
 
 .mer-reader {
     display: grid;
@@ -3703,14 +3703,14 @@
     min-height: 0;
 }
 
-.mer-status { font-size: 13px; color: #cfc2aa; }
+.mer-status { font-size: 13px; color: var(--wb-semantic-meridian-secondary-text); }
 
 .mer-map {
     position: relative;
     min-height: 0;
     overflow: hidden;
-    border: 1px solid rgba(110, 163, 216, 0.16);
-    background: #101010;
+    border: 1px solid var(--wb-semantic-meridian-border-map);
+    background: var(--wb-semantic-meridian-map-surface);
 }
 
 .mer-zoom-viewport {
@@ -3738,12 +3738,12 @@
     flex: none;
 }
 
-/* 蓝色人体：半侧路径镜像复用，fill 与描边分层 */
-.mer-fill { fill: rgba(110, 163, 216, 0.09); stroke: none; }
+/* 人体轮廓：fill 与描边分层，轮廓由脚本按 v14 临摹路径渲染 */
+.mer-fill { fill: var(--wb-semantic-meridian-body-fill); stroke: none; }
 
 .mer-line {
     fill: none;
-    stroke: #6ea3d8;
+    stroke: var(--wb-semantic-meridian-body-line);
     stroke-width: 2.2;
     stroke-linecap: round;
     stroke-linejoin: round;
@@ -3762,60 +3762,60 @@
     height: 28px;
     font-size: 14px;
     line-height: 1;
-    color: #f5efe3;
-    background: rgba(32, 30, 26, 0.92);
-    border: 1px solid rgba(191, 170, 124, 0.3);
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-overlay-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
     cursor: pointer;
 }
 
-.mer-zoom-btn:hover { background: #3a352b; }
+.mer-zoom-btn:hover { background: var(--wb-semantic-meridian-control-hover); }
 
 .mer-mgroup { opacity: 0.42; }
 .mer-mgroup.is-active { opacity: 1; }
 .mer-mgroup.is-locked { opacity: 0.26; }
 
 /* 白色=未贯通，绿色=已贯通（两端均贯通的连线转绿） */
-.mer-seg { stroke: #ffffff; stroke-width: 2.4; }
-.mer-seg.is-lit { stroke: #4caf50; }
+.mer-seg { stroke: var(--wb-semantic-meridian-unlit-fill); stroke-width: 2.4; }
+.mer-seg.is-lit { stroke: var(--wb-semantic-meridian-lit-fill); }
 
 .mer-dot {
-    fill: #ffffff;
-    stroke: #151412;
+    fill: var(--wb-semantic-meridian-unlit-fill);
+    stroke: var(--wb-semantic-meridian-dot-stroke);
     stroke-width: 1.5;
     cursor: pointer;
 }
 
 /* 穴位状态由脚本按"脉内按序 + 情报 + 预算"下发，色板与图例一一对应 */
-.mer-dot.is-lit { fill: #4caf50; }
-.mer-dot.is-next { fill: #ffffff; stroke: #e8d9a8; }
-.mer-dot.is-sealed { fill: #4a4740; stroke: #151412; cursor: not-allowed; }
-.mer-dot.is-info { fill: #3f5468; stroke: #151412; cursor: not-allowed; }
-.mer-dot.is-capped { fill: #5a4a33; stroke: #e2a06a; cursor: not-allowed; }
-.mer-dot.is-selected { stroke: #e8d9a8; stroke-width: 2.5; }
+.mer-dot.is-lit { fill: var(--wb-semantic-meridian-lit-fill); }
+.mer-dot.is-next { fill: var(--wb-semantic-meridian-unlit-fill); stroke: var(--wb-semantic-meridian-selection-stroke); }
+.mer-dot.is-sealed { fill: var(--wb-semantic-meridian-sealed-fill); stroke: var(--wb-semantic-meridian-dot-stroke); cursor: not-allowed; }
+.mer-dot.is-info { fill: var(--wb-semantic-meridian-info-fill); stroke: var(--wb-semantic-meridian-dot-stroke); cursor: not-allowed; }
+.mer-dot.is-capped { fill: var(--wb-semantic-meridian-capped-fill); stroke: var(--wb-semantic-meridian-error-text); cursor: not-allowed; }
+.mer-dot.is-selected { stroke: var(--wb-semantic-meridian-selection-stroke); stroke-width: 2.5; }
 
 /* 下一穴光环：把"能点的那个"从一片白点里拎出来（半径由脚本按缩放反算） */
 .mer-halo {
     fill: none;
-    stroke: rgba(232, 217, 168, 0.6);
+    stroke: var(--wb-semantic-meridian-halo-stroke);
     pointer-events: none;
 }
 
 .mer-dot-label {
     font-size: 16px;
-    fill: #cfc2aa;
+    fill: var(--wb-semantic-meridian-secondary-text);
     pointer-events: none;
 }
 
 /* 穴位引线：标签被行距避让推开时仍指得回穴位（宽度由脚本按缩放反算） */
 .mer-leader {
     fill: none;
-    stroke: rgba(207, 194, 170, 0.5);
+    stroke: var(--wb-semantic-meridian-leader-stroke);
     stroke-linejoin: round;
     pointer-events: none;
 }
 
-.mer-dot-label.is-dim { fill: #6f6857; }
-.mer-leader.is-dim { stroke: rgba(207, 194, 170, 0.22); }
+.mer-dot-label.is-dim { fill: var(--wb-semantic-meridian-dim-text); }
+.mer-leader.is-dim { stroke: var(--wb-semantic-meridian-leader-stroke-dim); }
 
 .mer-legend {
     display: flex;
@@ -3823,7 +3823,7 @@
     justify-content: center;
     gap: 6px 16px;
     font-size: 11px;
-    color: #9c8f78;
+    color: var(--wb-semantic-meridian-muted-text);
 }
 
 .mer-legend-item::before {
@@ -3836,13 +3836,13 @@
     vertical-align: -1px;
 }
 
-.mer-legend-body::before { background: #6ea3d8; }
-.mer-legend-white::before { background: #ffffff; }
-.mer-legend-next::before { background: #ffffff; box-shadow: 0 0 0 2px rgba(232, 217, 168, 0.75); }
-.mer-legend-sealed::before { background: #4a4740; }
-.mer-legend-green::before { background: #4caf50; }
+.mer-legend-body::before { background: var(--wb-semantic-meridian-body-line); }
+.mer-legend-white::before { background: var(--wb-semantic-meridian-unlit-fill); }
+.mer-legend-next::before { background: var(--wb-semantic-meridian-unlit-fill); box-shadow: 0 0 0 2px var(--wb-semantic-meridian-legend-halo); }
+.mer-legend-sealed::before { background: var(--wb-semantic-meridian-sealed-fill); }
+.mer-legend-green::before { background: var(--wb-semantic-meridian-lit-fill); }
 
-.mer-legend-hint { color: #7d7462; }
+.mer-legend-hint { color: var(--wb-semantic-meridian-faint-text); }
 
 .mer-side {
     display: grid;
@@ -3855,22 +3855,22 @@
 }
 
 .mer-meridian-head { display: grid; gap: 6px; }
-.mer-meridian-name { font-size: 19px; font-weight: 700; color: #e8d9a8; }
-.mer-meridian-desc { font-size: 12px; color: #cfc2aa; }
+.mer-meridian-name { font-size: 19px; font-weight: 700; color: var(--wb-semantic-meridian-heading-text); }
+.mer-meridian-desc { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
 
 .mer-require-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
 
 .mer-require-chip {
     padding: 3px 9px;
     font-size: 11px;
-    background: #1b1917;
-    border: 1px solid rgba(191, 170, 124, 0.27);
+    background: var(--wb-semantic-meridian-recessed-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
 }
 
-.mer-require-chip.is-held { color: #9fd19a; border-color: rgba(120, 190, 120, 0.4); }
-.mer-require-chip.is-missing { color: #d98878; border-color: rgba(190, 110, 90, 0.4); }
+.mer-require-chip.is-held { color: var(--wb-semantic-meridian-positive-text); border-color: var(--wb-semantic-meridian-positive-border); }
+.mer-require-chip.is-missing { color: var(--wb-semantic-meridian-missing-text); border-color: var(--wb-semantic-meridian-missing-border); }
 
-.mer-meridian-progress { font-size: 11px; color: #9c8f78; }
+.mer-meridian-progress { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
 
 /* 贯注操作条：图下方一行，给出选中穴的内力/K 价/状态与唯一按钮
    （作者要求右栏只留介绍与情报提示，不再逐穴出栏位） */
@@ -3880,44 +3880,44 @@
     align-items: center;
     gap: 4px 12px;
     padding: 8px 12px;
-    background: #201e1a;
-    border: 1px solid rgba(191, 170, 124, 0.24);
+    background: var(--wb-semantic-meridian-raised-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-node);
 }
 
-.mer-node-bar.is-lit { background: #2a2517; border-color: #c3a55d; }
+.mer-node-bar.is-lit { background: var(--wb-semantic-meridian-lit-surface); border-color: var(--wb-semantic-meridian-accent); }
 .mer-node-bar.is-empty { border-style: dashed; }
 
-.mer-bar-hint { font-size: 12px; color: #7d7462; }
+.mer-bar-hint { font-size: 12px; color: var(--wb-semantic-meridian-faint-text); }
 .mer-bar-name { font-size: 14px; font-weight: 700; }
-.mer-bar-gain { font-size: 12px; color: #9fd19a; }
-.mer-bar-cost { font-size: 12px; color: #cfc2aa; }
-.mer-bar-state { font-size: 12px; color: #9fd19a; }
+.mer-bar-gain { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
+.mer-bar-cost { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
+.mer-bar-state { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
 
 .mer-node-bar.is-sealed .mer-bar-state,
 .mer-node-bar.is-info .mer-bar-state,
 .mer-node-bar.is-capped .mer-bar-state,
-.mer-node-bar.is-lit .mer-bar-state { color: #d98878; }
+.mer-node-bar.is-lit .mer-bar-state { color: var(--wb-semantic-meridian-missing-text); }
 
 .mer-bar-btn {
     margin-left: auto;
     padding: 4px 14px;
     font-size: 12px;
-    color: #f5efe3;
-    background: #2b2822;
-    border: 1px solid rgba(191, 170, 124, 0.27);
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-control-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
     cursor: pointer;
 }
 
-.mer-bar-btn:hover:enabled { background: #3a352b; }
-.mer-bar-btn:disabled { color: #8a8070; background: #1d1b18; cursor: default; }
+.mer-bar-btn:hover:enabled { background: var(--wb-semantic-meridian-control-hover); }
+.mer-bar-btn:disabled { color: var(--wb-semantic-meridian-disabled-text); background: var(--wb-semantic-meridian-disabled-surface); cursor: default; }
 
 .mer-footer {
     grid-column: 1 / 3;
     padding: 8px 18px;
-    background: #201e1a;
-    border-top: 1px solid rgba(191, 170, 124, 0.18);
+    background: var(--wb-semantic-meridian-raised-surface);
+    border-top: 1px solid var(--wb-semantic-meridian-border-divider-soft);
 }
 
-.mer-error { min-height: 16px; font-size: 12px; color: #e2a06a; }
+.mer-error { min-height: 16px; font-size: 12px; color: var(--wb-semantic-meridian-error-text); }
 .mer-error[hidden],
 .mer-status[hidden] { display: none; }

@@ -1,0 +1,99 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "manman-integration-r2-20261015-orc-99",
+  "createdAt": "2026-10-15T09:27:00.877Z",
+  "buildCommit": "88c53b13271111cd99a253ba2fe6d690f964734c",
+  "planner": {
+    "name": "cf6-manman-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "orc-99-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-enhanced-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种125",
+          "level": 99,
+          "sourceId": "undead-orc-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 2400,
+      "tags": [
+        "manman",
+        "orc",
+        "blue"
+      ],
+      "plannerReason": "与不死兽人同等级换边对照；包含阶段和档次差异，只检验整体行为，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "d5628323cb0a0ceefb3eaefa735fddf7b0f4219377ac9f43eeb22581597ea849",
+        "candidateSide": "blue",
+        "comparison": "orc",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "integration",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:e5be028b773ce537472c69a7db69ba48be64f584c4a88712a56119e91764a606"
+    },
+    {
+      "caseId": "orc-99-red",
+      "blueRoster": [
+        {
+          "type": "兵种125",
+          "level": 99,
+          "sourceId": "undead-orc-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 99,
+          "sourceId": "manman-enhanced-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 2400,
+      "tags": [
+        "manman",
+        "orc",
+        "red"
+      ],
+      "plannerReason": "与不死兽人同等级换边对照；包含阶段和档次差异，只检验整体行为，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "d5628323cb0a0ceefb3eaefa735fddf7b0f4219377ac9f43eeb22581597ea849",
+        "candidateSide": "red",
+        "comparison": "orc",
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "integration",
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:6e0e76fdb45bae14cc881621a55136e03c6ca8c4fdc6631e14089fd1871023d2"
+    }
+  ],
+  "manifestHash": "sha256:c66178435e4432c1ed9459a1f75482744bd184cd8d3175dcdd9b143d4b9708af"
+}

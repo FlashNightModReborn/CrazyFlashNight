@@ -1,0 +1,16 @@
+﻿trace("FocusedTestRunId cf6-data-read Start: __FOCUSED_RUN_ID__");
+_root.cf6DataReadComplete=function():Void { trace("FocusedTestRunId cf6-data-read Complete: __FOCUSED_RUN_ID__"); };
+_root.cf6ManmanAssetComplete=function():Void {
+org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader.getInstance().reload(function(data:Object):Void {
+    var keys:Array = ["敌人-CF6普通男僵尸", "敌人-CF6女僵尸", "敌人-CF6蛮蛮"];
+    for (var i:Number=0;i<keys.length;i++) {
+        var entry:Object=data[keys[i]];
+        trace("CF6_LOAD " + keys[i] + "|" + entry.displayname + "|" + entry.hp_min + "|" + entry.hp_max + "|" + entry.标识.阶段);
+    }
+    _root.cf6DataReadComplete();
+}, function():Void {
+    trace("[TEST_FAIL] CF6 enemy catalog load failed");
+    _root.cf6DataReadComplete();
+});
+};
+org.flashNight.arki.unit.Action.Melee.Cf6ManmanAssetTest.runAllTests();

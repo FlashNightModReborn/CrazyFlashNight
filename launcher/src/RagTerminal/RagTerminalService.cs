@@ -207,6 +207,55 @@ namespace CF7Launcher.RagTerminal
                 LogManager.Log("[RagTerminal] refresh bind failed (ignored) slot=" + slotKey);
         }
 
+        /// <summary>Agent 委托完成事件的异步落点（G4-2）：绝不拉起 exe，exe 不在线静默跳过；
+        /// 单次 POST、不重试（幂等在终端侧），失败仅记日志，绝不回 toast 打断游戏流程。</summary>
+        internal void NotifyTaskCompletedInBackground(string slotKey, int taskId, string npc)
+        {
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                try { NotifyTaskCompletedAsync(slotKey, taskId, npc).GetAwaiter().GetResult(); }
+                catch (Exception ex) { LogManager.Log("[RagTerminal] task-completed threw: " + ex.Message); }
+            });
+        }
+
+        /// <summary>POST /api/integration/task-completed：终端据此对发布时挂了对话重写标记的
+        /// 委托自动派对话修改子 Agent。受理与否都是 200＋accepted 字段，Host 只留痕不判断。</summary>
+        internal async Task NotifyTaskCompletedAsync(string slotKey, int taskId, string npc)
+        {
+            if (!IsValidSlotKey(slotKey))
+            {
+                LogManager.Log("[RagTerminal] task-completed skipped: invalid slot");
+                return;
+            }
+            if (taskId < 1)
+            {
+                LogManager.Log("[RagTerminal] task-completed skipped: invalid task id=" + taskId);
+                return;
+            }
+            JObject health = await ProbeHealthAsync().ConfigureAwait(false);
+            if (health == null)
+            {
+                LogManager.Log("[RagTerminal] task-completed skipped: exe offline");
+                return;
+            }
+            JObject payload = new JObject
+            {
+                ["slot_key"] = slotKey,
+                ["task_id"] = taskId,
+                ["npc"] = npc ?? ""
+            };
+            JObject response = await PostJsonAsync(
+                "/api/integration/task-completed",
+                payload.ToString(Formatting.None)).ConfigureAwait(false);
+            if (response == null)
+                LogManager.Log("[RagTerminal] task-completed post failed (ignored) slot="
+                    + slotKey + " task=" + taskId);
+            else
+                LogManager.Log("[RagTerminal] task-completed slot=" + slotKey + " task=" + taskId
+                    + " accepted=" + (response.Value<bool?>("accepted") == true)
+                    + " detail=" + (response.Value<string>("detail") ?? ""));
+        }
+
         /// <summary>bind 载荷：slot_key 恒在；投影段仅在 AS2 提供时携带。后端覆盖式语义下，
         /// 缺省段＝该段置空（非保留旧值），所以刷新点必须带齐自己已知的全部投影。</summary>
         internal static JObject BuildBindPayload(string slotKey,

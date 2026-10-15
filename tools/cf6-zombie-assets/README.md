@@ -11,7 +11,7 @@
 | `461` | `敌人-CF6普通男僵尸` | `CF6黄衣僵尸` | `敌人-黄色衣服男僵尸1` | `6` | `126..1696` | `1345..5682` | `70..306` | `87..443` | `15..25` | `60` / `0.6` |
 | `462` | `敌人-CF6女僵尸` | `CF6红衣僵尸` | `敌人-金发红衣服女僵尸1` | `6` | `112..1707` | `1097..5425` | `66..332` | `79..445` | `10..15` | `50` / `0.5` |
 
-- **敌人属性表**：`data/enemy_properties/CF6僵尸.xml`（已登记入 `data/enemy_properties/list.xml`）
+- **敌人属性表**：`data/enemy_properties/CF6重制敌人.xml`（已登记入 `data/enemy_properties/list.xml`）
 - **单位注册表**：`data/units/units.json`（`id: 461`、`id: 462`）
 - **标识账本**：`tools/cf7-balance-tool/data/monster-flag-ledger.json`（`claims` 登记两单位完整 10 项标识）
 - **公式核对账本**：`tools/cf6-zombie-assets/balance-inputs.json`

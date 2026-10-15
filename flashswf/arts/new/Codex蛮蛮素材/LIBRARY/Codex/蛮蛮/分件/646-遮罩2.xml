@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/蛮蛮/分件/646-遮罩2" itemID="6aa00000-b48f9a23" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="646-遮罩2">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!2987 -3646[2671 -4256 2046 -4486[1040 -5011 120 -4292[-749 -3617 -749 -2557|-875 -2471[-925 -2474 -936 -2453[-1223 -1935 -1187 -1325|-767 -739[-692 -732 -641 -685[-613 -657 -598 -613[-530 -437 -541 -247|681 1406|681 1621|1040 2052|1166 2102[1636 2257 2118 2124|2477 1621|2502 1366[2506 1327 2502 1291|2491 1251[2470 1197 2409 1147[2700 662 2894 119[2998 -168 3109 -448[3425 -1235 3124 -1971|3321 -2334[3307 -3017 2987 -3646" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/646-遮罩3" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

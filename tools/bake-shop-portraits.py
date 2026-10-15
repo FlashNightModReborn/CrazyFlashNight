@@ -31,11 +31,11 @@ from PIL import Image, __version__ as PILLOW_VERSION
 SCHEMA = "cf7-shop-portraits-v1"
 PROVENANCE_SCHEMA = "cf7-shop-portrait-provenance-v1"
 RECEIPT_SCHEMA = "cf7-shop-portrait-promotion-receipt-v1"
-GENERATOR_VERSION = "1.1.0"
+GENERATOR_VERSION = "1.1.1"
 GEOMETRY = {"width": 256, "height": 256}
 PADDING = 16
-EXPECTED_LIST_COUNT = 39
-EXPECTED_ACTIVE_COUNT = 38
+EXPECTED_LIST_COUNT = 40
+EXPECTED_ACTIVE_COUNT = 39
 EXCLUDED_SHOPS = {"幸存老兵-暂时停用"}
 # Same character, separate inventory authority. Keep both exact runtime shopIds;
 # only these declared identities may share the existing portrait pixels.
@@ -704,7 +704,7 @@ def build_stage(
             external_ids.append(shop_id)
         else:
             raise BakeError(f"Unsupported dialogue source for shop {shop_id}: {kind!r}")
-    if len(internal_ids) != 2 or len(external_ids) != 34:
+    if len(internal_ids) != 2 or len(external_ids) != 35:
         raise BakeError(f"Shop source partition drift: internal={len(internal_ids)} external={len(external_ids)}")
 
     internal_images, internal_evidence = build_internal_sources(
@@ -787,7 +787,7 @@ def build_stage(
         "activeShopSource": active_source,
         "dialogueManifest": artifact(dialogue_manifest_path, root),
         "sourcePartition": {
-            "externalDialogue": 34, "internalDialogue": 2, "exactXflSwfPilot": 1,
+            "externalDialogue": 35, "internalDialogue": 2, "exactXflSwfPilot": 1,
             "sharedShopPortrait": len(SHARED_SHOP_PORTRAITS),
         },
         "sources": provenance_sources,

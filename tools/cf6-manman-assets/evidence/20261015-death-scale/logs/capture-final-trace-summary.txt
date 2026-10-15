@@ -1,0 +1,15 @@
+FocusedTestRunId cf6-manman Start: d1201798775948c4a30e5352b75747dc
+[MANMAN_IMAGE_BEGIN] stand 640 320
+[MANMAN_IMAGE_END] stand
+[MANMAN_DEATH_SCALE] side=0 standHeight=254.95 deathHeight=254.95 groundDelta=0
+[MANMAN_IMAGE_BEGIN] death-start 640 320
+[MANMAN_IMAGE_END] death-start
+[MANMAN_IMAGE_BEGIN] death-transition 640 320
+[MANMAN_IMAGE_END] death-transition
+[MANMAN_DEATH_SCALE] side=1 standHeight=254.95 deathHeight=254.95 groundDelta=0
+[MANMAN_IMAGE_BEGIN] cleave-impact 640 320
+[MANMAN_IMAGE_END] cleave-impact
+[MANMAN_IMAGE_BEGIN] death-late 640 320
+[MANMAN_IMAGE_END] death-late
+Cf6ManmanAssetTest: 169 passed, 0 failed; 22 actual timeline cases
+FocusedTestRunId cf6-manman Complete: d1201798775948c4a30e5352b75747dc
