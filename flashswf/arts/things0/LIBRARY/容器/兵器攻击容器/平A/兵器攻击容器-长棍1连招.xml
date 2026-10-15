@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1789926670" lastUniqueIdentifier="6">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招" itemID="69647138-00000e5c" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-长棍1连招" lastModified="1792045137" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-长棍1连招" currentFrame="136">
+    <DOMTimeline name="兵器攻击容器-长棍1连招" currentFrame="114">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -659,7 +659,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="22" duration="3" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="244.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="244.2">
                   <matrix>
                     <Matrix tx="-12.1" ty="231.7"/>
                   </matrix>
@@ -749,7 +749,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="92" duration="11" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="298.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="298.25">
                   <matrix>
                     <Matrix a="4.57000732421875" d="4.57000732421875" tx="-12.1" ty="285.75"/>
                   </matrix>
@@ -791,7 +791,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="122" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="298.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="298.25">
                   <matrix>
                     <Matrix a="4.57000732421875" d="4.57000732421875" tx="-12.1" ty="285.75"/>
                   </matrix>
@@ -812,7 +812,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="136" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="298.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="298.25">
                   <matrix>
                     <Matrix a="4.57000732421875" d="4.57000732421875" tx="-12.1" ty="285.75"/>
                   </matrix>
@@ -896,7 +896,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="171" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="298.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="298.25">
                   <matrix>
                     <Matrix a="4.57000732421875" d="4.57000732421875" tx="-12.1" ty="285.75"/>
                   </matrix>
@@ -959,7 +959,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" locked="true" autoNamed="false">
+        <DOMLayer name="变招&amp;其他" color="#FF4F4F" parentLayerIndex="1" current="true" isSelected="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="10" keyMode="9728">
               <elements/>
@@ -1087,7 +1087,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-228.85" centerPoint3DY="288.1">
                   <matrix>
-                    <Matrix a="3.47999572753906" d="3.47999572753906" tx="-241.35" ty="275.6"/>
+                    <Matrix a="3.47998046875" d="3.47998046875" tx="-241.35" ty="275.6"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -1210,7 +1210,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-47.55" centerPoint3DY="20.2">
                   <matrix>
-                    <Matrix a="0" b="32.2612609863281" c="-38.2522277832031" d="0.0977783203125" tx="174.75" ty="-72.35"/>
+                    <Matrix a="0" b="32.2612457275391" c="-38.2522125244141" d="0.0977783203125" tx="174.75" ty="-72.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -1273,7 +1273,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-70.55" centerPoint3DY="159.25">
                   <matrix>
-                    <Matrix a="0" b="35.7524108886719" c="-39.6402130126953" d="0.101333618164063" tx="168.95" ty="23.1"/>
+                    <Matrix a="0" b="35.7524108886719" c="-39.6401977539063" d="0.101333618164063" tx="168.95" ty="23.1"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.4" y="12.3"/>
@@ -1336,7 +1336,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-272.55" centerPoint3DY="268.25">
                   <matrix>
-                    <Matrix a="0" b="34.2775726318359" c="-42.6479187011719" d="0.1090087890625" tx="3.3" ty="151.35"/>
+                    <Matrix a="0" b="34.2775573730469" c="-42.6479187011719" d="0.1090087890625" tx="3.3" ty="151.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -1528,7 +1528,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-482.55" centerPoint3DY="-146.75">
                   <matrix>
-                    <Matrix a="0" b="35.7086029052734" c="-38.2522125244141" d="0.0977783203125" tx="-260.25" ty="-281.25"/>
+                    <Matrix a="0" b="35.7085876464844" c="-38.2522125244141" d="0.0977783203125" tx="-260.25" ty="-281.25"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -1594,7 +1594,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-240.55" centerPoint3DY="19.25">
                   <matrix>
-                    <Matrix a="0" b="24.3421325683594" c="-63.4223480224609" d="0.162109375" tx="297.35" ty="24.3"/>
+                    <Matrix a="0" b="24.3421325683594" c="-63.4223327636719" d="0.162109375" tx="297.35" ty="24.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.4" y="12.5"/>
@@ -1726,7 +1726,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-386.55" centerPoint3DY="-9.75">
                   <matrix>
-                    <Matrix a="0" b="23.1183624267578" c="-33.7794494628906" d="-0.0533447265625" tx="-219.7" ty="10.3"/>
+                    <Matrix a="0" b="23.1183471679688" c="-33.7794342041016" d="-0.0533447265625" tx="-219.7" ty="10.3"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.25" y="12.3"/>
@@ -1855,7 +1855,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-360.55" centerPoint3DY="426.55">
                   <matrix>
-                    <Matrix a="0" b="54.3108978271484" c="-57.7641296386719" d="0.147659301757813" tx="100.85" ty="62.4"/>
+                    <Matrix a="0" b="54.3108825683594" c="-57.7641296386719" d="0.147659301757813" tx="100.85" ty="62.4"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -1981,7 +1981,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-379.6" centerPoint3DY="151.25">
                   <matrix>
-                    <Matrix a="0" b="50.6686096191406" c="-59.7690887451172" d="0.152786254882813" tx="106.65" ty="-167.8"/>
+                    <Matrix a="0" b="50.6685943603516" c="-59.7690887451172" d="0.152786254882813" tx="106.65" ty="-167.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -2047,7 +2047,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-75.55" centerPoint3DY="37.25">
                   <matrix>
-                    <Matrix a="0" b="37.1396179199219" c="-63.5478363037109" d="0.162445068359375" tx="458.5" ty="-115.8"/>
+                    <Matrix a="0" b="37.1396179199219" c="-63.5478210449219" d="0.162445068359375" tx="458.5" ty="-115.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -2113,7 +2113,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-29.55" centerPoint3DY="19.25">
                   <matrix>
-                    <Matrix a="0" b="19.0576477050781" c="-32.390869140625" d="0.082794189453125" tx="120.05" ty="89.8"/>
+                    <Matrix a="0" b="19.0576324462891" c="-32.390869140625" d="0.082794189453125" tx="120.05" ty="89.8"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -2177,9 +2177,9 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="171" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-131.55" centerPoint3DY="0.95">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-131.55" centerPoint3DY="0.95">
                   <matrix>
-                    <Matrix a="0" b="16.7159271240234" c="-38.2522125244141" d="0.0977783203125" tx="90.75" ty="100.35"/>
+                    <Matrix a="0" b="16.7159118652344" c="-38.2522125244141" d="0.0977783203125" tx="90.75" ty="100.35"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -2245,7 +2245,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="48.4" centerPoint3DY="-117.05">
                   <matrix>
-                    <Matrix a="0" b="31.1984710693359" c="-38.2522125244141" d="0.0977783203125" tx="270.7" ty="-194"/>
+                    <Matrix a="0" b="31.1984558105469" c="-38.2522125244141" d="0.0977783203125" tx="270.7" ty="-194"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.25" y="12.3"/>
@@ -2306,7 +2306,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="186" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-251.85" centerPoint3DY="45.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-251.85" centerPoint3DY="45.4">
                   <matrix>
                     <Matrix a="0" b="16.7159118652344" c="-43.8818359375" d="0.112167358398438" tx="39.3" ty="144.6"/>
                   </matrix>
@@ -2768,7 +2768,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="121.75" centerPoint3DY="4.35">
                   <matrix>
-                    <Matrix a="0" b="28.6839447021484" c="-45.5015411376953" d="0.116302490234375" tx="433.95" ty="-44.9"/>
+                    <Matrix a="0" b="28.6839294433594" c="-45.5015258789063" d="0.116302490234375" tx="433.95" ty="-44.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -2835,7 +2835,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="116" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="-743.3" centerPoint3DY="17.25">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-743.3" centerPoint3DY="17.25">
                   <matrix>
                     <Matrix a="0" b="24.390869140625" c="-59.2384948730469" d="0.15142822265625" tx="-264" ty="20.85"/>
                   </matrix>
@@ -2901,7 +2901,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="123" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="160.45" centerPoint3DY="4.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="160.45" centerPoint3DY="4.35">
                   <matrix>
                     <Matrix a="0" b="35.6436157226563" c="-49.7431640625" d="0.127151489257813" tx="524.3" ty="-130.5"/>
                   </matrix>
@@ -2969,7 +2969,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-349.45" centerPoint3DY="-5.75">
                   <matrix>
-                    <Matrix a="0" b="40.3265533447266" c="-54.2486114501953" d="0.138671875" tx="69.85" ty="-197.2"/>
+                    <Matrix a="0" b="40.3265533447266" c="-54.2485961914063" d="0.138671875" tx="69.85" ty="-197.2"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.3" y="12.3"/>
@@ -3101,7 +3101,7 @@ Z轴攻击范围 = 30;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="-29.55" centerPoint3DY="19.25">
                   <matrix>
-                    <Matrix a="0" b="18.1469573974609" c="-61.6969909667969" d="0.157699584960938" tx="481.55" ty="100.15"/>
+                    <Matrix a="0" b="18.1469421386719" c="-61.6969909667969" d="0.157699584960938" tx="481.55" ty="100.15"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="12.25" y="12.3"/>
@@ -3165,7 +3165,7 @@ Z轴攻击范围 = 30;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="右小腿" color="#FF4FFF" locked="true" current="true" isSelected="true" autoNamed="false">
+        <DOMLayer name="右小腿" color="#FF4FFF" locked="true" autoNamed="false">
           <frames>
             <DOMFrame index="0" duration="92" keyMode="9728">
               <elements/>
@@ -3363,7 +3363,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="122" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 491" selected="true" centerPoint3DX="-182.1" centerPoint3DY="-3.25">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 491" centerPoint3DX="-182.1" centerPoint3DY="-3.25">
                   <matrix>
                     <Matrix a="-2.3929443359375" b="0.090576171875" c="-0.0905609130859375" d="-2.39300537109375" tx="-96.65" ty="-202.7"/>
                   </matrix>
@@ -3675,7 +3675,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="177" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 862" selected="true" centerPoint3DX="988.9" centerPoint3DY="-17.8">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 862" centerPoint3DX="988.9" centerPoint3DY="-17.8">
                   <matrix>
                     <Matrix a="2.46661376953125" b="0.021697998046875" c="-0.006500244140625" d="0.739532470703125" tx="121.8" ty="85.3"/>
                   </matrix>
@@ -4345,7 +4345,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="92" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 1796" selected="true" centerPoint3DX="155" centerPoint3DY="-190.25">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 1796" centerPoint3DX="155" centerPoint3DY="-190.25">
                   <matrix>
                     <Matrix a="1.98417663574219" b="-0.504058837890625" c="0.504058837890625" d="1.98417663574219" tx="154.9" ty="-190.75"/>
                   </matrix>
@@ -4501,7 +4501,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="103" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 1797" selected="true">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 1797">
                   <matrix>
                     <Matrix a="-1.73507690429688" b="-0.362228393554688" c="1.25706481933594" d="-2.03195190429688" tx="-336.6" ty="-129.3"/>
                   </matrix>
@@ -4650,7 +4650,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="118" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 697" selected="true">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 697">
                   <matrix>
                     <Matrix a="6.86181640625" d="-1.376220703125" tx="128.7" ty="-55.7"/>
                   </matrix>
@@ -5183,7 +5183,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter saturation="-100"/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 491" selected="true" centerPoint3DX="405.2" centerPoint3DY="-173.55">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 491" centerPoint3DX="405.2" centerPoint3DY="-173.55">
                   <matrix>
                     <Matrix a="1.15362548828125" b="0.608566284179688" c="-0.04656982421875" d="1.45011901855469" tx="356.65" ty="-78.45"/>
                   </matrix>
@@ -5308,7 +5308,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="205" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="Graphic/shape 2027" selected="true">
+                <DOMSymbolInstance libraryItemName="Graphic/shape 2027">
                   <matrix>
                     <Matrix a="3.11383056640625" d="3.11383056640625" tx="-191.8" ty="201.4"/>
                   </matrix>
@@ -19820,7 +19820,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="92" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="86.3" centerPoint3DY="144">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="86.3" centerPoint3DY="144">
                   <matrix>
                     <Matrix a="0.0348358154296875" b="-0.93621826171875" c="-0.93621826171875" d="-0.0348358154296875" tx="-21.5" ty="51.5"/>
                   </matrix>
@@ -19831,7 +19831,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="124.8" centerPoint3DY="52.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="124.8" centerPoint3DY="52.65">
                   <matrix>
                     <Matrix a="0.0639801025390625" b="0.971054077148438" c="-0.971054077148438" d="0.0639801025390625" tx="64.3" ty="28.35"/>
                   </matrix>
@@ -19842,7 +19842,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="139.1" centerPoint3DY="242.25">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="139.1" centerPoint3DY="242.25">
                   <matrix>
                     <Matrix a="0.715744018554688" b="0.227951049804688" c="-0.4271240234375" d="0.652313232421875" tx="113.9" ty="204"/>
                   </matrix>
@@ -19853,7 +19853,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="113.05" centerPoint3DY="116.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="113.05" centerPoint3DY="116.35">
                   <matrix>
                     <Matrix a="0.453216552734375" b="-0.70294189453125" c="0.70294189453125" d="0.453170776367188" tx="54.85" ty="56.95"/>
                   </matrix>
@@ -19864,7 +19864,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="121.6" centerPoint3DY="180.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="121.6" centerPoint3DY="180.95">
                   <matrix>
                     <Matrix a="0.745712280273438" b="0.2735595703125" c="-0.2735595703125" d="0.745712280273438" tx="146.9" ty="112.05"/>
                   </matrix>
@@ -19875,7 +19875,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="61.75" centerPoint3DY="129.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="61.75" centerPoint3DY="129.45">
                   <matrix>
                     <Matrix a="0.825225830078125" b="0.0489044189453125" c="-0.0489044189453125" d="0.825225830078125" tx="44.9" ty="11.4"/>
                   </matrix>
@@ -19886,7 +19886,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="73.75" centerPoint3DY="-81.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="73.75" centerPoint3DY="-81.2">
                   <matrix>
                     <Matrix a="0.88775634765625" b="0.116317749023438" c="-0.116317749023438" d="0.88775634765625" tx="55.85" ty="-124.6"/>
                   </matrix>
@@ -19897,7 +19897,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="89.2" centerPoint3DY="90.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="89.2" centerPoint3DY="90.8">
                   <matrix>
                     <Matrix a="0.8536376953125" b="-0.040740966796875" c="0.040740966796875" d="0.8536376953125" tx="39.8" ty="59.7"/>
                   </matrix>
@@ -19908,7 +19908,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="2.7" centerPoint3DY="152.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="2.7" centerPoint3DY="152.05">
                   <matrix>
                     <Matrix a="0.652999877929688" b="0.5074462890625" c="-0.5074462890625" d="0.652999877929688" tx="11.55" ty="71.35"/>
                   </matrix>
@@ -19919,7 +19919,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-111.05" centerPoint3DY="251.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-111.05" centerPoint3DY="251.55">
                   <matrix>
                     <Matrix a="0.6292724609375" b="0.4547119140625" c="-0.4547119140625" d="0.6292724609375" tx="-126.35" ty="206.65"/>
                   </matrix>
@@ -19930,7 +19930,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-66.35" centerPoint3DY="224.7">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-66.35" centerPoint3DY="224.7">
                   <matrix>
                     <Matrix a="0.5089111328125" b="0.61968994140625" c="-0.61968994140625" d="0.5089111328125" tx="-53.15" ty="150.85"/>
                   </matrix>
@@ -19941,7 +19941,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="52.65" centerPoint3DY="30">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="52.65" centerPoint3DY="30">
                   <matrix>
                     <Matrix a="0.000518798828125" b="0.97296142578125" c="-0.97296142578125" d="0.000518798828125" tx="-7.85" ty="5.7"/>
                   </matrix>
@@ -19952,7 +19952,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="51.2" centerPoint3DY="-22.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="51.2" centerPoint3DY="-22.55">
                   <matrix>
                     <Matrix a="0.80810546875" b="-0.21978759765625" c="0.21978759765625" d="0.80810546875" tx="7.65" ty="-77.3"/>
                   </matrix>
@@ -19963,7 +19963,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-10.9" centerPoint3DY="-29">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-10.9" centerPoint3DY="-29">
                   <matrix>
                     <Matrix a="0.239608764648438" b="-0.782257080078125" c="0.782455444335938" d="0.239669799804688" tx="31.15" ty="8.85"/>
                   </matrix>
@@ -19974,7 +19974,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="137.05" centerPoint3DY="-132.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="137.05" centerPoint3DY="-132.45">
                   <matrix>
                     <Matrix a="0.18707275390625" b="-0.814483642578125" c="0.814300537109375" d="0.18707275390625" tx="94.25" ty="-73.75"/>
                   </matrix>
@@ -19985,7 +19985,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-0.35" centerPoint3DY="-113.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-0.35" centerPoint3DY="-113.4">
                   <matrix>
                     <Matrix a="-0.778106689453125" b="-0.137298583984375" c="-0.13739013671875" d="0.778182983398438" tx="180.15" ty="-57.75"/>
                   </matrix>
@@ -19996,7 +19996,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="-2.8" centerPoint3DY="-49">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-2.8" centerPoint3DY="-49">
                   <matrix>
                     <Matrix a="-0.21234130859375" b="-1.0306396484375" c="1.0306396484375" d="-0.21234130859375" tx="-152.7" ty="107.2"/>
                   </matrix>
@@ -20004,7 +20004,7 @@ _root.播放音效("地震3.wav");
                     <Point x="4.75" y="307.8"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="69.85" centerPoint3DY="11.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="69.85" centerPoint3DY="11.05">
                   <matrix>
                     <Matrix a="0.754150390625" b="0.2930908203125" c="-0.2930908203125" d="0.754150390625" tx="97.9" ty="30.6"/>
                   </matrix>
@@ -20015,7 +20015,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="-9.95" centerPoint3DY="-62.65">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="-9.95" centerPoint3DY="-62.65">
                   <matrix>
                     <Matrix a="-0.224884033203125" b="0.761825561523438" c="0.761825561523438" d="0.224884033203125" tx="167.2" ty="19"/>
                   </matrix>
@@ -21256,7 +21256,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="-172" centerPoint3DY="-285.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-172" centerPoint3DY="-285.1">
                   <matrix>
                     <Matrix a="-0.0858612060546875" b="-1.03939819335938" c="1.03939819335938" d="-0.0858612060546875" tx="-337.9" ty="-149.4"/>
                   </matrix>
@@ -22343,7 +22343,7 @@ _root.播放音效("地震3.wav");
             </DOMFrame>
             <DOMFrame index="104" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" selected="true" centerPoint3DX="-186.25" centerPoint3DY="54.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/长枪" centerPoint3DX="-186.25" centerPoint3DY="54.5">
                   <matrix>
                     <Matrix a="0.727523803710938" b="-0.5833740234375" c="0.5833740234375" d="0.727523803710938" tx="-48.35" ty="85.8"/>
                   </matrix>
@@ -22354,7 +22354,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" selected="true" centerPoint3DX="-146.35" centerPoint3DY="41.35">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪2" centerPoint3DX="-146.35" centerPoint3DY="41.35">
                   <matrix>
                     <Matrix a="0.0430450439453125" b="0.97137451171875" c="0.97137451171875" d="-0.0430450439453125" tx="-88.95" ty="10.5"/>
                   </matrix>
@@ -22365,7 +22365,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-52.15" centerPoint3DY="233.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-52.15" centerPoint3DY="233.3">
                   <matrix>
                     <Matrix a="-0.769210815429688" b="-0.16888427734375" c="-0.16888427734375" d="0.769210815429688" tx="-0.9" ty="213.45"/>
                   </matrix>
@@ -22376,7 +22376,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" selected="true" centerPoint3DX="-54.7" centerPoint3DY="117">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左大腿" centerPoint3DX="-54.7" centerPoint3DY="117">
                   <matrix>
                     <Matrix a="-0.830718994140625" b="0.08843994140625" c="0.088409423828125" d="0.830718994140625" tx="-81" ty="38.15"/>
                   </matrix>
@@ -22387,7 +22387,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-18.9" centerPoint3DY="196.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-18.9" centerPoint3DY="196.15">
                   <matrix>
                     <Matrix a="-0.558090209960938" b="0.56072998046875" c="0.56072998046875" d="0.558090209960938" tx="-70.7" ty="144.5"/>
                   </matrix>
@@ -22398,7 +22398,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" selected="true" centerPoint3DX="-160.3" centerPoint3DY="64.4">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/身体" centerPoint3DX="-160.3" centerPoint3DY="64.4">
                   <matrix>
                     <Matrix a="-0.525177001953125" b="-0.6373291015625" c="-0.6373291015625" d="0.525177001953125" tx="-55.1" ty="8.65"/>
                   </matrix>
@@ -22409,7 +22409,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/头" selected="true" centerPoint3DX="62.1" centerPoint3DY="-35.1">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/头" centerPoint3DX="62.1" centerPoint3DY="-35.1">
                   <matrix>
                     <Matrix a="0.862899780273438" b="0.21917724609375" c="-0.21917724609375" d="0.862899780273438" tx="49.5" ty="-79.8"/>
                   </matrix>
@@ -22420,7 +22420,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" selected="true" centerPoint3DX="-106.9" centerPoint3DY="75.45">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/屁股" centerPoint3DX="-106.9" centerPoint3DY="75.45">
                   <matrix>
                     <Matrix a="-0.852935791015625" b="0.053009033203125" c="0.053009033203125" d="0.852935791015625" tx="-61.1" ty="39.1"/>
                   </matrix>
@@ -22431,7 +22431,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" selected="true" centerPoint3DX="-69.2" centerPoint3DY="-37.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右大腿" centerPoint3DX="-69.2" centerPoint3DY="-37.3">
                   <matrix>
                     <Matrix a="0.458831787109375" b="-0.6868896484375" c="-0.6868896484375" d="-0.458831787109375" tx="-35.25" ty="36.25"/>
                   </matrix>
@@ -22442,7 +22442,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" selected="true" centerPoint3DX="-145.45" centerPoint3DY="88.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/脚" centerPoint3DX="-145.45" centerPoint3DY="88.5">
                   <matrix>
                     <Matrix a="-0.767745971679688" b="-0.07330322265625" c="-0.07330322265625" d="0.767745971679688" tx="-104.55" ty="65.05"/>
                   </matrix>
@@ -22453,7 +22453,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" selected="true" centerPoint3DX="-161" centerPoint3DY="38.85">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/小腿" centerPoint3DX="-161" centerPoint3DY="38.85">
                   <matrix>
                     <Matrix a="-0.785934448242188" b="0.124862670898438" c="0.124862670898438" d="0.785934448242188" tx="-122.1" ty="-24.55"/>
                   </matrix>
@@ -22464,7 +22464,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" selected="true" centerPoint3DX="-77" centerPoint3DY="10.95">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/手枪" centerPoint3DX="-77" centerPoint3DY="10.95">
                   <matrix>
                     <Matrix a="0.10626220703125" b="0.966293334960938" c="0.966293334960938" d="-0.10626220703125" tx="-19.55" ty="-19.8"/>
                   </matrix>
@@ -22475,7 +22475,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="114.9" centerPoint3DY="-22.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="114.9" centerPoint3DY="-22.2">
                   <matrix>
                     <Matrix a="0.347946166992188" b="0.748077392578125" c="0.748077392578125" d="-0.347946166992188" tx="45.4" ty="-20.1"/>
                   </matrix>
@@ -22486,7 +22486,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="83.85" centerPoint3DY="-22.15">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="83.85" centerPoint3DY="-22.15">
                   <matrix>
                     <Matrix a="0.189453125" b="0.7774658203125" c="0.77764892578125" d="-0.18951416015625" tx="126.7" ty="-56.75"/>
                   </matrix>
@@ -22497,7 +22497,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" selected="true" centerPoint3DX="43.75" centerPoint3DY="-127.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="43.75" centerPoint3DY="-127.05">
                   <matrix>
                     <Matrix a="0.809906005859375" b="-0.1661376953125" c="-0.166183471679688" d="-0.809722900390625" tx="-15.65" ty="-86"/>
                   </matrix>
@@ -22508,7 +22508,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" selected="true" centerPoint3DX="-17.6" centerPoint3DY="11.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手臂" centerPoint3DX="-17.6" centerPoint3DY="11.05">
                   <matrix>
                     <Matrix a="0.153167724609375" b="0.755523681640625" c="0.755615234375" d="-0.153045654296875" tx="-31.8" ty="-172.65"/>
                   </matrix>
@@ -22519,7 +22519,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" selected="true" centerPoint3DX="279.6" centerPoint3DY="-176.3">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="279.6" centerPoint3DY="-176.3">
                   <matrix>
                     <Matrix a="0.60455322265625" b="-0.82623291015625" c="0.82623291015625" d="0.60455322265625" tx="70.45" ty="-181.1"/>
                   </matrix>
@@ -22527,7 +22527,7 @@ _root.播放音效("地震3.wav");
                     <Point x="0.25" y="-17.45"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" selected="true" centerPoint3DX="164.95" centerPoint3DY="-56.8">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/右手" centerPoint3DX="164.95" centerPoint3DY="-56.8">
                   <matrix>
                     <Matrix a="0.7501220703125" b="-0.24591064453125" c="-0.24591064453125" d="-0.7501220703125" tx="193.1" ty="-74.2"/>
                   </matrix>
@@ -22538,7 +22538,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" selected="true" centerPoint3DX="127.5" centerPoint3DY="-12.05">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="127.5" centerPoint3DY="-12.05">
                   <matrix>
                     <Matrix a="0.64068603515625" b="-0.4366455078125" c="-0.4366455078125" d="-0.64068603515625" tx="43.75" ty="-183.2"/>
                   </matrix>
@@ -23326,7 +23326,7 @@ _root.播放音效("地震3.wav");
                     <AdjustColorFilter/>
                   </filters>
                 </DOMSymbolInstance>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" selected="true" centerPoint3DX="-60.95" centerPoint3DY="-76.5">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/左下臂" centerPoint3DX="-60.95" centerPoint3DY="-76.5">
                   <matrix>
                     <Matrix a="0.47906494140625" b="0.63677978515625" c="0.636962890625" d="-0.47918701171875" tx="-35.25" ty="-124.85"/>
                   </matrix>
@@ -39036,7 +39036,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="-2.15" centerPoint3DY="160.9">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="10.75" ty="121.7"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="10.75" ty="121.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39051,7 +39051,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="-74.35" centerPoint3DY="142.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="-61.5" ty="102.85"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="-61.5" ty="102.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39066,7 +39066,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="54.95" centerPoint3DY="142.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="67.8" ty="102.85"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="67.8" ty="102.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39081,7 +39081,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="-84.5" centerPoint3DY="151.35">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="-71.7" ty="111.95"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="-71.7" ty="111.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.8"/>
@@ -39096,7 +39096,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="69.5" centerPoint3DY="141.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="82.35" ty="101.95"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="82.35" ty="101.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39111,7 +39111,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="-72.45" centerPoint3DY="141.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="-59.95" ty="101.95"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="-59.95" ty="101.95"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39126,7 +39126,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="39.75" centerPoint3DY="124.8">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="52.45" ty="85.55"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="52.45" ty="85.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39141,7 +39141,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="-74.35" centerPoint3DY="142.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="-61.5" ty="102.85"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="-61.5" ty="102.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>
@@ -39156,7 +39156,7 @@ _root.播放音效("地震3.wav");
               <elements>
                 <DOMSymbolInstance libraryItemName="MovieClip/sprite 1133" centerPoint3DX="71.15" centerPoint3DY="142.2">
                   <matrix>
-                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.95899963378906" tx="83.95" ty="102.85"/>
+                    <Matrix a="3.9957275390625" c="1.05741882324219" d="2.958984375" tx="83.95" ty="102.85"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-3.55" y="3.85"/>

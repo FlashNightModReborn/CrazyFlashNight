@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1789892967" lastUniqueIdentifier="48">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招" itemID="69eff1b8-00000ac4" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-疾影1连招" lastModified="1792044265" lastUniqueIdentifier="48">
   <timeline>
     <DOMTimeline name="兵器攻击容器-疾影1连招">
       <layers>
@@ -820,7 +820,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="87" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="0.4" centerPoint3DY="311.2">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="0.4" centerPoint3DY="311.2">
                   <matrix>
                     <Matrix a="3.39999389648438" d="3.39999389648438" tx="-12.1" ty="298.7"/>
                   </matrix>
@@ -967,7 +967,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="7" duration="4" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" selected="true" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
+                <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
                     <Matrix tx="-135.3" ty="-307.05"/>
                   </matrix>
@@ -1555,7 +1555,7 @@ Z轴攻击范围 = 60;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="865.8" centerPoint3DY="350.45">
                   <matrix>
-                    <Matrix a="36.9638519287109" d="20.9840393066406" tx="422.95" ty="-5.05"/>
+                    <Matrix a="36.9638366699219" d="20.9840240478516" tx="422.95" ty="-5.05"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -1832,7 +1832,7 @@ Z轴攻击范围 = 60;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="495.95" centerPoint3DY="179.95">
                   <matrix>
-                    <Matrix a="58.8740081787109" d="16.9633178710938" tx="327.6" ty="-7.9"/>
+                    <Matrix a="58.8739929199219" d="16.9633178710938" tx="327.6" ty="-7.9"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -2522,9 +2522,9 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="97" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="531.2" centerPoint3DY="260.35">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="531.2" centerPoint3DY="260.35">
                   <matrix>
-                    <Matrix a="29.8341979980469" d="15.7758331298828" tx="-0.8" ty="84.7"/>
+                    <Matrix a="29.8341979980469" d="15.7758178710938" tx="-0.8" ty="84.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -2802,7 +2802,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="122" duration="2" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" selected="true" centerPoint3DX="509.45" centerPoint3DY="241.4">
+                <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="509.45" centerPoint3DY="241.4">
                   <matrix>
                     <Matrix a="49.9076538085938" d="20.6906127929688" tx="225.4" ty="-22.65"/>
                   </matrix>
@@ -2871,7 +2871,7 @@ Z轴攻击范围 = 60;
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="486.8" centerPoint3DY="473.65">
                   <matrix>
-                    <Matrix a="31.241943359375" d="17.2904357910156" tx="-27.6" ty="57.7"/>
+                    <Matrix a="31.241943359375" d="17.2904205322266" tx="-27.6" ty="57.7"/>
                   </matrix>
                   <transformationPoint>
                     <Point x="-12.5" y="12.5"/>
@@ -13257,7 +13257,7 @@ Z轴攻击范围 = 60;
             </DOMFrame>
             <DOMFrame index="97" motionTweenScale="false" keyMode="8192">
               <elements>
-                <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 694" selected="true" centerPoint3DX="-55.15" centerPoint3DY="31.95">
+                <DOMSymbolInstance libraryItemName="重复项目文件夹/shape 694" centerPoint3DX="-55.15" centerPoint3DY="31.95">
                   <matrix>
                     <Matrix a="4.46820068359375" d="-0.669647216796875" tx="373.25" ty="10.05"/>
                   </matrix>
