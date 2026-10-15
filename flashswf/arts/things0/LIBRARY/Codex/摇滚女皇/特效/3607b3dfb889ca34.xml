@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/3607b3dfb889ca34" itemID="71340000-e7ff7d57" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="3607b3dfb889ca34">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/071eda0ee73f1fd9">
+                  <transformationPoint>
+                    <Point x="4.95" y="13.15"/>
+                  </transformationPoint>
+                  <filters>
+                    <GlowFilter blurX="14" blurY="14" color="#E34AED" strength="2"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

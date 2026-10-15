@@ -52,11 +52,100 @@ var StageSelectViewModel = (function() {
         return s;
     }
 
+    // 区域色盘按场景主色调分组（2026-10-15 地图语汇对齐）：key 表示色调而非派系，
+    // 刻意不复用地图面板的派系 key（base/warlord/blackiron/fallen…），避免同名不同色的误读。
+    // 色值真源在 stage-select.css 的 data-accent 块；语义色（任务红、交互琥珀、外交青绿、
+    // 焦点冷青、跳转钢蓝）保留色相区间，区域主色不得落入（qa-suite tactical-language-floors 守门）。
+    var FRAME_ACCENT_MAP = {
+        '基地门口': 'signal',
+        '基地车库': 'ash',
+        '基地房顶': 'sand',
+        '车库': 'ash',
+        '黑铁会': 'iron',
+        '黑铁会总部': 'iron',
+        '黑铁会总堂': 'iron',
+        '堕落城': 'ash',
+        '诺亚': 'ash',
+        '诺亚前线基地深处': 'ash',
+        '诺亚前线基地深处第二层': 'ash',
+        '沙漠虫洞': 'sand',
+        '亡灵沙漠': 'sand',
+        '近郊': 'sand',
+        '荒漠': 'sand',
+        '军阀': 'sand',
+        '军阀重地': 'sand',
+        '军阀总基地': 'sand',
+        '雪山': 'frost',
+        '雪山第二层': 'frost',
+        '雪山内部': 'frost',
+        '雪山内部第二层': 'frost',
+        '坠毁战舰': 'frost',
+        '遗迹': 'frost',
+        '遗迹外部': 'frost',
+        '遗迹深处': 'frost',
+        '地下': 'abyss',
+        '地下2': 'abyss',
+        '地下2层': 'abyss',
+        '异界战场': 'abyss',
+        '试炼场深处': 'abyss',
+        '修道院': 'abyss'
+    };
+
+    function getFrameAccent(frameLabel) {
+        var label = String(frameLabel || S._currentFrameLabel || '');
+        return FRAME_ACCENT_MAP[label] || 'signal';
+    }
+
+    function isChallengeMode() {
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.isChallengeMode !== 'undefined') return !!S._runtimeSnapshot.isChallengeMode;
+        return !!(S._fixture && S._fixture.challenge);
+    }
+
+    function isForceUnlockActive() {
+        if (isChallengeMode()) return false;
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.forceUnlock === 'boolean') {
+            return S._runtimeSnapshot.forceUnlock;
+        }
+        return !!S._forceUnlock;
+    }
+
+    function setForceUnlock(active) {
+        if (isChallengeMode()) {
+            S._forceUnlock = false;
+            if (S._runtimeSnapshot && typeof S._runtimeSnapshot === 'object') {
+                S._runtimeSnapshot.forceUnlock = false;
+            }
+            return false;
+        }
+        var next = !!active;
+        S._forceUnlock = next;
+        if (S._runtimeSnapshot && typeof S._runtimeSnapshot === 'object') {
+            S._runtimeSnapshot.forceUnlock = next;
+        }
+        return next;
+    }
+
+    function getPreviewAsset(button) {
+        var b = button || {};
+        var hdUrl = typeof b.bannerUrl === 'string' && b.bannerUrl
+            ? b.bannerUrl
+            : (typeof b.hdPreviewUrl === 'string' && b.hdPreviewUrl ? b.hdPreviewUrl : '');
+        var legacyUrl = typeof b.previewUrl === 'string' && b.previewUrl ? b.previewUrl : '';
+        return {
+            url: hdUrl || legacyUrl || '',
+            legacyUrl: legacyUrl,
+            hdUrl: hdUrl,
+            tier: hdUrl ? 'hd' : 'legacy'
+        };
+    }
+
     function getStageState(stageName) {
         var stages = S._fixture && S._fixture.stages || {};
         var base = stages[stageName] || {};
         var state = {
             unlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            nativeUnlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            forceUnlocked: false,
             task: !!base.task,
             highestDifficulty: base.highestDifficulty || '简单',
             detail: base.detail || '',
@@ -83,13 +172,16 @@ var StageSelectViewModel = (function() {
         }
         if (S._runtimeSnapshot && S._runtimeSnapshot.unlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.unlockedStages, stageName)) {
             state.unlocked = !!S._runtimeSnapshot.unlockedStages[stageName];
+            state.nativeUnlocked = state.unlocked;
+        }
+        if (S._runtimeSnapshot && S._runtimeSnapshot.nativeUnlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.nativeUnlockedStages, stageName)) {
+            state.nativeUnlocked = !!S._runtimeSnapshot.nativeUnlockedStages[stageName];
+        }
+        if (isForceUnlockActive()) {
+            state.forceUnlocked = !state.nativeUnlocked;
+            state.unlocked = true;
         }
         return state;
-    }
-
-    function isChallengeMode() {
-        if (S._runtimeSnapshot && typeof S._runtimeSnapshot.isChallengeMode !== 'undefined') return !!S._runtimeSnapshot.isChallengeMode;
-        return !!(S._fixture && S._fixture.challenge);
     }
 
     function isRuntimeMode() {
@@ -166,7 +258,7 @@ var StageSelectViewModel = (function() {
     }
 
     function isDirectEntry(button) {
-        return button && button.entryKind && button.entryKind !== 'difficulty';
+        return !!(button && button.entryKind && button.entryKind !== 'difficulty' && button.entryKind !== 'map');
     }
 
     function getStageDisplayName(button) {
@@ -276,12 +368,21 @@ var StageSelectViewModel = (function() {
     function setFixture(name) {
         S._fixtureName = name || 'mixed';
         S._fixture = StageSelectData.getFixture(S._fixtureName);
+        if (S._fixture && S._fixture.challenge) {
+            S._forceUnlock = false;
+        }
     }
 
     // runtime snapshot 应用（纯状态半）：全量替换 + 帧标签随动；重渲染 / 日志由 renderer 编排。
     function applySnapshot(snapshot) {
         S._runtimeSnapshot = snapshot || {};
         S._lastError = '';
+        if (S._runtimeSnapshot.isChallengeMode) {
+            S._forceUnlock = false;
+            S._runtimeSnapshot.forceUnlock = false;
+        } else if (typeof S._runtimeSnapshot.forceUnlock === 'boolean') {
+            S._forceUnlock = S._runtimeSnapshot.forceUnlock;
+        }
         if (S._runtimeSnapshot.currentFrameLabel
                 && (!StageSelectData.hasFrame || StageSelectData.hasFrame(S._runtimeSnapshot.currentFrameLabel))) {
             S._currentFrameLabel = S._runtimeSnapshot.currentFrameLabel;
@@ -325,9 +426,14 @@ var StageSelectViewModel = (function() {
     // 导出：被 renderer / inspector / bridge / facade 引用的纯数据层 API
     return {
         LIMITATION_DESC: LIMITATION_DESC,
+        FRAME_ACCENT_MAP: FRAME_ACCENT_MAP,
+        getFrameAccent: getFrameAccent,
         renderLimitDetail: renderLimitDetail,
         getStageState: getStageState,
         isChallengeMode: isChallengeMode,
+        isForceUnlockActive: isForceUnlockActive,
+        setForceUnlock: setForceUnlock,
+        getPreviewAsset: getPreviewAsset,
         isRuntimeMode: isRuntimeMode,
         getTaskTargets: getTaskTargets,
         formatTaskCount: formatTaskCount,

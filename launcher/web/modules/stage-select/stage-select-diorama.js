@@ -156,7 +156,14 @@ var StageSelectDiorama = (function() {
         mount.prepend(cache.canvas);cache.view.resize(1024,576);
         if(active&&!failed)cache.view.overview(preset('overview'));else cache.view.stop();
     }
-    function edit(enabled){return cache?cache.view.edit(enabled):Promise.resolve();}
+    function edit(enabled){
+        if(!cache)return Promise.resolve();
+        if(!failed&&focused&&focusHost&&focusHost.clientWidth&&focusHost.clientHeight){
+            cache.view.resize(focusHost.clientWidth,focusHost.clientHeight);
+            cache.render();
+        }
+        return cache.view.edit(enabled);
+    }
     function exportPresets(){
         if(!cache)return;var value=cache.view.snapshot();if(!cache.view.valid(value))throw new Error('当前取景超出可保存范围，请恢复默认取景后调整。');
         var result=Object.assign({},presets);result[focused||'overview']=value;return result;
@@ -235,6 +242,18 @@ var StageSelectDiorama = (function() {
     window.addEventListener('pagehide',function(){active=false;discard();});
     return {bind:bind,hide:hide,place:place,placeNav:placeNav,retry:retry,focus:focus,overview:overview,edit:edit,
         canFocus:canFocus,
+        getTourStageIds:function(){
+            var frame=StageSelectData.getFrame(S._currentFrameLabel);
+            var buttons=frame&&frame.stageButtons||[];
+            return buttons.filter(function(b){return !StageSelectViewModel.isDirectEntry(b)&&canFocus(b.id);}).map(function(b){return b.id;});
+        },
+        peekStage:function(id){
+            if(!active||!cache||failed||!canFocus(id))return false;
+            cache.view.focus(id,preset(id),false);
+            cache.view.edit(true);
+            changed();
+            return true;
+        },
         fallbackMap:function(id){
             var screenOnly=config&&config.twoDimensionalStageIds&&config.twoDimensionalStageIds.indexOf(id)>=0;
             return active&&(failed||screenOnly)&&config.fallback?{src:StageSelectCore.resolveAssetUrl(config.fallback),x:0,y:0,w:1024,h:576,

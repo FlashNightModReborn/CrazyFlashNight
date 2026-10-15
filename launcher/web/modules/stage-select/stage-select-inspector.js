@@ -88,17 +88,32 @@
         var state = VM.getStageState(button.stageName);
         var detail = StageSelectCore.buildStageDetail(button, state);
         var displayName = VM.getStageDisplayName(button);
+        var previewAsset = VM.getPreviewAsset(button);
+        var resolvedPreview = StageSelectCore.resolveAssetUrl(previewAsset.url || button.previewUrl || '');
+        var isMap = button.entryKind === 'map';
+        var stageTypeText = state.stageType || button.stageType || (isMap ? '外交地图' : '');
         S._inspectorEl.setAttribute('aria-label', '关卡决策：' + displayName);
         S._inspectorNameEl.textContent = displayName;
-        S._inspectorTypeEl.textContent = state.stageType || '';
-        S._inspectorTypeEl.hidden = !state.stageType;
-        S._inspectorPreviewEl.src = StageSelectCore.resolveAssetUrl(button.previewUrl || '');
+        S._inspectorTypeEl.textContent = stageTypeText;
+        S._inspectorTypeEl.hidden = !stageTypeText;
+        S._inspectorPreviewEl.src = resolvedPreview;
         S._inspectorPreviewEl.alt = displayName + ' 预览';
+        if (S._inspectorPreviewEl.parentElement) {
+            S._inspectorPreviewEl.parentElement.setAttribute('data-preview-tier', previewAsset.tier);
+        }
         S._inspectorDetailEl.innerHTML = detail.html;
         if (state.unlocked) {
-            S._inspectorLockEl.hidden = true;
-            S._inspectorLockEl.textContent = '';
+            if (state.forceUnlocked) {
+                S._inspectorLockEl.classList.add('is-force-unlocked');
+                S._inspectorLockEl.textContent = '⚡ 演习解锁已生效' + (state.lockReason ? '（原条件：' + state.lockReason + '）' : '');
+                S._inspectorLockEl.hidden = false;
+            } else {
+                S._inspectorLockEl.classList.remove('is-force-unlocked');
+                S._inspectorLockEl.hidden = true;
+                S._inspectorLockEl.textContent = '';
+            }
         } else {
+            S._inspectorLockEl.classList.remove('is-force-unlocked');
             // 逐关锁定原因（2026-08-16 专项）：snapshot stageDetails[].lockReason 由 AS2
             // StageSelectPanelService.buildLockReason 生成（仅锁定时非空，字段恒在）；
             // 空串 / 旧快照缺字段时回退通用文案。
@@ -114,9 +129,10 @@
             S._inspectorTaskEl.hidden = true;
             S._inspectorTaskEl.textContent = '';
         }
-        S._inspectorDiffEl.innerHTML = state.unlocked ? StageSelectRenderer.renderDifficulties(button, state, true) : '';
-        S._inspectorDiffEl.hidden = !state.unlocked;
+        S._inspectorDiffEl.innerHTML = (state.unlocked && !isMap) ? StageSelectRenderer.renderDifficulties(button, state, true) : '';
+        S._inspectorDiffEl.hidden = !state.unlocked || isMap;
         S._inspectorEl.classList.toggle('is-locked', !state.unlocked);
+        S._inspectorEl.classList.toggle('is-force-unlocked', !!state.forceUnlocked);
         S._inspectorEl.classList.toggle('is-busy', !!S._busyStageName && S._busyStageName === button.stageName);
         // 浮层不遮选中节点本身：节点在下半屏时检查器改靠顶停靠（runtime 让开 42px 顶部 HUD）。
         S._inspectorEl.classList.toggle('is-dock-top', VM.getStageNavPoint(button, StageSelectRenderer.computeDirectSizing).y > S.DESIGN_H * 0.5);
@@ -124,11 +140,17 @@
         StageSelectFocus.render(button, state);
     }
 
-    // 键盘打开检查器后的落点：任务推荐难度 > 首个难度 > （锁定时）关闭钮。
+    // 键盘打开检查器后的落点：任务推荐难度 > 首个难度 > 外交据点出发按钮 > （锁定时）关闭钮。
     function focusInspectorPrimary() {
         if (!isInspectorOpen()) return;
         var target = S._inspectorDiffEl.querySelector('.stage-select-difficulty.is-recommended')
             || S._inspectorDiffEl.querySelector('.stage-select-difficulty');
+        if (!target) {
+            var enterBtn = document.getElementById('stage-focus-enter');
+            if (enterBtn && !enterBtn.disabled && !enterBtn.closest('[hidden]')) {
+                target = enterBtn;
+            }
+        }
         if (!target) target = document.querySelector('.stage-focus-surface .stage-focus-action');
         if (target) target.focus();
     }
@@ -190,10 +212,10 @@
         clearSelection();
     }
 
-    // 难度点击委派入口（面板根 click 委托，同时覆盖 hover 卡与检查器内的难度按钮）。
+    // 难度与外交进图点击委派入口（面板根 click 委托，同时覆盖 hover 卡与检查器内的按钮）。
     function handleDifficultyClick(e) {
         var target = e.target;
-        if (!target || !target.classList || !target.classList.contains('stage-select-difficulty')) return;
+        if (!target || !target.classList || (!target.classList.contains('stage-select-difficulty') && !target.classList.contains('stage-select-map-action'))) return;
         e.preventDefault();
         e.stopPropagation();
         if (target.dataset.focusDifficulty === 'true') {
@@ -244,7 +266,7 @@
         };
         StageSelectCore.logDev((entryKind === 'difficulty' ? 'difficulty' : entryKind) + ' enter request: ' + stageName + (difficulty ? ' / ' + difficulty : ''));
         StageSelectCore.cue('activate'); // 进入关卡 = 核心提交动作：本地校验已过，播意图音（契约 §2 activate；权威回包不再补结果音）
-        if (pressedTarget && pressedTarget.classList && pressedTarget.classList.contains('stage-select-difficulty')) {
+        if (pressedTarget && pressedTarget.classList && (pressedTarget.classList.contains('stage-select-difficulty') || pressedTarget.classList.contains('stage-select-map-action'))) {
             pressedTarget.classList.add('is-pressed');
             StageSelectCore.scheduleTimer(function() {
                 pressedTarget.classList.remove('is-pressed');

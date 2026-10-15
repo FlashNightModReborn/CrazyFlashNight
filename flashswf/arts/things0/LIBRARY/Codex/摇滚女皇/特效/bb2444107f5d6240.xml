@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/bb2444107f5d6240" itemID="71340000-cbb6547d" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="bb2444107f5d6240">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/1c2b49311db86692" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.684494018554688" d="0.684494018554688" tx="1.2" ty="8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/1c2b49311db86692" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.995162963867188" d="0.22698974609375" tx="0.6" ty="34.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/1c2b49311db86692" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.593795776367188" d="0.5078125" tx="1.4" ty="18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.95" y="58.6"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/1c2b49311db86692" blendMode="add">
+                  <matrix>
+                    <Matrix a="1.29803466796875" d="0.0848236083984375" ty="43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.05" y="58.95"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/1c2b49311db86692" blendMode="add">
+                  <matrix>
+                    <Matrix a="0.0748138427734375" d="0.8231201171875" tx="2.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="2.65" y="58.5"/>
+                  </transformationPoint>
+                  <filters>
+                    <BlurFilter blurX="2" blurY="2" quality="3"/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/演出/guitar-gun" itemID="71340000-009fb532">
+  <timeline>
+    <DOMTimeline name="guitar-gun">
+      <layers>
+        <DOMLayer name="停止自主播放" color="#A84FFF">
+          <frames>
+            <DOMFrame index="0" duration="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

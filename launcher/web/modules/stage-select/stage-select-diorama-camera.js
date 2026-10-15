@@ -22,8 +22,19 @@ export function createCameraView(config, root, camera, renderer, render, onChang
             const forward=controls.target.clone().sub(camera.position);forward.y=0;forward.normalize();
             const right=forward.clone().cross(new THREE.Vector3(0,1,0));
             const delta=right.multiplyScalar(x).addScaledVector(forward,y).normalize().multiplyScalar(span/camera.zoom*.4*dt*(fastWalk?2.5:1));
-            // 同时平移相机和轨道中心，保留鼠标正在改变的观察方向。
-            camera.position.add(delta);controls.target.add(delta);controls.update();
+            const maxRadius=(config.camera.maxSpan || 240)*1.15;
+            const homeTarget=new THREE.Vector3(...home.target);
+            const nextTarget=controls.target.clone().add(delta);
+            const offsetXZ=new THREE.Vector2(nextTarget.x-homeTarget.x,nextTarget.z-homeTarget.z);
+            if(offsetXZ.length()>maxRadius) {
+                offsetXZ.setLength(maxRadius);
+                const clampedDelta=new THREE.Vector3(homeTarget.x+offsetXZ.x,nextTarget.y,homeTarget.z+offsetXZ.y).sub(controls.target);
+                camera.position.add(clampedDelta);controls.target.add(clampedDelta);
+            } else {
+                // 同时平移相机和轨道中心，保留鼠标正在改变的观察方向。
+                camera.position.add(delta);controls.target.add(delta);
+            }
+            controls.update();
         }
         walkFrame=requestAnimationFrame(walk);
     }
@@ -108,15 +119,20 @@ export function createCameraView(config, root, camera, renderer, render, onChang
         if (!building) return home;
         const box=new THREE.Box3().setFromObject(building);
         const aim=box.getCenter(new THREE.Vector3());
-        const direction=new THREE.Vector3(...home.position).sub(new THREE.Vector3(...home.target)).normalize();
+        const direction=new THREE.Vector3(...home.position).sub(new THREE.Vector3(...home.target));
+        direction.y*=0.78;
+        direction.normalize();
         const position=aim.clone().addScaledVector(direction,90), probe=camera.clone();
         probe.position.copy(position);probe.lookAt(aim);probe.updateMatrixWorld(true);
         const projected=new THREE.Box3();
         for (const x of [box.min.x,box.max.x]) for (const y of [box.min.y,box.max.y]) for (const z of [box.min.z,box.max.z])
             projected.expandByPoint(new THREE.Vector3(x,y,z).applyMatrix4(probe.matrixWorldInverse));
-        const size=projected.getSize(new THREE.Vector3());
+        const size=projected.getSize(new THREE.Vector3()), center=projected.getCenter(new THREE.Vector3());
+        const shift=new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld,0).multiplyScalar(center.x)
+            .addScaledVector(new THREE.Vector3().setFromMatrixColumn(probe.matrixWorld,1),center.y);
+        aim.add(shift); position.add(shift);
         return {position:position.toArray(),target:aim.toArray(),
-            span:Math.max(12,Math.min(120,Math.max(size.x,size.y*width/height)*1.3))};
+            span:Math.max(12,Math.min(120,Math.max(size.x,size.y*width/height)*1.16))};
     }
     function focus(id,preset,animate=true) { focusId=id; highlight(id); move(preset || defaultFocus(id),animate); }
     function overview(preset,animate=true) { focusId=''; highlight(''); move(preset || home,animate); }

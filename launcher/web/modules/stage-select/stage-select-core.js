@@ -80,6 +80,11 @@
     state._lastInputKeyboard = false;
     state._scaleHandle = null;   // PanelScale 句柄（共享缩放 primitive；onOpen attach / onClose detach）
     state._timers = [];          // 统一登记的 setTimeout，onClose 全清（幂等销毁）
+    state._forceUnlock = false;  // 选关修改器小模块：非挑战模式下临时全关卡解锁
+    state._modToolbarEl = undefined;
+    state._modUnlockBtnEl = undefined;
+    state._modTestSpaceBtnEl = undefined;
+    state._tourPinsVisible = false; // 游览模式地标标签开关
 
     var S = state;
 
@@ -223,7 +228,11 @@
         if (detail) parts.push(detail);
         if (limit) parts.push(limit);
         if (!parts.length && material) parts.push(material);
-        if (!parts.length) parts.push('暂无资料');
+        if (!parts.length) {
+            parts.push(button && button.entryKind === 'map'
+                ? '非交战安全区域与外交据点，可前往休整、交易或推进支线交互。'
+                : '暂无资料');
+        }
         var text = parts.join('\n');
         return {
             html: escapeHtml(text).replace(/\r?\n/g, '<br>'),

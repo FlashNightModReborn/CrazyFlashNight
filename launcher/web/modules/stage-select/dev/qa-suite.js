@@ -216,7 +216,7 @@ var StageSelectHarnessQA = (function() {
             ['hover-preview', 'stage card has preview and difficulty buttons', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var button = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var button = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!button, 'stage button exists');
                     // 三维图的程序性回焦不弹卡；键盘 Tab 到达才应打开预览。
                     button.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
@@ -981,7 +981,7 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['direct-entry-actions', 'direct map/task entries send entryKind without difficulty', function() {
+            ['direct-entry-actions', 'map entries open hover card with one-click action while task entries remain direct', function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 document.getElementById('stage-frame-select').value = '地下2层';
                 host.open({ mode: 'runtime', debug: false });
@@ -992,12 +992,20 @@ var StageSelectHarnessQA = (function() {
                     var mapEntry = document.querySelector('.stage-select-stage-button.is-map-entry[data-stage-name="幸存者营地"]');
                     var taskEntry = document.querySelector('.stage-select-stage-button.is-task-entry[data-stage-name="菲尼克斯Lv10"]');
                     api.assert(sigils.length === 2, '地下2层 magic sigil base art rendered');
-                    api.assert(directEntries.length >= 6, '地下2层 direct entries rendered');
+                    api.assert(directEntries.length >= 4, '地下2层 direct task entries rendered');
                     api.assert(!!mapEntry, '幸存者营地 map entry rendered');
                     api.assert(!!taskEntry, '菲尼克斯Lv10 task entry rendered');
                     host.enterMessages.length = 0;
-                    api.assert(!mapEntry.querySelector('.stage-select-difficulty'), 'map entry has no secondary choice');
-                    mapEntry.click();
+                    mapEntry.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+                    var mapMarker = mapEntry.querySelector('.stage-select-marker');
+                    var mapName = mapEntry.querySelector('.stage-select-stage-name');
+                    api.assert(getComputedStyle(mapMarker).display !== 'none', '2D map marker stays visible on hover');
+                    api.assert(getComputedStyle(mapName).visibility !== 'hidden', '2D map name stays visible on hover');
+                    var mapAnchor = findCardAnchor(mapEntry.getAttribute('data-stage-id'));
+                    api.assert(!!mapAnchor && mapAnchor.classList.contains('is-card-open'), 'map entry opens hover card');
+                    var mapAction = mapAnchor.querySelector('.stage-select-map-action');
+                    api.assert(!!mapAction, 'map hover card renders one-click action button');
+                    mapAction.click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
                     }, 2000, 'direct map enter').then(function(msg) {
@@ -1164,7 +1172,7 @@ var StageSelectHarnessQA = (function() {
                 document.getElementById('stage-fixture-select').value = 'mixed';
                 host.open();
                 return waitReady(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!node, 'unlocked difficulty node exists');
                     var stageId = node.getAttribute('data-stage-id');
                     node.focus();
@@ -1189,7 +1197,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function() {
                     host.enterMessages.length = 0;
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageName = node.getAttribute('data-stage-name');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1217,7 +1225,7 @@ var StageSelectHarnessQA = (function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageId = node.getAttribute('data-stage-id');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1293,7 +1301,7 @@ var StageSelectHarnessQA = (function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     host.enterMessages.length = 0;
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageName = node.getAttribute('data-stage-name');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1348,7 +1356,7 @@ var StageSelectHarnessQA = (function() {
             ['esc-layering', 'Escape consumes frame menu > inspector > panel in order on both paths', function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
                     api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector open');
@@ -1492,7 +1500,7 @@ var StageSelectHarnessQA = (function() {
             ['selection-persists-rebuild', 'selection and inspector survive snapshot merge and same-frame re-render', function() {
                 host.open();
                 return waitReady(api).then(function() {
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     var stageId = node.getAttribute('data-stage-id');
                     var stageName = node.getAttribute('data-stage-name');
                     node.click();
@@ -1521,7 +1529,7 @@ var StageSelectHarnessQA = (function() {
                     return 'selection persists across rebuilds';
                 });
             }],
-            ['direct-entry-no-inspector', 'direct entries keep one-step enter and never open inspector', function() {
+            ['direct-entry-no-inspector', 'map entries open focus inspector while task entries keep one-step enter', function() {
                 document.getElementById('stage-fixture-select').value = 'allUnlocked';
                 document.getElementById('stage-frame-select').value = '地下2层';
                 host.open({ mode: 'runtime', debug: false });
@@ -1532,11 +1540,15 @@ var StageSelectHarnessQA = (function() {
                     host.enterMessages.length = 0;
                     mapEntry.focus();
                     mapEntry.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
-                    api.assert(!StageSelectPanel._debugGetState().inspectorOpen, 'no inspector for map entry');
-                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, '', 'no selection for map entry');
+                    api.assert(StageSelectPanel._debugGetState().inspectorOpen, 'inspector opens for map entry');
+                    api.assertEqual(StageSelectPanel._debugGetState().selectedStageId, mapEntry.getAttribute('data-stage-id'), 'map entry selected');
+                    var enterBtn = document.getElementById('stage-focus-enter');
+                    api.assert(document.activeElement === enterBtn, 'focus moves to stage-focus-enter for map entry');
+                    api.assertEqual(enterBtn.textContent, '前往地点', 'map focus enter label');
+                    enterBtn.click();
                     return api.waitFor(function() {
                         return host.enterMessages.length ? host.enterMessages[0] : null;
-                    }, 2000, 'direct map enter via keyboard').then(function(msg) {
+                    }, 2000, 'map enter via focus inspector').then(function(msg) {
                         api.assertEqual(msg.entryKind, 'map', 'map entryKind sent');
                         api.assertEqual(msg.difficulty, '', 'map difficulty empty');
                     });
@@ -1556,7 +1568,7 @@ var StageSelectHarnessQA = (function() {
                         }, 2000, 'direct task enter via keyboard').then(function(msg) {
                             api.assertEqual(msg.entryKind, 'task', 'task entryKind sent');
                             api.assertEqual(msg.difficulty, '', 'task difficulty empty');
-                            return 'direct entries bypass inspector';
+                            return 'map inspector and task direct entry ok';
                         });
                     });
                 });
@@ -1566,7 +1578,7 @@ var StageSelectHarnessQA = (function() {
                 host.open();
                 return waitRuntime(api).then(function(state) {
                     api.assert(state.challenge, 'challenge flag set');
-                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-locked)');
+                    var node = document.querySelector('.stage-select-stage-button:not(.is-direct-entry):not(.is-map-entry):not(.is-locked)');
                     api.assert(!!node, 'challenge node exists');
                     node.focus();
                     node.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true, cancelable: true }));
@@ -1856,6 +1868,169 @@ var StageSelectHarnessQA = (function() {
                     api.assertEqual(getComputedStyle(hitZone).outlineStyle, 'none', 'ring gone under pointer modality');
                     return 'keyboard ring semantics ok';
                 });
+            }],
+            ['modifier-pod-and-tactical-ux', 'regional data-accent, dual-track preview tier, force-unlock toggle, test-space jump, and challenge auto-hide', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                document.getElementById('stage-frame-select').value = '基地车库';
+                host.open();
+                return waitRuntime(api).then(function() {
+                    var panel = document.querySelector('.stage-select-panel');
+                    var modPod = document.querySelector('.stage-select-mod-pod');
+                    var unlockBtn = document.getElementById('stage-select-mod-unlock');
+                    var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
+                    api.assert(!!modPod && !modPod.hidden, 'modifier pod visible in normal mode');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'ash', '基地车库 (堕落城) uses ash tone');
+                    var previewWrap = document.querySelector('.stage-select-preview-wrap');
+                    api.assertEqual(previewWrap && previewWrap.getAttribute('data-preview-tier'), 'legacy', 'legacy preview tier set by default');
+
+                    StageSelectPanel._debugSetFrame('基地门口', 'qa-accent-base');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'signal', '基地门口 uses signal tone');
+                    StageSelectPanel._debugSetFrame('黑铁会总部', 'qa-accent');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'iron', '黑铁会总部 uses iron tone');
+                    StageSelectPanel._debugSetFrame('基地房顶', 'qa-accent-warlord');
+                    api.assertEqual(panel.getAttribute('data-accent'), 'sand', '基地房顶 (荒漠) uses sand tone');
+                    StageSelectPanel._debugSetFrame('基地车库', 'qa-accent-back');
+
+                    var lockedBefore = document.querySelectorAll('.stage-select-stage-button.is-locked').length;
+                    api.assert(lockedBefore > 0, 'mixed fixture has locked stages before force unlock');
+                    unlockBtn.click();
+                    return api.waitFor(function() {
+                        return unlockBtn.getAttribute('aria-pressed') === 'true'
+                            && document.querySelectorAll('.stage-select-stage-button.is-locked').length === 0;
+                    }, 2000, 'force unlock applied');
+                }).then(function() {
+                    var forceNodes = document.querySelectorAll('.stage-select-stage-button.is-force-unlocked');
+                    api.assert(forceNodes.length > 0, 'force-unlocked stages carry .is-force-unlocked');
+                    host.returnMessages.length = 0;
+                    var testSpaceBtn = document.getElementById('stage-select-mod-test-space');
+                    testSpaceBtn.click();
+                    return api.waitFor(function() {
+                        return host.returnMessages.length ? host.returnMessages[0] : null;
+                    }, 2000, 'test space return_frame');
+                }).then(function(retMsg) {
+                    api.assertEqual(retMsg.frameLabel, '地图-测试空间', 'test space button jumps to 地图-测试空间');
+                    document.getElementById('stage-fixture-select').value = 'challenge';
+                    host.open();
+                    return waitRuntime(api);
+                }).then(function() {
+                    var modPod = document.querySelector('.stage-select-mod-pod');
+                    api.assert(!!modPod && modPod.hidden, 'modifier pod auto-hidden in challenge mode');
+                    return 'modifier pod and tactical ux ok';
+                });
+            }],
+            ['tactical-language-floors', 'primary/secondary color split keeps cross-region node semantics invariant while regional secondary chrome adapts', function() {
+                document.getElementById('stage-fixture-select').value = 'mixed';
+                document.getElementById('stage-frame-select').value = '基地门口';
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
+                    var panel = document.querySelector('.stage-select-panel');
+                    var header = panel.querySelector('.stage-select-header');
+                    api.assert(panel.classList.contains('is-runtime'), 'floor gate runs the production runtime chrome');
+                    api.assert(panel.classList.contains('is-diorama'), '基地门口 runs the diorama skin');
+                    var originalTone = panel.getAttribute('data-accent');
+                    var rootStyle = getComputedStyle(panel);
+                    var primaryRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-primary-rgb'));
+                    var primaryHiRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-primary-hi-rgb'));
+                    var primaryInkRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-primary-ink-rgb'));
+                    var combatRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-pin-combat-rgb'));
+                    var goldRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-gold-rgb'));
+                    var mapRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-pin-map-rgb'));
+                    var selectedRgb = qaParseTriplet(rootStyle.getPropertyValue('--ss-selected-rgb'));
+                    api.assert(primaryRgb && primaryHiRgb && primaryInkRgb && combatRgb && goldRgb && mapRgb && selectedRgb, 'primary and node semantic triplets defined');
+                    api.assertEqual(selectedRgb.join(','), primaryRgb.join(','), 'selected state uses fixed primary toxic green (leaving gold for tasks/modifiers)');
+                    api.assert(qaContrast(primaryRgb, primaryInkRgb) >= 4.5, 'primary ink on solid primary keeps 4.5:1');
+
+                    var plainNode = panel.querySelector('.stage-select-stage-button:not(.is-task):not(.is-locked):not(.is-map-entry):not(.is-selected)');
+                    var taskNode = panel.querySelector('.stage-select-stage-button.is-task:not(.is-locked)');
+                    var mapNode = panel.querySelector('.stage-select-stage-button.is-map-entry:not(.is-locked)');
+                    api.assert(plainNode && taskNode && mapNode, 'combat, task, and diplomacy nodes present in 基地门口');
+
+                    var expectedCombatColor = 'rgb(' + combatRgb.join(', ') + ')';
+                    var expectedGoldColor = 'rgb(' + goldRgb.join(', ') + ')';
+                    var expectedMapColor = 'rgb(' + mapRgb.join(', ') + ')';
+
+                    var semanticNames = ['--ss-pin-combat-rgb', '--ss-gold-rgb', '--ss-pin-map-rgb', '--ss-task-rgb', '--ss-danger-rgb', '--ss-focus-rgb', '--ss-pin-jump-rgb'];
+                    var semantics = semanticNames.map(function(name) {
+                        var rgb = qaParseTriplet(rootStyle.getPropertyValue(name));
+                        api.assert(rgb, name + ' resolves to an rgb triplet');
+                        return { name: name, hsl: qaHsl(rgb) };
+                    });
+                    ['signal', 'sand', 'ash', 'iron', 'frost', 'abyss'].forEach(function(tone) {
+                        panel.setAttribute('data-accent', tone);
+                        var style = getComputedStyle(panel);
+                        var accent = qaParseTriplet(style.getPropertyValue('--ss-accent-rgb'));
+                        var ink = qaParseTriplet(style.getPropertyValue('--ss-accent-ink-rgb'));
+                        var text = qaParseTriplet(style.getPropertyValue('--ss-region-text-rgb'));
+                        var plate = qaParseTriplet(style.getPropertyValue('--ss-header-rgb'));
+                        api.assert(accent && ink && text && plate, tone + ' defines secondary accent/ink/text/header triplets');
+                        var hsl = qaHsl(accent);
+                        if (hsl.s > 0.3) {
+                            semantics.forEach(function(semantic) {
+                                if (semantic.hsl.s <= 0.3) return;
+                                var distance = qaHueDistance(hsl.h, semantic.hsl.h);
+                                api.assert(distance >= 20, tone + ' secondary accent hue ' + hsl.h.toFixed(0) + ' collides with ' + semantic.name + ' (' + distance.toFixed(0) + '°)');
+                            });
+                        }
+                        api.assert(qaContrast(accent, ink) >= 4.5, tone + ' ink on solid secondary accent keeps 4.5:1');
+                        var worstPlate = qaComposite(plate, 0.86, [255, 255, 255]);
+                        api.assert(qaContrast(text, worstPlate) >= 4.5, tone + ' name text over plate keeps 4.5:1 on a white scene');
+
+                        // 跨区域语义恒定性：切换区域副色时，战斗红/任务金/外交青绿的铭牌侧条与信标内芯零漂移，而顶栏副色下划线随区域改变
+                        api.assertEqual(getComputedStyle(header, '::after').backgroundColor, 'rgb(' + accent.join(', ') + ')', tone + ' secondary header underline follows region accent');
+                        api.assertEqual(getComputedStyle(plainNode.querySelector('.stage-select-stage-name')).borderLeftColor, expectedCombatColor, tone + ' combat stage keeps combat-red left stripe');
+                        api.assertEqual(getComputedStyle(plainNode.querySelector('.stage-select-marker-core')).fill, expectedCombatColor, tone + ' combat stage keeps combat-red marker core');
+                        api.assertEqual(getComputedStyle(taskNode.querySelector('.stage-select-stage-name')).borderLeftColor, expectedGoldColor, tone + ' task stage keeps task-gold left stripe');
+                        api.assertEqual(getComputedStyle(taskNode.querySelector('.stage-select-marker-core')).fill, expectedGoldColor, tone + ' task stage keeps task-gold marker core');
+                        api.assertEqual(getComputedStyle(mapNode.querySelector('.stage-select-stage-name')).borderLeftColor, expectedMapColor, tone + ' diplomacy stage keeps map-green left stripe');
+                        api.assertEqual(getComputedStyle(mapNode.querySelector('.stage-select-marker-core')).fill, expectedMapColor, tone + ' diplomacy stage keeps map-green marker core');
+                    });
+                    panel.setAttribute('data-accent', originalTone);
+
+                    var stage = document.querySelector('.stage-select-stage');
+                    api.assertEqual(getComputedStyle(stage, '::after').pointerEvents, 'none', 'atmosphere layer never takes pointer input');
+                    var clipped = Array.prototype.filter.call(panel.querySelectorAll('button, [tabindex], [role="button"]'), function(el) {
+                        return getComputedStyle(el).clipPath !== 'none';
+                    });
+                    api.assertEqual(clipped.length, 0, 'focusable controls carry no clip-path (focus ring and hit corners stay intact)');
+
+                    var names = Array.prototype.slice.call(panel.querySelectorAll('.stage-select-stage-button > .stage-select-stage-name'));
+                    api.assert(names.length > 0, 'diorama names rendered');
+                    var plateRgb = qaParseTriplet(getComputedStyle(panel).getPropertyValue('--ss-header-rgb'));
+                    names.forEach(function(name) {
+                        var st = getComputedStyle(name);
+                        if (st.visibility === 'hidden' || st.display === 'none') return;
+                        var fg = qaParseColor(st.color);
+                        var plateOnWhite = qaComposite(plateRgb, 0.86, [255, 255, 255]);
+                        var effective = qaComposite(fg.rgb, fg.a, plateOnWhite);
+                        api.assert(qaContrast(effective, plateOnWhite) >= 4.5, 'name "' + name.textContent.trim() + '" keeps 4.5:1 (locked included)');
+                    });
+
+                    var expectedPrimaryHi = 'rgb(' + primaryHiRgb.join(', ') + ')';
+                    var lastSeen = '';
+                    plainNode.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true, cancelable: true }));
+                    plainNode.focus();
+                    return api.waitFor(function() {
+                        var label = plainNode.querySelector('.stage-select-stage-name');
+                        var markerFill = plainNode.querySelector('.stage-select-marker-fill');
+                        var reticleOpacity = getComputedStyle(label, '::after').opacity;
+                        lastSeen = plainNode.className + ' / fill=' + getComputedStyle(markerFill).fill + ' / left=' + getComputedStyle(label).borderLeftColor + ' / reticle=' + reticleOpacity;
+                        return plainNode.classList.contains('is-kb-focus')
+                            && getComputedStyle(markerFill).fill === expectedPrimaryHi
+                            && getComputedStyle(label).borderLeftColor === expectedCombatColor
+                            && reticleOpacity !== '0' ? label : null;
+                    }, 1500, 'keyboard focus lights outer marker/frame with fixed primary while preserving combat-red stripe').catch(function(error) {
+                        throw new Error(error.message + ' (expected fill=' + expectedPrimaryHi + ', left=' + expectedCombatColor + ', saw ' + lastSeen + ')');
+                    }).then(function(label) {
+                        api.assert(getComputedStyle(label, '::after').opacity !== '0', 'reticle brackets appear on keyboard focus');
+                        var marker = plainNode.querySelector('.stage-select-marker');
+                        var markerCore = plainNode.querySelector('.stage-select-marker-core');
+                        api.assert(getComputedStyle(marker).display !== 'none', 'focused 3D marker stays visible (leader keeps its anchor)');
+                        api.assertEqual(getComputedStyle(markerCore).fill, expectedCombatColor, 'focused 3D marker core preserves combat-red semantic color');
+                        plainNode.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
+                        plainNode.blur();
+                        return 'tactical language floors ok';
+                    });
+                });
             }]
         ];
 
@@ -1885,6 +2060,56 @@ var StageSelectHarnessQA = (function() {
         return chain.then(function(results) {
             return MinigameHarness.normalizeBundle(results);
         });
+    }
+
+    // tactical-language-floors 用色彩工具：只读计算值，不改面板状态。
+    function qaParseTriplet(value) {
+        var parts = String(value || '').split(',').map(function(part) { return Number(part.trim()); });
+        if (parts.length !== 3 || parts.some(function(n) { return !isFinite(n); })) return null;
+        return parts;
+    }
+
+    function qaParseColor(value) {
+        var match = /rgba?\(([^)]+)\)/.exec(String(value || ''));
+        if (!match) return { rgb: [0, 0, 0], a: 0 };
+        var parts = match[1].split(',').map(function(part) { return Number(part.trim()); });
+        return { rgb: parts.slice(0, 3), a: parts.length > 3 ? parts[3] : 1 };
+    }
+
+    function qaHsl(rgb) {
+        var r = rgb[0] / 255, g = rgb[1] / 255, b = rgb[2] / 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b), d = max - min;
+        var l = (max + min) / 2;
+        var s = d === 0 ? 0 : d / (1 - Math.abs(2 * l - 1));
+        var h = 0;
+        if (d !== 0) {
+            if (max === r) h = 60 * (((g - b) / d) % 6);
+            else if (max === g) h = 60 * ((b - r) / d + 2);
+            else h = 60 * ((r - g) / d + 4);
+        }
+        return { h: (h + 360) % 360, s: s, l: l };
+    }
+
+    function qaHueDistance(a, b) {
+        var d = Math.abs(a - b) % 360;
+        return d > 180 ? 360 - d : d;
+    }
+
+    function qaLuminance(rgb) {
+        var c = rgb.map(function(v) {
+            v /= 255;
+            return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+        });
+        return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+    }
+
+    function qaContrast(a, b) {
+        var la = qaLuminance(a), lb = qaLuminance(b);
+        return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    }
+
+    function qaComposite(fg, alpha, bg) {
+        return fg.map(function(v, i) { return v * alpha + bg[i] * (1 - alpha); });
     }
 
     // P2：hover 卡已迁至 .stage-select-card-anchor 同位锚点层，统一按 stage id 反查。
