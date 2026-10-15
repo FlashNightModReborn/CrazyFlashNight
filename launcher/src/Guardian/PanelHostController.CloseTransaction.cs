@@ -16,6 +16,9 @@ namespace CF7Launcher.Guardian
         internal void WithHostCloseContext(HostCloseContext context, Action action)
         { var previous=_admittingClose; _admittingClose=context; try { action(); } finally { _admittingClose=previous; } }
         internal HostCloseContext LastCloseOutcome { get; private set; }
+#if CF7_TEST_SEAMS
+        internal Action ReleaseClosePauseForTests;
+#endif
         internal void ConfigureCloseFocus(WindowManager manager,Func<bool> additionalGate=null)
         { _closeFocusManager=manager; _additionalFocusGate=additionalGate ?? (()=>true); }
         private HostCloseContext CaptureHostClose(string panel, string instance, NativeCloseCause cause=NativeCloseCause.HostOperation)
@@ -133,7 +136,15 @@ namespace CF7Launcher.Guardian
                 // CommitAcceptedPanelCloseEffects normally releases its own domain pause.
                 // Composition/help has no business callback; its generic pause is released here.
                 if(context.ReleaseGenericPause || surface!=null && context.Authority==AuthorityCommitState.NotStarted)
-                    RunCloseCleanup(context,"pause",()=>_web?.ReleaseClosePause());
+                    RunCloseCleanup(context,"pause",()=> {
+#if CF7_TEST_SEAMS
+                        if(_testPumpDispatcher!=null && ReleaseClosePauseForTests!=null) {
+                            ReleaseClosePauseForTests();
+                            return;
+                        }
+#endif
+                        _web?.ReleaseClosePause();
+                    });
                 if(!OwnsClosingCleanup(context)) { context.Outcome="Superseded"; return false; }
                 ClearActiveSettingsPreview();
                 _activePanel=null; _activePanelInstanceId=null;
