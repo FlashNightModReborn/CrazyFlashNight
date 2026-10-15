@@ -18,13 +18,6 @@
       "exitCondition": "Remove as feature and skin ownership moves behind the shared layered shell contract."
     },
     {
-      "file": "launcher/web/css/panels/features.css",
-      "ceiling": 14,
-      "classification": "migration-debt",
-      "reason": "Historical feature panels contain priority overrides predating the workbench cascade contract.",
-      "exitCondition": "Retire file-local overrides feature by feature after computed-style and interaction fixtures cover each consumer."
-    },
-    {
       "file": "launcher/web/css/workbench/inventory.css",
       "ceiling": 2,
       "classification": "migration-debt",

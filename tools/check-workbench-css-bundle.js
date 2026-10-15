@@ -20,6 +20,8 @@ const IMPORTS = [
     './workbench/core.css',
     './workbench/profiles.css',
     './panels/features.css',
+    './panels/tactical-map-shared.css',
+    './panels/map.css',
     './panels/stage-select.css',
     './panels/stage-select-focus.css',
     './workbench/portraits.css',

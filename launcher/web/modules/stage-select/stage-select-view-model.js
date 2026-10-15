@@ -52,44 +52,48 @@ var StageSelectViewModel = (function() {
         return s;
     }
 
+    // 区域色盘按场景主色调分组（2026-10-15 地图语汇对齐）：key 表示色调而非派系，
+    // 刻意不复用地图面板的派系 key（base/warlord/blackiron/fallen…），避免同名不同色的误读。
+    // 色值真源在 stage-select.css 的 data-accent 块；语义色（任务红、交互琥珀、外交青绿、
+    // 焦点冷青、跳转钢蓝）保留色相区间，区域主色不得落入（qa-suite tactical-language-floors 守门）。
     var FRAME_ACCENT_MAP = {
-        '基地门口': 'base',
-        '基地车库': 'fallen',
-        '基地房顶': 'warlord',
-        '车库': 'fallen',
-        '黑铁会': 'blackiron',
-        '黑铁会总部': 'blackiron',
-        '黑铁会总堂': 'blackiron',
-        '堕落城': 'fallen',
-        '诺亚': 'fallen',
-        '诺亚前线基地深处': 'fallen',
-        '诺亚前线基地深处第二层': 'fallen',
-        '沙漠虫洞': 'warlord',
-        '亡灵沙漠': 'warlord',
-        '近郊': 'warlord',
-        '荒漠': 'warlord',
-        '军阀': 'warlord',
-        '军阀重地': 'warlord',
-        '军阀总基地': 'warlord',
-        '雪山': 'remnant',
-        '雪山第二层': 'remnant',
-        '雪山内部': 'remnant',
-        '雪山内部第二层': 'remnant',
-        '坠毁战舰': 'remnant',
-        '遗迹': 'remnant',
-        '遗迹外部': 'remnant',
-        '遗迹深处': 'remnant',
-        '地下': 'underground',
-        '地下2': 'underground',
-        '地下2层': 'underground',
-        '异界战场': 'underground',
-        '试炼场深处': 'underground',
-        '修道院': 'underground'
+        '基地门口': 'signal',
+        '基地车库': 'ash',
+        '基地房顶': 'sand',
+        '车库': 'ash',
+        '黑铁会': 'iron',
+        '黑铁会总部': 'iron',
+        '黑铁会总堂': 'iron',
+        '堕落城': 'ash',
+        '诺亚': 'ash',
+        '诺亚前线基地深处': 'ash',
+        '诺亚前线基地深处第二层': 'ash',
+        '沙漠虫洞': 'sand',
+        '亡灵沙漠': 'sand',
+        '近郊': 'sand',
+        '荒漠': 'sand',
+        '军阀': 'sand',
+        '军阀重地': 'sand',
+        '军阀总基地': 'sand',
+        '雪山': 'frost',
+        '雪山第二层': 'frost',
+        '雪山内部': 'frost',
+        '雪山内部第二层': 'frost',
+        '坠毁战舰': 'frost',
+        '遗迹': 'frost',
+        '遗迹外部': 'frost',
+        '遗迹深处': 'frost',
+        '地下': 'abyss',
+        '地下2': 'abyss',
+        '地下2层': 'abyss',
+        '异界战场': 'abyss',
+        '试炼场深处': 'abyss',
+        '修道院': 'abyss'
     };
 
     function getFrameAccent(frameLabel) {
         var label = String(frameLabel || S._currentFrameLabel || '');
-        return FRAME_ACCENT_MAP[label] || 'base';
+        return FRAME_ACCENT_MAP[label] || 'signal';
     }
 
     function isChallengeMode() {

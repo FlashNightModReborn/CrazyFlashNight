@@ -57,10 +57,9 @@
    ⑤ 本地 reduced-motion 关闭块原样保留：motion.css 根级关闭块只覆盖 .workbench-shell /
       .arena-xshell，stage-select 不在其辖域，删除会改变行为。
    ⑥ chip 块（任务红点 badge：.stage-select-frame-toggle-task-badge / .stage-select-tab-task-badge
-      的视觉规则与其 reduced-motion 项）有意留在 features.css「共用 chip 视觉」单一来源块——
-      该块被 map page tab / map filter 跨面板复用；曾试拆同值副本入本文件，重复的
-      cubic-bezier(0.34,1.56,0.64,1) 触发 ratchet rawEasing 单调上限违例（WB130，上限不可上调），
-      按"规则被其他面板复用则局部回退"原则回退。本文件仅保留 stage-select 专属的 :empty 隐藏规则。
+      的视觉规则与其 reduced-motion 项）及跨面板主色/角标/顶栏发光下划线已抽至
+      css/panels/tactical-map-shared.css 作 map/stage-select 跨面板单一来源；本文件仅保留
+      stage-select 专属的 :empty 隐藏规则。
    ════════════════════════════════════════════════════════════════════════════ */
 
 .stage-select-panel[data-workbench-skin="stage-select"],
@@ -78,6 +77,15 @@
     --ss-header-rgb: 10,12,16;
     --ss-surface-rgb: 16,19,24;
     --ss-accent-rgb: 164,188,210;
+    /* 副色三元组（随区域 data-accent 切换）：仅用于氛围层、四角框标、顶栏染色、闲置边框与卡片框体装饰 */
+    --ss-accent-hi-rgb: 196,212,228;
+    --ss-accent-lo-rgb: 128,156,184;
+    --ss-accent-ink-rgb: 10,14,18;
+    /* 主色三元组（跨区域全局恒定，继承自 tactical-map-shared.css 毒绿主色）：专供悬停/键盘靶标、选中态、激活 tab 与主动作按钮 */
+    --ss-primary-rgb: var(--tactical-primary-rgb);
+    --ss-primary-hi-rgb: var(--tactical-primary-hi-rgb);
+    --ss-primary-lo-rgb: var(--tactical-primary-lo-rgb);
+    --ss-primary-ink-rgb: var(--tactical-primary-ink-rgb);
     --ss-active-rgb: 42,54,68;
     --ss-toggle-text-rgb: 220,228,236;
     --ss-counter-text-rgb: 168,178,190;
@@ -163,74 +171,102 @@
     --ss-ease-linear: linear;
     /* 打磨批：选中光环呼吸缓动（对称往返） */
     --ss-ease-in-out: ease-in-out;
-    /* P2 焦点环 / 选中态：对齐 workbench 战术琥珀与冷青 */
+    /* P2 焦点环 / 选中态：选中对齐主色毒绿（把金色 --ss-gold-rgb 专留给任务与修改器） */
     --ss-focus-rgb: 138,192,224;
-    --ss-selected-rgb: 240,164,58;
+    --ss-selected-rgb: 200,255,76;
     --ss-mod-cyan-rgb: 126,168,198;
     --ss-mod-amber-rgb: 240,164,58;
     --ss-mod-amber-bg-rgb: 48,32,12;
     --ss-mod-cyan-bg-rgb: 18,30,42;
 }
 
-/* ── 区域战术终端动态色板（工业灰模母体：底板保持深冷枪铁石墨，区域色仅作低饱和金属刻线与顶栏能量条）── */
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="base"] {
-    --ss-accent-rgb: 118,176,210;
-    --ss-active-rgb: 32,54,72;
-    --ss-region-text-rgb: 204,224,238;
-    --ss-badge-rgb: 118,176,210;
-    --ss-header-rgb: 10,13,17;
-    --ss-card-grad-top-rgb: 18,23,30;
-    --ss-card-grad-bottom-rgb: 10,13,17;
+/* ── 区域副色盘（2026-10-15 主副色分离架构）：按场景主色调分组，key 为色调名 ──
+   主色（--ss-primary-* 毒绿）与节点语义色（战斗红 --ss-pin-combat-rgb / 任务金 --ss-gold-rgb /
+   外交青绿 --ss-pin-map-rgb / 锁定灰 --ss-marker-locked-rgb）跨区域 100% 恒定；
+   区域副色（--ss-accent-*）仅作用于环境氛围层、四角框标、顶栏横染与闲置卡片框体点缀。
+   由 qa-suite 的 tactical-language-floors 用例以计算值守门。 */
+/* signal：基地门口，沿用地图面板标志性毒绿（基地页同色，进出地图主色不跳变） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="signal"] {
+    --ss-accent-rgb: 200,255,76;
+    --ss-accent-hi-rgb: 220,255,128;
+    --ss-accent-lo-rgb: 162,230,56;
+    --ss-accent-ink-rgb: 16,21,5;
+    --ss-active-rgb: 46,62,20;
+    --ss-region-text-rgb: 228,246,200;
+    --ss-badge-rgb: 200,255,76;
+    --ss-header-rgb: 8,11,7;
+    --ss-card-grad-top-rgb: 15,19,12;
+    --ss-card-grad-bottom-rgb: 7,9,6;
 }
 
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="blackiron"] {
-    --ss-accent-rgb: 218,152,68;
-    --ss-active-rgb: 78,48,20;
-    --ss-region-text-rgb: 236,212,172;
-    --ss-badge-rgb: 218,152,68;
-    --ss-header-rgb: 13,12,11;
-    --ss-card-grad-top-rgb: 25,21,18;
-    --ss-card-grad-bottom-rgb: 12,11,10;
+/* sand：荒漠/军阀/近郊，低饱和沙卡其（暖场景不与交互琥珀撞色相） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="sand"] {
+    --ss-accent-rgb: 196,186,156;
+    --ss-accent-hi-rgb: 222,212,184;
+    --ss-accent-lo-rgb: 168,156,124;
+    --ss-accent-ink-rgb: 20,18,12;
+    --ss-active-rgb: 58,52,36;
+    --ss-region-text-rgb: 234,226,206;
+    --ss-badge-rgb: 196,186,156;
+    --ss-header-rgb: 13,12,9;
+    --ss-card-grad-top-rgb: 24,22,17;
+    --ss-card-grad-bottom-rgb: 12,11,9;
 }
 
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="fallen"] {
-    --ss-accent-rgb: 164,188,210;
-    --ss-active-rgb: 38,50,64;
-    --ss-region-text-rgb: 216,226,236;
-    --ss-badge-rgb: 164,188,210;
-    --ss-header-rgb: 10,12,16;
-    --ss-card-grad-top-rgb: 19,23,29;
-    --ss-card-grad-bottom-rgb: 10,12,16;
+/* ash：堕落城/诺亚/车库，低饱和灰烬钢（避开焦点冷青与跳转钢蓝） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="ash"] {
+    --ss-accent-rgb: 176,188,200;
+    --ss-accent-hi-rgb: 206,214,224;
+    --ss-accent-lo-rgb: 140,154,170;
+    --ss-accent-ink-rgb: 12,15,19;
+    --ss-active-rgb: 40,48,58;
+    --ss-region-text-rgb: 222,228,236;
+    --ss-badge-rgb: 176,188,200;
+    --ss-header-rgb: 10,12,15;
+    --ss-card-grad-top-rgb: 19,23,28;
+    --ss-card-grad-bottom-rgb: 10,12,15;
 }
 
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="warlord"] {
-    --ss-accent-rgb: 214,138,84;
-    --ss-active-rgb: 82,42,22;
-    --ss-region-text-rgb: 238,204,176;
-    --ss-badge-rgb: 214,138,84;
-    --ss-header-rgb: 14,11,10;
-    --ss-card-grad-top-rgb: 26,20,17;
-    --ss-card-grad-bottom-rgb: 13,10,9;
-}
-
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="remnant"] {
-    --ss-accent-rgb: 204,88,78;
-    --ss-active-rgb: 84,26,24;
-    --ss-region-text-rgb: 238,188,182;
-    --ss-badge-rgb: 204,88,78;
+/* iron：黑铁会，玫瑰铁红（同地图黑铁会色族，色相偏洋红以让出任务红） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="iron"] {
+    --ss-accent-rgb: 212,132,160;
+    --ss-accent-hi-rgb: 232,168,190;
+    --ss-accent-lo-rgb: 186,98,130;
+    --ss-accent-ink-rgb: 24,10,15;
+    --ss-active-rgb: 70,30,44;
+    --ss-region-text-rgb: 240,214,222;
+    --ss-badge-rgb: 212,132,160;
     --ss-header-rgb: 14,10,11;
-    --ss-card-grad-top-rgb: 26,18,19;
+    --ss-card-grad-top-rgb: 26,18,21;
     --ss-card-grad-bottom-rgb: 13,9,10;
 }
 
-.stage-select-panel[data-workbench-skin="stage-select"][data-accent="underground"] {
-    --ss-accent-rgb: 108,172,168;
-    --ss-active-rgb: 26,58,58;
-    --ss-region-text-rgb: 198,226,224;
-    --ss-badge-rgb: 108,172,168;
-    --ss-header-rgb: 9,13,15;
-    --ss-card-grad-top-rgb: 17,24,27;
-    --ss-card-grad-bottom-rgb: 9,13,15;
+/* frost：雪山/遗迹/坠毁战舰，冰霜薰衣草（原遗迹红与任务红同色相，已退役） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="frost"] {
+    --ss-accent-rgb: 170,160,222;
+    --ss-accent-hi-rgb: 200,192,240;
+    --ss-accent-lo-rgb: 136,124,200;
+    --ss-accent-ink-rgb: 14,12,24;
+    --ss-active-rgb: 44,38,72;
+    --ss-region-text-rgb: 226,222,244;
+    --ss-badge-rgb: 170,160,222;
+    --ss-header-rgb: 11,10,15;
+    --ss-card-grad-top-rgb: 21,19,29;
+    --ss-card-grad-bottom-rgb: 10,9,15;
+}
+
+/* abyss：地下/异界/修道院，深渊靛蓝（原青绿与外交青绿同色相，已退役） */
+.stage-select-panel[data-workbench-skin="stage-select"][data-accent="abyss"] {
+    --ss-accent-rgb: 140,150,226;
+    --ss-accent-hi-rgb: 176,184,240;
+    --ss-accent-lo-rgb: 104,116,204;
+    --ss-accent-ink-rgb: 10,12,26;
+    --ss-active-rgb: 32,36,72;
+    --ss-region-text-rgb: 214,218,246;
+    --ss-badge-rgb: 140,150,226;
+    --ss-header-rgb: 9,10,16;
+    --ss-card-grad-top-rgb: 17,19,30;
+    --ss-card-grad-bottom-rgb: 9,10,16;
 }
 
 /* ── 全屏 anchor / 去 backdrop 暗屏（原 foundation-rest.css，仅服务 stage-select）── */
@@ -2573,5 +2609,596 @@
     }
 }
 
+/* ══ 地图语汇层（2026-10-15 主副色分离 + 跨区域恒定节点语义）══════════════════
+   1. 主色（--ss-primary-* / --ss-selected-rgb，跨区域恒定为地图标志性毒绿）：
+      专供悬停/键盘焦点靶标、选中态（光环/铭牌/引线）、激活 tab、展开态区域按钮。
+   2. 节点语义（跨区域 2D/3D 恒定，不随区域色盘改变）：
+      - 普通战斗关卡：钢框红芯信标（--ss-pin-frame-rgb + --ss-pin-combat-rgb）+ 战斗红左侧条；
+      - 任务关卡（is-task）：任务金信标 + 金色脉冲环 + 任务金左侧条（--ss-gold-rgb）；
+      - 外交地图（is-map-entry）：钢框青绿芯信标 + 外交青绿左侧条（--ss-pin-map-rgb）；
+      - 锁定关卡（is-locked）：暗灰信标 + 暗灰左侧条（--ss-marker-locked-rgb），文字底板保持 ≥4.5:1。
+      悬停/聚焦时外框与靶标点亮为主色毒绿，左侧语义条与信标内芯始终保留节点自身语义色。
+   3. 区域副色（--ss-accent-*，由 data-accent 按场景主色调驱动）：
+      仅用于舞台氛围层、舞台四角框标、顶栏渐变与 180px 下划线、闲置控件边框及卡片/检查器框体装饰。
+   交互下限（本层只改 paint）：
+   - 不改可交互元素的 width/height/padding/border-width/position/字重/字距，命中几何零漂移；
+   - 可聚焦元素自身不加 clip-path（会裁掉焦点环与命中角），切角只画在 pointer-events:none 的伪元素上；
+   - html.perf-low-effects 下氛围层与画布滤镜整体关闭。 */
+.stage-select-panel[data-workbench-skin="stage-select"] {
+    --ss-atmo-opacity: 1;
+    --ss-scene-saturate: 0.84;
+    --ss-scene-brightness: 0.9;
+    --ss-scene-contrast: 1.05;
+    --ss-chamfer: 5px;
+    --ss-reticle-rgb: var(--ss-primary-hi-rgb);
+    --ss-easy-rgb: 92,176,206;
+    --ss-adventure-rgb: 104,190,128;
+    --ss-shura-rgb: 226,146,66;
+    --ss-hell-rgb: 222,84,74;
+}
 
+/* 1. 舞台氛围层（副色）：夹在场景（画布/底图）与导航/地点层之间，不接收指针 */
+.stage-select-panel.is-runtime .stage-select-nav-layer {
+    z-index: 2;
+}
 
+.stage-select-panel.is-runtime .stage-select-stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: var(--ss-atmo-opacity);
+    background:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='128' height='128'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='128' height='128' filter='url(%23n)'/%3E%3C/svg%3E"),
+        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(var(--ss-accent-rgb), 0.028) 3px, rgba(var(--ss-accent-rgb), 0.028) 4px),
+        linear-gradient(180deg, rgba(var(--ss-accent-rgb), 0.07) 0%, rgba(var(--ss-accent-rgb), 0.02) 42%, rgba(var(--ss-accent-rgb), 0) 72%),
+        radial-gradient(ellipse at 50% 46%, rgba(var(--ss-black-rgb), 0) 54%, rgba(var(--ss-black-rgb), 0.44) 100%);
+    background-size: 128px 128px, auto, auto, auto;
+}
+
+.stage-select-panel.is-diorama .stage-select-diorama-canvas {
+    filter: saturate(var(--ss-scene-saturate)) brightness(var(--ss-scene-brightness)) contrast(var(--ss-scene-contrast));
+}
+
+html.perf-low-effects .stage-select-panel.is-runtime .stage-select-stage::after {
+    display: none;
+}
+
+html.perf-low-effects .stage-select-panel.is-diorama .stage-select-diorama-canvas {
+    filter: none;
+}
+
+/* 2. 舞台角标与顶栏 180px 发光下划线由 tactical-map-shared.css 统一持有；
+      本处仅保留顶栏的横向氛围染色（副色） */
+.stage-select-panel.is-runtime .stage-select-header {
+    background:
+        linear-gradient(90deg, rgba(var(--ss-accent-rgb), 0.12) 0%, rgba(var(--ss-accent-rgb), 0.04) 38%, rgba(var(--ss-accent-rgb), 0) 64%),
+        linear-gradient(180deg, rgba(var(--ss-header-rgb), 0.86) 0%, rgba(var(--ss-header-rgb), 0.4) 66%, transparent 100%);
+}
+
+/* 4. 顶栏按钮：闲置边框用副色，悬停/展开激活态用主色毒绿；切角画在伪元素上，不裁切焦点环与命中角 */
+.stage-select-panel.is-runtime .stage-select-frame-toggle,
+.stage-select-header .stage-camera-toggle,
+.stage-select-header .stage-select-mod-btn,
+.stage-select-panel.is-runtime .stage-select-close-btn {
+    position: relative;
+    isolation: isolate;
+    opacity: 1;
+    color: rgb(var(--ss-region-text-rgb));
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle::before,
+.stage-select-header .stage-camera-toggle::before,
+.stage-select-header .stage-select-mod-btn::before,
+.stage-select-panel.is-runtime .stage-select-close-btn::before,
+.stage-select-panel.is-runtime .stage-select-frame-toggle::after,
+.stage-select-header .stage-camera-toggle::after,
+.stage-select-header .stage-select-mod-btn::after,
+.stage-select-panel.is-runtime .stage-select-close-btn::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    clip-path: polygon(0 0, calc(100% - var(--ss-chamfer)) 0, 100% var(--ss-chamfer), 100% 100%, var(--ss-chamfer) 100%, 0 calc(100% - var(--ss-chamfer)));
+    transition: background-color var(--ss-motion-fast) var(--ss-ease-default), opacity var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+/* 闲置边框层（副色） */
+.stage-select-panel.is-runtime .stage-select-frame-toggle::before,
+.stage-select-header .stage-camera-toggle::before,
+.stage-select-header .stage-select-mod-btn::before,
+.stage-select-panel.is-runtime .stage-select-close-btn::before {
+    inset: -1px;
+    background: rgba(var(--ss-accent-rgb), 0.28);
+}
+
+/* 闲置面层（副色微染 + 不透明深底） */
+.stage-select-panel.is-runtime .stage-select-frame-toggle::after,
+.stage-select-header .stage-camera-toggle::after,
+.stage-select-header .stage-select-mod-btn::after,
+.stage-select-panel.is-runtime .stage-select-close-btn::after {
+    inset: 0;
+    background:
+        linear-gradient(rgba(var(--ss-accent-rgb), 0.06), rgba(var(--ss-accent-rgb), 0.06)),
+        rgb(var(--ss-header-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible,
+.stage-select-header .stage-camera-toggle:hover,
+.stage-select-header .stage-select-mod-btn:hover {
+    color: rgb(var(--ss-white-rgb));
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover::before,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible::before,
+.stage-select-header .stage-camera-toggle:hover::before,
+.stage-select-header .stage-select-mod-btn:hover::before {
+    background: rgba(var(--ss-primary-hi-rgb), 0.72);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover::after,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible::after,
+.stage-select-header .stage-camera-toggle:hover::after,
+.stage-select-header .stage-select-mod-btn:hover::after {
+    background:
+        linear-gradient(rgba(var(--ss-primary-rgb), 0.14), rgba(var(--ss-primary-rgb), 0.14)),
+        rgb(var(--ss-header-rgb));
+}
+
+/* 区域菜单含任务：任务红边框层 + 左侧红条（任务语义不被区域色覆盖）；置于展开态之前，展开态优先 */
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task::before {
+    background: rgba(var(--ss-task-rgb), 0.62);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task::after {
+    background:
+        linear-gradient(90deg, rgb(var(--ss-task-rgb)) 0 2px, transparent 2px),
+        linear-gradient(rgba(var(--ss-task-rgb), 0.1), rgba(var(--ss-task-rgb), 0.1)),
+        rgb(var(--ss-header-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task:hover::before,
+.stage-select-panel.is-runtime .stage-select-frame-toggle.has-task:focus-visible::before {
+    background: rgba(var(--ss-task-hot-rgb), 0.95);
+}
+
+/* 区域菜单展开 = 地图激活 tab：实心主色毒绿 + 深色字 */
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle {
+    color: rgb(var(--ss-primary-ink-rgb));
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle::before {
+    background: rgb(var(--ss-primary-hi-rgb));
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle::after {
+    background: linear-gradient(180deg, rgb(var(--ss-primary-rgb)) 0%, rgb(var(--ss-primary-lo-rgb)) 100%);
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle.has-task::after {
+    background:
+        linear-gradient(90deg, rgb(var(--ss-task-rgb)) 0 3px, transparent 3px),
+        linear-gradient(180deg, rgb(var(--ss-primary-rgb)) 0%, rgb(var(--ss-primary-lo-rgb)) 100%);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle .stage-select-frame-toggle-counter {
+    font-family: "Consolas", "Courier New", "Microsoft YaHei", monospace;
+    color: rgba(var(--ss-region-text-rgb), 0.7);
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle .stage-select-frame-toggle-icon {
+    color: rgb(var(--ss-accent-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-frame-toggle:hover .stage-select-frame-toggle-icon,
+.stage-select-panel.is-runtime .stage-select-frame-toggle:focus-visible .stage-select-frame-toggle-icon {
+    color: rgb(var(--ss-primary-hi-rgb));
+}
+
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle .stage-select-frame-toggle-counter,
+.stage-select-panel.is-runtime.is-frame-menu-open .stage-select-frame-toggle .stage-select-frame-toggle-icon {
+    color: rgba(var(--ss-primary-ink-rgb), 0.82);
+}
+
+/* 修改器激活保持琥珀语义 */
+.stage-select-header .stage-select-mod-btn.is-active,
+.stage-select-header .stage-select-mod-btn[aria-pressed="true"] {
+    color: rgb(var(--ss-gold-rgb));
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.stage-select-header .stage-select-mod-btn.is-active::before,
+.stage-select-header .stage-select-mod-btn[aria-pressed="true"]::before {
+    background: rgba(var(--ss-mod-amber-rgb), 0.9);
+}
+
+.stage-select-header .stage-select-mod-btn.is-active::after,
+.stage-select-header .stage-select-mod-btn[aria-pressed="true"]::after {
+    background:
+        linear-gradient(90deg, rgb(var(--ss-mod-amber-rgb)) 0 2px, transparent 2px),
+        rgb(var(--ss-mod-amber-bg-rgb));
+}
+
+.stage-select-header .stage-camera-toggle[aria-pressed="true"] {
+    color: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-header .stage-camera-toggle[aria-pressed="true"]::before {
+    background: rgba(var(--ss-selected-rgb), 0.85);
+}
+
+/* 修改器托盘去容器化：按钮像地图 tab 一样独立成组 */
+.stage-select-header .stage-select-mod-pod {
+    background: transparent;
+    border-color: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+/* 关闭：地图同款红色切角 */
+.stage-select-panel.is-runtime .stage-select-close-btn {
+    color: rgb(var(--ss-danger-rgb));
+}
+
+.stage-select-panel.is-runtime .stage-select-close-btn::before {
+    background: rgba(var(--ss-danger-rgb), 0.34);
+}
+
+.stage-select-panel.is-runtime .stage-select-close-btn:hover,
+.stage-select-panel.is-runtime .stage-select-close-btn:focus-visible {
+    color: rgb(var(--ss-white-rgb));
+    background: transparent;
+    border-color: transparent;
+}
+
+.stage-select-panel.is-runtime .stage-select-close-btn:hover::before,
+.stage-select-panel.is-runtime .stage-select-close-btn:focus-visible::before {
+    background: rgba(var(--ss-danger-rgb), 0.8);
+}
+
+.stage-select-panel.is-runtime .stage-select-close-btn:hover::after,
+.stage-select-panel.is-runtime .stage-select-close-btn:focus-visible::after {
+    background:
+        linear-gradient(rgba(var(--ss-danger-rgb), 0.24), rgba(var(--ss-danger-rgb), 0.24)),
+        rgb(var(--ss-header-rgb));
+}
+
+/* 5. 区域菜单：容器框体用副色，悬停与当前激活条目用主色毒绿 */
+.stage-select-panel.is-runtime .stage-select-tabs {
+    backdrop-filter: none;
+    background:
+        repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(var(--ss-accent-rgb), 0.025) 3px, rgba(var(--ss-accent-rgb), 0.025) 4px),
+        rgba(var(--ss-header-rgb), 0.98);
+    border-color: rgba(var(--ss-accent-rgb), 0.34);
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+}
+
+.stage-select-panel.is-runtime .stage-select-tab {
+    color: rgb(var(--ss-region-text-rgb));
+    background: rgba(var(--ss-accent-rgb), 0.05);
+    border-color: rgba(var(--ss-accent-rgb), 0.16);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab:hover {
+    color: rgb(var(--ss-white-rgb));
+    background: rgba(var(--ss-primary-rgb), 0.14);
+    border-color: rgba(var(--ss-primary-hi-rgb), 0.52);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.is-active {
+    color: rgb(var(--ss-primary-ink-rgb));
+    background: linear-gradient(180deg, rgba(var(--ss-primary-rgb), 0.96) 0%, rgba(var(--ss-primary-lo-rgb), 0.94) 100%);
+    border-color: rgba(var(--ss-primary-hi-rgb), 0.85);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.is-active::before {
+    background: rgba(var(--ss-white-rgb), 0.38);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task {
+    border-color: rgba(var(--ss-task-rgb), 0.58);
+}
+
+.stage-select-panel.is-runtime .stage-select-tab.has-task::before {
+    background: rgb(var(--ss-task-rgb));
+}
+
+/* 6. 三维地点：跨区域恒定节点语义（战斗=红 / 任务=金 / 外交=青绿 / 锁定=灰），悬停与选中统一为主色毒绿 */
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name {
+    color: rgb(var(--ss-region-text-rgb));
+    background: rgba(var(--ss-header-rgb), 0.88);
+    border-color: rgba(var(--ss-pin-frame-rgb), 0.28);
+    border-left-color: rgb(var(--ss-pin-combat-rgb));
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.6),
+        0 6px 16px rgba(var(--ss-black-rgb), 0.32);
+    transition:
+        color var(--ss-motion-fast) var(--ss-ease-default),
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry > .stage-select-stage-name {
+    color: rgb(var(--ss-pin-map-text-rgb));
+    background: rgba(var(--ss-header-rgb), 0.88);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.34);
+    border-left-color: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task > .stage-select-stage-name {
+    color: rgb(var(--ss-white-rgb));
+    background: linear-gradient(90deg, rgba(var(--ss-gold-rgb), 0.2) 0%, rgba(var(--ss-header-rgb), 0.9) 32%, rgba(var(--ss-header-rgb), 0.9) 100%);
+    border-color: rgba(var(--ss-gold-rgb), 0.68);
+    border-left-color: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked > .stage-select-stage-name {
+    color: rgba(var(--ss-pin-frame-rgb), 0.8);
+    background: rgba(var(--ss-header-rgb), 0.86);
+    border-color: rgba(var(--ss-pin-frame-rgb), 0.16);
+    border-left-color: rgba(var(--ss-marker-locked-rgb), 0.8);
+}
+
+/* 悬停 / 键盘焦点：上/右/下边框点亮为主色毒绿，左侧 3px 语义条保持各节点固有语义色 */
+.stage-select-panel.is-diorama .stage-select-stage-button:hover > .stage-select-stage-name,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-kb-focus > .stage-select-stage-name {
+    color: rgb(var(--ss-white-rgb));
+    background: linear-gradient(90deg, rgba(var(--ss-primary-rgb), 0.22) 0%, rgba(var(--ss-header-rgb), 0.94) 36%, rgba(var(--ss-header-rgb), 0.94) 100%);
+    border-color: rgba(var(--ss-primary-hi-rgb), 0.85);
+    border-left-color: rgb(var(--ss-pin-combat-rgb));
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.7),
+        0 0 14px rgba(var(--ss-primary-rgb), 0.28),
+        0 6px 16px rgba(var(--ss-black-rgb), 0.4);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry:hover > .stage-select-stage-name,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry.is-kb-focus > .stage-select-stage-name {
+    border-left-color: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task:hover > .stage-select-stage-name,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task.is-kb-focus > .stage-select-stage-name {
+    border-left-color: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked:hover > .stage-select-stage-name,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked.is-kb-focus > .stage-select-stage-name {
+    border-left-color: rgba(var(--ss-marker-locked-rgb), 0.8);
+}
+
+/* 选中态：使用主色毒绿（--ss-selected-rgb），任务与外交节点仍保留左侧语义条以区分节点类型 */
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected > .stage-select-stage-name {
+    color: rgb(var(--ss-selected-rgb));
+    background: linear-gradient(90deg, rgba(var(--ss-selected-rgb), 0.2) 0%, rgba(var(--ss-header-rgb), 0.94) 36%, rgba(var(--ss-header-rgb), 0.94) 100%);
+    border-color: rgba(var(--ss-selected-rgb), 0.9);
+    border-left-color: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry.is-selected > .stage-select-stage-name {
+    border-left-color: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task.is-selected > .stage-select-stage-name {
+    border-left-color: rgb(var(--ss-gold-rgb));
+}
+
+/* 四角靶标：同地图 .map-scene-visual::before，悬停/键盘焦点与选中统一为主色毒绿 */
+.stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    pointer-events: none;
+    opacity: 0;
+    background:
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) left top / 9px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) left top / 2px 9px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) right top / 9px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) right top / 2px 9px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) left bottom / 9px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) left bottom / 2px 9px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) right bottom / 9px 2px no-repeat,
+        linear-gradient(rgb(var(--ss-reticle-rgb)), rgb(var(--ss-reticle-rgb))) right bottom / 2px 9px no-repeat;
+    filter: drop-shadow(0 0 4px rgba(var(--ss-reticle-rgb), 0.45));
+    transition: opacity var(--ss-motion-icon) var(--ss-ease-out);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:hover > .stage-select-stage-name::after,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-kb-focus > .stage-select-stage-name::after,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected > .stage-select-stage-name::after {
+    opacity: 0.92;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected {
+    --ss-reticle-rgb: var(--ss-selected-rgb);
+}
+
+html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name::after {
+    filter: none;
+}
+
+/* 焦点光晕：同地图 .map-scene-visual-glow，低透明主色毒绿不压邻近名称 */
+.stage-select-panel.is-diorama .stage-select-stage-button::before {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: 104px;
+    height: 104px;
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(var(--ss-reticle-rgb), 0.24) 0%, rgba(var(--ss-reticle-rgb), 0.08) 40%, rgba(var(--ss-reticle-rgb), 0) 70%);
+    transition: opacity var(--ss-motion-icon) var(--ss-ease-out);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:hover::before,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-kb-focus::before {
+    opacity: 1;
+}
+
+/* 地点标记：闲置保持钢框+语义芯（战斗红/外交青绿/任务金/锁定灰/修改器琥珀）；
+   悬停/焦点时外框点亮为主色毒绿，内芯仍保持各节点语义色。 */
+/* 回归修复：二维「悬停隐藏标记」规则在 f6d5642e 加入 :not(.is-map-entry) 后与三维保留规则同为 (0,7,0)，
+   靠源序胜出导致三维悬停时标记消失、引线悬空；此处同权后置恢复三维语义。 */
+.stage-select-panel.is-diorama .stage-select-stage-button:not(.is-locked):not(.is-selected):is(:hover, :focus) > .stage-select-marker {
+    display: block;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus) .stage-select-marker-fill {
+    fill: rgb(var(--ss-primary-hi-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus) .stage-select-marker-core {
+    fill: rgb(var(--ss-pin-combat-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry:is(:hover, .is-kb-focus) .stage-select-marker-core {
+    fill: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task:is(:hover, .is-kb-focus) .stage-select-marker-core {
+    fill: rgb(var(--ss-task-hot-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked:is(:hover, .is-kb-focus) .stage-select-marker-fill {
+    fill: rgb(var(--ss-marker-locked-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-locked:is(:hover, .is-kb-focus) .stage-select-marker-core {
+    fill: transparent;
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected .stage-select-marker-fill,
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected .stage-select-marker-core {
+    fill: rgb(var(--ss-selected-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry.is-selected .stage-select-marker-core {
+    fill: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-task.is-selected .stage-select-marker-core {
+    fill: rgb(var(--ss-gold-rgb));
+}
+
+/* 引线：闲置跟随区域文字色，悬停/焦点与选中统一为主色毒绿 */
+.stage-select-panel.is-diorama .stage-select-leader-ink {
+    stroke: rgba(var(--ss-region-text-rgb), 0.58);
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus) .stage-select-leader-ink {
+    stroke: rgb(var(--ss-primary-hi-rgb));
+}
+
+.stage-select-panel.is-diorama .stage-select-stage-button.is-selected .stage-select-leader-ink {
+    stroke: rgb(var(--ss-selected-rgb));
+}
+
+/* 三维导航按钮：底板与地点名牌同材质 */
+.stage-select-panel.is-diorama .stage-select-nav-button.is-diorama-nav,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-return-garage {
+    background: rgba(var(--ss-header-rgb), 0.9);
+    border-color: rgba(var(--ss-accent-rgb), 0.3);
+}
+
+/* 7. 悬停卡与检查器：地图 overlay 卡语汇（平面底 + 区域副色细边 + 切角），去光面渐变 */
+.stage-select-card,
+.stage-select-inspector {
+    background: linear-gradient(180deg, rgba(var(--ss-card-grad-top-rgb), 0.97) 0%, rgba(var(--ss-card-grad-bottom-rgb), 0.98) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(var(--ss-accent-rgb), 0.3),
+        inset 0 0 18px rgba(var(--ss-accent-rgb), 0.05),
+        0 6px 16px rgba(var(--ss-black-rgb), 0.5);
+}
+
+.stage-select-inspector {
+    border-color: rgba(var(--ss-accent-rgb), 0.3);
+}
+
+.stage-select-card-name,
+.stage-select-inspector-name {
+    color: rgb(var(--ss-accent-hi-rgb));
+}
+
+/* 难度：平面面 + 3px 语义侧条（同地图任务按钮），色相即难度语义 */
+.stage-select-difficulty {
+    --ss-diff-rgb: var(--ss-easy-rgb);
+    background:
+        linear-gradient(90deg, rgba(var(--ss-diff-rgb), 0.95) 0 3px, transparent 3px),
+        rgba(var(--ss-diff-rgb), 0.34);
+    border-color: rgba(var(--ss-diff-rgb), 0.6);
+    box-shadow: none;
+    transition:
+        background-color var(--ss-motion-fast) var(--ss-ease-default),
+        border-color var(--ss-motion-fast) var(--ss-ease-default),
+        box-shadow var(--ss-motion-fast) var(--ss-ease-default);
+}
+
+.stage-select-difficulty.is-easy { --ss-diff-rgb: var(--ss-easy-rgb); }
+.stage-select-difficulty.is-adventure { --ss-diff-rgb: var(--ss-adventure-rgb); }
+.stage-select-difficulty.is-shura { --ss-diff-rgb: var(--ss-shura-rgb); }
+.stage-select-difficulty.is-hell { --ss-diff-rgb: var(--ss-hell-rgb); }
+
+.stage-select-difficulty.is-easy,
+.stage-select-difficulty.is-adventure,
+.stage-select-difficulty.is-shura,
+.stage-select-difficulty.is-hell {
+    background:
+        linear-gradient(90deg, rgba(var(--ss-diff-rgb), 0.95) 0 3px, transparent 3px),
+        rgba(var(--ss-diff-rgb), 0.34);
+}
+
+.stage-select-difficulty:hover {
+    filter: none;
+    background:
+        linear-gradient(90deg, rgb(var(--ss-diff-rgb)) 0 3px, transparent 3px),
+        rgba(var(--ss-diff-rgb), 0.56);
+    border-color: rgba(var(--ss-diff-rgb), 0.95);
+    box-shadow: 0 0 8px rgba(var(--ss-diff-rgb), 0.38);
+}
+
+.stage-select-difficulty.is-pressed {
+    background:
+        linear-gradient(90deg, rgb(var(--ss-diff-rgb)) 0 3px, transparent 3px),
+        rgba(var(--ss-diff-rgb), 0.7);
+}
+
+/* 外交直达：同地图「前往选关」主 CTA */
+.stage-select-map-action {
+    background: rgba(var(--ss-pin-map-rgb), 0.32);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.62);
+    box-shadow: none;
+}
+
+.stage-select-map-action:hover {
+    filter: none;
+    background: rgba(var(--ss-pin-map-rgb), 0.52);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.95);
+    box-shadow: 0 0 12px rgba(var(--ss-pin-map-rgb), 0.32);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name,
+    .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name::after,
+    .stage-select-panel.is-diorama .stage-select-stage-button::before {
+        transition: none;
+    }
+}
