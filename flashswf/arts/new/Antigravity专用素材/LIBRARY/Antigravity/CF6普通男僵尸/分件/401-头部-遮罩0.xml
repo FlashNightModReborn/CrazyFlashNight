@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩0" itemID="6af00000-1df0081e" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="401-头部-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!407 -1218|347 -1198|87 -1238[87 -1258 77 -1271[73 -1277 59 -1275|51 -1273|67 -1258|45 -1232|34 -1225|22 -1220|10 -1218|-18 -1227|-53 -1178|-93 -1178|-133 -1138|-133 -1098|-253 -1078|-253 -1018|-313 -978|-333 -778|-393 -758|-353 -738|-373 -618|-433 -638|-493 -578[-446 -398 -445 -220[-445 -199 -453 -178|-433 -138|-313 -118|-313 -78|-193 42|-113 62|-33 142|-33 182|7 202|87 422[290 507 507 442[577 391 565 300[545 157 618 35[669 -51 677 -157[692 -352 662 -545|656 -556|687 -858|647 -858|627 -958|587 -998|587 -1038|527 -1098|467 -1098|407 -1158|407 -1218" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/分件/1625-前臂-遮罩0" itemID="6af00000-3287d7b6" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1625-前臂-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-251 105[-259 443 -214 725|-211 765[-221 765 -226 770|-235 777[-265 791 -253 845|-251 865[-241 865 -236 870|-226 880|-191 905|-191 925|-191 945[-171 1390 -190 1785|-191 1825[-181 1825 -176 1830|-166 1838[-141 1855 -111 1865|-96 1860|-91 1855[52 1881 189 1845|189 1825|188 1805[163 1413 207 1005|209 965|209 945|209 935[306 962 289 885|285 873|269 865[291 813 229 785|229 765|229 745[232 368 286 44|289 5|289 -15|286 -34[255 -131 206 -213|189 -235|153 -243|145 -247[46 -292 -111 -275[-111 -265 -116 -260|-129 -251[-215 -209 -259 -119|-271 -115|-271 85[-261 85 -256 90[-251 95 -251 105" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂-遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

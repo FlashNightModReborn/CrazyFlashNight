@@ -1,0 +1,418 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backgroundColor="#E5E3DF" width="550" height="400" frameRate="24" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" nextSceneIdentifier="2">
+  <folders>
+    <DOMFolderItem name="Antigravity" itemID="6af10000-e3e0a2b6"/>
+    <DOMFolderItem name="Antigravity/CF6女僵尸" itemID="6af10000-389f524c"/>
+    <DOMFolderItem name="Antigravity/CF6女僵尸/分件" itemID="6af10000-e66cde9d"/>
+    <DOMFolderItem name="Antigravity/CF6女僵尸/动作" itemID="6af10000-d0e87dec"/>
+    <DOMFolderItem name="Antigravity/CF6女僵尸/碎尸" itemID="6af10000-6e74ff48"/>
+    <DOMFolderItem name="Antigravity/CF6普通男僵尸" itemID="6af10000-491a2284"/>
+    <DOMFolderItem name="Antigravity/CF6普通男僵尸/分件" itemID="6af10000-701f9ea9"/>
+    <DOMFolderItem name="Antigravity/CF6普通男僵尸/动作" itemID="6af10000-14da6d4f"/>
+    <DOMFolderItem name="Antigravity/CF6普通男僵尸/碎尸" itemID="6af10000-1f9a6288"/>
+    <DOMFolderItem name="Antigravity/共用" itemID="6af10000-0f0f1920"/>
+  </folders>
+  <symbols>
+    <Include href="Antigravity/CF6女僵尸/分件/1619-脚靴.xml" itemID="6af00000-cc2fbf1a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1619-脚靴-遮罩0.xml" itemID="6af00000-943ff670" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1619-脚靴-遮罩1.xml" itemID="6af00000-fab543f9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1620-小腿.xml" itemID="6af00000-ccd473ba" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1620-小腿-遮罩0.xml" itemID="6af00000-2bc29448" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1620-小腿-遮罩1.xml" itemID="6af00000-1b85772b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1621-大腿.xml" itemID="6af00000-356d087c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1621-大腿-遮罩0.xml" itemID="6af00000-33c02d05" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1621-大腿-遮罩1.xml" itemID="6af00000-1ac98d5d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1622-髋部.xml" itemID="6af00000-468eedbe" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1622-髋部-遮罩0.xml" itemID="6af00000-8f2645d0" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1622-髋部-遮罩1.xml" itemID="6af00000-f57efe34" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1623-上臂.xml" itemID="6af00000-9f002d80" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1623-上臂-遮罩0.xml" itemID="6af00000-39fc115f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1623-上臂-遮罩1.xml" itemID="6af00000-e01e43c4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1624-张爪手.xml" itemID="6af00000-aaa0b0d3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1624-张爪手-遮罩0.xml" itemID="6af00000-55a70bd8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1624-张爪手-遮罩1.xml" itemID="6af00000-2dd847bd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1625-前臂.xml" itemID="6af00000-31d5aca9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1625-前臂-遮罩0.xml" itemID="6af00000-3287d7b6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1625-前臂-遮罩1.xml" itemID="6af00000-7d2d9eee" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1626-躯干.xml" itemID="6af00000-28f8b7b1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1626-躯干-遮罩0.xml" itemID="6af00000-5bc59ff3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1627-头部.xml" itemID="6af00000-b1ede808" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1627-头部-遮罩0.xml" itemID="6af00000-afbece3f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1627-头部母版.xml" itemID="6af00000-872edced" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1627-头部母版-遮罩0.xml" itemID="6af00000-c87a5026" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1628-垂指手.xml" itemID="6af00000-ba9eb8a8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1628-垂指手-遮罩0.xml" itemID="6af00000-b01d8b0f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/分件/1628-垂指手-遮罩1.xml" itemID="6af00000-75d5e42b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/倒地.xml" itemID="6af00000-971564a2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/击倒.xml" itemID="6af00000-97b39f16" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/攻击.xml" itemID="6af00000-822979ec" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/站立.xml" itemID="6af00000-f4013bf3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/血腥死.xml" itemID="6af00000-76277078" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/行走.xml" itemID="6af00000-88ed6958" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/被击.xml" itemID="6af00000-1cf480b1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/动作/被投.xml" itemID="6af00000-a1b43f5c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/敌人-CF6女僵尸.xml" itemID="6af00000-7c9e1b86" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635.xml" itemID="6af00000-f9ca8160" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635-遮罩0.xml" itemID="6af00000-b65990b6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635-遮罩1.xml" itemID="6af00000-151dba7b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635-遮罩2.xml" itemID="6af00000-dd0c99c8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635-遮罩3.xml" itemID="6af00000-575d8ee1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1635-遮罩4.xml" itemID="6af00000-07d04de6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1636.xml" itemID="6af00000-d2511900" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637.xml" itemID="6af00000-b2cc0bde" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩0.xml" itemID="6af00000-a8cf954f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩1.xml" itemID="6af00000-fdd1e63e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩2.xml" itemID="6af00000-e4f93f0c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩3.xml" itemID="6af00000-2daa4512" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩4.xml" itemID="6af00000-b1b1a3ee" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩5.xml" itemID="6af00000-8bf13b7f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩6.xml" itemID="6af00000-c0976816" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩7.xml" itemID="6af00000-60f91e98" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩8.xml" itemID="6af00000-f8556633" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1637-遮罩9.xml" itemID="6af00000-220e8afb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1638.xml" itemID="6af00000-d1e1d3a3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639.xml" itemID="6af00000-a63c580e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩0.xml" itemID="6af00000-3bf094bb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩1.xml" itemID="6af00000-20837b42" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩2.xml" itemID="6af00000-56832a2e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩3.xml" itemID="6af00000-7bfff0cc" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩4.xml" itemID="6af00000-8defb52e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩5.xml" itemID="6af00000-8f4834c7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩6.xml" itemID="6af00000-bbfdf87d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1639-遮罩7.xml" itemID="6af00000-2b2360c9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1640.xml" itemID="6af00000-8af0f095" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1641.xml" itemID="6af00000-e8a08f8b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1642.xml" itemID="6af00000-beec125b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1643.xml" itemID="6af00000-e788b7e6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1644.xml" itemID="6af00000-39fb94b1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1645.xml" itemID="6af00000-17bf9b78" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1646.xml" itemID="6af00000-960d67db" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1647.xml" itemID="6af00000-ecb4e431" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1648.xml" itemID="6af00000-b3986f8a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1649.xml" itemID="6af00000-b844c55e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1650.xml" itemID="6af00000-1f1eabfe" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1651.xml" itemID="6af00000-e80aea71" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1652.xml" itemID="6af00000-f4a1bbc1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1653.xml" itemID="6af00000-e2feff42" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1654.xml" itemID="6af00000-e655887a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1655.xml" itemID="6af00000-a72013fa" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1656.xml" itemID="6af00000-3b00e602" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1657.xml" itemID="6af00000-1ce37431" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1658.xml" itemID="6af00000-fe122375" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1659.xml" itemID="6af00000-e22c6a3a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1660.xml" itemID="6af00000-910dc0f4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1661.xml" itemID="6af00000-3af6b271" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1662.xml" itemID="6af00000-9f1b2f51" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1663.xml" itemID="6af00000-2e19f576" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1664.xml" itemID="6af00000-2a81edec" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1665.xml" itemID="6af00000-4e6eb778" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1666.xml" itemID="6af00000-9b0a7fb1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1667.xml" itemID="6af00000-186fe9cf" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1668.xml" itemID="6af00000-ec17caf8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1669.xml" itemID="6af00000-5897955c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1670.xml" itemID="6af00000-08be76fc" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1671.xml" itemID="6af00000-9157fc50" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1672.xml" itemID="6af00000-541ed126" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1673.xml" itemID="6af00000-e555149d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1674.xml" itemID="6af00000-a1caea87" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1675.xml" itemID="6af00000-3d555d59" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1676.xml" itemID="6af00000-72c9c4c3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1677.xml" itemID="6af00000-473f7af2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1678.xml" itemID="6af00000-1070fc86" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1679.xml" itemID="6af00000-42ed1649" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1680.xml" itemID="6af00000-2511e289" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1681.xml" itemID="6af00000-6aaf9872" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1682.xml" itemID="6af00000-c9ba6d09" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1683.xml" itemID="6af00000-ad60a29a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1684.xml" itemID="6af00000-3cc14521" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1685.xml" itemID="6af00000-97ea4fde" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1686.xml" itemID="6af00000-ce0be2a4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1687.xml" itemID="6af00000-fd1bf3d7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1688.xml" itemID="6af00000-bce685cd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1689.xml" itemID="6af00000-c7e0fbe0" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1690.xml" itemID="6af00000-a8bd8886" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1691.xml" itemID="6af00000-340e8edb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6女僵尸/碎尸/1692.xml" itemID="6af00000-1c766379" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/393-脚靴.xml" itemID="6af00000-d7a47a66" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/393-脚靴-遮罩0.xml" itemID="6af00000-6dd45f5a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/394-小腿.xml" itemID="6af00000-4bd43714" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/394-小腿-遮罩0.xml" itemID="6af00000-cf72af76" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/395-大腿.xml" itemID="6af00000-882d17ad" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/395-大腿-遮罩0.xml" itemID="6af00000-f05d058b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/396-髋部.xml" itemID="6af00000-46b8c689" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/396-髋部-遮罩0.xml" itemID="6af00000-ba73178c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/397-上臂.xml" itemID="6af00000-14d627e6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/397-上臂-遮罩0.xml" itemID="6af00000-0944aa5e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/398-张爪手.xml" itemID="6af00000-7d5ee6c1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/398-张爪手-遮罩0.xml" itemID="6af00000-f79e3c8f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/399-前臂.xml" itemID="6af00000-e554ac41" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/399-前臂-遮罩0.xml" itemID="6af00000-82573747" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/400-躯干.xml" itemID="6af00000-df43435a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/400-躯干-遮罩0.xml" itemID="6af00000-e9bf25db" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部.xml" itemID="6af00000-bab346a3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩0.xml" itemID="6af00000-1df0081e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩1.xml" itemID="6af00000-223a42e5" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩2.xml" itemID="6af00000-fe63ff08" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩3.xml" itemID="6af00000-7830f6cf" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/401-头部-遮罩4.xml" itemID="6af00000-bbe92f45" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/402-垂指手.xml" itemID="6af00000-15a3a332" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/分件/402-垂指手-遮罩0.xml" itemID="6af00000-4b2f1eda" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/倒地.xml" itemID="6af00000-0c6eb24a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/击倒.xml" itemID="6af00000-1d371ceb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/攻击.xml" itemID="6af00000-7f30d0fb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/站立.xml" itemID="6af00000-b4a26543" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/血腥死.xml" itemID="6af00000-08d53c97" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/行走.xml" itemID="6af00000-bd92bd51" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/被击.xml" itemID="6af00000-e8c4d4ab" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/动作/被投.xml" itemID="6af00000-94218e69" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸.xml" itemID="6af00000-0a74453c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/409.xml" itemID="6af00000-fffb99ec" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410.xml" itemID="6af00000-98e3c33f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩0.xml" itemID="6af00000-7e15de0a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩1.xml" itemID="6af00000-1ccf4eeb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩2.xml" itemID="6af00000-d05d477e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩3.xml" itemID="6af00000-96d11dc1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩4.xml" itemID="6af00000-68a785ad" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/410-遮罩5.xml" itemID="6af00000-8deb213b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/411.xml" itemID="6af00000-49f3e639" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412.xml" itemID="6af00000-bc7e9643" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩0.xml" itemID="6af00000-5ed1c8e4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩1.xml" itemID="6af00000-f3b7fedd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩2.xml" itemID="6af00000-7a6a7fd6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩3.xml" itemID="6af00000-ec85d94e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩4.xml" itemID="6af00000-18b4e3d6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/412-遮罩5.xml" itemID="6af00000-6646e086" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/413.xml" itemID="6af00000-760a1812" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414.xml" itemID="6af00000-8f1fff07" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩0.xml" itemID="6af00000-251e0fd9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩1.xml" itemID="6af00000-9784a34f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩2.xml" itemID="6af00000-ee28ecbd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩3.xml" itemID="6af00000-6585fe05" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩4.xml" itemID="6af00000-0a7cec17" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩5.xml" itemID="6af00000-7f2306a2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩6.xml" itemID="6af00000-dbad0079" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩7.xml" itemID="6af00000-931d73f2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/414-遮罩8.xml" itemID="6af00000-d1806737" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/415.xml" itemID="6af00000-aa4c87a2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416.xml" itemID="6af00000-39b65a4b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩0.xml" itemID="6af00000-9aac33c8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩1.xml" itemID="6af00000-8478e1cb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩2.xml" itemID="6af00000-c667df56" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩3.xml" itemID="6af00000-a104ec04" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩4.xml" itemID="6af00000-3e3a4f15" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/416-遮罩5.xml" itemID="6af00000-b9c88f17" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/417.xml" itemID="6af00000-f1db77c7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/418.xml" itemID="6af00000-e8d7171b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/419.xml" itemID="6af00000-44f689fd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/420.xml" itemID="6af00000-d368e811" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/421.xml" itemID="6af00000-72c3611d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/422.xml" itemID="6af00000-d6355ba9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/423.xml" itemID="6af00000-495530d7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/424.xml" itemID="6af00000-7f57f5b1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/425.xml" itemID="6af00000-9018dc24" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/426.xml" itemID="6af00000-74e599e0" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/427.xml" itemID="6af00000-e8d06928" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/428.xml" itemID="6af00000-cfbf7bd1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/429.xml" itemID="6af00000-f19f02c8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/430.xml" itemID="6af00000-e3272da2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/431.xml" itemID="6af00000-fce51f7f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432.xml" itemID="6af00000-0a998130" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩0.xml" itemID="6af00000-601e1018" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩1.xml" itemID="6af00000-67ad32c9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩10.xml" itemID="6af00000-b7cb57a2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩11.xml" itemID="6af00000-e01a0944" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩12.xml" itemID="6af00000-69af7fed" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩2.xml" itemID="6af00000-7f253d2c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩3.xml" itemID="6af00000-7ce9e36e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩4.xml" itemID="6af00000-c6b5b5b8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩5.xml" itemID="6af00000-2b89c95a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩6.xml" itemID="6af00000-e0023474" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩7.xml" itemID="6af00000-75591987" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩8.xml" itemID="6af00000-1c105dc6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/432-遮罩9.xml" itemID="6af00000-04f2eb16" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/433.xml" itemID="6af00000-ebfe6b57" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434.xml" itemID="6af00000-5a811436" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩0.xml" itemID="6af00000-75a16d75" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩1.xml" itemID="6af00000-51a697c5" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩2.xml" itemID="6af00000-3dd9a67d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩3.xml" itemID="6af00000-a732fa02" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩4.xml" itemID="6af00000-83c11767" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩5.xml" itemID="6af00000-2db73b80" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩6.xml" itemID="6af00000-4bdfa915" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩7.xml" itemID="6af00000-99489689" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/434-遮罩8.xml" itemID="6af00000-9599b966" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/435.xml" itemID="6af00000-731b60eb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436.xml" itemID="6af00000-e6318c4f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩0.xml" itemID="6af00000-e6aabffe" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩1.xml" itemID="6af00000-5e311daa" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩2.xml" itemID="6af00000-608da8fe" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩3.xml" itemID="6af00000-3ad8955a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩4.xml" itemID="6af00000-04eafa47" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩5.xml" itemID="6af00000-e585cc77" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/436-遮罩6.xml" itemID="6af00000-afecc7e2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/437.xml" itemID="6af00000-aa5f9ccf" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438.xml" itemID="6af00000-8bee61a8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩0.xml" itemID="6af00000-c81b0c02" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩1.xml" itemID="6af00000-994352e6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩2.xml" itemID="6af00000-aeeb7f3a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩3.xml" itemID="6af00000-3e794db1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩4.xml" itemID="6af00000-ec027320" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩5.xml" itemID="6af00000-69aee56e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/438-遮罩6.xml" itemID="6af00000-abe78462" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/439.xml" itemID="6af00000-b21d9fa2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440.xml" itemID="6af00000-02b5d8c0" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩0.xml" itemID="6af00000-db9ebd74" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩1.xml" itemID="6af00000-daa2d222" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩2.xml" itemID="6af00000-d6cefb8c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩3.xml" itemID="6af00000-04e21802" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩4.xml" itemID="6af00000-dde3b5eb" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩5.xml" itemID="6af00000-02e8c2c7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/440-遮罩6.xml" itemID="6af00000-92c65ff7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/441.xml" itemID="6af00000-5499b93b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442.xml" itemID="6af00000-c1950a14" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩0.xml" itemID="6af00000-1eb63a23" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩1.xml" itemID="6af00000-f2fa1585" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩2.xml" itemID="6af00000-e875aeb3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩3.xml" itemID="6af00000-ab1b3870" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩4.xml" itemID="6af00000-285adae4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩5.xml" itemID="6af00000-0b845177" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/442-遮罩6.xml" itemID="6af00000-16db2634" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/443.xml" itemID="6af00000-9688b68b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444.xml" itemID="6af00000-4c548bac" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩0.xml" itemID="6af00000-4de2be42" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩1.xml" itemID="6af00000-3fac335b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩2.xml" itemID="6af00000-20eb170f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩3.xml" itemID="6af00000-8089aa16" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩4.xml" itemID="6af00000-d62d78a8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩5.xml" itemID="6af00000-392990f6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/444-遮罩6.xml" itemID="6af00000-ee3da580" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/445.xml" itemID="6af00000-f3f413b7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446.xml" itemID="6af00000-0f27bdab" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩0.xml" itemID="6af00000-42c02b5e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩1.xml" itemID="6af00000-6a6e63d1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩2.xml" itemID="6af00000-8de11ce9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩3.xml" itemID="6af00000-86a061b7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩4.xml" itemID="6af00000-58fa5305" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩5.xml" itemID="6af00000-1c0a2819" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/446-遮罩6.xml" itemID="6af00000-c61fbd94" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/447.xml" itemID="6af00000-322d6562" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448.xml" itemID="6af00000-1888e8e8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩0.xml" itemID="6af00000-a9deadfa" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩1.xml" itemID="6af00000-1155f6e9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩2.xml" itemID="6af00000-366efd96" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩3.xml" itemID="6af00000-0edef941" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩4.xml" itemID="6af00000-6268d3d4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩5.xml" itemID="6af00000-f6398083" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/448-遮罩6.xml" itemID="6af00000-be080e77" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/449.xml" itemID="6af00000-94b35976" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450.xml" itemID="6af00000-43ccc0d4" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩0.xml" itemID="6af00000-93e4bf27" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩1.xml" itemID="6af00000-0709b7d3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩2.xml" itemID="6af00000-9d240d60" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩3.xml" itemID="6af00000-e5381891" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩4.xml" itemID="6af00000-8f205877" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩5.xml" itemID="6af00000-a3d26091" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/450-遮罩6.xml" itemID="6af00000-844058f2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/451.xml" itemID="6af00000-9e7f1db9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452.xml" itemID="6af00000-585a00fc" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩0.xml" itemID="6af00000-abb62591" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩1.xml" itemID="6af00000-c9e6cc69" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩2.xml" itemID="6af00000-a8ca93bd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩3.xml" itemID="6af00000-d2990724" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩4.xml" itemID="6af00000-a24e2df8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩5.xml" itemID="6af00000-b0055a73" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/452-遮罩6.xml" itemID="6af00000-723936b7" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/453.xml" itemID="6af00000-872da907" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454.xml" itemID="6af00000-4bc23e7b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩0.xml" itemID="6af00000-f71d7d6e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩1.xml" itemID="6af00000-69efa4dc" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩2.xml" itemID="6af00000-b351d9fa" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩3.xml" itemID="6af00000-15609e56" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩4.xml" itemID="6af00000-841c164b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩5.xml" itemID="6af00000-cba028ee" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/454-遮罩6.xml" itemID="6af00000-d1b16cc1" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/455.xml" itemID="6af00000-daf468c9" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456.xml" itemID="6af00000-b599db72" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩0.xml" itemID="6af00000-4e546551" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩1.xml" itemID="6af00000-8f572a87" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩2.xml" itemID="6af00000-3a525136" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩3.xml" itemID="6af00000-6ebd29f6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩4.xml" itemID="6af00000-43a2e6a8" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩5.xml" itemID="6af00000-2e6e03ba" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/456-遮罩6.xml" itemID="6af00000-05184262" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/457.xml" itemID="6af00000-1dccb335" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458.xml" itemID="6af00000-b6ea4412" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩0.xml" itemID="6af00000-c024668d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩1.xml" itemID="6af00000-2e738a4b" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩2.xml" itemID="6af00000-5273bc96" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩3.xml" itemID="6af00000-06908648" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩4.xml" itemID="6af00000-ed7ce2ec" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩5.xml" itemID="6af00000-49b6c254" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/458-遮罩6.xml" itemID="6af00000-113f1804" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/459.xml" itemID="6af00000-eafc7891" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460.xml" itemID="6af00000-ca7e554f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩0.xml" itemID="6af00000-112acfdd" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩1.xml" itemID="6af00000-c277eaa2" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩2.xml" itemID="6af00000-b79fb81c" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩3.xml" itemID="6af00000-7cac863e" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩4.xml" itemID="6af00000-7df1b673" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩5.xml" itemID="6af00000-a0123109" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/460-遮罩6.xml" itemID="6af00000-f6c82634" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/461.xml" itemID="6af00000-80b78016" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/462.xml" itemID="6af00000-621210f3" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/463.xml" itemID="6af00000-f7efd302" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/464.xml" itemID="6af00000-46c42b8a" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/465.xml" itemID="6af00000-0f205169" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/466.xml" itemID="6af00000-b3def531" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/467.xml" itemID="6af00000-96d212ce" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/468.xml" itemID="6af00000-90038619" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/469.xml" itemID="6af00000-f1b828b5" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/470.xml" itemID="6af00000-7955c3aa" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/471.xml" itemID="6af00000-fd3dcd1f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/472.xml" itemID="6af00000-426e8d6d" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/473.xml" itemID="6af00000-272c295f" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/474.xml" itemID="6af00000-9c3c7eb6" loadImmediate="false"/>
+    <Include href="Antigravity/CF6普通男僵尸/碎尸/475.xml" itemID="6af00000-a694988c" loadImmediate="false"/>
+    <Include href="Antigravity/共用/area框.xml" itemID="6af00000-671d0521" loadImmediate="false"/>
+    <Include href="Antigravity/共用/area框图形.xml" itemID="6af00000-0a19ebbd" loadImmediate="false"/>
+    <Include href="Antigravity/共用/人物文字信息.xml" itemID="6af00000-81f3d20c" loadImmediate="false"/>
+    <Include href="Antigravity/共用/思考标签.xml" itemID="6af00000-2d2351a0" loadImmediate="false"/>
+    <Include href="Antigravity/共用/思考标签图形.xml" itemID="6af00000-edab5f5f" loadImmediate="false"/>
+    <Include href="Antigravity/共用/接地阴影.xml" itemID="6af00000-35c71a66" loadImmediate="false"/>
+    <Include href="Antigravity/共用/控制块.xml" itemID="6af00000-847bfed8" loadImmediate="false"/>
+    <Include href="Antigravity/共用/攻击点.xml" itemID="6af00000-5d932a90" loadImmediate="false"/>
+    <Include href="Antigravity/共用/玩家控制停止器.xml" itemID="6af00000-450a40f5" loadImmediate="false"/>
+    <Include href="Antigravity/共用/血条组件21.xml" itemID="6af00000-168f803f" loadImmediate="false"/>
+    <Include href="Antigravity/共用/血条组件23.xml" itemID="6af00000-77367d80" loadImmediate="false"/>
+    <Include href="Antigravity/共用/血条组件24.xml" itemID="6af00000-a9d1b300" loadImmediate="false"/>
+    <Include href="Antigravity/共用/血条组件26.xml" itemID="6af00000-258ceb89" loadImmediate="false"/>
+    <Include href="Antigravity/共用/被投旋转area.xml" itemID="6af00000-fdd87d9b" loadImmediate="false"/>
+    <Include href="Antigravity专用素材.xml" itemID="6af00000-52ab3bbf" loadImmediate="false"/>
+  </symbols>
+  <media/>
+  <timelines>
+    <DOMTimeline name="场景 1">
+      <layers>
+        <DOMLayer name="共享导出锚点" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity专用素材">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

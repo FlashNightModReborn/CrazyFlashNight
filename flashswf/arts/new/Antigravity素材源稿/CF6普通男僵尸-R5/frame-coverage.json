@@ -1,0 +1,7633 @@
+{
+  "scope": "all173deathframes rendered,3 branches sampled separately; no AS execution",
+  "sourceFrameRate": 30,
+  "gifNote": "30fps approx 30/30/40ms; extra1s last-frame review hold; looping for review only",
+  "deathShapeIdsCovered": [
+    409,
+    410,
+    411,
+    412,
+    413,
+    414,
+    415,
+    416,
+    417,
+    418,
+    419,
+    420,
+    421,
+    422,
+    423,
+    424,
+    425,
+    426,
+    427,
+    428,
+    429,
+    430,
+    431,
+    432,
+    433,
+    434,
+    435,
+    436,
+    437,
+    438,
+    439,
+    440,
+    441,
+    442,
+    443,
+    444,
+    445,
+    446,
+    447,
+    448,
+    449,
+    450,
+    451,
+    452,
+    453,
+    454,
+    455,
+    456,
+    457,
+    458,
+    459,
+    460,
+    461,
+    462,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    472,
+    473,
+    474,
+    475
+  ],
+  "missingDeathIds": [],
+  "transparentHelpersExcluded": {
+    "281": "Wraps Shape280, sole fill RGBA ff000000 alpha 0",
+    "311": "Wraps Shape310, sole fill RGBA ff000000 alpha 0"
+  },
+  "branches": [
+    {
+      "label": "a0",
+      "startFrame": 1,
+      "endFrame": 77,
+      "frameCount": 77,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409,
+        410,
+        411,
+        412,
+        413,
+        414,
+        415,
+        416,
+        417,
+        418,
+        419,
+        420,
+        421,
+        422,
+        423,
+        424,
+        425,
+        426,
+        427,
+        428,
+        429,
+        430
+      ]
+    },
+    {
+      "label": "a1",
+      "startFrame": 78,
+      "endFrame": 130,
+      "frameCount": 53,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        431,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        447,
+        448,
+        449,
+        450,
+        451,
+        452,
+        453,
+        454,
+        455,
+        456,
+        457,
+        458,
+        459,
+        460,
+        461
+      ]
+    },
+    {
+      "label": "a2",
+      "startFrame": 131,
+      "endFrame": 173,
+      "frameCount": 43,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        462,
+        463,
+        464,
+        465,
+        466,
+        467,
+        468,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        475
+      ]
+    }
+  ],
+  "frames": [
+    {
+      "frame": 1,
+      "branch": "a0",
+      "branchFrame": 1,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 2,
+      "branch": "a0",
+      "branchFrame": 2,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 3,
+      "branch": "a0",
+      "branchFrame": 3,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 4,
+      "branch": "a0",
+      "branchFrame": 4,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            550,
+            120,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "448ea9de3faf712b8b9ef023357e8f24ef5e112977544c4bef06d66678792912"
+        },
+        "candidate": {
+          "bbox": [
+            550,
+            121,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df8da712fdc52483ae240deff63f1ca5a7efdc0a45217cb101bb6d38286c4082"
+        }
+      }
+    },
+    {
+      "frame": 5,
+      "branch": "a0",
+      "branchFrame": 5,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            550,
+            120,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "448ea9de3faf712b8b9ef023357e8f24ef5e112977544c4bef06d66678792912"
+        },
+        "candidate": {
+          "bbox": [
+            550,
+            121,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df8da712fdc52483ae240deff63f1ca5a7efdc0a45217cb101bb6d38286c4082"
+        }
+      }
+    },
+    {
+      "frame": 6,
+      "branch": "a0",
+      "branchFrame": 6,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            550,
+            120,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "448ea9de3faf712b8b9ef023357e8f24ef5e112977544c4bef06d66678792912"
+        },
+        "candidate": {
+          "bbox": [
+            550,
+            121,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df8da712fdc52483ae240deff63f1ca5a7efdc0a45217cb101bb6d38286c4082"
+        }
+      }
+    },
+    {
+      "frame": 7,
+      "branch": "a0",
+      "branchFrame": 7,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            550,
+            120,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "448ea9de3faf712b8b9ef023357e8f24ef5e112977544c4bef06d66678792912"
+        },
+        "candidate": {
+          "bbox": [
+            550,
+            121,
+            755,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df8da712fdc52483ae240deff63f1ca5a7efdc0a45217cb101bb6d38286c4082"
+        }
+      }
+    },
+    {
+      "frame": 8,
+      "branch": "a0",
+      "branchFrame": 8,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        410,
+        411
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a206b753a0cde670292d20c58f558092155da88c3758e8c9ae13f130218fd254"
+        },
+        "candidate": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2136647513123d44cb6e1ac6b412f8f21f93c060bb3f05b5bcf1e9a6e400d0f4"
+        }
+      }
+    },
+    {
+      "frame": 9,
+      "branch": "a0",
+      "branchFrame": 9,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        410,
+        411
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a206b753a0cde670292d20c58f558092155da88c3758e8c9ae13f130218fd254"
+        },
+        "candidate": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2136647513123d44cb6e1ac6b412f8f21f93c060bb3f05b5bcf1e9a6e400d0f4"
+        }
+      }
+    },
+    {
+      "frame": 10,
+      "branch": "a0",
+      "branchFrame": 10,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        410,
+        411
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a206b753a0cde670292d20c58f558092155da88c3758e8c9ae13f130218fd254"
+        },
+        "candidate": {
+          "bbox": [
+            502,
+            97,
+            651,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2136647513123d44cb6e1ac6b412f8f21f93c060bb3f05b5bcf1e9a6e400d0f4"
+        }
+      }
+    },
+    {
+      "frame": 11,
+      "branch": "a0",
+      "branchFrame": 11,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        412,
+        413
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            453,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1bc141b1f358d4825b44831edf1674775af8efcab2b4b8574a066c44f2c1bcee"
+        },
+        "candidate": {
+          "bbox": [
+            454,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "578a8017e2eca6a88a3df7203767cddd7d6814abec2b864fb2a06cda18fb1904"
+        }
+      }
+    },
+    {
+      "frame": 12,
+      "branch": "a0",
+      "branchFrame": 12,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        412,
+        413
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            453,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1bc141b1f358d4825b44831edf1674775af8efcab2b4b8574a066c44f2c1bcee"
+        },
+        "candidate": {
+          "bbox": [
+            454,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "578a8017e2eca6a88a3df7203767cddd7d6814abec2b864fb2a06cda18fb1904"
+        }
+      }
+    },
+    {
+      "frame": 13,
+      "branch": "a0",
+      "branchFrame": 13,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        412,
+        413
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            453,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1bc141b1f358d4825b44831edf1674775af8efcab2b4b8574a066c44f2c1bcee"
+        },
+        "candidate": {
+          "bbox": [
+            454,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "578a8017e2eca6a88a3df7203767cddd7d6814abec2b864fb2a06cda18fb1904"
+        }
+      }
+    },
+    {
+      "frame": 14,
+      "branch": "a0",
+      "branchFrame": 14,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        412,
+        413
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            453,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1bc141b1f358d4825b44831edf1674775af8efcab2b4b8574a066c44f2c1bcee"
+        },
+        "candidate": {
+          "bbox": [
+            454,
+            42,
+            660,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "578a8017e2eca6a88a3df7203767cddd7d6814abec2b864fb2a06cda18fb1904"
+        }
+      }
+    },
+    {
+      "frame": 15,
+      "branch": "a0",
+      "branchFrame": 15,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        414,
+        415
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0efa67ff5e4982033eb89f59ef1609f160206975b60ce144bb768a41b52b3000"
+        },
+        "candidate": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "20033b253577c5ef177eb1d7bf43c7b220bceccdd09c9f49749ed65d25ca202e"
+        }
+      }
+    },
+    {
+      "frame": 16,
+      "branch": "a0",
+      "branchFrame": 16,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        414,
+        415
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0efa67ff5e4982033eb89f59ef1609f160206975b60ce144bb768a41b52b3000"
+        },
+        "candidate": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "20033b253577c5ef177eb1d7bf43c7b220bceccdd09c9f49749ed65d25ca202e"
+        }
+      }
+    },
+    {
+      "frame": 17,
+      "branch": "a0",
+      "branchFrame": 17,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        414,
+        415
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0efa67ff5e4982033eb89f59ef1609f160206975b60ce144bb768a41b52b3000"
+        },
+        "candidate": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "20033b253577c5ef177eb1d7bf43c7b220bceccdd09c9f49749ed65d25ca202e"
+        }
+      }
+    },
+    {
+      "frame": 18,
+      "branch": "a0",
+      "branchFrame": 18,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        414,
+        415
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0efa67ff5e4982033eb89f59ef1609f160206975b60ce144bb768a41b52b3000"
+        },
+        "candidate": {
+          "bbox": [
+            387,
+            24,
+            690,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "20033b253577c5ef177eb1d7bf43c7b220bceccdd09c9f49749ed65d25ca202e"
+        }
+      }
+    },
+    {
+      "frame": 19,
+      "branch": "a0",
+      "branchFrame": 19,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        416,
+        417
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3aa6fcbd2a309f097d6da829ff812b0577dcbb2101dee6a052c9a1cd37b1b930"
+        },
+        "candidate": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8e5a302108e5ce60018293024f8035d61bd09596549407c11f1c937d4b9a2fc0"
+        }
+      }
+    },
+    {
+      "frame": 20,
+      "branch": "a0",
+      "branchFrame": 20,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        416,
+        417
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3aa6fcbd2a309f097d6da829ff812b0577dcbb2101dee6a052c9a1cd37b1b930"
+        },
+        "candidate": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8e5a302108e5ce60018293024f8035d61bd09596549407c11f1c937d4b9a2fc0"
+        }
+      }
+    },
+    {
+      "frame": 21,
+      "branch": "a0",
+      "branchFrame": 21,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        416,
+        417
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3aa6fcbd2a309f097d6da829ff812b0577dcbb2101dee6a052c9a1cd37b1b930"
+        },
+        "candidate": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8e5a302108e5ce60018293024f8035d61bd09596549407c11f1c937d4b9a2fc0"
+        }
+      }
+    },
+    {
+      "frame": 22,
+      "branch": "a0",
+      "branchFrame": 22,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        416,
+        417
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3aa6fcbd2a309f097d6da829ff812b0577dcbb2101dee6a052c9a1cd37b1b930"
+        },
+        "candidate": {
+          "bbox": [
+            378,
+            24,
+            697,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8e5a302108e5ce60018293024f8035d61bd09596549407c11f1c937d4b9a2fc0"
+        }
+      }
+    },
+    {
+      "frame": 23,
+      "branch": "a0",
+      "branchFrame": 23,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        418,
+        419
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e31309a3274e37986c436a809bd00054dd7c7c1cbe34153a02be6860b59ee927"
+        },
+        "candidate": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b47cbbba16c158e1bf94768613d31a7c895edbbac160a55906ca07d8d708976b"
+        }
+      }
+    },
+    {
+      "frame": 24,
+      "branch": "a0",
+      "branchFrame": 24,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        418,
+        419
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e31309a3274e37986c436a809bd00054dd7c7c1cbe34153a02be6860b59ee927"
+        },
+        "candidate": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b47cbbba16c158e1bf94768613d31a7c895edbbac160a55906ca07d8d708976b"
+        }
+      }
+    },
+    {
+      "frame": 25,
+      "branch": "a0",
+      "branchFrame": 25,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        418,
+        419
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e31309a3274e37986c436a809bd00054dd7c7c1cbe34153a02be6860b59ee927"
+        },
+        "candidate": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b47cbbba16c158e1bf94768613d31a7c895edbbac160a55906ca07d8d708976b"
+        }
+      }
+    },
+    {
+      "frame": 26,
+      "branch": "a0",
+      "branchFrame": 26,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        418,
+        419
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e31309a3274e37986c436a809bd00054dd7c7c1cbe34153a02be6860b59ee927"
+        },
+        "candidate": {
+          "bbox": [
+            401,
+            34,
+            743,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b47cbbba16c158e1bf94768613d31a7c895edbbac160a55906ca07d8d708976b"
+        }
+      }
+    },
+    {
+      "frame": 27,
+      "branch": "a0",
+      "branchFrame": 27,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        420
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7cc48a52b49e053d657d45489a1d788b335bf16edbb5a256b8a9b804c6c3e30"
+        },
+        "candidate": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1991fd583e9f6132018a2c0a94560830470339d07715967ffc325e490caea41d"
+        }
+      }
+    },
+    {
+      "frame": 28,
+      "branch": "a0",
+      "branchFrame": 28,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        420
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7cc48a52b49e053d657d45489a1d788b335bf16edbb5a256b8a9b804c6c3e30"
+        },
+        "candidate": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1991fd583e9f6132018a2c0a94560830470339d07715967ffc325e490caea41d"
+        }
+      }
+    },
+    {
+      "frame": 29,
+      "branch": "a0",
+      "branchFrame": 29,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        420
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7cc48a52b49e053d657d45489a1d788b335bf16edbb5a256b8a9b804c6c3e30"
+        },
+        "candidate": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1991fd583e9f6132018a2c0a94560830470339d07715967ffc325e490caea41d"
+        }
+      }
+    },
+    {
+      "frame": 30,
+      "branch": "a0",
+      "branchFrame": 30,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        420
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7cc48a52b49e053d657d45489a1d788b335bf16edbb5a256b8a9b804c6c3e30"
+        },
+        "candidate": {
+          "bbox": [
+            416,
+            87,
+            736,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1991fd583e9f6132018a2c0a94560830470339d07715967ffc325e490caea41d"
+        }
+      }
+    },
+    {
+      "frame": 31,
+      "branch": "a0",
+      "branchFrame": 31,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        421
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "43e36d1343190a0a98786c1bb9c19072004781da2cdb0ddd86d0f141e3b00984"
+        },
+        "candidate": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df56b439af1e185aa84bb7e8a08ef382842a32792117809a907ac5ad0a8e2d3e"
+        }
+      }
+    },
+    {
+      "frame": 32,
+      "branch": "a0",
+      "branchFrame": 32,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        421
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "43e36d1343190a0a98786c1bb9c19072004781da2cdb0ddd86d0f141e3b00984"
+        },
+        "candidate": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df56b439af1e185aa84bb7e8a08ef382842a32792117809a907ac5ad0a8e2d3e"
+        }
+      }
+    },
+    {
+      "frame": 33,
+      "branch": "a0",
+      "branchFrame": 33,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        421
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "43e36d1343190a0a98786c1bb9c19072004781da2cdb0ddd86d0f141e3b00984"
+        },
+        "candidate": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df56b439af1e185aa84bb7e8a08ef382842a32792117809a907ac5ad0a8e2d3e"
+        }
+      }
+    },
+    {
+      "frame": 34,
+      "branch": "a0",
+      "branchFrame": 34,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        421
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "43e36d1343190a0a98786c1bb9c19072004781da2cdb0ddd86d0f141e3b00984"
+        },
+        "candidate": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df56b439af1e185aa84bb7e8a08ef382842a32792117809a907ac5ad0a8e2d3e"
+        }
+      }
+    },
+    {
+      "frame": 35,
+      "branch": "a0",
+      "branchFrame": 35,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        421
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "43e36d1343190a0a98786c1bb9c19072004781da2cdb0ddd86d0f141e3b00984"
+        },
+        "candidate": {
+          "bbox": [
+            404,
+            136,
+            734,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "df56b439af1e185aa84bb7e8a08ef382842a32792117809a907ac5ad0a8e2d3e"
+        }
+      }
+    },
+    {
+      "frame": 36,
+      "branch": "a0",
+      "branchFrame": 36,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        422
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f2167d8d42cf627961edb766f313a80d0a190da49a2835c6c3f9fda51dc34b61"
+        },
+        "candidate": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e260350689debcc56e7af015f199fc04eb25e5beb8687cbb77c8391f675eb226"
+        }
+      }
+    },
+    {
+      "frame": 37,
+      "branch": "a0",
+      "branchFrame": 37,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        422
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f2167d8d42cf627961edb766f313a80d0a190da49a2835c6c3f9fda51dc34b61"
+        },
+        "candidate": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e260350689debcc56e7af015f199fc04eb25e5beb8687cbb77c8391f675eb226"
+        }
+      }
+    },
+    {
+      "frame": 38,
+      "branch": "a0",
+      "branchFrame": 38,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        422
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f2167d8d42cf627961edb766f313a80d0a190da49a2835c6c3f9fda51dc34b61"
+        },
+        "candidate": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e260350689debcc56e7af015f199fc04eb25e5beb8687cbb77c8391f675eb226"
+        }
+      }
+    },
+    {
+      "frame": 39,
+      "branch": "a0",
+      "branchFrame": 39,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        422
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f2167d8d42cf627961edb766f313a80d0a190da49a2835c6c3f9fda51dc34b61"
+        },
+        "candidate": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e260350689debcc56e7af015f199fc04eb25e5beb8687cbb77c8391f675eb226"
+        }
+      }
+    },
+    {
+      "frame": 40,
+      "branch": "a0",
+      "branchFrame": 40,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        422
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f2167d8d42cf627961edb766f313a80d0a190da49a2835c6c3f9fda51dc34b61"
+        },
+        "candidate": {
+          "bbox": [
+            393,
+            130,
+            727,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e260350689debcc56e7af015f199fc04eb25e5beb8687cbb77c8391f675eb226"
+        }
+      }
+    },
+    {
+      "frame": 41,
+      "branch": "a0",
+      "branchFrame": 41,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        423
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a11799d8c978646931466081b39a6654aef75065afe13a184a42f7cffe571962"
+        },
+        "candidate": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "36ce1d58a25fbe58b645ffa208aac5cdf1c32a97303fd32e2f0a1d94f56017e0"
+        }
+      }
+    },
+    {
+      "frame": 42,
+      "branch": "a0",
+      "branchFrame": 42,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        423
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a11799d8c978646931466081b39a6654aef75065afe13a184a42f7cffe571962"
+        },
+        "candidate": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "36ce1d58a25fbe58b645ffa208aac5cdf1c32a97303fd32e2f0a1d94f56017e0"
+        }
+      }
+    },
+    {
+      "frame": 43,
+      "branch": "a0",
+      "branchFrame": 43,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        423
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a11799d8c978646931466081b39a6654aef75065afe13a184a42f7cffe571962"
+        },
+        "candidate": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "36ce1d58a25fbe58b645ffa208aac5cdf1c32a97303fd32e2f0a1d94f56017e0"
+        }
+      }
+    },
+    {
+      "frame": 44,
+      "branch": "a0",
+      "branchFrame": 44,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        423
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a11799d8c978646931466081b39a6654aef75065afe13a184a42f7cffe571962"
+        },
+        "candidate": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "36ce1d58a25fbe58b645ffa208aac5cdf1c32a97303fd32e2f0a1d94f56017e0"
+        }
+      }
+    },
+    {
+      "frame": 45,
+      "branch": "a0",
+      "branchFrame": 45,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        423
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a11799d8c978646931466081b39a6654aef75065afe13a184a42f7cffe571962"
+        },
+        "candidate": {
+          "bbox": [
+            390,
+            148,
+            740,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "36ce1d58a25fbe58b645ffa208aac5cdf1c32a97303fd32e2f0a1d94f56017e0"
+        }
+      }
+    },
+    {
+      "frame": 46,
+      "branch": "a0",
+      "branchFrame": 46,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        424
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "439bbae5d95f5d06e9a68ee31b88fb88441f954ab0b5eb67c4b96561a962617f"
+        },
+        "candidate": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10339cb060b7b727ed7a64f7ad26dee296d72164393c756c16d8dcbe287b86bf"
+        }
+      }
+    },
+    {
+      "frame": 47,
+      "branch": "a0",
+      "branchFrame": 47,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        424
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "439bbae5d95f5d06e9a68ee31b88fb88441f954ab0b5eb67c4b96561a962617f"
+        },
+        "candidate": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10339cb060b7b727ed7a64f7ad26dee296d72164393c756c16d8dcbe287b86bf"
+        }
+      }
+    },
+    {
+      "frame": 48,
+      "branch": "a0",
+      "branchFrame": 48,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        424
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "439bbae5d95f5d06e9a68ee31b88fb88441f954ab0b5eb67c4b96561a962617f"
+        },
+        "candidate": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10339cb060b7b727ed7a64f7ad26dee296d72164393c756c16d8dcbe287b86bf"
+        }
+      }
+    },
+    {
+      "frame": 49,
+      "branch": "a0",
+      "branchFrame": 49,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        424
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "439bbae5d95f5d06e9a68ee31b88fb88441f954ab0b5eb67c4b96561a962617f"
+        },
+        "candidate": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10339cb060b7b727ed7a64f7ad26dee296d72164393c756c16d8dcbe287b86bf"
+        }
+      }
+    },
+    {
+      "frame": 50,
+      "branch": "a0",
+      "branchFrame": 50,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        424
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "439bbae5d95f5d06e9a68ee31b88fb88441f954ab0b5eb67c4b96561a962617f"
+        },
+        "candidate": {
+          "bbox": [
+            573,
+            168,
+            741,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10339cb060b7b727ed7a64f7ad26dee296d72164393c756c16d8dcbe287b86bf"
+        }
+      }
+    },
+    {
+      "frame": 51,
+      "branch": "a0",
+      "branchFrame": 51,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        425
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b6ec537bf3a2e2f53b0de4366c326f365d1bbc1d05a722701da4836020b11f0d"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0561bd80377cf3cb1c2ddff3f6646e365e0e0716b5dc8c6daba2d3ed453434d7"
+        }
+      }
+    },
+    {
+      "frame": 52,
+      "branch": "a0",
+      "branchFrame": 52,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        425
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b6ec537bf3a2e2f53b0de4366c326f365d1bbc1d05a722701da4836020b11f0d"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0561bd80377cf3cb1c2ddff3f6646e365e0e0716b5dc8c6daba2d3ed453434d7"
+        }
+      }
+    },
+    {
+      "frame": 53,
+      "branch": "a0",
+      "branchFrame": 53,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        425
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b6ec537bf3a2e2f53b0de4366c326f365d1bbc1d05a722701da4836020b11f0d"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0561bd80377cf3cb1c2ddff3f6646e365e0e0716b5dc8c6daba2d3ed453434d7"
+        }
+      }
+    },
+    {
+      "frame": 54,
+      "branch": "a0",
+      "branchFrame": 54,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        425
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b6ec537bf3a2e2f53b0de4366c326f365d1bbc1d05a722701da4836020b11f0d"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0561bd80377cf3cb1c2ddff3f6646e365e0e0716b5dc8c6daba2d3ed453434d7"
+        }
+      }
+    },
+    {
+      "frame": 55,
+      "branch": "a0",
+      "branchFrame": 55,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        425
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b6ec537bf3a2e2f53b0de4366c326f365d1bbc1d05a722701da4836020b11f0d"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            188,
+            797,
+            519
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0561bd80377cf3cb1c2ddff3f6646e365e0e0716b5dc8c6daba2d3ed453434d7"
+        }
+      }
+    },
+    {
+      "frame": 56,
+      "branch": "a0",
+      "branchFrame": 56,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        426
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7d205adfc5e1906c71ba5f8827efafc8090340dec9d2cb01e0cf2d37c1d561f"
+        },
+        "candidate": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "773265a8081712cefffcb94e55cd8326b96500ce5ee0eba8bb6cdc9cbdf4fe00"
+        }
+      }
+    },
+    {
+      "frame": 57,
+      "branch": "a0",
+      "branchFrame": 57,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        426
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7d205adfc5e1906c71ba5f8827efafc8090340dec9d2cb01e0cf2d37c1d561f"
+        },
+        "candidate": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "773265a8081712cefffcb94e55cd8326b96500ce5ee0eba8bb6cdc9cbdf4fe00"
+        }
+      }
+    },
+    {
+      "frame": 58,
+      "branch": "a0",
+      "branchFrame": 58,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        426
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7d205adfc5e1906c71ba5f8827efafc8090340dec9d2cb01e0cf2d37c1d561f"
+        },
+        "candidate": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "773265a8081712cefffcb94e55cd8326b96500ce5ee0eba8bb6cdc9cbdf4fe00"
+        }
+      }
+    },
+    {
+      "frame": 59,
+      "branch": "a0",
+      "branchFrame": 59,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        426
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7d205adfc5e1906c71ba5f8827efafc8090340dec9d2cb01e0cf2d37c1d561f"
+        },
+        "candidate": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "773265a8081712cefffcb94e55cd8326b96500ce5ee0eba8bb6cdc9cbdf4fe00"
+        }
+      }
+    },
+    {
+      "frame": 60,
+      "branch": "a0",
+      "branchFrame": 60,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        426
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7d205adfc5e1906c71ba5f8827efafc8090340dec9d2cb01e0cf2d37c1d561f"
+        },
+        "candidate": {
+          "bbox": [
+            549,
+            214,
+            796,
+            526
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "773265a8081712cefffcb94e55cd8326b96500ce5ee0eba8bb6cdc9cbdf4fe00"
+        }
+      }
+    },
+    {
+      "frame": 61,
+      "branch": "a0",
+      "branchFrame": 61,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        427
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b89af9a4e559e348880dc83c2be99f6ab7683d26aa8d8c03cb958082897acaf7"
+        },
+        "candidate": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "24f54da2fe1d7ea94001301aa1ca093f6b46e0e31a94aa28ebc26d26abc6aed9"
+        }
+      }
+    },
+    {
+      "frame": 62,
+      "branch": "a0",
+      "branchFrame": 62,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        427
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b89af9a4e559e348880dc83c2be99f6ab7683d26aa8d8c03cb958082897acaf7"
+        },
+        "candidate": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "24f54da2fe1d7ea94001301aa1ca093f6b46e0e31a94aa28ebc26d26abc6aed9"
+        }
+      }
+    },
+    {
+      "frame": 63,
+      "branch": "a0",
+      "branchFrame": 63,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        427
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b89af9a4e559e348880dc83c2be99f6ab7683d26aa8d8c03cb958082897acaf7"
+        },
+        "candidate": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "24f54da2fe1d7ea94001301aa1ca093f6b46e0e31a94aa28ebc26d26abc6aed9"
+        }
+      }
+    },
+    {
+      "frame": 64,
+      "branch": "a0",
+      "branchFrame": 64,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        427
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b89af9a4e559e348880dc83c2be99f6ab7683d26aa8d8c03cb958082897acaf7"
+        },
+        "candidate": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "24f54da2fe1d7ea94001301aa1ca093f6b46e0e31a94aa28ebc26d26abc6aed9"
+        }
+      }
+    },
+    {
+      "frame": 65,
+      "branch": "a0",
+      "branchFrame": 65,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        427
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b89af9a4e559e348880dc83c2be99f6ab7683d26aa8d8c03cb958082897acaf7"
+        },
+        "candidate": {
+          "bbox": [
+            533,
+            256,
+            898,
+            520
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "24f54da2fe1d7ea94001301aa1ca093f6b46e0e31a94aa28ebc26d26abc6aed9"
+        }
+      }
+    },
+    {
+      "frame": 66,
+      "branch": "a0",
+      "branchFrame": 66,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        428
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e2bcc40750035537aa196e0f3c856955d8182a7663afe5f667a9243bb0042de6"
+        },
+        "candidate": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "32c97e653ffc133f105c0b9f8614247e7debc6b165e9a0b647278682abb4fb48"
+        }
+      }
+    },
+    {
+      "frame": 67,
+      "branch": "a0",
+      "branchFrame": 67,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        428
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e2bcc40750035537aa196e0f3c856955d8182a7663afe5f667a9243bb0042de6"
+        },
+        "candidate": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "32c97e653ffc133f105c0b9f8614247e7debc6b165e9a0b647278682abb4fb48"
+        }
+      }
+    },
+    {
+      "frame": 68,
+      "branch": "a0",
+      "branchFrame": 68,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        428
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e2bcc40750035537aa196e0f3c856955d8182a7663afe5f667a9243bb0042de6"
+        },
+        "candidate": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "32c97e653ffc133f105c0b9f8614247e7debc6b165e9a0b647278682abb4fb48"
+        }
+      }
+    },
+    {
+      "frame": 69,
+      "branch": "a0",
+      "branchFrame": 69,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        428
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e2bcc40750035537aa196e0f3c856955d8182a7663afe5f667a9243bb0042de6"
+        },
+        "candidate": {
+          "bbox": [
+            496,
+            280,
+            926,
+            536
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "32c97e653ffc133f105c0b9f8614247e7debc6b165e9a0b647278682abb4fb48"
+        }
+      }
+    },
+    {
+      "frame": 70,
+      "branch": "a0",
+      "branchFrame": 70,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        429
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1fa7e656ad8c7455f30d43598006ba503d5f440b4a62e9ff4b24d0c112e1a3ae"
+        },
+        "candidate": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "aa8507eee511948f3cb112e3ab9e7861cf738a7ec1be3afb66668312412f930f"
+        }
+      }
+    },
+    {
+      "frame": 71,
+      "branch": "a0",
+      "branchFrame": 71,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        429
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1fa7e656ad8c7455f30d43598006ba503d5f440b4a62e9ff4b24d0c112e1a3ae"
+        },
+        "candidate": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "aa8507eee511948f3cb112e3ab9e7861cf738a7ec1be3afb66668312412f930f"
+        }
+      }
+    },
+    {
+      "frame": 72,
+      "branch": "a0",
+      "branchFrame": 72,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        429
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1fa7e656ad8c7455f30d43598006ba503d5f440b4a62e9ff4b24d0c112e1a3ae"
+        },
+        "candidate": {
+          "bbox": [
+            489,
+            312,
+            944,
+            511
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "aa8507eee511948f3cb112e3ab9e7861cf738a7ec1be3afb66668312412f930f"
+        }
+      }
+    },
+    {
+      "frame": 73,
+      "branch": "a0",
+      "branchFrame": 73,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        430
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1db8ebcc70aa52f241b2a8f30d9117cc4648ddfbced273f7c84e3e8f301f1fcd"
+        },
+        "candidate": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "952b513361b7c9e47c4dc991c72155fcfa1de7f2da52ff914f6f7a05bae10318"
+        }
+      }
+    },
+    {
+      "frame": 74,
+      "branch": "a0",
+      "branchFrame": 74,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        430
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1db8ebcc70aa52f241b2a8f30d9117cc4648ddfbced273f7c84e3e8f301f1fcd"
+        },
+        "candidate": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "952b513361b7c9e47c4dc991c72155fcfa1de7f2da52ff914f6f7a05bae10318"
+        }
+      }
+    },
+    {
+      "frame": 75,
+      "branch": "a0",
+      "branchFrame": 75,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        430
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1db8ebcc70aa52f241b2a8f30d9117cc4648ddfbced273f7c84e3e8f301f1fcd"
+        },
+        "candidate": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "952b513361b7c9e47c4dc991c72155fcfa1de7f2da52ff914f6f7a05bae10318"
+        }
+      }
+    },
+    {
+      "frame": 76,
+      "branch": "a0",
+      "branchFrame": 76,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        430
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1db8ebcc70aa52f241b2a8f30d9117cc4648ddfbced273f7c84e3e8f301f1fcd"
+        },
+        "candidate": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "952b513361b7c9e47c4dc991c72155fcfa1de7f2da52ff914f6f7a05bae10318"
+        }
+      }
+    },
+    {
+      "frame": 77,
+      "branch": "a0",
+      "branchFrame": 77,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        402,
+        430
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1db8ebcc70aa52f241b2a8f30d9117cc4648ddfbced273f7c84e3e8f301f1fcd"
+        },
+        "candidate": {
+          "bbox": [
+            494,
+            420,
+            954,
+            542
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "952b513361b7c9e47c4dc991c72155fcfa1de7f2da52ff914f6f7a05bae10318"
+        }
+      }
+    },
+    {
+      "frame": 78,
+      "branch": "a1",
+      "branchFrame": 1,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 79,
+      "branch": "a1",
+      "branchFrame": 2,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 80,
+      "branch": "a1",
+      "branchFrame": 3,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "326976bdbbbeb254792a0073aedd2a3a4c79d1a4a5984392dfc7a3333d979035"
+        },
+        "candidate": {
+          "bbox": [
+            560,
+            134,
+            747,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "569f748f9da1359b5ede0b762f3ef68748e225170cf19c7db7ef0aec8278bbe7"
+        }
+      }
+    },
+    {
+      "frame": 81,
+      "branch": "a1",
+      "branchFrame": 4,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        431
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bbb4d783e513363d1013284f4054d96dee798855c8d5e8b28329dfb042f4cc07"
+        },
+        "candidate": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6a324681bb72cf1f413e5ed8072dc74f389e2faed54a08f0b9a80aba69912657"
+        }
+      }
+    },
+    {
+      "frame": 82,
+      "branch": "a1",
+      "branchFrame": 5,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        431
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bbb4d783e513363d1013284f4054d96dee798855c8d5e8b28329dfb042f4cc07"
+        },
+        "candidate": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6a324681bb72cf1f413e5ed8072dc74f389e2faed54a08f0b9a80aba69912657"
+        }
+      }
+    },
+    {
+      "frame": 83,
+      "branch": "a1",
+      "branchFrame": 6,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        431
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bbb4d783e513363d1013284f4054d96dee798855c8d5e8b28329dfb042f4cc07"
+        },
+        "candidate": {
+          "bbox": [
+            473,
+            135,
+            711,
+            517
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6a324681bb72cf1f413e5ed8072dc74f389e2faed54a08f0b9a80aba69912657"
+        }
+      }
+    },
+    {
+      "frame": 84,
+      "branch": "a1",
+      "branchFrame": 7,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        432,
+        433
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "baf2a3338888379c6d2a06b37f03681d6b06f2036be518160917a16233ef706d"
+        },
+        "candidate": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "19d095bdf5fe961947d7ca31f7fc2aa36f946cda6853cdcb1a67165d087bc7cc"
+        }
+      }
+    },
+    {
+      "frame": 85,
+      "branch": "a1",
+      "branchFrame": 8,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        432,
+        433
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "baf2a3338888379c6d2a06b37f03681d6b06f2036be518160917a16233ef706d"
+        },
+        "candidate": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "19d095bdf5fe961947d7ca31f7fc2aa36f946cda6853cdcb1a67165d087bc7cc"
+        }
+      }
+    },
+    {
+      "frame": 86,
+      "branch": "a1",
+      "branchFrame": 9,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        432,
+        433
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "baf2a3338888379c6d2a06b37f03681d6b06f2036be518160917a16233ef706d"
+        },
+        "candidate": {
+          "bbox": [
+            420,
+            135,
+            658,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "19d095bdf5fe961947d7ca31f7fc2aa36f946cda6853cdcb1a67165d087bc7cc"
+        }
+      }
+    },
+    {
+      "frame": 87,
+      "branch": "a1",
+      "branchFrame": 10,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        434,
+        435
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a84f7cd6ac223f595de99c2f60126b3b50e1ef4aee5d662fc52da82ccb258c46"
+        },
+        "candidate": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bb235f556102c22e1e83cc4f34499c0ac1683db377cef61ea0c39fe69d16aa98"
+        }
+      }
+    },
+    {
+      "frame": 88,
+      "branch": "a1",
+      "branchFrame": 11,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        434,
+        435
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a84f7cd6ac223f595de99c2f60126b3b50e1ef4aee5d662fc52da82ccb258c46"
+        },
+        "candidate": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bb235f556102c22e1e83cc4f34499c0ac1683db377cef61ea0c39fe69d16aa98"
+        }
+      }
+    },
+    {
+      "frame": 89,
+      "branch": "a1",
+      "branchFrame": 12,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        434,
+        435
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a84f7cd6ac223f595de99c2f60126b3b50e1ef4aee5d662fc52da82ccb258c46"
+        },
+        "candidate": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bb235f556102c22e1e83cc4f34499c0ac1683db377cef61ea0c39fe69d16aa98"
+        }
+      }
+    },
+    {
+      "frame": 90,
+      "branch": "a1",
+      "branchFrame": 13,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        434,
+        435
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a84f7cd6ac223f595de99c2f60126b3b50e1ef4aee5d662fc52da82ccb258c46"
+        },
+        "candidate": {
+          "bbox": [
+            364,
+            135,
+            684,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "bb235f556102c22e1e83cc4f34499c0ac1683db377cef61ea0c39fe69d16aa98"
+        }
+      }
+    },
+    {
+      "frame": 91,
+      "branch": "a1",
+      "branchFrame": 14,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        436,
+        437
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "70dece2e24fc49ed557217a51707686cc4933bc05f9cc33ea474ea75a84de6a0"
+        },
+        "candidate": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "103ad896a99f2bd5efa2884d7d5d28f319c7e8e5112b613d050e9b234b0e3023"
+        }
+      }
+    },
+    {
+      "frame": 92,
+      "branch": "a1",
+      "branchFrame": 15,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        436,
+        437
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "70dece2e24fc49ed557217a51707686cc4933bc05f9cc33ea474ea75a84de6a0"
+        },
+        "candidate": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "103ad896a99f2bd5efa2884d7d5d28f319c7e8e5112b613d050e9b234b0e3023"
+        }
+      }
+    },
+    {
+      "frame": 93,
+      "branch": "a1",
+      "branchFrame": 16,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        436,
+        437
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "70dece2e24fc49ed557217a51707686cc4933bc05f9cc33ea474ea75a84de6a0"
+        },
+        "candidate": {
+          "bbox": [
+            336,
+            135,
+            721,
+            512
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "103ad896a99f2bd5efa2884d7d5d28f319c7e8e5112b613d050e9b234b0e3023"
+        }
+      }
+    },
+    {
+      "frame": 94,
+      "branch": "a1",
+      "branchFrame": 17,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        438,
+        439
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "327d1731ba3ba74aae8356f212ab4f2c98b35fac26a235b472f274f1abec5eca"
+        },
+        "candidate": {
+          "bbox": [
+            335,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0ea1bcedb05e35e11036c414e27cdf57d8c54ec27e35d0cf705658152aae3c8e"
+        }
+      }
+    },
+    {
+      "frame": 95,
+      "branch": "a1",
+      "branchFrame": 18,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        438,
+        439
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "327d1731ba3ba74aae8356f212ab4f2c98b35fac26a235b472f274f1abec5eca"
+        },
+        "candidate": {
+          "bbox": [
+            335,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0ea1bcedb05e35e11036c414e27cdf57d8c54ec27e35d0cf705658152aae3c8e"
+        }
+      }
+    },
+    {
+      "frame": 96,
+      "branch": "a1",
+      "branchFrame": 19,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        438,
+        439
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "327d1731ba3ba74aae8356f212ab4f2c98b35fac26a235b472f274f1abec5eca"
+        },
+        "candidate": {
+          "bbox": [
+            335,
+            135,
+            736,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0ea1bcedb05e35e11036c414e27cdf57d8c54ec27e35d0cf705658152aae3c8e"
+        }
+      }
+    },
+    {
+      "frame": 97,
+      "branch": "a1",
+      "branchFrame": 20,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        440,
+        441
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d53007fdc304ff1f6cd30bd77aacd85bd0af9f8da501bdfd737f125ec298eeda"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1e9b45bd1a170ca68640aaa0de430dbe2f946e2e2fa8d2c93041383c2f58ca8e"
+        }
+      }
+    },
+    {
+      "frame": 98,
+      "branch": "a1",
+      "branchFrame": 21,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        440,
+        441
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d53007fdc304ff1f6cd30bd77aacd85bd0af9f8da501bdfd737f125ec298eeda"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1e9b45bd1a170ca68640aaa0de430dbe2f946e2e2fa8d2c93041383c2f58ca8e"
+        }
+      }
+    },
+    {
+      "frame": 99,
+      "branch": "a1",
+      "branchFrame": 22,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        440,
+        441
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d53007fdc304ff1f6cd30bd77aacd85bd0af9f8da501bdfd737f125ec298eeda"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1e9b45bd1a170ca68640aaa0de430dbe2f946e2e2fa8d2c93041383c2f58ca8e"
+        }
+      }
+    },
+    {
+      "frame": 100,
+      "branch": "a1",
+      "branchFrame": 23,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        440,
+        441
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d53007fdc304ff1f6cd30bd77aacd85bd0af9f8da501bdfd737f125ec298eeda"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            135,
+            760,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1e9b45bd1a170ca68640aaa0de430dbe2f946e2e2fa8d2c93041383c2f58ca8e"
+        }
+      }
+    },
+    {
+      "frame": 101,
+      "branch": "a1",
+      "branchFrame": 24,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        442,
+        443
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5fe273428e6ea6462bfd32c9c2906cbe912484ac60eb9d38c727efc046238528"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4e1e62f883d03e1aa8f110b7d99bead55241164830fe7dc9cbb14e0c05b3530"
+        }
+      }
+    },
+    {
+      "frame": 102,
+      "branch": "a1",
+      "branchFrame": 25,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        442,
+        443
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5fe273428e6ea6462bfd32c9c2906cbe912484ac60eb9d38c727efc046238528"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4e1e62f883d03e1aa8f110b7d99bead55241164830fe7dc9cbb14e0c05b3530"
+        }
+      }
+    },
+    {
+      "frame": 103,
+      "branch": "a1",
+      "branchFrame": 26,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        442,
+        443
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5fe273428e6ea6462bfd32c9c2906cbe912484ac60eb9d38c727efc046238528"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            134,
+            705,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4e1e62f883d03e1aa8f110b7d99bead55241164830fe7dc9cbb14e0c05b3530"
+        }
+      }
+    },
+    {
+      "frame": 104,
+      "branch": "a1",
+      "branchFrame": 27,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        444,
+        445
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "67748af0bb3286fb987e66e79b556a3f4696150d61a5a28f4a6d5e6520ea252d"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9a65045d8308c5c24a3fb6a774eedef4c4a534ac33ec801610faf2fcdc2e15e0"
+        }
+      }
+    },
+    {
+      "frame": 105,
+      "branch": "a1",
+      "branchFrame": 28,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        444,
+        445
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "67748af0bb3286fb987e66e79b556a3f4696150d61a5a28f4a6d5e6520ea252d"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9a65045d8308c5c24a3fb6a774eedef4c4a534ac33ec801610faf2fcdc2e15e0"
+        }
+      }
+    },
+    {
+      "frame": 106,
+      "branch": "a1",
+      "branchFrame": 29,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        444,
+        445
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "67748af0bb3286fb987e66e79b556a3f4696150d61a5a28f4a6d5e6520ea252d"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            186,
+            708,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9a65045d8308c5c24a3fb6a774eedef4c4a534ac33ec801610faf2fcdc2e15e0"
+        }
+      }
+    },
+    {
+      "frame": 107,
+      "branch": "a1",
+      "branchFrame": 30,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        446,
+        447
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            194,
+            651,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2342e2b4c2462a8a3fe9548571e59f658150fedbb336c33751bddf2554bb7232"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            196,
+            651,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d1a11b678b6cddfdd332255bc818c21794c5867534a24f7cd913d966a289b582"
+        }
+      }
+    },
+    {
+      "frame": 108,
+      "branch": "a1",
+      "branchFrame": 31,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        446,
+        447
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            194,
+            651,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2342e2b4c2462a8a3fe9548571e59f658150fedbb336c33751bddf2554bb7232"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            196,
+            651,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "d1a11b678b6cddfdd332255bc818c21794c5867534a24f7cd913d966a289b582"
+        }
+      }
+    },
+    {
+      "frame": 109,
+      "branch": "a1",
+      "branchFrame": 32,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        448,
+        449
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            222,
+            665,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1fa45ef80d474fb00b8888a6a2e37248d7bc36a7fdb1820ddfdd153a366c8c4c"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            223,
+            665,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9818055ad8e98bc064ece997d21aa33d93f5e14ed144cb88877152d1c4e50484"
+        }
+      }
+    },
+    {
+      "frame": 110,
+      "branch": "a1",
+      "branchFrame": 33,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        448,
+        449
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            222,
+            665,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "1fa45ef80d474fb00b8888a6a2e37248d7bc36a7fdb1820ddfdd153a366c8c4c"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            223,
+            665,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9818055ad8e98bc064ece997d21aa33d93f5e14ed144cb88877152d1c4e50484"
+        }
+      }
+    },
+    {
+      "frame": 111,
+      "branch": "a1",
+      "branchFrame": 34,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        450,
+        451
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "53eb68afbd0cd616154e2e34987a2b221d4e4663d61269b37d8dbfed811a1ac1"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "db412a28815620e2148c33fcfdfa760c3f832da497630cf0235b2352ecacf065"
+        }
+      }
+    },
+    {
+      "frame": 112,
+      "branch": "a1",
+      "branchFrame": 35,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        450,
+        451
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "53eb68afbd0cd616154e2e34987a2b221d4e4663d61269b37d8dbfed811a1ac1"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "db412a28815620e2148c33fcfdfa760c3f832da497630cf0235b2352ecacf065"
+        }
+      }
+    },
+    {
+      "frame": 113,
+      "branch": "a1",
+      "branchFrame": 36,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        450,
+        451
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "53eb68afbd0cd616154e2e34987a2b221d4e4663d61269b37d8dbfed811a1ac1"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "db412a28815620e2148c33fcfdfa760c3f832da497630cf0235b2352ecacf065"
+        }
+      }
+    },
+    {
+      "frame": 114,
+      "branch": "a1",
+      "branchFrame": 37,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        450,
+        451
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "53eb68afbd0cd616154e2e34987a2b221d4e4663d61269b37d8dbfed811a1ac1"
+        },
+        "candidate": {
+          "bbox": [
+            334,
+            218,
+            669,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "db412a28815620e2148c33fcfdfa760c3f832da497630cf0235b2352ecacf065"
+        }
+      }
+    },
+    {
+      "frame": 115,
+      "branch": "a1",
+      "branchFrame": 38,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        452,
+        453
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "191eeb81b764b8acb6089bd8200285a77198cd442bfd96b5d713aa0a10ba3d55"
+        },
+        "candidate": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0755661534e8f3537bd139c2ea5166740400ea9d6c1b4211aa46e29196a4ccf9"
+        }
+      }
+    },
+    {
+      "frame": 116,
+      "branch": "a1",
+      "branchFrame": 39,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        452,
+        453
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "191eeb81b764b8acb6089bd8200285a77198cd442bfd96b5d713aa0a10ba3d55"
+        },
+        "candidate": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0755661534e8f3537bd139c2ea5166740400ea9d6c1b4211aa46e29196a4ccf9"
+        }
+      }
+    },
+    {
+      "frame": 117,
+      "branch": "a1",
+      "branchFrame": 40,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        452,
+        453
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "191eeb81b764b8acb6089bd8200285a77198cd442bfd96b5d713aa0a10ba3d55"
+        },
+        "candidate": {
+          "bbox": [
+            329,
+            243,
+            679,
+            521
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "0755661534e8f3537bd139c2ea5166740400ea9d6c1b4211aa46e29196a4ccf9"
+        }
+      }
+    },
+    {
+      "frame": 118,
+      "branch": "a1",
+      "branchFrame": 41,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        454,
+        455
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            300,
+            382,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "39854262088ea04993b4e8c99b35bd89f7046733c6ca398d3486a605dc38065f"
+        },
+        "candidate": {
+          "bbox": [
+            300,
+            381,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "45aadc0a7fd93ff69d3ba0f7304d865a79dcf20e98f9aaedbb75508a51071f5d"
+        }
+      }
+    },
+    {
+      "frame": 119,
+      "branch": "a1",
+      "branchFrame": 42,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        454,
+        455
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            300,
+            382,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "39854262088ea04993b4e8c99b35bd89f7046733c6ca398d3486a605dc38065f"
+        },
+        "candidate": {
+          "bbox": [
+            300,
+            381,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "45aadc0a7fd93ff69d3ba0f7304d865a79dcf20e98f9aaedbb75508a51071f5d"
+        }
+      }
+    },
+    {
+      "frame": 120,
+      "branch": "a1",
+      "branchFrame": 43,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        454,
+        455
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            300,
+            382,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "39854262088ea04993b4e8c99b35bd89f7046733c6ca398d3486a605dc38065f"
+        },
+        "candidate": {
+          "bbox": [
+            300,
+            381,
+            692,
+            532
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "45aadc0a7fd93ff69d3ba0f7304d865a79dcf20e98f9aaedbb75508a51071f5d"
+        }
+      }
+    },
+    {
+      "frame": 121,
+      "branch": "a1",
+      "branchFrame": 44,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        456,
+        457
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "13a228c1203420f27054f1550a5573cfafecc820f14a5369335701e8a954b642"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3157e82946c4af93e8f2c578f09fb8c67147a8148f2f310b295e358d889925f2"
+        }
+      }
+    },
+    {
+      "frame": 122,
+      "branch": "a1",
+      "branchFrame": 45,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        456,
+        457
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "13a228c1203420f27054f1550a5573cfafecc820f14a5369335701e8a954b642"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3157e82946c4af93e8f2c578f09fb8c67147a8148f2f310b295e358d889925f2"
+        }
+      }
+    },
+    {
+      "frame": 123,
+      "branch": "a1",
+      "branchFrame": 46,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        456,
+        457
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "13a228c1203420f27054f1550a5573cfafecc820f14a5369335701e8a954b642"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            686,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "3157e82946c4af93e8f2c578f09fb8c67147a8148f2f310b295e358d889925f2"
+        }
+      }
+    },
+    {
+      "frame": 124,
+      "branch": "a1",
+      "branchFrame": 47,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        458,
+        459
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f0f0fc8083574427e5e1d12e386a14fb5cbe95b1619df06909b797da031b5b1e"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2a961a6e3ea61f25e6b213a0f30cfd066903d3f273e4c6c86ee1b6a121642ddd"
+        }
+      }
+    },
+    {
+      "frame": 125,
+      "branch": "a1",
+      "branchFrame": 48,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        458,
+        459
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f0f0fc8083574427e5e1d12e386a14fb5cbe95b1619df06909b797da031b5b1e"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2a961a6e3ea61f25e6b213a0f30cfd066903d3f273e4c6c86ee1b6a121642ddd"
+        }
+      }
+    },
+    {
+      "frame": 126,
+      "branch": "a1",
+      "branchFrame": 49,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        460,
+        461
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "30a80a696d53ec19b541a4026cb360a778dc84a5c83fe58103418c0ec7d26989"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "820c8725538ae5204ad8675b95799bef983584098433ccc29b57379fb7be53b0"
+        }
+      }
+    },
+    {
+      "frame": 127,
+      "branch": "a1",
+      "branchFrame": 50,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        460,
+        461
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "30a80a696d53ec19b541a4026cb360a778dc84a5c83fe58103418c0ec7d26989"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "820c8725538ae5204ad8675b95799bef983584098433ccc29b57379fb7be53b0"
+        }
+      }
+    },
+    {
+      "frame": 128,
+      "branch": "a1",
+      "branchFrame": 51,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        460,
+        461
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "30a80a696d53ec19b541a4026cb360a778dc84a5c83fe58103418c0ec7d26989"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "820c8725538ae5204ad8675b95799bef983584098433ccc29b57379fb7be53b0"
+        }
+      }
+    },
+    {
+      "frame": 129,
+      "branch": "a1",
+      "branchFrame": 52,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        460,
+        461
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "30a80a696d53ec19b541a4026cb360a778dc84a5c83fe58103418c0ec7d26989"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "820c8725538ae5204ad8675b95799bef983584098433ccc29b57379fb7be53b0"
+        }
+      }
+    },
+    {
+      "frame": 130,
+      "branch": "a1",
+      "branchFrame": 53,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        460,
+        461
+      ],
+      "instanceCount": 15,
+      "rendered": {
+        "original": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "30a80a696d53ec19b541a4026cb360a778dc84a5c83fe58103418c0ec7d26989"
+        },
+        "candidate": {
+          "bbox": [
+            299,
+            434,
+            692,
+            553
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "820c8725538ae5204ad8675b95799bef983584098433ccc29b57379fb7be53b0"
+        }
+      }
+    },
+    {
+      "frame": 131,
+      "branch": "a2",
+      "branchFrame": 1,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        462
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "49f47b5d37b601972055796562c8aecd6a7d47556c7af5bada9b47112d95584c"
+        },
+        "candidate": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2f7e449551f09cd150f4b8eefcf4f7f9e0a847dd38bf6b8acc8aa7f6f7bd92d0"
+        }
+      }
+    },
+    {
+      "frame": 132,
+      "branch": "a2",
+      "branchFrame": 2,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        462
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "49f47b5d37b601972055796562c8aecd6a7d47556c7af5bada9b47112d95584c"
+        },
+        "candidate": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2f7e449551f09cd150f4b8eefcf4f7f9e0a847dd38bf6b8acc8aa7f6f7bd92d0"
+        }
+      }
+    },
+    {
+      "frame": 133,
+      "branch": "a2",
+      "branchFrame": 3,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        462
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "49f47b5d37b601972055796562c8aecd6a7d47556c7af5bada9b47112d95584c"
+        },
+        "candidate": {
+          "bbox": [
+            563,
+            128,
+            750,
+            509
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2f7e449551f09cd150f4b8eefcf4f7f9e0a847dd38bf6b8acc8aa7f6f7bd92d0"
+        }
+      }
+    },
+    {
+      "frame": 134,
+      "branch": "a2",
+      "branchFrame": 4,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        463
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            436,
+            128,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7fd7ab7c5e90e3ef8a16cd5437cabc23038796337f24debce6531b54c062c32f"
+        },
+        "candidate": {
+          "bbox": [
+            436,
+            127,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9860af8590812b95c9e3fc804316ba2542cf7851a54132547093f66e678851e1"
+        }
+      }
+    },
+    {
+      "frame": 135,
+      "branch": "a2",
+      "branchFrame": 5,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        463
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            436,
+            128,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7fd7ab7c5e90e3ef8a16cd5437cabc23038796337f24debce6531b54c062c32f"
+        },
+        "candidate": {
+          "bbox": [
+            436,
+            127,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9860af8590812b95c9e3fc804316ba2542cf7851a54132547093f66e678851e1"
+        }
+      }
+    },
+    {
+      "frame": 136,
+      "branch": "a2",
+      "branchFrame": 6,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        463
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            436,
+            128,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7fd7ab7c5e90e3ef8a16cd5437cabc23038796337f24debce6531b54c062c32f"
+        },
+        "candidate": {
+          "bbox": [
+            436,
+            127,
+            732,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9860af8590812b95c9e3fc804316ba2542cf7851a54132547093f66e678851e1"
+        }
+      }
+    },
+    {
+      "frame": 137,
+      "branch": "a2",
+      "branchFrame": 7,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        464
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            320,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "707b42c9197f1052ebb248e90e35d958ec8df6ba349469ab954d0e29080b4ab1"
+        },
+        "candidate": {
+          "bbox": [
+            319,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "60036b1ce4b62aec43cea109a70e5b15e39dea295a696285b21f131d4dd8e1d0"
+        }
+      }
+    },
+    {
+      "frame": 138,
+      "branch": "a2",
+      "branchFrame": 8,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        464
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            320,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "707b42c9197f1052ebb248e90e35d958ec8df6ba349469ab954d0e29080b4ab1"
+        },
+        "candidate": {
+          "bbox": [
+            319,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "60036b1ce4b62aec43cea109a70e5b15e39dea295a696285b21f131d4dd8e1d0"
+        }
+      }
+    },
+    {
+      "frame": 139,
+      "branch": "a2",
+      "branchFrame": 9,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        464
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            320,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "707b42c9197f1052ebb248e90e35d958ec8df6ba349469ab954d0e29080b4ab1"
+        },
+        "candidate": {
+          "bbox": [
+            319,
+            111,
+            744,
+            508
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "60036b1ce4b62aec43cea109a70e5b15e39dea295a696285b21f131d4dd8e1d0"
+        }
+      }
+    },
+    {
+      "frame": 140,
+      "branch": "a2",
+      "branchFrame": 10,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        465
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "fca0ff152a12a122a6a2bbaf68e48233e2f9695c06531ed90f261d1e4190ef5f"
+        },
+        "candidate": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a9f8c06ae8bf658f7f7f94c133f83f09262aa7c7d00b521aab278e8c32ce9f28"
+        }
+      }
+    },
+    {
+      "frame": 141,
+      "branch": "a2",
+      "branchFrame": 11,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        465
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "fca0ff152a12a122a6a2bbaf68e48233e2f9695c06531ed90f261d1e4190ef5f"
+        },
+        "candidate": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a9f8c06ae8bf658f7f7f94c133f83f09262aa7c7d00b521aab278e8c32ce9f28"
+        }
+      }
+    },
+    {
+      "frame": 142,
+      "branch": "a2",
+      "branchFrame": 12,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        465
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "fca0ff152a12a122a6a2bbaf68e48233e2f9695c06531ed90f261d1e4190ef5f"
+        },
+        "candidate": {
+          "bbox": [
+            198,
+            207,
+            744,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a9f8c06ae8bf658f7f7f94c133f83f09262aa7c7d00b521aab278e8c32ce9f28"
+        }
+      }
+    },
+    {
+      "frame": 143,
+      "branch": "a2",
+      "branchFrame": 13,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        466
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            192,
+            217,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "c76b761b65ad215eb3023849bc8087873dacaadd33e737455f90a60f1e1224a0"
+        },
+        "candidate": {
+          "bbox": [
+            192,
+            218,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4a405d3abbed72a66c71796e37c4776b126c5967b3c434cab803f214150a4b9"
+        }
+      }
+    },
+    {
+      "frame": 144,
+      "branch": "a2",
+      "branchFrame": 14,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        466
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            192,
+            217,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "c76b761b65ad215eb3023849bc8087873dacaadd33e737455f90a60f1e1224a0"
+        },
+        "candidate": {
+          "bbox": [
+            192,
+            218,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4a405d3abbed72a66c71796e37c4776b126c5967b3c434cab803f214150a4b9"
+        }
+      }
+    },
+    {
+      "frame": 145,
+      "branch": "a2",
+      "branchFrame": 15,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        466
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            192,
+            217,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "c76b761b65ad215eb3023849bc8087873dacaadd33e737455f90a60f1e1224a0"
+        },
+        "candidate": {
+          "bbox": [
+            192,
+            218,
+            740,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a4a405d3abbed72a66c71796e37c4776b126c5967b3c434cab803f214150a4b9"
+        }
+      }
+    },
+    {
+      "frame": 146,
+      "branch": "a2",
+      "branchFrame": 16,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        467
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            121,
+            217,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b2d27e0d22a7bc2e3c58016bc1e4190074466842a3850a240804376dfd05b665"
+        },
+        "candidate": {
+          "bbox": [
+            121,
+            218,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8749ea56baf4b150d614cd0a42b39b03cf86bc865ed64af3e45a8fb9b052321e"
+        }
+      }
+    },
+    {
+      "frame": 147,
+      "branch": "a2",
+      "branchFrame": 17,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        467
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            121,
+            217,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b2d27e0d22a7bc2e3c58016bc1e4190074466842a3850a240804376dfd05b665"
+        },
+        "candidate": {
+          "bbox": [
+            121,
+            218,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8749ea56baf4b150d614cd0a42b39b03cf86bc865ed64af3e45a8fb9b052321e"
+        }
+      }
+    },
+    {
+      "frame": 148,
+      "branch": "a2",
+      "branchFrame": 18,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        467
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            121,
+            217,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "b2d27e0d22a7bc2e3c58016bc1e4190074466842a3850a240804376dfd05b665"
+        },
+        "candidate": {
+          "bbox": [
+            121,
+            218,
+            747,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8749ea56baf4b150d614cd0a42b39b03cf86bc865ed64af3e45a8fb9b052321e"
+        }
+      }
+    },
+    {
+      "frame": 149,
+      "branch": "a2",
+      "branchFrame": 19,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        468
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            68,
+            217,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "4d5c1664ff101a3de3b456192a4dee6732490a8ebbf6e75a3259534d5755e121"
+        },
+        "candidate": {
+          "bbox": [
+            68,
+            218,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "52400386042179c4c83969fd0b991267b6aa59429b67e209449f59d3f0048eb0"
+        }
+      }
+    },
+    {
+      "frame": 150,
+      "branch": "a2",
+      "branchFrame": 20,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        468
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            68,
+            217,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "4d5c1664ff101a3de3b456192a4dee6732490a8ebbf6e75a3259534d5755e121"
+        },
+        "candidate": {
+          "bbox": [
+            68,
+            218,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "52400386042179c4c83969fd0b991267b6aa59429b67e209449f59d3f0048eb0"
+        }
+      }
+    },
+    {
+      "frame": 151,
+      "branch": "a2",
+      "branchFrame": 21,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        468
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            68,
+            217,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "4d5c1664ff101a3de3b456192a4dee6732490a8ebbf6e75a3259534d5755e121"
+        },
+        "candidate": {
+          "bbox": [
+            68,
+            218,
+            754,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "52400386042179c4c83969fd0b991267b6aa59429b67e209449f59d3f0048eb0"
+        }
+      }
+    },
+    {
+      "frame": 152,
+      "branch": "a2",
+      "branchFrame": 22,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        469
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            54,
+            247,
+            757,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8cc4899608cb088655f95ae1750279285892f02c9eed6a223eba367e8858384f"
+        },
+        "candidate": {
+          "bbox": [
+            54,
+            247,
+            757,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7665916b9e02617ec181d5ad07d741a6c8e7e1f93a0521e85543752492360fd"
+        }
+      }
+    },
+    {
+      "frame": 153,
+      "branch": "a2",
+      "branchFrame": 23,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        469
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            54,
+            247,
+            757,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8cc4899608cb088655f95ae1750279285892f02c9eed6a223eba367e8858384f"
+        },
+        "candidate": {
+          "bbox": [
+            54,
+            247,
+            757,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7665916b9e02617ec181d5ad07d741a6c8e7e1f93a0521e85543752492360fd"
+        }
+      }
+    },
+    {
+      "frame": 154,
+      "branch": "a2",
+      "branchFrame": 24,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        469
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            54,
+            247,
+            757,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "8cc4899608cb088655f95ae1750279285892f02c9eed6a223eba367e8858384f"
+        },
+        "candidate": {
+          "bbox": [
+            54,
+            247,
+            757,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "e7665916b9e02617ec181d5ad07d741a6c8e7e1f93a0521e85543752492360fd"
+        }
+      }
+    },
+    {
+      "frame": 155,
+      "branch": "a2",
+      "branchFrame": 25,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        470
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            27,
+            247,
+            671,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5b14357be6dbee103857fd936a42f87a7a118114d96be711c03085382c54b8ee"
+        },
+        "candidate": {
+          "bbox": [
+            27,
+            247,
+            671,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2ddca7c486e0f078f69375a4610180f63c91b7945c2dc84fc3e8bd38d8fd7953"
+        }
+      }
+    },
+    {
+      "frame": 156,
+      "branch": "a2",
+      "branchFrame": 26,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        470
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            27,
+            247,
+            671,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5b14357be6dbee103857fd936a42f87a7a118114d96be711c03085382c54b8ee"
+        },
+        "candidate": {
+          "bbox": [
+            27,
+            247,
+            671,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2ddca7c486e0f078f69375a4610180f63c91b7945c2dc84fc3e8bd38d8fd7953"
+        }
+      }
+    },
+    {
+      "frame": 157,
+      "branch": "a2",
+      "branchFrame": 27,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        470
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            27,
+            247,
+            671,
+            504
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "5b14357be6dbee103857fd936a42f87a7a118114d96be711c03085382c54b8ee"
+        },
+        "candidate": {
+          "bbox": [
+            27,
+            247,
+            671,
+            505
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "2ddca7c486e0f078f69375a4610180f63c91b7945c2dc84fc3e8bd38d8fd7953"
+        }
+      }
+    },
+    {
+      "frame": 158,
+      "branch": "a2",
+      "branchFrame": 28,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        471
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            247,
+            671,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f5fbf1e704962564e4a7ebf774da33a05feca3f9a68b1d12afc40951e7638dea"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            247,
+            671,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "27c662505fbc37c7d6430379e22942f0e9cb300db5c888415caaebee8eaa78b8"
+        }
+      }
+    },
+    {
+      "frame": 159,
+      "branch": "a2",
+      "branchFrame": 29,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        471
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            247,
+            671,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f5fbf1e704962564e4a7ebf774da33a05feca3f9a68b1d12afc40951e7638dea"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            247,
+            671,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "27c662505fbc37c7d6430379e22942f0e9cb300db5c888415caaebee8eaa78b8"
+        }
+      }
+    },
+    {
+      "frame": 160,
+      "branch": "a2",
+      "branchFrame": 30,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        471
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            247,
+            671,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f5fbf1e704962564e4a7ebf774da33a05feca3f9a68b1d12afc40951e7638dea"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            247,
+            671,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "27c662505fbc37c7d6430379e22942f0e9cb300db5c888415caaebee8eaa78b8"
+        }
+      }
+    },
+    {
+      "frame": 161,
+      "branch": "a2",
+      "branchFrame": 31,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        471
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            247,
+            671,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f5fbf1e704962564e4a7ebf774da33a05feca3f9a68b1d12afc40951e7638dea"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            247,
+            671,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "27c662505fbc37c7d6430379e22942f0e9cb300db5c888415caaebee8eaa78b8"
+        }
+      }
+    },
+    {
+      "frame": 162,
+      "branch": "a2",
+      "branchFrame": 32,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        472
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            255,
+            685,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9855334f73ef673244c40902f092f9a0bff6b85457a594065828ec7fc2733c9f"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            255,
+            685,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6d14a0161e0b6480c5488e282e86504267bf26449c72d73bb1f14ebb08028e68"
+        }
+      }
+    },
+    {
+      "frame": 163,
+      "branch": "a2",
+      "branchFrame": 33,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        472
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            255,
+            685,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9855334f73ef673244c40902f092f9a0bff6b85457a594065828ec7fc2733c9f"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            255,
+            685,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6d14a0161e0b6480c5488e282e86504267bf26449c72d73bb1f14ebb08028e68"
+        }
+      }
+    },
+    {
+      "frame": 164,
+      "branch": "a2",
+      "branchFrame": 34,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        472
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            255,
+            685,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9855334f73ef673244c40902f092f9a0bff6b85457a594065828ec7fc2733c9f"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            255,
+            685,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6d14a0161e0b6480c5488e282e86504267bf26449c72d73bb1f14ebb08028e68"
+        }
+      }
+    },
+    {
+      "frame": 165,
+      "branch": "a2",
+      "branchFrame": 35,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        472
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            255,
+            685,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "9855334f73ef673244c40902f092f9a0bff6b85457a594065828ec7fc2733c9f"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            255,
+            685,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "6d14a0161e0b6480c5488e282e86504267bf26449c72d73bb1f14ebb08028e68"
+        }
+      }
+    },
+    {
+      "frame": 166,
+      "branch": "a2",
+      "branchFrame": 36,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        473
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            275,
+            630,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "eb3bbbd4e19672ffe3c5c3a672d60d476c331e6d1470efcc92d8dcade8d6352d"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            275,
+            630,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7acd3dd412a14d7b64771867afa794e85a4de5c20f1cb534bd9fde106c45184"
+        }
+      }
+    },
+    {
+      "frame": 167,
+      "branch": "a2",
+      "branchFrame": 37,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        473
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            275,
+            630,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "eb3bbbd4e19672ffe3c5c3a672d60d476c331e6d1470efcc92d8dcade8d6352d"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            275,
+            630,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7acd3dd412a14d7b64771867afa794e85a4de5c20f1cb534bd9fde106c45184"
+        }
+      }
+    },
+    {
+      "frame": 168,
+      "branch": "a2",
+      "branchFrame": 38,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        473
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            275,
+            630,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "eb3bbbd4e19672ffe3c5c3a672d60d476c331e6d1470efcc92d8dcade8d6352d"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            275,
+            630,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "f7acd3dd412a14d7b64771867afa794e85a4de5c20f1cb534bd9fde106c45184"
+        }
+      }
+    },
+    {
+      "frame": 169,
+      "branch": "a2",
+      "branchFrame": 39,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        474
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            308,
+            613,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7378e1f3c8e73c38188e6a1e1afb81a0b0b60a7a83116b8358a98bd6b35ba05c"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            308,
+            613,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10b21f9463da7d7642e5c7446847406f3d3654f4ccfb0d0d84fd4daac618c43c"
+        }
+      }
+    },
+    {
+      "frame": 170,
+      "branch": "a2",
+      "branchFrame": 40,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        474
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            308,
+            613,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7378e1f3c8e73c38188e6a1e1afb81a0b0b60a7a83116b8358a98bd6b35ba05c"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            308,
+            613,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10b21f9463da7d7642e5c7446847406f3d3654f4ccfb0d0d84fd4daac618c43c"
+        }
+      }
+    },
+    {
+      "frame": 171,
+      "branch": "a2",
+      "branchFrame": 41,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        474
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            308,
+            613,
+            513
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "7378e1f3c8e73c38188e6a1e1afb81a0b0b60a7a83116b8358a98bd6b35ba05c"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            308,
+            613,
+            514
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "10b21f9463da7d7642e5c7446847406f3d3654f4ccfb0d0d84fd4daac618c43c"
+        }
+      }
+    },
+    {
+      "frame": 172,
+      "branch": "a2",
+      "branchFrame": 42,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        475
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            431,
+            638,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "ebc2bdb09e7291f964417916168594f6ed9fc1d3f0195e820d94afab4f2b278c"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            431,
+            638,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a7761e87960056108d88acb8bb896c281d0daef6aa7a035ea2045789894f5c55"
+        }
+      }
+    },
+    {
+      "frame": 173,
+      "branch": "a2",
+      "branchFrame": 43,
+      "resolvedVisibleIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        475
+      ],
+      "instanceCount": 16,
+      "rendered": {
+        "original": {
+          "bbox": [
+            24,
+            431,
+            638,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "ebc2bdb09e7291f964417916168594f6ed9fc1d3f0195e820d94afab4f2b278c"
+        },
+        "candidate": {
+          "bbox": [
+            24,
+            431,
+            638,
+            518
+          ],
+          "nonempty": true,
+          "touchesCanvasEdge": false,
+          "sha256": "a7761e87960056108d88acb8bb896c281d0daef6aa7a035ea2045789894f5c55"
+        }
+      }
+    }
+  ]
+}

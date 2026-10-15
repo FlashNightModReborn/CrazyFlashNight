@@ -1,0 +1,602 @@
+{
+  "assetCount": 77,
+  "liveAssets": 10,
+  "deathAssets": 67,
+  "deathPreservedPureVector": 48,
+  "deathBitmapReplacementShapes": 19,
+  "deathBitmapFills": 140,
+  "sourceSolidFillsPreserved": 69,
+  "liveFramesStatic": 406,
+  "liveBodyInstancesStatic": 6090,
+  "deathFramesRendered": 173,
+  "deathVisibleInstancesStatic": 2664,
+  "branches": [
+    {
+      "label": "a0",
+      "startFrame": 1,
+      "endFrame": 77,
+      "frameCount": 77,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        409,
+        410,
+        411,
+        412,
+        413,
+        414,
+        415,
+        416,
+        417,
+        418,
+        419,
+        420,
+        421,
+        422,
+        423,
+        424,
+        425,
+        426,
+        427,
+        428,
+        429,
+        430
+      ]
+    },
+    {
+      "label": "a1",
+      "startFrame": 78,
+      "endFrame": 130,
+      "frameCount": 53,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        431,
+        432,
+        433,
+        434,
+        435,
+        436,
+        437,
+        438,
+        439,
+        440,
+        441,
+        442,
+        443,
+        444,
+        445,
+        446,
+        447,
+        448,
+        449,
+        450,
+        451,
+        452,
+        453,
+        454,
+        455,
+        456,
+        457,
+        458,
+        459,
+        460,
+        461
+      ]
+    },
+    {
+      "label": "a2",
+      "startFrame": 131,
+      "endFrame": 173,
+      "frameCount": 43,
+      "shapeIds": [
+        393,
+        394,
+        395,
+        396,
+        397,
+        398,
+        399,
+        400,
+        401,
+        402,
+        462,
+        463,
+        464,
+        465,
+        466,
+        467,
+        468,
+        469,
+        470,
+        471,
+        472,
+        473,
+        474,
+        475
+      ]
+    }
+  ],
+  "assets": [
+    {
+      "id": 393,
+      "file": "inputs/live/393.svg",
+      "role": "frozen-live-source",
+      "sha256": "9a536e8e0b1313c2b5cd1fb79739b56e55d702aa49ec0fe574f14923bce00898"
+    },
+    {
+      "id": 394,
+      "file": "inputs/live/394.svg",
+      "role": "frozen-live-source",
+      "sha256": "0c5cf63a67d751dd49fa4b4eed8edd2bcc8c71f1b832bbdf4ba74b8de06f51b8"
+    },
+    {
+      "id": 395,
+      "file": "inputs/live/395.svg",
+      "role": "frozen-live-source",
+      "sha256": "9ad40774052c5f6211497473b150c8cbc0f3e759cfaea75f8fc9301863608a2d"
+    },
+    {
+      "id": 396,
+      "file": "inputs/live/396.svg",
+      "role": "frozen-live-source",
+      "sha256": "ea074751b062d1b55a552df6db344c34cc816a2c4629174c9badf207b76ab072"
+    },
+    {
+      "id": 397,
+      "file": "inputs/live/397.svg",
+      "role": "frozen-live-source",
+      "sha256": "147f6dfc51d8a0f1c07f5456656b874cadd46ddf27f18399903d45604770ade9"
+    },
+    {
+      "id": 398,
+      "file": "inputs/live/398.svg",
+      "role": "frozen-live-source",
+      "sha256": "d0a002e9180579c678d40faefa5af1f8c5fe8f3e3f1389e3d2d774d0dd695049"
+    },
+    {
+      "id": 399,
+      "file": "inputs/live/399.svg",
+      "role": "frozen-live-source",
+      "sha256": "9329dd0d14d94e19a8d21454e719b74c65fe3b55ff22249e72c250d5af2993df"
+    },
+    {
+      "id": 400,
+      "file": "inputs/live/400.svg",
+      "role": "frozen-live-source",
+      "sha256": "cebead0b2d94480d465ddabd988e6aaad6f981347b4998ec2f3e1857fa9d8272"
+    },
+    {
+      "id": 401,
+      "file": "inputs/live/401.svg",
+      "role": "frozen-live-source",
+      "sha256": "3a5ef9e9cb17d089684cf806f85c0912c240b74d8382841fe21ee6b361d2da3a"
+    },
+    {
+      "id": 402,
+      "file": "inputs/live/402.svg",
+      "role": "frozen-live-source",
+      "sha256": "dca10536476d993b9d5d0aafd9ed6c92b29895e18a740454aab0aef100a24350"
+    },
+    {
+      "id": 409,
+      "file": "death-parts/409.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "f84def8fd31f97d2db3bed338f4d4322759ecc8167abce042b9555ba1acaaf89"
+    },
+    {
+      "id": 410,
+      "file": "death-parts/410.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "3bf284e2970030570acda4a8629495cf92b0480df355ba9981a5104edba1d979"
+    },
+    {
+      "id": 411,
+      "file": "death-parts/411.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "3eb1b5b996d085d22167897bec404dcb07d338eaec56fd129051db596b65f418"
+    },
+    {
+      "id": 412,
+      "file": "death-parts/412.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "afa1cc4604e6e74b027f13c49061cf7156a9be31bcee463cb2e581df934f2aab"
+    },
+    {
+      "id": 413,
+      "file": "death-parts/413.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "7375a37f6b1a61bc02b0487731410dcb5671e5d89d3a767f987c12f1253e1d4d"
+    },
+    {
+      "id": 414,
+      "file": "death-parts/414.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "6f2102cd4e8a51ef70e981c19c846578eac3f8dc8f3c9acf141b23de98c9fb52"
+    },
+    {
+      "id": 415,
+      "file": "death-parts/415.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "601feaa48f1fe0b72e1aaf0c91ca8aa62272c91ee6ca6fb73a9678e52e55adc3"
+    },
+    {
+      "id": 416,
+      "file": "death-parts/416.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "63c063852c27664da95754434ba2aa6bf4b8760a808a87fcba4f9fd1905ff2cf"
+    },
+    {
+      "id": 417,
+      "file": "death-parts/417.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "3488f5a6604f4b9c60ce03bc6cb9b79eeb10ccc30e403ca1d782844f9ac851a0"
+    },
+    {
+      "id": 418,
+      "file": "death-parts/418.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "7d478c7529f70f9aa90d17080288b1ed804742c9271fdfdb9b0e2661bcbbb19c"
+    },
+    {
+      "id": 419,
+      "file": "death-parts/419.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "539cf4f79214191f1ceb8d3b44442c34d40ec87efb151335878c6ff2a4bf1908"
+    },
+    {
+      "id": 420,
+      "file": "death-parts/420.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "2164d1518fd882d4fed12980c1f34d22e6020a5e038b3dc8e943a14625a94466"
+    },
+    {
+      "id": 421,
+      "file": "death-parts/421.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "b3013af23d9c9f9c6cf62bf2ab5bdc1e091d79714fab7c88610ce336251e4b90"
+    },
+    {
+      "id": 422,
+      "file": "death-parts/422.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "1ce2e09b2910d968e9764e4e25de45470b9298ab360cd4fa0c58076e387dc04d"
+    },
+    {
+      "id": 423,
+      "file": "death-parts/423.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "a77d8c1a53b9b562eb4042d186a7f2923359831189b423dc70fc74688f65af60"
+    },
+    {
+      "id": 424,
+      "file": "death-parts/424.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "e2bf6e342b73025c47b27221c4c6389e6353ecaf91edb20f417ebc1f30684487"
+    },
+    {
+      "id": 425,
+      "file": "death-parts/425.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "72b427e3139eb439ca76534d50249397dfc4d1e2571954e289a35a45edf4bda2"
+    },
+    {
+      "id": 426,
+      "file": "death-parts/426.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "05d716d6288b4510c876412813a7959b8ef5820d0d9dca2d5955e6c1983a15e3"
+    },
+    {
+      "id": 427,
+      "file": "death-parts/427.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "17a244c7e4d9457ed4e8599b2c97485daacfa5a04d879c40bfedcc9dad0d2cee"
+    },
+    {
+      "id": 428,
+      "file": "death-parts/428.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "eb48b9491787fb217ef351dbc025b10d3f387fbe2fb4ffcb3ed02940f9a4f51a"
+    },
+    {
+      "id": 429,
+      "file": "death-parts/429.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "08c04739ad6b19ccb94c3e52617bf8bc2607a5d6045381f22de4cd00bda27826"
+    },
+    {
+      "id": 430,
+      "file": "death-parts/430.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "14bc9fa9134c0199f456126c91db23e826c13f76f2adba5ffc10895f57b953cd"
+    },
+    {
+      "id": 431,
+      "file": "death-parts/431.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "0df961168dbe8a1c89dd3b2c08141790f85f2ea593b2b17409df506184916f38"
+    },
+    {
+      "id": 432,
+      "file": "death-parts/432.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "efafe84a2300b0fda2bea76e70d7dcefffb1f01585d5584541c40c85ef3ed819"
+    },
+    {
+      "id": 433,
+      "file": "death-parts/433.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "8683901f0796217aec6438ab0b01c13b8db6710a07a345b4c673a23a76519b81"
+    },
+    {
+      "id": 434,
+      "file": "death-parts/434.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "1a6ce9aa323a3fe851f55b9a83f4ecb13905ba6d6418ec8e7568b2de29d2e081"
+    },
+    {
+      "id": 435,
+      "file": "death-parts/435.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "705ee329bc9ea4963e857e1a97a2efb4af505f9e320d5f4482b8df8951609fd8"
+    },
+    {
+      "id": 436,
+      "file": "death-parts/436.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "989ab45fdadf858fb6aed4f8eec7bedfff9045a24ab2ea1cef3394e29efb44bd"
+    },
+    {
+      "id": 437,
+      "file": "death-parts/437.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "663c01c5d4086e71bf013d62e10f929b46b07d6919f777e8c6340296c4ed5ae5"
+    },
+    {
+      "id": 438,
+      "file": "death-parts/438.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "0bf6cbcce690974decb66e0ea882215fceb8b501ca9bf9ebe194f2bddb119132"
+    },
+    {
+      "id": 439,
+      "file": "death-parts/439.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "1a4cf22c1fdf9bf54c7612077acbaf6f54fbe06fe2d098bc2badecc62cc591f8"
+    },
+    {
+      "id": 440,
+      "file": "death-parts/440.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "62f0bb04baeb8f795465fb2a96869d3c1a56114e64d3f351ff2b06712dfd5c5e"
+    },
+    {
+      "id": 441,
+      "file": "death-parts/441.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "c075e046c029d4c9d24e35c3637a07f0cf2ad1571e991604c86b4e95e2da0bc3"
+    },
+    {
+      "id": 442,
+      "file": "death-parts/442.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "75579f6312dfc119eff13157b599c34829cf9ea2bd31ee6f041ec1db4db80b69"
+    },
+    {
+      "id": 443,
+      "file": "death-parts/443.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "0a8e7e394cf54641de77a953562be15e6874bf7e970df1a49abdb14cf7bd9391"
+    },
+    {
+      "id": 444,
+      "file": "death-parts/444.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "9de14e65c200cfbf2a4d8f0570f4ad0d2a546d9c9f2c761ff7e091cf1ca388c2"
+    },
+    {
+      "id": 445,
+      "file": "death-parts/445.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "a3a2b2a54d5e99fc3f6b6b8305dc963bb5c34c91564a28edc60798924d490439"
+    },
+    {
+      "id": 446,
+      "file": "death-parts/446.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "f64b611b22c297250d4570662fb4ccd0eb559821ce788c7f3fa7615682ff2d88"
+    },
+    {
+      "id": 447,
+      "file": "death-parts/447.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "59ddadee7b5c3d36ee7c58b4b1d45d726c90039b0d0e9eeb367c7c30f87198ad"
+    },
+    {
+      "id": 448,
+      "file": "death-parts/448.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "2f3f1c1f74c3d237bb177cff276c2a5a4ac144c1fa3eb5701d37bb03e6b1fde8"
+    },
+    {
+      "id": 449,
+      "file": "death-parts/449.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "285f6d6f99049f058084dd87332e42bec574e175c6bb45cefa41c9b28e7ec41e"
+    },
+    {
+      "id": 450,
+      "file": "death-parts/450.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "b635c43f5f42d5f21b46938d5c6c9db23772b703b5e70ef574df7e4033fb8ed2"
+    },
+    {
+      "id": 451,
+      "file": "death-parts/451.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "0e3923ba0c23b5b97e7ab82e16dcde73b8eb970b27e8d310732b8e9e90727aef"
+    },
+    {
+      "id": 452,
+      "file": "death-parts/452.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "6bd0cb758984fd4386b1457a3e4b17b27f04cffb435bb1839bf59a9c19c6ebc6"
+    },
+    {
+      "id": 453,
+      "file": "death-parts/453.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "f2c2b37d336958cffb3a5cad40b75af58e324bbcaf9fa0520e4b9d232e7153f4"
+    },
+    {
+      "id": 454,
+      "file": "death-parts/454.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "9ec02ef6a0e8842b907b168b1469a449687f6d9df9e57f784d60b3e5e7b468ba"
+    },
+    {
+      "id": 455,
+      "file": "death-parts/455.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "5d272294a4323a135be19a51763723b40de53c065f6d60a6be1cf85730aa6945"
+    },
+    {
+      "id": 456,
+      "file": "death-parts/456.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "f177e74ea22d6434dfcc5de616e17e83074bc1d9aec2d907445dc58776493f60"
+    },
+    {
+      "id": 457,
+      "file": "death-parts/457.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "2d31d0960982a6109087db07e7009e21397a91c77ce5abac12cf2380414f0741"
+    },
+    {
+      "id": 458,
+      "file": "death-parts/458.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "f47ffa27ee165ea454ea493f90fc2aae03a566c09e1db39b7addfcdbb49feb5e"
+    },
+    {
+      "id": 459,
+      "file": "death-parts/459.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "4e623e2cc18966a4f5ca1af79759e4d89498817c42ce06f58aee47c59c396411"
+    },
+    {
+      "id": 460,
+      "file": "death-parts/460.svg",
+      "role": "bitmap-replaced-by-vector-crops",
+      "sha256": "534aa30c5ee9fe96ad2accd7910a342287e4ae2917caceca6d263133541c70e5"
+    },
+    {
+      "id": 461,
+      "file": "death-parts/461.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "7cb6349403aeaeef46c980c0c3b66394cc36b54950c31977656b7958d5c9e7c1"
+    },
+    {
+      "id": 462,
+      "file": "death-parts/462.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "521600c4fbd090f03eb662033c93c8148c96478e3b2cfd573ab1af797027db94"
+    },
+    {
+      "id": 463,
+      "file": "death-parts/463.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "edc456d397d365f15d529466b2d307b4f5d29a8e22f5b4a74148899f78fc46e9"
+    },
+    {
+      "id": 464,
+      "file": "death-parts/464.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "688712c23416a25ea7788102069b214ceba63411b00690bc96be8bf99ed52b22"
+    },
+    {
+      "id": 465,
+      "file": "death-parts/465.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "3b186a631f6eeea2633cedf097d12f22a06d77d43140cd02b13eab8a3c865311"
+    },
+    {
+      "id": 466,
+      "file": "death-parts/466.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "fdb30c2110ee7547934c4d3aded5db23150f63cd2415b621e3a095ff5aa8278b"
+    },
+    {
+      "id": 467,
+      "file": "death-parts/467.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "51795cbc869b11bfc30dd609c0c641513853b65a5393e1f9088fe89da6dfae06"
+    },
+    {
+      "id": 468,
+      "file": "death-parts/468.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "86e70ee16f1dda0a9ac86f91311f95086ecad2ed0fc56087f06d677e5998ff41"
+    },
+    {
+      "id": 469,
+      "file": "death-parts/469.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "de94006100fedbed05b20017e68beca1612eca70dc7f1548da6b3c60e0c50651"
+    },
+    {
+      "id": 470,
+      "file": "death-parts/470.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "41221ee765f7f1931fb4c63b88b69fe19f2e2d0c7efe0898883238b2973b71f2"
+    },
+    {
+      "id": 471,
+      "file": "death-parts/471.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "3c1971f17e0b30b67a0626d3e1f0f158a1a00dfbedb52212253faaf081fd8008"
+    },
+    {
+      "id": 472,
+      "file": "death-parts/472.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "d2ec2bc9fb56df3349fe9ca22ef40aa7088208331a04fd57c12d87183fba3963"
+    },
+    {
+      "id": 473,
+      "file": "death-parts/473.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "3e1b4c7f566b21b474abf1359f6fe1a4b0d95e8ad63350379081e68e61af8e21"
+    },
+    {
+      "id": 474,
+      "file": "death-parts/474.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "97499d3be3ee77b42db0c531c431cc69ce36b716be99fca59ca86edd5eeb825f"
+    },
+    {
+      "id": 475,
+      "file": "death-parts/475.svg",
+      "role": "original-flat-vector-preserved",
+      "sha256": "36ec80b62d42e3d341669e4f0d7e0eb72dd5a6dfb4a7c65c8e5208bb3f0094a9"
+    }
+  ],
+  "evidence": "offline SVG + Inkscape renders; no CS6/AS execution/game verification",
+  "notClaimed": "pixel-equivalent silhouettes; 3 tiny head fragments narrower"
+}

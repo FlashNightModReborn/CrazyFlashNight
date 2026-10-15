@@ -1,0 +1,119 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "rounding": "nearest integer",
+  "requestedStage": 6,
+  "unitIds": [
+    461,
+    462
+  ],
+  "rows": [
+    {
+      "unitId": 461,
+      "linkage": "敌人-CF6普通男僵尸",
+      "displayname": "CF6黄衣僵尸",
+      "source": "原版敌人 2011-2012.xml/敌人-黄色衣服男僵尸1",
+      "sourceStage": 1,
+      "stage": 6,
+      "sourceFlags": {
+        "速度系数": 1.0,
+        "攻速系数": 4.0,
+        "攻击倍率": 1.0,
+        "段数系数": 2.0,
+        "阶段": 1.0,
+        "霸体系数": 1.0,
+        "档次系数": 1.5,
+        "成长系数": 1.3,
+        "高攻低血防系数": 1.5,
+        "高防低血系数": 1.4
+      },
+      "input": {
+        "speedFactor": 1,
+        "atkSpeedFactor": 4,
+        "atkMultiplier": 1,
+        "segmentFactor": 2,
+        "stage": 6,
+        "superArmorFactor": 1,
+        "tierFactor": 1.5,
+        "growthFactor": 1.3,
+        "highAtkFactor": 1.5,
+        "highDefFactor": 1.4
+      },
+      "output": {
+        "atkMin": 70.1257630670489,
+        "atkMax": 305.51591645369315,
+        "hpMin": 1344.5819564042376,
+        "hpMax": 5681.531393982297,
+        "defMin": 87.38888888888889,
+        "defMax": 443.11111111111114,
+        "expMin": 126.25911010537517,
+        "expMax": 1696.265571288167,
+        "goldPrice": 32900,
+        "kPointPrice": 950
+      },
+      "integerPanel": {
+        "最小经验值": "126",
+        "最大经验值": "1696",
+        "hp_min": "1345",
+        "hp_max": "5682",
+        "空手攻击力_min": "70",
+        "空手攻击力_max": "306",
+        "基本防御力_min": "87",
+        "基本防御力_max": "443"
+      }
+    },
+    {
+      "unitId": 462,
+      "linkage": "敌人-CF6女僵尸",
+      "displayname": "CF6红衣僵尸",
+      "source": "原版敌人 2011-2012.xml/敌人-金发红衣服女僵尸1",
+      "sourceStage": 1,
+      "stage": 6,
+      "sourceFlags": {
+        "速度系数": 1.0,
+        "攻速系数": 4.0,
+        "攻击倍率": 1.0,
+        "段数系数": 2.0,
+        "阶段": 1.0,
+        "霸体系数": 1.0,
+        "档次系数": 1.5,
+        "成长系数": 1.5,
+        "高攻低血防系数": 1.6,
+        "高防低血系数": 1.4
+      },
+      "input": {
+        "speedFactor": 1,
+        "atkSpeedFactor": 4,
+        "atkMultiplier": 1,
+        "segmentFactor": 2,
+        "stage": 6,
+        "superArmorFactor": 1,
+        "tierFactor": 1.5,
+        "growthFactor": 1.5,
+        "highAtkFactor": 1.6,
+        "highDefFactor": 1.4
+      },
+      "output": {
+        "atkMin": 65.58777767154605,
+        "atkMax": 332.02096127895066,
+        "hpMin": 1096.6052180755805,
+        "hpMax": 5424.948019729691,
+        "defMin": 78.66666666666667,
+        "defMax": 444.66666666666663,
+        "expMin": 111.79772322577746,
+        "expMax": 1707.1852716455297,
+        "goldPrice": 33100,
+        "kPointPrice": 950
+      },
+      "integerPanel": {
+        "最小经验值": "112",
+        "最大经验值": "1707",
+        "hp_min": "1097",
+        "hp_max": "5425",
+        "空手攻击力_min": "66",
+        "空手攻击力_max": "332",
+        "基本防御力_min": "79",
+        "基本防御力_max": "445"
+      }
+    }
+  ]
+}

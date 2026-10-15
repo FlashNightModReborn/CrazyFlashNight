@@ -1,0 +1,3444 @@
+{
+  "method": "Death path clipped over original matrix times vector atlas; live parts placed in atlas with inverse original live bitmap matrix. Matrix/path transforms exact. Per-fill attribution is diagnostic 4x atlas raster area sampling, not generation authority.",
+  "pureVectorIds": [
+    409,
+    411,
+    413,
+    415,
+    417,
+    418,
+    419,
+    420,
+    421,
+    422,
+    423,
+    424,
+    425,
+    426,
+    427,
+    428,
+    429,
+    430,
+    431,
+    433,
+    435,
+    437,
+    439,
+    441,
+    443,
+    445,
+    447,
+    449,
+    451,
+    453,
+    455,
+    457,
+    459,
+    461,
+    462,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    472,
+    473,
+    474,
+    475
+  ],
+  "mixedIds": [
+    410,
+    412,
+    414,
+    416,
+    432,
+    434,
+    436,
+    438,
+    440,
+    442,
+    444,
+    446,
+    448,
+    450,
+    452,
+    454,
+    456,
+    458,
+    460
+  ],
+  "counts": {
+    "sourceDeathShapes": 67,
+    "originalFlatVectorShapes": 48,
+    "mixedShapes": 19,
+    "bitmapFills": 140,
+    "solidFills": 69
+  },
+  "shapes": [
+    {
+      "id": 409,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 410,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -49.05,
+            -65.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 818.6875,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 818.6875,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -50.85,
+            -65.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 879.625,
+              "fraction": 0.996389
+            }
+          ],
+          "sampledSourceAlphaPixels": 882.8125,
+          "unmappedSourceAlphaPixels": 3.1875
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -47.8,
+            -67.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 455.1875,
+              "fraction": 0.999725
+            }
+          ],
+          "sampledSourceAlphaPixels": 455.3125,
+          "unmappedSourceAlphaPixels": 0.125
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -48.65,
+            -65.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 822.125,
+              "fraction": 0.996893
+            }
+          ],
+          "sampledSourceAlphaPixels": 824.6875,
+          "unmappedSourceAlphaPixels": 2.5625
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -46.6,
+            -66.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 216.625,
+              "fraction": 0.997984
+            }
+          ],
+          "sampledSourceAlphaPixels": 217.0625,
+          "unmappedSourceAlphaPixels": 0.4375
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -52.1,
+            -68.25
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 437.5625,
+              "fraction": 0.999144
+            }
+          ],
+          "sampledSourceAlphaPixels": 437.9375,
+          "unmappedSourceAlphaPixels": 0.375
+        }
+      ]
+    },
+    {
+      "id": 411,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 412,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -45.7,
+            -77.3
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 454.625,
+              "fraction": 0.999725
+            }
+          ],
+          "sampledSourceAlphaPixels": 454.75,
+          "unmappedSourceAlphaPixels": 0.125
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -40.7,
+            -80.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 211.9375,
+              "fraction": 0.998528
+            }
+          ],
+          "sampledSourceAlphaPixels": 212.25,
+          "unmappedSourceAlphaPixels": 0.3125
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -63.3,
+            -80.15
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 437.5625,
+              "fraction": 0.999144
+            }
+          ],
+          "sampledSourceAlphaPixels": 437.9375,
+          "unmappedSourceAlphaPixels": 0.375
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -57.65,
+            -74.2
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 818.0,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 818.0,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -58.45,
+            -61.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 817.75,
+              "fraction": 0.996876
+            }
+          ],
+          "sampledSourceAlphaPixels": 820.3125,
+          "unmappedSourceAlphaPixels": 2.5625
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -74.55,
+            -64.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 879.625,
+              "fraction": 0.996248
+            }
+          ],
+          "sampledSourceAlphaPixels": 882.9375,
+          "unmappedSourceAlphaPixels": 3.3125
+        }
+      ]
+    },
+    {
+      "id": 413,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 414,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 2,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -99.45,
+            -95.45
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 73.75,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 73.75,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -88.4,
+            -73.35
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 33.25,
+              "fraction": 0.98155
+            }
+          ],
+          "sampledSourceAlphaPixels": 33.875,
+          "unmappedSourceAlphaPixels": 0.625
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -92.6,
+            -56.85
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 34.0,
+              "fraction": 0.966252
+            }
+          ],
+          "sampledSourceAlphaPixels": 35.1875,
+          "unmappedSourceAlphaPixels": 1.1875
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -51.55,
+            -95.15
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 42.375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 42.375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -64.0,
+            -87.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 77.0,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 77.0,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -74.25,
+            -85.75
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 113.5,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 113.5,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -80.7,
+            -68.25
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 241.375,
+              "fraction": 0.997675
+            }
+          ],
+          "sampledSourceAlphaPixels": 241.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 9,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -96.95,
+            -70.65
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 7.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 7.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 11,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -84.35,
+            -54.25
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 232.1875,
+              "fraction": 0.99678
+            }
+          ],
+          "sampledSourceAlphaPixels": 232.9375,
+          "unmappedSourceAlphaPixels": 0.75
+        }
+      ]
+    },
+    {
+      "id": 415,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 416,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -99.45,
+            -95.45
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 0.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -114.2,
+            -76.65
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 7.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 7.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -108.0,
+            -67.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 7.5,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 7.5,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -95.8,
+            -102.45
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 13.3125,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 13.3125,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.19909286499023438,
+            -0.14331130981445311,
+            0.14331130981445311,
+            0.19909286499023438,
+            -87.2,
+            -87.2
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 8.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 8.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.03944320678710937,
+            -0.24211654663085938,
+            0.24211654663085938,
+            0.03944320678710937,
+            -90.85,
+            -73.2
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 401,
+              "name": "head",
+              "sampledAtlasPixels": 77.875,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 77.875,
+          "unmappedSourceAlphaPixels": 0.0
+        }
+      ]
+    },
+    {
+      "id": 417,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 418,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 419,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 420,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 421,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 422,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 423,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 424,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 425,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 426,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 427,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 428,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 429,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 430,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 431,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 432,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -18.4,
+            -6.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 160.0,
+              "fraction": 0.99961
+            }
+          ],
+          "sampledSourceAlphaPixels": 160.0625,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.11825408935546874,
+            0.19128646850585937,
+            -0.19128646850585937,
+            0.11825408935546874,
+            -17.15,
+            13.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 274.5,
+              "fraction": 0.997502
+            }
+          ],
+          "sampledSourceAlphaPixels": 275.1875,
+          "unmappedSourceAlphaPixels": 0.6875
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.11825408935546874,
+            0.19128646850585937,
+            -0.19128646850585937,
+            0.11825408935546874,
+            -22.9,
+            13.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 858.25,
+              "fraction": 0.994136
+            }
+          ],
+          "sampledSourceAlphaPixels": 863.3125,
+          "unmappedSourceAlphaPixels": 5.0625
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -29.65,
+            -10.35
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 621.4375,
+              "fraction": 0.996692
+            }
+          ],
+          "sampledSourceAlphaPixels": 623.5,
+          "unmappedSourceAlphaPixels": 2.0625
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.11825408935546874,
+            0.19128646850585937,
+            -0.19128646850585937,
+            0.11825408935546874,
+            -28.4,
+            9.7
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 582.0,
+              "fraction": 0.999249
+            }
+          ],
+          "sampledSourceAlphaPixels": 582.4375,
+          "unmappedSourceAlphaPixels": 0.4375
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -14.05,
+            0.3
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 277.75,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 277.75,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -25.15,
+            -23.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 130.1875,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 130.1875,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 9,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -25.65,
+            -19.45
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.625,
+              "fraction": 0.998664
+            }
+          ],
+          "sampledSourceAlphaPixels": 421.1875,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 10,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -21.4,
+            -11.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 186.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 186.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 11,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -14.5,
+            -2.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 232.625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 232.625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 12,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -24.3,
+            -12.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 672.5625,
+              "fraction": 0.999814
+            }
+          ],
+          "sampledSourceAlphaPixels": 672.6875,
+          "unmappedSourceAlphaPixels": 0.125
+        },
+        {
+          "fillIndex": 13,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -14.85,
+            -2.75
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 443.0,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 443.0,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 14,
+          "bitmapMatrix": [
+            -0.21517486572265626,
+            -0.0659912109375,
+            0.0659912109375,
+            -0.21517486572265626,
+            -44.8,
+            99.3
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 332.5,
+              "fraction": 0.999624
+            }
+          ],
+          "sampledSourceAlphaPixels": 332.625,
+          "unmappedSourceAlphaPixels": 0.125
+        }
+      ]
+    },
+    {
+      "id": 433,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 434,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -18.4,
+            -6.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.215179443359375,
+            0.0659912109375,
+            -0.06599273681640624,
+            0.21517486572265626,
+            -94.95,
+            -16.15
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 626.25,
+              "fraction": 0.988263
+            }
+          ],
+          "sampledSourceAlphaPixels": 633.6875,
+          "unmappedSourceAlphaPixels": 7.4375
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            0.15416488647460938,
+            -0.16373367309570314,
+            0.16373519897460936,
+            0.15416183471679687,
+            -142.8,
+            16.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 581.8125,
+              "fraction": 0.998498
+            }
+          ],
+          "sampledSourceAlphaPixels": 582.6875,
+          "unmappedSourceAlphaPixels": 0.875
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.21934280395507813,
+            -0.05043716430664062,
+            0.05043716430664062,
+            0.21934280395507813,
+            -112.35,
+            -5.35
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 651.0625,
+              "fraction": 0.999904
+            }
+          ],
+          "sampledSourceAlphaPixels": 651.125,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.22492294311523436,
+            0.008051300048828125,
+            -0.008051300048828125,
+            0.22492294311523436,
+            -93.45,
+            -19.95
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.3125,
+              "fraction": 0.998663
+            }
+          ],
+          "sampledSourceAlphaPixels": 420.875,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -35.15,
+            -15.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 130.1875,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 130.1875,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.16473770141601562,
+            0.15335159301757811,
+            -0.15335159301757811,
+            -0.16473770141601562,
+            -2.9,
+            63.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 337.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 337.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 9,
+          "bitmapMatrix": [
+            0.11943435668945312,
+            -0.19076309204101563,
+            0.19076309204101563,
+            0.11943435668945312,
+            -101.7,
+            51.0
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.6875,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.6875,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 10,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335159301757811,
+            0.16473770141601562,
+            -118.1,
+            30.65
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 277.375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 277.375,
+          "unmappedSourceAlphaPixels": 0.0
+        }
+      ]
+    },
+    {
+      "id": 435,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 436,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043792724609375,
+            -0.21934280395507813,
+            0.21934280395507813,
+            -0.05043792724609375,
+            -120.15,
+            92.7
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 332.75,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 332.75,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881515502929686,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -122.2,
+            102.5
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 672.625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 672.625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            -3.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            -0.19076309204101563,
+            -0.11943435668945312,
+            0.11943435668945312,
+            -0.19076309204101563,
+            -53.5,
+            104.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 435.8125,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 435.8125,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.16373367309570314,
+            -0.15416488647460938,
+            0.15416183471679687,
+            -0.16373519897460936,
+            -136.8,
+            102.2
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 540.1875,
+              "fraction": 0.999191
+            }
+          ],
+          "sampledSourceAlphaPixels": 540.625,
+          "unmappedSourceAlphaPixels": 0.4375
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.05043792724609375,
+            -0.21934280395507813,
+            0.21934280395507813,
+            -0.05043792724609375,
+            -127.15,
+            84.3
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 416.625,
+              "fraction": 0.993443
+            }
+          ],
+          "sampledSourceAlphaPixels": 419.375,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.050439453125,
+            -0.21934661865234376,
+            0.21934356689453124,
+            -0.050435638427734374,
+            -145.95,
+            102.35
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 616.375,
+              "fraction": 0.990757
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.125,
+          "unmappedSourceAlphaPixels": 5.75
+        }
+      ]
+    },
+    {
+      "id": 437,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 438,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -82.5,
+            101.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            -1.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 4,
+          "bitmapMatrix": [
+            -0.19076309204101563,
+            -0.11943511962890625,
+            0.11943511962890625,
+            -0.19076309204101563,
+            -90.95,
+            119.0
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 671.25,
+              "fraction": 0.999814
+            }
+          ],
+          "sampledSourceAlphaPixels": 671.375,
+          "unmappedSourceAlphaPixels": 0.125
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.21934280395507813,
+            -0.05043792724609375,
+            0.05043792724609375,
+            0.21934280395507813,
+            -113.95,
+            15.0
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 331.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 331.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            0.0659912109375,
+            -0.21517562866210938,
+            0.21517562866210938,
+            0.0659912109375,
+            -139.95,
+            64.2
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 421.0,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 421.0,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.21518020629882811,
+            -0.0659912109375,
+            0.06599273681640624,
+            -0.21517486572265626,
+            -79.95,
+            131.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 623.625,
+              "fraction": 0.986944
+            }
+          ],
+          "sampledSourceAlphaPixels": 631.875,
+          "unmappedSourceAlphaPixels": 8.25
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            112.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        }
+      ]
+    },
+    {
+      "id": 439,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 440,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        }
+      ]
+    },
+    {
+      "id": 441,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 442,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        }
+      ]
+    },
+    {
+      "id": 443,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 444,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        }
+      ]
+    },
+    {
+      "id": 445,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 446,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 447,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 448,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 449,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 450,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 451,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 452,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 453,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 454,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            94.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            104.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            1.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            42.6
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            97.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            114.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -1.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 455,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 456,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            87.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            -6.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            96.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            35.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            107.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            89.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -9.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 457,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 458,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            87.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            -6.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            96.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            35.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            107.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            89.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -9.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 459,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 460,
+      "category": "frozen-live-vector-crop",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": [
+        {
+          "fillIndex": 1,
+          "bitmapMatrix": [
+            -0.05043716430664062,
+            -0.21934356689453124,
+            0.21934356689453124,
+            -0.05043716430664062,
+            -134.1,
+            87.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 666.9375,
+              "fraction": 0.999906
+            }
+          ],
+          "sampledSourceAlphaPixels": 667.0,
+          "unmappedSourceAlphaPixels": 0.0625
+        },
+        {
+          "fillIndex": 2,
+          "bitmapMatrix": [
+            0.10548858642578125,
+            0.19881439208984375,
+            -0.19881439208984375,
+            0.10548858642578125,
+            -20.9,
+            -6.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 0.5625,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 0.5625,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 3,
+          "bitmapMatrix": [
+            -0.10548858642578125,
+            -0.19881439208984375,
+            0.19881515502929686,
+            -0.10548858642578125,
+            -87.45,
+            96.55
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 442.9375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 442.9375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 5,
+          "bitmapMatrix": [
+            0.16473770141601562,
+            -0.15335159301757811,
+            0.15335235595703126,
+            0.16473770141601562,
+            -133.5,
+            35.1
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 311.4375,
+              "fraction": 1.0
+            }
+          ],
+          "sampledSourceAlphaPixels": 311.4375,
+          "unmappedSourceAlphaPixels": 0.0
+        },
+        {
+          "fillIndex": 6,
+          "bitmapMatrix": [
+            -0.1980560302734375,
+            -0.10653457641601563,
+            0.10653076171875,
+            -0.19805679321289063,
+            -123.15,
+            107.05
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 393,
+              "name": "boot",
+              "sampledAtlasPixels": 576.375,
+              "fraction": 0.999025
+            }
+          ],
+          "sampledSourceAlphaPixels": 576.9375,
+          "unmappedSourceAlphaPixels": 0.5625
+        },
+        {
+          "fillIndex": 7,
+          "bitmapMatrix": [
+            -0.10548934936523438,
+            -0.19881439208984375,
+            0.19881439208984375,
+            -0.10548934936523438,
+            -116.8,
+            89.9
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 420.875,
+              "fraction": 0.993508
+            }
+          ],
+          "sampledSourceAlphaPixels": 423.625,
+          "unmappedSourceAlphaPixels": 2.75
+        },
+        {
+          "fillIndex": 8,
+          "bitmapMatrix": [
+            0.22492752075195313,
+            0.008050537109375,
+            -0.008052825927734375,
+            0.2249237060546875,
+            -118.45,
+            -9.4
+          ],
+          "mappedLiveParts": [
+            {
+              "liveId": 394,
+              "name": "shin",
+              "sampledAtlasPixels": 611.8125,
+              "fraction": 0.983127
+            }
+          ],
+          "sampledSourceAlphaPixels": 622.3125,
+          "unmappedSourceAlphaPixels": 10.5
+        }
+      ]
+    },
+    {
+      "id": 461,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 462,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 463,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 464,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 465,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 466,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 467,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 468,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 469,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 470,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 471,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 472,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 473,
+      "category": "original-flat-vector",
+      "solidFillsKept": 2,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 474,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    },
+    {
+      "id": 475,
+      "category": "original-flat-vector",
+      "solidFillsKept": 1,
+      "bitmapFillsReplaced": []
+    }
+  ]
+}

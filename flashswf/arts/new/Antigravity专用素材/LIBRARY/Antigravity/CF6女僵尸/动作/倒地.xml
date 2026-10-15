@@ -1,0 +1,1836 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/动作/倒地" itemID="6af00000-971564a2">
+  <timeline>
+    <DOMTimeline name="倒地">
+      <layers>
+        <DOMLayer name="Script Layer" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="8">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.死亡检测();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="66">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="控制层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="8">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/玩家控制停止器">
+                  <matrix>
+                    <Matrix a="0.444443" d="0.444443"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.控制目标 == _parent._parent._name)
+   {
+      stop();
+   }
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="71">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.097672" b="-0.167099" c="0.167099" d="0.097672" tx="14.3" ty="-1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.1633" b="-0.103424" c="0.103424" d="0.1633" tx="6.5" ty="31.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="44">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.092377" b="-0.169312" c="0.169312" d="0.092377" tx="5.55" ty="51.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.128113" b="-0.143997" c="0.143997" d="0.128113" tx="8.4" ty="48.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.148438" b="-0.122803" c="0.122803" d="0.148438" tx="10.6" ty="46.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19162" b="-0.016846" c="0.016846" d="0.19162" tx="14.5" ty="34.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19162" b="-0.016846" c="0.016846" d="0.19162" tx="8.6" ty="20.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160904" b="-0.10495" c="0.10495" d="0.160904" tx="-7.75" ty="-11.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.16246" b="-0.107025" c="0.107025" d="0.16246" tx="-7.6" ty="-24.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222229" b="-0.029251" c="0.029251" d="0.222229" tx="27.65" ty="6.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.210541" b="0.075989" c="-0.075989" d="0.210541" tx="15" ty="43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="55">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19342" b="0.112366" c="-0.112366" d="0.19342" tx="18" ty="58.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.19342" b="0.112366" c="-0.112366" d="0.19342" tx="16.75" ty="51.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.048218" b="0.218063" c="-0.218063" d="0.048218" tx="10.9" ty="38.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.109131" b="0.194534" c="-0.194534" d="0.109131" tx="2.2" ty="2.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.143494" b="0.173386" c="-0.173386" d="0.143494" tx="0.5" ty="-12.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.193497" b="0.008972" c="-0.008972" d="0.193497" tx="15.85" ty="-18.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.167526" b="0.096725" c="-0.096725" d="0.167526" tx="15.8" ty="16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="44">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.14743" b="0.125061" c="-0.125061" d="0.14743" tx="17.45" ty="38.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.14743" b="0.125061" c="-0.125061" d="0.14743" tx="19.45" ty="37.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.14743" b="0.125061" c="-0.125061" d="0.14743" tx="20.45" ty="35.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.187744" b="0.045044" c="-0.045044" d="0.187744" tx="18.9" ty="18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192123" b="-0.017014" c="0.017014" d="0.192123" tx="7.85" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186584" b="-0.048584" c="0.048584" d="0.186584" tx="-11.1" ty="-27.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.181915" b="-0.068939" c="0.068939" d="0.181915" tx="-13.35" ty="-40.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085968" b="0.17424" c="-0.17424" d="0.085968" tx="29.15" ty="-14.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.003662" b="0.194" c="-0.194" d="-0.003662" tx="25.7" ty="26.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="44">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.038284" b="0.190109" c="-0.190109" d="-0.038284" tx="25.45" ty="50"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.101669" b="0.164902" c="-0.164902" d="-0.101669" tx="26.55" ty="48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.156204" b="0.114395" c="-0.114395" d="-0.156204" tx="25.65" ty="48.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.156204" b="0.114395" c="-0.114395" d="-0.156204" tx="28.65" ty="26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.009705" b="0.193069" c="-0.193069" d="-0.009705" tx="21.9" ty="0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.13681" b="0.136871" c="-0.136871" d="0.13681" tx="-0.5" ty="-35.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1627-头部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191238" b="0.037277" c="-0.037277" d="0.191238" tx="-1.95" ty="-48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.086105" b="0.174454" c="-0.174454" d="0.086105" tx="-1.75" ty="-1.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.003647" b="0.19426" c="-0.19426" d="-0.003647" tx="-7.4" ty="23.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.03833" b="0.190353" c="-0.190353" d="-0.03833" tx="-6.55" ty="41"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="40">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001923" b="0.194046" c="-0.194046" d="-0.001923" tx="-7.45" ty="45.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.029083" b="0.191772" c="-0.191772" d="-0.029083" tx="-5.45" ty="40.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.099426" b="0.166336" c="-0.166336" d="-0.099426" tx="-3.45" ty="29.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.008606" b="0.193329" c="-0.193329" d="-0.008606" tx="-5.05" ty="24.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111572" b="0.15773" c="-0.15773" d="0.111572" tx="-6.3" ty="19.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189148" b="0.037918" c="-0.037918" d="0.189148" tx="-9.15" ty="-1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1626-躯干" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191483" b="0.037308" c="-0.037308" d="0.191483" tx="-10.8" ty="-16.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.019623" b="-0.192856" c="0.192856" d="0.019623" tx="30.1" ty="8.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.105881" b="-0.162079" c="0.162079" d="0.105881" tx="15.9" ty="47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.030869" b="-0.190704" c="0.190704" d="-0.030869" tx="30.9" ty="61.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.030869" b="-0.190704" c="0.190704" d="-0.030869" tx="31.15" ty="55.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.037933" b="-0.189224" c="0.189224" d="0.037933" tx="29.95" ty="47.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191849" b="-0.019196" c="0.019196" d="0.191849" tx="20.45" ty="30.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.102509" b="-0.163269" c="0.163269" d="0.102509" tx="6.9" ty="-7.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1625-前臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.153625" b="-0.119522" c="0.119522" d="0.153625" tx="5.6" ty="-23.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218552" b="-0.050308" c="0.050308" d="0.218552" tx="46.6" ty="10.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.216934" b="0.055634" c="-0.055634" d="0.216934" tx="29.7" ty="56.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203354" b="0.093491" c="-0.093491" d="0.203354" tx="46.15" ty="58.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203354" b="0.093491" c="-0.093491" d="0.203354" tx="46.4" ty="52.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222412" b="0.023026" c="-0.023026" d="0.222412" tx="44.65" ty="50.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.204514" b="0.089874" c="-0.089874" d="0.204514" tx="21.15" ty="45.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.109695" b="0.194443" c="-0.194443" d="0.109695" tx="18.65" ty="-0.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1624-张爪手" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.145111" b="0.17218" c="-0.17218" d="0.145111" tx="13.9" ty="-13.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.18396" b="-0.06102" c="0.06102" d="0.18396" tx="23.85" ty="-5.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191193" b="0.030273" c="-0.030273" d="0.191193" tx="16.85" ty="32.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="50">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.086487" b="-0.172974" c="0.172974" d="0.086487" tx="15.75" ty="53.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.086487" b="-0.172974" c="0.172974" d="0.086487" tx="16" ty="47.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.159454" b="-0.108948" c="0.108948" d="0.159454" tx="20.7" ty="34.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191696" b="-0.021103" c="0.021103" d="0.191696" tx="18.1" ty="14.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.190475" b="-0.030365" c="0.030365" d="0.190475" tx="3.45" ty="-23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1623-上臂" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.190979" b="-0.037537" c="0.037537" d="0.190979" tx="2.05" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.063644" b="0.183319" c="-0.183319" d="-0.063644" tx="-14.15" ty="3.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.140549" b="0.133423" c="-0.133423" d="-0.140549" tx="-20.8" ty="22.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.162064" b="0.106064" c="-0.106064" d="-0.162064" tx="-19.55" ty="37.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073914" b="0.178711" c="-0.178711" d="-0.073914" tx="-22.55" ty="43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001434" b="0.193161" c="-0.193161" d="-0.001434" tx="-22.55" ty="43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.038925" b="0.189072" c="-0.189072" d="0.038925" tx="-22.55" ty="43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728" duration="28">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.090424" b="0.170364" c="-0.170364" d="0.090424" tx="-22.55" ty="43.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.133865" b="0.138626" c="-0.138626" d="0.133865" tx="-20.7" ty="38.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191788" b="-0.018173" c="0.018173" d="0.191788" tx="-16" ty="18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184387" b="-0.055374" c="0.055374" d="0.184387" tx="-18" ty="22.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.149445" b="-0.120178" c="0.120178" d="0.149445" tx="-16" ty="9.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.193771" b="-0.02298" c="0.02298" d="0.193771" tx="-14.2" ty="-3.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.193588" b="-0.004517" c="0.004517" d="-0.193588" tx="-38.75" ty="-4.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.169647" b="-0.092819" c="0.092819" d="-0.169647" tx="-38.9" ty="3.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.095566" b="-0.167725" c="0.167725" d="-0.095566" tx="-34.1" ty="16.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.173233" b="-0.084503" c="0.084503" d="-0.173233" tx="-46.55" ty="34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.114059" b="0.155228" c="-0.155228" d="-0.114059" tx="-46.8" ty="43.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.006882" b="0.192184" c="-0.192184" d="0.006882" tx="-48.45" ty="49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728" duration="28">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.006882" b="0.192184" c="-0.192184" d="0.006882" tx="-47.45" ty="55.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.006882" b="0.192184" c="-0.192184" d="0.006882" tx="-39.9" ty="57.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.065262" b="0.180695" c="-0.180695" d="0.065262" tx="-13.75" ty="43.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.065262" b="0.180695" c="-0.180695" d="0.065262" tx="-11.25" ty="45.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.161179" b="0.103699" c="-0.103699" d="0.161179" tx="-2.65" ty="30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189209" b="0.047333" c="-0.047333" d="0.189209" tx="-11.3" ty="21.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.189484" b="-0.043137" c="0.043137" d="-0.189484" tx="-37.7" ty="-29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.1483" b="-0.125198" c="0.125198" d="-0.1483" tx="-26.6" ty="-17.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.123444" b="-0.149628" c="0.149628" d="-0.123444" tx="-14.1" ty="4.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.186035" b="-0.053879" c="0.053879" d="-0.186035" tx="-36.55" ty="13.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.176407" b="0.079208" c="-0.079208" d="-0.176407" tx="-69.05" ty="29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.040771" b="0.188721" c="-0.188721" d="-0.040771" tx="-74.55" ty="49.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728" duration="28">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.040771" b="0.188721" c="-0.188721" d="-0.040771" tx="-73.05" ty="57.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.040771" b="0.188721" c="-0.188721" d="-0.040771" tx="-65.5" ty="59.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.040771" b="0.188721" c="-0.188721" d="-0.040771" tx="-34.8" ty="52.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="63" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.040771" b="0.188721" c="-0.188721" d="-0.040771" tx="-32.8" ty="55.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192444" b="0.002319" c="-0.002319" d="0.192444" tx="-14.9" ty="49.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.195206" d="0.195206" tx="-17.1" ty="45.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.117935" b="0.154846" c="-0.154846" d="0.117935" tx="-8.15" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.033585" b="0.191467" c="-0.191467" d="0.033585" tx="-15.5" ty="25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001221" b="0.194275" c="-0.194275" d="-0.001221" tx="-14.85" ty="41.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="40">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001221" b="0.194275" c="-0.194275" d="-0.001221" tx="-16.75" ty="45.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001221" b="0.194275" c="-0.194275" d="-0.001221" tx="-16.75" ty="40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.001221" b="0.194275" c="-0.194275" d="-0.001221" tx="-13.5" ty="24.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.117981" b="0.153961" c="-0.153961" d="0.117981" tx="-12.7" ty="25.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191193" b="0.030807" c="-0.030807" d="0.191193" tx="-10" ty="7.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1622-髋部" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.195206" d="0.195206" tx="-10.45" ty="-7.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.144836" b="0.129852" c="-0.129852" d="0.144836" tx="-5" ty="8.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.068909" b="0.181625" c="-0.181625" d="0.068909" tx="-15.15" ty="31.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.094391" b="0.169312" c="-0.169312" d="-0.094391" tx="-15.6" ty="47.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="40">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.017487" b="0.192764" c="-0.192764" d="0.017487" tx="-13.8" ty="49.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.048355" b="0.187317" c="-0.187317" d="0.048355" tx="-12.8" ty="44.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.152466" b="0.118744" c="-0.118744" d="0.152466" tx="-13.8" ty="32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.059128" b="-0.183762" c="0.183762" d="0.059128" tx="-15.05" ty="29.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.130173" b="-0.142151" c="0.142151" d="0.130173" tx="-7.9" ty="6.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1621-大腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.191605" b="-0.036652" c="0.036652" d="0.191605" tx="-4.4" ty="-7.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.10556" b="0.162811" c="-0.162811" d="-0.10556" tx="-22.3" ty="27.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.168335" b="0.095993" c="-0.095993" d="-0.168335" tx="-38.95" ty="39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.182693" b="0.064285" c="-0.064285" d="-0.182693" tx="-38.3" ty="34.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.114456" b="0.155869" c="-0.155869" d="-0.114456" tx="-39.9" ty="51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728" duration="36">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00943" b="0.192841" c="-0.192841" d="0.00943" tx="-39.95" ty="51.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00943" b="0.192841" c="-0.192841" d="0.00943" tx="-34.95" ty="50.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.00943" b="0.192841" c="-0.192841" d="0.00943" tx="-30.7" ty="51.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.11087" b="0.157715" c="-0.157715" d="0.11087" tx="8.6" ty="38.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.18541" b="0.053146" c="-0.053146" d="0.18541" tx="10.1" ty="23.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1620-小腿" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.193756" b="0.023071" c="-0.023071" d="0.193756" tx="-0.1" ty="17.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.062943" b="0.183792" c="-0.183792" d="-0.062943" tx="-42.75" ty="14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.140152" b="0.134171" c="-0.134171" d="-0.140152" tx="-51.2" ty="19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.161804" b="0.106873" c="-0.106873" d="-0.161804" tx="-46.85" ty="11.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073257" b="0.179214" c="-0.179214" d="-0.073257" tx="-59.95" ty="37.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728" duration="36">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073257" b="0.179214" c="-0.179214" d="-0.073257" tx="-66.45" ty="53.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073257" b="0.179214" c="-0.179214" d="-0.073257" tx="-61.45" ty="52.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="58" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073257" b="0.179214" c="-0.179214" d="-0.073257" tx="-56.2" ty="53.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="68" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.073257" b="0.179214" c="-0.179214" d="-0.073257" tx="-10.7" ty="54.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192795" b="-0.01297" c="0.01297" d="0.192795" tx="3.85" ty="43.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1619-脚靴" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.193756" b="0.023071" c="-0.023071" d="0.193756" tx="-2.45" ty="42.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

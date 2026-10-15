@@ -155,3 +155,8 @@ launcher/app.manifest text eol=lf
 
 # Rock Queen generated manifest is verified byte-for-byte after checkout.
 /tools/rock-queen-assets/manifest.json text eol=lf
+
+# CF6 archived vectors and native-project hashes retain their reviewed bytes.
+/flashswf/arts/new/Antigravity专用素材/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Antigravity素材源稿/** -text whitespace=cr-at-eol
+/tools/cf6-zombie-assets/*.json text eol=lf

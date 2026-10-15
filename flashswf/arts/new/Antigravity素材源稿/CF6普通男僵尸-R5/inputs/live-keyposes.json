@@ -1,0 +1,188 @@
+[
+  {
+    "sequence": "stand",
+    "characterId": 403,
+    "frame": 1,
+    "svg": "keyposes/stand-001.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "stand",
+    "characterId": 403,
+    "frame": 41,
+    "svg": "keyposes/stand-041.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "stand",
+    "characterId": 403,
+    "frame": 61,
+    "svg": "keyposes/stand-061.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "stand",
+    "characterId": 403,
+    "frame": 83,
+    "svg": "keyposes/stand-083.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "walk",
+    "characterId": 404,
+    "frame": 1,
+    "svg": "keyposes/walk-001.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "walk",
+    "characterId": 404,
+    "frame": 25,
+    "svg": "keyposes/walk-025.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "walk",
+    "characterId": 404,
+    "frame": 26,
+    "svg": "keyposes/walk-026.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "walk",
+    "characterId": 404,
+    "frame": 52,
+    "svg": "keyposes/walk-052.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "attack1",
+    "characterId": 405,
+    "frame": 1,
+    "svg": "keyposes/attack1-001.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "attack1",
+    "characterId": 405,
+    "frame": 2,
+    "svg": "keyposes/attack1-002.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "attack1",
+    "characterId": 405,
+    "frame": 43,
+    "svg": "keyposes/attack1-043.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "attack1",
+    "characterId": 405,
+    "frame": 87,
+    "svg": "keyposes/attack1-087.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "hit",
+    "characterId": 406,
+    "frame": 1,
+    "svg": "keyposes/hit-001.svg",
+    "excludedHelpers": [
+      299
+    ]
+  },
+  {
+    "sequence": "hit",
+    "characterId": 406,
+    "frame": 9,
+    "svg": "keyposes/hit-009.svg",
+    "excludedHelpers": [
+      299
+    ]
+  },
+  {
+    "sequence": "hit",
+    "characterId": 406,
+    "frame": 20,
+    "svg": "keyposes/hit-020.svg",
+    "excludedHelpers": [
+      299
+    ]
+  },
+  {
+    "sequence": "hit",
+    "characterId": 406,
+    "frame": 40,
+    "svg": "keyposes/hit-040.svg",
+    "excludedHelpers": [
+      299
+    ]
+  },
+  {
+    "sequence": "grabbed",
+    "characterId": 407,
+    "frame": 1,
+    "svg": "keyposes/grabbed-001.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "grabbed",
+    "characterId": 407,
+    "frame": 2,
+    "svg": "keyposes/grabbed-002.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "grabbed",
+    "characterId": 407,
+    "frame": 14,
+    "svg": "keyposes/grabbed-014.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "grabbed",
+    "characterId": 407,
+    "frame": 28,
+    "svg": "keyposes/grabbed-028.svg",
+    "excludedHelpers": []
+  },
+  {
+    "sequence": "knockdown",
+    "characterId": 408,
+    "frame": 1,
+    "svg": "keyposes/knockdown-001.svg",
+    "excludedHelpers": [
+      299,
+      281
+    ]
+  },
+  {
+    "sequence": "knockdown",
+    "characterId": 408,
+    "frame": 10,
+    "svg": "keyposes/knockdown-010.svg",
+    "excludedHelpers": [
+      299,
+      281
+    ]
+  },
+  {
+    "sequence": "knockdown",
+    "characterId": 408,
+    "frame": 58,
+    "svg": "keyposes/knockdown-058.svg",
+    "excludedHelpers": [
+      299
+    ]
+  },
+  {
+    "sequence": "knockdown",
+    "characterId": 408,
+    "frame": 116,
+    "svg": "keyposes/knockdown-116.svg",
+    "excludedHelpers": [
+      299
+    ]
+  }
+]
