@@ -1,16 +1,12 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/259380f1e0eb6aab" itemID="71340000-03bad036" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/259380f1e0eb6aab" itemID="71340000-03bad036" symbolType="graphic">
   <timeline>
     <DOMTimeline name="259380f1e0eb6aab">
       <layers>
-        <DOMLayer name="定格画面">
+        <DOMLayer name="定格画面" color="#4F4FFF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/dcd5944e16cc1063" symbolType="graphic" loop="single frame" firstFrame="0">
-                  <matrix>
-                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
-                  </matrix>
+                <DOMSymbolInstance libraryItemName="Codex/摇滚女皇/特效/dcd5944e16cc1063" symbolType="graphic" loop="single frame">
                   <transformationPoint>
                     <Point/>
                   </transformationPoint>
