@@ -455,23 +455,22 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
             if(target.手枪2.value.shot <= 0) target.手枪2.value.shot = 0;
         }
 
-        // 健身房加成
+        // 健身房与经脉的常驻加成
         if (_root.控制目标 === target._name) {
-            target.hp满血值 += _root.全局健身HP加成;
-            target.mp满血值 += _root.全局健身MP加成;
+            // HP/MP 上限与防御各让出一半练级空间给经脉穴位：健身房上限减半、穴位补上另一半，
+            // 两边相加仍等于旧版练满的总收益。经脉那几项是 MeridianPanelService 安装的 getter，
+            // 每次读取按当前配置与点亮集重算，改 meridians_config.json 后即以新值生效；
+            // 服务未安装（属性缺失）时按 0 计，避免把整条属性算成 NaN。
+            target.hp满血值 += _root.全局健身HP加成 + readGlobalBonus(_root.经脉HP加成);
+            target.mp满血值 += _root.全局健身MP加成 + readGlobalBonus(_root.经脉MP加成);
             target.空手攻击力 += _root.全局健身空攻加成;
-            target.防御力 += _root.全局健身防御加成;
+            target.防御力 += _root.全局健身防御加成 + readGlobalBonus(_root.经脉防御加成);
             // 内力只发一份：健身旧档加成与经脉加成取较大者，不叠加。
             // 健身房已移除内力训练项，练过内力的存档改走经脉时先补回原值——
             // 点亮累加超过旧值之前内力不增长，之后只补差值，避免同一份收益重复发放。
-            // _root.经脉内力加成 是 MeridianPanelService 安装的 getter，每次读取按当前配置与点亮集重算，
-            // 改 meridians_config.json 后即以新值生效。
-            var 健身内力:Number = Number(_root.全局健身内力加成);
-            if (!isFinite(健身内力)) 健身内力 = 0;
-            var 经脉内力:Number = Number(_root.经脉内力加成);
-            if (!isFinite(经脉内力)) 经脉内力 = 0;
-            var 内力加成:Number = 健身内力 > 经脉内力 ? 健身内力 : 经脉内力;
-            target.内力 += 内力加成;
+            var 健身内力:Number = readGlobalBonus(_root.全局健身内力加成);
+            var 经脉内力:Number = readGlobalBonus(_root.经脉内力加成);
+            target.内力 += 健身内力 > 经脉内力 ? 健身内力 : 经脉内力;
         }
 
         if(isNaN(target.hp)) target.hp = target.hp满血值;
@@ -493,6 +492,12 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
 
         // AI DPS 估算缓存失效（装备变化 → 武器威力/弹匣容量/伤害类型可能全变）
         org.flashNight.arki.unit.PlayerInfoProvider.invalidateDpsCache(target);
+    }
+
+    /** 常驻全局加成的读数：属性缺失（对应服务未安装）或 NaN 一律按 0，避免把单位属性算成 NaN。 */
+    private static function readGlobalBonus(value:Object):Number {
+        var result:Number = Number(value);
+        return isFinite(result) ? result : 0;
     }
 
     /**

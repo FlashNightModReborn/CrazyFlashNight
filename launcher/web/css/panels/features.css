@@ -3633,6 +3633,11 @@
 .mer-title { font-size: 22px; font-weight: 700; }
 .mer-subtitle { font-size: 11px; color: var(--wb-semantic-meridian-secondary-text); }
 
+/* 表头四类收益预算（内力/HP上限/MP上限/防御）逐类独立封顶，框比旧的单项框紧凑。 */
+.mer-budgets { display: flex; gap: 8px; }
+.mer-budgets .mer-total-box { min-width: 78px; padding: 6px 10px; }
+.mer-budgets .mer-total-value { font-size: 15px; }
+
 .mer-total-box,
 .mer-kpoint-box {
     display: grid;
@@ -3685,9 +3690,10 @@
 .mer-catalog-meta { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
 .mer-catalog-meta.is-locked { color: var(--wb-semantic-meridian-locked-text); }
 
+/* 中间人体图吃满剩余宽度（标签要在两侧腾空），右栏压到约四分之一。 */
 .mer-reader {
     display: grid;
-    grid-template-columns: minmax(340px, 46%) 1fr;
+    grid-template-columns: minmax(320px, 1fr) minmax(200px, 26%);
     gap: 0 18px;
     min-width: 0;
     min-height: 0;
@@ -3800,9 +3806,11 @@
     pointer-events: none;
 }
 
+/* 穴位标签：加粗大号，未贯通白、已贯通绿，与穴位点同色系（字号由脚本按缩放反算） */
 .mer-dot-label {
-    font-size: 16px;
-    fill: var(--wb-semantic-meridian-secondary-text);
+    font-size: 20px;
+    font-weight: 700;
+    fill: var(--wb-semantic-meridian-unlit-fill);
     pointer-events: none;
 }
 
@@ -3814,7 +3822,7 @@
     pointer-events: none;
 }
 
-.mer-dot-label.is-dim { fill: var(--wb-semantic-meridian-dim-text); }
+.mer-dot-label.is-lit { fill: var(--wb-semantic-meridian-lit-fill); }
 .mer-leader.is-dim { stroke: var(--wb-semantic-meridian-leader-stroke-dim); }
 
 .mer-legend {
@@ -3844,9 +3852,10 @@
 
 .mer-legend-hint { color: var(--wb-semantic-meridian-faint-text); }
 
+/* 右栏：上面是脉络介绍与情报清单，贯注区钉在栏底（作者要求按钮放在右栏下面）。 */
 .mer-side {
     display: grid;
-    align-content: start;
+    grid-template-rows: 1fr auto;
     gap: 12px;
     min-width: 0;
     min-height: 0;
@@ -3854,11 +3863,12 @@
     overflow-y: auto;
 }
 
-.mer-meridian-head { display: grid; gap: 6px; }
+.mer-meridian-head { display: grid; align-content: start; gap: 6px; min-height: 0; }
 .mer-meridian-name { font-size: 19px; font-weight: 700; color: var(--wb-semantic-meridian-heading-text); }
 .mer-meridian-desc { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
 
-.mer-require-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+/* 情报一物一行：清单名字本来就长，横排会折行错位，逐行才看得清缺哪本。 */
+.mer-require-list { display: grid; gap: 4px; margin-top: 4px; }
 
 .mer-require-chip {
     padding: 3px 9px;
@@ -3872,7 +3882,7 @@
 
 .mer-meridian-progress { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
 
-/* 贯注操作条：图下方一行，给出选中穴的内力/K 价/状态与唯一按钮
+/* 图下动作条：选中穴的身份、收益与 K 价一行给出，贯注按钮在右栏底部
    （作者要求右栏只留介绍与情报提示，不再逐穴出栏位） */
 .mer-node-bar {
     display: flex;
@@ -3891,25 +3901,28 @@
 .mer-bar-name { font-size: 14px; font-weight: 700; }
 .mer-bar-gain { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
 .mer-bar-cost { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
-.mer-bar-state { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
 
-.mer-node-bar.is-sealed .mer-bar-state,
-.mer-node-bar.is-info .mer-bar-state,
-.mer-node-bar.is-capped .mer-bar-state,
-.mer-node-bar.is-lit .mer-bar-state { color: var(--wb-semantic-meridian-missing-text); }
+/* 贯注区：右栏底部一整块，状态原因在上、按钮铺满栏宽，连续贯注时手不用回到图下 */
+.mer-action { display: grid; align-content: end; gap: 6px; }
+.mer-action-state { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
 
-.mer-bar-btn {
-    margin-left: auto;
-    padding: 4px 14px;
-    font-size: 12px;
+.mer-action.is-sealed .mer-action-state,
+.mer-action.is-info .mer-action-state,
+.mer-action.is-capped .mer-action-state,
+.mer-action.is-lit .mer-action-state { color: var(--wb-semantic-meridian-missing-text); }
+
+.mer-action-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 700;
     color: var(--wb-semantic-meridian-control-text);
     background: var(--wb-semantic-meridian-control-surface);
     border: 1px solid var(--wb-semantic-meridian-border-control);
     cursor: pointer;
 }
 
-.mer-bar-btn:hover:enabled { background: var(--wb-semantic-meridian-control-hover); }
-.mer-bar-btn:disabled { color: var(--wb-semantic-meridian-disabled-text); background: var(--wb-semantic-meridian-disabled-surface); cursor: default; }
+.mer-action-btn:hover:enabled { background: var(--wb-semantic-meridian-control-hover); }
+.mer-action-btn:disabled { color: var(--wb-semantic-meridian-disabled-text); background: var(--wb-semantic-meridian-disabled-surface); cursor: default; }
 
 .mer-footer {
     grid-column: 1 / 3;

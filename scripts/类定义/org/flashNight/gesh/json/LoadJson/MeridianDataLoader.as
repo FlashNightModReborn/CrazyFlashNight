@@ -4,8 +4,8 @@ import org.flashNight.gesh.object.ObjectUtil;
 import org.flashNight.aven.Promise.ListLoader;
 
 // 经脉系统配置加载器：先读 data/meridians/list.xml，再并行加载子 JSON 并合并。
-// 合并结果是 {meridians, innerPowerCap} 对象，不是裸数组：根级 innerPowerCap 承载内力总预算，
-// ListLoader.concatField 只会串接数组字段、会丢弃根级标量，故本类自带 mergeConfig。
+// 合并结果是 {meridians, bonusCaps} 对象，不是裸数组：根级 bonusCaps 承载内力/HP/MP/防御四类收益预算，
+// ListLoader.concatField 只会串接数组字段、会丢弃根级对象，故本类自带 mergeConfig。
 // 数据真源见 data/meridians/meridians_config.json。
 class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader {
     private static var instance:MeridianDataLoader = null;
@@ -41,7 +41,7 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
 
     /**
      * 解析 list.xml 文件，根据其中内容，并行加载并合并子 JSON 数据。
-     * @param onLoadHandler 加载成功后的回调函数，接收 {meridians, innerPowerCap} 合并结果。
+     * @param onLoadHandler 加载成功后的回调函数，接收 {meridians, bonusCaps} 合并结果。
      * @param onErrorHandler 加载失败时的回调函数。
      */
     public function loadMeridianData(onLoadHandler:Function, onErrorHandler:Function):Void {
@@ -63,7 +63,7 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
                 basePath:     path,
                 childType:    "json",
                 mergeFn:      org.flashNight.gesh.json.LoadJson.MeridianDataLoader.mergeConfig,
-                initialValue: {meridians: [], innerPowerCap: 0}
+                initialValue: {meridians: [], bonusCaps: null}
             }).then(function(result:Object):Void {
                 self.combinedData = result;
                 if (onLoadHandler != null) onLoadHandler(self.combinedData);
@@ -77,7 +77,7 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
     }
 
     /**
-     * 子 JSON 合并函数：按加载顺序串接 meridians，根级 innerPowerCap 取第一个合法值。
+     * 子 JSON 合并函数：按加载顺序串接 meridians，根级 bonusCaps 取第一个合法对象。
      * 由 ListLoader 以裸函数回调调用，禁止依赖 this。
      */
     public static function mergeConfig(acc:Object, childData:Object, index:Number, entry:String):Object {
@@ -90,9 +90,9 @@ class org.flashNight.gesh.json.LoadJson.MeridianDataLoader extends BaseXMLLoader
                 acc.meridians.push(list);
             }
         }
-        if (acc.innerPowerCap <= 0) {
-            var cap:Number = Number(childData.innerPowerCap);
-            if (isFinite(cap) && cap > 0) acc.innerPowerCap = cap;
+        if (acc.bonusCaps == null) {
+            var caps:Object = childData.bonusCaps;
+            if (caps != null && typeof caps == "object") acc.bonusCaps = caps;
         }
         return acc;
     }

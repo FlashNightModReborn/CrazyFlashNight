@@ -282,19 +282,20 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
 
     private static function testOtherStationsAndContext():Void {
         setup();
-        _root.全局健身HP加成 = 1995;
+        // HP/MP 上限练级空间已减半（2000→1000），让出的那一半改由经脉穴位发放。
+        _root.全局健身HP加成 = 995;
         var running:Object = start(open("dumbbell"), "dumbbell.1");
         GymTrainingPanelService._setNowForTests(11000);
         var done:Object = invoke("finish", running.sessionToken);
-        check(done.saved && done.current == 2000 && done.award.amount == 5,
+        check(done.saved && done.current == 1000 && done.award.amount == 5,
             "dumbbell HP cap uses source row and actual gain");
 
         setup();
-        _root.全局健身MP加成 = 1995;
+        _root.全局健身MP加成 = 995;
         running = start(open("squat"), "squat.0");
         GymTrainingPanelService._setNowForTests(11000);
         done = invoke("finish", running.sessionToken);
-        check(done.saved && done.current == 2000 && done.award.amount == 5,
+        check(done.saved && done.current == 1000 && done.award.amount == 5,
             "squat MP cap uses source row and actual gain");
 
         setup();

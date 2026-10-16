@@ -102,14 +102,14 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
         var dumbbell:Object = GymPreviewProjection.buildPreview("dumbbell");
         var dumbbellFirst:Object = projectAt(dumbbell, 0);
         check(dumbbellFirst.rewardLabel == "HP上限" && dumbbellFirst.rewardAmount == 10
-                && dumbbellFirst.cost == 50000 && dumbbellFirst.cap == 2000,
+                && dumbbellFirst.cost == 50000 && dumbbellFirst.cap == 1000,
             "dumbbell opener uses the actual HP catalog");
 
         prepareFixture(0, 34);
         var squat:Object = GymPreviewProjection.buildPreview("squat");
         var squatFirst:Object = projectAt(squat, 0);
         check(squatFirst.rewardLabel == "MP上限" && squatFirst.rewardAmount == 10
-                && squatFirst.cost == 50000 && squatFirst.cap == 2000,
+                && squatFirst.cost == 50000 && squatFirst.cap == 1000,
             "squat opener uses the actual MP catalog");
     }
 
