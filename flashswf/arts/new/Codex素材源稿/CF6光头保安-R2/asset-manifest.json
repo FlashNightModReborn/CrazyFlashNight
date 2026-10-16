@@ -1,0 +1,2475 @@
+{
+  "title": "CF6 bald guard 612 / 888 hard-edge vector redraw R2",
+  "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "sourceRoots": [
+    612,
+    888
+  ],
+  "revision": "R2 fidelity refinement after frozen R1",
+  "artMaterialPolicy": {
+    "cloth": "curved hard-edge vector planes, no gradients",
+    "leather": "rounded volumes, restrained hard-edge planes",
+    "skin": "two controlled radial gradients for connected skull and cheek volume",
+    "noNewRasterOrFilter": true
+  },
+  "authoredBodyParts": 10,
+  "authoredProjectionShapes": 9,
+  "projectedFills": 181,
+  "reusedCloneParts": 13,
+  "cloneVariant": "stabilized archive, historical approved SVG, not current native XFL equivalence",
+  "classes": {
+    "original-shared-effect-or-helper-preserved": 68,
+    "reused-approved-stabilized-clone-archive": 13,
+    "redrawn-live-body": 10,
+    "original-weapon-preserved": 2,
+    "original-blood-vector-preserved": 8,
+    "redrawn-atlas-projected-original-crops": 9
+  },
+  "assets": [
+    {
+      "id": 95,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/95.svg",
+      "viewBox": [
+        -11.0,
+        -15.85,
+        31.25,
+        32.5
+      ],
+      "exportWidth": 93.75,
+      "exportHeight": 97.5,
+      "sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b",
+      "originalSha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b",
+      "svgElements": {
+        "svg": 1,
+        "path": 4
+      }
+    },
+    {
+      "id": 96,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/96.svg",
+      "viewBox": [
+        -18.5,
+        -22.1,
+        40.25,
+        47.0
+      ],
+      "exportWidth": 120.75,
+      "exportHeight": 141.0,
+      "sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b",
+      "originalSha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 97,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/97.svg",
+      "viewBox": [
+        -23.5,
+        -26.1,
+        39.5,
+        58.0
+      ],
+      "exportWidth": 118.5,
+      "exportHeight": 174.0,
+      "sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635",
+      "originalSha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 98,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/98.svg",
+      "viewBox": [
+        -26.25,
+        -27.35,
+        43.75,
+        64.25
+      ],
+      "exportWidth": 131.25,
+      "exportHeight": 192.75,
+      "sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133",
+      "originalSha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 99,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/99.svg",
+      "viewBox": [
+        -12.65,
+        -14.2,
+        23.9,
+        28.299999999999997
+      ],
+      "exportWidth": 71.69999999999999,
+      "exportHeight": 84.89999999999999,
+      "sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668",
+      "originalSha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 100,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/100.svg",
+      "viewBox": [
+        -14.9,
+        -15.25,
+        29.450000000000003,
+        32.75
+      ],
+      "exportWidth": 88.35000000000001,
+      "exportHeight": 98.25,
+      "sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71",
+      "originalSha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 101,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/101.svg",
+      "viewBox": [
+        -18.3,
+        -15.55,
+        34.1,
+        37.400000000000006
+      ],
+      "exportWidth": 102.30000000000001,
+      "exportHeight": 112.20000000000002,
+      "sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b",
+      "originalSha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 102,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/102.svg",
+      "viewBox": [
+        -19.35,
+        -15.55,
+        36.150000000000006,
+        39.35
+      ],
+      "exportWidth": 108.45000000000002,
+      "exportHeight": 118.05000000000001,
+      "sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6",
+      "originalSha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 103,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/103.svg",
+      "viewBox": [
+        -13.8,
+        -15.45,
+        32.45,
+        40.2
+      ],
+      "exportWidth": 97.35000000000001,
+      "exportHeight": 120.60000000000001,
+      "sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3",
+      "originalSha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 104,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/104.svg",
+      "viewBox": [
+        -6.3,
+        -12.1,
+        17.1,
+        24.1
+      ],
+      "exportWidth": 51.300000000000004,
+      "exportHeight": 72.30000000000001,
+      "sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966",
+      "originalSha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 105,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/105.svg",
+      "viewBox": [
+        -8.65,
+        -16.5,
+        23.4,
+        32.1
+      ],
+      "exportWidth": 70.19999999999999,
+      "exportHeight": 96.30000000000001,
+      "sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1",
+      "originalSha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 106,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/106.svg",
+      "viewBox": [
+        -11.4,
+        -19.15,
+        27.3,
+        37.7
+      ],
+      "exportWidth": 81.9,
+      "exportHeight": 113.10000000000001,
+      "sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406",
+      "originalSha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 107,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/107.svg",
+      "viewBox": [
+        -13.25,
+        -20.45,
+        29.85,
+        40.9
+      ],
+      "exportWidth": 89.55000000000001,
+      "exportHeight": 122.69999999999999,
+      "sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15",
+      "originalSha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 108,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/108.svg",
+      "viewBox": [
+        -14.15,
+        -21.0,
+        30.65,
+        43.4
+      ],
+      "exportWidth": 91.94999999999999,
+      "exportHeight": 130.2,
+      "sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173",
+      "originalSha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 109,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/109.svg",
+      "viewBox": [
+        -18.55,
+        -18.9,
+        34.1,
+        43.45
+      ],
+      "exportWidth": 102.30000000000001,
+      "exportHeight": 130.35000000000002,
+      "sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f",
+      "originalSha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 110,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/110.svg",
+      "viewBox": [
+        -23.45,
+        -24.4,
+        47.0,
+        56.8
+      ],
+      "exportWidth": 141.0,
+      "exportHeight": 170.39999999999998,
+      "sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a",
+      "originalSha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 111,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/111.svg",
+      "viewBox": [
+        -26.0,
+        -26.05,
+        56.1,
+        60.25
+      ],
+      "exportWidth": 168.3,
+      "exportHeight": 180.75,
+      "sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e",
+      "originalSha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 112,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/112.svg",
+      "viewBox": [
+        -28.05,
+        -27.5,
+        60.05,
+        67.5
+      ],
+      "exportWidth": 180.14999999999998,
+      "exportHeight": 202.5,
+      "sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733",
+      "originalSha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 113,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/113.svg",
+      "viewBox": [
+        -27.0,
+        -17.3,
+        60.5,
+        26.700000000000003
+      ],
+      "exportWidth": 181.5,
+      "exportHeight": 80.10000000000001,
+      "sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810",
+      "originalSha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 114,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/114.svg",
+      "viewBox": [
+        -30.3,
+        -5.1,
+        65.0,
+        18.049999999999997
+      ],
+      "exportWidth": 195.0,
+      "exportHeight": 54.14999999999999,
+      "sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa",
+      "originalSha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa",
+      "svgElements": {
+        "svg": 1,
+        "path": 2
+      }
+    },
+    {
+      "id": 123,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/123.svg",
+      "viewBox": [
+        -73.0,
+        -76.0,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a",
+      "originalSha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 125,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/125.svg",
+      "viewBox": [
+        -76.0,
+        -76.0,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512",
+      "originalSha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 127,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/127.svg",
+      "viewBox": [
+        -76.5,
+        -77.05,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9",
+      "originalSha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 129,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/129.svg",
+      "viewBox": [
+        -79.5,
+        -75.05,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144",
+      "originalSha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 131,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/131.svg",
+      "viewBox": [
+        -75.5,
+        -72.05,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840",
+      "originalSha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 133,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/133.svg",
+      "viewBox": [
+        -77.5,
+        -77.05,
+        240.0,
+        150.0
+      ],
+      "exportWidth": 720.0,
+      "exportHeight": 450.0,
+      "sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3",
+      "originalSha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 135,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/135.svg",
+      "viewBox": [
+        -55.5,
+        -20.0,
+        69.0,
+        44.0
+      ],
+      "exportWidth": 207.0,
+      "exportHeight": 132.0,
+      "sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d",
+      "originalSha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 137,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/137.svg",
+      "viewBox": [
+        -84.0,
+        -30.05,
+        103.0,
+        74.0
+      ],
+      "exportWidth": 309.0,
+      "exportHeight": 222.0,
+      "sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96",
+      "originalSha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 139,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/139.svg",
+      "viewBox": [
+        -120.5,
+        -47.55,
+        140.0,
+        93.0
+      ],
+      "exportWidth": 420.0,
+      "exportHeight": 279.0,
+      "sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7",
+      "originalSha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 141,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/141.svg",
+      "viewBox": [
+        -145.0,
+        -43.05,
+        181.0,
+        88.0
+      ],
+      "exportWidth": 543.0,
+      "exportHeight": 264.0,
+      "sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3",
+      "originalSha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 143,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/143.svg",
+      "viewBox": [
+        -163.0,
+        -49.05,
+        119.0,
+        98.0
+      ],
+      "exportWidth": 357.0,
+      "exportHeight": 294.0,
+      "sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9",
+      "originalSha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 145,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/145.svg",
+      "viewBox": [
+        -44.0,
+        -28.0,
+        88.0,
+        56.0
+      ],
+      "exportWidth": 264.0,
+      "exportHeight": 168.0,
+      "sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9",
+      "originalSha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 147,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/147.svg",
+      "viewBox": [
+        -52.95,
+        -68.5,
+        106.0,
+        132.0
+      ],
+      "exportWidth": 318.0,
+      "exportHeight": 396.0,
+      "sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471",
+      "originalSha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 149,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/149.svg",
+      "viewBox": [
+        -89.5,
+        -120.55,
+        266.0,
+        205.0
+      ],
+      "exportWidth": 798.0,
+      "exportHeight": 615.0,
+      "sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0",
+      "originalSha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 151,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/151.svg",
+      "viewBox": [
+        -72.5,
+        -93.55,
+        170.0,
+        163.0
+      ],
+      "exportWidth": 510.0,
+      "exportHeight": 489.0,
+      "sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8",
+      "originalSha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 152,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/152.svg",
+      "viewBox": [
+        -23.65,
+        -22.8,
+        51.599999999999994,
+        47.8
+      ],
+      "exportWidth": 154.79999999999998,
+      "exportHeight": 143.39999999999998,
+      "sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691",
+      "originalSha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 153,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/153.svg",
+      "viewBox": [
+        -35.25,
+        -40.4,
+        72.95,
+        87.19999999999999
+      ],
+      "exportWidth": 218.85000000000002,
+      "exportHeight": 261.59999999999997,
+      "sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021",
+      "originalSha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 154,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/154.svg",
+      "viewBox": [
+        -49.6,
+        -43.75,
+        93.7,
+        101.05
+      ],
+      "exportWidth": 281.1,
+      "exportHeight": 303.15,
+      "sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0",
+      "originalSha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 155,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/155.svg",
+      "viewBox": [
+        -65.2,
+        -35.4,
+        131.10000000000002,
+        106.05000000000001
+      ],
+      "exportWidth": 393.30000000000007,
+      "exportHeight": 318.15000000000003,
+      "sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c",
+      "originalSha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 156,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/156.svg",
+      "viewBox": [
+        -83.4,
+        -16.4,
+        171.7,
+        96.5
+      ],
+      "exportWidth": 515.0999999999999,
+      "exportHeight": 289.5,
+      "sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2",
+      "originalSha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 157,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/157.svg",
+      "viewBox": [
+        -71.7,
+        -5.1,
+        168.7,
+        101.0
+      ],
+      "exportWidth": 506.09999999999997,
+      "exportHeight": 303.0,
+      "sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999",
+      "originalSha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 158,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/158.svg",
+      "viewBox": [
+        -79.2,
+        11.6,
+        180.60000000000002,
+        96.15
+      ],
+      "exportWidth": 541.8000000000001,
+      "exportHeight": 288.45000000000005,
+      "sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e",
+      "originalSha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 159,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/159.svg",
+      "viewBox": [
+        -52.9,
+        21.75,
+        151.7,
+        102.0
+      ],
+      "exportWidth": 455.09999999999997,
+      "exportHeight": 306.0,
+      "sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f",
+      "originalSha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 160,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/160.svg",
+      "viewBox": [
+        -53.0,
+        -64.5,
+        106.0,
+        129.0
+      ],
+      "exportWidth": 318.0,
+      "exportHeight": 387.0,
+      "sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416",
+      "originalSha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 161,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/161.svg",
+      "viewBox": [
+        -67.0,
+        -62.85,
+        135.65,
+        145.7
+      ],
+      "exportWidth": 406.95000000000005,
+      "exportHeight": 437.09999999999997,
+      "sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f",
+      "originalSha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 162,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/162.svg",
+      "viewBox": [
+        -80.55,
+        -84.7,
+        144.5,
+        143.4
+      ],
+      "exportWidth": 433.5,
+      "exportHeight": 430.20000000000005,
+      "sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4",
+      "originalSha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 163,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/163.svg",
+      "viewBox": [
+        -91.55,
+        -88.2,
+        168.39999999999998,
+        143.9
+      ],
+      "exportWidth": 505.19999999999993,
+      "exportHeight": 431.70000000000005,
+      "sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133",
+      "originalSha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 164,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/164.svg",
+      "viewBox": [
+        -88.75,
+        -80.0,
+        184.6,
+        185.45
+      ],
+      "exportWidth": 553.8,
+      "exportHeight": 556.3499999999999,
+      "sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0",
+      "originalSha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 165,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/165.svg",
+      "viewBox": [
+        -96.25,
+        33.7,
+        158.8,
+        92.55
+      ],
+      "exportWidth": 476.40000000000003,
+      "exportHeight": 277.65,
+      "sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831",
+      "originalSha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 166,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/166.svg",
+      "viewBox": [
+        -31.35,
+        -42.55,
+        62.75,
+        85.1
+      ],
+      "exportWidth": 188.25,
+      "exportHeight": 255.29999999999998,
+      "sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171",
+      "originalSha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 167,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/167.svg",
+      "viewBox": [
+        -62.0,
+        -63.5,
+        126.2,
+        141.0
+      ],
+      "exportWidth": 378.6,
+      "exportHeight": 423.0,
+      "sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d",
+      "originalSha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 168,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/168.svg",
+      "viewBox": [
+        -83.15,
+        -79.75,
+        158.65,
+        159.5
+      ],
+      "exportWidth": 475.95000000000005,
+      "exportHeight": 478.5,
+      "sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf",
+      "originalSha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 169,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/169.svg",
+      "viewBox": [
+        -107.75,
+        -107.0,
+        196.0,
+        190.7
+      ],
+      "exportWidth": 588.0,
+      "exportHeight": 572.0999999999999,
+      "sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf",
+      "originalSha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 170,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/170.svg",
+      "viewBox": [
+        -132.5,
+        -136.75,
+        234.5,
+        232.95
+      ],
+      "exportWidth": 703.5,
+      "exportHeight": 698.8499999999999,
+      "sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44",
+      "originalSha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 171,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/171.svg",
+      "viewBox": [
+        -150.0,
+        -127.25,
+        245.25,
+        254.7
+      ],
+      "exportWidth": 735.75,
+      "exportHeight": 764.0999999999999,
+      "sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83",
+      "originalSha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 172,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/172.svg",
+      "viewBox": [
+        -197.45,
+        -124.9,
+        312.79999999999995,
+        276.85
+      ],
+      "exportWidth": 938.3999999999999,
+      "exportHeight": 830.5500000000001,
+      "sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd",
+      "originalSha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 173,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/173.svg",
+      "viewBox": [
+        -224.85,
+        -110.55,
+        369.6,
+        289.95
+      ],
+      "exportWidth": 1108.8000000000002,
+      "exportHeight": 869.8499999999999,
+      "sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31",
+      "originalSha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 174,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/174.svg",
+      "viewBox": [
+        -227.3,
+        -65.15,
+        389.75,
+        266.55
+      ],
+      "exportWidth": 1169.25,
+      "exportHeight": 799.6500000000001,
+      "sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46",
+      "originalSha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 175,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/175.svg",
+      "viewBox": [
+        -225.35,
+        -33.65,
+        405.95,
+        259.09999999999997
+      ],
+      "exportWidth": 1217.85,
+      "exportHeight": 777.3,
+      "sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5",
+      "originalSha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 176,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/176.svg",
+      "viewBox": [
+        -221.7,
+        -6.3,
+        405.95,
+        253.10000000000002
+      ],
+      "exportWidth": 1217.85,
+      "exportHeight": 759.3000000000001,
+      "sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721",
+      "originalSha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 177,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/177.svg",
+      "viewBox": [
+        -217.7,
+        39.85,
+        403.15,
+        176.55
+      ],
+      "exportWidth": 1209.4499999999998,
+      "exportHeight": 529.6500000000001,
+      "sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415",
+      "originalSha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 178,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/178.svg",
+      "viewBox": [
+        -191.85,
+        86.5,
+        396.1,
+        137.3
+      ],
+      "exportWidth": 1188.3000000000002,
+      "exportHeight": 411.90000000000003,
+      "sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69",
+      "originalSha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 262,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/262.svg",
+      "archiveSha256": "2998a8f5a28d144d55cfb1a2fa120616e8f0bdc929ab5e507dad84c735b7f5fc",
+      "registrationTranslation": [
+        -28.8,
+        -32.3
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -28.8,
+        -32.3,
+        57.0,
+        112.1
+      ],
+      "exportWidth": 171.0,
+      "exportHeight": 336.29999999999995,
+      "sha256": "35dfb729cf6b5065c0fea18d7ceefebb042b076764c8f7ac0fe0056e7908a0fd",
+      "originalSha256": "92d22d95a4b77f89e3634a5e31cc6645862de3d385c27fa01f02072dbbb18bbf",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 13
+      }
+    },
+    {
+      "id": 263,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/263.svg",
+      "archiveSha256": "6f4dd7c4a24b7be71e48722802eb1fce936120afc9f23f4bf908a8778cc395d3",
+      "registrationTranslation": [
+        -28.2,
+        -12.9
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -28.2,
+        -12.9,
+        51.849999999999994,
+        105.35000000000001
+      ],
+      "exportWidth": 155.54999999999998,
+      "exportHeight": 316.05,
+      "sha256": "c5ebb6c564f290992297628cae9be91c826547f6a6f6649376a3962d923fee88",
+      "originalSha256": "34172a9c351440f19c97533e7ca2f81fdd38e6a9e8c214aeea87e148751023f3",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 13
+      }
+    },
+    {
+      "id": 264,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/264.svg",
+      "archiveSha256": "865bd748d0265bc7a51a6a1a29d7f3cc146f489b89e5650bbdfa97542f30fe32",
+      "registrationTranslation": [
+        -40.3,
+        -51.75
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -40.3,
+        -51.75,
+        59.0,
+        69.0
+      ],
+      "exportWidth": 177.0,
+      "exportHeight": 207.0,
+      "sha256": "a17710d6e31dccf30b9475366c5cdc9193bbcfdf6cfc0be379e3343a79695380",
+      "originalSha256": "1597929cee10e122232e71bfab654318c31663985b50cf9287cad0ea169a7fd0",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 13
+      }
+    },
+    {
+      "id": 265,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/265.svg",
+      "archiveSha256": "6774682f8399351d2b381dc41f2e726d05adc622d104a5a8b2c0614f4d17bf7f",
+      "registrationTranslation": [
+        -27.35,
+        -13.65
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -27.35,
+        -13.65,
+        53.55,
+        117.2
+      ],
+      "exportWidth": 160.64999999999998,
+      "exportHeight": 351.6,
+      "sha256": "0a796ba000339e15c0485e47aff4b223dd1541ab3b48f8451ec10221105d3112",
+      "originalSha256": "c7b3cc0516a9a2fd258541166ca2a62de12fd779ca1f9a346307405f27c6e188",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 14
+      }
+    },
+    {
+      "id": 266,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/266.svg",
+      "archiveSha256": "2635c5e040d17c8822828eb42b9449109faa762fe1dbeee6483f418ce905f8e8",
+      "registrationTranslation": [
+        -64.55,
+        -148.0
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -64.55,
+        -148.0,
+        127.15,
+        200.9
+      ],
+      "exportWidth": 381.45000000000005,
+      "exportHeight": 602.7,
+      "sha256": "01ff8723ffc6af89c49102bad27a952148e6159c31b08583a70713a837a9bdfc",
+      "originalSha256": "3434faf5d47701cc65ce258f62384ef8b5a6d3b5bdd861385cb1e42ecf08770a",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 26
+      }
+    },
+    {
+      "id": 267,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/267.svg",
+      "archiveSha256": "38dda5835671e3955fbbd6c7cb2a9d36457f850c8f6e8f2f23fa52174e98769d",
+      "registrationTranslation": [
+        -44.85,
+        -75.7
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -44.85,
+        -75.7,
+        109.1,
+        93.9
+      ],
+      "exportWidth": 327.29999999999995,
+      "exportHeight": 281.70000000000005,
+      "sha256": "03dbc73eab49c195ef28f18ab7a1ea546cb49839a4a0988cefd02036686f661c",
+      "originalSha256": "1b38a0971f883ae4c91916e2558be06c24083c425dcf98f4fbf8b93796fbe5ae",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 16
+      }
+    },
+    {
+      "id": 268,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/268.svg",
+      "archiveSha256": "f3207568b21b82a8602d58e36f713dbcf21405bcdb4e87ac5170e516b7a5c47f",
+      "registrationTranslation": [
+        -16.55,
+        -7.25
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -16.55,
+        -7.25,
+        57.5,
+        48.0
+      ],
+      "exportWidth": 172.5,
+      "exportHeight": 144.0,
+      "sha256": "b6d2171189c9031da9952ad639fb757d824a09c9e72b8539f0b027e251bff433",
+      "originalSha256": "92c5d47ddb3c66d48efe79b13faa6735b776a0bc5071a7fe71fbe569634d1dc2",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 15
+      }
+    },
+    {
+      "id": 269,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/269.svg",
+      "archiveSha256": "1e3a1a94e4ca0c06cded6f0bed79170b2f4aeea5743b13e2f33652c60ded92f3",
+      "registrationTranslation": [
+        -28.8,
+        -51.3
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -28.8,
+        -51.3,
+        133.0,
+        103.1
+      ],
+      "exportWidth": 399.0,
+      "exportHeight": 309.29999999999995,
+      "sha256": "866dc966892ad626358811e6f306e6760cc60f5110f27f7afbca36230f022732",
+      "originalSha256": "1ac60ed3b5ef266c0d688ba02bb0524907e4d044976067253e1412a5f8b52a21",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 31,
+        "ellipse": 2
+      }
+    },
+    {
+      "id": 270,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/270.svg",
+      "archiveSha256": "88787186d401788ac10cd4fc0e68d2951ddb902ca5bb005998dbf985723b13a3",
+      "registrationTranslation": [
+        -36.1,
+        -22.8
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -36.1,
+        -22.8,
+        58.0,
+        96.89999999999999
+      ],
+      "exportWidth": 174.0,
+      "exportHeight": 290.7,
+      "sha256": "ffca2b0ee6f3f0c8c1cf9efae1c5c0e8027f17e261799fe2d69cad14c616e7b8",
+      "originalSha256": "b55d693f05fc4608335f6c61586a3a838116c3e2be2fed2610f5c67884b7dcee",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 15
+      }
+    },
+    {
+      "id": 271,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/271.svg",
+      "archiveSha256": "614119e3ef96f7d3866255cedf5314ac605470f2e5ccc7ab351145ceba841ba1",
+      "registrationTranslation": [
+        -30.05,
+        -21.2
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -30.05,
+        -21.2,
+        48.35,
+        93.0
+      ],
+      "exportWidth": 145.05,
+      "exportHeight": 279.0,
+      "sha256": "ea0f1e0da075e3e92070caa297e8d0afcc092efe1d91a7f5618a221bbe9d1f0b",
+      "originalSha256": "150c35bfa39aba743f702cbb7ada1e09d5ab1fcbcfec2f45ff05c27acd986de3",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 14
+      }
+    },
+    {
+      "id": 272,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/272.svg",
+      "archiveSha256": "d320fb0397df256cd3b44064850c32c1f1f952bac7ee16bc4e97381d1f63837e",
+      "registrationTranslation": [
+        -27.05,
+        -11.65
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -27.05,
+        -11.65,
+        54.0,
+        91.9
+      ],
+      "exportWidth": 162.0,
+      "exportHeight": 275.70000000000005,
+      "sha256": "81cd3d3c8b863c984bd988244cabee7699a3f3472f952698d999f27e3a8ff5aa",
+      "originalSha256": "8a3cd176c429f3fd2ea6ffa9256ea6443047cc02151e1665f0a519248e211c3e",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 17
+      }
+    },
+    {
+      "id": 273,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/273.svg",
+      "archiveSha256": "53a2d33dd88fc2cd9f85bc9f9e274185e5d8da6443fdf22a8b01af9678ae89d5",
+      "registrationTranslation": [
+        -18.8,
+        -14.9
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -18.8,
+        -14.9,
+        86.0,
+        72.9
+      ],
+      "exportWidth": 258.0,
+      "exportHeight": 218.70000000000002,
+      "sha256": "c65fcd330715b695ca081e8e9760e8a7e6d309fdb0158a2033bac94beaefad0d",
+      "originalSha256": "72bd43ace8e0c19a0c72d12f32f88aed684176e90f63ac46a233f1532c3417bb",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 17
+      }
+    },
+    {
+      "id": 274,
+      "class": "reused-approved-stabilized-clone-archive",
+      "file": "transition-parts/274.svg",
+      "archiveSha256": "37f499a08fa9914bd22fe6280fde8cbf9dfb96edfa333a94de814f5a12522eb4",
+      "registrationTranslation": [
+        -34.7,
+        -12.7
+      ],
+      "note": "Historical approved SVG archive; current native XFL has later joint/death edits not represented here.",
+      "viewBox": [
+        -34.7,
+        -12.7,
+        82.85,
+        83.9
+      ],
+      "exportWidth": 248.54999999999998,
+      "exportHeight": 251.70000000000002,
+      "sha256": "6d164067107c93735baa64b919216c92ec37e6dc65dc5d1e2bb31a841ab04114",
+      "originalSha256": "f7986a5a16ec529c5e31d1db4f232d7f0a2c40cbb03449c7c324be965a4ec987",
+      "svgElements": {
+        "svg": 1,
+        "g": 4,
+        "title": 1,
+        "desc": 1,
+        "defs": 1,
+        "linearGradient": 1,
+        "stop": 3,
+        "clipPath": 2,
+        "path": 18
+      }
+    },
+    {
+      "id": 277,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/277.svg",
+      "viewBox": [
+        -16.5,
+        -12.0,
+        33.0,
+        24.0
+      ],
+      "exportWidth": 99.0,
+      "exportHeight": 72.0,
+      "sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "originalSha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 280,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/280.svg",
+      "viewBox": [
+        -4.65,
+        -4.8,
+        9.350000000000001,
+        9.6
+      ],
+      "exportWidth": 28.050000000000004,
+      "exportHeight": 28.799999999999997,
+      "sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "originalSha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 310,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/310.svg",
+      "viewBox": [
+        -2.2,
+        -2.2,
+        4.35,
+        4.4
+      ],
+      "exportWidth": 13.049999999999999,
+      "exportHeight": 13.200000000000001,
+      "sha256": "c543585112b8f7203ade84fd877a870e0e628803377fe51ee98dbe8b2e5a52fb",
+      "originalSha256": "c543585112b8f7203ade84fd877a870e0e628803377fe51ee98dbe8b2e5a52fb",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 503,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/503.svg",
+      "viewBox": [
+        -29.4,
+        -20.55,
+        58.849999999999994,
+        41.05
+      ],
+      "exportWidth": 176.54999999999998,
+      "exportHeight": 123.14999999999999,
+      "sha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81",
+      "originalSha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 504,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/504.svg",
+      "viewBox": [
+        -27.9,
+        -6.5,
+        39.95,
+        22.65
+      ],
+      "exportWidth": 119.85000000000001,
+      "exportHeight": 67.94999999999999,
+      "sha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8",
+      "originalSha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 505,
+      "class": "original-shared-effect-or-helper-preserved",
+      "file": "shared/505.svg",
+      "viewBox": [
+        -25.85,
+        -15.0,
+        48.85,
+        41.5
+      ],
+      "exportWidth": 146.55,
+      "exportHeight": 124.5,
+      "sha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d",
+      "originalSha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 582,
+      "class": "redrawn-live-body",
+      "file": "parts/582.svg",
+      "viewBox": [
+        -30.65,
+        -17.35,
+        94.0,
+        77.0
+      ],
+      "exportWidth": 282.0,
+      "exportHeight": 231.0,
+      "sha256": "74a783ba7289238e6caad0b4e72af237f919b53bc3ba262052a6f3e5fc3ddda5",
+      "originalSha256": "cc3fd26e650d1a5beecde3bcb8202742ee3e06cab51dd8da176ec711a7e9ab7e",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 17,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 583,
+      "class": "redrawn-live-body",
+      "file": "parts/583.svg",
+      "viewBox": [
+        -47.5,
+        -20.5,
+        84.0,
+        169.95
+      ],
+      "exportWidth": 252.0,
+      "exportHeight": 509.84999999999997,
+      "sha256": "ce3fc758cef8d37eb107c23d1da969a5b93667f6a01baad91327ed4520fe6ce0",
+      "originalSha256": "c15176986ea5b41c07fc69200f4247bd022ed87b36a35aaea86c033f80b6fcfe",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 15,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 584,
+      "class": "redrawn-live-body",
+      "file": "parts/584.svg",
+      "viewBox": [
+        -31.95,
+        -26.5,
+        64.35,
+        145.9
+      ],
+      "exportWidth": 193.04999999999998,
+      "exportHeight": 437.70000000000005,
+      "sha256": "a3e95035a134f084413094f270e52932dc5878b1bea71b1f5b2b19baa3359aab",
+      "originalSha256": "bcb1b6a01120429541e691e52427f369b6453ab59ae8c52af99d0e6378233f6b",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 12,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 585,
+      "class": "redrawn-live-body",
+      "file": "parts/585.svg",
+      "viewBox": [
+        -58.95,
+        -28.55,
+        116.95,
+        64.0
+      ],
+      "exportWidth": 350.85,
+      "exportHeight": 192.0,
+      "sha256": "69fec6d0e7fad18a3cb52c48a445913782ee9e8566c2888d56e442481df2e6c9",
+      "originalSha256": "6ed1ec65f7588e65261219e2f93adf454a4af84fe2a9507851c7071efdbf4198",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 11,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 586,
+      "class": "redrawn-live-body",
+      "file": "parts/586.svg",
+      "viewBox": [
+        -56.85,
+        -30.8,
+        90.0,
+        115.95
+      ],
+      "exportWidth": 270.0,
+      "exportHeight": 347.85,
+      "sha256": "a40d0c524d6bba817f7ce86b034eb48f66b7a9f3a8fa61b2216b2096b966ff01",
+      "originalSha256": "4b2bdc4091603d6b70ea2f8663bc91f471fc06b839bb1955d25dc8773eb790ab",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 11,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 587,
+      "class": "redrawn-live-body",
+      "file": "parts/587.svg",
+      "viewBox": [
+        -24.75,
+        -24.0,
+        92.95,
+        90.95
+      ],
+      "exportWidth": 278.85,
+      "exportHeight": 272.85,
+      "sha256": "f047bb6855a309fd0a4d32cf7dae9bc87a08e025cc55be4197a8dac963c19c54",
+      "originalSha256": "6b18785791ab1d46a144be1a1783bdd49e0e6c7f4a74602b7438d9409aa4e94e",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 26,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 588,
+      "class": "redrawn-live-body",
+      "file": "parts/588.svg",
+      "viewBox": [
+        -33.0,
+        -33.55,
+        61.0,
+        128.0
+      ],
+      "exportWidth": 183.0,
+      "exportHeight": 384.0,
+      "sha256": "c1f480c1766e261c2f14352c44d6e4c5677772a33cfa288c4bce3a24b750c65f",
+      "originalSha256": "d6ec6a28f2f37bc9b2b95d63ba98d2feb67fe781f16ad01f111fcd6acdb7f43a",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 12,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 589,
+      "class": "redrawn-live-body",
+      "file": "parts/589.svg",
+      "viewBox": [
+        -80.0,
+        -207.45,
+        143.05,
+        243.79999999999998
+      ],
+      "exportWidth": 429.15000000000003,
+      "exportHeight": 731.4,
+      "sha256": "65fa40fc4d9b48d478eba1c553fa7b5e7859373d3be5ee28db3cac247217d5cb",
+      "originalSha256": "15e74651184f5ff736e23bc2d3454b5a0f6a9ea87eadf953fe5a156427f58565",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 2,
+        "path": 37,
+        "g": 3,
+        "defs": 1,
+        "ellipse": 2
+      }
+    },
+    {
+      "id": 590,
+      "class": "redrawn-live-body",
+      "file": "parts/590.svg",
+      "viewBox": [
+        -31.0,
+        -59.05,
+        81.0,
+        97.05
+      ],
+      "exportWidth": 243.0,
+      "exportHeight": 291.15,
+      "sha256": "7f2e74cfac8347868ba3702915af2ef86c5af312a76fc4c627d0ed327a3f3e6b",
+      "originalSha256": "494c85407ea94613401997c60b0f511bd7c6b38cbee9cced5ca83d65320b37c6",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 2,
+        "path": 26,
+        "g": 3,
+        "defs": 3,
+        "radialGradient": 2,
+        "stop": 7
+      }
+    },
+    {
+      "id": 592,
+      "class": "original-weapon-preserved",
+      "file": "shared/592.svg",
+      "viewBox": [
+        -16.7,
+        -44.9,
+        201.0,
+        67.0
+      ],
+      "exportWidth": 603.0,
+      "exportHeight": 201.0,
+      "sha256": "10000e96aac1a2eb9c10d1a216fac7addaad18ec7bb9fc9fa7a03e88a97d9a1e",
+      "originalSha256": "10000e96aac1a2eb9c10d1a216fac7addaad18ec7bb9fc9fa7a03e88a97d9a1e",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 594,
+      "class": "redrawn-live-body",
+      "file": "parts/594.svg",
+      "viewBox": [
+        -17.45,
+        -21.55,
+        85.95,
+        72.0
+      ],
+      "exportWidth": 257.85,
+      "exportHeight": 216.0,
+      "sha256": "e96d3d913028a83adf334b238eac04fc9ee4797439be1a178a3b0ffc7fdb95eb",
+      "originalSha256": "318c0762a3ffa341140a4604c3178119cc45d4c4820a4d6b7306760538dc1463",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 3,
+        "path": 18,
+        "g": 4,
+        "defs": 2
+      }
+    },
+    {
+      "id": 600,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/600.svg",
+      "viewBox": [
+        -93.75,
+        -68.8,
+        96.15,
+        47.55
+      ],
+      "exportWidth": 288.45000000000005,
+      "exportHeight": 142.64999999999998,
+      "sha256": "a6e6d96c675c85a3c84796c5aa3272f7aaffb7da84e988d1e6902a6ad53ca8f0",
+      "originalSha256": "a6e6d96c675c85a3c84796c5aa3272f7aaffb7da84e988d1e6902a6ad53ca8f0",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 601,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "death-parts/601.svg",
+      "replacedBitmapFills": 1,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -3.9,
+        -5.15,
+        7.8,
+        10.25
+      ],
+      "exportWidth": 23.4,
+      "exportHeight": 30.75,
+      "sha256": "f0da04081683ffb25b441705f760cdbf28f607e09a1495aa03f9b3f689e8f14f",
+      "originalSha256": "68bf61ed908a5d21bc8a2bf4d3251580af913f337e122cc585911aef8963f4e9",
+      "svgElements": {
+        "svg": 1,
+        "defs": 21,
+        "g": 20,
+        "clipPath": 19,
+        "path": 176,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 1
+      }
+    },
+    {
+      "id": 602,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "death-parts/602.svg",
+      "replacedBitmapFills": 1,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -6.8,
+        -9.4,
+        13.6,
+        18.75
+      ],
+      "exportWidth": 40.8,
+      "exportHeight": 56.25,
+      "sha256": "b9a2f5afb9e980f261c33b9c14eee8d501ff5510c6157016bc8657263d8b66da",
+      "originalSha256": "6f8270e138c8c76147d752740276567546eb6f0c2291af8328df17388cd4bf91",
+      "svgElements": {
+        "svg": 1,
+        "defs": 21,
+        "g": 20,
+        "clipPath": 19,
+        "path": 176,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 1
+      }
+    },
+    {
+      "id": 603,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "death-parts/603.svg",
+      "replacedBitmapFills": 1,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -5.5,
+        -7.45,
+        10.95,
+        14.850000000000001
+      ],
+      "exportWidth": 32.849999999999994,
+      "exportHeight": 44.550000000000004,
+      "sha256": "0cee09c162301e3d4193edb1670adf8ff31d07b1ee8cded3f14923375167a002",
+      "originalSha256": "3bac6a16784add8f7ebabfd3febbd680dbdbdc308b4036abffc22de2bee47795",
+      "svgElements": {
+        "svg": 1,
+        "defs": 21,
+        "g": 20,
+        "clipPath": 19,
+        "path": 176,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 1
+      }
+    },
+    {
+      "id": 604,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/604.svg",
+      "viewBox": [
+        -120.8,
+        -62.75,
+        119.14999999999999,
+        40.25
+      ],
+      "exportWidth": 357.45,
+      "exportHeight": 120.75,
+      "sha256": "a0bfca72850fe837de50a4255bfeb6ae5d44b5e3e81d452b3eb1c604494ae75c",
+      "originalSha256": "a0bfca72850fe837de50a4255bfeb6ae5d44b5e3e81d452b3eb1c604494ae75c",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 605,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/605.svg",
+      "viewBox": [
+        -140.55,
+        -68.25,
+        157.05,
+        77.1
+      ],
+      "exportWidth": 471.15000000000003,
+      "exportHeight": 231.29999999999998,
+      "sha256": "6b4712f9285aad713140a5ef1a95ebdbc2897be3cf7918736ac272147ef84c41",
+      "originalSha256": "6b4712f9285aad713140a5ef1a95ebdbc2897be3cf7918736ac272147ef84c41",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 606,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/606.svg",
+      "viewBox": [
+        -142.75,
+        -61.9,
+        183.35,
+        110.25
+      ],
+      "exportWidth": 550.05,
+      "exportHeight": 330.75,
+      "sha256": "abb3bb1d0d1d85753f8cedbc8434d13b3201d9ad3cbf320958dd814b5f76fc4d",
+      "originalSha256": "abb3bb1d0d1d85753f8cedbc8434d13b3201d9ad3cbf320958dd814b5f76fc4d",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 607,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/607.svg",
+      "viewBox": [
+        -141.8,
+        -53.65,
+        214.8,
+        115.5
+      ],
+      "exportWidth": 644.4000000000001,
+      "exportHeight": 346.5,
+      "sha256": "4717d4efa6c2ee6c5a7fae68d7746e182acbf4c8379e81c99fd7ce7343536016",
+      "originalSha256": "4717d4efa6c2ee6c5a7fae68d7746e182acbf4c8379e81c99fd7ce7343536016",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 608,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/608.svg",
+      "viewBox": [
+        -151.9,
+        -39.75,
+        247.9,
+        108.15
+      ],
+      "exportWidth": 743.7,
+      "exportHeight": 324.45000000000005,
+      "sha256": "5efec722e13eb3c4abc694f98d8e4383303d5dc6bc9d7fb214f7a715cbbe1d06",
+      "originalSha256": "5efec722e13eb3c4abc694f98d8e4383303d5dc6bc9d7fb214f7a715cbbe1d06",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 609,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/609.svg",
+      "viewBox": [
+        -182.0,
+        -20.55,
+        328.9,
+        90.45
+      ],
+      "exportWidth": 986.6999999999999,
+      "exportHeight": 271.35,
+      "sha256": "12992dae95081978a8d858332d5ba5c661f5e2914d7b74f3eb2f4c9bc624d408",
+      "originalSha256": "12992dae95081978a8d858332d5ba5c661f5e2914d7b74f3eb2f4c9bc624d408",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 610,
+      "class": "original-blood-vector-preserved",
+      "file": "death-parts/610.svg",
+      "viewBox": [
+        -200.15,
+        58.25,
+        365.0,
+        16.900000000000006
+      ],
+      "exportWidth": 1095.0,
+      "exportHeight": 50.70000000000002,
+      "sha256": "45acce6c7a608857ef6e228b9271eb78b41c4bdc872efab497a4d8f3daeabf78",
+      "originalSha256": "45acce6c7a608857ef6e228b9271eb78b41c4bdc872efab497a4d8f3daeabf78",
+      "svgElements": {
+        "svg": 1,
+        "path": 1
+      }
+    },
+    {
+      "id": 877,
+      "class": "original-weapon-preserved",
+      "file": "transition-parts/877.svg",
+      "viewBox": [
+        -16.7,
+        -44.9,
+        201.0,
+        67.0
+      ],
+      "exportWidth": 603.0,
+      "exportHeight": 201.0,
+      "sha256": "1fc22b83f948403a9a9f4b7a7710766d7721301253171e62cdb1b435beb9e7a3",
+      "originalSha256": "1fc22b83f948403a9a9f4b7a7710766d7721301253171e62cdb1b435beb9e7a3",
+      "svgElements": {
+        "svg": 1,
+        "clipPath": 1,
+        "path": 1,
+        "g": 1,
+        "image": 1
+      }
+    },
+    {
+      "id": 880,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/880.svg",
+      "replacedBitmapFills": 7,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -15.25,
+        -94.25,
+        40.4,
+        33.65
+      ],
+      "exportWidth": 121.19999999999999,
+      "exportHeight": 100.94999999999999,
+      "sha256": "3ef4f078b41189e4de5917b4377a3fee9050ad9ea5941fbdfebfe17ffa3a9da4",
+      "originalSha256": "7eb38fe46f8698d8eea0cead6968c937fa6dda5ec060f15a3d13b90f7f73eea1",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 26,
+        "clipPath": 25,
+        "path": 183,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 8
+      }
+    },
+    {
+      "id": 882,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/882.svg",
+      "replacedBitmapFills": 25,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -56.2,
+        -111.25,
+        125.8,
+        133.55
+      ],
+      "exportWidth": 377.4,
+      "exportHeight": 400.65000000000003,
+      "sha256": "51bf9d4e06a0dc699fd0d3b554c791b99470f1f710baaa992d069cc504dcbaa3",
+      "originalSha256": "4521b00d65ec5ba2f00f8ea185679bf47c3af389ff872753f03a63e7170ef8c5",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 44,
+        "clipPath": 43,
+        "path": 200,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 26
+      }
+    },
+    {
+      "id": 883,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/883.svg",
+      "replacedBitmapFills": 53,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -78.65,
+        -124.95,
+        162.10000000000002,
+        161.65
+      ],
+      "exportWidth": 486.30000000000007,
+      "exportHeight": 484.95000000000005,
+      "sha256": "4355dccee263878514f4fb62e7e782258292dab880602548c587a1714a305861",
+      "originalSha256": "1d2f0e8db3ba75e8c3d325682f1dbdbca45f9740533863bd2dd83eff36815e00",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 72,
+        "clipPath": 71,
+        "path": 228,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 54
+      }
+    },
+    {
+      "id": 884,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/884.svg",
+      "replacedBitmapFills": 24,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -97.7,
+        -124.35,
+        195.65,
+        177.25
+      ],
+      "exportWidth": 586.95,
+      "exportHeight": 531.75,
+      "sha256": "5f19f3697ab7e7a0b8f9656c0c4b39574f4e1bf6886b56eebf0b724275260e77",
+      "originalSha256": "b475c4a38117481152c96b53e4251efd7f2915e65fae47c642fd4412e11dad37",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 43,
+        "clipPath": 42,
+        "path": 199,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 25
+      }
+    },
+    {
+      "id": 885,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/885.svg",
+      "replacedBitmapFills": 28,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -87.4,
+        -49.5,
+        195.75,
+        95.65
+      ],
+      "exportWidth": 587.25,
+      "exportHeight": 286.95000000000005,
+      "sha256": "90f8ac83c1d68f62ec3c83c7caf0b40b8e73eb579041dd0163fe5fae3b879d61",
+      "originalSha256": "8b5c26823040cb87874487479eacf3eeca63fdfbca54236ab0f62ff09095c92c",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 47,
+        "clipPath": 46,
+        "path": 203,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 29
+      }
+    },
+    {
+      "id": 886,
+      "class": "redrawn-atlas-projected-original-crops",
+      "file": "transition-parts/886.svg",
+      "replacedBitmapFills": 41,
+      "replacedEmbeddedBitmapDefinitions": 1,
+      "atlas": 581,
+      "viewBox": [
+        -89.75,
+        -65.2,
+        173.0,
+        145.0
+      ],
+      "exportWidth": 519.0,
+      "exportHeight": 435.0,
+      "sha256": "af681e9a7d8d98e8ef5a626ce47c60e92eae4d79615f25e5baf552135f05f827",
+      "originalSha256": "6900f2178745ecdac5373e9f3d92faea3c35903b85670e1e3f6647bf3e722808",
+      "svgElements": {
+        "svg": 1,
+        "defs": 22,
+        "g": 60,
+        "clipPath": 59,
+        "path": 216,
+        "radialGradient": 2,
+        "stop": 7,
+        "ellipse": 2,
+        "use": 42
+      }
+    }
+  ],
+  "runtimeVerified": false,
+  "productionModified": false
+}

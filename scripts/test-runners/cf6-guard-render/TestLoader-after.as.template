@@ -1,0 +1,8 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.guardRenderSwf = "../flashswf/arts/new/Codex光头保安素材.swf";
+_root.guardRenderTag = "after";
+_root.cf6GuardRenderComplete = function():Void {
+    trace("FocusedTestRunId cf6-guard-render Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-guard-render Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6GuardRenderTest.runAllTests();

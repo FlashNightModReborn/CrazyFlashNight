@@ -1,0 +1,404 @@
+{
+  "schema": "cf6-guard.phase-closeout.v1",
+  "runtimeEvidenceState": "candidate_executed",
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "sha256": "f42607dcfe6a70573d4c2086bea8d1191f53f50a7f4613464b4b34eedcb6100c"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardAI.as",
+      "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardTransform.as",
+      "sha256": "9dfccf8fd7be2deb7875d7bf5133a22dc2cdf11f821a0575a24d9258ba866f2d"
+    },
+    {
+      "path": "tools/cf6-guard-assets/transform.py",
+      "sha256": "cd18d570d1dc697c7b9017ab485cccb22ef41d0d56cc5e0fa04f115383bd4a55"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "sha256": "09fadd52c226b8a5490d0f96da7989d545b807896ec1e12555438b963bea0ccc"
+    },
+    {
+      "path": "tools/cf6-guard-assets/balance-inputs.json",
+      "sha256": "caaf5b1fded66dbf65874cf657c43b287e3d231f5d42f4e28cc1119f7db5b00e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b"
+    },
+    {
+      "path": "tools/gamma-echo-assets/native-manifest.json",
+      "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+    },
+    {
+      "path": "data/enemy_properties/γ-ECHO克隆兽.xml",
+      "sha256": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "7168f7ab37172cd20c91b6e043b6d4ddabee8c14df32f4d6b9b0f65e4ab010de"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "f6dfd34fc5e58b87b33691b8bcc75815b558e0c4dd59d2964bd6a111df2f5b0c"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+    }
+  ],
+  "native": {
+    "runId": "5f66e86011224a6ca3ac07f791d7aa3b",
+    "passed": 445,
+    "failed": 0,
+    "cases": 22,
+    "transformationCases": 11,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "current": {
+    "pellets": 3,
+    "bulletKind": "穿刺子弹",
+    "effectiveSegments": 6,
+    "stage": 6,
+    "tier": 3,
+    "successorUnitId": 460,
+    "successorLevel": "inherit",
+    "successorCombatState": "fresh canonical tyrant"
+  },
+  "swf": {
+    "path": "flashswf/arts/new/Codex光头保安素材.swf",
+    "sha256": "f42607dcfe6a70573d4c2086bea8d1191f53f50a7f4613464b4b34eedcb6100c",
+    "bytes": 161955
+  },
+  "selectedRows": [
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-0-30-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "transformation": false,
+      "phaseSpawnCount": 0.0,
+      "successor": null,
+      "status": "finished",
+      "frames": 508.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 8012.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 45.74021400514696,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-1-60-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "transformation": false,
+      "phaseSpawnCount": 0.0,
+      "successor": null,
+      "status": "finished",
+      "frames": 741.0,
+      "guardStartHp": 16564.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 22018.0,
+      "soldierRemainHp": 13442.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 38.94995004087565,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-2-99-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "transformation": false,
+      "phaseSpawnCount": 0.0,
+      "successor": null,
+      "status": "finished",
+      "frames": 990.0,
+      "guardStartHp": 23773.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 31446.0,
+      "soldierRemainHp": 13194.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 58.04235832856326,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-3-30-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "blue",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 30,
+        "side": "blue",
+        "spawnFrame": 531,
+        "aggregateReportedMaxHp": 10578.0,
+        "remainHp": 9443.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 1289.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 100.0,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-4-60-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "blue",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 60,
+        "side": "blue",
+        "spawnFrame": 674,
+        "aggregateReportedMaxHp": 15413.0,
+        "remainHp": 12748.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 1637.0,
+      "guardStartHp": 16564.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 22018.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 100.0,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-5-99-blue",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "blue",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 99,
+        "side": "blue",
+        "spawnFrame": 1013,
+        "aggregateReportedMaxHp": 21698.0,
+        "remainHp": 16257.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 1771.0,
+      "guardStartHp": 23773.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 31446.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 100.0,
+      "evidence": "three-piercing-observed"
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "reverse-r4-red-30",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "red",
+      "winner": "red",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 30,
+        "side": "red",
+        "spawnFrame": 530,
+        "aggregateReportedMaxHp": 10578.0,
+        "remainHp": 2968.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 3202.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 44298.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 3,
+      "soldierDamagePercent": 100.0,
+      "evidence": "reverse-qualified"
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "reverse-r4-red-60",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "guardSide": "red",
+      "winner": "red",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 60,
+        "side": "red",
+        "spawnFrame": 675,
+        "aggregateReportedMaxHp": 15413.0,
+        "remainHp": 5942.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 4089.0,
+      "guardStartHp": 16564.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 66054.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 3,
+      "soldierDamagePercent": 100.0,
+      "evidence": "reverse-qualified"
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "reverse-r4-red-99",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "guardSide": "red",
+      "winner": "blue",
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 99,
+        "side": "red",
+        "spawnFrame": 718,
+        "aggregateReportedMaxHp": 0.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0
+      },
+      "status": "finished",
+      "frames": 4357.0,
+      "guardStartHp": 23773.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 94338.0,
+      "soldierRemainHp": 19416.0,
+      "soldierHpMultiplier": 3,
+      "soldierDamagePercent": 79.41868600139924,
+      "evidence": "reverse-qualified"
+    }
+  ],
+  "selectedQualifiedShardRows": 9,
+  "firstLifeTargetMetInSelectedSamples": true,
+  "humanoidDamagePercent": {
+    "min": 38.94995004087565,
+    "max": 58.04235832856326
+  },
+  "transformationCases": 6,
+  "transformationNaturalFinishes": 6,
+  "oneSuccessorPerDeath": true,
+  "acceptedShards": [
+    {
+      "evidence": "three-piercing-observed",
+      "worker": "guard-w01",
+      "status": "completed",
+      "coordinatorStatusRemains": "unqualified"
+    },
+    {
+      "evidence": "reverse-qualified",
+      "worker": "guard-w02",
+      "status": "completed",
+      "coordinatorStatus": "completed"
+    }
+  ],
+  "retainedUnqualified": {
+    "evidence": "three-piercing-observed",
+    "worker": "guard-w02",
+    "rows": 6,
+    "reason": "shutdown identity sampling incomplete",
+    "status": "unqualified",
+    "upgraded": false
+  },
+  "totalObservedCurrentVersionRows": 15,
+  "nativeArt": {
+    "symbols": 476,
+    "projectFiles": 480,
+    "bitmapCount": 0,
+    "images": "images/source-equivalence.json"
+  },
+  "failures": "failures/summary.json",
+  "boundaries": [
+    "First-life qualified comparison has one sample per level; additional first-life observations in the unqualified Worker are retained but excluded from selected acceptance.",
+    "The earlier coordinator run remains unqualified; only its independently completed Worker is selected, alongside the fresh qualified reverse-faction rerun.",
+    "Reverse-faction soldier uses the existing triple-health rule; this is a separate context.",
+    "No exact RNG matching, general win-rate guarantee, performance benchmark, formal runtime promotion, or standard-entry human visual/audio/gameplay acceptance is claimed."
+  ]
+}

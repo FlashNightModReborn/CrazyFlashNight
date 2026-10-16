@@ -199,3 +199,17 @@ launcher/app.manifest text eol=lf
 /scripts/test-runners/cf6-soldier/** -text whitespace=-blank-at-eof,cr-at-eol
 /scripts/Cf6SoldierNativeHost/** -text
 /scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as -text
+
+# Bald guard frozen inputs, native project and evidence retain their exact bytes.
+/flashswf/arts/new/Codex素材源稿/CF6光头保安-R2/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex光头保安素材/** -text whitespace=cr-at-eol
+/tools/cf6-guard-assets/** -text whitespace=cr-at-eol
+/tools/cf6-guard-assets/evidence/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/scripts/run-cf6-guard-asset-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-guard/** -text whitespace=-blank-at-eof,cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardAssetTest.as -text
+
+/flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/** -text whitespace=cr-at-eol
+/scripts/run-cf6-guard-render-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-guard-render/** -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardRenderTest.as -text

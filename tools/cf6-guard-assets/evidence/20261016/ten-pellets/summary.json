@@ -1,0 +1,503 @@
+{
+  "schema": "cf6-guard.threat-evidence.v1",
+  "experimentId": "guard-r3-20261016",
+  "qualified": true,
+  "native": {
+    "runId": "3db1ad98949c4e80960716142f6ccba1",
+    "passed": 308,
+    "failed": 0,
+    "cases": 22,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "sha256": "e31cfc1ab77ae90db05646c0807752d60cb036f7cd7b5078756035a7720fbd43"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardAI.as",
+      "sha256": "84d6f85f4bf1c2a44268d17c9c62bcb5f7c29759651ad13c577ff3ec63e27b5c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "sha256": "d87de3f2103a07ecb9297376401dad1b2f859adb6555a060670546a95a24f609"
+    },
+    {
+      "path": "tools/cf6-guard-assets/balance-inputs.json",
+      "sha256": "030d87fbe8e7f6da1955126321950cc611af5caae2c0023d153a9e20a1ec2215"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "655c7f114993c6cdb00ad077701176a7e77820928e3d249455c57c6f721fdf44"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    }
+  ],
+  "rows": [
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-0-30-blue",
+      "repeatIndex": 1,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 504.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 11367.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 23.019097927671684
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-1-60-blue",
+      "repeatIndex": 1,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 634.0,
+      "guardStartHp": 16564.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 22018.0,
+      "soldierRemainHp": 16535.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 24.90235262058316
+    },
+    {
+      "worker": "guard-w01",
+      "caseId": "w1-2-99-blue",
+      "repeatIndex": 1,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 975.0,
+      "guardStartHp": 23773.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 31446.0,
+      "soldierRemainHp": 21996.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 30.051516886090447
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "w2-0-30-blue",
+      "repeatIndex": 1,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 490.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 11226.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 23.973994311255588
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "w2-1-60-blue",
+      "repeatIndex": 1,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 638.0,
+      "guardStartHp": 16564.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 22018.0,
+      "soldierRemainHp": 16733.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 24.00308838223272
+    },
+    {
+      "worker": "guard-w02",
+      "caseId": "w2-2-99-blue",
+      "repeatIndex": 1,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "status": "finished",
+      "frames": 1110.0,
+      "guardStartHp": 23773.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 31446.0,
+      "soldierRemainHp": 22661.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 27.936780512624814
+    }
+  ],
+  "groups": [
+    {
+      "guardSide": "blue",
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 23.019097927671684,
+        "max": 23.973994311255588,
+        "mean": 23.496546119463638
+      }
+    },
+    {
+      "guardSide": "blue",
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 24.00308838223272,
+        "max": 24.90235262058316,
+        "mean": 24.45272050140794
+      }
+    },
+    {
+      "guardSide": "blue",
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 27.936780512624814,
+        "max": 30.051516886090447,
+        "mean": 28.99414869935763
+      }
+    }
+  ],
+  "protectedSavesUnchanged": true,
+  "resourcesUnchanged": true,
+  "ownedProcessesExited": true,
+  "physicalWorkers": 2,
+  "wallDurationMs": 170369,
+  "copies": [
+    {
+      "path": "coordinator/experiment-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\experiment-report.json",
+      "bytes": 4420,
+      "sha256": "f172831c49d8f56f0d2136d36f78f6e838eb24e465fec23ff1da441656160f7c"
+    },
+    {
+      "path": "coordinator/frozen-plan.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\frozen-plan.json",
+      "bytes": 312010,
+      "sha256": "80e03d606845c18fef2f6a0efe8b27af4bf2ca743b5e2873cf744b7f5c5f5c36"
+    },
+    {
+      "path": "coordinator/measurement.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\measurement.json",
+      "bytes": 22226,
+      "sha256": "6a6f90118e5403c879577e9b15605d4f1bbbaecaa736c11ee83d43afca5c4049"
+    },
+    {
+      "path": "coordinator/expected-receipts.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\expected-receipts.json",
+      "bytes": 1259,
+      "sha256": "1098bccbb0e41daab91b3137de1fdf2f1d9e538b77a4eadef8feaa994556e449"
+    },
+    {
+      "path": "coordinator/threat/group-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\groups\\threat\\group-report.json",
+      "bytes": 2739,
+      "sha256": "070d0a5db4720d51273397a80f4cbf68c5aa5a42cc4b11208aa59473a7949d0e"
+    },
+    {
+      "path": "coordinator/threat/save-protection.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-r3-20261016\\groups\\threat\\save-protection.json",
+      "bytes": 136175,
+      "sha256": "17b7987eea3059c69685aad6dcea226d80ae7a8ef8b2a3ba66d5a90c4fbcb000"
+    },
+    {
+      "path": "input-identity.json",
+      "originalPath": "tmp\\cf6-guard-20261016\\dual-worker-r3\\input-identity.json",
+      "bytes": 3893,
+      "sha256": "8fef741ed5ca633ef2417dc81b2bfab2a3743c3929e34cde6e80dc4763d6500a"
+    },
+    {
+      "path": "experiment-plan.json",
+      "originalPath": "tmp\\cf6-guard-20261016\\dual-worker-r3\\experiment-plan.json",
+      "bytes": 303031,
+      "sha256": "1c8c2357a00ca07a000d68bd5cb030bbed9ba956118647e7ef96c5c85e079fdf"
+    },
+    {
+      "path": "native/trace.txt",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4\\test-flashlog.txt",
+      "bytes": 206,
+      "sha256": "5a2cfa2d08bab1cf3041d629b86f6cf1522d55120f1131481e7ef7d394d273c0"
+    },
+    {
+      "path": "native/publish-compiler_errors.txt",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4\\publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/test-compiler_errors.txt",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4\\test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/publish-compile_output.txt",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4\\publish-compile_output.txt",
+      "bytes": 78,
+      "sha256": "6bf59513f86efc888ebdeeb2772ce65b1e447763d57101f1aa86e2d0a49f745a"
+    },
+    {
+      "path": "native/test-compile_output.txt",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4\\test-compile_output.txt",
+      "bytes": 87,
+      "sha256": "d7aaf854387dd5d39ca33f85be4ea77ee3a6713c5881f524d190118ebe4a153f"
+    },
+    {
+      "path": "native/run.log",
+      "originalPath": "tmp\\cf6-guard-20261016\\native-r4.log",
+      "bytes": 2205,
+      "sha256": "d4094fa31d0e44e55efc17810a4bcaca59a639c7e130e0da10141cce50b824a8"
+    },
+    {
+      "path": "native/publish.log",
+      "originalPath": "tmp\\cf6-guard-20261016\\publish-r4.log",
+      "bytes": 1340,
+      "sha256": "50f4432ca55cf652a8a418e79f08d505057fa14a693fc1c65fb955750e798264"
+    },
+    {
+      "path": "source/flashswf/arts/new/Codex光头保安素材.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\flashswf\\arts\\new\\Codex光头保安素材.swf",
+      "bytes": 73837,
+      "sha256": "e31cfc1ab77ae90db05646c0807752d60cb036f7cd7b5078756035a7720fbd43"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/GuardAI.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\GuardAI.as",
+      "bytes": 8264,
+      "sha256": "84d6f85f4bf1c2a44268d17c9c62bcb5f7c29759651ad13c577ff3ec63e27b5c"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/native-manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\native-manifest.json",
+      "bytes": 34524,
+      "sha256": "d87de3f2103a07ecb9297376401dad1b2f859adb6555a060670546a95a24f609"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/balance-inputs.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\balance-inputs.json",
+      "bytes": 2343,
+      "sha256": "030d87fbe8e7f6da1955126321950cc611af5caae2c0023d153a9e20a1ec2215"
+    },
+    {
+      "path": "source/flashswf/arts/new/Codex特种兵素材.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\flashswf\\arts\\new\\Codex特种兵素材.swf",
+      "bytes": 99704,
+      "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+    },
+    {
+      "path": "source/data/enemy_properties/CF6重制敌人.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\enemy_properties\\CF6重制敌人.xml",
+      "bytes": 11960,
+      "sha256": "655c7f114993c6cdb00ad077701176a7e77820928e3d249455c57c6f721fdf44"
+    },
+    {
+      "path": "source/data/units/units.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\units\\units.json",
+      "bytes": 152685,
+      "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+    },
+    {
+      "path": "source/data/items/asset_source_map.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\items\\asset_source_map.xml",
+      "bytes": 863146,
+      "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+    },
+    {
+      "path": "source/scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\逻辑\\单位函数\\单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36819,
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\类定义\\org\\flashNight\\arki\\unit\\Action\\Melee\\Cf6GuardAssetTest.as",
+      "bytes": 19055,
+      "sha256": "689cb90f45d3ddd1f34907d2497cfd304ccae146dc7aa2e6cd8f5b362e0d0d9b"
+    },
+    {
+      "path": "source/scripts/TestLoader.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\TestLoader.swf",
+      "bytes": 10598,
+      "sha256": "5f8fda0e2f29f1c8f82611524e49c29bb9d1136643f6d46081cd5bfa81c7096a"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/worker-plan.js",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\worker-plan.js",
+      "bytes": 7229,
+      "sha256": "9b86932980ccb61b26c53af017d355ab70a33c149086d91e9876a8c6797e133f"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/build.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\build.py",
+      "bytes": 17421,
+      "sha256": "245d2efada6f65b229ca916700e5c80a7b86da0cd8df6944f2f4d677245027ef"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/balance.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\balance.py",
+      "bytes": 6369,
+      "sha256": "5bec324a2e93de4fc6ba7e4988af952eced935ab4ddd169e1446320bddabeb0a"
+    },
+    {
+      "path": "source/tools/cf6-guard-assets/verify.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\verify.py",
+      "bytes": 7950,
+      "sha256": "125c3fa3918d9539feee2c14afed4d138db76ce4a7a20c37e7d3672695333248"
+    },
+    {
+      "path": "source/scripts/run-cf6-guard-asset-tests.ps1",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\run-cf6-guard-asset-tests.ps1",
+      "bytes": 1121,
+      "sha256": "95549aacacc107129eb9b2307b85d7e862d68e2b03b31be27daa96807628fa14"
+    },
+    {
+      "path": "source/scripts/test-runners/cf6-guard/TestLoader-capture.as.template",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\test-runners\\cf6-guard\\TestLoader-capture.as.template",
+      "bytes": 333,
+      "sha256": "8d6f6c7a6e0bc2a09ba6f9880c9989ee888fbedbee5442a1a84ba87468f96184"
+    },
+    {
+      "path": "workers/guard-w01/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-49a7f339ec564aa484e0e91a3deed358\\assignment-49a7f339ec564aa484e0e91a3deed358\\attempt-49a7f339ec564aa484e0e91a3deed358\\shard-receipt.json",
+      "bytes": 746543,
+      "sha256": "636c44656e9012a47d7618e1e025cf558e9c9c79c41add57f5d59b5e32085045"
+    },
+    {
+      "path": "workers/guard-w01/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-49a7f339ec564aa484e0e91a3deed358\\assignment-49a7f339ec564aa484e0e91a3deed358\\attempt-49a7f339ec564aa484e0e91a3deed358\\raw\\03dfcb4f8b943b04257667f918a7b81410d4339c19bdaec32b520382539abd6e.jsonl",
+      "bytes": 15171,
+      "sha256": "03dfcb4f8b943b04257667f918a7b81410d4339c19bdaec32b520382539abd6e"
+    },
+    {
+      "path": "workers/guard-w01/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-49a7f339ec564aa484e0e91a3deed358\\assignment-49a7f339ec564aa484e0e91a3deed358\\attempt-49a7f339ec564aa484e0e91a3deed358\\manifest.json",
+      "bytes": 12836,
+      "sha256": "75f30cf67519ced6399c3d51d5b40e841b3dff2e3c5891ed4cf38f22268d915a"
+    },
+    {
+      "path": "workers/guard-w01/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-49a7f339ec564aa484e0e91a3deed358\\assignment-49a7f339ec564aa484e0e91a3deed358\\attempt-49a7f339ec564aa484e0e91a3deed358\\launch.json",
+      "bytes": 860,
+      "sha256": "6b1fe20dd2f3aae314f8300a6b6f91e2ddceb0e32de3deca2f01626fd4dbcebf"
+    },
+    {
+      "path": "workers/guard-w02/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9980bd889268462b87260160cef70962\\assignment-9980bd889268462b87260160cef70962\\attempt-9980bd889268462b87260160cef70962\\shard-receipt.json",
+      "bytes": 719670,
+      "sha256": "cfa2658499cfb2eb0b017a0c82ee39083cf4ee92b65f9d775231f28d0c0c9eb5"
+    },
+    {
+      "path": "workers/guard-w02/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9980bd889268462b87260160cef70962\\assignment-9980bd889268462b87260160cef70962\\attempt-9980bd889268462b87260160cef70962\\raw\\f1e25a833e66af326418fff785a0ab2caf86267a8346cf14c27e0b1ad89bbb95.jsonl",
+      "bytes": 15172,
+      "sha256": "f1e25a833e66af326418fff785a0ab2caf86267a8346cf14c27e0b1ad89bbb95"
+    },
+    {
+      "path": "workers/guard-w02/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9980bd889268462b87260160cef70962\\assignment-9980bd889268462b87260160cef70962\\attempt-9980bd889268462b87260160cef70962\\manifest.json",
+      "bytes": 12836,
+      "sha256": "fd326bef728226b5549a126111f7f501bc5ad4433ec595a37d3c2f4f54018d0f"
+    },
+    {
+      "path": "workers/guard-w02/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9980bd889268462b87260160cef70962\\assignment-9980bd889268462b87260160cef70962\\attempt-9980bd889268462b87260160cef70962\\launch.json",
+      "bytes": 875,
+      "sha256": "9c203abd073bc68fcdf783aac3ad8180973daf0d026454ca0ec9e695f3763a42"
+    }
+  ],
+  "archives": [
+    {
+      "path": "source/guard-project.zip",
+      "bytes": 282988,
+      "sha256": "cb1ecb1884a7d957be5b2aee21f2ab44a78ab622879e4d3bde22b8506e750eda",
+      "entries": 141
+    }
+  ],
+  "sourceCoverage": "Guard changed sources, native XFL, test SWF and both combat unit SWFs copied; shared inputs remain hash-bound repository files.",
+  "boundaries": [
+    "Guard blue versus normal enemy soldier is the base comparison; reverse-side soldier triple HP is separate.",
+    "No RNG equivalence or speed-up benchmark is claimed.",
+    "Candidate combat evidence is not formal runtime deployment or human visual/gameplay acceptance."
+  ]
+}

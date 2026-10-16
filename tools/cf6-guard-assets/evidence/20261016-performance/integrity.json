@@ -1,0 +1,697 @@
+{
+  "schema": "cf6-guard.evidence-integrity.v1",
+  "fileCount": 138,
+  "totalBytes": 12905117,
+  "files": [
+    {
+      "path": "after/capture/Cf6GuardRenderTest.as",
+      "bytes": 5251,
+      "sha256": "27ef2881b802f3d155816de44475c283ddbde0ee3ea5810ed4a2878a67b6152c"
+    },
+    {
+      "path": "after/capture/compile_output.txt",
+      "bytes": 94,
+      "sha256": "e229045eadf6c5fab23310b102121112f002c21dd176eacfefbf49551aa9959d"
+    },
+    {
+      "path": "after/capture/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "after/capture/executed-template.as.template",
+      "bytes": 460,
+      "sha256": "3989f8ace015478a539d09e17b92b90b77d4c53a1fb3120d0482c67b810b8ffe"
+    },
+    {
+      "path": "after/capture/flashlog.txt",
+      "bytes": 1179984,
+      "sha256": "a0b6ee563eea29f8c6bfcf22b1c716c4d515a0d0e78a2ba5e9ff0185f7b60f5b"
+    },
+    {
+      "path": "after/capture/TestLoader.swf",
+      "bytes": 6090,
+      "sha256": "02c53747ac1820d4210a734d1e510fb0bea2960d19b96d8364a3e8db1db63a3b"
+    },
+    {
+      "path": "before/capture/Cf6GuardRenderTest.as",
+      "bytes": 5251,
+      "sha256": "27ef2881b802f3d155816de44475c283ddbde0ee3ea5810ed4a2878a67b6152c"
+    },
+    {
+      "path": "before/capture/compile_output.txt",
+      "bytes": 94,
+      "sha256": "e747ae24491657b8f723e140e47083282c069219b9c6e41f4e57a8a58c116aa2"
+    },
+    {
+      "path": "before/capture/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "before/capture/executed-template.as.template",
+      "bytes": 495,
+      "sha256": "f829521c51e30220318ca09196aec1c540d139761bd84c870349e8daf4967c41"
+    },
+    {
+      "path": "before/capture/flashlog.txt",
+      "bytes": 1185438,
+      "sha256": "88b4c131b8dfa4b458feb4f9dbf4e4ccfc7c0eea2d7987aabd6eefecc5b549cc"
+    },
+    {
+      "path": "before/capture/TestLoader.swf",
+      "bytes": 6111,
+      "sha256": "c9582564f17a28a0a865d75b64793317f1d7ade5fba2e6b9fc45c4d70ec33963"
+    },
+    {
+      "path": "before/Codex光头保安素材.swf",
+      "bytes": 161955,
+      "sha256": "f42607dcfe6a70573d4c2086bea8d1191f53f50a7f4613464b4b34eedcb6100c"
+    },
+    {
+      "path": "before/initial-probe/compile_action.jsfl",
+      "bytes": 17019,
+      "sha256": "dabb3666e5b405b5fd81dd0741146cd04fd74a563473bf17713a77fd18de73e3"
+    },
+    {
+      "path": "before/initial-probe/compile_env.sh",
+      "bytes": 632,
+      "sha256": "8d954a07e69d6e6c9538749d6789cb700ce4cf59879571ca3cf6ba7ea349079b"
+    },
+    {
+      "path": "before/initial-probe/compile_output.txt",
+      "bytes": 94,
+      "sha256": "2046ae8d9e8502ffaf0f4ac1a4d59fec6bb055c4ac5eb9dfff48f0824e5aed75"
+    },
+    {
+      "path": "before/initial-probe/compile_test.ps1",
+      "bytes": 40520,
+      "sha256": "043cb03d657fb0c53ace93f85b2ffcc1fc29f0e141a29cddeebf70385a609c96"
+    },
+    {
+      "path": "before/initial-probe/compile_test.sh",
+      "bytes": 265,
+      "sha256": "38aa77f81cf8af4f79472af6dcb59503b377d7c3ae7e9dd20377a82f7d3bddf8"
+    },
+    {
+      "path": "before/initial-probe/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "before/initial-probe/flashlog.txt",
+      "bytes": 1104,
+      "sha256": "977b84b46e4590a2f839554aa67837f63b95f9b58743362663e4a444b0ea5103"
+    },
+    {
+      "path": "before/initial-probe/focused-flashlog.txt",
+      "bytes": 1104,
+      "sha256": "977b84b46e4590a2f839554aa67837f63b95f9b58743362663e4a444b0ea5103"
+    },
+    {
+      "path": "before/initial-probe/TestLoader.swf",
+      "bytes": 5770,
+      "sha256": "b4c4886883a578baa79bee76709f426a00820c743853de8d9a06b68cabaf784d"
+    },
+    {
+      "path": "before/native-manifest.json",
+      "bytes": 117019,
+      "sha256": "09fadd52c226b8a5490d0f96da7989d545b807896ec1e12555438b963bea0ccc"
+    },
+    {
+      "path": "checks/balance-check.log",
+      "bytes": 527735,
+      "sha256": "ac77b216948d0f0cdf0c1447ed2a7951175c37f21a8457ddafaa6e15831fe611"
+    },
+    {
+      "path": "checks/diff-check.log",
+      "bytes": 261,
+      "sha256": "7227bcdd5087c4aa7541b1f09935dbaf7bf8d99e665c2d5ecdfbda7924d89559"
+    },
+    {
+      "path": "checks/doc-governance-final.log",
+      "bytes": 3614,
+      "sha256": "629b713c257d2745f27ff984e6de9e063bf0ab0b1a417aec3670344044f98b8d"
+    },
+    {
+      "path": "checks/doc-governance.log",
+      "bytes": 3614,
+      "sha256": "629b713c257d2745f27ff984e6de9e063bf0ab0b1a417aec3670344044f98b8d"
+    },
+    {
+      "path": "checks/final-ownership.log",
+      "bytes": 164,
+      "sha256": "c4d75049760bbe9752f05315af535031a52b4fe6563553f1a291c4968f30f2f5"
+    },
+    {
+      "path": "checks/final-verify-worker.log",
+      "bytes": 1303,
+      "sha256": "631b842d988ea5030f8ed0ab83f4a5711a0fb206bbcc03a210dd6e8543ef79f5"
+    },
+    {
+      "path": "checks/guard-roundtrip.log",
+      "bytes": 97,
+      "sha256": "a507e256246cb718306451e8e2e1b0f8e2c498bf67dcc89a7cbb6a4fc0c964b7"
+    },
+    {
+      "path": "checks/preexisting-weapon-gate.json",
+      "bytes": 1009,
+      "sha256": "3d4946b3a8307e68f93cad09a0463d0b116cd128062026d7af2d9f318ac77ab7"
+    },
+    {
+      "path": "comparison/after-1.png",
+      "bytes": 10327,
+      "sha256": "db090467687676227fb3c9b5284a7752cf522a6cb1a1e6f37d6d81dad45fadaf"
+    },
+    {
+      "path": "comparison/after-40.png",
+      "bytes": 14040,
+      "sha256": "ef34953bc1b9e6b3cee33e610a129a6d74ff60e08c43ebb3223ca92892f3f54f"
+    },
+    {
+      "path": "comparison/after-43.png",
+      "bytes": 16610,
+      "sha256": "6641f9ba20d1059c183672a9a8479d47127625d3b65a042d048046211cbe68da"
+    },
+    {
+      "path": "comparison/after-46.png",
+      "bytes": 26604,
+      "sha256": "d36f33e81372ac28332fe68d38d2e60bb8be20a5e1ed623214d83ed2ba85087c"
+    },
+    {
+      "path": "comparison/after-49.png",
+      "bytes": 32864,
+      "sha256": "28731337a3b5645d47d2d58fc055c4e840b4361b3c851bcc30556a1c9b6e1826"
+    },
+    {
+      "path": "comparison/after-52.png",
+      "bytes": 26753,
+      "sha256": "102e9d5e9ac0b38e9842fbac8d16775676ff6475eedf05f9bcaa6dd4504ce46f"
+    },
+    {
+      "path": "comparison/after-55.png",
+      "bytes": 30475,
+      "sha256": "8b4f225807a798fd21bda8e1cfcd238cb7e89568046e84a218847e854dc5befe"
+    },
+    {
+      "path": "comparison/after-58.png",
+      "bytes": 35058,
+      "sha256": "43e4df3bbb62cd30f8b251e267f98bffdaf5086d97935afca7784214c633d578"
+    },
+    {
+      "path": "comparison/after-61.png",
+      "bytes": 27950,
+      "sha256": "dd64527783ac933fd6210326183b83ffc7c6254308a581c87f17b8c6a29b4225"
+    },
+    {
+      "path": "comparison/after-70.png",
+      "bytes": 28085,
+      "sha256": "ca9f78687c16672272ed2bda0052d1d012ecf75701df1c7802833006349c67ea"
+    },
+    {
+      "path": "comparison/before-1.png",
+      "bytes": 10327,
+      "sha256": "db090467687676227fb3c9b5284a7752cf522a6cb1a1e6f37d6d81dad45fadaf"
+    },
+    {
+      "path": "comparison/before-40.png",
+      "bytes": 14040,
+      "sha256": "ef34953bc1b9e6b3cee33e610a129a6d74ff60e08c43ebb3223ca92892f3f54f"
+    },
+    {
+      "path": "comparison/before-43.png",
+      "bytes": 16625,
+      "sha256": "414d3e34a8b8f4dd25e4c5efb528cd890807978fffd46a64302c7b7f36c9e974"
+    },
+    {
+      "path": "comparison/before-46.png",
+      "bytes": 26786,
+      "sha256": "b39947ed70d72bd294b1e6486213bf4966f3dc7020caffde02a56495be6acc66"
+    },
+    {
+      "path": "comparison/before-49.png",
+      "bytes": 32805,
+      "sha256": "51a35ebe8b4d3adc276d1ba7e44f63963fd4f93f9e163fee18c1bf608318330f"
+    },
+    {
+      "path": "comparison/before-52.png",
+      "bytes": 26693,
+      "sha256": "59769aae403a83c0e75c81c7046a2c8be47ee8e91f05b2f039b0e75a0afa900d"
+    },
+    {
+      "path": "comparison/before-55.png",
+      "bytes": 30491,
+      "sha256": "608d287ebaa2e5d1ef9979d7d0227635d38b9e255a18f91286c9ef0a85ffefc7"
+    },
+    {
+      "path": "comparison/before-58.png",
+      "bytes": 34957,
+      "sha256": "6eab6686a5331eb696888cb130724b5ec809cb9f5b2e5f5081a87622ecd35a1a"
+    },
+    {
+      "path": "comparison/before-61.png",
+      "bytes": 27950,
+      "sha256": "dd64527783ac933fd6210326183b83ffc7c6254308a581c87f17b8c6a29b4225"
+    },
+    {
+      "path": "comparison/before-70.png",
+      "bytes": 28085,
+      "sha256": "ca9f78687c16672272ed2bda0052d1d012ecf75701df1c7802833006349c67ea"
+    },
+    {
+      "path": "comparison/compare-1.png",
+      "bytes": 14471,
+      "sha256": "3ef55326837eb40c71c447dbfe9fc0b481330971a3781443adc149b28fbf262f"
+    },
+    {
+      "path": "comparison/compare-40.png",
+      "bytes": 17934,
+      "sha256": "c3f25a77aef730e673cce5d2d7a13f84a82246700810c3895e4282318f875782"
+    },
+    {
+      "path": "comparison/compare-43.png",
+      "bytes": 21173,
+      "sha256": "95c41ebf5ddc7bde13033af2b6a46f2f46892359a8bfafd37842aca81932a71a"
+    },
+    {
+      "path": "comparison/compare-46.png",
+      "bytes": 38055,
+      "sha256": "6d18bf2d8a9826b2de0e3e914d2c1eaf6c065b91f5eded6b7bd5e8595e8bc069"
+    },
+    {
+      "path": "comparison/compare-49.png",
+      "bytes": 44569,
+      "sha256": "cf3b10958a87a3a512dec5fd7120fb5cb71c34406682901c9dcc6a6a80068301"
+    },
+    {
+      "path": "comparison/compare-52.png",
+      "bytes": 32576,
+      "sha256": "39028d64203c46708a070d3cc451fed40d348e20c838111055bc5b3f6b2f11f8"
+    },
+    {
+      "path": "comparison/compare-55.png",
+      "bytes": 38087,
+      "sha256": "b81ab05a5fa5d5e7cf8017808fe1037a4be6e4451dbd4f9f99c8ca79a31c48cc"
+    },
+    {
+      "path": "comparison/compare-58.png",
+      "bytes": 45545,
+      "sha256": "71269a37afbc3ff27b16fb695b71447a56ce75ce432f6281fb211fcf75889183"
+    },
+    {
+      "path": "comparison/compare-61.png",
+      "bytes": 31466,
+      "sha256": "bf5d2919cf3304a9e3e33b9ab2386409d578e79556a27c116c3986b17e534be5"
+    },
+    {
+      "path": "comparison/compare-70.png",
+      "bytes": 31582,
+      "sha256": "dfedebfce7ea694161ef3f6bb0b9a179aa06e967110a9d657a29a05d4fde06ec"
+    },
+    {
+      "path": "comparison/summary.json",
+      "bytes": 8960,
+      "sha256": "c098aca68fd184aada73597be4185cb86fadf3459a3ff12cfaa3c07c4520620c"
+    },
+    {
+      "path": "defaults/coordinator/defaults/group-report.json",
+      "bytes": 1642,
+      "sha256": "2d46bc54e720772d22119aa541ab944b12c02c5bba7d8308dd046e00128add85"
+    },
+    {
+      "path": "defaults/coordinator/defaults/save-protection.json",
+      "bytes": 129983,
+      "sha256": "f44d24b058cd31a6ee173df1ea9e61ec1082497a8e20c6d2468e5000bee3f1a1"
+    },
+    {
+      "path": "defaults/coordinator/expected-receipts.json",
+      "bytes": 693,
+      "sha256": "d619702ffbbc3e1e6435128270f2442dd7f4e35997dacdffe42daee275fa6904"
+    },
+    {
+      "path": "defaults/coordinator/experiment-report.json",
+      "bytes": 2833,
+      "sha256": "eeeb3b4fe004a67ce23dcca2a821cbbc16ff98f67b60bd2f7decb2a61ecac8f6"
+    },
+    {
+      "path": "defaults/coordinator/frozen-plan.json",
+      "bytes": 157325,
+      "sha256": "8d39c19fc7823110879feb3b1e2109f8639193aae8f6fdaca730f610ae29ee0e"
+    },
+    {
+      "path": "defaults/coordinator/measurement.json",
+      "bytes": 10601,
+      "sha256": "f552e15442b5350e2385b5592b1006030bd6842678c9693c4105557439b5c607"
+    },
+    {
+      "path": "defaults/experiment-plan.json",
+      "bytes": 151863,
+      "sha256": "1254b0b9a0cdcb536d5b852dabd40bbf635a24727b1c96f74b0f9d6e3a6e1b98"
+    },
+    {
+      "path": "defaults/input-identity.json",
+      "bytes": 149587,
+      "sha256": "8534b1fd236c1f08a1d3c13bc8aed1497c0171e66560de92238923bb96febdb2"
+    },
+    {
+      "path": "defaults/native/executed-runner.ps1",
+      "bytes": 1158,
+      "sha256": "aec32a87ac4109e4fbd30bfb0fef9041c0ee097ff2c05bc89ebba402b42d7410"
+    },
+    {
+      "path": "defaults/native/publish-compile_output.txt",
+      "bytes": 78,
+      "sha256": "6bf59513f86efc888ebdeeb2772ce65b1e447763d57101f1aa86e2d0a49f745a"
+    },
+    {
+      "path": "defaults/native/publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "defaults/native/publish.log",
+      "bytes": 1341,
+      "sha256": "347aaf922b8252780e89361a00d8a37b6c984f0a6f46ec7512c80e94afa807c0"
+    },
+    {
+      "path": "defaults/native/run.log",
+      "bytes": 2578,
+      "sha256": "f1ffdf0e5180102fcdd1a568103b3b038b97b0077d44c9d9df9c9d1079fb53f4"
+    },
+    {
+      "path": "defaults/native/test-compile_output.txt",
+      "bytes": 445,
+      "sha256": "cb71e385a448240059fc78bf6c8a3c26b3a0e9a0fc0aeaff96dff75b576c6bc9"
+    },
+    {
+      "path": "defaults/native/test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "defaults/native/trace.txt",
+      "bytes": 488,
+      "sha256": "dcb0f6f3216bfa1f55faa62f3711fd63afac3b75f8c5b702ad0a1d07ded211e6"
+    },
+    {
+      "path": "defaults/source/data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 13427,
+      "sha256": "677bb4ef9e141126ae64aed94b7fdefcb42b6f4cb4c422e407b5de8d430e2247"
+    },
+    {
+      "path": "defaults/source/data/enemy_properties/γ-ECHO克隆兽.xml",
+      "bytes": 3174,
+      "sha256": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314"
+    },
+    {
+      "path": "defaults/source/data/items/asset_source_map.xml",
+      "bytes": 863305,
+      "sha256": "e8899410c859ae6fcadd658a796885d5a43c3f373af2fc2f3a77509b9ce020d7"
+    },
+    {
+      "path": "defaults/source/data/units/units.json",
+      "bytes": 152986,
+      "sha256": "6cc74fa9a609715a9394a8f3737a2036886505caa04369bafb9c1cb469bd9a57"
+    },
+    {
+      "path": "defaults/source/flashswf/arts/new/Codex专用素材.swf",
+      "bytes": 1753580,
+      "sha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b"
+    },
+    {
+      "path": "defaults/source/flashswf/arts/new/Codex光头保安素材.swf",
+      "bytes": 189309,
+      "sha256": "c90a6eb3209a8e295fb9af76bc7efb4cd5534c2d03086bf29ba1e9f574677c28"
+    },
+    {
+      "path": "defaults/source/flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 99704,
+      "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+    },
+    {
+      "path": "defaults/source/guard-project.zip",
+      "bytes": 572205,
+      "sha256": "64451becdfe111d4cb7335ebe7448c7741b58987b04b2e7e039921ef405295b9"
+    },
+    {
+      "path": "defaults/source/scripts/run-cf6-guard-asset-tests.ps1",
+      "bytes": 1158,
+      "sha256": "aec32a87ac4109e4fbd30bfb0fef9041c0ee097ff2c05bc89ebba402b42d7410"
+    },
+    {
+      "path": "defaults/source/scripts/test-runners/cf6-guard/TestLoader-capture.as.template",
+      "bytes": 333,
+      "sha256": "8d6f6c7a6e0bc2a09ba6f9880c9989ee888fbedbee5442a1a84ba87468f96184"
+    },
+    {
+      "path": "defaults/source/scripts/TestLoader.swf",
+      "bytes": 861242,
+      "sha256": "4883db40052abe4cbed89d66b7bb253f1413eddda6295f01972560e297935a3f"
+    },
+    {
+      "path": "defaults/source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardAssetTest.as",
+      "bytes": 27270,
+      "sha256": "3355a75c05bd50964ea07b8cf9f610e6ccf420a642cd9a1b624359cda0b9a45c"
+    },
+    {
+      "path": "defaults/source/scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36819,
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/balance-inputs.json",
+      "bytes": 2581,
+      "sha256": "bfae0e691a35f0fb46cb3c2692517bbefdefff4f367e77efa779ffe789b487cb"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/balance.py",
+      "bytes": 7250,
+      "sha256": "d025f492db88dd002546c06f0f893042c39ad20ee314b990c6dc761beb8b55bb"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/build.py",
+      "bytes": 21861,
+      "sha256": "5fe4874a96e5c522faf040e101742cd52b96d87194ab0cc6db6eea511b77faa7"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/clip-vectors.ps1",
+      "bytes": 3549,
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/clipped_vector.py",
+      "bytes": 6220,
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/GuardAI.as",
+      "bytes": 8769,
+      "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/GuardTransform.as",
+      "bytes": 3997,
+      "sha256": "1baf53bb81ab3cf632ec1df15f15efe21c6616d31aee4a95b25c66008f5175f2"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/native-manifest.json",
+      "bytes": 60124,
+      "sha256": "a582ef0f061f84a4e957b57a30968e0a3b8e82046de30c0473ea7712a10c8643"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/transform-balance-inputs.json",
+      "bytes": 2586,
+      "sha256": "a15178dfe7be79d32a5f2b3230f066a03e67edc067f785b42d98b5df29b54aa0"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/transform.py",
+      "bytes": 3741,
+      "sha256": "a963dd530236c5164a2702dfd34a9d6ce62fc625a5abbf551712ca3afd9eb64d"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/vector.py",
+      "bytes": 4043,
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/verify.py",
+      "bytes": 8450,
+      "sha256": "3f7afa3393560af7bc1126f923ad7d6886f5d28e15e9f6216af2e9abc6464962"
+    },
+    {
+      "path": "defaults/source/tools/cf6-guard-assets/worker-plan.js",
+      "bytes": 7714,
+      "sha256": "998ce2c61623e2c53f8b1247e8d2dd346e297cb6ed2c8d7872e4c528e210bcb9"
+    },
+    {
+      "path": "defaults/source/tools/gamma-echo-assets/native-manifest.json",
+      "bytes": 42835,
+      "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+    },
+    {
+      "path": "defaults/summary.json",
+      "bytes": 24424,
+      "sha256": "e995b44bce67e24ea7b4935cd32a028bd234730095cb87933c6450535e3c8873"
+    },
+    {
+      "path": "defaults/workers/guard-fix-w01/launch.json",
+      "bytes": 864,
+      "sha256": "c8c0f976f0cdb65cbd8207a4a514a7a25bf2264a39bb5365c4405b4f3c2f0d8c"
+    },
+    {
+      "path": "defaults/workers/guard-fix-w01/manifest.json",
+      "bytes": 12604,
+      "sha256": "36e9dc6366a14db85f993ba26fadb0ed265631edd376fd2bb998c219f2cd7930"
+    },
+    {
+      "path": "defaults/workers/guard-fix-w01/receipt.json",
+      "bytes": 770826,
+      "sha256": "66fe66fcdd55d4e3f141b0d4f290451be6e0f8c7ac7c7b0cd00c8a26e53f4e8b"
+    },
+    {
+      "path": "defaults/workers/guard-fix-w01/results.jsonl",
+      "bytes": 13371,
+      "sha256": "fc1fc8eb2cfc50c01d47e4e26e2b45e4980cca8f3423815d7385cc9d9b361f97"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/Cf6GuardRenderTest.as",
+      "bytes": 5251,
+      "sha256": "27ef2881b802f3d155816de44475c283ddbde0ee3ea5810ed4a2878a67b6152c"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/compile_output.txt",
+      "bytes": 94,
+      "sha256": "746d60a62574679232007bcaeaf33a77bff09eec8accebc7a761705adf2d49a5"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/executed-template.as.template",
+      "bytes": 460,
+      "sha256": "3989f8ace015478a539d09e17b92b90b77d4c53a1fb3120d0482c67b810b8ffe"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/flashlog.txt",
+      "bytes": 1179981,
+      "sha256": "41371b93653b2413b55b516edeacf3c4a6143fc1164aa52a7c46ba3c44b5e3ba"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/native-manifest.json",
+      "bytes": 60124,
+      "sha256": "2307407bb1e2c86dfb093478b98964c6e11cd44c4741ca694f7ca0d2857fd33b"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe/TestLoader.swf",
+      "bytes": 6089,
+      "sha256": "1380b3114daf27698248cb739de591c5c3f85987d73e577c6d206f6732dd7a14"
+    },
+    {
+      "path": "failures/second-export-placeholder/probe.log",
+      "bytes": 47534,
+      "sha256": "c5c8d846133a21ae83277c9006e1316edcac8437f676734c4b4d365bf1288728"
+    },
+    {
+      "path": "failures/second-export-placeholder/publish.log",
+      "bytes": 1341,
+      "sha256": "17497c04c81997efa4991bd2ac9fe729b413368716dd7dd349651be204160312"
+    },
+    {
+      "path": "failures/second-export-placeholder/published/Codex光头保安素材.swf",
+      "bytes": 193864,
+      "sha256": "b459d89f9cdd050f8bfe835433efe97b00c310c4c7d821a87b4a2e22c3c19968"
+    },
+    {
+      "path": "failures/second-export-placeholder/published/compile_output.txt",
+      "bytes": 78,
+      "sha256": "6bf59513f86efc888ebdeeb2772ce65b1e447763d57101f1aa86e2d0a49f745a"
+    },
+    {
+      "path": "failures/second-export-placeholder/published/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "intake.json",
+      "bytes": 446,
+      "sha256": "62cdab3825db763dae3197885ecf7be38e59d170010f98c5a64495b15871c27b"
+    },
+    {
+      "path": "logs/render-after-r2-capture.log",
+      "bytes": 2201,
+      "sha256": "2e27fd44d8f2d2bd240943f8db4985786b7692a453d7333284cf1fe6d8812252"
+    },
+    {
+      "path": "logs/render-before-capture.log",
+      "bytes": 45283,
+      "sha256": "012122ef24b13669131eba460fd96ba02a55e6197b90f366b69b61faa28e4aa9"
+    },
+    {
+      "path": "logs/render-before-r2.log",
+      "bytes": 2434,
+      "sha256": "1b475b12636acaa753a1f5e25bbdb3030a92e160f3a99c79267778bbfa2006bf"
+    },
+    {
+      "path": "logs/stop-final.log",
+      "bytes": 228,
+      "sha256": "5b5cac3c5c6b2ddf26d82d79eb96899c8764d7dad0ec4a73ded617ba10320c82"
+    },
+    {
+      "path": "logs/verify-r2.log",
+      "bytes": 1337,
+      "sha256": "4fa1074f95364f6959cacb4673d4b6e7baffdf3c2e4e5cfa71eb5abb5ec6ef6e"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 5241,
+      "sha256": "6d3c7255c89f78d69edd8135c5459f253565e10634065c0a39b68152460272c7"
+    },
+    {
+      "path": "tools/scripts/run-cf6-guard-render-tests.ps1",
+      "bytes": 842,
+      "sha256": "78ed334393372e6d874b52ed311156df9b39cb3ccc4873ddee1d70f63beee935"
+    },
+    {
+      "path": "tools/scripts/test-runners/cf6-guard-render/TestLoader-after-capture.as.template",
+      "bytes": 460,
+      "sha256": "3989f8ace015478a539d09e17b92b90b77d4c53a1fb3120d0482c67b810b8ffe"
+    },
+    {
+      "path": "tools/scripts/test-runners/cf6-guard-render/TestLoader-after.as.template",
+      "bytes": 429,
+      "sha256": "9a5665c8d994c249668aefc31e5189bb8154aa0f71fef6b2820dca1a328aef68"
+    },
+    {
+      "path": "tools/scripts/test-runners/cf6-guard-render/TestLoader-before-capture.as.template",
+      "bytes": 503,
+      "sha256": "7144265842ec5eb11aa5656b91ff9041bca401589bee45e7f4af4757d9149cf4"
+    },
+    {
+      "path": "tools/scripts/test-runners/cf6-guard-render/TestLoader-before.as.template",
+      "bytes": 472,
+      "sha256": "5c311284df7db8d99bac77a0277dd26b0b8882ede3635c188297d8d6892bea92"
+    },
+    {
+      "path": "tools/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardRenderTest.as",
+      "bytes": 5251,
+      "sha256": "27ef2881b802f3d155816de44475c283ddbde0ee3ea5810ed4a2878a67b6152c"
+    },
+    {
+      "path": "tools/tools/cf6-guard-assets/combat-evidence.py",
+      "bytes": 14590,
+      "sha256": "19f5798d7cf51d6aa6f4a513947ffd256b9cacc2d48caf64bbb3d2cdef6c81b8"
+    },
+    {
+      "path": "tools/tools/cf6-guard-assets/compare-render.py",
+      "bytes": 5244,
+      "sha256": "3ade46a66660786b2e38bccce154ff0561357b793a782e221fe81ad4bff333be"
+    },
+    {
+      "path": "user-report.png",
+      "bytes": 1039725,
+      "sha256": "ed6269a27fd0ac903cb6b394a48cd53137880ac5a9928238cb204591843b0af5"
+    }
+  ]
+}

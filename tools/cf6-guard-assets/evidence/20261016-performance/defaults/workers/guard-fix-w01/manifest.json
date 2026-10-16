@@ -1,0 +1,329 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "guard-fix-defaults-20261016",
+  "createdAt": "2026-10-16T10:37:25.498Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-guard-two-worker-comparison",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "normal-default",
+      "blueRoster": [
+        {
+          "type": "兵种468",
+          "level": 30,
+          "sourceId": "guard-default-468"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30",
+          "parameters": {
+            "特种兵初始阶段": 2,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 4200,
+      "tags": [
+        "cf6-guard",
+        "piercing-shotgun",
+        "ordinary-soldier",
+        "blue",
+        "humanoid-only"
+      ],
+      "plannerReason": "验证两种兵种经真实登记表加载后的默认死亡路线；不覆盖光头保安变身参数。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "defaultWithoutParameter": true,
+        "guardHpMultiplier": 1,
+        "revision": "preclipped-vectors-name-inheritance-two-default-variants",
+        "rivalPhase": 2,
+        "rivalStage": 7,
+        "rivalTier": 5,
+        "rivalUnitId": 466,
+        "soldierHpMultiplier": 1,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex光头保安素材.swf",
+            "sha256": "c90a6eb3209a8e295fb9af76bc7efb4cd5534c2d03086bf29ba1e9f574677c28"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardAI.as",
+            "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardTransform.as",
+            "sha256": "1baf53bb81ab3cf632ec1df15f15efe21c6616d31aee4a95b25c66008f5175f2"
+          },
+          {
+            "path": "tools/cf6-guard-assets/transform.py",
+            "sha256": "a963dd530236c5164a2702dfd34a9d6ce62fc625a5abbf551712ca3afd9eb64d"
+          },
+          {
+            "path": "tools/cf6-guard-assets/native-manifest.json",
+            "sha256": "a582ef0f061f84a4e957b57a30968e0a3b8e82046de30c0473ea7712a10c8643"
+          },
+          {
+            "path": "tools/cf6-guard-assets/balance-inputs.json",
+            "sha256": "bfae0e691a35f0fb46cb3c2692517bbefdefff4f367e77efa779ffe789b487cb"
+          },
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "sha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b"
+          },
+          {
+            "path": "tools/gamma-echo-assets/native-manifest.json",
+            "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+          },
+          {
+            "path": "data/enemy_properties/γ-ECHO克隆兽.xml",
+            "sha256": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "7168f7ab37172cd20c91b6e043b6d4ddabee8c14df32f4d6b9b0f65e4ab010de"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "677bb4ef9e141126ae64aed94b7fdefcb42b6f4cb4c422e407b5de8d430e2247"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "6cc74fa9a609715a9394a8f3737a2036886505caa04369bafb9c1cb469bd9a57"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "e8899410c859ae6fcadd658a796885d5a43c3f373af2fc2f3a77509b9ce020d7"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+          },
+          {
+            "path": "tools/cf6-guard-assets/build.py",
+            "sha256": "5fe4874a96e5c522faf040e101742cd52b96d87194ab0cc6db6eea511b77faa7"
+          },
+          {
+            "path": "tools/cf6-guard-assets/vector.py",
+            "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+          },
+          {
+            "path": "tools/cf6-guard-assets/clipped_vector.py",
+            "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+          },
+          {
+            "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+            "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+          },
+          {
+            "path": "tools/cf6-guard-assets/transform-balance-inputs.json",
+            "sha256": "a15178dfe7be79d32a5f2b3230f066a03e67edc067f785b42d98b5df29b54aa0"
+          }
+        ],
+        "stage": 6,
+        "successorUnitId": null,
+        "targetPosition": "clearly_below_ordinary_soldier_with_twenty_percent_exchange",
+        "tier": 3,
+        "transform": false,
+        "unitId": 468,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:79baec37a39b32853488604d70142d438d3ad6132df9a9d52c3adf99a761a05d"
+    },
+    {
+      "caseId": "transform-default",
+      "blueRoster": [
+        {
+          "type": "兵种469",
+          "level": 30,
+          "sourceId": "guard-default-469"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30",
+          "parameters": {
+            "特种兵初始阶段": 2,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 4200,
+      "tags": [
+        "cf6-guard",
+        "piercing-shotgun",
+        "ordinary-soldier",
+        "blue",
+        "humanoid-only"
+      ],
+      "plannerReason": "验证两种兵种经真实登记表加载后的默认死亡路线；不覆盖光头保安变身参数。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "defaultWithoutParameter": true,
+        "guardHpMultiplier": 1,
+        "revision": "preclipped-vectors-name-inheritance-two-default-variants",
+        "rivalPhase": 2,
+        "rivalStage": 7,
+        "rivalTier": 5,
+        "rivalUnitId": 466,
+        "soldierHpMultiplier": 1,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex光头保安素材.swf",
+            "sha256": "c90a6eb3209a8e295fb9af76bc7efb4cd5534c2d03086bf29ba1e9f574677c28"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardAI.as",
+            "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardTransform.as",
+            "sha256": "1baf53bb81ab3cf632ec1df15f15efe21c6616d31aee4a95b25c66008f5175f2"
+          },
+          {
+            "path": "tools/cf6-guard-assets/transform.py",
+            "sha256": "a963dd530236c5164a2702dfd34a9d6ce62fc625a5abbf551712ca3afd9eb64d"
+          },
+          {
+            "path": "tools/cf6-guard-assets/native-manifest.json",
+            "sha256": "a582ef0f061f84a4e957b57a30968e0a3b8e82046de30c0473ea7712a10c8643"
+          },
+          {
+            "path": "tools/cf6-guard-assets/balance-inputs.json",
+            "sha256": "bfae0e691a35f0fb46cb3c2692517bbefdefff4f367e77efa779ffe789b487cb"
+          },
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "flashswf/arts/new/Codex专用素材.swf",
+            "sha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b"
+          },
+          {
+            "path": "tools/gamma-echo-assets/native-manifest.json",
+            "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+          },
+          {
+            "path": "data/enemy_properties/γ-ECHO克隆兽.xml",
+            "sha256": "667b89db99944fb12cbb716195cc5ea924dcd006b508bcf832f7051dc6ba2314"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "7168f7ab37172cd20c91b6e043b6d4ddabee8c14df32f4d6b9b0f65e4ab010de"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "677bb4ef9e141126ae64aed94b7fdefcb42b6f4cb4c422e407b5de8d430e2247"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "6cc74fa9a609715a9394a8f3737a2036886505caa04369bafb9c1cb469bd9a57"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "e8899410c859ae6fcadd658a796885d5a43c3f373af2fc2f3a77509b9ce020d7"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+          },
+          {
+            "path": "tools/cf6-guard-assets/build.py",
+            "sha256": "5fe4874a96e5c522faf040e101742cd52b96d87194ab0cc6db6eea511b77faa7"
+          },
+          {
+            "path": "tools/cf6-guard-assets/vector.py",
+            "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+          },
+          {
+            "path": "tools/cf6-guard-assets/clipped_vector.py",
+            "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+          },
+          {
+            "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+            "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+          },
+          {
+            "path": "tools/cf6-guard-assets/transform-balance-inputs.json",
+            "sha256": "a15178dfe7be79d32a5f2b3230f066a03e67edc067f785b42d98b5df29b54aa0"
+          }
+        ],
+        "stage": 6,
+        "successorUnitId": null,
+        "targetPosition": "clearly_below_ordinary_soldier_with_twenty_percent_exchange",
+        "tier": 3,
+        "transform": true,
+        "unitId": 469,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:44ec8d8ecdce8cb738ecc4c0a9ae178dc43d529d375bbb8f92e04b608271e6de"
+    }
+  ],
+  "manifestHash": "sha256:4f61aca8f56be3028177d54a77dd0a7082aaca75c65b4c10117d96b93f23199a"
+}

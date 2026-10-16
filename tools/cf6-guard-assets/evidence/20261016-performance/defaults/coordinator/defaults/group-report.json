@@ -1,0 +1,35 @@
+{
+  "groupId": "defaults",
+  "mode": "serial",
+  "outcomes": [
+    {
+      "jobId": "defaults",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9b26eb7d9d5d4bfda1e42bf85d546379\\assignment-9b26eb7d9d5d4bfda1e42bf85d546379\\attempt-9b26eb7d9d5d4bfda1e42bf85d546379\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "completed",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:66fe66fcdd55d4e3f141b0d4f290451be6e0f8c7ac7c7b0cd00c8a26e53f4e8b",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    }
+  ],
+  "seedSources": [
+    {
+      "workerId": "guard-fix-w01",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "seedSourcesUnchanged": true,
+  "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-fix-defaults-20261016\\groups\\defaults\\save-protection.json",
+  "globalSaveUnchanged": true,
+  "stopBeforeNextGroup": false,
+  "startedAt": "2026-10-16T12:06:56.899Z",
+  "completedAt": "2026-10-16T12:09:05.110Z",
+  "wallDurationMs": 128211
+}

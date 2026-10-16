@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/光头保安/分件/586-遮罩1" itemID="6aa00000-eb8e4e46" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="586-遮罩1">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!12 -488|-48 -478|-88 -463|-108 -460|-128 -446|-168 -437|-180 -428|-208 -419|-228 -405|-248 -399|-265 -388|-288 -381|-308 -366|-328 -361|-340 -348|-345 -328|-360 -308|-365 -288|-379 -268|-384 -248|-398 -228|-428 -155|-435 -148|-448 -115|-455 -108|-468 -68|-500 -8|-505 12|-520 32|-525 52|-539 72|-544 92|-558 112|-588 185|-595 192|-608 225|-615 232|-628 272|-661 332|-665 352|-680 372|-685 392|-700 412|-704 432|-718 452|-728 481|-738 492|-748 525|-755 532|-768 565|-775 572|-788 612|-821 672|-825 692|-840 712|-845 732|-860 752|-864 772|-878 792|-888 821|-898 832|-902 852|-908 863|-952 912|-980 952|-986 972|-1001 992|-1004 1012|-1015 1032|-1020 1052|-1023 1152|-1017 1212|-1008 1224|-995 1272|-948 1339|-928 1350|-848 1424|-808 1445|-788 1447|-768 1459|-748 1463|-628 1465|-588 1452|-528 1439|-448 1379|-377 1292|-368 1272|-299 1192|-290 1172|-236 1112|-210 1072|-77 912|-50 872|81 712|92 692|161 612|188 572|224 532|250 492|304 432|330 392|383 332|410 292|462 232|487 192|482 152|482 32|472 -8|465 -108|459 -148|452 -158|444 -208|427 -248|424 -268|409 -288|405 -308|383 -348|352 -386|310 -428|272 -459|252 -465|232 -479|152 -498|52 -498|12 -488" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586-遮罩2" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

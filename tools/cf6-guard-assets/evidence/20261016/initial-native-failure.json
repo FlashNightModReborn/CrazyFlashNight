@@ -1,0 +1,10 @@
+{
+  "artifact": "initial-native-failure.zip",
+  "sha256": "64bf9e340e8f3a601193dd2e7291ef95047696b9aec4017cf5d7c7b4695aa007",
+  "bytes": 379392,
+  "files": 18,
+  "nativePassed": 286,
+  "nativeFailed": 1,
+  "cases": 22,
+  "reason": "The first duplicate-fire check ran before the authored shot. The test was moved into the actual callback and an explicit frame-41 producer gate was added. This failed attempt is not a behavior pass."
+}

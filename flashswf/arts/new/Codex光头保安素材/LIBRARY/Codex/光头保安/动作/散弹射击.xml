@@ -1,0 +1,1484 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/光头保安/动作/散弹射击" itemID="6af00000-4893734e">
+  <timeline>
+    <DOMTimeline name="散弹射击">
+      <layers>
+        <DOMLayer name="CF7生命周期" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.guardBeginAttack(this);stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="39">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.guardShoot(this);stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="32">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.guardFinishAttack(this);stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="74" keyMode="9728" duration="13">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.097336" b="-0.221436" c="0.221451" d="-0.097336" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.097336" b="-0.221436" c="0.221451" d="-0.097336" tx="-24.55" ty="-10.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.097336" b="-0.221436" c="0.221451" d="-0.097336" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.030197" b="-0.239761" c="0.239777" d="-0.030197" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.116241" b="-0.211563" c="0.211578" d="-0.116257" tx="-18.3" ty="-13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12175" b="-0.208908" c="0.208923" d="-0.121765" tx="-32.35" ty="-9.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.12175" b="-0.208908" c="0.208923" d="-0.121765" tx="-25.05" ty="-9.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.097336" b="-0.221436" c="0.221451" d="-0.097336" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.030197" b="-0.239761" c="0.239777" d="-0.030197" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.116241" b="-0.211563" c="0.211578" d="-0.116257" tx="-18.3" ty="-13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.030197" b="-0.239761" c="0.239777" d="-0.030197" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.097336" b="-0.221436" c="0.221451" d="-0.097336" tx="-22.1" ty="-11.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.060226" b="-0.184616" c="0.184616" d="0.060226" tx="-5.4" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.060226" b="-0.184616" c="0.184616" d="0.060226" tx="-8.2" ty="-17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.060226" b="-0.184616" c="0.184616" d="0.060226" tx="-5.4" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085419" b="-0.174301" c="0.174301" d="0.085419" tx="-4.25" ty="-12.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.15155" b="-0.120941" c="0.120941" d="0.15155" tx="-3.05" ty="-21.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03891" b="-0.190186" c="0.190186" d="0.03891" tx="-16.6" ty="-18.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03891" b="-0.190186" c="0.190186" d="0.03891" tx="-9.85" ty="-17.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.060226" b="-0.184616" c="0.184616" d="0.060226" tx="-5.4" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085419" b="-0.174301" c="0.174301" d="0.085419" tx="-4.25" ty="-12.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.15155" b="-0.120941" c="0.120941" d="0.15155" tx="-3.05" ty="-21.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085419" b="-0.174301" c="0.174301" d="0.085419" tx="-4.25" ty="-12.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/594" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.060226" b="-0.184616" c="0.184616" d="0.060226" tx="-5.4" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.201584" b="-0.234909" c="0.234924" d="0.201584" tx="0.65" ty="-23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.201584" b="-0.234909" c="0.234924" d="0.201584" tx="-1.35" ty="-21.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.201584" b="-0.234909" c="0.234924" d="0.201584" tx="0.65" ty="-23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.237549" b="-0.198212" c="0.198227" d="0.237549" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.291672" b="-0.102081" c="0.102097" d="0.291672" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.308212" b="0.020416" c="-0.020401" d="0.308228" tx="2.65" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.173615" b="-0.256134" c="0.256149" d="0.173599" tx="-11.1" ty="-23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.173615" b="-0.256134" c="0.256149" d="0.173599" tx="-4.35" ty="-22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.201584" b="-0.234909" c="0.234924" d="0.201584" tx="0.65" ty="-23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.237549" b="-0.198212" c="0.198227" d="0.237549" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.291672" b="-0.102081" c="0.102097" d="0.291672" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.308212" b="0.020416" c="-0.020401" d="0.308228" tx="2.65" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.291672" b="-0.102081" c="0.102097" d="0.291672" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.237549" b="-0.198212" c="0.198227" d="0.237549" tx="2.4" ty="-15.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/武器/固定散弹枪" name="guardGun">
+                  <matrix>
+                    <Matrix a="0.201584" b="-0.234909" c="0.234924" d="0.201584" tx="0.65" ty="-23.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160782" b="-0.179428" c="0.179398" d="0.160797" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.183578" b="-0.155869" c="0.155838" d="0.183594" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160782" b="-0.179428" c="0.179398" d="0.160797" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.103653" b="-0.216766" c="0.216736" d="0.103668" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225861" b="-0.08255" c="0.082489" d="0.225845" tx="-31.4" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.180939" b="-0.157974" c="0.157928" d="0.180954" tx="-30.4" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160782" b="-0.179428" c="0.179398" d="0.160797" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.103653" b="-0.216766" c="0.216736" d="0.103668" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="21">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.160782" b="-0.179428" c="0.179398" d="0.160797" tx="-28.3" ty="-26.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="23">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230026" b="-0.017105" c="0.017105" d="0.230026" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230606" b="-0.000809" c="0.000809" d="0.230606" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228241" b="0.032196" c="-0.032196" d="0.228241" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.216125" b="-0.079987" c="0.079987" d="0.216125" tx="-19.85" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222519" b="-0.059677" c="0.059677" d="0.222519" tx="-19.1" ty="-38.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230026" b="-0.017105" c="0.017105" d="0.230026" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230606" b="-0.000809" c="0.000809" d="0.230606" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228241" b="0.032196" c="-0.032196" d="0.228241" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230606" b="-0.000809" c="0.000809" d="0.230606" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" keyMode="9728" duration="17">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/590" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230026" b="-0.017105" c="0.017105" d="0.230026" tx="-15.1" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="41">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/589" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.242538" b="-0.018112" c="0.018112" d="0.242538" tx="-11.6" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/589" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.238846" b="-0.045456" c="0.045456" d="0.238846" tx="-11.25" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/589" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.23996" b="-0.039062" c="0.039062" d="0.23996" tx="-11.25" ty="5.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="38">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/589" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.242538" b="-0.018112" c="0.018112" d="0.242538" tx="-11.6" ty="5.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/584" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.24205" b="0.004639" c="-0.004623" d="0.24205" tx="-18.25" ty="10.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/585" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.243271" d="0.243271" tx="-12.25" ty="8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/584" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.230011" b="-0.075668" c="0.075668" d="0.229996" tx="-8.5" ty="8.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/583" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.243271" d="0.243271" tx="-17.2" ty="32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.242783" b="-0.003983" c="0.003983" d="0.242783" tx="-18.65" ty="61"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/583" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.243271" d="0.243271" tx="0.75" ty="27.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="87">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/582" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.243271" d="0.243271" tx="-1.85" ty="56.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="6.1" ty="-18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="7.95" ty="-22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="8.2" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="7.95" ty="-22.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="6.1" ty="-18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="7.4" ty="-21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141174" b="-0.160446" c="0.160446" d="-0.141174" tx="8.7" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.069687" b="-0.201782" c="0.201782" d="-0.069687" tx="7.35" ty="-20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.036316" b="-0.210556" c="0.210556" d="-0.036316" tx="7.65" ty="-19.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.207718" b="-0.051224" c="0.051224" d="-0.207718" tx="1.5" ty="-31.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.198456" b="-0.079651" c="0.079651" d="-0.198456" tx="3.4" ty="-32.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="6.1" ty="-18.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141174" b="-0.160446" c="0.160446" d="-0.141174" tx="8.7" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.069687" b="-0.201782" c="0.201782" d="-0.069687" tx="7.35" ty="-20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.036316" b="-0.210556" c="0.210556" d="-0.036316" tx="7.65" ty="-19.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.069687" b="-0.201782" c="0.201782" d="-0.069687" tx="7.35" ty="-20.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.141174" b="-0.160446" c="0.160446" d="-0.141174" tx="8.7" ty="-21.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/588" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.200638" b="-0.074448" c="0.074448" d="-0.200638" tx="7.4" ty="-21.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="11" ty="-34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="12" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="14" ty="-45.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="12" ty="-36.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="11" ty="-34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="11.75" ty="-36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03772" b="-0.145004" c="0.145004" d="0.03772" tx="19.2" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.089813" b="-0.119705" c="0.119705" d="0.089813" tx="21" ty="-25.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056915" b="-0.138168" c="0.138168" d="0.056915" tx="23.7" ty="-21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.051834" b="-0.140747" c="0.140747" d="-0.051834" tx="4.65" ty="-47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.031693" b="-0.14653" c="0.14653" d="-0.031693" tx="8.7" ty="-47.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="11" ty="-34.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03772" b="-0.145004" c="0.145004" d="0.03772" tx="19.2" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.089813" b="-0.119705" c="0.119705" d="0.089813" tx="21" ty="-25.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="59" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056915" b="-0.138168" c="0.138168" d="0.056915" tx="23.7" ty="-21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="66" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.089813" b="-0.119705" c="0.119705" d="0.089813" tx="21" ty="-25.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="70" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.03772" b="-0.145004" c="0.145004" d="0.03772" tx="19.2" ty="-31.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="73" keyMode="9728" duration="14">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.035568" b="-0.145767" c="0.145767" d="-0.035568" tx="11.75" ty="-36.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.004089" b="-0.192169" c="0.192184" d="0.004074" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.059662" b="-0.18251" c="0.18251" d="-0.059677" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.151413" b="-0.117661" c="0.117661" d="-0.151443" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.059662" b="-0.18251" c="0.18251" d="-0.059677" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.004089" b="-0.192169" c="0.192184" d="0.004074" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="24">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.043488" b="-0.187073" c="0.187088" d="-0.043503" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.18222" b="-0.060165" c="0.060165" d="-0.182236" tx="-8.05" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="45" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.18222" b="-0.060165" c="0.060165" d="-0.182236" tx="-7.05" ty="-23.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="49" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.004089" b="-0.192169" c="0.192184" d="0.004074" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="35">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/586" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.043488" b="-0.187073" c="0.187088" d="-0.043503" tx="-5.1" ty="-23.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

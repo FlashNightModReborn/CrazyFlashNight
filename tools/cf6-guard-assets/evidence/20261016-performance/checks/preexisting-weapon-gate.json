@@ -1,0 +1,22 @@
+{
+  "gate": "whole-repository weapon balance-check",
+  "passed": false,
+  "checkedCount": 365,
+  "failures": [
+    "武器_长枪_特殊.xml / 吉他喷火器 / data: source_digest_mismatch: stored sha256:e27f32bacc74be7ac89badb1672edf87a444b46127bde7def9e1aae28fb93823 does not match current sha256:50ecb59246f12d2c9535b737d794672e0896f75f41c8b1f1b4c005d399f5259e"
+  ],
+  "warningCount": 998,
+  "attribution": [
+    {
+      "path": "data/items/武器_长枪_特殊.xml",
+      "workingEqualsHeadAfterLfNormalization": true,
+      "sha256Lf": "b2d20358caca255a0e10ee7f524947f2676caeb7e37177f76f1242c52352994d"
+    },
+    {
+      "path": "tools/cf7-balance-tool/records/weapon-balance-audit.xml",
+      "workingEqualsHeadAfterLfNormalization": true,
+      "sha256Lf": "5f5fa954dc1d22649cab0f634c36bc41894be5cd0449853b799461809800775a"
+    }
+  ],
+  "impact": "Unchanged guitar-flamethrower profile digest; Guard uses monster panel and private shotgun behavior, not this weapon profile."
+}

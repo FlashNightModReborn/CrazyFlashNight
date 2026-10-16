@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩14" itemID="6aa00000-7060bf8b" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="d48e8ce542122a09-遮罩14">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!6410 3423|6403 3430|6330 3463|6290 3493|6270 3501|6190 3572|6119 3650|6110 3670|6080 3710|6074 3730|6060 3750|6050 3780|6041 3790|6032 3830|6019 3850|6013 3890|6013 3930|6023 3950|6110 4050|6121 4070|6178 4130|6210 4190|6217 4210|6233 4230|6238 4250|6254 4270|6260 4290|6292 4330|6300 4350|6410 4474|6417 4490|6433 4510|6440 4530|6470 4563|6590 4660|6610 4670|6650 4702|6670 4710|6710 4741|6730 4748|6750 4763|6770 4770|6810 4794|6850 4810|6870 4822|6890 4827|6910 4841|6930 4844|6950 4857|6970 4863|7010 4865|7050 4842|7102 4790|7140 4730|7144 4710|7150 4703|7170 4687|7190 4680|7260 4610|7270 4580|7279 4570|7288 4530|7310 4523|7350 4502|7385 4470|7402 4450|7408 4430|7422 4410|7424 4390|7430 4374|7450 4380|7523 4390|7550 4400|7570 4397|7625 4350|7682 4290|7703 4250|7703 4210|7688 4190|7650 4158|7630 4152|7601 4130|7565 4090|7430 3958|7330 3881|7310 3874|7270 3846|7263 3830|7260 3750|7240 3690|7194 3630|7150 3594|7110 3580|7010 3574|6970 3561|6670 3554|6630 3520|6610 3513|6590 3497|6574 3490|6530 3460|6510 3453|6470 3426|6450 3417|6430 3416|6410 3423" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩15" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
