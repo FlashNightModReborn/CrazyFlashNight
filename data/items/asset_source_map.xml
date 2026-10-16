@@ -5,7 +5,7 @@
   <!-- orphan="true" = XML present in LIBRARY/ but not in DOMDocument <Include>; 
        Flash IDE library panel cannot see it but .swf compile may still expose linkage -->
 
-  <!-- 5777 unique assets -->
+  <!-- 5784 unique assets -->
   <asset id="(劣质)蓝色刀光" swf="flashswf/arts/new/雾人整合特效.swf" symbolName="尚未整理/(劣质)蓝色刀光/(劣质)蓝色刀光" />
   <asset id="0" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器/武器部分/mk23/MK23手枪" />
   <asset id="1" swf="flashswf/arts/new/3XD的素材.swf" symbolName="1主武器/一部分武器1/武器本体/PKM战术版/元件 16" />
@@ -25,7 +25,10 @@
   <asset id="Au的素材" swf="flashswf/arts/new/Au的素材.swf" symbolName="男变装-大圣上装身体" />
   <asset id="BBPLAYER手雷" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER手雷" />
   <asset id="BBPLAYER炸弹" swf="flashswf/arts/原版素材库-子弹.swf" symbolName="手雷/BBPLAYER炸弹/BBPLAYER炸弹" />
+  <asset id="CodexWings素材" swf="flashswf/arts/new/CodexWings素材.swf" />
   <asset id="Codex专用素材" swf="flashswf/arts/new/Codex专用素材.swf" />
+  <asset id="Codex大刀机器人素材" swf="flashswf/arts/new/Codex大刀机器人素材.swf" />
+  <asset id="Codex特种兵素材" swf="flashswf/arts/new/Codex特种兵素材.swf" />
   <asset id="Codex蛮蛮素材" swf="flashswf/arts/new/Codex蛮蛮素材.swf" />
   <asset id="Codex黑仔素材" swf="flashswf/arts/new/Codex黑仔素材.swf" />
   <asset id="GM6j击杀特效" swf="flashswf/arts/new/fs配置素材.swf" symbolName="长枪/GM6_LYNX/GM6j击杀特效" />
@@ -3542,8 +3545,12 @@
   <asset id="敌人-ArmsArius素体" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="敌人-ArmsMalakim" swf="flashswf/arts/new/天网大家庭.swf" />
   <asset id="敌人-A兵团改造人" swf="flashswf/arts/new/诺亚试验体-A兵团.swf" />
+  <asset id="敌人-CF6Wings" swf="flashswf/arts/new/CodexWings素材.swf" symbolName="Codex/Wings/敌人-CF6Wings" />
+  <asset id="敌人-CF6大刀机器人" swf="flashswf/arts/new/Codex大刀机器人素材.swf" symbolName="Codex/大刀机器人/敌人-CF6大刀机器人" />
   <asset id="敌人-CF6女僵尸" swf="flashswf/arts/new/Antigravity专用素材.swf" symbolName="Antigravity/CF6女僵尸/敌人-CF6女僵尸" />
   <asset id="敌人-CF6普通男僵尸" swf="flashswf/arts/new/Antigravity专用素材.swf" symbolName="Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸" />
+  <asset id="敌人-CF6特种兵" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6特种兵" />
+  <asset id="敌人-CF6持盾特种兵" swf="flashswf/arts/new/Codex特种兵素材.swf" symbolName="Codex/特种兵/敌人-CF6持盾特种兵" />
   <asset id="敌人-CF6蛮蛮" swf="flashswf/arts/new/Codex蛮蛮素材.swf" symbolName="Codex/蛮蛮/敌人-CF6蛮蛮" />
   <asset id="敌人-Codex黑仔" swf="flashswf/arts/new/Codex黑仔素材.swf" />
   <asset id="敌人-EXUSIAI指挥官" swf="flashswf/arts/new/偷吃屑鱼坟头贡品.swf" />

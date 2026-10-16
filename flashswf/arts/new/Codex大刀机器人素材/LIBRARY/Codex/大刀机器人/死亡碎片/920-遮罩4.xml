@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/死亡碎片/920-遮罩4" itemID="6aa00000-00ee16b8" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="920-遮罩4">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2743 1348[-2807 1353 -2875 1348|-2910 1345|-2912 1347|-2912 1348|-3034 1338[-3038 1471 -2977 1589|-2960 1621|-2648 1747[-2523 1685 -2387 1649|-2309 1630|-2312 1626[-2351 1550 -2424 1488|-2468 1455[-2473 1451 -2477 1448|-2479 1446[-2513 1399 -2571 1383|-2572 1382|-2601 1377|-2624 1375|-2625 1376|-2626 1378|-2628 1377|-2658 1368|-2738 1350|-2743 1348" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/碎片图集/207ad0e4be8a5376" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.1168381" b="0.2759247" c="-0.2759262" d="-0.1168427" tx="-29.15" ty="-44.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

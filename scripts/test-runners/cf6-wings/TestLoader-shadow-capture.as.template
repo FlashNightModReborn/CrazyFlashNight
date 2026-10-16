@@ -1,0 +1,7 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.wingsShadowCapture = true;
+_root.cf6WingsAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-wings Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-wings Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6WingsAssetTest.runAllTests();

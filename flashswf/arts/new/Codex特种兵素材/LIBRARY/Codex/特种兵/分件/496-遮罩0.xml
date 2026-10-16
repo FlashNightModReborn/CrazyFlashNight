@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/特种兵/分件/496-遮罩0" itemID="6aa00000-5f96dba9" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="496-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-162 -172[-243 -102 -291 4[-302 28 -322 48[-313 127 -333 172[-356 222 -322 228[-499 472 -374 797|-362 848[-158 918 78 908[191 1005 313 1095|318 1108[738 1255 1058 1068|1058 948|1058 868[994 742 898 648|858 608[706 550 538 508[385 381 338 164[330 126 298 128[313 43 293 1[278 -32 278 -72[238 -92 204 -119[188 -131 178 -152[77 -201 -62 -212[-92 -192 -125 -179[-142 -172 -162 -172" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,21 @@
+{
+  "scope": "R3 material refinement of frozen R2, distinct from structural checks",
+  "status": "Frozen material candidate for user review",
+  "r2ZipUnchangedSha256": "95c5c30e951f6eb8963ef69bf4411bb8451934af9c77d25e86ef8075d0f40ecb",
+  "geometryDesignRegistrationChanged": false,
+  "interpretation": "Visual inference only: glossy coated textile/leather/latex-style surface is plausible, exact substance unknown. Retain cool reflections without treating the garment as solid metal.",
+  "treatments": [
+    "Continuous lower-intensity blue garment turn",
+    "Upper-outer chest and upper-arm curved soft reflection bands replace isolated white round highlights",
+    "Diffuse lavender thigh, elongated calf/boot sheen",
+    "Low-gloss gloves and matte pouches",
+    "Harder optic/weapon reflection bands and steel edge"
+  ],
+  "parentInitialReview": "Parent actually inspected three first-pass comparison images, accepted the material direction and requested curved chest/arm bands instead of white point highlights. That correction was made before rendering all357 frames.",
+  "finalUserArtApproval": false,
+  "limits": [
+    "Materials are stylistic inference, not physical identification",
+    "Lighting is fixed authored art per part, not real-time game illumination",
+    "SVG gradient/opacity import compatibility and game performance pending local validation"
+  ]
+}

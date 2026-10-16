@@ -1,0 +1,515 @@
+{
+  "schema": "cf6-soldier.threat-archive-integrity.v1",
+  "excludesSelf": true,
+  "files": [
+    {
+      "path": "baseline-unbounded/raw.manifest.json",
+      "bytes": 4720,
+      "sha256": "3f707afe6df27d295a539bed2a3b424ef3dc02bdee37ef329c57f1bb5ee2d3e0"
+    },
+    {
+      "path": "baseline-unbounded/raw.zip",
+      "bytes": 523986,
+      "sha256": "13e24daed6aed6db39e16f35097b211637181be58d40fd5427e490e6498c63b8"
+    },
+    {
+      "path": "baseline-unbounded/review.json",
+      "bytes": 6994,
+      "sha256": "dcd8a6c62b56e3ec8d5b2774ea5b972ebf18a334740ec1e4f532ee5a3a8ba05a"
+    },
+    {
+      "path": "failed-starts/wings-threat-pool-r2.manifest.json",
+      "bytes": 4126,
+      "sha256": "24f250466c3169e99fa9a9e6ba42de123039d0d6cb9edae1ccd76a9bd49f3ab3"
+    },
+    {
+      "path": "failed-starts/wings-threat-pool-r2.zip",
+      "bytes": 428989,
+      "sha256": "4f815964e9200c19c81727d6135cb4febb39847dc55a95665efabdfd16eb3e72"
+    },
+    {
+      "path": "failed-starts/wings-threat-pool.manifest.json",
+      "bytes": 2665,
+      "sha256": "e945a50fbb236e10b7f89b82995c469af1bb2c1d774e6b5a50b6b9e80c85e3d0"
+    },
+    {
+      "path": "failed-starts/wings-threat-pool.zip",
+      "bytes": 418537,
+      "sha256": "4108bfdf15f60abae096a9ded3e097e6623178582d69efa6dd53ffa768882235"
+    },
+    {
+      "path": "fire18-rest30/coordinator/expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "df8001c254d72035af06c34bf4fd0aad17ca15d025c7218526f23b2aee8919bf"
+    },
+    {
+      "path": "fire18-rest30/coordinator/experiment-report.json",
+      "bytes": 4453,
+      "sha256": "5dacb38fb1bd145291fc38d5804969e9fc85e6768980e743e6b5ac50db8f6d15"
+    },
+    {
+      "path": "fire18-rest30/coordinator/frozen-plan.json",
+      "bytes": 311971,
+      "sha256": "36339be894aac534ea004540d963d9e5ab92154bb22efc5824036feb8413120d"
+    },
+    {
+      "path": "fire18-rest30/coordinator/measurement.json",
+      "bytes": 52773,
+      "sha256": "1e6c3e7196d9e38403a2c2f19e48467af15ec59f9a2650804c157ee4e8cad8c0"
+    },
+    {
+      "path": "fire18-rest30/coordinator/threat/group-report.json",
+      "bytes": 2754,
+      "sha256": "ad2cf5eb2fe4b59f692aa3c4f0271d6a084a1ad746efc3dee444e1ddaf7fb9f0"
+    },
+    {
+      "path": "fire18-rest30/coordinator/threat/save-protection.json",
+      "bytes": 120279,
+      "sha256": "f9d496c555eee1f144b540d6107a50c1bea370dcbcca3ff3cf0d422ba9d1598f"
+    },
+    {
+      "path": "fire18-rest30/experiment-plan.json",
+      "bytes": 302919,
+      "sha256": "b18400c1d16a6f3052817f0397c63c07c17bafb4b3d6823731f248beffac6222"
+    },
+    {
+      "path": "fire18-rest30/input-identity.json",
+      "bytes": 2674,
+      "sha256": "6c8ffc3412b2aa7a4183aa071fc7d139010ddc5041a605fc6bd42f5e5e141175"
+    },
+    {
+      "path": "fire18-rest30/native/publish-compile_output.txt",
+      "bytes": 75,
+      "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57"
+    },
+    {
+      "path": "fire18-rest30/native/publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "fire18-rest30/native/publish.log",
+      "bytes": 1321,
+      "sha256": "6f0d644cb043b17d1e812b3931a0b7e289ec4194553972fe2a401dfc7b3c468f"
+    },
+    {
+      "path": "fire18-rest30/native/run.log",
+      "bytes": 2885,
+      "sha256": "2e7f544c80ef3b1426b2a2f9cf3e4fcf47eb1429de7dd987f898179688aea9c6"
+    },
+    {
+      "path": "fire18-rest30/native/test-compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "fire18-rest30/native/test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "fire18-rest30/native/trace.txt",
+      "bytes": 1747,
+      "sha256": "a749ed60088e66b0bea3024f4207b13f6aed7592c72d068ba585c300e4a5f9b8"
+    },
+    {
+      "path": "fire18-rest30/source/flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 83125,
+      "sha256": "47a1ed3681d2db05968e56e71badbec14b9ab87d1c2cf2f4c9df06f9df34a6c4"
+    },
+    {
+      "path": "fire18-rest30/source/scripts/Cf6SoldierNativeHost.swf",
+      "bytes": 856972,
+      "sha256": "bca41c97046a9842afcff8f58ddeb7dd3afaf53c27aa1e9f66d8e1d73a4f967c"
+    },
+    {
+      "path": "fire18-rest30/source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "bytes": 30160,
+      "sha256": "5833bf7edfe35454dca6e8c7ca53998e32e10519382954bab653faa2e14c3e86"
+    },
+    {
+      "path": "fire18-rest30/source/soldier-project.zip",
+      "bytes": 305040,
+      "sha256": "84d62957110ad14207ed4bd56c905ac4b4a2907b4c8f0d96d6e921fce47ee1df"
+    },
+    {
+      "path": "fire18-rest30/source/tools/cf6-soldier-assets/native-manifest.json",
+      "bytes": 45854,
+      "sha256": "a62dda432e327226e9c2b29c6e18e3a7501d3dc3ab809b8c322288a5f3149221"
+    },
+    {
+      "path": "fire18-rest30/source/tools/cf6-soldier-assets/SoldierAI.as",
+      "bytes": 9418,
+      "sha256": "bf547a29c7e3129826cd939d0c62e3de285313af48a8d69ae44a403a7b683189"
+    },
+    {
+      "path": "fire18-rest30/source/tools/cf6-soldier-assets/worker-plan.js",
+      "bytes": 6643,
+      "sha256": "a8ba6241da09cad273814f83aa23852e9465994087a4a70328ba4a957b4ec8b8"
+    },
+    {
+      "path": "fire18-rest30/summary.json",
+      "bytes": 26567,
+      "sha256": "262f589211917f444baf873752335871f9c696fc2929b98d39f31c18c767587c"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w01/launch.json",
+      "bytes": 862,
+      "sha256": "b04bfa28a45951aed6fd13fbe807ff6d5d7a4ef81af808f50890b6d62975416d"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w01/manifest.json",
+      "bytes": 10355,
+      "sha256": "ef558f2a01b718e4e963a1fcd3328ce32715f93e525bff2fc408adac61f9bc64"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w01/receipt.json",
+      "bytes": 820804,
+      "sha256": "abe473d6bd1d945b80242dc0445e7ce59203747639809e3df694aa5fd7ac9e7d"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w01/results.jsonl",
+      "bytes": 46399,
+      "sha256": "7f2637c49b7ba37dee659a825d4efd9863619227b60ce8ffd2ef48961f67e21f"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w02/launch.json",
+      "bytes": 877,
+      "sha256": "a8956c1e13a1d08f9838d1fd870a50966ae3e6f8caa31d0deffd72580309102a"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w02/manifest.json",
+      "bytes": 10362,
+      "sha256": "96d13b6f6f829f888c52fc4c803b8fd6351866a95fa85c6e5f3892ed832fe61a"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w02/receipt.json",
+      "bytes": 759302,
+      "sha256": "c03db23c277866537ea4e2b08532a5343e8a06e381bc5f4be1eb578f964ef542"
+    },
+    {
+      "path": "fire18-rest30/workers/soldier-w02/results.jsonl",
+      "bytes": 46355,
+      "sha256": "6be67e9b73392c7c2641e72e04d13c5d08fe86df6e57d8c9cee98bb9c71f3eeb"
+    },
+    {
+      "path": "fire18-rest66/coordinator/expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "79e771da14c364e0a08ee740f39a7d6cc9c4cbf457c18913ccde22ea05a30e5e"
+    },
+    {
+      "path": "fire18-rest66/coordinator/experiment-report.json",
+      "bytes": 4453,
+      "sha256": "35e8fd692f63b6e5cfc7a0504a2401b45084694f50ce3604b36498f64f67bbe3"
+    },
+    {
+      "path": "fire18-rest66/coordinator/frozen-plan.json",
+      "bytes": 311971,
+      "sha256": "bad9b174a61a22e9a8cb6f5d8c897c5c6e65d025bc81602f26cfc92242f6b4d7"
+    },
+    {
+      "path": "fire18-rest66/coordinator/measurement.json",
+      "bytes": 52763,
+      "sha256": "715adc6b02f71e29635f029c4b1ace0e4d84ab770e2d599dc05d24b1382b1c8f"
+    },
+    {
+      "path": "fire18-rest66/coordinator/threat/group-report.json",
+      "bytes": 2754,
+      "sha256": "c0d0549acfd1f1193ce795591d2e9142236c19cc0b0d6012aecd1fb8bd57a8b3"
+    },
+    {
+      "path": "fire18-rest66/coordinator/threat/save-protection.json",
+      "bytes": 118675,
+      "sha256": "f56fa5abc6894a20920e907e3f0106c5a24a710ff129abc96150c05b49cc190f"
+    },
+    {
+      "path": "fire18-rest66/experiment-plan.json",
+      "bytes": 302919,
+      "sha256": "60f0b37bf922c924b9486e3638df68122ee16f2781b4952e670c857901414e98"
+    },
+    {
+      "path": "fire18-rest66/input-identity.json",
+      "bytes": 2595,
+      "sha256": "bbb28a83cd3cd8a45b472d624093a344107eeaf9278b96f3ba50203a0305d5ad"
+    },
+    {
+      "path": "fire18-rest66/native/publish-compile_output.txt",
+      "bytes": 75,
+      "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57"
+    },
+    {
+      "path": "fire18-rest66/native/publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "fire18-rest66/native/publish.log",
+      "bytes": 1321,
+      "sha256": "a5d35965fc52a6c32abd054ce2dfa73d56c1c108fbf2c7f86cdd1d3b63ec544c"
+    },
+    {
+      "path": "fire18-rest66/native/run.log",
+      "bytes": 2674,
+      "sha256": "ab6928f785df8151c3469df487d77aa0574db841e27fc21832ebcdcce37f08a8"
+    },
+    {
+      "path": "fire18-rest66/native/test-compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "fire18-rest66/native/test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "fire18-rest66/native/trace.txt",
+      "bytes": 1747,
+      "sha256": "4696052b520428ae17babd67264cd36d5a22df3c062e5bb77b2843504fe7f293"
+    },
+    {
+      "path": "fire18-rest66/source/flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 83126,
+      "sha256": "7f3d62938c7d0e9ce91b84c54a8d305e35c7cabf3be3627530eb333e6dcb36e6"
+    },
+    {
+      "path": "fire18-rest66/source/scripts/Cf6SoldierNativeHost.swf",
+      "bytes": 856979,
+      "sha256": "455b055840423a5f366b263eada7031e5b94a4d04c0c84967b12febd239d3c98"
+    },
+    {
+      "path": "fire18-rest66/source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "bytes": 30160,
+      "sha256": "b4fd9848639f653fe39d2c50fcb6a11edcede13dd8013a46f3d3735a903a5bc2"
+    },
+    {
+      "path": "fire18-rest66/source/soldier-project.zip",
+      "bytes": 305040,
+      "sha256": "b81d09deb708913bc1b3c1c629ce289623f6d7fe128781eb0285f913814390c7"
+    },
+    {
+      "path": "fire18-rest66/source/tools/cf6-soldier-assets/native-manifest.json",
+      "bytes": 45854,
+      "sha256": "78d8c8c39b53688d04de06025c11149e55c2523c12e8fa9386aa935f56901571"
+    },
+    {
+      "path": "fire18-rest66/source/tools/cf6-soldier-assets/SoldierAI.as",
+      "bytes": 9418,
+      "sha256": "d1a80dc106ca35d09a951b15c365ef41c024f86e899fb5f7e72a0a38056fd340"
+    },
+    {
+      "path": "fire18-rest66/source/tools/cf6-soldier-assets/worker-plan.js",
+      "bytes": 6166,
+      "sha256": "68649001df2e66f28f644145481feb11ade984c77a03527cda924abd37b3d383"
+    },
+    {
+      "path": "fire18-rest66/summary.json",
+      "bytes": 26252,
+      "sha256": "e8f2e3ab4a8ccafe6f26ce48ac3e55587527920f1ef1af4c7a663d4195fe7309"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w01/launch.json",
+      "bytes": 862,
+      "sha256": "56861a76180f1023fe9dc9c1e228b6d952008af1d85c9b98f4ee5caf52f6a83a"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w01/manifest.json",
+      "bytes": 10355,
+      "sha256": "3d2886e540c752a5876c0b50fd0d01ae1b5ca14fc40264579205281239515dd9"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w01/receipt.json",
+      "bytes": 815637,
+      "sha256": "012719d27e57524cd9fa013603f58fd9ffa16e1f51f9d4fbe030fa31fef44e69"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w01/results.jsonl",
+      "bytes": 46394,
+      "sha256": "a44a9cde45fbfa44cc4e3e3650276de030748e48365310c96f7ec46e252c1745"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w02/launch.json",
+      "bytes": 877,
+      "sha256": "d4e451ee64ce9c6e8c0a1a51ea34834d49261a7d92c4453d2c96fd5e25419f4c"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w02/manifest.json",
+      "bytes": 10362,
+      "sha256": "291187bdde41b6d7bf4b20c5f20b8f0c3b65a6572ac4613e60275a2b1d1045ec"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w02/receipt.json",
+      "bytes": 739312,
+      "sha256": "a28531928c03b706ab18b4d832f532b5493ae2ff6b537b4ddeb66d6f2eb6d2c3"
+    },
+    {
+      "path": "fire18-rest66/workers/soldier-w02/results.jsonl",
+      "bytes": 46350,
+      "sha256": "6a5cac9b71b4028f98a046cba73422f9cf112e324e002b2bd0a8931ee614ae99"
+    },
+    {
+      "path": "original/config-01.as.txt",
+      "bytes": 420,
+      "sha256": "21d566c9d756441b3d7f6fd456640cf3482bb8e7e75a3c5b3682dca5b76603bc"
+    },
+    {
+      "path": "original/config-02.as.txt",
+      "bytes": 422,
+      "sha256": "65eb3d57ede780577744de770142f8a7eb99ddd9e77c5aaef6471f674cbf1a30"
+    },
+    {
+      "path": "original/config-03.as.txt",
+      "bytes": 476,
+      "sha256": "9a46ac9da39baa2e786f21c5e30a3af1ec9c1ad8040e8629cb22006050e282d8"
+    },
+    {
+      "path": "original/config-04.as.txt",
+      "bytes": 476,
+      "sha256": "9a46ac9da39baa2e786f21c5e30a3af1ec9c1ad8040e8629cb22006050e282d8"
+    },
+    {
+      "path": "original/config-05.as.txt",
+      "bytes": 543,
+      "sha256": "888d634133e4d2d594e13f1a8806adc079bf2741f1cedf2f9e41e52de80f6a85"
+    },
+    {
+      "path": "original/config-06.as.txt",
+      "bytes": 443,
+      "sha256": "fb7dff511dc1d0ce03bc3f3713c7266b5a30941e63499a66bb60733afe81288c"
+    },
+    {
+      "path": "original/config-07.as.txt",
+      "bytes": 394,
+      "sha256": "2838c491f78a9c631c370991a6ac4ac116f6465683bed98671f8d875a224a868"
+    },
+    {
+      "path": "original/config-08.as.txt",
+      "bytes": 443,
+      "sha256": "2c88168aa8f2f8feab012b615c6fb9484310f099cd3a63cafbd02d27de4200a5"
+    },
+    {
+      "path": "original/config-09.as.txt",
+      "bytes": 443,
+      "sha256": "9eabf4d440dde59f67a704721869c88b3ea7adbe6c82161e512d9f5e7e593ad7"
+    },
+    {
+      "path": "original/config-10.as.txt",
+      "bytes": 443,
+      "sha256": "1eb5922d0d2b56e01980f823b569598afa7cc14ba6ad09dd665e4531c45d800e"
+    },
+    {
+      "path": "original/config-11.as.txt",
+      "bytes": 441,
+      "sha256": "23b3f5228e4b84c83a44ef87459641c280301fed0e462850e4acb4fa6465d3fc"
+    },
+    {
+      "path": "original/config-12.as.txt",
+      "bytes": 442,
+      "sha256": "6896306f777ecd8aa811d56d120e70e344367339f155b2320d845cf0d3500d85"
+    },
+    {
+      "path": "original/config-13.as.txt",
+      "bytes": 443,
+      "sha256": "8c8fd3d86d1902254314a72ed7ffa15b4a0f24cd0c33de1e7830ab9943144f4c"
+    },
+    {
+      "path": "original/config-14.as.txt",
+      "bytes": 443,
+      "sha256": "9786f43ed28228b336a6f8438e40bb6a65ee95c044ea550dacbadb0666cea918"
+    },
+    {
+      "path": "original/config-15.as.txt",
+      "bytes": 443,
+      "sha256": "6b045de2e543722a0779fb1bef4250af1bdd983a5d9decb1280ed9efcfc9b171"
+    },
+    {
+      "path": "original/config-16.as.txt",
+      "bytes": 556,
+      "sha256": "fb401276340bc4de5a5c2a02d8e5c1fc184bbf40d7a3c3b30de5ba5375ea3e57"
+    },
+    {
+      "path": "original/config-map.json",
+      "bytes": 4894,
+      "sha256": "2267c9c9c0b0da68f92263cc650b05877848b0c856c90d97be6c8680986d3ead"
+    },
+    {
+      "path": "original/ordinary-knife.as.txt",
+      "bytes": 456,
+      "sha256": "9b30ef0973b979c7227ba4ba36fa3997e57096d8994b9a639d08983716150bbd"
+    },
+    {
+      "path": "original/ordinary-knife.pcode.txt",
+      "bytes": 4118,
+      "sha256": "96ccc15c454931ed3023d38ab8fb1cb143e399245308c35b6386d88ee18ee346"
+    },
+    {
+      "path": "original/ordinary-movement-enterFrame.as.txt",
+      "bytes": 599,
+      "sha256": "fc3acc06b5697c4b1141a6631a4f7a4f12baa4342ec247070056e582fdfdab3b"
+    },
+    {
+      "path": "original/ordinary-movement-load.as.txt",
+      "bytes": 232,
+      "sha256": "34007f1f1177b95386f8de6b5af2999367316d136425dea5ec5328f40381e4d8"
+    },
+    {
+      "path": "original/review.json",
+      "bytes": 10252,
+      "sha256": "14fa29ce6b749259c8554556789551fbdea71e9dc5a3f8b41d826ecc6e8923f2"
+    },
+    {
+      "path": "original/shield-knife.as.txt",
+      "bytes": 457,
+      "sha256": "659c6ffde94a6e1328379dacd3d19c10612b83978dc3a1a17afec014c9ef033a"
+    },
+    {
+      "path": "original/shield-knife.pcode.txt",
+      "bytes": 5233,
+      "sha256": "e716a269e277d14c3de395f53d5e2dfaf6c88906f8366aefb21bb734301941bd"
+    },
+    {
+      "path": "original/shield-movement-enterFrame.as.txt",
+      "bytes": 599,
+      "sha256": "46658fcb1bf6f4a5008ef52c5becb290911c6b2e89dbbd197b5ef9eafd1d98ff"
+    },
+    {
+      "path": "original/shield-movement-load.as.txt",
+      "bytes": 232,
+      "sha256": "c6087293004fe9085c163fdb8668c01a00f5604e0e9e4005abbe352efbc7ceae"
+    },
+    {
+      "path": "original/source-identity.json",
+      "bytes": 375,
+      "sha256": "80c77160433e99eb96db211d1c308f702191625e2358c69aac981824cb138baa"
+    },
+    {
+      "path": "startup-recovery/failures.manifest.json",
+      "bytes": 8522,
+      "sha256": "bda95f052148d2dec6165309bf06351442bab2ab70c614d30e174dc05124be02"
+    },
+    {
+      "path": "startup-recovery/failures.zip",
+      "bytes": 13001,
+      "sha256": "af1d5e89e056d14968b919db1b8eb4e1482fdfaceff30e096f42fa36f994177a"
+    },
+    {
+      "path": "startup-recovery/review.json",
+      "bytes": 9338,
+      "sha256": "c27d5460ae9833dd77e55c1e9e95c3f38166ec3d5bee08f6e4774442610fe79d"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 15993,
+      "sha256": "cfce1b420dabeb16cb440fff3cbcc88df9c6231981ff148de4b565c4b8e3640f"
+    }
+  ],
+  "fileCount": 100,
+  "totalBytes": 9172306,
+  "largestFileBytes": 856979,
+  "allRecordedBindingsVerified": true,
+  "archivesReadBack": true,
+  "protectedPlayerFilesUnchanged": true,
+  "currentSourceAndBothWorkersMatch": true,
+  "docGovernance": "passed with existing repository-wide warnings",
+  "diffWhitespaceCheck": "passed"
+}

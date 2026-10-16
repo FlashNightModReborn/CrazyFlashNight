@@ -1,0 +1,76 @@
+{
+  "schema": "cf6-soldier.worker-inputs.v1",
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    }
+  ],
+  "fireControl": {
+    "maximumFireFrames": 18,
+    "shootRestFrames": 30,
+    "shieldDamageReductionPercent": 70
+  },
+  "roles": [
+    "enemy body calibration",
+    "friendly HP multiplier reported separately"
+  ],
+  "expectedRows": 12,
+  "enemyRows": 12,
+  "friendlyRows": 0,
+  "claimsNoSpeedBenchmark": true
+}

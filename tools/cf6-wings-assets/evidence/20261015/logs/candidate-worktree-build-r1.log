@@ -1,0 +1,71 @@
+=== CF7 Local Development Candidate Build ===
+  Network/cloud policy : skipped; using installed local toolchain and dependency caches.
+  Formal deployment    : not selected and must remain unchanged.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  CANDIDATE BUILD ONLY - NOT DEPLOYED
+  FORMAL RUNTIME WILL NOT BE UPDATED; acceptance must explicitly start the candidate.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+=== CF7 Runtime Payload Producer ===
+[RuntimeBuildEnv] OK baseline=cf7-win-x64-2026-07-22 dotnet=10.0.300 msvc=19.44.35228.0 rustc=1.96.0/ac68faa20 sdk=10.0.22621.0
+=== CF7 Runtime Producer v2 ===
+  CANDIDATE ONLY - NOT DEPLOYED; FORMAL RUNTIME WILL NOT BE UPDATED.
+  Artifact source : 55BCB122EC0AD784B5BDEADA27D5F4B328F9E60B981EBD74AEA9947209C0B73D
+  Producer recipe : 9F4CA12452FD4BC5B1024CCD69084FE77AE8106F5A211DC6160EF2DFC0BCE405
+  Toolchain lock  : DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36
+  Build identity  : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Candidate       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+  Work root       : C:\Users\fs\AppData\Local\CF7\runtime-build-temp\cf7-runtime-build-work\job-542b41be4b8149278750b76d0f4f9175
+[1/5] Build deterministic miniaudio.dll...
+[2/5] Build deterministic sol_parser.dll...
+[3/5] Build deterministic native bootstrap...
+Build deterministic world compositor and Flash input bridge...
+[4/5] Publish managed Core into isolated output...
+[5/5] Assemble immutable candidate and manifest...
+[FixedWebView2] version=154.0.4258.53 cab=EC12B2DB6423D127FB8E1935D34E2E68ABC70FE8ECB1F6162BA1C1CCC2825F6D files=257 chunks=7
+=== Runtime Candidate Complete - NOT DEPLOYED ===
+  Deployment      : NOT_DEPLOYED
+  Candidate       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+  Candidate Core  : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+  Candidate SHA   : 0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6
+  Live Core       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+  Live SHA        : ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712
+  Formal closure  : FCF2439B48F213FD4AB26D1FC3C06325FE58F4E36866BFE59D2BC5152C3F21E8 (45 files)
+  Build identity  : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Payload closure : 20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+  FORMAL RUNTIME UNCHANGED; acceptance must explicitly select this candidate.
+=== CF7 Runtime Candidate Ready - NOT DEPLOYED ===
+  Deployment status : NOT_DEPLOYED
+  Candidate root    : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+  Candidate Core    : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+  Candidate SHA256  : 0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6
+  Live Core         : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+  Live SHA256       : ADB5903786AAA76DDF1D17B20FC9E4EFE7DB3F4ED4791BD35015A203A9C2D712
+  Formal closure    : FCF2439B48F213FD4AB26D1FC3C06325FE58F4E36866BFE59D2BC5152C3F21E8 (45 files)
+  Build identity    : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Payload closure   : 20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+  Tree              : a1fd560c90d96b0a81b69643b85cf5dbc1b27d80
+  FORMAL RUNTIME UNCHANGED; candidate ready must never be reported as deployed.
+=== CF7 Local Development Candidate Selected ===
+  Action          : built
+  Candidate       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+  Core SHA256     : 0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6
+  Build identity  : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Payload closure : 20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+  Deployment      : NOT_DEPLOYED (isolated local development candidate)
+[RuntimeBundleV2] OK state=integrity-only mode=worktree files=43 payload=20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+
+
+schema              : cf7-local-dev-runtime-result.v1
+lifecycleState      : candidate_built
+candidateAction     : built
+candidateRoot       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+candidateCorePath   : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runt
+                      ime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+candidateCoreSha256 : 0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6
+buildIdentityHash   : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+payloadClosureHash  : 20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+activePointerPath   : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-dev\active.v1.json
+deploymentStatus    : NOT_DEPLOYED
+
+
+

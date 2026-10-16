@@ -1,0 +1,46 @@
+{
+  "schema": "cf6-soldier.native-visual-failure.v1",
+  "behaviorPassed": 333,
+  "behaviorFailed": 0,
+  "visualAccepted": false,
+  "finding": "Limb SVG clipPath path has its own translate transform, omitted by the inherited converter mask call. Arms and legs invisible in full native captures despite nonempty body bounds.",
+  "nativeCaptureDirectory": "../images-r1",
+  "sourceSnapshots": [
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "snapshot": "build.py",
+      "sha256": "836f92e352f4df1d71bda4068d7b7fff38d285ce246ee304028253be5680023e",
+      "bytes": 17928
+    },
+    {
+      "path": "tools/cf6-soldier-assets/vector.py",
+      "snapshot": "vector.py",
+      "sha256": "ad0003b4ce1bf42804e51d79fa9393b7132d225cd784146fae3bb7e2453a5f5f",
+      "bytes": 2169
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "snapshot": "SoldierAI.as",
+      "sha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+      "bytes": 6381
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "snapshot": "native-manifest.json",
+      "sha256": "ef31be2e6a9a4aa931d5793ecee11f8d29e3ede0146f2a03df786991de2adbf7",
+      "bytes": 46332
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "snapshot": "Cf6SoldierAssetTest.as",
+      "sha256": "ef0101c617520907d4dc9be57514b1c1069674593f5c545bd442fdbf8786e3d0",
+      "bytes": 19470
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "snapshot": "Codex特种兵素材.swf",
+      "sha256": "c0f50a472a30fe0cfa6473f23ba6e3f5cb7cfb4bf39de2ba1961dce2773de6b6",
+      "bytes": 85898
+    }
+  ]
+}

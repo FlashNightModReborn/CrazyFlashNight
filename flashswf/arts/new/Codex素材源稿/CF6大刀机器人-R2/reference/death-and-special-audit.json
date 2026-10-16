@@ -1,0 +1,838 @@
+{
+  "root": 925,
+  "stand": 901,
+  "death": 924,
+  "deathFrames": 58,
+  "deathLabels": [
+    {
+      "frame": 1,
+      "label": "a0"
+    }
+  ],
+  "newShapesVsOtherActions": [
+    {
+      "id": 310,
+      "role": "helper",
+      "actualBitmapIds": [],
+      "fillTypes": [
+        "solid"
+      ]
+    },
+    {
+      "id": 364,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        363
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 366,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        365
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 368,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        367
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 370,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        369
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 372,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        371
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 374,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        373
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 376,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        375
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 378,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        377
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 380,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        379
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 382,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        381
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 384,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        383
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 386,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        385
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 388,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        387
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 390,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        389
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 699,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        698
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 701,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        700
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 703,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        702
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 705,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        704
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 707,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        706
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 709,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        708
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 711,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        710
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 713,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        712
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 715,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        714
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 717,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        716
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 719,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        718
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 721,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        720
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 723,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        722
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 725,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        724
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 727,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        726
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 729,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        728
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 731,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        730
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 733,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        732
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 735,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        734
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 737,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        736
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 739,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        738
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 741,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        740
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 743,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        742
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 745,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        744
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 747,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        746
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 749,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        748
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 751,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        750
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 753,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        752
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 755,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        754
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 757,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        756
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 759,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        758
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 761,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        760
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 763,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        762
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 765,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        764
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 767,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        766
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 769,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        768
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 771,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        770
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 773,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        772
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 775,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        774
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 777,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        776
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 779,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        778
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 781,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        780
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 783,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        782
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 785,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        784
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 787,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        786
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 789,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        788
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 791,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        790
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 793,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        792
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 795,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        794
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 797,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        796
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 799,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        798
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 801,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        800
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 803,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        802
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 805,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        804
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 807,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        806
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 809,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        808
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 916,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap",
+        "solid"
+      ]
+    },
+    {
+      "id": 917,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 918,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 919,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 920,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 921,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 922,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 923,
+      "role": "variant-or-special",
+      "actualBitmapIds": [
+        889
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    }
+  ],
+  "note": "10身体件；899独立大刀。889主体图集。916–923八个死亡合成碎片均来自889，按原fill矩阵/path裁切新身体；924死亡58帧/a0。",
+  "bodyBitmapIds": [
+    889
+  ],
+  "branches": [
+    {
+      "label": "a0",
+      "startFrame": 1,
+      "endFrame": 58,
+      "directInstances": [
+        311,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        914,
+        916,
+        917,
+        918,
+        919,
+        920,
+        921,
+        922,
+        923
+      ],
+      "continuity": "label interval only; AS stop/goto not executed"
+    }
+  ]
+}

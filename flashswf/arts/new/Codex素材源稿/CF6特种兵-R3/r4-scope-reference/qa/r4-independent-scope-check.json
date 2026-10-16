@@ -1,0 +1,1547 @@
+{
+  "status": "PASS",
+  "checked_utc": "2026-10-15T04:06:21.809201+00:00",
+  "scope": "Independent read-only audit of all 152 output SVGs plus focused structure checks on 561/575/577/578. No art edited and no timeline frames rendered.",
+  "baseline": "frozen R3",
+  "candidate": "R4 CT correction",
+  "changed_ids": [
+    561,
+    575,
+    577,
+    578
+  ],
+  "unchanged_output_count": 148,
+  "checks": {
+    "r4_ct_scope_declared": true,
+    "r3_frozen_baseline_unchanged": true,
+    "output_count_152": true,
+    "output_ids_unchanged": true,
+    "output_file_paths_unchanged": true,
+    "manifest_roots_unchanged": true,
+    "source_swf_hash_unchanged": true,
+    "changed_output_ids_exactly_authorized": true,
+    "remaining_148_outputs_byte_identical": true,
+    "all_r3_manifest_hashes_match": true,
+    "all_r4_manifest_hashes_match": true,
+    "only_manifest_asset_hashes_changed": true,
+    "all_four_changed_assets_pass_local_structure": true,
+    "same_ct_shield_vector_body_in_all_four_outputs": true,
+    "all_other_source_core_parts_unchanged": true,
+    "shield_source_geometry_materials_defs_unchanged": true,
+    "shield_source_body_exact_two_path_substitutions": true,
+    "shield_source_body_matches_output_body": true,
+    "timelines_byte_identical": true,
+    "archived_r3_manifest_byte_identical": true,
+    "four_archived_r3_svg_baselines_byte_identical": true
+  },
+  "timeline_sha256": {
+    "r3": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0",
+    "r4": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0"
+  },
+  "expected_t_path": "M49.9 73.1L58.4 72.1L57.9 74.2L54.8 74.6L52.3 84.2L50.1 84.7L52.6 74.9L49.4 75.3Z",
+  "removed_obsolete_wear_subpath": "M54.3 77.1L55.1 77L54.8 78L54 78.2Z",
+  "focused_svg_checks": [
+    {
+      "id": 561,
+      "file": "parts/561.svg",
+      "exact_expected_two_path_substitutions_only": true,
+      "root_dimensions_and_viewbox_unchanged": true,
+      "all_clip_paths_unchanged": true,
+      "clip_path_count": 2,
+      "all_mapping_matrices_unchanged": true,
+      "mapping_matrix_count": 1,
+      "same_element_count": true,
+      "ct_t_path_count": 1,
+      "old_f_path_absent": true,
+      "obsolete_f_crossbar_wear_absent": true,
+      "shield_body_count": 1,
+      "all_original_text_and_style_preserved": true,
+      "xml_differences": [
+        {
+          "element": "root/1/0/0/36",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M49.9 73.1L58.4 72.1L57.9 74.2L52.8 74.9L52.1 77.2L57.4 76.8L56.8 79L51.8 79.3L50.8 84L48.6 84.7Z",
+          "r4": "M49.9 73.1L58.4 72.1L57.9 74.2L54.8 74.6L52.3 84.2L50.1 84.7L52.6 74.9L49.4 75.3Z"
+        },
+        {
+          "element": "root/1/0/0/38",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M54.3 77.1L55.1 77L54.8 78L54 78.2Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z",
+          "r4": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": 575,
+      "file": "variants/575.svg",
+      "exact_expected_two_path_substitutions_only": true,
+      "root_dimensions_and_viewbox_unchanged": true,
+      "all_clip_paths_unchanged": true,
+      "clip_path_count": 7,
+      "all_mapping_matrices_unchanged": true,
+      "mapping_matrix_count": 6,
+      "same_element_count": true,
+      "ct_t_path_count": 1,
+      "old_f_path_absent": true,
+      "obsolete_f_crossbar_wear_absent": true,
+      "shield_body_count": 1,
+      "all_original_text_and_style_preserved": true,
+      "xml_differences": [
+        {
+          "element": "root/0/0/1/36",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M49.9 73.1L58.4 72.1L57.9 74.2L52.8 74.9L52.1 77.2L57.4 76.8L56.8 79L51.8 79.3L50.8 84L48.6 84.7Z",
+          "r4": "M49.9 73.1L58.4 72.1L57.9 74.2L54.8 74.6L52.3 84.2L50.1 84.7L52.6 74.9L49.4 75.3Z"
+        },
+        {
+          "element": "root/0/0/1/38",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M54.3 77.1L55.1 77L54.8 78L54 78.2Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z",
+          "r4": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": 577,
+      "file": "variants/577.svg",
+      "exact_expected_two_path_substitutions_only": true,
+      "root_dimensions_and_viewbox_unchanged": true,
+      "all_clip_paths_unchanged": true,
+      "clip_path_count": 7,
+      "all_mapping_matrices_unchanged": true,
+      "mapping_matrix_count": 6,
+      "same_element_count": true,
+      "ct_t_path_count": 1,
+      "old_f_path_absent": true,
+      "obsolete_f_crossbar_wear_absent": true,
+      "shield_body_count": 1,
+      "all_original_text_and_style_preserved": true,
+      "xml_differences": [
+        {
+          "element": "root/0/0/1/36",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M49.9 73.1L58.4 72.1L57.9 74.2L52.8 74.9L52.1 77.2L57.4 76.8L56.8 79L51.8 79.3L50.8 84L48.6 84.7Z",
+          "r4": "M49.9 73.1L58.4 72.1L57.9 74.2L54.8 74.6L52.3 84.2L50.1 84.7L52.6 74.9L49.4 75.3Z"
+        },
+        {
+          "element": "root/0/0/1/38",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M54.3 77.1L55.1 77L54.8 78L54 78.2Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z",
+          "r4": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z"
+        }
+      ],
+      "passed": true
+    },
+    {
+      "id": 578,
+      "file": "variants/578.svg",
+      "exact_expected_two_path_substitutions_only": true,
+      "root_dimensions_and_viewbox_unchanged": true,
+      "all_clip_paths_unchanged": true,
+      "clip_path_count": 7,
+      "all_mapping_matrices_unchanged": true,
+      "mapping_matrix_count": 6,
+      "same_element_count": true,
+      "ct_t_path_count": 1,
+      "old_f_path_absent": true,
+      "obsolete_f_crossbar_wear_absent": true,
+      "shield_body_count": 1,
+      "all_original_text_and_style_preserved": true,
+      "xml_differences": [
+        {
+          "element": "root/0/0/1/36",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M49.9 73.1L58.4 72.1L57.9 74.2L52.8 74.9L52.1 77.2L57.4 76.8L56.8 79L51.8 79.3L50.8 84L48.6 84.7Z",
+          "r4": "M49.9 73.1L58.4 72.1L57.9 74.2L54.8 74.6L52.3 84.2L50.1 84.7L52.6 74.9L49.4 75.3Z"
+        },
+        {
+          "element": "root/0/0/1/38",
+          "tag": "path",
+          "field": "attribute:d",
+          "r3": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M54.3 77.1L55.1 77L54.8 78L54 78.2Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z",
+          "r4": "M38.4 73.7L39.2 73.6L38.7 74.8L38 75Z M33.4 81.7L34.2 81.4L34 82.8L33 83Z M41.5 81L43.2 80.5L42.7 81.3L41.2 81.8Z"
+        }
+      ],
+      "passed": true
+    }
+  ],
+  "assets": [
+    {
+      "id": 95,
+      "file": "preserved/95.svg",
+      "r3_sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b",
+      "r4_sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 96,
+      "file": "preserved/96.svg",
+      "r3_sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b",
+      "r4_sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 97,
+      "file": "preserved/97.svg",
+      "r3_sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635",
+      "r4_sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 98,
+      "file": "preserved/98.svg",
+      "r3_sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133",
+      "r4_sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 99,
+      "file": "preserved/99.svg",
+      "r3_sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668",
+      "r4_sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 100,
+      "file": "preserved/100.svg",
+      "r3_sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71",
+      "r4_sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 101,
+      "file": "preserved/101.svg",
+      "r3_sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b",
+      "r4_sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 102,
+      "file": "preserved/102.svg",
+      "r3_sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6",
+      "r4_sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 103,
+      "file": "preserved/103.svg",
+      "r3_sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3",
+      "r4_sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 104,
+      "file": "preserved/104.svg",
+      "r3_sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966",
+      "r4_sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 105,
+      "file": "preserved/105.svg",
+      "r3_sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1",
+      "r4_sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 106,
+      "file": "preserved/106.svg",
+      "r3_sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406",
+      "r4_sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 107,
+      "file": "preserved/107.svg",
+      "r3_sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15",
+      "r4_sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 108,
+      "file": "preserved/108.svg",
+      "r3_sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173",
+      "r4_sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 109,
+      "file": "preserved/109.svg",
+      "r3_sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f",
+      "r4_sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 110,
+      "file": "preserved/110.svg",
+      "r3_sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a",
+      "r4_sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 111,
+      "file": "preserved/111.svg",
+      "r3_sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e",
+      "r4_sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 112,
+      "file": "preserved/112.svg",
+      "r3_sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733",
+      "r4_sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 113,
+      "file": "preserved/113.svg",
+      "r3_sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810",
+      "r4_sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 114,
+      "file": "preserved/114.svg",
+      "r3_sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa",
+      "r4_sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 123,
+      "file": "preserved/123.svg",
+      "r3_sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a",
+      "r4_sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 125,
+      "file": "preserved/125.svg",
+      "r3_sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512",
+      "r4_sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 127,
+      "file": "preserved/127.svg",
+      "r3_sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9",
+      "r4_sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 129,
+      "file": "preserved/129.svg",
+      "r3_sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144",
+      "r4_sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 131,
+      "file": "preserved/131.svg",
+      "r3_sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840",
+      "r4_sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 133,
+      "file": "preserved/133.svg",
+      "r3_sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3",
+      "r4_sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 135,
+      "file": "preserved/135.svg",
+      "r3_sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d",
+      "r4_sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 137,
+      "file": "preserved/137.svg",
+      "r3_sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96",
+      "r4_sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 139,
+      "file": "preserved/139.svg",
+      "r3_sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7",
+      "r4_sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 141,
+      "file": "preserved/141.svg",
+      "r3_sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3",
+      "r4_sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 143,
+      "file": "preserved/143.svg",
+      "r3_sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9",
+      "r4_sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 145,
+      "file": "preserved/145.svg",
+      "r3_sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9",
+      "r4_sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 147,
+      "file": "preserved/147.svg",
+      "r3_sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471",
+      "r4_sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 149,
+      "file": "preserved/149.svg",
+      "r3_sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0",
+      "r4_sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 151,
+      "file": "preserved/151.svg",
+      "r3_sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8",
+      "r4_sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 152,
+      "file": "preserved/152.svg",
+      "r3_sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691",
+      "r4_sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 153,
+      "file": "preserved/153.svg",
+      "r3_sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021",
+      "r4_sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 154,
+      "file": "preserved/154.svg",
+      "r3_sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0",
+      "r4_sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 155,
+      "file": "preserved/155.svg",
+      "r3_sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c",
+      "r4_sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 156,
+      "file": "preserved/156.svg",
+      "r3_sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2",
+      "r4_sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 157,
+      "file": "preserved/157.svg",
+      "r3_sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999",
+      "r4_sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 158,
+      "file": "preserved/158.svg",
+      "r3_sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e",
+      "r4_sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 159,
+      "file": "preserved/159.svg",
+      "r3_sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f",
+      "r4_sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 160,
+      "file": "preserved/160.svg",
+      "r3_sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416",
+      "r4_sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 161,
+      "file": "preserved/161.svg",
+      "r3_sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f",
+      "r4_sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 162,
+      "file": "preserved/162.svg",
+      "r3_sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4",
+      "r4_sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 163,
+      "file": "preserved/163.svg",
+      "r3_sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133",
+      "r4_sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 164,
+      "file": "preserved/164.svg",
+      "r3_sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0",
+      "r4_sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 165,
+      "file": "preserved/165.svg",
+      "r3_sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831",
+      "r4_sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 166,
+      "file": "preserved/166.svg",
+      "r3_sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171",
+      "r4_sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 167,
+      "file": "preserved/167.svg",
+      "r3_sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d",
+      "r4_sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 168,
+      "file": "preserved/168.svg",
+      "r3_sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf",
+      "r4_sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 169,
+      "file": "preserved/169.svg",
+      "r3_sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf",
+      "r4_sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 170,
+      "file": "preserved/170.svg",
+      "r3_sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44",
+      "r4_sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 171,
+      "file": "preserved/171.svg",
+      "r3_sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83",
+      "r4_sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 172,
+      "file": "preserved/172.svg",
+      "r3_sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd",
+      "r4_sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 173,
+      "file": "preserved/173.svg",
+      "r3_sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31",
+      "r4_sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 174,
+      "file": "preserved/174.svg",
+      "r3_sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46",
+      "r4_sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 175,
+      "file": "preserved/175.svg",
+      "r3_sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5",
+      "r4_sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 176,
+      "file": "preserved/176.svg",
+      "r3_sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721",
+      "r4_sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 177,
+      "file": "preserved/177.svg",
+      "r3_sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415",
+      "r4_sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 178,
+      "file": "preserved/178.svg",
+      "r3_sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69",
+      "r4_sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 238,
+      "file": "preserved/238.svg",
+      "r3_sha256": "940048bbd298ce85e91a449c92237bd67eada2d82a0b449416140bd1c2154ab4",
+      "r4_sha256": "940048bbd298ce85e91a449c92237bd67eada2d82a0b449416140bd1c2154ab4",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 240,
+      "file": "preserved/240.svg",
+      "r3_sha256": "b5428898dd2e3db8c6ca45a5e4bc5467693d6afdba920b4e0340362c031bf1d8",
+      "r4_sha256": "b5428898dd2e3db8c6ca45a5e4bc5467693d6afdba920b4e0340362c031bf1d8",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 241,
+      "file": "preserved/241.svg",
+      "r3_sha256": "278b926bd1645492d80cdbcb545041cfc958b143b2c981388e624f8147122fa6",
+      "r4_sha256": "278b926bd1645492d80cdbcb545041cfc958b143b2c981388e624f8147122fa6",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 242,
+      "file": "preserved/242.svg",
+      "r3_sha256": "e685708220c958713e1ff532a951e2c9f096074422826eaa2ee1207cc2617de7",
+      "r4_sha256": "e685708220c958713e1ff532a951e2c9f096074422826eaa2ee1207cc2617de7",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 243,
+      "file": "preserved/243.svg",
+      "r3_sha256": "fc3b7f73e9782d5ea440167ca5a6ac3be65382cd7450e8633b9951e2058be193",
+      "r4_sha256": "fc3b7f73e9782d5ea440167ca5a6ac3be65382cd7450e8633b9951e2058be193",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 244,
+      "file": "preserved/244.svg",
+      "r3_sha256": "59a65a4f52820ce325ccc6f2239396ff234bd5ffc3abc3f8a87f97085859e40f",
+      "r4_sha256": "59a65a4f52820ce325ccc6f2239396ff234bd5ffc3abc3f8a87f97085859e40f",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 245,
+      "file": "preserved/245.svg",
+      "r3_sha256": "67c6c09e0912668b875bd7f5d81a983c68f255c3510ca26e55698e54e0cc2a5c",
+      "r4_sha256": "67c6c09e0912668b875bd7f5d81a983c68f255c3510ca26e55698e54e0cc2a5c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 246,
+      "file": "preserved/246.svg",
+      "r3_sha256": "2846455ab92b5765132e3572dc28c8c2553b46eca50de1a8bff82c0be71b63b2",
+      "r4_sha256": "2846455ab92b5765132e3572dc28c8c2553b46eca50de1a8bff82c0be71b63b2",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 247,
+      "file": "preserved/247.svg",
+      "r3_sha256": "f202ba3bed5c76a92277a96e11954b0de0be6c2abb043620b8e604e887650aff",
+      "r4_sha256": "f202ba3bed5c76a92277a96e11954b0de0be6c2abb043620b8e604e887650aff",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 248,
+      "file": "preserved/248.svg",
+      "r3_sha256": "e33f7c12ceb695cae152b342d945e261dd88b02d2b5a29266cc8934b7f9f435a",
+      "r4_sha256": "e33f7c12ceb695cae152b342d945e261dd88b02d2b5a29266cc8934b7f9f435a",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 249,
+      "file": "preserved/249.svg",
+      "r3_sha256": "68e51d2f551dcc848e781f31937072fcb959e16acd48cc2d56a03e0dd84a94db",
+      "r4_sha256": "68e51d2f551dcc848e781f31937072fcb959e16acd48cc2d56a03e0dd84a94db",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 250,
+      "file": "preserved/250.svg",
+      "r3_sha256": "37c3a0ffc8d45e29f6eff96ba667cd1ee8baac5322d0a55ac4c0e6a7c0ff4574",
+      "r4_sha256": "37c3a0ffc8d45e29f6eff96ba667cd1ee8baac5322d0a55ac4c0e6a7c0ff4574",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 251,
+      "file": "preserved/251.svg",
+      "r3_sha256": "7a08936663947a4d0f5698928884c59fb48e4c51ab337a1a7e694e712dae7686",
+      "r4_sha256": "7a08936663947a4d0f5698928884c59fb48e4c51ab337a1a7e694e712dae7686",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 253,
+      "file": "preserved/253.svg",
+      "r3_sha256": "7b170960c1b974f47448ba02a723e58198b753da6dd57cdc5c683cb58849956b",
+      "r4_sha256": "7b170960c1b974f47448ba02a723e58198b753da6dd57cdc5c683cb58849956b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 277,
+      "file": "preserved/277.svg",
+      "r3_sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "r4_sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 280,
+      "file": "preserved/280.svg",
+      "r3_sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "r4_sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 310,
+      "file": "preserved/310.svg",
+      "r3_sha256": "c543585112b8f7203ade84fd877a870e0e628803377fe51ee98dbe8b2e5a52fb",
+      "r4_sha256": "c543585112b8f7203ade84fd877a870e0e628803377fe51ee98dbe8b2e5a52fb",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 484,
+      "file": "parts/484.svg",
+      "r3_sha256": "cfd41880144150f9d3e5f6876b286b19235b21c770246ac8b74770a084be2e38",
+      "r4_sha256": "cfd41880144150f9d3e5f6876b286b19235b21c770246ac8b74770a084be2e38",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 485,
+      "file": "parts/485.svg",
+      "r3_sha256": "56ef0fd3377f137dff90a7b980c3e289b032d208d04469f8b52c40c90957230c",
+      "r4_sha256": "56ef0fd3377f137dff90a7b980c3e289b032d208d04469f8b52c40c90957230c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 486,
+      "file": "parts/486.svg",
+      "r3_sha256": "9e5c3db9493c6b510a35446c8b9f5761c856d823fab2771370807af1af437a4a",
+      "r4_sha256": "9e5c3db9493c6b510a35446c8b9f5761c856d823fab2771370807af1af437a4a",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 487,
+      "file": "parts/487.svg",
+      "r3_sha256": "82d9558c2e5df44e58fece416fbcb87203994a509fc3f98216ca327f8a9e0077",
+      "r4_sha256": "82d9558c2e5df44e58fece416fbcb87203994a509fc3f98216ca327f8a9e0077",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 488,
+      "file": "parts/488.svg",
+      "r3_sha256": "d3af92224e494727c5265f9f8b0f63836b4a784b08e414e9b9667946be5083b6",
+      "r4_sha256": "d3af92224e494727c5265f9f8b0f63836b4a784b08e414e9b9667946be5083b6",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 489,
+      "file": "parts/489.svg",
+      "r3_sha256": "7eee4da58bffaf890da8030cc062c0067ee08ac98d21e3ea477983f178316011",
+      "r4_sha256": "7eee4da58bffaf890da8030cc062c0067ee08ac98d21e3ea477983f178316011",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 490,
+      "file": "parts/490.svg",
+      "r3_sha256": "88c0efa37bdc314d8d853497390cc6ba25cb7b64b3d41466f613c33835796fae",
+      "r4_sha256": "88c0efa37bdc314d8d853497390cc6ba25cb7b64b3d41466f613c33835796fae",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 491,
+      "file": "parts/491.svg",
+      "r3_sha256": "b569e3666198e8f5bdb5f358017a0fd7a2be01bb7082eed177a16a067edf0429",
+      "r4_sha256": "b569e3666198e8f5bdb5f358017a0fd7a2be01bb7082eed177a16a067edf0429",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 493,
+      "file": "parts/493.svg",
+      "r3_sha256": "39c0f1ecedbcdec9488712c81f2eb4b56285d08056a0c0d215198a923423be56",
+      "r4_sha256": "39c0f1ecedbcdec9488712c81f2eb4b56285d08056a0c0d215198a923423be56",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 494,
+      "file": "parts/494.svg",
+      "r3_sha256": "d08aec8281a1e53ddfea869c651c794c1b2b14519c16e0ca72dd884d23f2fefa",
+      "r4_sha256": "d08aec8281a1e53ddfea869c651c794c1b2b14519c16e0ca72dd884d23f2fefa",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 495,
+      "file": "parts/495.svg",
+      "r3_sha256": "36ca589bb2197da660196ce991ef7cb0ff7930e8fd0546acf2597103ddddc1b9",
+      "r4_sha256": "36ca589bb2197da660196ce991ef7cb0ff7930e8fd0546acf2597103ddddc1b9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 496,
+      "file": "parts/496.svg",
+      "r3_sha256": "acff4bb6b2e58a1a182d6c953c8f686bc085fdfcd627f2a56782ed08dbfaac02",
+      "r4_sha256": "acff4bb6b2e58a1a182d6c953c8f686bc085fdfcd627f2a56782ed08dbfaac02",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 497,
+      "file": "parts/497.svg",
+      "r3_sha256": "04fb97f5148e2d7f5b8d437e511e66dd70eef06447ecca7276dfe625eefc9c78",
+      "r4_sha256": "04fb97f5148e2d7f5b8d437e511e66dd70eef06447ecca7276dfe625eefc9c78",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 503,
+      "file": "preserved/503.svg",
+      "r3_sha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81",
+      "r4_sha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 504,
+      "file": "preserved/504.svg",
+      "r3_sha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8",
+      "r4_sha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 505,
+      "file": "preserved/505.svg",
+      "r3_sha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d",
+      "r4_sha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 508,
+      "file": "variants/508.svg",
+      "r3_sha256": "e60e7512b2e4c8b77a6858643aa80429157a589e44746b8f80ceb878683cbe64",
+      "r4_sha256": "e60e7512b2e4c8b77a6858643aa80429157a589e44746b8f80ceb878683cbe64",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 509,
+      "file": "variants/509.svg",
+      "r3_sha256": "66a46d7a44fc580567acad42471bbf23c57afccb35b215483b4c2581d667026b",
+      "r4_sha256": "66a46d7a44fc580567acad42471bbf23c57afccb35b215483b4c2581d667026b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 510,
+      "file": "variants/510.svg",
+      "r3_sha256": "dfa88ce3b2a95355489fed64445c713628cd9f5adc24c369ac61967b84cc7cb3",
+      "r4_sha256": "dfa88ce3b2a95355489fed64445c713628cd9f5adc24c369ac61967b84cc7cb3",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 511,
+      "file": "variants/511.svg",
+      "r3_sha256": "52c9193bbae1a4d80ee56dfd0de35015a77e5ca705269a366862be1cfeda1a9b",
+      "r4_sha256": "52c9193bbae1a4d80ee56dfd0de35015a77e5ca705269a366862be1cfeda1a9b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 512,
+      "file": "variants/512.svg",
+      "r3_sha256": "2e0712937a7897345f9f5e2e2f1e5049dacbd6be725a62e29e5a3bec7145dd41",
+      "r4_sha256": "2e0712937a7897345f9f5e2e2f1e5049dacbd6be725a62e29e5a3bec7145dd41",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 514,
+      "file": "variants/514.svg",
+      "r3_sha256": "103dde06f680844c42957a599dab7cd9b8d832cecde50e131e67a64bfe09edd9",
+      "r4_sha256": "103dde06f680844c42957a599dab7cd9b8d832cecde50e131e67a64bfe09edd9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 515,
+      "file": "variants/515.svg",
+      "r3_sha256": "99abf8f34befc29956cebc675a7b2edff05a035ae67f9664d1a38ab3433d4261",
+      "r4_sha256": "99abf8f34befc29956cebc675a7b2edff05a035ae67f9664d1a38ab3433d4261",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 516,
+      "file": "variants/516.svg",
+      "r3_sha256": "368ddc7b78923b4b07e22fbc1ecdb896ed9757854ff857c7c0d61befd85b7216",
+      "r4_sha256": "368ddc7b78923b4b07e22fbc1ecdb896ed9757854ff857c7c0d61befd85b7216",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 521,
+      "file": "preserved/521.svg",
+      "r3_sha256": "a04e72a4e081112a24f8b980d7a7e7084ae170d8f040fd23f22542e3802b8b66",
+      "r4_sha256": "a04e72a4e081112a24f8b980d7a7e7084ae170d8f040fd23f22542e3802b8b66",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 522,
+      "file": "variants/522.svg",
+      "r3_sha256": "e2d815dd147f03cadad57f1ca60ca99bd56c321cc6ed016d7737d045eb1a79ab",
+      "r4_sha256": "e2d815dd147f03cadad57f1ca60ca99bd56c321cc6ed016d7737d045eb1a79ab",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 523,
+      "file": "preserved/523.svg",
+      "r3_sha256": "4acca2b5448216098678a770d41ed1ed98059f0a10660180aca83a841865e450",
+      "r4_sha256": "4acca2b5448216098678a770d41ed1ed98059f0a10660180aca83a841865e450",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 524,
+      "file": "variants/524.svg",
+      "r3_sha256": "f075c6b6c521d317295569a9f2c222675113a4337aa28bb673e11e5f3b901b49",
+      "r4_sha256": "f075c6b6c521d317295569a9f2c222675113a4337aa28bb673e11e5f3b901b49",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 525,
+      "file": "preserved/525.svg",
+      "r3_sha256": "5f992037915f4aca31aa794e09824c0facadb217cecf0f9db3ddcfc98c17ac1a",
+      "r4_sha256": "5f992037915f4aca31aa794e09824c0facadb217cecf0f9db3ddcfc98c17ac1a",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 526,
+      "file": "variants/526.svg",
+      "r3_sha256": "af6e58638820c5d83580a4592e35713ef93c014d736d630fb53123a6dbda8187",
+      "r4_sha256": "af6e58638820c5d83580a4592e35713ef93c014d736d630fb53123a6dbda8187",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 527,
+      "file": "preserved/527.svg",
+      "r3_sha256": "167cce8db9207fd9ef93f5864bb6d094e050ef5f94e2f187ad37290f09f7217b",
+      "r4_sha256": "167cce8db9207fd9ef93f5864bb6d094e050ef5f94e2f187ad37290f09f7217b",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 528,
+      "file": "variants/528.svg",
+      "r3_sha256": "edc0085f2d87eaf62cc8b4b67693e5d749040a9354e0e80a9797b9aa8488f7b1",
+      "r4_sha256": "edc0085f2d87eaf62cc8b4b67693e5d749040a9354e0e80a9797b9aa8488f7b1",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 529,
+      "file": "preserved/529.svg",
+      "r3_sha256": "0f907520be3287147d18a7b9e5aac8508b1fc5122980f111d1d38b9e21741a4f",
+      "r4_sha256": "0f907520be3287147d18a7b9e5aac8508b1fc5122980f111d1d38b9e21741a4f",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 530,
+      "file": "variants/530.svg",
+      "r3_sha256": "915729af67125246c43dcbfba5e0f3c81ca1710e80dee5a0edcde9a15bd8fc53",
+      "r4_sha256": "915729af67125246c43dcbfba5e0f3c81ca1710e80dee5a0edcde9a15bd8fc53",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 531,
+      "file": "preserved/531.svg",
+      "r3_sha256": "59661a61b0f381d5939b968535fa79706a01afb86e1bad89a4d4fb24a012bad8",
+      "r4_sha256": "59661a61b0f381d5939b968535fa79706a01afb86e1bad89a4d4fb24a012bad8",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 532,
+      "file": "variants/532.svg",
+      "r3_sha256": "5510023a57023f7739483afa54518130120f9d795c63bab24aeb5b3a12f1b8b7",
+      "r4_sha256": "5510023a57023f7739483afa54518130120f9d795c63bab24aeb5b3a12f1b8b7",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 533,
+      "file": "preserved/533.svg",
+      "r3_sha256": "2b12198338f53e03eebce39c909bf5c83a5e67d8eb31689f56e6be500000c99c",
+      "r4_sha256": "2b12198338f53e03eebce39c909bf5c83a5e67d8eb31689f56e6be500000c99c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 534,
+      "file": "variants/534.svg",
+      "r3_sha256": "74d5448c31dac5d0e7949c36d78fe8f2561c7bb7b0c81d749d486c137ea0036c",
+      "r4_sha256": "74d5448c31dac5d0e7949c36d78fe8f2561c7bb7b0c81d749d486c137ea0036c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 535,
+      "file": "preserved/535.svg",
+      "r3_sha256": "747d65cea28bbf91f8c0b92b7a5e7c0a1c36e57ad976095a76ce4691f620470c",
+      "r4_sha256": "747d65cea28bbf91f8c0b92b7a5e7c0a1c36e57ad976095a76ce4691f620470c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 536,
+      "file": "variants/536.svg",
+      "r3_sha256": "a1ef7a848a55d80482e9ec856ee513a738f4f27e65a6b9795894980acc060606",
+      "r4_sha256": "a1ef7a848a55d80482e9ec856ee513a738f4f27e65a6b9795894980acc060606",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 537,
+      "file": "preserved/537.svg",
+      "r3_sha256": "ac5614bc6e3db96c76ed1bead72cad8b515a668321088159926dd92220629aad",
+      "r4_sha256": "ac5614bc6e3db96c76ed1bead72cad8b515a668321088159926dd92220629aad",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 538,
+      "file": "preserved/538.svg",
+      "r3_sha256": "017fd60a6f0ff653400fe70a4c4c3ab4159458317d4a1382157d24554bb6545d",
+      "r4_sha256": "017fd60a6f0ff653400fe70a4c4c3ab4159458317d4a1382157d24554bb6545d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 539,
+      "file": "preserved/539.svg",
+      "r3_sha256": "e9a1056c745be03aee3832e305e59fb7b47f9307f56c6eead8f5d95ac83c686d",
+      "r4_sha256": "e9a1056c745be03aee3832e305e59fb7b47f9307f56c6eead8f5d95ac83c686d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 540,
+      "file": "preserved/540.svg",
+      "r3_sha256": "c0a43317bb761ac754579c05676076e2498cb08650632559f175348c9475e79d",
+      "r4_sha256": "c0a43317bb761ac754579c05676076e2498cb08650632559f175348c9475e79d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 541,
+      "file": "preserved/541.svg",
+      "r3_sha256": "88869990674fbf83d192a8fbb217c31b7d3af0ba596f894a9763e8896af6569d",
+      "r4_sha256": "88869990674fbf83d192a8fbb217c31b7d3af0ba596f894a9763e8896af6569d",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 542,
+      "file": "variants/542.svg",
+      "r3_sha256": "1dabf3516bd1dc79c3c9b198ba0167f65fbe9b1cc92d37cd9c439db36afb17d6",
+      "r4_sha256": "1dabf3516bd1dc79c3c9b198ba0167f65fbe9b1cc92d37cd9c439db36afb17d6",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 543,
+      "file": "preserved/543.svg",
+      "r3_sha256": "8d17aad4b0f2c6b74024823e430634568b3af75453b46c0c1d3d258ec58235db",
+      "r4_sha256": "8d17aad4b0f2c6b74024823e430634568b3af75453b46c0c1d3d258ec58235db",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 544,
+      "file": "variants/544.svg",
+      "r3_sha256": "ce534c263ed8a107d5d36e14d3d8489d7b49e50abbce3cf8c1787a7bd2bb07e2",
+      "r4_sha256": "ce534c263ed8a107d5d36e14d3d8489d7b49e50abbce3cf8c1787a7bd2bb07e2",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 545,
+      "file": "preserved/545.svg",
+      "r3_sha256": "9d1682252a2944e2039843415c94e9672db9fc27abe80458364d9ad3bd51c73e",
+      "r4_sha256": "9d1682252a2944e2039843415c94e9672db9fc27abe80458364d9ad3bd51c73e",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 546,
+      "file": "preserved/546.svg",
+      "r3_sha256": "94d8c86ac26d50b9831512c03dcf13eb29d2b2440bd5d5cdf641a958488980fd",
+      "r4_sha256": "94d8c86ac26d50b9831512c03dcf13eb29d2b2440bd5d5cdf641a958488980fd",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 547,
+      "file": "preserved/547.svg",
+      "r3_sha256": "8534cfa50348b5902d80732bc93bd3a2dec3ed0621f566ce8108dde3748c5652",
+      "r4_sha256": "8534cfa50348b5902d80732bc93bd3a2dec3ed0621f566ce8108dde3748c5652",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 548,
+      "file": "preserved/548.svg",
+      "r3_sha256": "6445baca231866070b679390848ef12b8be283f135124703056e34e288158aec",
+      "r4_sha256": "6445baca231866070b679390848ef12b8be283f135124703056e34e288158aec",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 549,
+      "file": "preserved/549.svg",
+      "r3_sha256": "61fa0b20907aa372ad69f66b5e80d882963a06edfd52350e84fadbb2361aec8e",
+      "r4_sha256": "61fa0b20907aa372ad69f66b5e80d882963a06edfd52350e84fadbb2361aec8e",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 550,
+      "file": "preserved/550.svg",
+      "r3_sha256": "5e6df01bdb89cda66d24ddcd1086c19c97d84adf790fb846e68a3ed9e980c5c4",
+      "r4_sha256": "5e6df01bdb89cda66d24ddcd1086c19c97d84adf790fb846e68a3ed9e980c5c4",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 551,
+      "file": "preserved/551.svg",
+      "r3_sha256": "bb5c4a443e438ea1835ae2d2d1cd728e8e4099fa28eba6eb6212b9ac4f178ced",
+      "r4_sha256": "bb5c4a443e438ea1835ae2d2d1cd728e8e4099fa28eba6eb6212b9ac4f178ced",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 552,
+      "file": "preserved/552.svg",
+      "r3_sha256": "9f84baafd42010e9edd2426e1ff34e4ac31af3b33b758d07eacdcc6c34023217",
+      "r4_sha256": "9f84baafd42010e9edd2426e1ff34e4ac31af3b33b758d07eacdcc6c34023217",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 553,
+      "file": "preserved/553.svg",
+      "r3_sha256": "9ac03f7e1a36f92e7bee5964571bdcedbfce1c75153dd22a123481f692071ee0",
+      "r4_sha256": "9ac03f7e1a36f92e7bee5964571bdcedbfce1c75153dd22a123481f692071ee0",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 554,
+      "file": "preserved/554.svg",
+      "r3_sha256": "82d72c9cec17e19abd2a4c5186d7ba11c7b763e9026fd9039644f34fc6d6eede",
+      "r4_sha256": "82d72c9cec17e19abd2a4c5186d7ba11c7b763e9026fd9039644f34fc6d6eede",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 555,
+      "file": "preserved/555.svg",
+      "r3_sha256": "559600a2dd2a3066be4b9a6a2a9415409e24c26d130f364301b950e1af24e3fb",
+      "r4_sha256": "559600a2dd2a3066be4b9a6a2a9415409e24c26d130f364301b950e1af24e3fb",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 556,
+      "file": "preserved/556.svg",
+      "r3_sha256": "88a3630a1f1c5d917074838cb81a72dde002a9ac77695fb913ea389137ac9132",
+      "r4_sha256": "88a3630a1f1c5d917074838cb81a72dde002a9ac77695fb913ea389137ac9132",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 557,
+      "file": "preserved/557.svg",
+      "r3_sha256": "0619979e668673431eda7b5c457474d093b150922c5061a1f9cba9d1d6cfd4f8",
+      "r4_sha256": "0619979e668673431eda7b5c457474d093b150922c5061a1f9cba9d1d6cfd4f8",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 561,
+      "file": "parts/561.svg",
+      "r3_sha256": "2284e3b8e0be6aa71dffb4b05fa285927aec0eed09d8192bfbf5c067df629807",
+      "r4_sha256": "299021268b92354238d42d96cfff643f2e23813e8ab4a0a9b89d5bf990353bec",
+      "byte_identical": false,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 565,
+      "file": "variants/565.svg",
+      "r3_sha256": "25ea1c88600f35b6272ea359984be7d4a06010bc23249692a91243f7d100e210",
+      "r4_sha256": "25ea1c88600f35b6272ea359984be7d4a06010bc23249692a91243f7d100e210",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 566,
+      "file": "variants/566.svg",
+      "r3_sha256": "a0f0cfa90773948730e8af07624816c99f3cc2023ff3d74b1d96b9696399cf23",
+      "r4_sha256": "a0f0cfa90773948730e8af07624816c99f3cc2023ff3d74b1d96b9696399cf23",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 567,
+      "file": "variants/567.svg",
+      "r3_sha256": "d90f66a4c06d70d7c35723116b1a99782c7635a51db10801fc1cc0f8fa682047",
+      "r4_sha256": "d90f66a4c06d70d7c35723116b1a99782c7635a51db10801fc1cc0f8fa682047",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 568,
+      "file": "variants/568.svg",
+      "r3_sha256": "498b8cf4ce38bcb7a91d9ac6667cb77f409baa0d87e803b38855fcbd8ce65a83",
+      "r4_sha256": "498b8cf4ce38bcb7a91d9ac6667cb77f409baa0d87e803b38855fcbd8ce65a83",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 569,
+      "file": "variants/569.svg",
+      "r3_sha256": "dcfbcc673c3cb971051ae747732115054bb5ea985fe80ca7c27151a1fa721afd",
+      "r4_sha256": "dcfbcc673c3cb971051ae747732115054bb5ea985fe80ca7c27151a1fa721afd",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 570,
+      "file": "variants/570.svg",
+      "r3_sha256": "83615bdd7d84e15d0d0698dac9099cc3983e9a346f422f759058374ccbae56d9",
+      "r4_sha256": "83615bdd7d84e15d0d0698dac9099cc3983e9a346f422f759058374ccbae56d9",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 571,
+      "file": "variants/571.svg",
+      "r3_sha256": "8bc29775dcb81b197c8f17d47cf0163a429a47ac942f4ce098649a19c0f9782e",
+      "r4_sha256": "8bc29775dcb81b197c8f17d47cf0163a429a47ac942f4ce098649a19c0f9782e",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 572,
+      "file": "variants/572.svg",
+      "r3_sha256": "3b4d9260262f20dde7f9e2d78673f65440a5331c27ec34270743460c9273ba9c",
+      "r4_sha256": "3b4d9260262f20dde7f9e2d78673f65440a5331c27ec34270743460c9273ba9c",
+      "byte_identical": true,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 575,
+      "file": "variants/575.svg",
+      "r3_sha256": "c1597ce39297f4328ec8e94ae3e317dc74bef058e4a1de65638375875f73a2ad",
+      "r4_sha256": "6c925a95c401554623f23a4c4f4ccba3a1ba480fff1f2781b1fa42d27d688f15",
+      "byte_identical": false,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 577,
+      "file": "variants/577.svg",
+      "r3_sha256": "07b43a5531a34aa7bce7ae2df1a3016c09f5ae9ca74c40b36dd69485057da310",
+      "r4_sha256": "c0dd2013e6a29099a553871d35602dd137f69c1e93ef600c17ee222e71f8180c",
+      "byte_identical": false,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    },
+    {
+      "id": 578,
+      "file": "variants/578.svg",
+      "r3_sha256": "138e23c1b7a702c872e33aba721020119bd754331021602f31668f102858dc95",
+      "r4_sha256": "3013e83b92b17afbe25c7ee659da86402b2479a32945ed96fddd002cb602e6b7",
+      "byte_identical": false,
+      "r3_manifest_hash_matches": true,
+      "r4_manifest_hash_matches": true
+    }
+  ]
+}

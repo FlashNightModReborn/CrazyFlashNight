@@ -1,0 +1,38 @@
+{
+  "passed": 517,
+  "failed": 0,
+  "cases": 52,
+  "runId": "6d354d82c8434d84968fc0a9dcdf6b42",
+  "files": [
+    {
+      "source": "scripts/flashlog.txt",
+      "archive": "flashlog.txt",
+      "sha256": "083da279efe6e403f7d8c423d3b4a57941e07f52861d01e2afd66110200b6727",
+      "bytes": 3412838
+    },
+    {
+      "source": "scripts/compiler_errors.txt",
+      "archive": "compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "source": "scripts/compile_output.txt",
+      "archive": "compile_output.txt",
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728",
+      "bytes": 19
+    },
+    {
+      "source": "scripts/Cf6SoldierNativeHost.swf",
+      "archive": "Cf6SoldierNativeHost.swf",
+      "sha256": "77bc5e68e90dbcfb81ad7a1a96e7adbb4ff4c69f431107c2205a0124055ca6d4",
+      "bytes": 856455
+    },
+    {
+      "source": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "archive": "Cf6SoldierAssetTest.as",
+      "sha256": "743a9f35a691cb3e5c01313f1790347ca1cbac7d9a0f70450685df206b222770",
+      "bytes": 28303
+    }
+  ]
+}

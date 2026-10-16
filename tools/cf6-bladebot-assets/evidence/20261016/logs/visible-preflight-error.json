@@ -1,0 +1,8 @@
+{
+  "stage": "before prepareExperiment",
+  "workerStarted": false,
+  "error": "Worker roots must be absolute",
+  "cause": "relative plan path passed to readExperimentPlan",
+  "resolution": "resolve plan path before reading",
+  "timeLocal": "2026-10-16T00:06"
+}

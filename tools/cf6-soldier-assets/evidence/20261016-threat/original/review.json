@@ -1,0 +1,182 @@
+{
+  "schema": "cf6-soldier.original-knife-review.v1",
+  "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "exeEmbeddedBytesReverified": true,
+  "evidenceKind": "read-only-original-avm1-audit",
+  "ordinarySprite": 517,
+  "shieldSprite": 573,
+  "hitFrame": 14,
+  "attackType": "single onClipEvent(load) hitTest then direct global player HP subtraction",
+  "damageExpression": "_root.主角hp -= _parent._parent.攻击力",
+  "randomCriticalBranchInHitScript": false,
+  "executeThresholdInHitScript": false,
+  "explicitConfigurationCount": 15,
+  "explicitAttackValues": [
+    20
+  ],
+  "missingAssignmentCount": 1,
+  "missingAssignmentPath": "DefineSprite_1180\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_208\\CLIPACTIONRECORD onClipEvent(load).as",
+  "limitations": [
+    "Original game incident was not reproduced. No claim that overlap or missing attack data caused the remembered instant death.",
+    "One shield placement lacks an explicit attack value; its live reachability and effective runtime value are unverified.",
+    "FFDec obfuscated decompilation alone was insufficient. Recovered text was reconciled with P-code, including the constant pool on the real control-flow path."
+  ],
+  "files": [
+    {
+      "path": "ordinary-knife.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_517\\frame_14\\PlaceObject2_290_27\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "9b30ef0973b979c7227ba4ba36fa3997e57096d8994b9a639d08983716150bbd",
+      "bytes": 456
+    },
+    {
+      "path": "ordinary-knife.pcode.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\pcode\\scripts\\DefineSprite_517\\frame_14\\PlaceObject2_290_27\\CLIPACTIONRECORD onClipEvent(load).pcode",
+      "sha256": "96ccc15c454931ed3023d38ab8fb1cb143e399245308c35b6386d88ee18ee346",
+      "bytes": 4118
+    },
+    {
+      "path": "ordinary-movement-load.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_517\\frame_6\\PlaceObject2_281_27\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "34007f1f1177b95386f8de6b5af2999367316d136425dea5ec5328f40381e4d8",
+      "bytes": 232
+    },
+    {
+      "path": "ordinary-movement-enterFrame.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_517\\frame_6\\PlaceObject2_281_27\\CLIPACTIONRECORD onClipEvent(enterFrame).as",
+      "sha256": "fc3acc06b5697c4b1141a6631a4f7a4f12baa4342ec247070056e582fdfdab3b",
+      "bytes": 599
+    },
+    {
+      "path": "shield-knife.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_573\\frame_14\\PlaceObject2_290_27\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "659c6ffde94a6e1328379dacd3d19c10612b83978dc3a1a17afec014c9ef033a",
+      "bytes": 457
+    },
+    {
+      "path": "shield-knife.pcode.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\pcode\\scripts\\DefineSprite_573\\frame_14\\PlaceObject2_290_27\\CLIPACTIONRECORD onClipEvent(load).pcode",
+      "sha256": "e716a269e277d14c3de395f53d5e2dfaf6c88906f8366aefb21bb734301941bd",
+      "bytes": 5233
+    },
+    {
+      "path": "shield-movement-load.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_573\\frame_6\\PlaceObject2_281_27\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "c6087293004fe9085c163fdb8668c01a00f5604e0e9e4005abbe352efbc7ceae",
+      "bytes": 232
+    },
+    {
+      "path": "shield-movement-enterFrame.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_573\\frame_6\\PlaceObject2_281_27\\CLIPACTIONRECORD onClipEvent(enterFrame).as",
+      "sha256": "46658fcb1bf6f4a5008ef52c5becb290911c6b2e89dbbd197b5ef9eafd1d98ff",
+      "bytes": 599
+    },
+    {
+      "path": "config-01.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1180\\frame_1\\PlaceObject2_559_敌人-特种兵_164\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "21d566c9d756441b3d7f6fd456640cf3482bb8e7e75a3c5b3682dca5b76603bc",
+      "bytes": 420
+    },
+    {
+      "path": "config-02.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1180\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_208\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "65eb3d57ede780577744de770142f8a7eb99ddd9e77c5aaef6471f674cbf1a30",
+      "bytes": 422
+    },
+    {
+      "path": "config-03.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1778\\frame_1\\PlaceObject2_1585_91\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "9a46ac9da39baa2e786f21c5e30a3af1ec9c1ad8040e8629cb22006050e282d8",
+      "bytes": 476
+    },
+    {
+      "path": "config-04.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1778\\frame_1\\PlaceObject2_1585_93\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "9a46ac9da39baa2e786f21c5e30a3af1ec9c1ad8040e8629cb22006050e282d8",
+      "bytes": 476
+    },
+    {
+      "path": "config-05.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1869\\frame_1\\PlaceObject2_1434_204\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "888d634133e4d2d594e13f1a8806adc079bf2741f1cedf2f9e41e52de80f6a85",
+      "bytes": 543
+    },
+    {
+      "path": "config-06.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1869\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_206\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "fb7dff511dc1d0ce03bc3f3713c7266b5a30941e63499a66bb60733afe81288c",
+      "bytes": 443
+    },
+    {
+      "path": "config-07.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1917\\frame_1\\PlaceObject2_559_敌人-特种兵_257\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "2838c491f78a9c631c370991a6ac4ac116f6465683bed98671f8d875a224a868",
+      "bytes": 394
+    },
+    {
+      "path": "config-08.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1917\\frame_1\\PlaceObject2_559_敌人-特种兵_363\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "2c88168aa8f2f8feab012b615c6fb9484310f099cd3a63cafbd02d27de4200a5",
+      "bytes": 443
+    },
+    {
+      "path": "config-09.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1920\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_100\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "9eabf4d440dde59f67a704721869c88b3ea7adbe6c82161e512d9f5e7e593ad7",
+      "bytes": 443
+    },
+    {
+      "path": "config-10.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1927\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_540\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "1eb5922d0d2b56e01980f823b569598afa7cc14ba6ad09dd665e4531c45d800e",
+      "bytes": 443
+    },
+    {
+      "path": "config-11.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1927\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_585\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "23b3f5228e4b84c83a44ef87459641c280301fed0e462850e4acb4fa6465d3fc",
+      "bytes": 441
+    },
+    {
+      "path": "config-12.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1954\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_989\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "6896306f777ecd8aa811d56d120e70e344367339f155b2320d845cf0d3500d85",
+      "bytes": 442
+    },
+    {
+      "path": "config-13.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1977\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_154\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "8c8fd3d86d1902254314a72ed7ffa15b4a0f24cd0c33de1e7830ab9943144f4c",
+      "bytes": 443
+    },
+    {
+      "path": "config-14.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1985\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_167\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "9786f43ed28228b336a6f8438e40bb6a65ee95c044ea550dacbadb0666cea918",
+      "bytes": 443
+    },
+    {
+      "path": "config-15.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1985\\frame_1\\PlaceObject2_580_敌人-特种兵-带盾_297\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "6b045de2e543722a0779fb1bef4250af1bdd983a5d9decb1280ed9efcfc9b171",
+      "bytes": 443
+    },
+    {
+      "path": "config-16.as.txt",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\deobfuscated-export\\scripts\\DefineSprite_1992\\frame_1\\PlaceObject2_1434_225\\CLIPACTIONRECORD onClipEvent(load).as",
+      "sha256": "fb401276340bc4de5a5c2a02d8e5c1fc184bbf40d7a3c3b30de5ba5375ea3e57",
+      "bytes": 556
+    },
+    {
+      "path": "source-identity.json",
+      "originalPath": "tmp\\monster-reskin\\cf6-unit-audit-20261013\\source-identity.json",
+      "sha256": "80c77160433e99eb96db211d1c308f702191625e2358c69aac981824cb138baa",
+      "bytes": 375
+    },
+    {
+      "path": "config-map.json",
+      "originalPath": "tmp\\cf6-soldier-20261016\\knife-audit\\soldier-original-configs.json",
+      "sha256": "2267c9c9c0b0da68f92263cc650b05877848b0c856c90d97be6c8680986d3ead",
+      "bytes": 4894
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "purpose": "Same-level side swaps: 12 Black Iron and 6 Ark Claw natural fights. Authored air height and held-pose guard corrected, no rival edits.",
+  "supersedesUnexecuted": [
+    "r7b",
+    "r7c"
+  ],
+  "batches": [
+    {
+      "id": "r8a",
+      "cases": [
+        [
+          "blackiron",
+          30
+        ],
+        [
+          "arkclaw",
+          30
+        ],
+        [
+          "blackiron",
+          60
+        ]
+      ],
+      "mode": "pilot"
+    },
+    {
+      "id": "r8b",
+      "cases": [
+        [
+          "blackiron",
+          30
+        ],
+        [
+          "blackiron",
+          60
+        ],
+        [
+          "blackiron",
+          99
+        ]
+      ],
+      "mode": "confirm"
+    },
+    {
+      "id": "r8c",
+      "cases": [
+        [
+          "blackiron",
+          99
+        ],
+        [
+          "arkclaw",
+          60
+        ],
+        [
+          "arkclaw",
+          99
+        ]
+      ],
+      "mode": "confirm"
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩1" itemID="6aa00000-d01a4fc2" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="207ad0e4be8a5376-遮罩1">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!660 2200|640 2220|440 2260[340 2330 305 2461|300 2500|318 2620|320 2660[409 2801 546 2891[560 2900 580 2900[640 2980 820 2940[870 2890 940 2860|962 2822|980 2800|980 2760|980 2720[1842 1952 2680 1160|2700 1140[2686 1066 2710 1033[2720 1020 2720 1000|2703 880|2700 840[2662 768 2605 715|2580 680[2492 648 2360 660|2317 695|2300 700|2286 722[2280 740 2280 760[1448 1458 660 2200" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="0">
+                        <matrix>
+                          <Matrix a="0.0282756771" b="0" c="0" d="0.029274271" tx="25.1747529" ty="121.081482"/>
+                        </matrix>
+                        <GradientEntry color="#E0D7D0" ratio="0"/>
+                        <GradientEntry color="#B4A6A5" ratio="0.18"/>
+                        <GradientEntry color="#6C5966" ratio="0.4"/>
+                        <GradientEntry color="#362732" ratio="0.67"/>
+                        <GradientEntry color="#201822" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.33333333" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#251C28"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!600 2250[474 2256 400 2320[326 2383 320 2504[313 2567 333 2628[353 2690 393 2744[434 2799 489 2842[544 2885 607 2910[660 2931 713 2935[766 2939 816 2924[866 2910 908 2876[950 2841 980 2784|940 2564|600 2250" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="pad">
+                        <matrix>
+                          <Matrix a="0.0109863281" b="0.0118001302" c="-0.0118001302" d="0.0109863281" tx="83" ty="82.1833333"/>
+                        </matrix>
+                        <GradientEntry color="#211B22" ratio="0"/>
+                        <GradientEntry color="#44363F" ratio="0.17"/>
+                        <GradientEntry color="#8B797F" ratio="0.3"/>
+                        <GradientEntry color="#C9BEBC" ratio="0.38"/>
+                        <GradientEntry color="#E4DCD7" ratio="0.43"/>
+                        <GradientEntry color="#A29098" ratio="0.49"/>
+                        <GradientEntry color="#463640" ratio="0.61"/>
+                        <GradientEntry color="#251D26" ratio="0.8"/>
+                        <GradientEntry color="#17141B" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.33333333" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#221B25"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!607 2250[552 2310 558 2377[564 2444 620 2524[658 2572 701 2612[745 2653 792 2681[838 2710 884 2721[931 2733 973 2724|2693 1144[2715 1042 2702 944[2690 847 2627 770[2599 733 2568 707[2536 681 2499 670[2462 660 2419 669[2377 678 2327 710|607 2250" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.666666667" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#8E7383"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!667 2290|2373 777" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#493643"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!573 2337[564 2395 584 2453[605 2510 647 2562[689 2614 744 2654[799 2694 860 2717" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

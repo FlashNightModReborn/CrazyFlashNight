@@ -1,0 +1,55 @@
+{
+  "groupId": "threat",
+  "mode": "parallel",
+  "outcomes": [
+    {
+      "jobId": "soldier-w1",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-90a6cac5500c4b39ace7830c91064619\\assignment-90a6cac5500c4b39ace7830c91064619\\attempt-90a6cac5500c4b39ace7830c91064619\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "completed",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:941eea145f3224801d28c657cb7b19db5eae9d11d6d08776ad690d06b97d7d14",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    },
+    {
+      "jobId": "soldier-w2",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-67765240e8544cf591cea54770d39308\\assignment-67765240e8544cf591cea54770d39308\\attempt-67765240e8544cf591cea54770d39308\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "completed",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:2ea5d925c763117205ef9ca2b3be7944d8ebf3e1300b7665570e555a81dbca3a",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    }
+  ],
+  "seedSources": [
+    {
+      "workerId": "soldier-w01",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    },
+    {
+      "workerId": "soldier-w02",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "seedSourcesUnchanged": true,
+  "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r1-20261016\\groups\\threat\\save-protection.json",
+  "globalSaveUnchanged": true,
+  "stopBeforeNextGroup": false,
+  "startedAt": "2026-10-16T07:50:54.393Z",
+  "completedAt": "2026-10-16T07:53:45.068Z",
+  "wallDurationMs": 170675
+}

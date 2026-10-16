@@ -1,0 +1,1914 @@
+{
+  "group": "bladebot",
+  "roots": [
+    {
+      "root": 925,
+      "linkage": "敌人-大刀机器人",
+      "labels": [
+        {
+          "frame": 1,
+          "label": "站1",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              22.5,
+              -76.55
+            ],
+            "placedAt": 1,
+            "id": 901
+          }
+        },
+        {
+          "frame": 15,
+          "label": "走",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              21.5,
+              -80.7
+            ],
+            "placedAt": 15,
+            "id": 902,
+            "ratio": 14
+          }
+        },
+        {
+          "frame": 37,
+          "label": "攻1",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              4.75,
+              -62.05
+            ],
+            "placedAt": 37,
+            "id": 906,
+            "ratio": 36
+          }
+        },
+        {
+          "frame": 43,
+          "label": "攻2",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              26.5,
+              -53.5
+            ],
+            "placedAt": 43,
+            "id": 910,
+            "ratio": 42
+          }
+        },
+        {
+          "frame": 46,
+          "label": "攻3",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              21.5,
+              -79.55
+            ],
+            "placedAt": 46,
+            "id": 912,
+            "ratio": 45
+          }
+        },
+        {
+          "frame": 50,
+          "label": "被击中",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              8.95,
+              -59.95
+            ],
+            "placedAt": 50,
+            "id": 913,
+            "ratio": 49,
+            "name": "被击中"
+          }
+        },
+        {
+          "frame": 60,
+          "label": "被抓",
+          "body": null
+        },
+        {
+          "frame": 70,
+          "label": "-倒",
+          "body": null
+        },
+        {
+          "frame": 77,
+          "label": "死",
+          "body": {
+            "matrix": [
+              1,
+              0,
+              0,
+              1,
+              7.0,
+              -60.15
+            ],
+            "placedAt": 77,
+            "id": 924,
+            "ratio": 76
+          }
+        }
+      ]
+    }
+  ],
+  "coreBodyIds": [
+    890,
+    891,
+    892,
+    893,
+    894,
+    895,
+    896,
+    897,
+    898,
+    900
+  ],
+  "explicitWeaponOrShieldIds": [
+    899
+  ],
+  "sharedCloneIds": [],
+  "sequences": [
+    {
+      "id": 901,
+      "frames": 20,
+      "labels": [],
+      "dependencies": [
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        901
+      ]
+    },
+    {
+      "id": 902,
+      "frames": 9,
+      "labels": [],
+      "dependencies": [
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        902
+      ]
+    },
+    {
+      "id": 906,
+      "frames": 31,
+      "labels": [],
+      "dependencies": [
+        277,
+        290,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        903,
+        905,
+        906
+      ]
+    },
+    {
+      "id": 910,
+      "frames": 37,
+      "labels": [],
+      "dependencies": [
+        277,
+        280,
+        281,
+        290,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        909,
+        910
+      ]
+    },
+    {
+      "id": 912,
+      "frames": 49,
+      "labels": [],
+      "dependencies": [
+        277,
+        290,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        912
+      ]
+    },
+    {
+      "id": 913,
+      "frames": 25,
+      "labels": [
+        {
+          "frame": 1,
+          "label": "a0"
+        },
+        {
+          "frame": 13,
+          "label": "a1"
+        }
+      ],
+      "dependencies": [
+        95,
+        96,
+        97,
+        98,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        107,
+        108,
+        109,
+        110,
+        111,
+        112,
+        113,
+        114,
+        123,
+        125,
+        127,
+        129,
+        131,
+        133,
+        135,
+        137,
+        139,
+        141,
+        143,
+        145,
+        147,
+        149,
+        151,
+        152,
+        153,
+        154,
+        155,
+        156,
+        157,
+        158,
+        159,
+        160,
+        161,
+        162,
+        163,
+        164,
+        165,
+        166,
+        167,
+        168,
+        169,
+        170,
+        171,
+        172,
+        173,
+        174,
+        175,
+        176,
+        177,
+        178,
+        299,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        913
+      ]
+    },
+    {
+      "id": 924,
+      "frames": 58,
+      "labels": [
+        {
+          "frame": 1,
+          "label": "a0"
+        }
+      ],
+      "dependencies": [
+        310,
+        311,
+        364,
+        366,
+        368,
+        370,
+        372,
+        374,
+        376,
+        378,
+        380,
+        382,
+        384,
+        386,
+        388,
+        390,
+        699,
+        701,
+        703,
+        705,
+        707,
+        709,
+        711,
+        713,
+        715,
+        717,
+        719,
+        721,
+        723,
+        725,
+        727,
+        729,
+        731,
+        733,
+        735,
+        737,
+        739,
+        741,
+        743,
+        745,
+        747,
+        749,
+        751,
+        753,
+        755,
+        757,
+        759,
+        761,
+        763,
+        765,
+        767,
+        769,
+        771,
+        773,
+        775,
+        777,
+        779,
+        781,
+        783,
+        785,
+        787,
+        789,
+        791,
+        793,
+        795,
+        797,
+        799,
+        801,
+        803,
+        805,
+        807,
+        809,
+        890,
+        891,
+        892,
+        893,
+        894,
+        895,
+        896,
+        897,
+        898,
+        899,
+        900,
+        914,
+        916,
+        917,
+        918,
+        919,
+        920,
+        921,
+        922,
+        923,
+        924
+      ]
+    }
+  ],
+  "shapeRoles": [
+    {
+      "id": 95,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 96,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 97,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 98,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 99,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 100,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 101,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 102,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 103,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 104,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 105,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 106,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 107,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 108,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 109,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 110,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 111,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 112,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 113,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 114,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": []
+    },
+    {
+      "id": 123,
+      "role": "shared-effect",
+      "bitmapIds": [
+        122,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 125,
+      "role": "shared-effect",
+      "bitmapIds": [
+        124,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 127,
+      "role": "shared-effect",
+      "bitmapIds": [
+        126,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 129,
+      "role": "shared-effect",
+      "bitmapIds": [
+        128,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 131,
+      "role": "shared-effect",
+      "bitmapIds": [
+        130,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 133,
+      "role": "shared-effect",
+      "bitmapIds": [
+        132,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 135,
+      "role": "shared-effect",
+      "bitmapIds": [
+        134,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 137,
+      "role": "shared-effect",
+      "bitmapIds": [
+        136,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 139,
+      "role": "shared-effect",
+      "bitmapIds": [
+        138,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 141,
+      "role": "shared-effect",
+      "bitmapIds": [
+        140,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 143,
+      "role": "shared-effect",
+      "bitmapIds": [
+        142,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 145,
+      "role": "shared-effect",
+      "bitmapIds": [
+        144,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 147,
+      "role": "shared-effect",
+      "bitmapIds": [
+        146,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 149,
+      "role": "shared-effect",
+      "bitmapIds": [
+        148,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 151,
+      "role": "shared-effect",
+      "bitmapIds": [
+        150,
+        65535
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 152,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 153,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 154,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 155,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 156,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 157,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 158,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 159,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 160,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 161,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 162,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 163,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 164,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 165,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 166,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 167,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 168,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 169,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 170,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 171,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 172,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 173,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 174,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 175,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 176,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 177,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 178,
+      "role": "shared-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 277,
+      "role": "helper",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 280,
+      "role": "helper",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 310,
+      "role": "helper",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 364,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        363
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 366,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        365
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 368,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        367
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 370,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        369
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 372,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        371
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 374,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        373
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 376,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        375
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 378,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        377
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 380,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        379
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 382,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        381
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 384,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        383
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 386,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        385
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 388,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        387
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 390,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        389
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 699,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        698
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 701,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        700
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 703,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        702
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 705,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        704
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 707,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        706
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 709,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        708
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 711,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        710
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 713,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        712
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 715,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        714
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 717,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        716
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 719,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        718
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 721,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        720
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 723,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        722
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 725,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        724
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 727,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        726
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 729,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        728
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 731,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        730
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 733,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        732
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 735,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        734
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 737,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        736
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 739,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        738
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 741,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        740
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 743,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        742
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 745,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        744
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 747,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        746
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 749,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        748
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 751,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        750
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 753,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        752
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 755,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        754
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 757,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        756
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 759,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        758
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 761,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        760
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 763,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        762
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 765,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        764
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 767,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        766
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 769,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        768
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 771,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        770
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 773,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        772
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 775,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        774
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 777,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        776
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 779,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        778
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 781,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        780
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 783,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        782
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 785,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        784
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 787,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        786
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 789,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        788
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 791,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        790
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 793,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        792
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 795,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        794
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 797,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        796
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 799,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        798
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 801,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        800
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 803,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        802
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 805,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        804
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 807,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        806
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 809,
+      "role": "shared-explosion-or-smoke",
+      "bitmapIds": [
+        808
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 890,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 891,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 892,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 893,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 894,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 895,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 896,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 897,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 898,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 899,
+      "role": "weapon-or-shield",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 900,
+      "role": "live-body",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 903,
+      "role": "shared-attack-effect",
+      "bitmapIds": [],
+      "fillKinds": [
+        "gradient"
+      ]
+    },
+    {
+      "id": 905,
+      "role": "variant-or-special",
+      "bitmapIds": [],
+      "fillKinds": [
+        "gradient"
+      ]
+    },
+    {
+      "id": 909,
+      "role": "variant-or-special",
+      "bitmapIds": [],
+      "fillKinds": [
+        "solid"
+      ]
+    },
+    {
+      "id": 916,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap",
+        "solid"
+      ]
+    },
+    {
+      "id": 917,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 918,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 919,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 920,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 921,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 922,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 923,
+      "role": "variant-or-special",
+      "bitmapIds": [
+        889
+      ],
+      "fillKinds": [
+        "bitmap"
+      ]
+    }
+  ],
+  "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "sourceSwf": "/workspace/scratch/1fc166b42c80/cf6-handoff-input/extracted/crazyflasher6-cn_secure.swf",
+  "scope": "Static display lists; no AS execution. Do not infer branch playback from sequential frames.",
+  "renderingLimits": [
+    "No AS2 or EXE/SWF execution. Static timeline display lists only.",
+    "Nested sprites in preview advance by local placement age; script-driven goto/stop state is not simulated.",
+    "UI/collision/transparent helper shapes277/280/285/310 excluded from preview; raw dependencies retained.",
+    "Some unused declared bitmap styles use ID65535; use actual fills rather than bitmapDependencies alone for materialization.",
+    "Contact sheets crop per-pose bounds for readability; original local coordinates and pose viewBox remain in data.",
+    "RGB/alpha color transforms are applied with per-layer SVG sRGB feColorMatrix, including cyan gunflash. Original transforms remain in timelines."
+  ],
+  "identityNotes": "10身体件；899独立大刀。889主体图集。916–923八个死亡合成碎片均来自889，按原fill矩阵/path裁切新身体；924死亡58帧/a0。"
+}

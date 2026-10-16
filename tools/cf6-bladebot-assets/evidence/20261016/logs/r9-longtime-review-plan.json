@@ -1,0 +1,29 @@
+{
+  "reason": "Retain both legitimate120-second timeouts; no source/stat change. Final fully-natural cohort consists of r9a+r9c2+r9d+r9e. The whole initial r9b batch remains separate, including its four wins.",
+  "supersedesUnexecuted": [
+    "r9c"
+  ],
+  "batches": [
+    {
+      "id": "r9c2",
+      "hash": "sha256:69a1e72aa648f2232bca48ba5b6fa5f76f6db6335f8c0ccde6494601a5ed9a44",
+      "runs": 4,
+      "timeoutFrames": 5400,
+      "worstCaseMs": 720000
+    },
+    {
+      "id": "r9d",
+      "hash": "sha256:01c513df65c30a989487fa5627b3c43b28c926a399f64653ffd6efd03343e16e",
+      "runs": 4,
+      "timeoutFrames": 3600,
+      "worstCaseMs": 480000
+    },
+    {
+      "id": "r9e",
+      "hash": "sha256:42653ae227535e6ac9c3b37d9d1f6c0eeb5befc0d89684d9940151ceb65af7ef",
+      "runs": 4,
+      "timeoutFrames": 3600,
+      "worstCaseMs": 480000
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+﻿import org.flashNight.arki.component.StatHandler.*;
+import org.flashNight.sara.util.*;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Collider.*;
+import org.flashNight.arki.component.Effect.*;
+import org.flashNight.arki.unit.UnitComponent.Status.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.*;
+
+class org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater {
+
+    private static function recordHitDiagnostic(hitTarget:MovieClip,
+                                                shooter:MovieClip,
+                                                bullet:MovieClip,
+                                                damageResult:DamageResult,
+                                                hitDirection:String):Void {
+        if (!ImpactStateHandler.shouldTrackCombatDiagnostics(hitTarget)) {
+            return;
+        }
+        var frame:Number = (_root.帧计时器 != undefined) ? _root.帧计时器.当前帧数 : -1;
+        hitTarget._lastHitFrame = frame;
+        hitTarget._lastHitShooterName = (shooter == null) ? "-" : (shooter.名字 || shooter._name || String(shooter));
+        hitTarget._lastHitBulletName = (bullet == null) ? "-" : (bullet.技能名 || bullet.子弹种类 || bullet._name || "-");
+        hitTarget._lastHitDirection = hitDirection;
+        hitTarget._lastHitDodge = (damageResult == null || damageResult.dodgeStatus == null || damageResult.dodgeStatus == "") ? "-" : damageResult.dodgeStatus;
+        hitTarget._lastHitDistance = (shooter == null || isNaN(shooter._x)) ? -1 : Math.round(Math.abs(hitTarget._x - shooter._x));
+    }
+
+    // 私有方法：核心受击处理逻辑（不包含主角专供的hp刷新）。
+    private static function doHitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        // === 宏展开：实例状态标志位 ===
+        #include "../macros/STATE_REVERSE_KNOCKBACK.as"
+
+        // ────────────── 调试与预处理 ──────────────
+
+        // BulletQueueProcessor 是单位 DamageResult hit 的唯一生产入口，并已在 settlement
+        // 冷分支吞掉 resolved MISS。这里故意不重复判定，避免每次真实命中支付函数税；
+        // 新旁路 producer 若绕过该边界，必须自行保证不发布 resolved MISS。
+
+        // 播报仇恨转锁 - 使用消音策略判断（无策略时走原逻辑）
+        var distance:Number = Math.abs(hitTarget._x - shooter._x);
+        var shouldAggro:Boolean = bullet.消音策略 ? bullet.消音策略(shooter, hitTarget, distance) : FactionManager.areUnitsEnemies(hitTarget, shooter);
+
+        if (shouldAggro) {
+            hitTarget.dispatcher.publish("aggroSet", hitTarget, shooter, bullet);
+        } else {
+            // _root.发布消息(hitTarget, "未触发仇恨转锁，因消音策略判定双方非敌对关系。");
+        }
+
+        // ────────────── 方向判断及效果 ──────────────
+        // 读取子弹的实例状态标志位，检测水平击退反向标志
+        var sf:Number = bullet.stateFlags | 0;
+        var reverse:Boolean = (sf & STATE_REVERSE_KNOCKBACK) != 0;
+
+        // 利用布尔运算确定初始受击方向，考虑了两个因素：
+        // 1. 命中对象相对于射手的位置：若 hitTarget 的 _x 坐标小于 shooter 的 _x 坐标，表示 hitTarget 位于射手左侧。
+        // 2. 子弹是否要求反转水平击退方向（通过 STATE_REVERSE_KNOCKBACK 标志位判断）。
+        //
+        // 这里用异或（^）操作符，将两个布尔值进行组合，解释如下：
+        // - 若 hitTarget 在射手左侧 (true) 且 reverse 为 false，则 true ^ false 得到 true，
+        //   表示默认方向为"左"；
+        // - 若 hitTarget 在射手左侧 (true) 但 reverse 为 true，则 true ^ true 得到 false，
+        //   表示反转方向，变为"右"；
+        // - 若 hitTarget 不在射手左侧 (false) 且 reverse 为 false，则 false ^ false 得到 false，
+        //   默认方向为"右"；
+        // - 若 hitTarget 不在射手左侧 (false) 但 reverse 为 true，则 false ^ true 得到 true，
+        //   反转后方向为"左"。
+        //
+        // 根据异或运算的结果，使用三元运算符直接赋值 hitDirection 为 "左" 或 "右"。
+        var hitDirection:String = ((hitTarget._x < shooter._x) ^ reverse) ? "左" : "右";
+
+        // 为实现受击目标视觉上面向与受击方向相反的效果
+        // issue #7 bug3：位移技能窗口内不翻转受击面向（窗口见 技能路由.技能标签跳转_旧），
+        // 否则受击翻面会让 闪现/小跳/一瞬千击 的脱困位移（读 live parent.方向）反向冲进人堆。
+        // NaN > x 恒 false → 未设窗口/已过期的单位照常翻面。
+        if (!hitTarget.锁定方向 && !(Number(hitTarget.位移锁向截止帧) > Number(_root.帧计时器.当前帧数)))
+            hitTarget.方向改变((hitDirection == "左") ? "右" : "左");
+
+        var overlapCenter:Vector = collisionResult.overlapCenter;
+        var ocx:Number = overlapCenter.x;
+        var ocy:Number = overlapCenter.y;
+        var sxc:Number = shooter._xscale;
+        var bloodEnabled:Boolean = _root.血腥开关;
+
+        // 根据血腥开关生成击中血液效果
+        if (bloodEnabled) {
+            BulletEffectHandler.createBulletEffect(hitTarget, ocx, ocy, sxc);
+        }
+
+        recordHitDiagnostic(hitTarget, shooter, bullet, damageResult, hitDirection);
+
+        // ────────────── 冲击力与状态判断 ──────────────
+        ImpactStateHandler.handleImpactState(hitTarget, bullet, damageResult, hitDirection, bloodEnabled);
+
+        // ────────────── 血槽颜色与后续特效 ──────────────
+        BloodBarEffectHandler.updateStatus(hitTarget);
+        EffectSystem.Effect(hitTarget.击中效果, ocx, ocy, sxc, undefined, true);
+
+        // 判断是否需要生成子弹击中后的后续效果
+        bullet.shouldGeneratePostHitEffect = (hitTarget.击中效果 != bullet.击中后子弹的效果);
+    }
+
+    public static function doHeroUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
+        _root.玩家信息界面.刷新hp显示();
+    }
+
+    public static function doStageEventUnitUpdate(hitTarget:MovieClip, shooter:MovieClip, bullet:MovieClip, collisionResult:CollisionResult, damageResult:DamageResult):Void {
+        doHitUpdate(hitTarget, shooter, bullet, collisionResult, damageResult);
+        var hp:Number = hitTarget.hp;
+        var hpMax:Number = hitTarget.hp满血值;
+        var currentFrame:Number = _root.帧计时器.当前帧数;
+        var hpEmergency = isNaN(hitTarget.hpEmergency) ? 0.3 : hitTarget.hpEmergency;
+
+        // 满足血量大于0且小于危急阈值时发布事件，发布间隔不小于2秒
+        if (hp > 0 && hp < hpMax * hpEmergency && (currentFrame - hitTarget.lastEmergencyFrame) > 2 * 30) {
+            _root.gameworld.dispatcher.publish("UnitEmergency", hitTarget._name);
+            hitTarget.lastEmergencyFrame = currentFrame;
+        }
+    }
+
+    /**
+     * 根据目标单位返回对应的受击事件处理函数
+     * 若目标为主角，则返回一个包装了hp刷新逻辑的函数；否则直接返回核心逻辑函数
+     * @param target 目标单位(MovieClip)
+     * @return Function
+     */
+    public static function getUpdater(target:MovieClip):Function {
+        if (target._name === _root.控制目标) {
+            // 主角：返回包装函数，先执行核心逻辑，再刷新hp显示
+            return doHeroUpdate;
+        } else {
+            // 非主角：直接返回核心逻辑函数
+
+            if (target.publishStageEvent) {
+                target.lastEmergencyFrame = 0;
+                return doStageEventUnitUpdate;
+            }
+
+            return doHitUpdate;
+        }
+    }
+}

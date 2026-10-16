@@ -1,0 +1,289 @@
+Jump loc00fd
+loc0005:Unknown_02
+Jump loc050a
+loc000b:Add
+SetVariable
+Jump loc0005
+loc0012:Push constant0
+GetVariable
+Push constant1
+GetMember
+Push constant2
+GetMember
+Push constant3
+GetMember
+Push 1, constant4
+GetVariable
+Push constant5
+CallMethod
+Not
+If loc00f3
+Push constant0
+GetVariable
+Push constant1
+GetMember
+Push constant2
+GetMember
+Push constant6
+GetMember
+Push constant7
+GetVariable
+Push constant7
+GetMember
+Push constant6
+GetMember
+Greater
+Not
+If loc0091
+Push constant0
+GetVariable
+Push constant1
+GetMember
+Push constant2
+GetMember
+Push constant8, constant9
+SetMember
+Jump loc00ab
+loc0091:Push constant0
+GetVariable
+Push constant1
+GetMember
+Push constant2
+GetMember
+Push constant8, constant10
+SetMember
+loc00ab:Push constant11, 1, constant0
+GetVariable
+Push constant1
+GetMember
+Push constant2
+GetMember
+Push constant12
+CallMethod
+Pop
+Push constant0
+GetVariable
+Push constant13, constant0
+GetVariable
+Push constant13
+GetMember
+Push constant7
+GetVariable
+Push constant7
+GetMember
+Push constant14
+GetMember
+Subtract
+SetMember
+loc00f3:Jump loc0230
+loc00f8:Jump loc0012
+loc00fd:DefineFunction "\x04\x05", 0 {
+Push "\x03", 589, 511
+Modulo
+Push 5
+Multiply
+SetVariable
+Push "\x03"
+GetVariable
+Return
+}
+Push "\x01", 362, 0, "\x04\x05"
+CallFunction
+Add2
+DefineLocal
+loc0151:Push "\x01"
+Jump loc0162
+loc015c:Unknown_03
+Jump loc050a
+loc0162:GetVariable
+Push 752
+Equals
+Not
+If loc0193
+Push "\x01", "\x01"
+GetVariable
+Push 357
+Subtract
+SetVariable
+Push true
+Jump loc0151
+loc0193:Push "\x01"
+GetVariable
+Push 702
+Equals
+Not
+If loc01c6
+Push "\x01", "\x01"
+GetVariable
+Push 412
+Subtract
+SetVariable
+Not
+Jump loc0151
+loc01c6:Push "\x01"
+GetVariable
+Push 46
+Equals
+Not
+If loc01fe
+Push "\x01", "\x01"
+GetVariable
+Push 727
+Add
+SetVariable
+Push "\x0f"
+Jump loc0151
+loc01fe:Push "\x01"
+GetVariable
+Push 268
+Equals
+Not
+If loc0235
+Push "\x01", "\x01"
+GetVariable
+Push 204
+Subtract
+SetVariable
+Jump loc00f8
+loc0230:Jump loc050a
+loc0235:Push "\x01"
+GetVariable
+Push 395
+Equals
+Not
+If loc0288
+Push "\x01", "\x01"
+GetVariable
+Push 401
+Add
+SetVariable
+If loc026c
+Jump loc0283
+loc026c:Push "\x01", "\x01"
+GetVariable
+Push 317
+Subtract
+SetVariable
+loc0283:Jump loc0151
+loc0288:Push "\x01"
+GetVariable
+Push 773
+Equals
+Not
+If loc02bb
+Push "\x01", "\x01"
+GetVariable
+Push 71
+Subtract
+SetVariable
+GetVariable
+Jump loc0151
+loc02bb:Push "\x01"
+GetVariable
+Push 480
+Equals
+Not
+If loc02ee
+Push "\x01", "\x01"
+GetVariable
+Push 434
+Subtract
+SetVariable
+DefineLocal
+Jump loc0151
+loc02ee:Push "\x01"
+GetVariable
+Push 725
+Equals
+Not
+If loc032b
+Push "\x01", "\x01"
+GetVariable
+Push 245
+Subtract
+SetVariable
+Push "\x0f", 1
+Jump loc0151
+loc032b:Push "\x01"
+GetVariable
+Push 296
+Equals
+Not
+If loc036f
+Push "\x01", "\x01"
+GetVariable
+Push 429
+Add
+SetVariable
+ConstantPool "\x04{invalid_utf8=183}{invalid_utf8=171}", "\x1a\x07{invalid_utf8=132}{invalid_utf8=202}", "|\x01"
+Jump loc0151
+loc036f:Push "\x01"
+GetVariable
+Push 796
+Equals
+Not
+If loc03a1
+Push "\x01", "\x01"
+GetVariable
+Push 317
+Subtract
+SetVariable
+Jump loc000b
+loc03a1:Push "\x01"
+GetVariable
+Push 451
+Equals
+Not
+If loc044e
+Push "\x01", "\x01"
+GetVariable
+Push 183
+Subtract
+SetVariable
+ConstantPool "_root", "gameworld", "man1", "area", "this", "hitTest", "_x", "_parent", "击中移动方向", "右", "左", "被击中", "gotoAndStop", "主角hp", "攻击力"
+Jump loc0151
+loc044e:Push "\x01"
+GetVariable
+Push 290
+Equals
+Not
+If loc04a1
+Push "\x01", "\x01"
+GetVariable
+Push 161
+Add
+SetVariable
+If loc0485
+Jump loc049c
+loc0485:Push "\x01", "\x01"
+GetVariable
+Push 183
+Subtract
+SetVariable
+loc049c:Jump loc0151
+loc04a1:Push "\x01"
+GetVariable
+Push 479
+Equals
+Not
+If loc04d3
+Push "\x01", "\x01"
+GetVariable
+Push 246
+Add
+SetVariable
+Jump loc0151
+loc04d3:Push "\x01"
+GetVariable
+Push 64
+Equals
+Not
+If loc0505
+Push "\x01", "\x01"
+GetVariable
+Push 64
+Subtract
+SetVariable
+Jump loc050a
+loc0505:Jump loc015c
+loc050a:

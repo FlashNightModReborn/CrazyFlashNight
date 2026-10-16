@@ -1,0 +1,84 @@
+{
+  "schema": "cf6-bladebot.native-capture-review.v1",
+  "runId": "c8f50d2540f84f69893ab7c0e94b6d47",
+  "nativeSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+  "beforeAndAfterNativeBytesEqual": true,
+  "passed": 300,
+  "failed": 0,
+  "actualTimelineCases": 22,
+  "compilerErrors": 0,
+  "compilerWarnings": 0,
+  "retry32K": 0,
+  "images": [
+    {
+      "key": "stand",
+      "path": "images/stand.png",
+      "sha256": "fc1ba016cef534a70068d657f9a28d48d13af47e4ef2e1ce6f5ebd05c5937265",
+      "bytes": 66147,
+      "assistantVisuallyInspected": true,
+      "note": "Whole actor and shadow; blade tip fully inside frame."
+    },
+    {
+      "key": "death-start",
+      "path": "images/death-start.png",
+      "sha256": "cfaa08dc404325f432207e34f50b0d5e55a18270b6243b332f584b9c2a862fdb",
+      "bytes": 66074,
+      "assistantVisuallyInspected": true,
+      "note": "Same camera and body/ground alignment as stand."
+    },
+    {
+      "key": "airborne-shadow",
+      "path": "images/airborne-shadow.png",
+      "sha256": "f3b50976629ea8c43c13b1694673a41e7128990be4bb3d907d7ab02013ca825c",
+      "bytes": 45537,
+      "assistantVisuallyInspected": true,
+      "note": "Mirrored, rotated and lifted; complete blade and horizontal grounded shadow. Camera0.65 only for this view."
+    },
+    {
+      "key": "cleave-impact",
+      "path": "images/cleave-impact.png",
+      "sha256": "28a221a1b7ad4d9fac7161707fc8c9bfd601cc510513d326fa61a84d0b2f2ba4",
+      "bytes": 65752,
+      "assistantVisuallyInspected": true,
+      "note": "Held strike pose and full blade."
+    },
+    {
+      "key": "sweep-front",
+      "path": "images/sweep-front.png",
+      "sha256": "ce0fade140c9f1152d8c6211effe2fa242efc8c100ac5a55474dfe4e55861171",
+      "bytes": 63688,
+      "assistantVisuallyInspected": true,
+      "note": "Front weapon sweep and body/shadow intact."
+    },
+    {
+      "key": "sweep-back",
+      "path": "images/sweep-back.png",
+      "sha256": "970761e67b70bb92291e7d4cb02b7b77fe3f06c54108daef232c38038874b69d",
+      "bytes": 62531,
+      "assistantVisuallyInspected": true,
+      "note": "Rear weapon sweep and body/shadow intact."
+    },
+    {
+      "key": "death-fragments",
+      "path": "images/death-fragments.png",
+      "sha256": "aaf5fcd84c89ab827d99a307ef76d720d36e4c1aa82b258d8972f99bee625038",
+      "bytes": 56877,
+      "assistantVisuallyInspected": true,
+      "note": "Separated native vector fragments retain materials."
+    },
+    {
+      "key": "death-late",
+      "path": "images/death-late.png",
+      "sha256": "7fcea5d28ea7a1987adca4e416435967d561fe686ebcb60cfccbd19425b70d51",
+      "bytes": 55925,
+      "assistantVisuallyInspected": true,
+      "note": "Late native fragments and shadow remain intact before removal."
+    }
+  ],
+  "humanAcceptance": false,
+  "standardEntryAcceptance": false,
+  "limitations": [
+    "Fixed-frame fixture captures are not animation feel or player-facing acceptance.",
+    "All comparison cameras use1.4 except airborne stress view0.65."
+  ]
+}

@@ -1,0 +1,367 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "soldier-eq-r4-20261016-weapons",
+  "createdAt": "2026-10-16T00:36:53.074Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-soldier-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 3600,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "cadet-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30-0"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种449",
+          "level": 30,
+          "sourceId": "cadet-30-0"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "cadet",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照军校生的持枪实战；不改军校生配置。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "blue",
+        "comparison": "cadet",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:50d070998a0330c78ede9d4e617719a90ddda6f3fb5ab326246bc51821709376"
+    },
+    {
+      "caseId": "cadet-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种449",
+          "level": 30,
+          "sourceId": "cadet-30-0"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30-0"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "cadet",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照军校生的持枪实战；不改军校生配置。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "red",
+        "comparison": "cadet",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:a8cc82d76da6b9f33dadabee2dc9655b1804e5f3c88fe994c4e41dd6256dfa90"
+    },
+    {
+      "caseId": "external-ak47-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-external",
+          "parameters": {
+            "长枪": "AK47#4"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-reference"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "standard-weapons",
+        "blue"
+      ],
+      "plannerReason": "验证外部指定长枪、真实枪口和标准耗弹装填；双方维持既有友军属性规则。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "blue",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "explicitLoadout": true,
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:1340d9c09dd73fd35bef79a4ff1c9b577b03dd53a07c076dbfad2d3617ccc3de"
+    },
+    {
+      "caseId": "external-ak47-red",
+      "blueRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-reference"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-external",
+          "parameters": {
+            "长枪": "AK47#4"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "standard-weapons",
+        "red"
+      ],
+      "plannerReason": "验证外部指定长枪、真实枪口和标准耗弹装填；双方维持既有友军属性规则。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "red",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "explicitLoadout": true,
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:d2d6369b6fad9df4b3d4f40ae554ff694b032871620062440dfd48f8f258c67f"
+    },
+    {
+      "caseId": "configured-squad-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-m16",
+          "parameters": {
+            "长枪": "M4A1改"
+          }
+        },
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-ak74",
+          "parameters": {
+            "长枪": "AK74战术版"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-m4",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        },
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-mk18",
+          "parameters": {
+            "长枪": "DD MK18战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "standard-weapons",
+        "blue"
+      ],
+      "plannerReason": "验证外部指定长枪、真实枪口和标准耗弹装填；双方维持既有友军属性规则。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "blue",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "explicitLoadout": true,
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 2,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:bb40305e84640e0704c5bff15ab517b02a42f3e9cfaab68d06088c60a7e64229"
+    },
+    {
+      "caseId": "configured-squad-red",
+      "blueRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-m4",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        },
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-mk18",
+          "parameters": {
+            "长枪": "DD MK18战术版"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-m16",
+          "parameters": {
+            "长枪": "M4A1改"
+          }
+        },
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-ak74",
+          "parameters": {
+            "长枪": "AK74战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "standard-weapons",
+        "red"
+      ],
+      "plannerReason": "验证外部指定长枪、真实枪口和标准耗弹装填；双方维持既有友军属性规则。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "red",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "explicitLoadout": true,
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 2,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "caseHash": "sha256:6c727c834e6b1da1e224c208065796ea7be59a2c68abe1651c435d0009c67b4f"
+    }
+  ],
+  "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff"
+}

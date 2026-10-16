@@ -1,0 +1,37 @@
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 853330 bytes, 2026/10/15 19:36:43)
+[INFO] 触发编译... (超时 180s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (9s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-wings Start: a03cdbb09feb44279fc8f6683de994df
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/15 20:57:31
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (10326 bytes, 2026/10/15 20:57:31)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 39   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    5937 B  DefineFunction2  (anon)
+    2913 B  DefineFunction2  (anon)
+    2811 B  DefineFunction2  (anon)
+    1320 B  DefineFunction2  (anon)
+    1212 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+Focused trace pattern must occur exactly once (found 0): Cf6WingsAssetTest: \d+ passed, 0 failed; 32 actual timeline ca
+ses
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\test-runners\ru
+n-focused-testloader.ps1:365 char:21
++ ...             throw "Focused trace pattern must occur exactly once (fou ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Focused trace p... timeline cases:String) [], RuntimeException
+    + FullyQualifiedErrorId : Focused trace pattern must occur exactly once (found 0): Cf6WingsAssetTest: \d+ passed,  
+   0 failed; 32 actual timeline cases
+ 

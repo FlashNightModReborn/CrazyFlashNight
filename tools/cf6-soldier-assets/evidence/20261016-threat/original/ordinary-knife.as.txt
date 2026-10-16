@@ -1,0 +1,17 @@
+onClipEvent(load){
+   var §\x01§ = 64;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.area))
+   {
+      if(_root.gameworld.man1._x > _parent._parent._x)
+      {
+         _root.gameworld.man1.击中移动方向 = "右";
+      }
+      else
+      {
+         _root.gameworld.man1.击中移动方向 = "左";
+      }
+      _root.gameworld.man1.gotoAndStop("被击中");
+      _root.主角hp -= _parent._parent.攻击力;
+   }
+}

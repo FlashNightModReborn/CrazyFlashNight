@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex特种兵素材" itemID="6af00000-f3a6dc2c" linkageExportForAS="true" linkageExportForRS="true" linkageIdentifier="Codex特种兵素材" linkageURL="flashswf/arts/new/Codex特种兵素材.swf">
+  <timeline>
+    <DOMTimeline name="Codex特种兵素材">
+      <layers>
+        <DOMLayer name="入口" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/敌人-CF6特种兵">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/敌人-CF6持盾特种兵">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

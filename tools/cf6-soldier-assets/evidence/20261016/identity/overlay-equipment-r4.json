@@ -1,0 +1,126 @@
+{
+  "resourceRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight",
+  "preservedPrevious": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\worker-before-equipment-r4",
+  "frozenInputs": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\frozen-equipment-r4",
+  "files": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sourceSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+      "bytes": 83026,
+      "previousSha256": "9ae5ad2e1929bd5fa9eb52ee95ff576cac6a772800c03d748ac15dd6545eaf0f",
+      "changed": true
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sourceSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+      "bytes": 113865,
+      "previousSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+      "changed": false
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sourceSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+      "bytes": 9024,
+      "previousSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+      "changed": false
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sourceSha256": "6551c42621270eaa955477da0712d96f989d2883de9892a1c3386c66558599d1",
+      "bytes": 869169,
+      "previousSha256": "6551c42621270eaa955477da0712d96f989d2883de9892a1c3386c66558599d1",
+      "changed": false
+    },
+    {
+      "path": "data/units/units.json",
+      "sourceSha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4",
+      "bytes": 152111,
+      "previousSha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4",
+      "changed": false
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "sourceSha256": "4d7858b4534e31f956f61fa1807a19279ec92361cc5838134545ba931caa91d4",
+      "bytes": 54745,
+      "previousSha256": "4d7858b4534e31f956f61fa1807a19279ec92361cc5838134545ba931caa91d4",
+      "changed": false
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+      "bytes": 8700,
+      "previousSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+      "changed": false
+    },
+    {
+      "path": "tools/cf6-soldier-assets/balance-inputs.json",
+      "sourceSha256": "7800f080590155bd2cddb0f6ea2ee63773f910325df133f0dd3cc01c66ceac2e",
+      "bytes": 1954,
+      "previousSha256": "7800f080590155bd2cddb0f6ea2ee63773f910325df133f0dd3cc01c66ceac2e",
+      "changed": false
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sourceSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+      "bytes": 5996081,
+      "previousSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+      "changed": false
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sourceSha256": "416f18e740717a6b9ee701e63dcbb6eee6bf606f7ce964707a18b281df96602d",
+      "bytes": 107414,
+      "previousSha256": "416f18e740717a6b9ee701e63dcbb6eee6bf606f7ce964707a18b281df96602d",
+      "changed": false
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sourceSha256": "e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "bytes": 207353,
+      "previousSha256": "e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "changed": false
+    },
+    {
+      "path": "data/enemy_properties/大学.xml",
+      "sourceSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+      "bytes": 12164,
+      "previousSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+      "changed": false
+    },
+    {
+      "path": "flashswf/arts/new/大学人员.swf",
+      "sourceSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+      "bytes": 1789114,
+      "previousSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+      "changed": false
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as",
+      "sourceSha256": "f372d4c59f32140b2de2312eb9ec82f748a034c379f28c8f9fcc17851b43d03e",
+      "bytes": 8200,
+      "previousSha256": "f372d4c59f32140b2de2312eb9ec82f748a034c379f28c8f9fcc17851b43d03e",
+      "changed": false
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sourceSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+      "bytes": 116442,
+      "previousSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+      "changed": false
+    },
+    {
+      "path": "flashswf/arts/things.swf",
+      "sourceSha256": "2dbd29856125c156e9e0402b86b1d1dc1fc403f1e7c5c4ecb7783ac18aff11ef",
+      "bytes": 2908207,
+      "previousSha256": "2dbd29856125c156e9e0402b86b1d1dc1fc403f1e7c5c4ecb7783ac18aff11ef",
+      "changed": false
+    },
+    {
+      "path": "flashswf/arts/new/Au的素材.swf",
+      "sourceSha256": "fc64494f79d7191ade68e95e1ca0445e3c2f9a39c696c93f19bc703a878d45a7",
+      "bytes": 2509849,
+      "previousSha256": "fc64494f79d7191ade68e95e1ca0445e3c2f9a39c696c93f19bc703a878d45a7",
+      "changed": false
+    }
+  ]
+}

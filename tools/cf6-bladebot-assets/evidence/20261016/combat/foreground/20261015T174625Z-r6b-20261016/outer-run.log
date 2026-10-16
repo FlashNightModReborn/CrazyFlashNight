@@ -1,0 +1,34 @@
+Temporary display request acquired on a dedicated thread.
+Using user-scope .NET 10 desktop runtime at C:\Users\fs\AppData\Local\Microsoft\dotnet (DOTNET_ROOT set)
+[RuntimeBundleV2] OK state=integrity-only mode=worktree files=43 payload=20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+=== CF7 Runtime Launch Identity ===
+  Runtime Mode    : isolated_candidate
+  Deployment Root : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1
+  Core Path       : C:\Users\fs\.codex\worktrees\wings-combat\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+  Core SHA256     : 0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6
+  Build Identity  : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Payload Closure : 20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+  Deployment      : NOT_DEPLOYED (explicit candidate acceptance run)
+Starting CF7:ME Guardian Core (isolated_candidate)...
+  Control plane   : LEGACY_HTTP_AUTOMATION (Agent Runtime admission disabled)
+Guardian PID: 18072
+Guardian bus ready: {"httpPort":1192,"socketPort":1924,"pid":18072,"legacyHttpAuthFile":"C:\\Users\\fs\\AppData\\Local\\CF7FlashNight\\agent-runtime\\v1\\5505cd94f80aac6cf419ae67a2491665\\legacy-http-credential.json"}
+Guardian started successfully.
+Runtime identity confirmed: mode=isolated_candidate coreSha256=0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6 buildIdentity=8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212 payloadClosure=20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156
+(Flash Player + V8 Bus are managed by the guardian process)
+{
+  "ok": false,
+  "status": "needs_rerun",
+  "batchId": "bladebot-front-r6b-20261016",
+  "resultPath": "tmp/arena-calibration/unattended/20261015T174625Z-bladebot-front-r6b-20261016-8ee667b7-80b5-4c75-b398-8ddb104fd7b2/attempt-1-bladebot-front-r6b-20261016-attempt-3a3dce9f-c2ca-435f-947b-1fcd28482884-results.jsonl",
+  "summary": "tmp/arena-calibration/unattended/20261015T174625Z-bladebot-front-r6b-20261016-8ee667b7-80b5-4c75-b398-8ddb104fd7b2/summary.json",
+  "report": "tmp/arena-calibration/unattended/20261015T174625Z-bladebot-front-r6b-20261016-8ee667b7-80b5-4c75-b398-8ddb104fd7b2/run-report.json",
+  "rerunManifest": "tmp/arena-calibration/batches/bladebot-front-r6b-20261016-rerun-20261015T175235Z/case-manifest-30047cb203aa46577203238d639b23d657f997bc85b93e96196ecfcc2a991bf0.json",
+  "recoveryAttemptsUsed": 0,
+  "runtimeMode": "isolated_candidate",
+  "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+  "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+  "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+  "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156"
+}
+Temporary display request released: True

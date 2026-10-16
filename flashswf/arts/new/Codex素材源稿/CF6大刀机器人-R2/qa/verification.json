@@ -1,0 +1,302 @@
+{
+  "staticOnly": true,
+  "noActionScriptOrExecutableRun": true,
+  "artGate": "Reviewed as a candidate for user annotation. Static structural checks do not assert art approval.",
+  "checks": {
+    "liveBodyCount": 10,
+    "weaponCount": 1,
+    "sequenceCount": 7,
+    "declaredFrames": 229,
+    "renderedFrames": 229,
+    "deathFrames": 58,
+    "weaponOriginalAlphaOpenings": [
+      {
+        "sourceBounds": [
+          2036,
+          12,
+          2051,
+          27
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1619,
+          15,
+          1640,
+          18
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1664,
+          15,
+          1685,
+          18
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1730,
+          15,
+          1874,
+          18
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1919,
+          15,
+          1940,
+          18
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1964,
+          15,
+          1985,
+          18
+        ],
+        "candidateCenterTransparent": true
+      },
+      {
+        "sourceBounds": [
+          1468,
+          86,
+          1505,
+          120
+        ],
+        "candidateCenterTransparent": true
+      }
+    ],
+    "deathCropFills": 40,
+    "renderedFragmentIds": [
+      916,
+      917,
+      918,
+      919,
+      920,
+      921,
+      922,
+      923
+    ],
+    "sharedEffectGeometryUnchanged": 138,
+    "timelineSha256": "4a0fbce67465cb046efad22fe730bdb70146bcdca0f2838f21f6424aa7d84af4",
+    "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+    "frameInputsMatchCurrentAssets": true,
+    "allFramesNonEmpty": true,
+    "allFrameAlphasClearOfCanvasEdges": true,
+    "duplicateDefinitionIds": [],
+    "unresolvedLocalAssets": []
+  },
+  "parts": [
+    {
+      "id": 890,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9960749261619773,
+      "alphaIoU": 0.9831418653267102,
+      "sourcePixels": 51464,
+      "candidatePixels": 51939,
+      "sha256": "ebbc7ce4102cc2fa82595f5373eb923f99db42f8d9de1b8f3b5553fc5d18f929"
+    },
+    {
+      "id": 891,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9975404948822418,
+      "alphaIoU": 0.9920689825567031,
+      "sourcePixels": 40252,
+      "candidatePixels": 40375,
+      "sha256": "9ff7127160ba6ccd7a8428bd0dea4b09f149c95e420c53af62fea61c101b92a8"
+    },
+    {
+      "id": 892,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.989709133800362,
+      "alphaIoU": 0.9860176123848082,
+      "sourcePixels": 209409,
+      "candidatePixels": 208038,
+      "sha256": "9e24c847e3865b0989d4373103b66144ff156cd79d4a8ea1a3e9eeab96aa0e5b"
+    },
+    {
+      "id": 893,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9862270792403406,
+      "alphaIoU": 0.9845547224549002,
+      "sourcePixels": 48864,
+      "candidatePixels": 48274,
+      "sha256": "5d5dcd8576cabfd1928e22cd2b6beb1dae8576c489bd7d60f6462ba9a562ce5f"
+    },
+    {
+      "id": 894,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9928245772656445,
+      "alphaIoU": 0.971372644971862,
+      "sourcePixels": 51983,
+      "candidatePixels": 52758,
+      "sha256": "a66293e91afcfba0d64ed3b1cf7d68ec89b214ed0273cddb8ca147e54c961c37"
+    },
+    {
+      "id": 895,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9786031611713862,
+      "alphaIoU": 0.9747441300421433,
+      "sourcePixels": 33089,
+      "candidatePixels": 32512,
+      "sha256": "9f77c2be7cd3511b2862156a53baee7ec67ed9b7d8e6f9c63c738f1319932011"
+    },
+    {
+      "id": 896,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9841366586498863,
+      "alphaIoU": 0.9819206810972503,
+      "sourcePixels": 60706,
+      "candidatePixels": 59880,
+      "sha256": "579517496bc015713b17a7290a3a52c3d2b0bf632b2cb0dcc52486d4b3efe6ae"
+    },
+    {
+      "id": 897,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9893207931801334,
+      "alphaIoU": 0.9673597897979523,
+      "sourcePixels": 43168,
+      "candidatePixels": 43687,
+      "sha256": "e0318e950c7a39788c862ef72f4b3ecb1828950232647e44cdac5498e912c673"
+    },
+    {
+      "id": 898,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9906521674481309,
+      "alphaIoU": 0.9874675985547391,
+      "sourcePixels": 302637,
+      "candidatePixels": 300784,
+      "sha256": "6c55bfa3ee5b7ec4135bcc161cc6f0ec1799c06460fae98afe912d6b90111988"
+    },
+    {
+      "id": 899,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9863258106215663,
+      "alphaIoU": 0.9687289222752701,
+      "sourcePixels": 148528,
+      "candidatePixels": 149195,
+      "sha256": "d07b81195bb7deeb1aff09449cbbcd074a9e08b1c91e247d3a6b2738be31121c"
+    },
+    {
+      "id": 900,
+      "viewBoxUnchanged": true,
+      "originalClipPresent": true,
+      "rasterImages": 0,
+      "nativeAlphaCoverage": 0.9844038885906841,
+      "alphaIoU": 0.9807480911494697,
+      "sourcePixels": 33534,
+      "candidatePixels": 33136,
+      "sha256": "28f6708cd354d061c77342b75933806324acc3f3930433e7f4a19921103379e6"
+    }
+  ],
+  "fragments": [
+    {
+      "id": 916,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "cca99e6df043552a450a14044c43dedabd39dbdb70dbfce010764e120b3ced56",
+      "sourceAlphaCoverage": 0.9906031468531469,
+      "alphaIoU": 0.9871157405727145
+    },
+    {
+      "id": 917,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "0e56535098876884d9a070fe6c21137f3d3d5c20b31e0ee95b82d5c3f7c62698",
+      "sourceAlphaCoverage": 0.9904540670030126,
+      "alphaIoU": 0.987657895689312
+    },
+    {
+      "id": 918,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "978f0320f97ed3b2252fe7c732ed3b04c32a69aac32ca27b301dc1175d5f97d0",
+      "sourceAlphaCoverage": 0.9897992640897665,
+      "alphaIoU": 0.9870304439439076
+    },
+    {
+      "id": 919,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "3a31d11fee45d41f70642e219c20f82bfa02ae4eb74e9736be8ba2818d63383c",
+      "sourceAlphaCoverage": 0.9902856103329088,
+      "alphaIoU": 0.9874473951530982
+    },
+    {
+      "id": 920,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "2679b2e4a05683b4d32a485905299ab51691444c66546847ae3dd0536b305c75",
+      "sourceAlphaCoverage": 0.9907811741872877,
+      "alphaIoU": 0.9877581395348837
+    },
+    {
+      "id": 921,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "d557264ea05f005b228450c2a7aac55010a273c3dd8b92ad24aea2a040822a1a",
+      "sourceAlphaCoverage": 0.9900226409301969,
+      "alphaIoU": 0.98718144945282
+    },
+    {
+      "id": 922,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "6015a3ea544ba1a8ce1fdc7cd06413b2f97fe0f31c8dffdd068121bb3e3c8de1",
+      "sourceAlphaCoverage": 0.9908680904990869,
+      "alphaIoU": 0.9881058578650015
+    },
+    {
+      "id": 923,
+      "bitmapFillsProjected": 5,
+      "allOriginalClipPathsPreserved": true,
+      "allOriginalFillMatricesPreserved": true,
+      "embeddedRasters": 0,
+      "sha256": "49370599b94120c27d27b8af9e34e92ffcf2c6a48c440ffe85067be65103d1d0",
+      "sourceAlphaCoverage": 0.9904712081013415,
+      "alphaIoU": 0.9875926822906964
+    }
+  ]
+}

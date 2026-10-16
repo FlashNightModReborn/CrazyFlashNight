@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/特种兵/分件/568-遮罩0" itemID="6aa00000-064c9597" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="568-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-238 310|-234 320|-232 324[-138 447 -30 508|-8 519[45 510 80 462|80 452[81 442 89 434[73 327 -8 210|-24 181[-20 153 24 130|11 115|-11 105[-38 115 -65 131|-86 96|-101 66[-109 44 -71 28[-64 14 -70 -1|-78 -29|-147 10[-247 -164 -392 -81[-455 108 -244 299|-242 303|-238 310" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/共用矢量图集/814d5bf409cd792c" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.1868439" b="-0.1334076" c="0.1334076" d="0.1868439" tx="-38.3" ty="-20.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

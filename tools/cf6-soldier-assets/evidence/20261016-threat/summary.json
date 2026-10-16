@@ -1,0 +1,410 @@
+{
+  "schema": "cf6-soldier.threat-review.v1",
+  "unitId": 466,
+  "stage": 7,
+  "tier": 5,
+  "selectedRevision": "fire18-rest30",
+  "firing": {
+    "maximumFireFrames": 18,
+    "mandatoryRestFrames": 30,
+    "minimumStartIntervalFrames": 48,
+    "maximumShots": 3
+  },
+  "nativeAndCandidateVerified": true,
+  "formalRuntimeDeploymentPerformed": false,
+  "standardEntryAcceptancePerformed": false,
+  "shieldVariantImplemented": false,
+  "dedicatedKnifeCriticalOrExecuteAdded": false,
+  "originalKnifeReview": "original/review.json",
+  "baselineReview": "baseline-unbounded/review.json",
+  "trials": [
+    {
+      "revision": "fire18-rest66",
+      "selected": false,
+      "path": "fire18-rest66/summary.json",
+      "sha256": "e8f2e3ab4a8ccafe6f26ce48ac3e55587527920f1ef1af4c7a663d4195fe7309",
+      "native": {
+        "runId": "17ed2a2c77634eb8ad5efc4931b23396",
+        "passed": 529,
+        "failed": 0,
+        "cases": 52,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "retry32K": 0
+      },
+      "physicalWorkers": 2,
+      "rows": 24,
+      "redSamples": 21,
+      "redWins": 0,
+      "blueSamples": 3,
+      "blueWins": 1,
+      "wallDurationMs": 270285,
+      "groups": [
+        {
+          "soldierSide": "red",
+          "level": 30,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 30.657640232108317,
+            "max": 43.47195357833655,
+            "mean": 36.960025789813024
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "M4A1战术版",
+          "samples": 6,
+          "soldierWins": 0,
+          "naturalFinishes": 6,
+          "wingsDamagePercent": {
+            "min": 17.501715854495536,
+            "max": 20.38435140700069,
+            "mean": 19.16990772515824
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 99,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 20.970019101403537,
+            "max": 26.800099659496723,
+            "mean": 24.38058854469452
+          }
+        },
+        {
+          "soldierSide": "blue",
+          "level": 60,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 1,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 75.840768702814,
+            "max": 100.0,
+            "mean": 88.27499428048502
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "M4A1改",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 12.274079158087392,
+            "max": 12.628689087165412,
+            "mean": 12.39990848776024
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "AK74战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 19.446350949439484,
+            "max": 36.95950583390528,
+            "mean": 26.771143140395026
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "DD MK18战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 22.820864790665752,
+            "max": 46.75131548844658,
+            "mean": 34.317089910775564
+          }
+        }
+      ]
+    },
+    {
+      "revision": "fire18-rest30",
+      "selected": true,
+      "path": "fire18-rest30/summary.json",
+      "sha256": "262f589211917f444baf873752335871f9c696fc2929b98d39f31c18c767587c",
+      "native": {
+        "runId": "34ddc249a36944ac83b89ab6598f8aae",
+        "passed": 529,
+        "failed": 0,
+        "cases": 52,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "retry32K": 0
+      },
+      "physicalWorkers": 2,
+      "rows": 24,
+      "redSamples": 21,
+      "redWins": 0,
+      "blueSamples": 3,
+      "blueWins": 2,
+      "wallDurationMs": 256713,
+      "groups": [
+        {
+          "soldierSide": "red",
+          "level": 30,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 23.758865248226947,
+            "max": 44.39071566731141,
+            "mean": 31.603266709649688
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "M4A1战术版",
+          "samples": 6,
+          "soldierWins": 0,
+          "naturalFinishes": 6,
+          "wingsDamagePercent": {
+            "min": 38.86982383893846,
+            "max": 57.366735300846486,
+            "mean": 48.14687714481812
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 99,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 48.351465825097584,
+            "max": 54.55526949588905,
+            "mean": 51.82570661351494
+          }
+        },
+        {
+          "soldierSide": "blue",
+          "level": 60,
+          "weapon": "M4A1战术版",
+          "samples": 3,
+          "soldierWins": 2,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 70.41866849691147,
+            "max": 100.0,
+            "mean": 90.13955616563716
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "M4A1改",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 24.23930450697781,
+            "max": 36.5705788149165,
+            "mean": 30.45832380080836
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "AK74战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 20.681766186227414,
+            "max": 81.46877144818119,
+            "mean": 49.847479600396554
+          }
+        },
+        {
+          "soldierSide": "red",
+          "level": 60,
+          "weapon": "DD MK18战术版",
+          "samples": 3,
+          "soldierWins": 0,
+          "naturalFinishes": 3,
+          "wingsDamagePercent": {
+            "min": 34.59162663006177,
+            "max": 64.92793411118737,
+            "mean": 45.504461221688395
+          }
+        }
+      ]
+    }
+  ],
+  "failedStarts": [
+    {
+      "name": "wings-threat-pool",
+      "qualified": false,
+      "combatNotStarted": true,
+      "rows": 0,
+      "error": null,
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "archive": {
+        "path": "failed-starts/wings-threat-pool.zip",
+        "bytes": 418537,
+        "sha256": "4108bfdf15f60abae096a9ded3e097e6623178582d69efa6dd53ffa768882235",
+        "files": [
+          {
+            "path": "plan.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\plan.json",
+            "bytes": 1790,
+            "sha256": "cff7a1190cc04ccf66823b5cc25871e2aaed32f98177119ec534f2f5d660b8c9"
+          },
+          {
+            "path": "unadmitted-after.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\unadmitted-after.json",
+            "bytes": 756958,
+            "sha256": "e94b35aeed10c98fda6753a57173474230074d5dd5d6870d74337e61f1c0312b"
+          },
+          {
+            "path": "wings-before.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\wings-before.json",
+            "bytes": 895560,
+            "sha256": "aec9e4dcad0f33e8877357f472a77462a45215c044f0ae8427876dfd0c653829"
+          },
+          {
+            "path": "wings-evidence-config.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\wings-evidence-config.json",
+            "bytes": 458,
+            "sha256": "01c271dc0f9c1e367282dde69d6410ca70345389cdec685f528c40c92f964976"
+          },
+          {
+            "path": "wings-manifest.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\wings-manifest.json",
+            "bytes": 10932,
+            "sha256": "d928118358b3e4da72f6ba4d8cef2b80990d14d8e0dc4c9e3202d47643a65d23"
+          },
+          {
+            "path": "wings-run.log",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool\\wings-run.log",
+            "bytes": 2628,
+            "sha256": "8b163466919579ffadfec49e8cbd82b4a61b19a50bf572928d2083ef3724a941"
+          },
+          {
+            "path": "original-run-report.json",
+            "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T021915Z-soldier-threat-pool-20261016-wings-71b48c5e-5b8e-4c65-b623-af1640fb6b0b\\run-report.json",
+            "bytes": 42690,
+            "sha256": "95cf1a82d84a5fe10ab9a092cdf0680943cda8046cb6300713fbbb0e09b98998"
+          }
+        ]
+      }
+    },
+    {
+      "name": "wings-threat-pool-r2",
+      "qualified": false,
+      "combatNotStarted": true,
+      "rows": 0,
+      "error": {
+        "code": null,
+        "phase": null,
+        "message": "legacy_http_credential_process_identity_unavailable",
+        "details": null
+      },
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "archive": {
+        "path": "failed-starts/wings-threat-pool-r2.zip",
+        "bytes": 428989,
+        "sha256": "4f815964e9200c19c81727d6135cb4febb39847dc55a95665efabdfd16eb3e72",
+        "files": [
+          {
+            "path": "owned-shutdown.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\owned-shutdown.json",
+            "bytes": 1202,
+            "sha256": "09951b2870fa4972e9c1c91daa408077289537a3b25e116d7a90cc65b030b405"
+          },
+          {
+            "path": "plan.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\plan.json",
+            "bytes": 1807,
+            "sha256": "92e133236d9a433114b4582b1db55aed5d2402de4089337dca673685f5cff9b4"
+          },
+          {
+            "path": "recovered-run-report.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\recovered-run-report.json",
+            "bytes": 45294,
+            "sha256": "76d5d70d2736dc208cc211d6e2ce3b3b1a997cec16b58600842e9c85fd2348b7"
+          },
+          {
+            "path": "settled-agent-status.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\settled-agent-status.json",
+            "bytes": 1186,
+            "sha256": "30d7a75948789e51b5a4e25cf7731bc4d2b192c0ce69f06d8754cdcf10860051"
+          },
+          {
+            "path": "settled-status.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\settled-status.json",
+            "bytes": 17265,
+            "sha256": "e6f3f776dddd51ab8d59add78349141214961c97ed7121e782bab4e4d55b7fa4"
+          },
+          {
+            "path": "unadmitted-after.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\unadmitted-after.json",
+            "bytes": 757755,
+            "sha256": "ab7eedd90cfaff4af3b4261c227e25f3312aeb9c63701c56ed2fdf248ffb03ec"
+          },
+          {
+            "path": "wings-before.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\wings-before.json",
+            "bytes": 896363,
+            "sha256": "e57d91e39c72d42a62c61bf20543bc86e55261edf606059dab6ac5f45f7ea38c"
+          },
+          {
+            "path": "wings-evidence-config.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\wings-evidence-config.json",
+            "bytes": 459,
+            "sha256": "3366ba42b2bbcd3586b6e5bc72f5f7b04aba645315e96c6686868cb2d2cb5a93"
+          },
+          {
+            "path": "wings-manifest.json",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\wings-manifest.json",
+            "bytes": 11058,
+            "sha256": "0d141d0a28104f473b46760d2d2b4f0c59f9eea07d4d4169085a4737f494dc1e"
+          },
+          {
+            "path": "wings-run.log",
+            "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-pool-r2\\wings-run.log",
+            "bytes": 1833,
+            "sha256": "4ea1a610b960203cf24d803960b2058db7abc672ab8c7d93c47a7637ebbbe3d5"
+          },
+          {
+            "path": "original-run-report.json",
+            "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T022510Z-soldier-threat-p2-20261016-wings-f78277c8-929a-4ec5-8c21-2351c87912cd\\run-report.json",
+            "bytes": 41834,
+            "sha256": "8b0291a2923004643a5eb982dd43f78fb9a13d3e6b0f53c87a842e955202ccd4"
+          }
+        ]
+      }
+    }
+  ],
+  "environmentRecovery": "startup-recovery/review.json",
+  "decision": "Keep 18-frame maximum fire and 30-frame mandatory rest: enemy body lost all 21 samples while dealing substantial damage to Wings; friendly HP multiplier is evaluated separately.",
+  "remainingAcceptance": [
+    "Human animation and gameplay acceptance through the standard entry."
+  ],
+  "boundaries": [
+    "No commit, push or native runtime promotion is included.",
+    "No original-game instant-kill incident was reproduced; absent RNG in the inspected hit script does not identify a field bug cause.",
+    "The trials are limited independent samples, not paired-seed statistics or a speed benchmark."
+  ],
+  "integrityReport": "integrity.json"
+}

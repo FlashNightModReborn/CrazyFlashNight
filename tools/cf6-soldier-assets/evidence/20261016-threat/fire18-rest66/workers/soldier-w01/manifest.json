@@ -1,0 +1,321 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "soldier-fire-r8-20261016-w1",
+  "createdAt": "2026-10-16T04:18:11.489Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-soldier-two-worker-threat",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 3,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "w1-0-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 3,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "敌方本体应弱于Wings且能造成明显威胁；固定长枪、同级、三次原始样本。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": true,
+        "revision": "fire18-rest66",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shootRestFrames": 66,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "7f3d62938c7d0e9ce91b84c54a8d305e35c7cabf3be3627530eb333e6dcb36e6"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d1a80dc106ca35d09a951b15c365ef41c024f86e899fb5f7e72a0a38056fd340"
+          }
+        ],
+        "stage": 7,
+        "tier": 5,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:8a2d259065341e8c96ff4fc138948f7770aed72ca858c4ad7d38dc84c94e7268"
+    },
+    {
+      "caseId": "w1-1-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 60,
+          "sourceId": "wings-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 3,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "敌方本体应弱于Wings且能造成明显威胁；固定长枪、同级、三次原始样本。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": true,
+        "revision": "fire18-rest66",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shootRestFrames": 66,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "7f3d62938c7d0e9ce91b84c54a8d305e35c7cabf3be3627530eb333e6dcb36e6"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d1a80dc106ca35d09a951b15c365ef41c024f86e899fb5f7e72a0a38056fd340"
+          }
+        ],
+        "stage": 7,
+        "tier": 5,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:5f1c4717079e8b83c15be960bd17bf41a4ce81ad20692f36cb5b1ff20ced5ac2"
+    },
+    {
+      "caseId": "w1-2-99-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 99,
+          "sourceId": "wings-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 99,
+          "sourceId": "soldier-99",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 3,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "敌方本体应弱于Wings且能造成明显威胁；固定长枪、同级、三次原始样本。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": true,
+        "revision": "fire18-rest66",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shootRestFrames": 66,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "7f3d62938c7d0e9ce91b84c54a8d305e35c7cabf3be3627530eb333e6dcb36e6"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d1a80dc106ca35d09a951b15c365ef41c024f86e899fb5f7e72a0a38056fd340"
+          }
+        ],
+        "stage": 7,
+        "tier": 5,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:9cde3a4c63f2ed04d23a24abedd2b6fe55d3c50920575748f3ce956ca4b6d28e"
+    },
+    {
+      "caseId": "w1-3-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60",
+          "parameters": {
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种464",
+          "level": 60,
+          "sourceId": "wings-60"
+        }
+      ],
+      "repeat": 3,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "blue"
+      ],
+      "plannerReason": "友方人形三倍生命加成单列观察，不参与敌方本体定位判定。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": false,
+        "revision": "fire18-rest66",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shootRestFrames": 66,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "7f3d62938c7d0e9ce91b84c54a8d305e35c7cabf3be3627530eb333e6dcb36e6"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d1a80dc106ca35d09a951b15c365ef41c024f86e899fb5f7e72a0a38056fd340"
+          }
+        ],
+        "stage": 7,
+        "tier": 5,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:51fb13d117107fc1db6ef25f02102d410c0aa558d1bb1b8222fc55de25986ab9"
+    }
+  ],
+  "manifestHash": "sha256:88f7d805f1d52f5df75e39bf6d6f2ff2e29f15f317c3da22c48a6cea14163330"
+}

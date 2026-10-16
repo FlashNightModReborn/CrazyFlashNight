@@ -1,0 +1,16 @@
+{
+  "initialCadetBatch": {
+    "natural": 5,
+    "timeouts": 1,
+    "allResultsRetained": true
+  },
+  "supersededUnexecutedManifest": "mixed-manifest.json",
+  "additionalManifest": "integration-manifest.json",
+  "configurationChanged": false,
+  "extraCase": "cadet-99-red-extended",
+  "mirrorFrameWindow": 5400,
+  "squadFrameWindow": 3600,
+  "worstCaseCombatMs": 780000,
+  "batchTimeoutMs": 1080000,
+  "reason": "Allow the observed long 99-level match and mirror fights to finish without changing stage, tier, AI or opponents."
+}

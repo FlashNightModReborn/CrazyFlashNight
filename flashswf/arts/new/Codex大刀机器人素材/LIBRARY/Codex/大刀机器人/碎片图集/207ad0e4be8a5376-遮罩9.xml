@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩9" itemID="6aa00000-89a541fb" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="207ad0e4be8a5376-遮罩9">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!10646 41[10564 102 10480 160|10465 165|10457 171|10360 200|10321 221[10170 307 10000 280[10020 280 10036 272|10044 268[10161 201 10224 82|10240 60|10240 41|9240 41|9240 60|9240 260|9240 280|9239 290[8805 355 8580 200[8560 200 8544 192|8537 189[8435 155 8380 80|8365 85|8358 90|8160 120|8145 125|8136 138[8102 202 8100 300|8085 305|8080 310|48 350|48 560[4074 590 8100 600[8105 675 8129 737|8140 740[8208 822 8380 800[8449 729 8560 700[8806 524 9240 600[9150 761 9091 957|9080 960[9139 984 9220 940[9247 887 9295 853|9300 840[9389 819 9440 760[9546 732 9620 760[9637 973 9820 1020[9950 1120 10080 1020[10221 971 10280 840[10280 769 10297 719|10300 700[11726 964 13540 1000|13720 900[13778 898 13800 860[14227 667 14387 208|14387 41|10646 41" fillStyle0="1"/>
+                    <Edge edges="!9900 820|9885 815|9875 805|9840 780|9840 760|9840 740|9840 680[10031 539 10069 698|10080 700|10080 720|10076 737[10053 773 10040 820|10004 828|10000 830|9900 820" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩10" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

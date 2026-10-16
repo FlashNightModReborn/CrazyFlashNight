@@ -1,0 +1,35 @@
+{
+  "status": "late_completion_recovered",
+  "firstWaitStatus": "timeout_180s",
+  "sourceOfCompletion": "fresh CS6 compiler 0/0, publish_done marker, explicit closed asLoader, task Ready, stable refreshed SWF",
+  "swfSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+  "swfBytes": 5996081,
+  "diagnostics": [
+    {
+      "path": "scripts/compile_state_uncertain.marker",
+      "bytes": 106,
+      "sha256": "f0274dc3c4000a19203ae9864adc0ca0a6578e1f2fe50b899a73a146020baf3e",
+      "mtimeNs": 1792108571322356600
+    },
+    {
+      "path": "scripts/publish_done.marker",
+      "bytes": 2,
+      "sha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+      "mtimeNs": 1792108701211015700
+    },
+    {
+      "path": "scripts/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "mtimeNs": 1792108701027565200
+    },
+    {
+      "path": "scripts/compile_output.txt",
+      "bytes": 63,
+      "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6",
+      "mtimeNs": 1792108701210055900
+    }
+  ],
+  "taskState": "Ready",
+  "replayed": false
+}

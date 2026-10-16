@@ -1,0 +1,437 @@
+{
+  "schema": "cf6-soldier.stability-evidence.v1",
+  "date": "2026-10-16",
+  "selectedShieldReductionPercent": 75,
+  "damageTakenMultiplier": 0.25,
+  "buffSourceId": "CF6特种兵持盾",
+  "buffLifetime": "Phase one only; remove own source at first depletion, flush before phase two. Other sources remain.",
+  "movementRootCause": "Generic CombatModule.chase and the four-frame private decision loop wrote conflicting Z movement flags; walking consumed these between decisions and overshot the target.",
+  "movementFix": {
+    "consumer": "actor-owned walking; resolve after generic AI writes on every movement frame",
+    "zStartAbove": 24,
+    "zStopAtOrBelow": 12,
+    "xStartAbove": 460,
+    "xStopAtOrBelow": 420,
+    "lastStepClamped": true,
+    "nativeCounterexample": "Self Z=200, target Z=201, four stock walk frames reach Z=216 and reverse. Fixed in-range cooldown stays at zero XY drift for 48 fixture frames."
+  },
+  "native": {
+    "runId": "2227680f6d2546008f2704ceb625e131",
+    "passed": 812,
+    "failed": 0,
+    "cases": 66,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "trials": [
+    {
+      "label": "trial40",
+      "summary": {
+        "path": "trial40/summary.json",
+        "bytes": 26598,
+        "sha256": "4d9918b8bb3e3782272695c6f20354d4d1dae3508dbeea3f487faf0ece14b179"
+      },
+      "experimentId": "soldier-stability-r1-20261016",
+      "qualified": true,
+      "rows": 8,
+      "native": {
+        "runId": "6e54ae5477504960a4cb574fbf7f28aa",
+        "passed": 812,
+        "failed": 0,
+        "cases": 66,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "retry32K": 0
+      }
+    },
+    {
+      "label": "trial70-75",
+      "summary": {
+        "path": "trial70-75/summary.json",
+        "bytes": 27497,
+        "sha256": "f091cc3ff51cc5764f236246d764ec702575e057d01ad3f01e5f0f372aea6f58"
+      },
+      "experimentId": "soldier-stability-r2-20261016",
+      "qualified": true,
+      "rows": 12,
+      "native": {
+        "runId": "61937b32ff864c938bf2582972c4d6d2",
+        "passed": 812,
+        "failed": 0,
+        "cases": 66,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "retry32K": 0
+      }
+    },
+    {
+      "label": "final75",
+      "summary": {
+        "path": "final75/summary.json",
+        "bytes": 26064,
+        "sha256": "972bc7c1f397301c339b8fd9d60f176bd5b0a2516f6241386eda46ed692a93a1"
+      },
+      "experimentId": "soldier-stability-final-20261016",
+      "qualified": true,
+      "rows": 8,
+      "native": {
+        "runId": "2227680f6d2546008f2704ceb625e131",
+        "passed": 812,
+        "failed": 0,
+        "cases": 66,
+        "compilerErrors": 0,
+        "compilerWarnings": 0,
+        "retry32K": 0
+      }
+    }
+  ],
+  "combat": {
+    "totalRows": 28,
+    "naturalFinishes": 28,
+    "errors": 0,
+    "timeouts": 0,
+    "selected75RedShield": {
+      "samples": 12,
+      "wins": 9
+    },
+    "selected75RedShieldM4": {
+      "samples": 9,
+      "wins": 7
+    },
+    "final75Rows": [
+      {
+        "worker": "soldier-w01",
+        "caseId": "w1-0-30-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 30,
+        "weapon": "M4A1战术版",
+        "soldierSide": "red",
+        "winner": "blue",
+        "status": "finished",
+        "frames": 927.0,
+        "soldierStartHp": 13585.0,
+        "soldierRemainHp": 0.0,
+        "wingsStartHp": 6204.0,
+        "wingsRemainHp": 404.0,
+        "wingsDamagePercent": 93.48807221147646
+      },
+      {
+        "worker": "soldier-w01",
+        "caseId": "w1-1-60-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 60,
+        "weapon": "M4A1战术版",
+        "soldierSide": "red",
+        "winner": "red",
+        "status": "finished",
+        "frames": 939.0,
+        "soldierStartHp": 20257.0,
+        "soldierRemainHp": 7090.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 0.0,
+        "wingsDamagePercent": 100.0
+      },
+      {
+        "worker": "soldier-w01",
+        "caseId": "w1-2-99-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 99,
+        "weapon": "M4A1战术版",
+        "soldierSide": "red",
+        "winner": "red",
+        "status": "finished",
+        "frames": 911.0,
+        "soldierStartHp": 28931.0,
+        "soldierRemainHp": 5976.0,
+        "wingsStartHp": 12041.0,
+        "wingsRemainHp": 0.0,
+        "wingsDamagePercent": 100.0
+      },
+      {
+        "worker": "soldier-w01",
+        "caseId": "w1-3-60-red",
+        "repeatIndex": 1,
+        "unitId": 466,
+        "initialPhase": 2,
+        "shieldDamageReductionPercent": 0,
+        "sourceConfiguredReductionPercent": 0,
+        "level": 60,
+        "weapon": "M4A1战术版",
+        "soldierSide": "red",
+        "winner": "blue",
+        "status": "finished",
+        "frames": 264.0,
+        "soldierStartHp": 22018.0,
+        "soldierRemainHp": 0.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 6791.0,
+        "wingsDamagePercent": 22.317547471974375
+      },
+      {
+        "worker": "soldier-w02",
+        "caseId": "w2-0-60-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 60,
+        "weapon": "M4A1改",
+        "soldierSide": "red",
+        "winner": "blue",
+        "status": "finished",
+        "frames": 841.0,
+        "soldierStartHp": 20257.0,
+        "soldierRemainHp": 0.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 3105.0,
+        "wingsDamagePercent": 64.48181194234729
+      },
+      {
+        "worker": "soldier-w02",
+        "caseId": "w2-1-60-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 60,
+        "weapon": "AK74战术版",
+        "soldierSide": "red",
+        "winner": "red",
+        "status": "finished",
+        "frames": 785.0,
+        "soldierStartHp": 20257.0,
+        "soldierRemainHp": 5921.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 0.0,
+        "wingsDamagePercent": 100.0
+      },
+      {
+        "worker": "soldier-w02",
+        "caseId": "w2-2-60-red",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 60,
+        "weapon": "DD MK18战术版",
+        "soldierSide": "red",
+        "winner": "red",
+        "status": "finished",
+        "frames": 781.0,
+        "soldierStartHp": 20257.0,
+        "soldierRemainHp": 3105.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 0.0,
+        "wingsDamagePercent": 100.0
+      },
+      {
+        "worker": "soldier-w02",
+        "caseId": "w2-3-60-blue",
+        "repeatIndex": 1,
+        "unitId": 467,
+        "initialPhase": 1,
+        "shieldDamageReductionPercent": 75,
+        "sourceConfiguredReductionPercent": 75,
+        "level": 60,
+        "weapon": "M4A1战术版",
+        "soldierSide": "blue",
+        "winner": "blue",
+        "status": "finished",
+        "frames": 1000.0,
+        "soldierStartHp": 60771.0,
+        "soldierRemainHp": 36370.0,
+        "wingsStartHp": 8742.0,
+        "wingsRemainHp": 0.0,
+        "wingsDamagePercent": 100.0
+      }
+    ]
+  },
+  "finalSourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "e900172a6fa1b32907f814838076d82abf0e3bb3402aaee998fa26b29a4af003"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "9217ef8bb3e0c0d0fc6bafc661e9fd15eb98a87a7eb3807a38d612e538de95e6"
+    }
+  ],
+  "finalRuntimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    }
+  ],
+  "geometryPreservation": {
+    "projectFileCount": 243,
+    "unchangedFiles": 241,
+    "changedFiles": [
+      "LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
+      "LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml"
+    ],
+    "changeScope": "Root AS2 script only; after removing script nodes both root XMLs are byte-equivalent in canonical XML. All body art, matrices and timelines unchanged.",
+    "newVisualCaptureClaimed": false
+  },
+  "nativeSupportFiles": [
+    {
+      "path": "final-native-support/tools/cf6-soldier-assets/build-test-consumer.py",
+      "bytes": 6246,
+      "sha256": "3816661ce102685f62f116bcf6a83f5014667eed54e6223df24a847e4f5ba617"
+    },
+    {
+      "path": "final-native-support/tools/cf6-soldier-assets/test-host-manifest.json",
+      "bytes": 2949,
+      "sha256": "94a93a2e060796e1ea2a4da6a580fafe7682cc446d1709d41292fefefee62cfc"
+    },
+    {
+      "path": "final-native-support/scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "bytes": 68893,
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "final-native-support/tools/cf6-soldier-assets/threat-evidence.py",
+      "bytes": 11777,
+      "sha256": "3039373541f22c230f4fde31ca04935a9635d5f16800d52e065b41d26ff5e35a"
+    },
+    {
+      "path": "final-native-support/test-host-project.zip",
+      "bytes": 10090,
+      "sha256": "2151cdcc4ca680853710372572fa2a5462eea117cd203045d6f7ef2c0ec1c27e"
+    }
+  ],
+  "firstNativeFailure": {
+    "archive": {
+      "path": "native-first-failure.zip",
+      "bytes": 915890,
+      "sha256": "5dc256aeb43b1e92097d783f7c7496379697cecea970b8f80b151be6de6e400d"
+    },
+    "passed": 807,
+    "failed": 5,
+    "timelineCases": 66,
+    "cause": "Fixture setup: missing attack-target field in movement contract and direct access before PinkNoise singleton initialization. Corrected fixture sets attack target and uses getInstance; production movement/buff code was not changed for these five failures.",
+    "entries": [
+      {
+        "path": "native-r1/Cf6SoldierAssetTest.as",
+        "bytes": 45445,
+        "sha256": "630870ceb108805726f6267d2b7db848833e67ad294fc6c963ae35fa650fabb3"
+      },
+      {
+        "path": "native-r1/Cf6SoldierNativeHost.swf",
+        "bytes": 898736,
+        "sha256": "6797ff1cea8ad946c700a98bce1b3c816ffb9c7ebe8f8211785e4b0a117e8659"
+      },
+      {
+        "path": "native-r1/publish-compile_output.txt",
+        "bytes": 75,
+        "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57"
+      },
+      {
+        "path": "native-r1/publish-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      {
+        "path": "native-r1/test-compile_output.txt",
+        "bytes": 19,
+        "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+      },
+      {
+        "path": "native-r1/test-compiler_errors.txt",
+        "bytes": 27,
+        "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+      },
+      {
+        "path": "native-r1/test-flashlog.txt",
+        "bytes": 3059,
+        "sha256": "71d7c9b167bc4100ecd37284d140b5031d07f9dcd4d984eedb27bcfea966640b"
+      },
+      {
+        "path": "native-r1.log",
+        "bytes": 3449,
+        "sha256": "685dc388cade9664a6ab21c75d15b244bf2730877cdf9a3ba5891c8517f474cd"
+      },
+      {
+        "path": "publish-r1.log",
+        "bytes": 1321,
+        "sha256": "e36e9bfd8b4d8495919b9516f3c2b9e989011e3b5854f375ee1c830b552f9905"
+      }
+    ]
+  },
+  "qualification": {
+    "flashCompiled": true,
+    "nativeFixturePassed": true,
+    "isolatedCandidateCombatVerified": true,
+    "formalRuntimePromoted": false,
+    "standardEntryVerified": false,
+    "humanVisualGameplayAccepted": false
+  },
+  "boundaries": [
+    "75 percent is the selected preset near and generally above Wings in this small sample; no stable win rate or every-weapon/every-level superiority is claimed.",
+    "Level 30 M4 and M16 cases still lost; ordinary phase two remains weaker.",
+    "Each trial used distinct game randomness; these are not paired seeded A/B results.",
+    "Blue friendly humanoid HP x3 cases remain separate.",
+    "Earlier WGC launch failures and the first failed native fixture remain preserved.",
+    "The trial40 derived summary corrects effective phase-two reduction to zero while retaining its original raw metadata and planner wording.",
+    "No new visual captures are claimed; generated geometry is unchanged."
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "schema": "arena-worker.experiment-report.v1",
+  "experimentId": "wings-pilot-20261015",
+  "frozenPlanHash": "sha256:7572611106b98bb7fe3c074fe90b16da3291e73607ebc9ad9e0fbf1114800d47",
+  "completedAt": "2026-10-15T13:43:33.694Z",
+  "stopped": false,
+  "expectedGroups": 1,
+  "completedGroups": 1,
+  "groups": [
+    {
+      "groupId": "pilot",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "pilot",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-625437d978634a23a10b1b6d0bd9490a\\assignment-625437d978634a23a10b1b6d0bd9490a\\attempt-625437d978634a23a10b1b6d0bd9490a\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:52abb9e069f14a3bed76e242f02a8e4c522104e3ac30cd77e848846e801c5f3f",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "wings",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\groups\\pilot\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-15T13:41:20.386Z",
+      "completedAt": "2026-10-15T13:43:33.657Z",
+      "wallDurationMs": 133271
+    }
+  ],
+  "errors": [],
+  "seedSources": [
+    {
+      "workerId": "wings",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "measurementPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\wings-pilot-20261015\\measurement.json",
+  "qualified": true,
+  "status": "completed"
+}

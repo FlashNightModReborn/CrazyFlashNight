@@ -1,0 +1,1509 @@
+{
+  "schema": "cf6-soldier.native-import.v1",
+  "owner": "flashswf/arts/new/Codex特种兵素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6特种兵-R3",
+  "nativeSymbolCount": 190,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "sha256": "ce74425dd1c6074408c81e731cd5101e170c8fdaad9ccf557e7431fdd5d5288b"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/vector.py",
+      "sha256": "355d4e94c78c4cd955742d5a8a8f2c4bf25ab40a370d7bf377c6b118881cda1a"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as",
+      "sha256": "f372d4c59f32140b2de2312eb9ec82f748a034c379f28c8f9fcc17851b43d03e"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as",
+      "sha256": "47322c07ba1c4e8d7dd1fce23affb15891d7c852f03a1c9cea30590f40e4e9da"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_装备引用配置.as",
+      "sha256": "5be48bc04b973e17310b9a4399d4d124655121431d04470647de3340fda29937"
+    }
+  ],
+  "parts": [
+    {
+      "id": 484,
+      "shapes": 25,
+      "segments": 240,
+      "masks": 2
+    },
+    {
+      "id": 485,
+      "shapes": 36,
+      "segments": 531,
+      "masks": 2
+    },
+    {
+      "id": 486,
+      "shapes": 20,
+      "segments": 386,
+      "masks": 2
+    },
+    {
+      "id": 487,
+      "shapes": 84,
+      "segments": 619,
+      "masks": 2
+    },
+    {
+      "id": 488,
+      "shapes": 74,
+      "segments": 451,
+      "masks": 2
+    },
+    {
+      "id": 489,
+      "shapes": 55,
+      "segments": 605,
+      "masks": 2
+    },
+    {
+      "id": 490,
+      "shapes": 23,
+      "segments": 488,
+      "masks": 2
+    },
+    {
+      "id": 491,
+      "shapes": 23,
+      "segments": 368,
+      "masks": 2
+    },
+    {
+      "id": 493,
+      "shapes": 16,
+      "segments": 446,
+      "masks": 2
+    },
+    {
+      "id": 494,
+      "shapes": 34,
+      "segments": 437,
+      "masks": 2
+    },
+    {
+      "id": 495,
+      "shapes": 21,
+      "segments": 373,
+      "masks": 2
+    },
+    {
+      "id": 496,
+      "shapes": 15,
+      "segments": 272,
+      "masks": 2
+    },
+    {
+      "id": 497,
+      "shapes": 24,
+      "segments": 363,
+      "masks": 2
+    },
+    {
+      "id": 508,
+      "shapes": 447,
+      "segments": 5461,
+      "masks": 1
+    },
+    {
+      "id": 509,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 510,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 511,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 512,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 514,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 515,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 516,
+      "shapes": 1,
+      "segments": 23,
+      "masks": 1
+    },
+    {
+      "id": 521,
+      "shapes": 1,
+      "segments": 48,
+      "masks": 0
+    },
+    {
+      "id": 522,
+      "shapes": 6,
+      "segments": 88,
+      "masks": 5
+    },
+    {
+      "id": 523,
+      "shapes": 1,
+      "segments": 139,
+      "masks": 0
+    },
+    {
+      "id": 524,
+      "shapes": 12,
+      "segments": 159,
+      "masks": 12
+    },
+    {
+      "id": 525,
+      "shapes": 1,
+      "segments": 202,
+      "masks": 0
+    },
+    {
+      "id": 526,
+      "shapes": 6,
+      "segments": 78,
+      "masks": 6
+    },
+    {
+      "id": 527,
+      "shapes": 1,
+      "segments": 214,
+      "masks": 0
+    },
+    {
+      "id": 528,
+      "shapes": 4,
+      "segments": 66,
+      "masks": 4
+    },
+    {
+      "id": 529,
+      "shapes": 1,
+      "segments": 194,
+      "masks": 0
+    },
+    {
+      "id": 530,
+      "shapes": 4,
+      "segments": 75,
+      "masks": 4
+    },
+    {
+      "id": 531,
+      "shapes": 1,
+      "segments": 134,
+      "masks": 0
+    },
+    {
+      "id": 532,
+      "shapes": 4,
+      "segments": 75,
+      "masks": 4
+    },
+    {
+      "id": 533,
+      "shapes": 1,
+      "segments": 158,
+      "masks": 0
+    },
+    {
+      "id": 534,
+      "shapes": 3,
+      "segments": 71,
+      "masks": 3
+    },
+    {
+      "id": 535,
+      "shapes": 1,
+      "segments": 146,
+      "masks": 0
+    },
+    {
+      "id": 536,
+      "shapes": 4,
+      "segments": 239,
+      "masks": 3
+    },
+    {
+      "id": 537,
+      "shapes": 1,
+      "segments": 154,
+      "masks": 0
+    },
+    {
+      "id": 538,
+      "shapes": 1,
+      "segments": 113,
+      "masks": 0
+    },
+    {
+      "id": 539,
+      "shapes": 1,
+      "segments": 120,
+      "masks": 0
+    },
+    {
+      "id": 540,
+      "shapes": 1,
+      "segments": 124,
+      "masks": 0
+    },
+    {
+      "id": 541,
+      "shapes": 1,
+      "segments": 125,
+      "masks": 0
+    },
+    {
+      "id": 542,
+      "shapes": 4,
+      "segments": 197,
+      "masks": 3
+    },
+    {
+      "id": 543,
+      "shapes": 1,
+      "segments": 65,
+      "masks": 0
+    },
+    {
+      "id": 544,
+      "shapes": 4,
+      "segments": 142,
+      "masks": 3
+    },
+    {
+      "id": 545,
+      "shapes": 1,
+      "segments": 63,
+      "masks": 0
+    },
+    {
+      "id": 546,
+      "shapes": 1,
+      "segments": 99,
+      "masks": 0
+    },
+    {
+      "id": 547,
+      "shapes": 1,
+      "segments": 120,
+      "masks": 0
+    },
+    {
+      "id": 548,
+      "shapes": 1,
+      "segments": 191,
+      "masks": 0
+    },
+    {
+      "id": 549,
+      "shapes": 1,
+      "segments": 222,
+      "masks": 0
+    },
+    {
+      "id": 550,
+      "shapes": 1,
+      "segments": 217,
+      "masks": 0
+    },
+    {
+      "id": 551,
+      "shapes": 1,
+      "segments": 139,
+      "masks": 0
+    },
+    {
+      "id": 552,
+      "shapes": 1,
+      "segments": 143,
+      "masks": 0
+    },
+    {
+      "id": 553,
+      "shapes": 1,
+      "segments": 141,
+      "masks": 0
+    },
+    {
+      "id": 554,
+      "shapes": 1,
+      "segments": 134,
+      "masks": 0
+    },
+    {
+      "id": 555,
+      "shapes": 1,
+      "segments": 151,
+      "masks": 0
+    },
+    {
+      "id": 556,
+      "shapes": 1,
+      "segments": 126,
+      "masks": 0
+    },
+    {
+      "id": 557,
+      "shapes": 1,
+      "segments": 133,
+      "masks": 0
+    }
+  ],
+  "groundShift": -12.500106811523438,
+  "sourceOffsets": {
+    "498": [
+      25.5,
+      -54.45
+    ],
+    "500": [
+      25.6,
+      -53.55
+    ],
+    "507": [
+      4.75,
+      -62.05
+    ],
+    "517": [
+      26.5,
+      -53.5
+    ],
+    "518": [
+      8.95,
+      -59.95
+    ],
+    "519": [
+      16.9,
+      -65.4
+    ],
+    "520": [
+      5.5,
+      -59
+    ],
+    "558": [
+      8,
+      -59.9
+    ]
+  },
+  "ordinaryRoot": 559,
+  "sourceBodyFrames": 378,
+  "shootingAuthority": "ShootInitCore / ShootCore / WeaponFireCore",
+  "shootingPoseFrame": 3,
+  "burstShots": 3,
+  "reloadFrames": [
+    15,
+    49
+  ],
+  "knifeHitFrame": 14,
+  "deathBranches": [
+    [
+      1,
+      58
+    ],
+    [
+      59,
+      104
+    ],
+    [
+      105,
+      139
+    ]
+  ],
+  "airborneSourceFrames": [
+    1,
+    40
+  ],
+  "landedSourceFrames": [
+    41,
+    116
+  ],
+  "weaponSource": "Existing long-gun equipment and shared cadet pool; external primary wins",
+  "weaponHolderPath": "man.枪.枪.装扮",
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 113.xml",
+      "sha256": "2bdd94db93e36e9adeb1af0bb6028a6d056ce956658f2ee2603f1526ffa0563c",
+      "bytes": 871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 15.xml",
+      "sha256": "109387063a66cc5ecfc5c23b88f21e38a9b7bbfffc38b794cb93b711071fbf20",
+      "bytes": 1051
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 16.xml",
+      "sha256": "77fe761702e87930ed8074488649c121344af27ff11a12bb4fdc42a6560ec0a7",
+      "bytes": 1105
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 18.xml",
+      "sha256": "f3a792e66850efaa4bc5e42417e042f2d593994b0523f0df2a15d75cec818cb0",
+      "bytes": 1087
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 19.xml",
+      "sha256": "348e40cb14800b6ec2d5e4b4593d884eff0fae9816bc39f129164ce96f282f44",
+      "bytes": 974
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 195.xml",
+      "sha256": "231dcff1d8a5e139a2b3e0a7c16c79153cea7b0223fa5b7eaf0f1ce18a593485",
+      "bytes": 1559
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 2.xml",
+      "sha256": "9565ec8b031de6d909996a63fed7a4711a1ca5e4c16ee530ed41c31303cf1dfb",
+      "bytes": 2483
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 21.xml",
+      "sha256": "d294f92a1b612f81c03297e10ff2d79796c7933d758aafcec26e7f8842f14ff6",
+      "bytes": 1057
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 23.xml",
+      "sha256": "cc2fa485304456b9d0a94d12ae17e5ca2ccf2aeb20d21b228942ec0fe482c6e1",
+      "bytes": 1011
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 24.xml",
+      "sha256": "cfe56edf007363b4c0c8b641148a59cdea6a848a00bde8aa9a413a1b145b677b",
+      "bytes": 869
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 26.xml",
+      "sha256": "7ade46820e96e0150ee146b91aa8455fe712dcb52b075bf6abca6f1e327ee61b",
+      "bytes": 4921
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 32.xml",
+      "sha256": "80fb3f77c9bf5bfd89cf19692c6eec6f8b4480becb97b15747ebf4e3c3cbfea0",
+      "bytes": 6410
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/Symbol 99.xml",
+      "sha256": "54db7debb2ebd7f5e82c01f52d5ef0a73ac201472268f95b8d1e109c6beac4f0",
+      "bytes": 1756
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/CF7/思考标签.xml",
+      "sha256": "60e137f241a17d177832669e4d19a150444680ba0b2a26ebab74a7c1ac2bbdb0",
+      "bytes": 1226
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c.xml",
+      "sha256": "cc820463ab119fa7bbd97feec7dc72aff7a28d0190464848f2bf090a3dba1289",
+      "bytes": 6318
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩0.xml",
+      "sha256": "b8772f01facad4b620a2f0fc9359ffb4262bcec40dab83e30f533fc46ecd9caa",
+      "bytes": 18003
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩1.xml",
+      "sha256": "2617f8bb2839cf3ddffa108b70f91e299b427a94033ecf995e40f4340c464476",
+      "bytes": 2118
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩10.xml",
+      "sha256": "dca1f56c1ea49e5a7dfc6ea71164801847277147590c558cf66bda38e8933adc",
+      "bytes": 2193
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩11.xml",
+      "sha256": "bfda398a20b45975dd506efd5ead40be988157aa789d43755b8c47316a6d33d6",
+      "bytes": 19197
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩12.xml",
+      "sha256": "9cc30e474888227c954c69b404ddfd4dc65a4690456b423282241bb1f1eb11d0",
+      "bytes": 2370
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩13.xml",
+      "sha256": "ee71c3a9e214765cd2126e0ddb0f614aac7f1b8e557a7a46d70f1ff575a59a6d",
+      "bytes": 14662
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩14.xml",
+      "sha256": "6e193bb4bf4de7fe8b507edb6fba513c733554b4bcc28309f6b03cd5593c0ef6",
+      "bytes": 2241
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩15.xml",
+      "sha256": "2cec228d32c7a1e429ed379aedc605d2fab8cc8ac5d234058a14a33e5b1c838a",
+      "bytes": 26240
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩16.xml",
+      "sha256": "29d0ec3e6dd9bc465d916fd49d2b9ad9911de5879dde26a87dc1bf092dad24d5",
+      "bytes": 2183
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩17.xml",
+      "sha256": "678bd3ffd4534c0ec4f0fde218999a019faa0f126510ccafe156cfd674cb60f1",
+      "bytes": 18003
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩18.xml",
+      "sha256": "ed1570af8fc6e06d6af8f7ae3f8e8c3f2255fb54bb85c1ff66ae621fe0993b43",
+      "bytes": 2173
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩19.xml",
+      "sha256": "52e5dc1230bbac3851a9c20aa1c5d002eb67a93935e2120f0760da1c212af0ff",
+      "bytes": 13125
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩2.xml",
+      "sha256": "da5dad729b00156a5dabd7e97bd28062e00a1ec29de44222f1b704286bed1c8d",
+      "bytes": 26736
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩20.xml",
+      "sha256": "ad464e01fd6c2e710776e97d95d7ecccec8cf94923c64e72b6bb4ccbd924c730",
+      "bytes": 2247
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩21.xml",
+      "sha256": "e01601e1bf161573de978948adaf0b89e0b3214436d9cb4ca4958452c30f92dc",
+      "bytes": 20529
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩3.xml",
+      "sha256": "e68ba3731c09adfeb18824b137922c59f9c77a8aeb0077eb3af599084469dfa4",
+      "bytes": 2262
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩4.xml",
+      "sha256": "89dfad57a831125d8bf94309f5d96743fbfc104bbf0f662c414a7f3f81d6169f",
+      "bytes": 17569
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩5.xml",
+      "sha256": "575e1e593dcdb9fa6b9063bf896c18933835f12c01eb347f95fd731d9fabad9a",
+      "bytes": 62511
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩6.xml",
+      "sha256": "bf5dde696bb916551b5b80543ab651eb09b2d08b1f6ab276d5948049b707c4ed",
+      "bytes": 53955
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩7.xml",
+      "sha256": "aae54f891d4aa0060eb249258c71f3daa189593f200594b713b845c37327d896",
+      "bytes": 43204
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩8.xml",
+      "sha256": "e5ae69e2fb0537cb990d69dc3672a2a8ff4377947598f0edd7c7528a089b2610",
+      "bytes": 2210
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/共用矢量图集/814d5bf409cd792c-遮罩9.xml",
+      "sha256": "93eba89e3af6f66fc0e7a1ca8f59d4988984f998e539f2dd87cd37c445a59293",
+      "bytes": 21960
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/484.xml",
+      "sha256": "7627c400a6856d35700c5f09ba66fb18bd74b41011450af6c12252dfb9bcc7fb",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/484-遮罩0.xml",
+      "sha256": "9bbcf523c8462703abee9ee3bcd1b9637c152f0ff44053b2971b5e240e8c33cb",
+      "bytes": 1983
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/484-遮罩1.xml",
+      "sha256": "c955b299ce2a962e33d65210551f5a49f21ab61533b675464f57d002722e60bb",
+      "bytes": 17620
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/485.xml",
+      "sha256": "9efb5317e1ca932d486e2b72c9b5e8323a7ee9cc3e7f4d96587d208bcd68a9d1",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/485-遮罩0.xml",
+      "sha256": "b77d2899a83bedc43be659b387a88543da73fe4f11baa1121978b57401a878e3",
+      "bytes": 2031
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/485-遮罩1.xml",
+      "sha256": "b8de49ec1617c4088ec21133a4d34656528cc613dfaf1519bd89d10bdf93ef2e",
+      "bytes": 26396
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/486.xml",
+      "sha256": "22da7a27633bb185eb513dadf0789f0349a86300dc9b5d831fcaf434c5097cd4",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/486-遮罩0.xml",
+      "sha256": "1e6176f1fa92a51fd07ab780780e53a4b1469619a702e2a31c6500be1dd5aa1b",
+      "bytes": 2187
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/486-遮罩1.xml",
+      "sha256": "e27560386544145955206d246e5c9dc16d9e1fd5d4cceff944917707a1e43f3a",
+      "bytes": 17230
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/487.xml",
+      "sha256": "80e8e9f05be071c8edf3e0acd3c2a882951d8ccb6c9a49268ee438bb78a9d67c",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/487-遮罩0.xml",
+      "sha256": "22643bb7b3a10a79a9b0649a8818c1a26ae1fdc0fd6a1ddf3cdd71bc3e6b673e",
+      "bytes": 1760
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/487-遮罩1.xml",
+      "sha256": "3178c2ced4d798d67d8cfec2de860c03058436e6f12fbda1f29054410b7f11fa",
+      "bytes": 63084
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/488.xml",
+      "sha256": "dfa5657394e61535584dd2c1fe7d6c2dd7d9a38bd3142c26c7efd67801eaffc2",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/488-遮罩0.xml",
+      "sha256": "4210648b7896193dbb20a9e1fe99d2936573772c2cde0696e0d3bbefe14a4f98",
+      "bytes": 2155
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/488-遮罩1.xml",
+      "sha256": "8377ad7ab7a3a0fb4c36e3c98e0145814f1e6fe1626b57c46ffaf6bb80400093",
+      "bytes": 53898
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489.xml",
+      "sha256": "71c7311c0f7905f17210083ac45522768e2132eee6bacf74236cc715e18fd03f",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-遮罩0.xml",
+      "sha256": "5354b603df078cd64ff562e9d6f1c5c1c105d8f710d889560d27995b59324414",
+      "bytes": 3053
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/489-遮罩1.xml",
+      "sha256": "426cc859305037095a015716fb34fc1ae2300fdfd8782dc048b3a47711e3f0ee",
+      "bytes": 43199
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/490.xml",
+      "sha256": "ac2f6a3f7bb41b80d72e3bfaaed520190b77720f0ff46fc908b757c96c36ad34",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/490-遮罩0.xml",
+      "sha256": "c76725d5db87f302a9ab05aaac975f5d561fe53cad4c8ee57b5593b6ab44be88",
+      "bytes": 2073
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/490-遮罩1.xml",
+      "sha256": "b7c7baf0bfd9d0927cd6f9f7989c85a5948a44cf0bc5ada9cd022fdcfe3196b0",
+      "bytes": 20778
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/491.xml",
+      "sha256": "b1e2de0b69c7e4d2f017f44093185f324be21c9de59444482b055235a40021c5",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/491-遮罩0.xml",
+      "sha256": "38dd29fe4feafeeb108a25576093ffd398665c537a60b10d128c1acbb6b24478",
+      "bytes": 2080
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/491-遮罩1.xml",
+      "sha256": "8e10730b024f2b03596fb78df4fae6b06ee9efee4ffdb96f2cf152ea37e2bf22",
+      "bytes": 18645
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/493.xml",
+      "sha256": "89c02b18e546fc86e7452a213ee84bdb14d06c20e47c8890d7317308236ba29d",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/493-遮罩0.xml",
+      "sha256": "7dc2750898b969604dace7281b7c2a4580e45416db4330c87cda00d1486ab8f6",
+      "bytes": 2250
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/493-遮罩1.xml",
+      "sha256": "8976a390ef2696cce29e1608ecdf66fbc77dcf661611747f833c5064094fef11",
+      "bytes": 14057
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/494.xml",
+      "sha256": "cecca48fbf9fc9fbf6cb84365fda47b6ddcefe9f0f3420526bd324ff3b7310eb",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/494-遮罩0.xml",
+      "sha256": "c57816af845d8d4073e716f3bf981c7e512cac59994a368dc87c50cc04e691ab",
+      "bytes": 2150
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/494-遮罩1.xml",
+      "sha256": "392ca1af4c2e76ffa5b7b02f2fc99a5be8aa603ebed7ea6078e2f7a7c623f79a",
+      "bytes": 25682
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/495.xml",
+      "sha256": "5bddf3cf41031670bb5929bab4132d6996dc697f68bbadb5b470af3b5fe90e97",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/495-遮罩0.xml",
+      "sha256": "99f4ac1bb111b00946f3858c07cdf206dc3fb614e64ea3f6e1c4c0d1f86b36e5",
+      "bytes": 2083
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/495-遮罩1.xml",
+      "sha256": "31eb4e09c47a817e3348af4ba032c0789c6d0f19c9d5ef1e9b212ede2b4d2045",
+      "bytes": 17455
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/496.xml",
+      "sha256": "50d1dc5be2a7a12255e245979fc34d004965b700ed8fa66c900944360716870e",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/496-遮罩0.xml",
+      "sha256": "150eccecf4a4b1caa2df50b0f0efc7f3e87fdb75d5b313435c25aefaf6b7eb4f",
+      "bytes": 2045
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/496-遮罩1.xml",
+      "sha256": "f6a49393819c447c2e0c261df9e5e6940c3050ee825ef9d17833068a5815d20e",
+      "bytes": 12505
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/497.xml",
+      "sha256": "9adc0a08ec73d2b36d577a8cc43f70cf6e95c7321ffaee2107e9334f0ba72ac6",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/497-遮罩0.xml",
+      "sha256": "59eab867fde5f83933dacdaae7bae24664dddde45a39cdb783c54e6625e1e007",
+      "bytes": 2154
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/497-遮罩1.xml",
+      "sha256": "eeb7aa8937c7e8794bf419007e302991abad8894cebb27e8867aed4358d249ba",
+      "bytes": 20128
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/508.xml",
+      "sha256": "9d097d3ca7506dcd424aa13c735aefa27eef946d33ba77fc072da40bd2d81c82",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/508-遮罩0.xml",
+      "sha256": "caa5908a9af400d681b639420faf640e743835740cd7271a5220c48dbf454125",
+      "bytes": 2015
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/509.xml",
+      "sha256": "460cdb3b62c2b424183b3faef241cdf2975c57fee61cab96930e8164cfbc2840",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/509-遮罩0.xml",
+      "sha256": "83ccaf96aa23e5aa2e3627573614a28968f2fd3f4e9498066aeadf7c7ba0821b",
+      "bytes": 2015
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/510.xml",
+      "sha256": "72be3ec079420a7798941128fc367aafa8787852f07ffd42f3a1ae2598d949dd",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/510-遮罩0.xml",
+      "sha256": "16be650dbc96203259997e5a7e93e9c8bf24ce8a5ed6649ddd32a21e214ffb1d",
+      "bytes": 2033
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/511.xml",
+      "sha256": "a0868afd59c32ca84ce09e843f5d3b1bef64888e8db8175e1ee12689e2742fe7",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/511-遮罩0.xml",
+      "sha256": "4ef47929e98c335a293e082f202358a3d4b096108908615e2dcac552a3f3bea7",
+      "bytes": 1995
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/512.xml",
+      "sha256": "106cd00a195490f68023ee2299652f239ab9893be872b18a5819540777170638",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/512-遮罩0.xml",
+      "sha256": "6a598448736f9afefd59ddd25940944fd3bd5543a9460c3fa959aa4fe3d50f08",
+      "bytes": 1995
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/514.xml",
+      "sha256": "c5ad28e4fd269e327e1b35743682f842c02ee012615cddf21078fb14f9f59a1e",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/514-遮罩0.xml",
+      "sha256": "916b4d5cb8d392b904e4db56e89cad0264bdf6b42dacc0bedb46b9d6ae19423d",
+      "bytes": 1995
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/515.xml",
+      "sha256": "7170475be67d8fe871be0b99e6bafa38c11ec2bd86c203af1d58cfdd583e9998",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/515-遮罩0.xml",
+      "sha256": "2937040b49e9018b474a72e1b10b05ee61c3def43737b0d9aba94f61dbb37f07",
+      "bytes": 2015
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/516.xml",
+      "sha256": "b607910370c3c38a551e0ae9840185f3211408ca83913cb091515c40602ad9a3",
+      "bytes": 965
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/516-遮罩0.xml",
+      "sha256": "0d808fe57a3772ae9fc985e7380b60afb57f2efbc9551e8b3e5f1fcdd4fcd6f7",
+      "bytes": 2015
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/521.xml",
+      "sha256": "2d02712eff89c40abd0876df70062f6aefedb7084e6237870a73316d394a9a97",
+      "bytes": 1924
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522.xml",
+      "sha256": "47a1f4de44b60324ce837ef4ae9eb4753f5b6e26e0db2d3a7c54acb757a90527",
+      "bytes": 3243
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522-遮罩0.xml",
+      "sha256": "0bdfd13b9a2d7a71815433a1f215ed80acb0e1de10539ce5bda0c7badd8a98a1",
+      "bytes": 1845
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522-遮罩1.xml",
+      "sha256": "6cfee1f24a828b5418154017903f5004d3b5adb1e429c80d1d8de2829fa32135",
+      "bytes": 2025
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522-遮罩2.xml",
+      "sha256": "f083e209a22141f5bb8ef396f08d32bc7c05cf83d37bb5d270463f062daca3d0",
+      "bytes": 2017
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522-遮罩3.xml",
+      "sha256": "11daad4ff8b7365ab3d0b107ca2ea86326813a49b038dbd7575c6e83338511ff",
+      "bytes": 1967
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/522-遮罩4.xml",
+      "sha256": "88737cf831394685082484c48b53020cfd9a9eab340213a7952ae660b1f4b573",
+      "bytes": 2098
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/523.xml",
+      "sha256": "e1cc224749e57d5202bb4f8538b057883e5023d98b4c8d42da675c6781c31121",
+      "bytes": 4088
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524.xml",
+      "sha256": "17edfec289d740b4df480fae2fd6cad229bc5472c1877741db14ede1cfa2ae59",
+      "bytes": 5532
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩0.xml",
+      "sha256": "e8a8e885dd74078d55524a4d7928b0c11e6e1f48e1bc6541af561c80bc8fb990",
+      "bytes": 2161
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩1.xml",
+      "sha256": "a05f6422219e2bf17de493297fee600b02575b68a865350ce275ebad9ac0975e",
+      "bytes": 1797
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩10.xml",
+      "sha256": "8ff82eac0fed66398024f4dd66f905bbaa0e16bb964288f4682c2f3ba1c19a53",
+      "bytes": 1775
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩11.xml",
+      "sha256": "1c73089de771399f5f707d240c8183df2c896d9bf84532daf663c0335d67cba8",
+      "bytes": 2006
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩2.xml",
+      "sha256": "269c973876989049ab96ed9c8125c99b2744bfca2231c608b42e3a7ad1be5c25",
+      "bytes": 1797
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩3.xml",
+      "sha256": "ccd1bbe57cd951fd18387431928f5344a0c29fd58e9f59af8b039e954a2097d9",
+      "bytes": 1932
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩4.xml",
+      "sha256": "96344230719e3aa36eb10df04879229ce2d809517601fd34ffc1c0d75645735e",
+      "bytes": 1906
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩5.xml",
+      "sha256": "cafe4fa6cecee0c3740f93320ff7dc1fba8200be305a3b4e08cdf1a14c3783e5",
+      "bytes": 2018
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩6.xml",
+      "sha256": "b538dc6c6238185026feb63237c415cee90e25ab9d36f113701c0fe749a54372",
+      "bytes": 2171
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩7.xml",
+      "sha256": "ea5c1e44d6557e62a05aba4d2fbb562f0cbafb5e8cd5a58a28941ab28cd396e2",
+      "bytes": 1880
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩8.xml",
+      "sha256": "24a6b6d00e44509a1b7e89d88230c52be61f2a5b680aa3e8a0b576ddc82962d2",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/524-遮罩9.xml",
+      "sha256": "1e2923f8f5036b0f6db219bc2f0cd2bc2fdbe9f5af15741cdda8984696ef785c",
+      "bytes": 1813
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/525.xml",
+      "sha256": "500f855907d99de0d66f9adae1f8cb903c371399112263530349b5018c66cc5e",
+      "bytes": 5573
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526.xml",
+      "sha256": "496cb59e9ecd8bbf3a5ad0b2472d63fc5f1d5ffe62a45a9d005ecb95b6b6d674",
+      "bytes": 3040
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩0.xml",
+      "sha256": "e8c7516c3c82f11c7249f0a324a9974bce7c32a5b2db4551eaf24cc956b462f5",
+      "bytes": 1786
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩1.xml",
+      "sha256": "7fff0bfa713b845a83669b58cd2187facd4fb36a4a7b8f3373ac8895b5f264a8",
+      "bytes": 1798
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩2.xml",
+      "sha256": "4e9164b1b9e892efadb061a2b8319221ed3e2a18102a3219b523dd1db6ba5550",
+      "bytes": 1814
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩3.xml",
+      "sha256": "fc58473725917920adca9a1f7da97184cde53eecc9db8a549e35e5d522dbc24d",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩4.xml",
+      "sha256": "8508e2b9a458b9d75e6006bc6768f26c3095ddd03c95b15801ded393cbae6f85",
+      "bytes": 2197
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/526-遮罩5.xml",
+      "sha256": "f03a9a41e6779f857da0cfadf4d95126f0493e08d67260fe03e34ce59c435eab",
+      "bytes": 1980
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/527.xml",
+      "sha256": "448e72ef506aba7e6e458871db04a2278ccaaf6db84e2360d15f7b7c98e3fbc1",
+      "bytes": 5926
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/528.xml",
+      "sha256": "deaaf4bf30b4d94263c00e8d198661c777f82a32854cb2863c4efad19e323d79",
+      "bytes": 2210
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/528-遮罩0.xml",
+      "sha256": "68503d7a17a6c193f2f55ce1418f348e3bae2a3454b199d85063e9e95c05d6b7",
+      "bytes": 1786
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/528-遮罩1.xml",
+      "sha256": "5f9d7615fcd7b5b0a856ccf5b9dc6bc26d80043d7bf6bc3d9cbbd8f6b72a21f7",
+      "bytes": 1963
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/528-遮罩2.xml",
+      "sha256": "9463a3b3ee5961790eee1fd187a63d14d80c796559c1526a8f790e9dcffe9533",
+      "bytes": 1869
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/528-遮罩3.xml",
+      "sha256": "24a976ff0abaca5f3b17be27bc9d0d49c5cd138ca976d5cc34ba82ad4e50d57a",
+      "bytes": 2159
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/529.xml",
+      "sha256": "c815258545efcbb2846ce7247f8fcb5394a7cf122f983ab20ebac92b74642497",
+      "bytes": 5325
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/530.xml",
+      "sha256": "2a0ef25c24392d9cbde8d5f6e4e6db11ab5890752cf840560fe780657adb6d2c",
+      "bytes": 2210
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/530-遮罩0.xml",
+      "sha256": "d4e48184942433e0b50f5bba63d1eaa0e7e0e782ef7de029c72d7cc4503cdca2",
+      "bytes": 1786
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/530-遮罩1.xml",
+      "sha256": "f044e2cabb7dc3c897ef38bc5243731d698709f2c10228914b17a6c26d9750a3",
+      "bytes": 2109
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/530-遮罩2.xml",
+      "sha256": "c170d26b31ea34434d79dc10b8b2a1e1daeaa76722895c808d54a0cb5c90d5b3",
+      "bytes": 2021
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/530-遮罩3.xml",
+      "sha256": "2348babfa88eb2f770460621418d58ef8687a7aa549dc6fe5f4a79a7797010bf",
+      "bytes": 1861
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/531.xml",
+      "sha256": "46629374ad5c6911c35182362a29638e5c06ac62b1c0ac2b3d4b615f41f49e84",
+      "bytes": 3773
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/532.xml",
+      "sha256": "9f4b0e78ef535827ef20c980b0a496bac7c2656fb01deb2e85e6f392f22beaa9",
+      "bytes": 2210
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/532-遮罩0.xml",
+      "sha256": "731bff4a2af136c3662f178661c6b832b905b40a3eaa999f965e96fd2448a124",
+      "bytes": 1786
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/532-遮罩1.xml",
+      "sha256": "5474dabdee5b00649933f7c2e93a56d4c6351a1d72b931c39584fbe9f00a95c1",
+      "bytes": 2038
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/532-遮罩2.xml",
+      "sha256": "59414b3b57eb708a547f20cc00e56089253ff3baca621697aef893034861a24d",
+      "bytes": 2130
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/532-遮罩3.xml",
+      "sha256": "7d4245a03bb9a9f894ae48cbe1d4590c9d69f747046a4f4b2e006f2e169b4da1",
+      "bytes": 1871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/533.xml",
+      "sha256": "c07d665959bd633df1c5f34b12239eb4f5e17b3acf67357db112cf74d283d1b6",
+      "bytes": 4472
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/534.xml",
+      "sha256": "bfb99018193ac9163b09a90f184e775febe943e26fad1c14c9025f953cfcb16f",
+      "bytes": 1795
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/534-遮罩0.xml",
+      "sha256": "f88963f6dea2417e2c089e3accf6730936716ae076fa968ff9f5202ca15999dc",
+      "bytes": 2038
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/534-遮罩1.xml",
+      "sha256": "7d74594f47b71356f98b54ff064af39c179e4684e98e8cfd3cd5d11af1f9601e",
+      "bytes": 2153
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/534-遮罩2.xml",
+      "sha256": "693c1d20446a69f574f4eed8381bd4c524f82819fba7be46a8e49303273defb7",
+      "bytes": 1871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/535.xml",
+      "sha256": "aff995720e10fd973b1a1ce827b4eefd455c4ad5de788f11ca2cfc78c30a402b",
+      "bytes": 4186
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/536.xml",
+      "sha256": "37a7e4e0377f0a1449cb5d21ab3725ca152966bd12c2b6b873b3a3d316c97deb",
+      "bytes": 5685
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/536-遮罩0.xml",
+      "sha256": "dde30cb6286617ed767062aa3dda0531cd362d04fdc90b572b5f8f3fc28189b3",
+      "bytes": 2038
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/536-遮罩1.xml",
+      "sha256": "448cb086789810eacea0ed2a349e1cb4fe6c71e811714982ab9262bd8022008a",
+      "bytes": 2153
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/536-遮罩2.xml",
+      "sha256": "76366cc7aa5a398fb20ddd2c0600b535e8a9cf10f5c0c1fce5f25ee1bcc2b113",
+      "bytes": 1871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/537.xml",
+      "sha256": "6668d2c6011094ecd15c3a5cdec947552ba05d5f1793b0d336e7d711ab03a00a",
+      "bytes": 4300
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/538.xml",
+      "sha256": "f5fada45ca816a231853ceecd77f0b68b75e863e20c1ce6dab74039ceacfd667",
+      "bytes": 3513
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/539.xml",
+      "sha256": "968608d0e02f951c5c2e357997fb35c54ed05b6d41146537ae7e8aa9da987a2a",
+      "bytes": 3501
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/540.xml",
+      "sha256": "98d44954d9d000926a883013839a19c84e54ee2b5865e3c3ca825c55ff22009a",
+      "bytes": 3418
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/541.xml",
+      "sha256": "f7a208b9eb5b9bbbf52022e387b90aef4e9da1d0ffc87d0998bdf5fce6403261",
+      "bytes": 3583
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/542.xml",
+      "sha256": "018e2b486cc72d455a27159fdfb33369733ea680d1b005e6bd5e8d16fa27cf78",
+      "bytes": 4699
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/542-遮罩0.xml",
+      "sha256": "a741bfb162b9341d6c19a9307e73951e79c797d19cb91cbcf398836c429c1540",
+      "bytes": 2038
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/542-遮罩1.xml",
+      "sha256": "8f0d7587ebb9abef1141c0c1382a2996208e37b25dc896ca678b8196e70781f4",
+      "bytes": 2153
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/542-遮罩2.xml",
+      "sha256": "7c81d0f8b747a4350f11d21ac779cf1cfc6d8d5d4c7775ec37e3eb1cc0124dc3",
+      "bytes": 1871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/543.xml",
+      "sha256": "f67cb7e7542346fbeeafb4b77f8535bebc859ff9c650c9833a07b988a7566caa",
+      "bytes": 2150
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/544.xml",
+      "sha256": "0c532e69e8a1e91fa6ba2153aefc71c2599403cec8e6e98bbefcda6718bb8ba2",
+      "bytes": 3533
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/544-遮罩0.xml",
+      "sha256": "933ffb4e9bf7d524cb44d085a4dadbc21043247a8b80bd88f04631810957a9db",
+      "bytes": 2038
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/544-遮罩1.xml",
+      "sha256": "de1c23f613afb4afa098a03d44aecb6b7e0726898532efe2a9b3479b6f02a6b0",
+      "bytes": 2153
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/544-遮罩2.xml",
+      "sha256": "8fb4ebd6f0e9b2fb258f0d818b876ebe4c2b6132fc40a055994407621bd019d8",
+      "bytes": 1871
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/545.xml",
+      "sha256": "4f0bda8b572ab58c4d1241f87de5639595c068da5f86cf7e99342386a17d1353",
+      "bytes": 2106
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/546.xml",
+      "sha256": "3cd34e265a25c4bae6921572b96711c4ae2287e6ab6538a87b779f7f66d3511e",
+      "bytes": 2300
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/547.xml",
+      "sha256": "533a37f83f2f51d99ba19562772b5eb72b462ff103296d6f6c513cf55c95d199",
+      "bytes": 3030
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/548.xml",
+      "sha256": "efb4dd67e8ce31ccdf7a2000ffa82fc5a90deeb1713d1fb3a11012836b83c39d",
+      "bytes": 4596
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/549.xml",
+      "sha256": "dd057a55a993f21c65df41e997f29f143fdf6b8cdfa2e7dc126d2f81e76f747d",
+      "bytes": 5510
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/550.xml",
+      "sha256": "f15db33e07b2f7987075b32ef3065a5c305b8c7668899ad3208b54e9d4cc8165",
+      "bytes": 5611
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/551.xml",
+      "sha256": "400d20ebaa9b486e202e503321daebed0a49191fd313f0c08a941af3ec594237",
+      "bytes": 4218
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/552.xml",
+      "sha256": "52d4a5c88c0586f43acb64a8e1beb5824209356c2b5745f75ffad71ca37f9ba1",
+      "bytes": 4011
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/553.xml",
+      "sha256": "4d88bc9069efeb6a966d502f945a004cd44f4055943cc0bc840366dae2e289dc",
+      "bytes": 3736
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/554.xml",
+      "sha256": "790c6570dd15adc5a7e1d6affa2697e6b3b43392f8da28a18ede05247433ae49",
+      "bytes": 3769
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/555.xml",
+      "sha256": "508c0e1778b1937c4c82bf908c0f4913467e6e1e590992c9ab549b4de983158c",
+      "bytes": 3762
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/556.xml",
+      "sha256": "875aac53c7458e256529d7febac2ec3b847bc5133a508c74a5e25a18c2f84a07",
+      "bytes": 3386
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/分件/557.xml",
+      "sha256": "a971031f02e101bbcc6d738d376209adf0282fecc41780dce0e92e5660365f84",
+      "bytes": 2816
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
+      "sha256": "94e281b4fe2fcdf245ce0cd34c8c875527bbf7193cf785cd43e8ae55db2d9de3",
+      "bytes": 54574
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/击飞.xml",
+      "sha256": "5edeca3758c5e861ebf3323bdf2ca4c544c4ad4446a1e802f0cc74b99f0cde53",
+      "bytes": 68907
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
+      "sha256": "2513931663eadc1a555eb9027293a761656f31ce2a241a62a9b876ecf5dd87f1",
+      "bytes": 78145
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/死亡.xml",
+      "sha256": "aeca7d8b94be40c7036d61fd5cecc5119017d21946656d3e9e68116ccc5bc94d",
+      "bytes": 278793
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/站立.xml",
+      "sha256": "669a2a4694c4d058f330d3ef822db54ee1cacc9c08576c2a9d7f651dbe22470c",
+      "bytes": 34099
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/行走.xml",
+      "sha256": "8b8664f607acd2002228fb3356ec287cbacf1a2bfe3127d758cc09b0afb94ee9",
+      "bytes": 63945
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/被击.xml",
+      "sha256": "cb0a980210f4254fed4afc5b95b93928fb7c6fae0afc7b489a5868f201d23ea5",
+      "bytes": 52562
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/被投.xml",
+      "sha256": "acdadd01fa245574828d71cee305f6918850c8e44722700b2b2948d57eeea003",
+      "bytes": 45894
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/动作/长枪点射与装填.xml",
+      "sha256": "a0a1bf95e1c712007304349a933274ef10df59b1d0233dd4d7d23943df9b0d90",
+      "bytes": 45119
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
+      "sha256": "e29af6c8e348acf4a276105af7969c675ff091a7501fbc88ada27e1d5423ddab",
+      "bytes": 27905
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/武器/可配置长枪.xml",
+      "sha256": "a5d30f6a07c51422e0b4e0f7b980e3838aed4960eabb49361d4ca607be06e411",
+      "bytes": 1310
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/武器/长枪挂点.xml",
+      "sha256": "67b0d0ed24e42ee6e1f25c8fbe4c64ffc4b64fb00021770a18cb5b0731df4437",
+      "bytes": 667
+    },
+    {
+      "path": "LIBRARY/Codex/特种兵/行为驱动.xml",
+      "sha256": "009b9a1a7d0c1a48a3d540af6ed0efc9dc41a3b152ecf5a8578b7ff92422bb6b",
+      "bytes": 660
+    },
+    {
+      "path": "LIBRARY/Codex特种兵素材.xml",
+      "sha256": "af5cc866e0c9524269bc94f3284ef8f579b98332889ce90911b62cf909d6235d",
+      "bytes": 1156
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "e8e1218c608e2cd9634a58e9584c0e7a2773a00ed26f4f2840b8d2b3e8b377de",
+      "bytes": 22625
+    },
+    {
+      "path": "Codex特种兵素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "18cc1e250792a3c6e8c97c1c31a5f7ad3c394276191da82d0c61e7416c91226c",
+      "bytes": 7947
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ]
+}

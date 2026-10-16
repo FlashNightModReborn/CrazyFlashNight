@@ -1,0 +1,197 @@
+{
+  "archive": "05-source.zip",
+  "archiveSha256": "a689834247d252b500d0ecfdbd6ed75f1744b0e0a4f7f5ddd234eae40db7cb72",
+  "archiveRoot": "cf6-bladebot-redraw-r2",
+  "members": [
+    {
+      "path": "README.txt",
+      "sha256": "ccc64c9b79bf28de09f21b8dc9dd182afc9d365aa07813f082a6e8328728fe03",
+      "bytes": 3107
+    },
+    {
+      "path": "reference/manifest.json",
+      "sha256": "9afb92f965071f82d2788bbb8c5db44c89d048051bf0250913f26808d47920aa",
+      "bytes": 31028
+    },
+    {
+      "path": "reference/timelines.json",
+      "sha256": "4a0fbce67465cb046efad22fe730bdb70146bcdca0f2838f21f6424aa7d84af4",
+      "bytes": 1090093
+    },
+    {
+      "path": "reference/control-evidence.json",
+      "sha256": "15efc46075d4fb3c1ea369b1247bdd4a8faeaf9828849eb779ee947110db0c4e",
+      "bytes": 4455
+    },
+    {
+      "path": "reference/shape-manifest.json",
+      "sha256": "33c4cdbe0c9a0465df4cdc7f35960d3f4a48d753a97e20a5f195e6350240b3a7",
+      "bytes": 229352
+    },
+    {
+      "path": "reference/keyposes.json",
+      "sha256": "0efe8eadd1c1ecc7f19562d8a1af1fc19dec62b330960ff6bb2a954c2b6584b5",
+      "bytes": 10698
+    },
+    {
+      "path": "reference/part-identity.json",
+      "sha256": "53e31edef07a944d79b264540d038f2758822939d1f9c37ca169a0da4ccfab86",
+      "bytes": 3262
+    },
+    {
+      "path": "reference/death-and-special-audit.json",
+      "sha256": "734bf2715446d57422afd04ff9c377e36b40318fa3ba7790acc56a657889d58f",
+      "bytes": 13975
+    },
+    {
+      "path": "reference/source-checksums.json",
+      "sha256": "d2f4ac79c71c133f33ce1f0646a56761170112b838701210d92ce6d7d6fa6697",
+      "bytes": 984
+    },
+    {
+      "path": "qa/verification.json",
+      "sha256": "03b4a3c35a322970168e2f7af793356cbdced6be3246ca991433a0bdfbf4e266",
+      "bytes": 8794
+    },
+    {
+      "path": "qa/material-structure-check.json",
+      "sha256": "65490b897ff38af4979a3e27a62435ad13df0536a7d946a898ad019f7db8d52a",
+      "bytes": 46607
+    },
+    {
+      "path": "qa/material-r1-r2.json",
+      "sha256": "f4400e04d5dd74c5e9ff7f46ce30f1714c80460c9417a76955fbcb8143e2042a",
+      "bytes": 2371
+    },
+    {
+      "path": "qa/material-frame-alpha-comparison.json",
+      "sha256": "918696d00e0af13ccb21411e3456022847ecdd6dc64c666f724f75258525e90b",
+      "bytes": 51125
+    },
+    {
+      "path": "qa/art-fidelity-review.txt",
+      "sha256": "d7eabca934fb8574138f52e1053e2c89b1e87a1585c0e25f213bf0038fad0748",
+      "bytes": 1879
+    },
+    {
+      "path": "parts/890.svg",
+      "sha256": "ebbc7ce4102cc2fa82595f5373eb923f99db42f8d9de1b8f3b5553fc5d18f929",
+      "bytes": 3906
+    },
+    {
+      "path": "parts/891.svg",
+      "sha256": "9ff7127160ba6ccd7a8428bd0dea4b09f149c95e420c53af62fea61c101b92a8",
+      "bytes": 2248
+    },
+    {
+      "path": "parts/892.svg",
+      "sha256": "9e24c847e3865b0989d4373103b66144ff156cd79d4a8ea1a3e9eeab96aa0e5b",
+      "bytes": 10513
+    },
+    {
+      "path": "parts/893.svg",
+      "sha256": "5d5dcd8576cabfd1928e22cd2b6beb1dae8576c489bd7d60f6462ba9a562ce5f",
+      "bytes": 2578
+    },
+    {
+      "path": "parts/894.svg",
+      "sha256": "a66293e91afcfba0d64ed3b1cf7d68ec89b214ed0273cddb8ca147e54c961c37",
+      "bytes": 3960
+    },
+    {
+      "path": "parts/895.svg",
+      "sha256": "9f77c2be7cd3511b2862156a53baee7ec67ed9b7d8e6f9c63c738f1319932011",
+      "bytes": 4199
+    },
+    {
+      "path": "parts/896.svg",
+      "sha256": "579517496bc015713b17a7290a3a52c3d2b0bf632b2cb0dcc52486d4b3efe6ae",
+      "bytes": 3532
+    },
+    {
+      "path": "parts/897.svg",
+      "sha256": "e0318e950c7a39788c862ef72f4b3ecb1828950232647e44cdac5498e912c673",
+      "bytes": 3498
+    },
+    {
+      "path": "parts/898.svg",
+      "sha256": "6c55bfa3ee5b7ec4135bcc161cc6f0ec1799c06460fae98afe912d6b90111988",
+      "bytes": 14620
+    },
+    {
+      "path": "parts/899.svg",
+      "sha256": "d07b81195bb7deeb1aff09449cbbcd074a9e08b1c91e247d3a6b2738be31121c",
+      "bytes": 7303
+    },
+    {
+      "path": "parts/900.svg",
+      "sha256": "28f6708cd354d061c77342b75933806324acc3f3930433e7f4a19921103379e6",
+      "bytes": 3820
+    },
+    {
+      "path": "death-parts/916.svg",
+      "sha256": "cca99e6df043552a450a14044c43dedabd39dbdb70dbfce010764e120b3ced56",
+      "bytes": 62654
+    },
+    {
+      "path": "death-parts/917.svg",
+      "sha256": "0e56535098876884d9a070fe6c21137f3d3d5c20b31e0ee95b82d5c3f7c62698",
+      "bytes": 62414
+    },
+    {
+      "path": "death-parts/918.svg",
+      "sha256": "978f0320f97ed3b2252fe7c732ed3b04c32a69aac32ca27b301dc1175d5f97d0",
+      "bytes": 62419
+    },
+    {
+      "path": "death-parts/919.svg",
+      "sha256": "3a31d11fee45d41f70642e219c20f82bfa02ae4eb74e9736be8ba2818d63383c",
+      "bytes": 62425
+    },
+    {
+      "path": "death-parts/920.svg",
+      "sha256": "2679b2e4a05683b4d32a485905299ab51691444c66546847ae3dd0536b305c75",
+      "bytes": 62560
+    },
+    {
+      "path": "death-parts/921.svg",
+      "sha256": "d557264ea05f005b228450c2a7aac55010a273c3dd8b92ad24aea2a040822a1a",
+      "bytes": 62747
+    },
+    {
+      "path": "death-parts/922.svg",
+      "sha256": "6015a3ea544ba1a8ce1fdc7cd06413b2f97fe0f31c8dffdd068121bb3e3c8de1",
+      "bytes": 62578
+    },
+    {
+      "path": "death-parts/923.svg",
+      "sha256": "49370599b94120c27d27b8af9e34e92ffcf2c6a48c440ffe85067be65103d1d0",
+      "bytes": 62613
+    },
+    {
+      "path": "reference/277.svg",
+      "sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "bytes": 212
+    },
+    {
+      "path": "reference/280.svg",
+      "sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "bytes": 294
+    },
+    {
+      "path": "reference/903.svg",
+      "sha256": "026704d42789f3f19a521145f2b6145bbcb94e0454bd09c231a2c7faa66150ba",
+      "bytes": 681
+    },
+    {
+      "path": "reference/905.svg",
+      "sha256": "aa70fd6198cd16069726b1f479556b6f971b0ca18d50703941e9256ab5f08cdf",
+      "bytes": 654
+    },
+    {
+      "path": "reference/909.svg",
+      "sha256": "7cb18866cf0f494a3b1aa42601d342ce8517eea3b21e467a604485b7dda6e29b",
+      "bytes": 274
+    }
+  ]
+}

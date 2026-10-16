@@ -1,0 +1,15 @@
+{
+  "observation": "Main candidate producer rejected formal deployment closure change during build; no formal files restored or overwritten by this task. Fresh candidate will be built in own managed worktree.",
+  "filesAfterFailure": [
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\runtime\\cf7-runtime-manifest.tsv",
+      "sha256": "f85e1630390d14611983f6cf910f9df4a6c1674fe8ffe6858f156d52ffeac06d",
+      "bytes": 5167
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\CRAZYFLASHER7MercenaryEmpire.exe",
+      "sha256": "551924a87b70e79feae08848207690cac0ca987b4a76e5f3d4bd4624bb4f359c",
+      "bytes": 310784
+    }
+  ]
+}

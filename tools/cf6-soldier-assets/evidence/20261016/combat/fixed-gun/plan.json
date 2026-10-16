@@ -1,0 +1,41 @@
+{
+  "schema": "cf6-soldier.foreground-plan.v1",
+  "source": {
+    "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+    "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+    "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+    "stage": 7,
+    "tier": 5,
+    "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+    "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+    "rivalDataPath": "data/enemy_properties/大学.xml",
+    "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+    "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+    "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+    "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+    "evidenceLane": "interactive_candidate"
+  },
+  "plans": [
+    {
+      "batchId": "soldier-r1-20261016-cadet",
+      "manifestPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-manifest.json",
+      "evidenceConfigPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-evidence-config.json",
+      "slot": "cf7_agent_soldier_r1_20261016_cadet",
+      "cases": 6,
+      "worstCaseCombatMs": 720000
+    },
+    {
+      "batchId": "soldier-r1-20261016-mixed",
+      "manifestPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\mixed-manifest.json",
+      "evidenceConfigPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\mixed-evidence-config.json",
+      "slot": "cf7_agent_soldier_r1_20261016_mixed",
+      "cases": 4,
+      "worstCaseCombatMs": 480000
+    }
+  ],
+  "boundaries": [
+    "Ordinary visible-window candidate; no background performance qualification.",
+    "Fresh dedicated slots and frozen resources required; no automatic retries or result relabeling.",
+    "Handgun is fixed presentation; no player equipment or inventory migration."
+  ]
+}

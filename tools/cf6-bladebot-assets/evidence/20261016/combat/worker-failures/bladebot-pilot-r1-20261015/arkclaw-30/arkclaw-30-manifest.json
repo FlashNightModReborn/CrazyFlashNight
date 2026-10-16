@@ -1,0 +1,105 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "bladebot-pilot-r1-20261015-arkclaw-30",
+  "createdAt": "2026-10-15T15:54:28.659Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-bladebot-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 3600,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "arkclaw-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种465",
+          "level": 30,
+          "sourceId": "bladebot-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种286",
+          "level": 30,
+          "sourceId": "arkclaw-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "arkclaw",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照方舟爪豪；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "1f2de1e5d8929b3f6753c89751f2e4e1e21397e166be145b6c933dcf8b50589b",
+        "candidateSide": "blue",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "64841084b2eb4189113c0bfdaab533bcae67b53661fe310a6fbfee40dd33e753",
+        "mode": "pilot",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "1f2262043ac31fc322efbcdda1a35d54b61d814904e9eff5807dc963cf70d3e1",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:a5baa20163c5b02f3093d1d161c5f4f19caa98a1482f46693fcc567cdc6e0229"
+    },
+    {
+      "caseId": "arkclaw-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种286",
+          "level": 30,
+          "sourceId": "arkclaw-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种465",
+          "level": 30,
+          "sourceId": "bladebot-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "arkclaw",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照方舟爪豪；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "1f2de1e5d8929b3f6753c89751f2e4e1e21397e166be145b6c933dcf8b50589b",
+        "candidateSide": "red",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "64841084b2eb4189113c0bfdaab533bcae67b53661fe310a6fbfee40dd33e753",
+        "mode": "pilot",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "1f2262043ac31fc322efbcdda1a35d54b61d814904e9eff5807dc963cf70d3e1",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:ff2f9d9fb201ce0f60f4eb04f060e884e7c305a5e559e9944c53f210d9e4e003"
+    }
+  ],
+  "manifestHash": "sha256:30a149d37985b7e973da0eae9142ec091341332b22932001dc9ce5cf0bfe544c"
+}
