@@ -33,6 +33,7 @@ namespace CF7Launcher.Tasks {
             invoke=i;
             close=c;
         }
+        static readonly HashSet<string> Pages=new HashSet<string>(StringComparer.Ordinal){"prologue","boss","lee-ambush","lee-breakout","lee-ending-normal","lee-ending-hidden"};
         static string Text(JToken t)=>t?.Type==JTokenType.String?t.Value<string>():null;
         static bool Exact(JObject o,params string[] k)=>o!=null&&o.Count==k.Length&&k.All(x=>o.Property(x,StringComparison.Ordinal)!=null);
         static bool CallId(JToken t){
@@ -63,7 +64,7 @@ namespace CF7Launcher.Tasks {
             catch(JsonException){
                 return null;
             }
-            if(source!="book_chapter"||!Exact(d,"v","presentationId","slot","sceneId","pageId")||!Version(d["v"])||!Regex.IsMatch(Text(d["presentationId"])??"","^bookcomic:[1-9][0-9]{0,14}$")||!Safe(Text(d["slot"]))||!Safe(Text(d["sceneId"]))||string.IsNullOrEmpty(Text(d["slot"]))||string.IsNullOrEmpty(Text(d["sceneId"]))||(Text(d["pageId"])!="prologue"&&Text(d["pageId"])!="boss"))return null;
+            if(source!="book_chapter"||!Exact(d,"v","presentationId","slot","sceneId","pageId")||!Version(d["v"])||!Regex.IsMatch(Text(d["presentationId"])??"","^bookcomic:[1-9][0-9]{0,14}$")||!Safe(Text(d["slot"]))||!Safe(Text(d["sceneId"]))||string.IsNullOrEmpty(Text(d["slot"]))||string.IsNullOrEmpty(Text(d["sceneId"]))||!Pages.Contains(Text(d["pageId"])??""))return null;
             return d;
         }
         public bool Reserve(JObject data){

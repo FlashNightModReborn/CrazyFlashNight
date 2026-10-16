@@ -2,16 +2,52 @@
   <timeline>
     <DOMTimeline name="Symbol 221" currentFrame="24">
       <layers>
+        <DOMLayer name="Player hit labels" color="#A6E091">
+          <frames>
+            <DOMFrame index="0" duration="25" keyMode="9728"><elements/></DOMFrame>
+            <DOMFrame index="25" duration="16" name="玩家受击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Script Layer" color="#A6E091">
           <frames>
             <DOMFrame index="0" duration="15" keyMode="9728">
+              <Actionscript><script><![CDATA[this.__enemyActionToken = _parent.状态 == "小跳" ? _root.敌人动作.currentToken(_parent) : null;
+this.__leePlayerHit = _parent.状态 == "被击" && !_root.敌人动作.usesHitHop(_parent);
+if (this.__leePlayerHit) {
+    // 未进阶玩家保持接地受击；进阶后与 AI 共用原生受击小跳。
+    gotoAndPlay("玩家受击");
+} else if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.setOwnedFlag(_parent, this.__enemyActionToken, "刚体", true);
+}
+]]></script></Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
+                <script><![CDATA[if (_parent.状态 == "小跳") {
+    if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+        _root.敌人动作.finish(_parent, this.__enemyActionToken);
+        _parent.动画完毕();
+    }
+} else if (_parent.状态 == "被击") {
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" duration="9" keyMode="9728"><elements/></DOMFrame>
+            <DOMFrame index="25" duration="15" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="40" keyMode="9728">
+              <Actionscript><script><![CDATA[stop();
+if (_parent.状态 == "被击" && _parent.__enemyActionPlayer === true) {
+    _parent.动画完毕();
+}
+]]></script></Actionscript>
               <elements/>
             </DOMFrame>
           </frames>
@@ -32,6 +68,8 @@
                   </transformationPoint>
                   <Actionscript>
                     <script><![CDATA[onClipEvent(load){
+   this.__enemyActionUnit = _parent._parent;
+   this.__enemyActionToken = _parent.__enemyActionToken;
    if(random(2) == 0)
    {
       方向 = "上";
@@ -42,7 +80,11 @@
    }
 }
 onClipEvent(enterFrame){
-   _parent._parent.移动(方向,20);
+   if (this.__enemyActionUnit.状态 == "小跳") {
+      _root.敌人动作.moveHop(this.__enemyActionUnit, this.__enemyActionToken);
+   } else if (this.__enemyActionUnit.状态 == "被击") {
+      _root.敌人动作.moveHitHop(this.__enemyActionUnit, 方向);
+   }
 }
 ]]></script>
                   </Actionscript>
@@ -51,6 +93,9 @@ onClipEvent(enterFrame){
             </DOMFrame>
             <DOMFrame index="11" duration="14" keyMode="9728">
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements></elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
@@ -131,6 +176,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 176" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.508132934570313" b="-0.04302978515625" c="-0.04302978515625" d="0.508132934570313" tx="-20.75" ty="-31.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 176" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.508132934570313" b="-0.04302978515625" c="-0.04302978515625" d="0.508132934570313" tx="-20.75" ty="-31.95"/>
                   </matrix>
@@ -228,6 +285,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 180" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.20635986328125" b="0.464004516601563" c="0.464004516601563" d="-0.20635986328125" tx="-13.9" ty="-22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 5" color="#4FA78E">
@@ -307,6 +376,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 187" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.20635986328125" b="0.464004516601563" c="0.464004516601563" d="-0.20635986328125" tx="0.4" ty="-30.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 187" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="0.20635986328125" b="0.464004516601563" c="0.464004516601563" d="-0.20635986328125" tx="0.4" ty="-30.5"/>
                   </matrix>
@@ -404,6 +485,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 185" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.510635375976563" b="0.03515625" c="0.03515625" d="0.510635375976563" tx="-10.75" ty="18"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 7" color="#DDF195">
@@ -492,6 +585,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 184" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.43121337890625" b="-0.275726318359375" c="-0.275726318359375" d="0.43121337890625" tx="-20.85" ty="43.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 8" color="#ED46D8">
@@ -547,6 +652,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="11" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 183" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.512847900390625" d="0.512847900390625" tx="-27.55" ty="65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 183" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.512847900390625" d="0.512847900390625" tx="-27.55" ty="65"/>
                   </matrix>
@@ -644,6 +761,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 186" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.512847900390625" d="0.512847900390625" tx="-7.35" ty="-3.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 10" color="#EC875B">
@@ -723,6 +852,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 185" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.438583374023438" b="0.262985229492188" c="0.262985229492188" d="0.438583374023438" tx="7.7" ty="11.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 185" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.438583374023438" b="0.262985229492188" c="0.262985229492188" d="0.438583374023438" tx="7.7" ty="11.7"/>
                   </matrix>
@@ -820,6 +961,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 184" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.458511352539063" b="-0.226913452148438" c="-0.226913452148438" d="0.458511352539063" tx="7" ty="35.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 12" color="#78CA72">
@@ -875,6 +1028,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="11" duration="14" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 183" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.510589599609375" b="0.0220489501953125" c="0.0220489501953125" d="0.510589599609375" tx="2.65" ty="57.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 183" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.510589599609375" b="0.0220489501953125" c="0.0220489501953125" d="0.510589599609375" tx="2.65" ty="57.6"/>
                   </matrix>
@@ -972,6 +1137,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 182" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.512603759765625" b="0.0018310546875" c="0.0018310546875" d="0.512603759765625" tx="-5.75" ty="-60.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 14" color="#FBB21D">
@@ -1051,6 +1228,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 181" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.512847900390625" d="0.512847900390625" tx="-7.1" ty="-10"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 181" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.512847900390625" d="0.512847900390625" tx="-7.1" ty="-10"/>
                   </matrix>
@@ -1148,6 +1337,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 180" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.315765380859375" b="-0.3974609375" c="0.3974609375" d="0.315765380859375" tx="15.95" ty="-17"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 16" color="#5AF3FC">
@@ -1227,6 +1428,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 179" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.429641723632813" b="0.272308349609375" c="0.272308349609375" d="0.429641723632813" tx="30" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 179" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.429641723632813" b="0.272308349609375" c="0.272308349609375" d="0.429641723632813" tx="30" ty="-8.05"/>
                   </matrix>
@@ -1324,6 +1537,18 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 178" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.512603759765625" b="0.0018310546875" c="0.0018310546875" d="0.512603759765625" tx="-7.6" ty="-19"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 18" color="#E74EF5">
@@ -1403,6 +1628,18 @@ onClipEvent(enterFrame){
             <DOMFrame index="13" duration="12" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 177" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.512603759765625" b="0.0018310546875" c="0.0018310546875" d="0.512603759765625" tx="-8.4" ty="-39.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 177" symbolType="graphic" loop="single frame" firstFrame="0">
                   <matrix>
                     <Matrix a="-0.512603759765625" b="0.0018310546875" c="0.0018310546875" d="0.512603759765625" tx="-8.4" ty="-39.75"/>
                   </matrix>
@@ -1500,11 +1737,51 @@ onClipEvent(enterFrame){
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 176" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.507553100585938" b="-0.056915283203125" c="0.056915283203125" d="0.507553100585938" tx="2.7" ty="-33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="Layer 20" color="#E8A727" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="75.2" centerPoint3DY="149.15">
+                  <matrix>
+                    <Matrix a="0.354278564453125" d="0.130126953125" tx="-11.45" ty="62.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="Symbol 2" centerPoint3DX="75.2" centerPoint3DY="149.15">
                   <matrix>
@@ -1544,6 +1821,9 @@ onClipEvent(enterFrame){
                 <SoundEnvelopePoint level0="32768" level1="32768"/>
               </SoundEnvelope>
               <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" duration="16" keyMode="9728">
+              <elements></elements>
             </DOMFrame>
           </frames>
         </DOMLayer>

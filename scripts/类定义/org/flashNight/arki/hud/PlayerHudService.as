@@ -1,6 +1,7 @@
 ﻿import org.flashNight.arki.hud.PlayerHudBuffProjection;
 import org.flashNight.arki.hud.PlayerHudShieldProjection;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
+import org.flashNight.arki.unit.Action.Input.EnemyActionRuntime;
 import org.flashNight.arki.unit.Action.Skill.ManualCooldownService;
 import org.flashNight.arki.unit.Action.Skill.DrugInputService;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
@@ -374,7 +375,9 @@ class org.flashNight.arki.hud.PlayerHudService {
         return isFinite(code) && _root.keyshow != undefined ? text(_root.keyshow(code)) : "";
     }
     private static function readLoadout():Object {
-        var skills:Object = SkillLoadoutService.getHudDescriptors();
+        var nativeUnit:Object = hero();
+        var skills:Object = nativeUnit.__enemyActionRuntime.enabled === true
+            ? EnemyActionRuntime.hudDescriptors(nativeUnit) : SkillLoadoutService.getHudDescriptors();
         var bank:Number = DrugInputService.getActiveBank();
         var source:Object = _root.物品栏.药剂栏;
         var signature:String = String(bank);
@@ -418,6 +421,8 @@ class org.flashNight.arki.hud.PlayerHudService {
             bank:bank, drugs:drugs, switchKey:switchKey};
     }
     private static function readCooldowns():Array {
+        var nativeUnit:Object = hero();
+        if (nativeUnit.__enemyActionRuntime.enabled === true) return EnemyActionRuntime.hudCooldowns(nativeUnit);
         var i:Number;
         // 首次实际读取时再引用其他类，避免类注册期跨类初始化。
         if (cooldownKeys == null) {
@@ -471,7 +476,9 @@ class org.flashNight.arki.hud.PlayerHudService {
             var slot:Number = Number(p.slot);
             if (p.kind == "skill" && slot > 0 && slot < 13 && Math.floor(slot) == slot
                     && Number(p.revision) == current.revision && text(p.key) == text(current.skills[slot - 1].skillKey)) {
-                result = SkillLoadoutService.unequip(slot, current.revision);
+                result = hero().__enemyActionRuntime.enabled === true
+                    ? {success:false, error:"fixed_loadout", changed:false}
+                    : SkillLoadoutService.unequip(slot, current.revision);
             } else if (p.kind == "drug" && slot > -1 && slot < 8 && Math.floor(slot) == slot
                     && Math.floor(slot / 4) == current.bank && Number(p.revision) == drugRevision
                     && text(p.key) == text(drugItems[slot].name)) {
@@ -518,6 +525,14 @@ class org.flashNight.arki.hud.PlayerHudService {
         hoverId = id;
         if (p.kind == "skill" && slot > 0 && slot < 13 && Math.floor(slot) == slot
                 && Number(p.revision) == current.revision && text(p.key) == text(current.skills[slot-1].skillKey)) {
+            var nativeUnit:Object = hero();
+            if (nativeUnit.__enemyActionRuntime.enabled === true) {
+                var action:Object = EnemyActionRuntime.hudAction(nativeUnit, slot);
+                if (action != null) NativeTooltipBridge.show(NativeTooltipDocument.buildSkill(action.name,
+                    "Lee 固定招式。按 " + current.skills[slot-1].keyLabel + " 发动；不消耗 MP。",
+                    action.description), null, "top", anchor);
+                return;
+            }
             var rows:Array = _root.主角技能表;
             for (var i:Number = 0; i < rows.length; i++) {
                 if (rows[i][0] === p.key) {
@@ -557,7 +572,8 @@ class org.flashNight.arki.hud.PlayerHudService {
             var v:Object = readVitals(hero());
             var lines:String = "生命：" + Math.floor(v.hp[0]) + " / " + Math.floor(v.hp[1]) + "（" + percentage(v.hp[0], v.hp[1]) + "）";
             lines += "<BR>护盾：" + (!v.shieldReady ? "未就绪" : v.shieldPresent ? Math.floor(v.shield[0]) + " / " + Math.floor(v.shield[1]) : "无护盾");
-            lines += "<BR>MP：" + Math.floor(v.mp[0]) + " / " + Math.floor(v.mp[1]) + "（" + percentage(v.mp[0], v.mp[1]) + "）";
+            lines += v.mp[0] == 0 && v.mp[1] == 0 ? "<BR>MP：本单位不使用此资源。"
+                : "<BR>MP：" + Math.floor(v.mp[0]) + " / " + Math.floor(v.mp[1]) + "（" + percentage(v.mp[0], v.mp[1]) + "）";
             lines += "<BR>韧性：" + Math.floor(v.poise * 100) + "%<BR>经验：" + Math.floor(v.experience[0]) + " / " + Math.floor(v.experience[2]);
             lines += "<BR>技能点：" + Math.floor(v.sp);
             NativeTooltipBridge.show(NativeTooltipDocument.buildBody(lines, "dense"), null, "top", anchor);

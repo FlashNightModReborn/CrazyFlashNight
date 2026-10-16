@@ -3365,6 +3365,10 @@ class Program
             if(admission!=null)settingsTask.BindAuthoritySource(admission,supported);
         };
         bookshelfTask.SetSettingsSourceApplied(admission=>settingsTask.BindAuthoritySource(admission,launchFlow.SettingsBackendV2));
+        var bookshelfContextTimer = new System.Windows.Forms.Timer { Interval = 500 };
+        bookshelfContextTimer.Tick += (_, _) => bookshelfTask.ObservePendingContext();
+        bookshelfContextTimer.Start();
+        form.FormClosed += (_, _) => bookshelfContextTimer.Dispose();
         form.InitializeLaunchFlow(launchFlow);
         agentControlTask.SetLaunchFlow(launchFlow, useBootstrapLoad: workerPolicy != null);
         if (workerPolicy != null)

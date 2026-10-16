@@ -27,6 +27,7 @@
             + '<button id="bookshelf-close" aria-label="关闭书架">×</button></header>'
             + '<div class="bookshelf-body"><nav id="bookshelf-directory" aria-label="书架目录"><button id="bookshelf-nav-overview" class="bookshelf-entry" type="button"><strong>置物架总览</strong><small>3D 书架与合集</small></button>'
             + '<h2>藏书</h2><div id="bookshelf-books"></div>'
+            + '<h2>角色试战</h2><button id="bookshelf-lee-trial" class="bookshelf-entry" data-book="lee-trial"><strong>Lee 试战</strong><small>攻入黑龙堂 · 剧情试战</small></button>'
             + '<h2>角色档案</h2><div id="bookshelf-slots"></div><p id="bookshelf-role" class="bookshelf-muted"></p></nav>'
             + '<main><div id="bookshelf-overview" hidden></div><div id="bookshelf-reader"></div><div id="bookshelf-original" hidden></div>'
             + '<article id="bookshelf-detail" hidden></article></main></div>'
@@ -62,6 +63,12 @@
             if (busy || returning) return;
             selected = null;
             if (shelfScene) shelfScene.home();
+            host.querySelector('.bookshelf-panel').classList.remove('library-open');
+            reader.get('library').setAttribute('aria-expanded', 'false'); render();
+        };
+        el('lee-trial').onclick = function() {
+            if (busy || returning) return;
+            selected = 'lee-trial';
             host.querySelector('.bookshelf-panel').classList.remove('library-open');
             reader.get('library').setAttribute('aria-expanded', 'false'); render();
         };
@@ -265,12 +272,12 @@
         if (result.outcomePending) recovery = token;
         else if (cmd === 'query' && result.phase === 'editing' && !result.requiresReconcile) recovery = '';
         if (result.phase) {
-            if (!state && (result.inRun || result.pendingRun)) { selected = 'crazy-flasher'; selectedChapter = 1; }
+            if (!state && (result.inRun || result.pendingRun)) { selected = (result.bookId || result.pendingBookId) === 'lee-trial' ? 'lee-trial' : 'crazy-flasher'; selectedChapter = 1; }
             state = result;
         }
         if (result.phase === 'switching') {
             if (result.kind === 'return') {
-                returning = true; selected = 'crazy-flasher'; selectedChapter = 1;
+                returning = true; selected = result.returningResult && result.returningResult.bookId === 'lee-trial' ? 'lee-trial' : 'crazy-flasher'; selectedChapter = 1;
                 status('正在恢复原角色。可以查看本局结果，请稍候…', false); render(); pollReturn();
             } else { status('正在翻开另一段人生…'); close(true); }
             return;
@@ -315,7 +322,7 @@
         panel.classList.toggle('is-overview', overview);
         panel.classList.toggle('is-reading', !!reading); panel.classList.toggle('is-original', playingOriginal);
         panel.classList.toggle('needs-attention', statusAttention || busy || !!recovery || readFailed || !state);
-        el('title').textContent = overview ? '基地收藏室' : playingOriginal ? '闪客快打 ' + selectedChapter : book ? book.title : '角色档案';
+        el('title').textContent = overview ? '基地收藏室' : playingOriginal ? '闪客快打 ' + selectedChapter : book ? book.title : selected === 'lee-trial' ? 'Lee 试战' : '角色档案';
         if (shelfScene) {
             var archiveSlots = state && state.slots || [];
             var ordered = archiveSlots.slice().sort(function(a, b) {
@@ -380,10 +387,14 @@
                         option.value = code; option.textContent = code === 'cn' ? '中文' : 'English'; language.appendChild(option); });
                     language.value = languages[selectedChapter] || 'cn'; language.parentElement.hidden = selectedChapter === 1;
                     language.onchange = function() { languages[selectedChapter] = language.value; };
+                } else if (selected === 'lee-trial') {
+                    detail.innerHTML = '<h2></h2><p></p><p class="bookshelf-muted" data-trial-controls></p><button data-action="trial"></button>';
+                    detail.querySelector('[data-trial-controls]').textContent = '操作沿用当前键位设置：普通主攻击键截击（1.6秒，攻击中可转向），跑动＋主攻击键连击（3.5秒）；副攻击键改接冲腿·龙息。快捷技能1主动小跳（2.5秒）、2寸拳（4.7秒）、5截击、6连击，均可直接按技能键释放，无需先跑动，与对应攻击共用冷却。入场时尚未领悟龙息；觉醒后，副／第三攻击键及快捷技能3、4即可直接发动进阶冲腿。以技能栏实际按键为准。';
                 } else detail.append(document.createElement('h2'), document.createElement('p'), document.createElement('button'));
             }
             var heading = detail.children[0], text = detail.children[1];
-            var action = chapter ? detail.querySelector('[data-action="remake"]') : detail.children[2];
+            var action = chapter ? detail.querySelector('[data-action="remake"]')
+                : selected === 'lee-trial' ? detail.querySelector('[data-action="trial"]') : detail.children[2];
             action.className = 'bookshelf-primary';
             if (selected.indexOf('slot:') === 0) {
                 var slot = selected.slice(5), entry = state && (state.slots || []).find(function(s) { return s.slot === slot; });
@@ -392,6 +403,19 @@
                 action.textContent = state && state.activeSlot === slot ? '当前角色' : '切换角色';
                 action.disabled = !state || state.activeSlot === slot || !state.canSwitch || state.inRun || !!state.pendingRun;
                 action.onclick = function() { commit('switch', slot); };
+            } else if (selected === 'lee-trial') {
+                heading.textContent = 'Lee · 攻入黑龙堂';
+                text.textContent = '扮演主线并肩作战的35级Lee，攻入完整的原版黑龙堂。赠送4枚复活币；每关清场后机关雷击，雷停后凭自身恢复能力逐步愈合。承受雷击或主动闪避，会让这次入侵走向不同结局。J截击，跑动+J或L连击，U寸拳，空格手动小跳；领悟龙息后K／I冲腿、O强力冲腿。冷却跨关保留，原角色物资与存档独立，结束后返回原角色。';
+                var trialRecord = state && (state.returningResult && state.returningResult.bookId === 'lee-trial' ? state.returningResult : state.lastTrialRecord);
+                if (trialRecord) text.textContent += ' 上次结果：' + ({victory:'胜利',failure:'倒地',defeat:'倒地',retreat:'撤退',abandoned:'放弃'}[trialRecord.outcome] || '未完成') + '。';
+                if (state && state.inRun) {
+                    action.textContent = '结束试战，返回原角色'; action.onclick = function() { commit('return', state.originSlot); };
+                } else if (state && state.pendingRun) {
+                    action.textContent = '核对上次旅程'; action.onclick = function() { commit('settle', state.pendingRun); };
+                } else {
+                    action.textContent = '进入 Lee 试战'; action.onclick = function() { commit('play', 'lee-trial'); };
+                }
+                action.disabled = !state || !state.canSwitch;
             } else if (chapter) {
                 var originalAction = detail.querySelector('[data-action="original"]');
                 originalAction.disabled = !state || !state.canSwitch || state.inRun || !!state.pendingRun || busy || !!recovery || readFailed;

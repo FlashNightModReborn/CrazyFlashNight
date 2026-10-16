@@ -111,17 +111,9 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	var 就绪世界:MovieClip = _root.gameworld;
 	var 就绪身份:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(就绪世界);
 	var 到达令牌:String = 就绪世界.__stageReturnToken;
-	var 当前操作单位 = (_root.特殊操作单位 != null && _root.特殊操作单位 != "") ? _root.特殊操作单位 : "主角-男"; //主角模型已经统一
-	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{
-		_x:地点X, 
-		_y:地点Y, 
-		是否为敌人:false, 
-		respawn:true,
-		身高:_root.身高, 
-		名字:_root.角色名, 
-		等级:_root.等级, 
-		性别:_root.性别
-	});
+	var 出生配置:Object = org.flashNight.arki.scene.ControlledEnemyLifecycle.createSpawn(_root, 地点X, 地点Y, false);
+	if (出生配置 == null) return;
+	_root.加载游戏世界人物(出生配置.identifier, _root.控制目标, _root.gameworld.getNextHighestDepth(), 出生配置.parameters);
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
 	_root.玩家信息界面.刷新经验值显示();
@@ -133,19 +125,9 @@ _root.加载我方人物 = function(地点X, 地点Y){
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
-	var 当前操作单位 = (_root.特殊操作单位 != null && _root.特殊操作单位 != "") ? _root.特殊操作单位 : "主角-男"; //主角模型已经统一
-
-	_root.加载游戏世界人物(当前操作单位,_root.控制目标,_root.gameworld.getNextHighestDepth(),{
-		_x:地点X, 
-		_y:地点Y, 
-		是否为敌人:false, 
-		respawn:true,
-		身高:_root.身高, 
-		名字:_root.角色名, 
-		等级:_root.等级, 
-		性别:_root.性别, 
-		用户ID:_root.accId
-	});
+	var 出生配置:Object = org.flashNight.arki.scene.ControlledEnemyLifecycle.createSpawn(_root, 地点X, 地点Y, true);
+	if (出生配置 == null) return;
+	_root.加载游戏世界人物(出生配置.identifier, _root.控制目标, _root.gameworld.getNextHighestDepth(), 出生配置.parameters);
 	_root.玩家信息界面.刷新hp显示();
 	_root.玩家信息界面.刷新mp显示();
 	// _root.添加其他玩家();
@@ -793,6 +775,7 @@ _root.从加载失败返回 = function():Boolean {
 
 _root.跳转地图 = function(跳转帧, 返回令牌:String){
 	if (!org.flashNight.arki.scene.StageReturnFlow.beginSceneLoad(返回令牌, 跳转帧)) return;
+    org.flashNight.arki.scene.SceneTransitionGuard.beginNavigation(_root);
     if (!org.flashNight.arki.ui.BookshelfPanelService.applyAtSceneBoundary(跳转帧)) {
         // 保留这次真实目的地，加载失败页的重试不能沿用旧房间标志。
         _root.关卡标志 = 跳转帧;
@@ -808,6 +791,25 @@ _root.跳转地图 = function(跳转帧, 返回令牌:String){
 		// 通过关卡标志是否有"地图-"前缀来区分基地/外部地图
 		跳转帧 = _root.关卡标志.indexOf("地图-") === 0 ? "外部地图" : "基地地图";
 	}
+    // 复用本进程真正创建过场景的显示帧，不依赖书架入场/返回的多帧加载段。
+    // 清场、换槽和SceneReady/呈现确认均仍走原权威；战斗快速路径仅属于Lee临时槽。
+    var 场景显示帧:Number = org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(_root, 跳转帧);
+    if (场景显示帧 > 0) {
+        if (跳转帧 === "wuxianguotu_1")
+            org.flashNight.arki.scene.SceneTransitionGuard.watchLeeStageNavigation(
+                _root, org.flashNight.arki.scene.StageManager.instance, 场景显示帧);
+        if (_root._currentframe === 场景显示帧) {
+            if (跳转帧 === "基地地图") _root.加载共享场景("基地场景-" + _root.关卡标志);
+            else {
+                // 与无限过图定位器的unload/load顺序一致，避免旧波次监听留到新世界。
+                _root.生存模式关闭();
+                _root.无限过图模式 = false;
+                _root.加载共享场景("wuxianguotu_1");
+                _root.开启生存模式();
+            }
+        } else _root.gotoAndPlay(场景显示帧);
+        return;
+    }
 	_root.gotoAndPlay(跳转帧);
 }
 
@@ -818,6 +820,7 @@ _root.加载共享场景 = function(加载场景名){
 	gw.swapDepths(_root.gameworld层级定位器);
 	gw.场景名 = 加载场景名;
 	SceneManager.instance.initGameWorld(gw);
+    org.flashNight.arki.scene.SceneTransitionGuard.rememberSharedSceneFrame(_root, 加载场景名);
 }
 
 

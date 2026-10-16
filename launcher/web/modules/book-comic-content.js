@@ -704,6 +704,398 @@ window.BOOK_COMIC_CONTENT = {
           ]
         }
       ]
+    },
+    {
+      "id": "lee-ambush",
+      "title": "Lee · 攻入黑龙堂",
+      "note": "背后的马蹄",
+      "image": "assets/book-comic/lee/ambush.svg",
+      "continueLabel": "继续",
+      "autoContinue": false,
+      "panels": [
+        {
+          "id": "p0",
+          "label": "背后的马蹄",
+          "rect": [
+            0,
+            0,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "总闸熄灭。Lee刚刚收住拳势，身后响起急促的马蹄。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p1",
+          "label": "背后的马蹄",
+          "rect": [
+            0,
+            0.25,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "黑龙",
+              "text": "皮肉恢复得倒快。可惜，你已经没力气了。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2",
+          "label": "背后的马蹄",
+          "rect": [
+            0,
+            0.5,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "全身铠甲隔绝电击。黑龙踏过烧毁的机关，从背后撞倒了Lee。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3",
+          "label": "背后的马蹄",
+          "rect": [
+            0,
+            0.75,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "黑铁会将他拖进内堂，铁箍把双臂锁在墙上。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lee-breakout",
+      "title": "Lee · 攻入黑龙堂",
+      "note": "挣脱",
+      "image": "assets/book-comic/lee/breakout.svg",
+      "continueLabel": "继续",
+      "autoContinue": false,
+      "panels": [
+        {
+          "id": "p0",
+          "label": "挣脱",
+          "rect": [
+            0,
+            0,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "黑龙",
+              "text": "两队重锤亲卫，足够把你耗死在这里。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p1",
+          "label": "挣脱",
+          "rect": [
+            0,
+            0.25,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "LEE",
+              "text": "刚才那股劲……还在。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2",
+          "label": "挣脱",
+          "rect": [
+            0,
+            0.5,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "Lee屏住呼吸，将透甲的震劲压入铁箍。墙面开裂，束缚崩断。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p3",
+          "label": "挣脱",
+          "rect": [
+            0,
+            0.75,
+            1,
+            0.25
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "LEE",
+              "text": "账还没算完。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lee-ending-normal",
+      "title": "Lee · 攻入黑龙堂",
+      "note": "原有的轨迹",
+      "image": "assets/book-comic/lee/captured.svg",
+      "continueLabel": "继续",
+      "autoContinue": false,
+      "panels": [
+        {
+          "id": "p0",
+          "label": "原有的轨迹",
+          "rect": [
+            0,
+            0,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "伤口逐渐合拢，耗尽的体力却没有随之回来。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p1",
+          "label": "原有的轨迹",
+          "rect": [
+            0,
+            0.3333333333333333,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "LEE",
+              "text": "就差……最后一步。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "p2",
+          "label": "原有的轨迹",
+          "rect": [
+            0,
+            0.6666666666666666,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 3,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "Lee没能挣脱黑铁会的束缚。这段经历，仍沿着主线的轨迹继续。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.25,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "lee-ending-hidden",
+      "title": "Lee · 攻入黑龙堂",
+      "note": "隐藏结局 · 自己走出去",
+      "image": "assets/book-comic/lee/victory.svg",
+      "continueLabel": "结束本章",
+      "autoContinue": false,
+      "panels": [
+        {
+          "id": "v0",
+          "label": "终战之后",
+          "rect": [
+            0,
+            0,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 5,
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "重锤倒下，黑龙的铠甲砸在断电的内堂。再没有人挡住出口。",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.2,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "v1",
+          "label": "龙息",
+          "rect": [
+            0,
+            0.3333333333333333,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 5,
+          "lines": [
+            {
+              "speaker": "LEE",
+              "text": "力气会回来。路，也该自己选。",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.2,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "v2",
+          "label": "另一条轨迹",
+          "rect": [
+            0,
+            0.6666666666666666,
+            1,
+            0.3333333333333333
+          ],
+          "duration": 5,
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "这一次，Lee挣脱了本该困住他的结局，独自走出了黑龙堂。",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.2,
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        }
+      ]
     }
   ]
 };

@@ -150,6 +150,27 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         var projected:Object=SkillResourceService.snapshot(hero,{skills:[],drugs:[],bank:0});
         check(projected.skills.length==12 && projected.drugs.length==4 && !projected.switchBlocked,
             "resource wire keeps fixed slot cardinalities and derives target stock");
+        var oldWorld = _root.gameworld;
+        _root.gameworld = {resourceHero:hero};
+        hero._parent = _root.gameworld; hero.mp = 0; hero.mp满血值 = 0; hero.hp满血值 = 100;
+        hero.状态 = "空手站立"; hero.宠物属性 = {冲腿龙息:true};
+        hero.状态改变 = function(state:String):Void { this.状态 = state; };
+        org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.installLee(hero);
+        var nativeWire:String = PlayerHudService.testOnlyWire(hero);
+        var nativePacket:Object = new LiteJSON().parse(Base64.decode(nativeWire));
+        check(nativePacket.groups.vitals.hp[1] == 100 && nativePacket.groups.vitals.mp[1] == 0,
+            "native ability HUD preserves real HP and absent MP");
+        check(nativePacket.groups.loadout.skills[0].skillKey == "小跳"
+            && nativePacket.groups.loadout.skills[1].skillKey == "寸拳"
+            && nativePacket.groups.loadout.skills[3].skillKey == "强力冲腿"
+            && nativePacket.groups.loadout.skills[3].equipped,
+            "actual HUD wire projects the native fixed skill bar and promotion");
+        check(nativePacket.groups.cooldowns.length == 18 && nativePacket.groups.cooldowns[0][0] === 1
+            && nativePacket.groups.resources.skills[0].state == "ready",
+            "fixed-slot management lock does not report a usable native ability as unavailable");
+        trace("[LEE_NATIVE_HUD_WIRE] " + nativeWire);
+        org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.releaseUnit(hero,"fixture");
+        _root.gameworld = oldWorld; hero.mp = 100; delete hero._parent;
         SkillResourceService.notify(hero,"skill",1,"mp");
         _root.暂停=true;
         projected=SkillResourceService.snapshot(hero,{skills:[],drugs:[],bank:0});

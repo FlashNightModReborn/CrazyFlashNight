@@ -16,6 +16,8 @@ class org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer
     {
         if(!target._deInitialized)
         {
+            // 在销毁AI、dispatcher和碰撞体前退休动作身份，旧帧回调不再拥有单位。
+            org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.releaseUnit(target, "unload");
             if(target.aabbCollider)
             {
                 target.aabbCollider.getFactory().releaseCollider(target.aabbCollider);

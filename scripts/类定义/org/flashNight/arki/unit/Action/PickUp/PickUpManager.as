@@ -241,6 +241,9 @@ class org.flashNight.arki.unit.Action.PickUp.PickUpManager {
      * 创建可拾取物
      */
     public function createCollectible(物品名:String, 数量:Number, X位置:Number, Y位置:Number, 是否飞出:Boolean, parameterObject:Object):Void {
+        // Lee攻入篇禁用场内拾取物创建，覆盖受击掉武器、原生帧脚本及换形态等旁路。
+        // 赠送复活币直接进入本局库存，不经过场内拾取物；其他书籍、普通关卡不受影响。
+        if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
         if (!parameterObject) parameterObject = new Object();
         if (!ProgressValidator.meetsRequirements(parameterObject)) return;
         if (PickUpManager.isOneTimeClaimed(parameterObject.一次性领取ID)) return;

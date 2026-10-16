@@ -39,7 +39,9 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
     {
         LastFixtureCaseId = null;
         var changed = _hp.Apply(new(values.Hp, values.HpMax), true) |
-            _mp.Apply(new(values.Mp, values.MpMax), true);
+            // A unit without MP still owns a valid, empty MP gauge. Preserve its
+            // authoritative 0/0 values; never invent MP to make HP renderable.
+            _mp.Apply(new(values.Mp, values.MpMax), true, allowEmpty: true);
         VisualState = CreateVisualState(); return changed;
     }
 
@@ -124,10 +126,10 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
 
         internal void Reset() => State = PlayerInfoGaugeVisualState.Unrenderable(_gaugeId);
 
-        internal bool Apply(PlayerInfoGaugeInput? input, bool preserveRaw = false)
+        internal bool Apply(PlayerInfoGaugeInput? input, bool preserveRaw = false, bool allowEmpty = false)
         {
             var before = State;
-            PlayerInfoInputDiagnostic? invalid = Validate(input);
+            PlayerInfoInputDiagnostic? invalid = Validate(input, allowEmpty);
             if (invalid.HasValue)
             {
                 if (preserveRaw)
@@ -146,14 +148,14 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
                 valid.Current,
                 0d,
                 valid.Maximum);
-            var ratio = clampedCurrent / valid.Maximum;
+            var ratio = valid.Maximum > 0 ? clampedCurrent / valid.Maximum : 0d;
             var targetFrame = MapVirtualFrame(ratio, _ratioSteps);
             var displayCurrent = preserveRaw ? valid.Current : clampedCurrent;
             var currentText =
                 PlayerInfoGaugeVisualState.FormatFlooredValue(displayCurrent);
             var maximumText =
                 PlayerInfoGaugeVisualState.FormatFlooredValue(valid.Maximum);
-            var percentValue = Math.Floor((preserveRaw ? valid.Current / valid.Maximum : ratio) * 100d)
+            var percentValue = Math.Floor((preserveRaw && valid.Maximum > 0 ? valid.Current / valid.Maximum : ratio) * 100d)
                 .ToString("0", System.Globalization.CultureInfo.InvariantCulture);
             var percentText = _appendPercentSign
                 ? percentValue + "%"
@@ -208,7 +210,7 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
         }
 
         private PlayerInfoInputDiagnostic? Validate(
-            PlayerInfoGaugeInput? input)
+            PlayerInfoGaugeInput? input, bool allowEmpty)
         {
             if (!input.HasValue)
             {
@@ -228,7 +230,7 @@ internal sealed class PlayerInfoAnimationModel : IPlayerInfoVisualStateSource
                     _gaugeId,
                     PlayerInfoInvalidInputReasons.MaximumNonFinite);
             }
-            if (input.Value.Maximum <= 0)
+            if (input.Value.Maximum <= 0 && !(allowEmpty && input.Value.Maximum == 0 && input.Value.Current == 0))
             {
                 return PlayerInfoInputDiagnostic.Invalid(
                     _gaugeId,

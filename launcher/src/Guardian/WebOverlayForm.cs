@@ -4955,7 +4955,12 @@ namespace CF7Launcher.Guardian
                 instance => _panelHost?.ActivePanelName == "bookshelf" && _panelHost.ActivePanelInstanceId == instance,
                 TryReleaseGenericWebPanelPause, AssertWebPanelPause, TryPostToWeb,
                 () => SceneTransitionWindowOrder.IsPresented(this) && _panelMode && CanAcceptPanelDocumentMessages,
-                () => SceneTransitionWindowOrder.RaiseIfCovered(this, Owner));
+                () => SceneTransitionWindowOrder.RaiseIfCovered(this, Owner),
+                hasForeground: () => {
+                    if (!IsHandleCreated) return false;
+                    var foreground = GetForegroundWindow();
+                    return foreground == Handle || foreground != IntPtr.Zero && IsChild(Handle, foreground);
+                });
             task.SetReturnPresentation((instance, receipt) =>
             {
                 _panelHost?.SceneTransition?.ConfigureBookshelfReturn(_bookshelfReturn);

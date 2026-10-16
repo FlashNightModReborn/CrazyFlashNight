@@ -1,0 +1,10 @@
+﻿trace("FocusedTestRunId lee-trial Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Input.EnemyActionRuntimeTest.runAllTests();
+org.flashNight.arki.scene.ControlledEnemyLifecycleTest.runAllTests();
+org.flashNight.arki.scene.LeeTrialTelemetryTest.runAllTests();
+org.flashNight.arki.scene.LeeAssaultRulesTest.runAllTests();
+_root.__leeHandoffTestsComplete = function():Void {
+    trace("FocusedTestRunId lee-trial Complete: __FOCUSED_RUN_ID__");
+    delete _root.__leeHandoffTestsComplete;
+};
+org.flashNight.arki.scene.SceneTransitionGuardHandoffTest.runAllTests();

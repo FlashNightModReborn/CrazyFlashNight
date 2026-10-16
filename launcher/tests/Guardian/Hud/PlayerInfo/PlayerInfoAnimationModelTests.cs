@@ -124,6 +124,37 @@ public sealed class PlayerInfoAnimationModelTests
         Assert.Equal("00010/00010", mp.CombinedText);
     }
 
+    private static PlayerHudVitals LeeVitals(double hp = 100, double hpMax = 100, double mp = 0) =>
+        new(hp, hpMax, mp, 0, 0, 0, false, 1, 0, 0, 100, 30, "Lee", 0, false, true, true);
+
+    [Fact]
+    public void ProductionUnitWithoutMpStillRendersAndUpdatesHp()
+    {
+        var model = new PlayerInfoAnimationModel();
+        Assert.True(model.ApplyProduction(LeeVitals()));
+        Assert.True(model.VisualState.HasRenderableState);
+        Assert.Equal(1, model.VisualState.Hp.TargetVirtualFrame);
+        Assert.Equal(101, model.VisualState.Mp.TargetVirtualFrame);
+        Assert.Equal(0, model.VisualState.Mp.Maximum);
+        Assert.Equal("00000/00000", model.VisualState.Mp.CombinedText);
+        Assert.Equal("0%", model.VisualState.Mp.PercentText);
+        model.ApplyProduction(LeeVitals(hp: 25));
+        Assert.True(model.VisualState.HasRenderableState);
+        Assert.Equal(97, model.VisualState.Hp.TargetVirtualFrame);
+    }
+
+    [Fact]
+    public void ZeroMpSupportDoesNotAcceptZeroHpMaximumOrNonzeroMpWithoutCapacity()
+    {
+        var model = new PlayerInfoAnimationModel();
+        model.ApplyProduction(LeeVitals(hpMax: 0));
+        Assert.False(model.VisualState.HasRenderableState);
+        Assert.False(model.VisualState.Hp.IsInputValid);
+        model.ApplyProduction(LeeVitals(mp: 1));
+        Assert.False(model.VisualState.HasRenderableState);
+        Assert.False(model.VisualState.Mp.IsInputValid);
+    }
+
     [Fact]
     public void FirstInvalidInput_RemainsUnrenderableAndDoesNotAnimate()
     {

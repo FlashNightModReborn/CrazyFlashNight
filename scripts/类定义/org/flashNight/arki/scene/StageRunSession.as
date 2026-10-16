@@ -375,6 +375,8 @@ class org.flashNight.arki.scene.StageRunSession {
         // 且 HP 已真实恢复，才能推进玩家 life 轴。
         if (hero == undefined || target == undefined || target !== hero
                 || isNaN(Number(target.hp)) || Number(target.hp) <= 0) return;
+        org.flashNight.arki.scene.LeeAssaultService.onRespawn(target);
+        if (target.__controlledEnemyContext != null) target.__controlledEnemyContext.handled = false;
         _run.life = "alive";
         bumpRevision();
         pushState();

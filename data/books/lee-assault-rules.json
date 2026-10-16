@@ -1,0 +1,119 @@
+{
+  "schema": "lee-assault.v1",
+  "boltsPerRoom": 12,
+  "damagePerBolt": 250,
+  "awakeningHits": 24,
+  "reviveCoins": 4,
+  "warningFrames": 6,
+  "gapFrames": 6,
+  "recoveryFrames": 180,
+  "battleLight": 7,
+  "outageLight": 0.8,
+  "corpseRosters": [
+    {
+      "background": 3,
+      "sourceSha256": "f76ca23cb3420d35ca90fac57fc2c485e0ba8840317c118f27ead2e6759bea61",
+      "counting": "full-scene recursive waist instances plus identifiable isolated upper bodies; no loose limbs",
+      "isolatedBroadswordUpperBodies": 0,
+      "units": [
+        {
+          "type": 64,
+          "count": 9,
+          "level": 25
+        },
+        {
+          "type": 65,
+          "count": 5,
+          "level": 25
+        },
+        {
+          "type": 47,
+          "count": 4,
+          "level": 25
+        }
+      ]
+    },
+    {
+      "background": 2,
+      "sourceSha256": "f8d29ca5b0db320bf21e3b781385f3f4b42d4aa1148532849aca698508f91ca9",
+      "counting": "full-scene recursive waist instances plus identifiable isolated upper bodies; no loose limbs",
+      "isolatedBroadswordUpperBodies": 1,
+      "units": [
+        {
+          "type": 64,
+          "count": 6,
+          "level": 25
+        },
+        {
+          "type": 65,
+          "count": 4,
+          "level": 25
+        },
+        {
+          "type": 47,
+          "count": 4,
+          "level": 25
+        }
+      ]
+    },
+    {
+      "background": 4,
+      "sourceSha256": "b2a42ee277415c693148ab770e765778f49e41a0df1d540154822727f8aef0e8",
+      "counting": "full-scene recursive waist instances plus identifiable isolated upper bodies; no loose limbs",
+      "isolatedBroadswordUpperBodies": 1,
+      "units": [
+        {
+          "type": 64,
+          "count": 4,
+          "level": 25
+        },
+        {
+          "type": 65,
+          "count": 5,
+          "level": 25
+        },
+        {
+          "type": 47,
+          "count": 3,
+          "level": 25
+        }
+      ]
+    },
+    {
+      "background": 5,
+      "sourceSha256": "9e91de9d87d04baa0070a7f1bb056d7295115a8ab0cbd034bb0f09fd423d8d2e",
+      "counting": "full-scene recursive waist instances plus identifiable isolated upper bodies; no loose limbs",
+      "isolatedBroadswordUpperBodies": 0,
+      "units": [
+        {
+          "type": 64,
+          "count": 5,
+          "level": 25
+        },
+        {
+          "type": 65,
+          "count": 2,
+          "level": 25
+        },
+        {
+          "type": 47,
+          "count": 2,
+          "level": 25
+        }
+      ]
+    }
+  ],
+  "finalReserve": [
+    {
+      "type": 64,
+      "count": 5,
+      "level": 25
+    },
+    {
+      "type": 47,
+      "count": 4,
+      "level": 25
+    }
+  ],
+  "finalRecoveryFrames": 3000
+}

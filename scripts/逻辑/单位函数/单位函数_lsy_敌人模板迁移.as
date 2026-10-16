@@ -1,6 +1,7 @@
 ﻿
 //容纳敌人函数的对象
 _root.敌人函数 = new Object();
+org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.installRootBridge(_root);
 
 
 //以下14个是原版敌人的必要函数
@@ -257,6 +258,8 @@ _root.敌人函数.移动钝感硬直 = _root.主角函数.移动钝感硬直;
 
 
 _root.敌人函数.随机掉钱 = function() {
+    // Lee 攻入篇整场无掉落，包含黑龙换形态后未继承波次参数的单位。
+    if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
     // 使用 LinearCongruentialEngine 的 randomCheck 方法进行概率检查
     // randomCheck(n) 等价于 random(n) === 0，但性能更好
     if (!this.不掉钱 && LinearCongruentialEngine.instance.randomCheck(_root.打怪掉钱机率)) {
@@ -327,6 +330,8 @@ _root.敌人函数.击倒呐喊 = function() {
    _parent.死亡检测({noCount:true, noCorpse:true});
  */
 _root.敌人函数.死亡检测 = function(para) {
+    // 主控怪物由本局玩家生命期接管，不能进入敌人掉落/尸体移除分支。
+    if (_root.敌人动作.handleDeath(this) === true) return;
     if (this.hp <= 0 && !this.已加经验值) {
         if (this.斗兽标定隔离 === true) {
             return;
@@ -354,6 +359,8 @@ _root.敌人函数.死亡检测 = function(para) {
 
 
 _root.敌人函数.掉落物判定 = function() {
+    // Lee 攻入篇整场无掉落，包含黑龙换形态后未继承波次参数的单位。
+    if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
     if (this.掉落物 == null)
         return;
     this.掉落物 = _root.配置数据为数组(this.掉落物);
@@ -374,6 +381,8 @@ _root.敌人函数.掉落物判定 = function() {
 }
 
 _root.敌人函数.掉落物品 = function(item) {
+    // Lee 攻入篇整场无掉落，包含黑龙换形态后未继承波次参数的单位。
+    if (org.flashNight.arki.scene.LeeAssaultService.suppressesEnemyDrops()) return;
     var itemData = _root.getItemData(item.名字);
     if (itemData == null)
         return;
@@ -741,6 +750,8 @@ _root.初始化敌人模板 = function() {
     _root.敌人函数.应用影子色彩(this);
 
     // 初始化完毕
+    // 必须在离开初始化帧前接入：玩家与AI Lee使用同一动作入口。
+    if (this.兵种 == "敌人-李小龙") _root.敌人动作.installLee(this);
     this.方向改变(方向);
     this.gotoAndStop(状态);
 }

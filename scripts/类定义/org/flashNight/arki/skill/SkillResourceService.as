@@ -124,7 +124,8 @@ class org.flashNight.arki.skill.SkillResourceService {
         for (i = 0; i < 12; i++) {
             var slot:Object = loadout.skills[i];
             oldHint = oldSkills[i];
-            hint = slot.equipped === true && slot.writeBlocked !== true
+            // Fixed native slots forbid management writes while remaining usable abilities.
+            hint = slot.equipped === true && (slot.writeBlocked !== true || unit.__enemyActionRuntime.enabled === true)
                 ? quick(unit, slot.skillKey, Number(slot.mp), readItems, oldHint) : state("unknown", "", oldHint);
             // combine() may select the shared same-snapshot item result instead.
             if (oldHint != null && oldHint.state === hint.state && oldHint.reason === hint.reason) hint = oldHint;

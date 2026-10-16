@@ -117,15 +117,94 @@ namespace Launcher.Tests.Tasks
             task.HandleWebRequest("commit", Request("commit", kind:"settle", target:"bookrun_missing"));
             Assert.True(sent[0].Value<bool>("missingRun")); Assert.Null(sent[0]["snapshot"]);
         }
-        [Fact]
-        public void PlayUsesHostGeneratedRunSlotAndDeduplicates()
+        [Theory]
+        [InlineData("repair-campus")][InlineData("lee-trial")]
+        public void PlayUsesHostGeneratedRunSlotAndDeduplicates(string bookId)
         {
             var sent = new List<JObject>(); var posted = new List<JObject>();
             using var task = Create(sent, posted);
-            task.HandleWebRequest("commit", Request("commit", kind:"play", target:"repair-campus"));
-            task.HandleWebRequest("commit", Request("commit", kind:"play", target:"repair-campus"));
+            task.HandleWebRequest("commit", Request("commit", kind:"play", target:bookId));
+            task.HandleWebRequest("commit", Request("commit", kind:"play", target:bookId));
             Assert.Single(sent); Assert.StartsWith("bookrun_", sent[0].Value<string>("runSlot"));
             Assert.True(SaveSlotKey.IsValid(sent[0].Value<string>("runSlot")));
+        }
+        [Theory]
+        [InlineData("lee-trial-unknown")][InlineData("../lee-trial")][InlineData("")]
+        public void UnknownTrialCannotMintARunSlot(string bookId)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"play", target:bookId));
+            Assert.Empty(sent); Assert.Equal("invalid_payload", posted[0].Value<string>("error"));
+        }
+        [Theory]
+        [InlineData(0, "debug", true, true)]
+        [InlineData(0, "pending", true, true)]
+        [InlineData(1, "debug", true, false)]
+        [InlineData(0, "clear", true, false)]
+        [InlineData(0, "debug", false, false)]
+        public void TrialReturnRecordCannotClaimRewards(int sp, string reason, bool debug, bool valid)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", active:"bookrun_fixture", kind:"return");
+            receipt["returningResult"] = new JObject { ["runId"]="bookrun_fixture", ["bookId"]="lee-trial",
+                ["outcome"]="victory", ["elapsedMs"]=7000, ["completedAt"]=0,
+                ["sp"]=sp, ["reason"]=reason, ["debug"]=debug };
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal(valid, posted[0].Value<string>("error") != "malformed_response");
+            Assert.True(task.IsReturning);
+        }
+        [Fact]
+        public void ForeignTrialBookIdentityDoesNotUnlockAnUnknownReturn()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"return"));
+            var receipt = Response(sent[0], "switching", active:"bookrun_fixture", kind:"return");
+            receipt["inRun"]=true; receipt["bookId"]="foreign";
+            task.HandleFlashResponse(receipt, _ => { });
+            Assert.Equal("malformed_response", posted[0].Value<string>("error"));
+            Assert.True(task.IsReturning); Assert.True(posted[0].Value<bool>("requiresReconcile"));
+        }
+        [Fact]
+        public void ClosedPlayViewStillObservesExactArrivalWithoutReplayingCommit()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"play", target:"lee-trial"));
+            var slot = sent[0].Value<string>("runSlot");
+            task.HandleFlashResponse(Response(sent[0], "switching", active:"slot_a", kind:"play", target:"lee-trial"), _ => {});
+            task.ClearPending();
+            task.ObservePendingContext();
+            Assert.Equal(2, sent.Count);
+            Assert.Equal("bookshelfQuery", sent[1].Value<string>("action"));
+            Assert.Equal("play", sent[1].Value<string>("reconcileKind"));
+            Assert.Equal("lee-trial", sent[1].Value<string>("reconcileTarget"));
+            Assert.Null(sent[1]["reconcileDestination"]);
+            Assert.Equal(sent[0]["token"], sent[1]["token"]);
+            task.ObservePendingContext(); Assert.Equal(2, sent.Count);
+            task.HandleFlashResponse(Response(sent[1], active:slot, kind:"play", target:"lee-trial"), _ => {});
+            task.ObservePendingContext(); Assert.Equal(2, sent.Count);
+            Assert.False(posted[posted.Count - 1].Value<bool>("requiresReconcile"));
+        }
+        [Fact]
+        public void ClosedPlayObserverCannotAcceptForeignArrivalOrSurviveDisposal()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            var task = Create(sent, posted);
+            task.HandleWebRequest("commit", Request("commit", kind:"play", target:"lee-trial"));
+            var slot = sent[0].Value<string>("runSlot");
+            task.HandleFlashResponse(Response(sent[0], "switching", active:"slot_a", kind:"play", target:"lee-trial"), _ => {});
+            task.ClearPending(); task.ObservePendingContext();
+            task.HandleFlashResponse(Response(sent[1], active:"bookrun_foreign", kind:"play", target:"lee-trial"), _ => {});
+            Assert.True(posted[posted.Count - 1].Value<bool>("requiresReconcile"));
+            task.ObservePendingContext();
+            Assert.Equal(3, sent.Count); Assert.Equal("lee-trial", sent[2].Value<string>("reconcileTarget"));
+            Assert.Null(sent[2]["reconcileDestination"]);
+            Assert.All(sent.GetRange(1, 2), wire => Assert.Equal("bookshelfQuery", wire.Value<string>("action")));
+            task.Dispose(); task.ObservePendingContext(); Assert.Equal(3, sent.Count);
         }
         [Fact]
         public void RepeatedPlayTokenKeepsTheSamePhysicalRunIdentity()

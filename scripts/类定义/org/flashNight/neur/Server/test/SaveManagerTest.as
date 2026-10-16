@@ -1385,7 +1385,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             "基础身价值", "允许存档", "限制系统", "转场景数据", "转场景记录数据第一次记录",
             "新出生", "当前关卡名", "当前关卡难度", "当前通关的关卡", "难度等级",
             "关卡地图帧值", "场景进入位置名", "关卡可获得奖励品",
-            "是否达成任务检测", "__contextTaskUi"];
+            "是否达成任务检测", "__contextTaskUi", "特殊操作单位"];
         var previous:Object = {};
         var key:String;
         for (var i:Number = 0; i < keys.length; i++) {
@@ -1393,6 +1393,10 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
         }
         var sm:SaveManager = SaveManager.getInstance();
         var world:MovieClip;
+        // 测试暂存定义的私有缓存；不替换 ready/accept/replacePlayerContext 的真实实现。
+        var trialDefinition:Object = org.flashNight.arki.scene.LeeTrialDefinition;
+        var previousTrialData:Object = trialDefinition["_data"];
+        var previousTrialLoading:Boolean = trialDefinition["_loading"];
         setUpForLoadTest();
         try {
             sm._configureSaveFlowForTest({saveInFlight:false, resetDirty:true,
@@ -1465,7 +1469,8 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                 "replace_context: prime populated task state, HUD projection and K balance before entering the book");
             armBankTwoAndAllDrugCooldowns();
             _root.转场景数据 = [99, 88, "长枪"];
-            var run:Object = {slot:runSlot, originSlot:slotA, status:"active", seed:7};
+            _root.特殊操作单位 = "敌人-李小龙";
+            var run:Object = {slot:runSlot, originSlot:slotA, bookId:"repair-campus", status:"active", seed:7};
             assert(sm.replacePlayerContext(runSlot, null, run)
                     && _root.savePath == runSlot && _root.角色名 == "Andy Law"
                     && _root.等级 == 1 && _root.金钱 == 8000 && _root.技能点数 == 120
@@ -1488,7 +1493,7 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
                     && _root._saveExt.isolationProbe == undefined
                     && _root._saveExt.bookRun !== run && _root._saveExt.bookRun.originSlot == slotA,
                 "replace_context: temporary state starts clean and owns a detached run record");
-            assert(_root.转场景数据[0] == 0 && _root.转场景数据[1] == 0
+            assert(_root.特殊操作单位 == "" && _root.转场景数据[0] == 0 && _root.转场景数据[1] == 0
                     && DrugInputService.getActiveBank() == 0 && allDrugCooldownsReady(true),
                 "replace_context: carry-over HP/MP and drug session are reset");
 
@@ -1511,10 +1516,67 @@ class org.flashNight.neur.Server.test.SaveManagerTest {
             assert(a[0][2] == 1111 && a[0][9] == 1234 && b[0][2] == 2222 && run.status == "active"
                     && a.ext.bookRun == undefined && b.ext.bookRun == undefined,
                 "replace_context: temporary mutations do not rewrite permanent input snapshots");
+            var leeRun:Object = {slot:runSlot, originSlot:slotA, bookId:"lee-trial",
+                status:"active", outcome:"active", seed:17, debug:true, probe:{value:5}};
+            trialDefinition["_data"] = null;
+            trialDefinition["_loading"] = false;
+            assert(!org.flashNight.arki.scene.LeeTrialDefinition.ready()
+                    && !sm.replacePlayerContext(runSlot, null, leeRun)
+                    && _root.savePath == slotA && _root.角色名 == "书架测试甲"
+                    && _root.金钱 == 1111 && _root.主角技能表[0][0] == "甲技能"
+                    && _root._saveExt.isolationProbe == "甲",
+                "replace_context_lee: unloaded definition refuses entry before clearing the origin");
+            var trialConfig:Object = {schema:"lee-trial.v1", id:"lee-trial", stageName:"Lee试战",
+                actor:{identifier:"敌人-李小龙", name:"Lee", level:30, height:185, gender:"男"},
+                stages:[{BasicInformation:{Background:"flashswf/backgrounds/gk15_1_BG.swf",
+                    EndFrame:"房间", PlayerX:230, PlayerY:470},
+                    Wave:{SubWave:[{EnemyGroup:{Enemy:[{Type:"兵种47", Level:20, Quantity:2,
+                        Parameters:{不掉钱:true, 最小经验值:0, 最大经验值:0, 掉落物:[]}}]}}]},
+                    Instances:{Instance:[]}, Pickups:{Pickup:[]}}]};
+            assert(org.flashNight.arki.scene.LeeTrialDefinition.accept(trialConfig)
+                    && org.flashNight.arki.scene.LeeTrialDefinition.ready(),
+                "replace_context_lee: real definition validator admits the isolated test configuration");
+            assert(sm.replacePlayerContext(runSlot, null, leeRun)
+                    && _root.savePath == runSlot && _root.角色名 == "Lee"
+                    && _root.等级 == 30 && _root.身高 == 185 && _root.性别 == "男"
+                    && _root.脸型 == "" && _root.发型 == "" && _root.特殊操作单位 == "",
+                "replace_context_lee: ready configuration initializes Lee without a persistent cheat actor");
+            assert(_root.金钱 == 0 && _root.虚拟币 == 0 && _root.技能点数 == 0 && _root.经验值 == 0,
+                "replace_context_lee: temporary Lee inherits no permanent currency, skill points or experience");
+            var equippedCount:Number = 0;
+            var equipped:Object = _root.物品栏.装备栏.toObject();
+            for (var equipmentKey:String in equipped) equippedCount++;
+            var learnedCount:Number = 0;
+            for (var skillIndex:Number = 0; skillIndex < _root.主角技能表.length; skillIndex++) {
+                if (_root.主角技能表[skillIndex][0] != "") learnedCount++;
+            }
+            assert(equippedCount == 0 && _root.物品栏.背包.size() == 0
+                    && _root.主角技能表.length == 80 && learnedCount == 0
+                    && _root.快捷技能栏1 == "" && _root.快捷技能栏2 == "",
+                "replace_context_lee: no generic starter equipment or learned hero skill enters the trial");
+            assert(_root._saveExt.bookRun !== leeRun
+                    && _root._saveExt.bookRun.probe !== leeRun.probe
+                    && _root._saveExt.bookRun.bookId == "lee-trial"
+                    && _root._saveExt.bookRun.originSlot == slotA,
+                "replace_context_lee: trial identity owns a deep detached run record");
+            _root._saveExt.bookRun.probe.value = 99;
+            _root.金钱 = 999999; _root.技能点数 = 999; _root.特殊操作单位 = "敌人-李小龙";
+            assert(sm.replacePlayerContext(slotA, a, null)
+                    && _root.savePath == slotA && _root.角色名 == "书架测试甲" && _root.等级 == 10
+                    && _root.金钱 == 1111 && _root.虚拟币 == 1234 && _root.技能点数 == 42
+                    && _root.主角技能表[0][0] == "甲技能" && _root._saveExt.isolationProbe == "甲"
+                    && _root._saveExt.bookRun == undefined && _root.特殊操作单位 == "",
+                "replace_context_lee: returning restores origin identity and removes all Lee control residue");
+            assert(leeRun.probe.value == 5 && leeRun.bookId == "lee-trial"
+                    && a[0][0] == "书架测试甲" && a[0][2] == 1111 && a[5][0][0] == "甲技能"
+                    && a.ext.bookRun == undefined,
+                "replace_context_lee: run mutation never changes its input or the permanent snapshot");
             var stats:Object = sm._getSavePhysicalStatsForTest();
             assert(stats.doSaveAll == 0 && stats.flushAttempt == 0 && stats.shadowDispatch == 0,
                 "replace_context: adoption only changes memory and never writes a player slot");
         } finally {
+            trialDefinition["_data"] = previousTrialData;
+            trialDefinition["_loading"] = previousTrialLoading;
             if (world._parent != undefined) world.removeMovieClip();
             sm._configureSaveFlowForTest({saveInFlight:false, resetDirty:true, resetScheduler:true});
             sm.clearPrefetch();

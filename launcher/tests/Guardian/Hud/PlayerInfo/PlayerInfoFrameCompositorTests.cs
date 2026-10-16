@@ -212,6 +212,22 @@ public sealed class PlayerInfoFrameCompositorTests
     }
 
     [Fact]
+    public void ProductionUnitWithoutMpStillComposesTheHpDisplay()
+    {
+        var assets = PlayerInfoSvgAssetContract.LoadProductionEmbedded(minimumRaster: false);
+        var plan = PlayerInfoRasterPlanner.Create(assets, new Rectangle(0, 0, 1024, 576), monitorDpiScale: 1f);
+        using var batch = new PlayerInfoSvgRasterizer().Bake(plan, System.Threading.CancellationToken.None);
+        using var compositor = new PlayerInfoFrameCompositor(assets);
+        var values = new PlayerHudVitals(50, 100, 0, 0, 0, 0, false, 1, 0, 0, 100, 30, "Lee", 0, false, true, true);
+        var model = new PlayerInfoAnimationModel();
+        model.ApplyProduction(values);
+        using var bitmap = NewDestination(plan);
+        var painted = compositor.Paint(bitmap, batch, plan, model.VisualState, values);
+        Assert.Equal(65, painted.HpVirtualFrame);
+        Assert.Equal(101, painted.MpVirtualFrame);
+    }
+
+    [Fact]
     public void FrozenFixtureMatrix_ComposesTightPArgbWithTypedMaskBoundaries()
     {
         PlayerInfoSvgAssetSet assets =

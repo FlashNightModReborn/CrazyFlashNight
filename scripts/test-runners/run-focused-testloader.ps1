@@ -176,6 +176,7 @@ if ($AutoStopReadOnlyPlayer -or $OwnedReadOnlyHost) {
         'swf-authority-debt' = 'org.flashNight.dev.SWFAuthorityDebtTest'
         'student-load-probe' = 'org.flashNight.dev.StudentLoadProbeTest'
         'student-repair' = 'org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest'
+        'lee-action-asset' = 'org.flashNight.arki.unit.Action.Input.EnemyActionAssetTest'
         'wing-tiger' = 'org.flashNight.arki.unit.UnitAI.Custom.WingTigerTest'
     }
     if ($OwnedReadOnlyHost -and @(Get-Process -Name Flash -ErrorAction SilentlyContinue).Count -gt 0) {

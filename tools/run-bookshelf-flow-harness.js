@@ -27,10 +27,11 @@ function fixture() {
         reason:index===0 ? 'incomplete' : index===1 ? 'first_clear' : index%3 ? 'clear' : 'incomplete', debug:index===19
     }))};
     if (scenario==='empty') qa.records={bestMs:87250,clears:8,history:[]};
-    qa.returningResult = scenario==='return' ? {
+    qa.returningResult = ['return','trial-return'].includes(scenario) ? {
         runId:'pending.victory', bookId:'repair-campus', outcome:'victory', elapsedMs:123450,
         completedAt:0, sp:0, reason:'pending', debug:false
     } : null;
+    if (scenario === 'trial-return') { qa.returningResult.bookId='lee-trial'; qa.returningResult.debug=true; }
     window.Toast = {add:function(){}};
     window.Bridge = {
         on:(type, handler)=>(handlers[type]||(handlers[type]=[])).push(handler),
@@ -50,12 +51,13 @@ function fixture() {
                     error:message.cmd==='prepare'?'not_owned':undefined};
                 setTimeout(()=>qa.emit('panel_resp',response),8); return true;
             }
-            const inRun=scenario==='return' && !qa.done;
+            const inRun=['return','trial-return'].includes(scenario) && !qa.done;
             const base={type:'panel_resp',panel:'bookshelf',domain:'bookshelf',cmd:message.cmd,
                 callId:message.callId,panelInstanceId:message.panelInstanceId,v:1,token:message.payload.token,
-                phase:'editing',success:true,kind:message.payload.kind || (scenario==='return'?'return':'settle'),
+                phase:'editing',success:true,kind:message.payload.kind || (['return','trial-return'].includes(scenario)?'return':'settle'),
                 activeSlot:inRun?'bookrun_fixture':'fixture_a',role:inRun?'Andy Law':'测试角色',inRun,
-                originSlot:'fixture_a',exitRequired:inRun,canSwitch:true,unlocked:true,
+                originSlot:'fixture_a',exitRequired:inRun,canSwitch:true,unlocked:scenario!=='trial',
+                bookId:inRun ? (scenario==='trial-return'?'lee-trial':'repair-campus') : '', pendingBookId:qa.pending?'repair-campus':'',
                 pendingRun:qa.pending?'bookrun_fixture':'',lastReward:0,records:qa.records,
                 returningResult:qa.returningResult,slots:scenario==='overview'
                     ? ['fixture_a','fixture_b','fixture_c','fixture_d','fixture_e'].map((slot,i)=>({slot,name:'测试角色'+'ABCDE'[i]}))
@@ -66,18 +68,18 @@ function fixture() {
             } else if(message.cmd==='commit') {
                 qa.writes++;
                 if(message.payload.kind==='play') Object.assign(base,{phase:'switching'});
-                else if(scenario==='return') {
+                else if(['return','trial-return'].includes(scenario)) {
                     if(qa.writes===1) Object.assign(base,{phase:undefined,success:false,error:'save_unavailable'});
                     else { Object.assign(base,{phase:'switching'}); setTimeout(()=>qa.transition(),20); }
                 } else Object.assign(base,{phase:'save_pending',success:false,requiresReconcile:true,recoveryToken:message.payload.token});
             } else if(message.cmd==='query') {
                 qa.queries++;
-                if(scenario==='return' && !qa.allowReturn) {
+                if(['return','trial-return'].includes(scenario) && !qa.allowReturn) {
                     Object.assign(base,qa.queries===1 ? {phase:undefined,success:false,error:'disconnected'} : {phase:'switching',kind:'return'});
                 } else if(scenario==='unknown' && qa.queries===1) {
                     Object.assign(base,{phase:'save_pending',success:false,requiresReconcile:true});
                 } else {
-                    if(scenario==='return') {
+                    if(['return','trial-return'].includes(scenario)) {
                         qa.records.history.unshift({runId:'saved.return',bookId:'repair-campus',outcome:'victory',
                             elapsedMs:86250,completedAt:1791176400000,sp:45,reason:'first_clear',debug:false});
                         qa.records.history=qa.records.history.slice(0,20);
@@ -164,12 +166,32 @@ async function main(){
         .map(p=>path.join(p,'Microsoft/Edge/Application/msedge.exe')).find(fs.existsSync);
     const browser=await chromium.launch({headless:true,executablePath:edge,ignoreDefaultArgs:['--hide-scrollbars']}),report=[];
     try {
-        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['overview','settle','unknown','readfail','return','series','records','empty']) {
+        for(const [width,height] of [[640,360],[1024,576],[1600,900]]) for(const scenario of ['overview','settle','unknown','readfail','return','series','records','empty','trial','trial-return']) {
             const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'}),errors=[];
             page.on('pageerror',e=>errors.push(e.message));
             await page.goto('http://127.0.0.1:'+server.address().port+'/launcher/web/modules/bookshelf/dev/harness.html?scenario='+scenario);
             const primary=page.locator('.bookshelf-primary'), recover=page.locator('#bookshelf-recover');
-            if(scenario==='series') {
+            if(scenario==='trial') {
+                await page.locator('#bookshelf-lee-trial').click();
+                await primary.waitFor();
+                assert.strictEqual(await primary.textContent(),'进入 Lee 试战');
+                assert(!(await primary.isDisabled()),'Lee trial does not borrow the university story unlock');
+                assert((await page.locator('#bookshelf-detail').textContent()).includes('不发放主角色奖励'));
+                await assertPrimaryReadability(page,true);
+                await page.screenshot({path:path.join(out,'trial-'+width+'x'+height+'.png')});
+                await primary.click();
+                await page.waitForFunction(()=>__bookQa.writes===1);
+                assert.deepStrictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').map(m=>[m.payload.kind,m.payload.target])),[['play','lee-trial']]);
+            } else if(scenario==='trial-return') {
+                await page.waitForFunction(()=>__bookQa.writes===1 && !document.querySelector('.bookshelf-primary').disabled);
+                assert.strictEqual(await page.locator('#bookshelf-title').textContent(),'Lee 试战');
+                assert.strictEqual(await primary.textContent(),'结束试战，返回原角色');
+                assert((await page.locator('#bookshelf-detail').textContent()).includes('上次结果：胜利'));
+                assert(await page.locator('#bookshelf-close').isDisabled());
+                await primary.click();
+                await page.waitForFunction(()=>__bookQa.writes===2);
+                assert.deepStrictEqual(await page.evaluate(()=>__bookQa.sent.filter(m=>m.cmd==='commit').map(m=>[m.payload.kind,m.payload.target])),[['return','fixture_a'],['return','fixture_a']]);
+            } else if(scenario==='series') {
                 await page.locator('[data-book="crazy-flasher"]').click();
                 await primary.waitFor();
                 assert.strictEqual(await page.locator('[data-book="crazy-flasher"]').count(),1);
@@ -328,7 +350,7 @@ async function main(){
                 }
             } else if(scenario==='overview') {
                 await page.waitForFunction(()=>window.__bookshelfShelfQa&&__bookshelfShelfQa.state()==='ready'
-                    &&document.querySelectorAll('[data-book]').length===5);
+                    &&document.querySelectorAll('#bookshelf-books [data-book]').length===5);
                 await page.waitForTimeout(100);
                 const stats0=await page.evaluate(()=>__bookshelfShelfQa.stats());
                 assert(stats0.triangles>100&&stats0.triangles<12000&&stats0.calls>10&&stats0.calls<220,'v4 shelf budget: '+JSON.stringify(stats0));

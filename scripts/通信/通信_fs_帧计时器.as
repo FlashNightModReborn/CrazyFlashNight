@@ -355,6 +355,8 @@ _root.帧计时器.定期更新天气 = function()
 _root.帧计时器.键盘输入控制目标 = function()
 {
     var 控制对象 = TargetCacheManager.findHero()
+    // 原生怪物能力输入独占此单位，避免主角技能、战技和药剂链误用全局存档。
+    if (_root.敌人动作.updateInput(控制对象) === true) return;
     if(!控制对象) {
         org.flashNight.arki.scene.StageRunSession.observeInputState(null, -1);
         return;

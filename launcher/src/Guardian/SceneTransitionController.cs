@@ -56,7 +56,7 @@ namespace CF7Launcher.Guardian
         internal void ConfigureBookshelfReturn(BookshelfReturnPresentation presentation) => _bookshelfReturn = presentation;
         internal bool BookshelfReturnLoading => _bookshelfReturn?.Loading == true;
         private bool BookshelfVisible => _bookshelfReturn?.CanPresent == true && _admitted()
-            && _owner.Visible && _owner.WindowState != FormWindowState.Minimized && _surface.CanRestoreGameFocus;
+            && _owner.Visible && _owner.WindowState != FormWindowState.Minimized && (_bookshelfReturn.OwnsForeground || _surface.CanRestoreGameFocus);
         internal void RestoreRetainedBookshelfOrder() { if (!_disposed && BookshelfVisible) _bookshelfReturn.RestoreOrder(); }
         internal void ConfigureExclusivePresentation(Func<bool> active) => _exclusivePresentation = active;
         internal static bool AllowsFocusHandoff(bool requested, bool admitted, bool exclusive) => requested && admitted && !exclusive;

@@ -28,6 +28,25 @@ public sealed class PlayerHudStateTests
         Assert.Equal(18, state.Snapshot.Cooldowns.Length);
     }
 
+    [Fact]
+    public void FreshAvm1NativeLeeWireKeepsSkillsAndZeroMpRenderable()
+    {
+        // Captured by the real PlayerHudService reader in the Lee regression.
+        var path = System.IO.Path.Combine(AppContext.BaseDirectory, "Fixtures", "PlayerHud", "as2-lee-wire.json");
+        var raw = System.IO.File.ReadAllText(path, Encoding.UTF8);
+        var state = new PlayerHudState();
+        Assert.True(state.Receive(Convert.ToBase64String(Encoding.UTF8.GetBytes(raw)), 1));
+        var snapshot = state.Snapshot;
+        Assert.Equal(0, snapshot.Vitals.MpMax);
+        Assert.Equal(new[] { "小跳", "寸拳", "冲腿·龙息", "强力冲腿", "截击", "连击" },
+            snapshot.Loadout.Skills.Take(6).Select(s => s.Key));
+        Assert.All(snapshot.Loadout.Skills.Take(6), s => { Assert.True(s.Equipped); Assert.True(s.WriteBlocked); });
+        Assert.Equal(18, snapshot.Cooldowns.Length);
+        var model = new PlayerInfoAnimationModel();
+        model.ApplyProduction(snapshot.Vitals);
+        Assert.True(model.VisualState.HasRenderableState);
+    }
+
     internal static JObject Full(long epoch = 1, long seq = 1) => new()
     {
         ["v"] = 1, ["epoch"] = epoch, ["seq"] = seq, ["full"] = true, ["visible"] = true,

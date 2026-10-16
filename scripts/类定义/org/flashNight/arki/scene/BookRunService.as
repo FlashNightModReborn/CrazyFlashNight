@@ -24,6 +24,8 @@ class org.flashNight.arki.scene.BookRunService {
         _installed = true;
         BookComicService.install();
         BookRunClock.install();
+        org.flashNight.arki.scene.LeeTrialTelemetry.install();
+        org.flashNight.arki.scene.LeeAssaultService.install();
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         EventBus.getInstance().subscribe("SceneTransitionReleased", onTransitionReleased, null);
         // 仅 AS2 开发控制台可调用；调试局明确禁止奖励回流。
@@ -34,6 +36,7 @@ class org.flashNight.arki.scene.BookRunService {
     public static function playChapter(index:Number):Void {
         var run:Object = _root._saveExt.bookRun;
         var config:Object = BookDefinition.get();
+        if (run.bookId === "lee-trial") return;
         if (run == null || run.outcome != "active" || isNaN(index) || Math.floor(index) != index
                 || index < 0 || index >= config.maps.length) return;
         var owner:Object = org.flashNight.arki.scene.StageReturnFlow.worldIdentity(_root.gameworld);
@@ -47,6 +50,12 @@ class org.flashNight.arki.scene.BookRunService {
     private static function onTransitionReleased(world:Object, token:String, identity:Object):Void {
         if (world !== _root.gameworld || identity == null
                 || identity !== org.flashNight.arki.scene.StageReturnFlow.worldIdentity(world)) return;
+        var run:Object = _root._saveExt.bookRun;
+        if (run.bookId === "lee-trial" && run.outcome === "active" && isBookStageContext()) {
+            BookRunClock.ensureStarted(run);
+            org.flashNight.arki.scene.LeeTrialTelemetry.beginRoom(world, identity);
+            org.flashNight.arki.scene.LeeAssaultService.beginRoom(world, identity);
+        }
         presentChapter();
     }
     /** 先等加载幕真实退场，再取得漫画/对白暂停；否则暂停会把旧遮幕永久留在下层。 */
@@ -125,19 +134,23 @@ class org.flashNight.arki.scene.BookRunService {
         var planSeed:Number = run.seed;
         if (_debug != null) { planSeed = _debug.seed; run.planSeed = planSeed; startMap = _debug.startMap; run.debug = true; _debug = null; }
         // 原档的进入凭据中的 seed 保持不变；调试随机种子单独存放。
-        var stages:Array = BookRunRules.stages(planSeed, startMap);
+        var trial:Boolean = run.bookId === "lee-trial";
+        var stages:Array = trial ? org.flashNight.arki.scene.LeeTrialDefinition.stages() : BookRunRules.stages(planSeed, startMap);
+        if (stages.length == 0) return "";
         _bossPlan = stages[stages.length - 1].BasicInformation.BookBoss;
         for (var i:Number = 0; i < stages.length; i++) {
             var env:Object = WeatherSystem.getInstance().getEnvConfig().getStageEnv(String(String(stages[i].BasicInformation.Background).split("/").pop()));
             // 环境名称解析与 StageManager 一致；运行前检查，避免默默生成原点商人。
             if (env == null) { _startError = "书中地图环境未就绪，请返回书架。"; return ""; }
-            stages[i].Instances.Instance[0].x = Number(env.Xmin) + 180;
-            stages[i].Instances.Instance[0].y = Number(env.Ymin) + 75;
+            if (!trial) {
+                stages[i].Instances.Instance[0].x = Number(env.Xmin) + 180;
+                stages[i].Instances.Instance[0].y = Number(env.Ymin) + 75;
+            }
         }
         _root.关卡回调函数.书中章节 = function(index:Number):Void {
             org.flashNight.arki.scene.BookRunService.playChapter(index);
         };
-        var name:String = BookDefinition.get().stageName;
+        var name:String = stageName(run);
         var token:String = coveredEntry ? StageRunSession.reserveBookshelfEntry(String(_root.savePath), name)
             : StageRunSession.reserveStageStart("bookshelf", name, "简单");
         if (token == "") return "";
@@ -149,6 +162,10 @@ class org.flashNight.arki.scene.BookRunService {
         _root.关卡类型 = "无限过图"; _root.关卡地图帧值 = "房间";
         _root.场景进入位置名 = "出生地";
         _root.限制系统.openEntries(["DisableCompanion"]);
+        if (trial && !org.flashNight.arki.scene.LeeAssaultService.prepare(run)) {
+            manager.abortPreparedStage(token); StageRunSession.cancelStageStart(token);
+            _startError = "本章复活币未能准备，请返回书架。"; return "";
+        }
         run.startedAt = new Date().getTime();
         run.started = true;
         run.playTimeMs = 0; run.clockVersion = 1;
@@ -168,7 +185,8 @@ class org.flashNight.arki.scene.BookRunService {
     public static function finish(outcome:String):Void {
         var run:Object = _root._saveExt.bookRun;
         if (run == null || run.outcome != "active" || _ending != null
-            || _root.当前关卡名 !== BookDefinition.get().stageName) return;
+            || _root.当前关卡名 !== stageName(run)) return;
+        org.flashNight.arki.scene.LeeTrialTelemetry.finish(outcome);
         _ending = {slot:String(_root.savePath), outcome:outcome,
             elapsedMs:BookRunClock.elapsed(run), run:run};
         persistOutcome();
@@ -199,6 +217,7 @@ class org.flashNight.arki.scene.BookRunService {
     public static function abandonIfActive():Void {
         var run:Object = _root._saveExt.bookRun;
         if (run != null && run.outcome == "active") {
+            org.flashNight.arki.scene.LeeTrialTelemetry.finish("abandoned");
             run.elapsedMs = BookRunClock.elapsed(run);
             run.outcome = "abandoned";
         }
@@ -244,7 +263,12 @@ class org.flashNight.arki.scene.BookRunService {
     public static function isBookStageContext():Boolean {
         var run:Object = _root._saveExt.bookRun;
         return run != null && run.slot === String(_root.savePath)
-            && run.bookId === BookDefinition.get().id && _root.当前关卡名 === BookDefinition.get().stageName;
+            && (run.bookId === "repair-campus" || run.bookId === "lee-trial")
+            && _root.当前关卡名 === stageName(run);
+    }
+    private static function stageName(run:Object):String {
+        return run.bookId === "lee-trial" ? String(org.flashNight.arki.scene.LeeTrialDefinition.get().stageName)
+            : String(BookDefinition.get().stageName);
     }
     public static function returnFrame(fallback) {
         return isBookStageContext() ? "房间" : fallback;

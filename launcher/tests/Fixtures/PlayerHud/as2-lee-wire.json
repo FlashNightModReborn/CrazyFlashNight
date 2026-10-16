@@ -1,0 +1,403 @@
+{
+  "v": 1,
+  "epoch": 1,
+  "seq": 1,
+  "full": true,
+  "visible": true,
+  "groups": {
+    "resources": {
+      "skills": [
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "ready",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        }
+      ],
+      "drugs": [
+        {
+          "state": "blocked",
+          "reason": "item"
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        },
+        {
+          "state": "unknown",
+          "reason": ""
+        }
+      ],
+      "weapon": {
+        "state": "unknown",
+        "reason": ""
+      },
+      "switchBlocked": false,
+      "feedback": null
+    },
+    "vitals": {
+      "hp": [
+        100,
+        100
+      ],
+      "mp": [
+        0,
+        0
+      ],
+      "shield": [
+        0,
+        0
+      ],
+      "shieldPresent": false,
+      "shieldReady": false,
+      "poise": 0,
+      "experience": [
+        0,
+        0,
+        0
+      ],
+      "level": 0,
+      "name": "",
+      "sp": 0,
+      "paused": false,
+      "decorations": true
+    },
+    "combat": {
+      "mode": "空手",
+      "ammo": [
+        "",
+        "",
+        "",
+        ""
+      ],
+      "weapon": {
+        "visible": false,
+        "name": "",
+        "mp": 0,
+        "cooldownMs": 0,
+        "key": ""
+      }
+    },
+    "loadout": {
+      "revision": 1,
+      "skills": [
+        {
+          "slot": 1,
+          "equipped": true,
+          "skillKey": "小跳",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "小跳",
+          "mp": 0,
+          "cooldownMs": 1000
+        },
+        {
+          "slot": 2,
+          "equipped": true,
+          "skillKey": "寸拳",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "寸拳",
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 3,
+          "equipped": true,
+          "skillKey": "冲腿·龙息",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "兽王崩拳",
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 4,
+          "equipped": true,
+          "skillKey": "强力冲腿",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "升龙拳",
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 5,
+          "equipped": true,
+          "skillKey": "截击",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "拳脚攻击",
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 6,
+          "equipped": true,
+          "skillKey": "连击",
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 1,
+          "iconKey": "日字冲拳",
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 7,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 8,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 9,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 10,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 11,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        },
+        {
+          "slot": 12,
+          "equipped": false,
+          "skillKey": null,
+          "keyLabel": "",
+          "stateHealth": "ok",
+          "writeBlocked": true,
+          "level": 0,
+          "iconKey": null,
+          "mp": 0,
+          "cooldownMs": 0
+        }
+      ],
+      "drugRevision": 3,
+      "bank": 0,
+      "drugs": [
+        {
+          "slot": 0,
+          "name": "能量电池",
+          "icon": "",
+          "count": 0,
+          "key": ""
+        },
+        {
+          "slot": 1,
+          "name": "",
+          "icon": "",
+          "count": 0,
+          "key": ""
+        },
+        {
+          "slot": 2,
+          "name": "",
+          "icon": "",
+          "count": 0,
+          "key": ""
+        },
+        {
+          "slot": 3,
+          "name": "",
+          "icon": "",
+          "count": 0,
+          "key": ""
+        }
+      ],
+      "switchKey": ""
+    },
+    "cooldowns": [
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ],
+      [
+        1,
+        0,
+        0
+      ]
+    ],
+    "buffs": []
+  }
+}

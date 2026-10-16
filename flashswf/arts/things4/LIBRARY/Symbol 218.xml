@@ -31,34 +31,47 @@
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[攻击时移动 = _root.敌人二级函数.攻击时移动;
+                <script><![CDATA[this.__enemyActionToken = _root.敌人动作.currentToken(_parent);
+攻击时移动 = _root.敌人二级函数.攻击时移动;
 
 攻击时四向移动 = _root.敌人二级函数.攻击时四向移动;
+if (_parent.__enemyActionPlayer === true) {
+    攻击时四向移动 = function(up, down, left, right) {
+        _root.敌人动作.moveTracking(_parent, this.__enemyActionToken, Math.max(Math.abs(left), Math.abs(right)));
+    };
+}
 function 近战冲伤攻击(倍率,Z轴攻击范围,击倒率,水平击退速度)
 {
-	子弹属性 = _root.子弹属性初始化(this.攻击点);
+    if (!_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) return;
+    子弹属性 = _root.子弹属性初始化(this.攻击点);
 
-	子弹属性.声音 = "";
-	子弹属性.霰弹值 = 1;
-	子弹属性.子弹散射度 = 1;
-	子弹属性.子弹种类 = "近战子弹";
-	子弹属性.子弹威力 = _parent.空手攻击力 * 倍率;
-	子弹属性.子弹速度 = 0;
-	子弹属性.Z轴攻击范围 = Z轴攻击范围 ? Z轴攻击范围 : 35;
-	子弹属性.击倒率 = 击倒率? 击倒率 :10;
+    子弹属性.声音 = "";
+    子弹属性.霰弹值 = 1;
+    子弹属性.子弹散射度 = 1;
+    子弹属性.子弹种类 = "近战子弹";
+    子弹属性.子弹威力 = _parent.空手攻击力 * 倍率;
+    子弹属性.子弹速度 = 0;
+    子弹属性.Z轴攻击范围 = Z轴攻击范围 ? Z轴攻击范围 : 35;
+    子弹属性.击倒率 = 击倒率? 击倒率 :10;
 
-	if(水平击退速度){
-		子弹属性.水平击退速度 = 水平击退速度;
-	}
+    if(水平击退速度){
+        子弹属性.水平击退速度 = 水平击退速度;
+    }
 
-	子弹属性.伤害类型 = "魔法";
-	子弹属性.魔法伤害属性 = "冲";
+    子弹属性.伤害类型 = "魔法";
+    子弹属性.魔法伤害属性 = "冲";
 
-	子弹属性.区域定位area = this.攻击点;
+    子弹属性.区域定位area = this.攻击点;
 
-	_root.子弹区域shoot传递(子弹属性);
+    _root.子弹区域shoot传递(子弹属性);
 }
-gotoAndPlay(_parent.近战招式);]]></script>
+if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.setOwnedFlag(_parent, this.__enemyActionToken, "刚体", true);
+    gotoAndPlay(_parent.近战招式);
+} else {
+    stop();
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -67,7 +80,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="59" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.finish(_parent, this.__enemyActionToken);
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -77,7 +93,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="107" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.finish(_parent, this.__enemyActionToken);
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -87,14 +106,20 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="120" duration="22" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.锁定方向 = true;]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.setOwnedFlag(_parent, this.__enemyActionToken, "锁定方向", true);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="142" duration="46" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.锁定方向 = false;
-_parent.动画完毕();
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.setOwnedFlag(_parent, this.__enemyActionToken, "锁定方向", false);
+    _root.敌人动作.finish(_parent, this.__enemyActionToken);
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -104,28 +129,38 @@ _parent.动画完毕();
             </DOMFrame>
             <DOMFrame index="241" duration="39" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_root.gameworld[_parent.攻击目标].hp> 0 ){
-	距离X= _root.gameworld[_parent.攻击目标]._x - _parent._x ;
-	if(距离X>0){
-		_parent.方向改变("右");
-	}else{
-		_parent.方向改变("左");
-	}
-}]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    var actionTarget:Object = _root.敌人动作.resolveTarget(_parent, this.__enemyActionToken);
+    if (actionTarget != null && _parent.__enemyActionPlayer !== true) {
+        距离X = actionTarget._x - _parent._x;
+        if (距离X > 0) {
+            _parent.方向改变("右");
+        } else {
+            _parent.方向改变("左");
+        }
+    }
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="280" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.finish(_parent, this.__enemyActionToken);
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="294" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[攻击时移动 = _root.敌人二级函数.攻击时移动;
-gotoAndPlay(_parent.近战招式);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    攻击时移动 = _root.敌人二级函数.攻击时移动;
+    gotoAndPlay(_parent.近战招式);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -134,7 +169,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="343" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.动画完毕();
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    _root.敌人动作.finish(_parent, this.__enemyActionToken);
+    _parent.动画完毕();
+}
 ]]></script>
               </Actionscript>
               <elements/>
@@ -159,41 +197,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -216,41 +258,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -273,41 +319,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -330,41 +380,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -387,41 +441,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -449,13 +507,19 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="11" duration="10" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(1);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(1);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="21" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(2);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(2);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -464,7 +528,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="34" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(2.5);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(2.5);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -473,7 +540,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="46" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(3.5);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(3.5);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -496,41 +566,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -553,41 +627,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -610,41 +688,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -667,41 +749,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -724,41 +810,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -776,7 +866,10 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="213" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(2.5,38,3);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(2.5,38,3);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -785,25 +878,37 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="228" duration="26" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(2.5,39,2);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(2.5,39,2);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="254" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(5,39,1,20);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(5,39,1,20);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="257" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(5,39,1,25);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(5,39,1,25);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
             <DOMFrame index="260" duration="3" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[近战冲伤攻击(3,39,1,25);]]></script>
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    近战冲伤攻击(3,39,1,25);
+}
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -823,41 +928,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -954,41 +1063,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1011,41 +1124,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1068,41 +1185,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1125,41 +1246,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1182,41 +1307,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1239,41 +1368,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1296,41 +1429,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 1.5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1440,41 +1577,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5.2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5.2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1648,41 +1789,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1705,41 +1850,45 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力  * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力  * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1762,8 +1911,14 @@ gotoAndPlay(_parent.近战招式);]]></script>
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(30,30);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(30,30);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -1778,44 +1933,31 @@ gotoAndPlay(_parent.近战招式);]]></script>
             </DOMFrame>
             <DOMFrame index="193" duration="20" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[//本帧是锁定敌人位置的帧，建议比位移元件早一些。
-
-//你需要改的值，追踪持续帧是从挂载ef的位移元件的第二帧到预计实际到达敌人位置时的总帧数。
-速度上限 = _parent.行走X速度 * 7;
-速度下限 = _parent.行走X速度 * 1;
-追踪持续帧 = 13;
-
-//自动计算的值
-敌方目标 = _root.gameworld[_parent.攻击目标];
-上速度 = 0;
-下速度 = 0;
-左速度 = 0;
-右速度 = 0;
-距离X = _parent._x - 敌方目标._x;
-速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
-
-if (速度X >= 0)
-{
-	速度X = Math.max(速度X, 速度下限);
-	左速度 = 速度X;
+                <script><![CDATA[if (_root.敌人动作.isCurrent(_parent, this.__enemyActionToken)) {
+    速度上限 = _parent.行走X速度 * _root.敌人动作.getParameter(_parent, this.__enemyActionToken, "maximumSpeedMultiplier");
+    速度下限 = _parent.行走X速度 * _root.敌人动作.getParameter(_parent, this.__enemyActionToken, "minimumSpeedMultiplier");
+    追踪持续帧 = _root.敌人动作.getParameter(_parent, this.__enemyActionToken, "trackingFrames");
+    敌方目标 = _root.敌人动作.resolveTarget(_parent, this.__enemyActionToken);
+    上速度 = 0;
+    下速度 = 0;
+    左速度 = 0;
+    右速度 = 0;
+    if (敌方目标 != null) {
+        距离X = _parent._x - 敌方目标._x;
+    } else {
+        距离X = _root.敌人动作.getParameter(_parent, this.__enemyActionToken, "fallbackTravel");
+        if (_parent.方向 == "右") 距离X = -距离X;
+    }
+    速度X = Math.min(Math.max(距离X / 追踪持续帧, -速度上限), 速度上限);
+    if (速度X >= 0) {
+        速度X = Math.max(速度X, 速度下限);
+        左速度 = 速度X;
+    } else {
+        速度X = Math.min(速度X, -速度下限);
+        右速度 = -速度X;
+    }
 }
-else
-{
-	速度X = Math.min(速度X, -速度下限);
-	右速度 = -速度X;
-}
-/* //如果打算给予Z轴位移能力，启用以下代码，但需谨慎给予。
-距离Z = _parent.Z轴坐标 - 敌方目标.Z轴坐标;
-速度Z = 速度X * 距离Z / 距离X;
-if (速度Z >= 0)
-{
-	上速度 = Math.min(速度Z, 速度上限 * 1);
-}
-else
-{
-	下速度 = Math.min(-速度Z, 速度上限 * 1);
-}
-*/]]></script>
+]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1937,41 +2079,45 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2001,8 +2147,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(10,10);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(10,10);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2025,8 +2175,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(10,10);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(10,10);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2049,8 +2203,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(20,20);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(20,20);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2070,8 +2228,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(30,30);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(30,30);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2097,8 +2259,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(50,50);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(50,50);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2115,41 +2281,45 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2172,8 +2342,12 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(50,50);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(50,50);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2190,41 +2364,45 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2247,8 +2425,14 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(20,20);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(20,20);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2307,9 +2491,15 @@ else
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
-onClipEvent(enterFrame){
-   _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+//以下为带追踪的位移代码。如需启用Z轴追踪，则在"追踪代码"图层启用相关代码
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时四向移动(_parent.上速度, _parent.下速度, _parent.左速度, _parent.右速度);
+    }
 }]]></script>
                   </Actionscript>
                 </DOMSymbolInstance>
@@ -2328,8 +2518,14 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(5,5);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(5,5);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2349,8 +2545,12 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(20,20);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(20,20);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2370,8 +2570,14 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(3,3);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(3,3);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2391,8 +2597,14 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-   _parent.攻击时移动(7,7);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+}
+onClipEvent(enterFrame) {
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(7,7);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2418,16 +2630,20 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   if(_parent._parent.方向 == "右")
-   {
-      移动距离 = Math.abs(_parent._parent._x - _root.gameworld[_parent._parent.攻击目标]._x) - 80;
-   }
-   else if(_parent._parent.方向 == "左")
-   {
-      移动距离 = Math.abs(_parent._parent._x - _root.gameworld[_parent._parent.攻击目标]._x) - 80;
-   }
-   _parent.攻击时移动(移动距离,移动距离);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        if(_parent._parent.方向 == "右")
+           {
+              移动距离 = Math.abs(_parent._parent._x - _root.gameworld[_parent._parent.攻击目标]._x) - 80;
+           }
+           else if(_parent._parent.方向 == "左")
+           {
+              移动距离 = Math.abs(_parent._parent._x - _root.gameworld[_parent._parent.攻击目标]._x) - 80;
+           }
+           _parent.攻击时移动(移动距离,移动距离);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -2444,41 +2660,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 5;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27001,41 +27221,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27300,41 +27524,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27375,41 +27603,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27686,8 +27918,12 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(50,50);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(50,50);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27704,41 +27940,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -27779,41 +28019,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 2;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -28486,41 +28730,45 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent (load) {
-    // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
-    var 子弹属性:Object = _root.子弹属性初始化(this);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        // 1) 初始化属性对象（会预填 发射者 / 坐标 等常用字段）
+            var 子弹属性:Object = _root.子弹属性初始化(this);
 
-    // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
-    子弹属性.声音 = "";
-    子弹属性.霰弹值 = 1;
-    子弹属性.子弹散射度 = 0;
-    子弹属性.发射效果 = "";
-    子弹属性.子弹种类 = "近战子弹";
-    子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
-    子弹属性.子弹速度 = 0;
-    子弹属性.击中地图效果 = "";
-    子弹属性.Z轴攻击范围 = 30;
-    子弹属性.击倒率 = 1;
-    子弹属性.击中后子弹的效果 = "空手攻击火花";
+            // 2) 迁移旧参数（仅填变化项，其余走初始化默认）
+            子弹属性.声音 = "";
+            子弹属性.霰弹值 = 1;
+            子弹属性.子弹散射度 = 0;
+            子弹属性.发射效果 = "";
+            子弹属性.子弹种类 = "近战子弹";
+            子弹属性.子弹威力 = _parent._parent.空手攻击力 * 3;
+            子弹属性.子弹速度 = 0;
+            子弹属性.击中地图效果 = "";
+            子弹属性.Z轴攻击范围 = 30;
+            子弹属性.击倒率 = 1;
+            子弹属性.击中后子弹的效果 = "空手攻击火花";
 
-    // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
-    var myPoint:Object = { x: this._x, y: this._y };
-    _parent.localToGlobal(myPoint);
-    _root.gameworld.globalToLocal(myPoint);
+            // 3) 发射者 & 坐标（严格复刻旧写法的坐标换算）
+            var myPoint:Object = { x: this._x, y: this._y };
+            _parent.localToGlobal(myPoint);
+            _root.gameworld.globalToLocal(myPoint);
 
-    子弹属性.shootX = myPoint.x;
-    子弹属性.shootY = myPoint.y;
-    子弹属性.shootZ = _parent._parent.Z轴坐标;
-    子弹属性.发射者 = _parent._parent._name;
-	
-	子弹属性.伤害类型 = "破击";
-	子弹属性.魔法伤害属性 = "首领";
+            子弹属性.shootX = myPoint.x;
+            子弹属性.shootY = myPoint.y;
+            子弹属性.shootZ = _parent._parent.Z轴坐标;
+            子弹属性.发射者 = _parent._parent._name;
 
-    // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
-    // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+            子弹属性.伤害类型 = "破击";
+            子弹属性.魔法伤害属性 = "首领";
 
-    // 4) 交由统一入口
-    _root.子弹区域shoot传递(子弹属性);
+            // 说明：旧代码里的“子弹敌我属性”新版通常由 发射者/阵营 在传递侧推断。
+            // 若项目仍需手动强制，可在这里按需扩展自定义标记并在 shoot传递 里处理。
+
+            // 4) 交由统一入口
+            _root.子弹区域shoot传递(子弹属性);
+    }
 }
 ]]></script>
                   </Actionscript>
@@ -29168,8 +29416,12 @@ onClipEvent(enterFrame){
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){
-   _parent.攻击时移动(50,50);
+                    <script><![CDATA[onClipEvent(load) {
+    this.__enemyActionUnit = _parent._parent;
+    this.__enemyActionToken = _parent.__enemyActionToken;
+    if (_root.敌人动作.isCurrent(this.__enemyActionUnit, this.__enemyActionToken)) {
+        _parent.攻击时移动(50,50);
+    }
 }
 ]]></script>
                   </Actionscript>

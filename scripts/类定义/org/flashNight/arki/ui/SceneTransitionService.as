@@ -13,6 +13,14 @@ class org.flashNight.arki.ui.SceneTransitionService {
     private static var _pump:MovieClip;
     public static var sendOverride:Function = null;
 
+    /** 保留背景目录内的完整资源路径；旧版 flashswf/文件名仍映射到背景目录。 */
+    public static function resolveBackgroundUrl(value:String):String {
+        var prefix:String = "flashswf/backgrounds/";
+        if (value.indexOf(prefix) == 0 && value.indexOf("..") == -1 && value.indexOf("\\") == -1) return value;
+        var pieces:Array = value.split("/");
+        return prefix + pieces[pieces.length - 1];
+    }
+
     /** Visual readiness is separate from the business SceneReady event. */
     public static function loadBackground(world:Object, url:String, target:Object):Void {
         retireBackgroundListener(_background);

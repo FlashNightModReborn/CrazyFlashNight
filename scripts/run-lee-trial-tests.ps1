@@ -1,0 +1,11 @@
+﻿[CmdletBinding()]
+param([ValidateRange(1, 3600)][int]$TimeoutSeconds = 360, [switch]$SkipCompile)
+$ErrorActionPreference = 'Stop'
+& (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') `
+    -DomainId 'lee-trial' `
+    -TemplateRelativePath 'scripts/test-runners/lee-trial/TestLoader.as.template' `
+    -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/LeeAssaultRulesTest.as', 'scripts/类定义/org/flashNight/arki/unit/Action/Input/EnemyActionRuntimeTest.as', 'scripts/类定义/org/flashNight/arki/scene/ControlledEnemyLifecycleTest.as', 'scripts/类定义/org/flashNight/arki/scene/LeeTrialTelemetryTest.as', 'scripts/类定义/org/flashNight/arki/scene/SceneTransitionGuardHandoffTest.as') `
+    -SuiteFqns @('org.flashNight.arki.scene.LeeAssaultRulesTest', 'org.flashNight.arki.unit.Action.Input.EnemyActionRuntimeTest', 'org.flashNight.arki.scene.ControlledEnemyLifecycleTest', 'org.flashNight.arki.scene.LeeTrialTelemetryTest', 'org.flashNight.arki.scene.SceneTransitionGuardHandoffTest') `
+    -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/LeeAssaultRules.as', 'scripts/类定义/org/flashNight/arki/scene/LeeAssaultService.as', 'scripts/类定义/org/flashNight/arki/unit/Action/Input/EnemyActionRuntime.as', 'scripts/类定义/org/flashNight/arki/unit/Action/Input/EnemyActionInputService.as', 'scripts/类定义/org/flashNight/arki/unit/Action/Input/LeeActionProfile.as', 'scripts/类定义/org/flashNight/arki/scene/ControlledEnemyLifecycle.as', 'scripts/类定义/org/flashNight/arki/scene/LeeTrialDefinition.as', 'scripts/类定义/org/flashNight/arki/scene/LeeTrialTelemetry.as') `
+    -ExpectedTracePatterns @('(?m)^LeeAssaultRulesTest Tests Passed: 39', '(?m)^LeeAssaultRulesTest Tests Failed: 0', '(?m)^--- EnemyActionRuntimeTest: ([1-9][0-9]*)/\1 passed, 0 failed ---', '(?m)^ControlledEnemyLifecycleTest Tests Passed: [1-9][0-9]*', '(?m)^ControlledEnemyLifecycleTest Tests Failed: 0', '(?m)^LeeTrialTelemetryTest Tests Passed: 5', '(?m)^LeeTrialTelemetryTest Tests Failed: 0', '(?m)^SceneTransitionGuardHandoffTest Tests Passed: 20', '(?m)^SceneTransitionGuardHandoffTest Tests Failed: 0') `
+    -SuccessSummary 'Lee shared abilities and lifecycle; in-memory fixtures, no physical save claim' -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

@@ -1,0 +1,6 @@
+﻿import org.flashNight.arki.unit.Action.Input.*;
+_root.leeActionAssetComplete = function():Void {
+    trace("FocusedTestRunId lee-action-asset Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId lee-action-asset Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Input.EnemyActionAssetTest.runAllTests();

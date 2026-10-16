@@ -338,6 +338,7 @@ class org.flashNight.neur.Server.SaveManager {
     private static var _settingsContextBootstraps:Object = {};
     private static var _settingsLegacyReadOnly:Boolean = false;
     private static var _settingsContextGeneration:Number = 0;
+    private static var _settingsAuthorityNamespace:String;
     private var _settingsAuthority:SettingsAuthority;
     private var _settingsPackedProjection:Object;
     private var _settingsPackedReceipt:Object;
@@ -385,6 +386,13 @@ class org.flashNight.neur.Server.SaveManager {
                 || _root.存档系统 == undefined || _settingsAuthority != null
                 && !_settingsAuthority.sameOwner(_root.存档系统, String(_root.savePath))) return null;
         if (_settingsAuthority == null) {
+            // Host starts a fresh VM namespace at .1 for each admitted owner.
+            // Keep generations monotonic only while that exact namespace survives.
+            var namespace:String = _settingsBootstrap.saveOwnerId + "|" + _settingsBootstrap.authorityEpoch;
+            if (_settingsAuthorityNamespace !== namespace) {
+                _settingsAuthorityNamespace = namespace;
+                _settingsContextGeneration = 0;
+            }
             _settingsContextGeneration++;
             _settingsAuthority = new SettingsAuthority(_settingsBootstrap, _root.存档系统,
                 String(_root.savePath), _settingsBootstrap.authorityEpoch + "." + _settingsContextGeneration);
@@ -1938,6 +1946,9 @@ class org.flashNight.neur.Server.SaveManager {
         _pendingSaveOrigin = undefined;
         _pendingSaveReasons = null;
 
+        // 特殊操作单位只是旧调试入口；换角色时不得泄漏到下一份角色上下文。
+        _root.特殊操作单位 = "";
+
         // 技能、快捷栏与称号。
         // 不委托时间轴回调：Web 路径的 reset 必须自身建立完整 80 槽默认，
         // 也避免外部初始化器被旧状态、加载顺序或测试替身影响。
@@ -2243,7 +2254,10 @@ class org.flashNight.neur.Server.SaveManager {
                 || slot == undefined || slot == "" || slot.length > 128 || sanitizeSlot(slot) !== slot
                 || _root.gameworld._parent != undefined
                 || !org.flashNight.arki.scene.StageRunSession.canNavigateAwayFromStage()) return false;
-        if (run != null && (run.slot !== slot || typeof run.originSlot != "string" || run.originSlot == "")) return false;
+        if (run != null && (run.slot !== slot || typeof run.originSlot != "string" || run.originSlot == ""
+                || (run.bookId !== "repair-campus" && run.bookId !== "lee-trial"))) return false;
+        if (run != null && run.bookId === "lee-trial"
+                && !org.flashNight.arki.scene.LeeTrialDefinition.ready()) return false;
         if (run == null && !validateMydata(snapshot)) return false;
         clearPrefetch();
         org.flashNight.arki.scene.StageManager.getInstance().clear();
@@ -2275,15 +2289,24 @@ class org.flashNight.neur.Server.SaveManager {
         if (run == null) {
             if (!loadFromMydata(snapshot, "bookshelf_context")) return false;
         } else {
-            _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
-            _root.脸型 = "男变装-基本脸型"; _root.发型 = "发型-男式-Andy发型";
-            _root.等级 = 1; _root.经验值 = 0; _root.技能点数 = org.flashNight.arki.scene.BookDefinition.get().startingSkillPoints;
-            _root.金钱 = org.flashNight.arki.scene.BookDefinition.get().startingMoney;
-            _root.虚拟币 = 0; _root.身价 = _root.基础身价值;
-            _root.difficultyMode = 0;
-            _root.物品栏.装备栏.add("上装装备", BaseItem.create("白色中山上装", 1));
-            _root.物品栏.装备栏.add("下装装备", BaseItem.create("Andy工装裤", 1));
-            _root.物品栏.装备栏.add("脚部装备", BaseItem.create("黑色板鞋", 1));
+            if (run.bookId === "lee-trial") {
+                var trialActor:Object = org.flashNight.arki.scene.LeeTrialDefinition.get().actor;
+                _root.角色名 = trialActor.name; _root.性别 = trialActor.gender; _root.身高 = trialActor.height;
+                _root.脸型 = ""; _root.发型 = "";
+                _root.等级 = trialActor.level; _root.经验值 = 0; _root.技能点数 = 0;
+                _root.金钱 = 0; _root.虚拟币 = 0; _root.身价 = _root.基础身价值 * trialActor.level;
+                _root.difficultyMode = 0;
+            } else {
+                _root.角色名 = "Andy Law"; _root.性别 = "男"; _root.身高 = 175;
+                _root.脸型 = "男变装-基本脸型"; _root.发型 = "发型-男式-Andy发型";
+                _root.等级 = 1; _root.经验值 = 0; _root.技能点数 = org.flashNight.arki.scene.BookDefinition.get().startingSkillPoints;
+                _root.金钱 = org.flashNight.arki.scene.BookDefinition.get().startingMoney;
+                _root.虚拟币 = 0; _root.身价 = _root.基础身价值;
+                _root.difficultyMode = 0;
+                _root.物品栏.装备栏.add("上装装备", BaseItem.create("白色中山上装", 1));
+                _root.物品栏.装备栏.add("下装装备", BaseItem.create("Andy工装裤", 1));
+                _root.物品栏.装备栏.add("脚部装备", BaseItem.create("黑色板鞋", 1));
+            }
             _root._saveExt.bookRun = org.flashNight.gesh.object.PersistedSnapshot.clone(run);
             _root.mydata = packGameState();
             markRuntimeSaveLoaded("bookshelf_run");

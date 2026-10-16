@@ -11,6 +11,9 @@ class org.flashNight.arki.scene.BookComicService {
     private static var _order:Array;
     private static var _watch:MovieClip;
 
+    public static function knownPage(page:String):Boolean {
+        return typeof page == "string" && page.indexOf("|") < 0 && ("|prologue|boss|lee-ambush|lee-breakout|lee-ending-normal|lee-ending-hidden|").indexOf("|" + page + "|") >= 0 && page.length > 0;
+    }
     public static function install():Void {
         if (_installed) return;
         _installed = true;
@@ -32,7 +35,7 @@ class org.flashNight.arki.scene.BookComicService {
         install();
         var run:Object = _root._saveExt.bookRun;
         var server:Object = _root.server;
-        if (_active != null || (pageId != "prologue" && pageId != "boss")
+        if (_active != null || !knownPage(pageId)
                 || run == null || run.outcome != "active" || run.slot !== String(_root.savePath)
                 || _root.gameworld == undefined || server.isSocketConnected !== true
                 || typeof server.sendTaskWithCallback != "function") return false;
@@ -73,7 +76,7 @@ class org.flashNight.arki.scene.BookComicService {
             && typeof p.presentationId == "string" && p.presentationId.length <= 80
             && typeof p.slot == "string" && p.slot.length > 0 && p.slot.length <= 160
             && typeof p.sceneId == "string" && p.sceneId.length > 0 && p.sceneId.length <= 160
-            && (p.pageId === "prologue" || p.pageId === "boss")
+            && knownPage(p.pageId)
             && typeof p.panelInstanceId == "string" && p.panelInstanceId.length > 0 && p.panelInstanceId.length <= 160;
     }
     private static function matches(s:Object, p:Object):Boolean {

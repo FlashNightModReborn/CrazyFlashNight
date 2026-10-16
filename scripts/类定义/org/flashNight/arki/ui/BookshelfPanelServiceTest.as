@@ -20,7 +20,11 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
         _root.__bookEffects = [];
         _root.server = {sendSocketMessage:function(message) { _root.__bookWire = message; return true; }};
         _root.淡出动画 = {淡出跳转帧:function(frame) { _root.__bookFrame = frame; _root.__bookFades++; return true; }};
-        fake = {pending:false,fence:true,replacements:0};
+        fake = {pending:false,fence:true,replacements:0,settingsAllowed:true};
+        // 独立内存存储夹具显式提供当前 settings 权威合同，不能靠缺失方法的 undefined。
+        fake.settingsWriteAllowed = function():Boolean { return this.settingsAllowed; };
+        fake.settingsProtocolV2 = function():Boolean { return false; };
+        fake.getSettingsAuthority = function():Object { return null; };
         fake.hasRewardCommitPending = function() { return this.pending; };
         fake.rewardCommitOperationId = function() { return this.pending ? _root.__bookEntry.id : ""; };
         fake.resolveRewardCommit = function(id) {
@@ -396,6 +400,11 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             check(BookshelfPanelService.execute("snapshot", {v:1,token:token}).unlocked, "metro completion unlocks playable book");
             check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_fixture",sp:900}).error == "invalid_payload", "extra reward write rejected");
             check(BookshelfPanelService.execute("snapshot", {v:1,token:"bookshelf.absent"}).error == "stale_token", "invented token rejected");
+            fake.settingsAllowed = false;
+            check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"switch",target:"book_fixture_b",snapshot:{ext:{}}}).error == "busy"
+                    && fake.replacements == 0 && _root.__bookFades == 0,
+                "settings authority rejection cannot clear the character or begin a transition");
+            fake.settingsAllowed = true;
             _root.tasks_finished = {};
             check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_fixture"}).error == "locked", "early story gate");
             setup(); token = open();
@@ -485,6 +494,33 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
                     && result.records.history[19].runId == "old.18", "history keeps newest twenty results including failures");
             check(result.records.bestMs == 600000 && result.records.clears == 20 && result.lastReward == 0,
                 "failed last run preserves all-time best and clears but never reuses previous SP");
+            setup(); token = open();
+            var trialActive:Object = {slot:"bookrun_lee_fixture",originSlot:"book_fixture_a",seed:23,bookId:"lee-trial",outcome:"active",debug:true};
+            var universityHistory:Array = [{runId:"campus_kept",bookId:"repair-campus",sp:45}];
+            _root._saveExt.bookshelf = {active:trialActive, firstClear:true, bestTier:2, bestMs:500000,
+                clears:9, lastReward:45, history:universityHistory};
+            var trialResult:Object = PersistedSnapshot.clone(trialActive);
+            trialResult.outcome = "victory"; trialResult.elapsedMs = 12000;
+            result = BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:trialActive.slot,snapshot:{ext:{bookRun:trialResult}}});
+            check(result.phase == "save_pending" && _root.技能点数 == 100 && _root.__bookEffects.length == 0,
+                "Lee trial uses the durable receipt transaction without an SP asset effect");
+            check(result.lastTrialRecord == null && result.pendingBookId == "lee-trial",
+                "unconfirmed trial result remains hidden behind the original operation");
+            result = BookshelfPanelService.execute("query", {v:1,token:token});
+            check(result.phase == "applied" && result.lastTrialRecord.bookId == "lee-trial"
+                    && result.lastTrialRecord.sp == 0 && result.lastTrialRecord.debug === true,
+                "trial result keeps its book identity and zero-reward receipt");
+            check(result.records.bestMs == 500000 && result.records.clears == 9
+                    && result.records.history.length == 1 && result.records.history[0].runId == "campus_kept"
+                    && result.lastReward == 45,
+                "trial settlement preserves the university record and reward history");
+            check(_root._saveExt.bookshelf.active == null && _root._saveExt.bookshelf.lastRun == trialActive.slot,
+                "trial consumes the shared entry credential and keeps the exact cleanup identity");
+            setup(); token = open(); _root._saveExt.bookshelf = {active:trialActive};
+            trialResult.bookId = "repair-campus";
+            check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:trialActive.slot,snapshot:{ext:{bookRun:trialResult}}}).error == "invalid_target"
+                    && _root.技能点数 == 100 && _root.__bookEffects.length == 0,
+                "a trial result cannot be relabeled as a rewarded university run");
             testDirectStageReturn();
             testReturnUiWaitsForCurtain();
             testContextArrivalWaitsForCurtain();

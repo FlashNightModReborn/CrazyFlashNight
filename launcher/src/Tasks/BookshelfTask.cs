@@ -18,7 +18,7 @@ namespace CF7Launcher.Tasks
     {
         private sealed class Request {
             public string Cmd, Token, Instance, Kind, Target, Destination;
-            public bool IsWrite;
+            public bool IsWrite, IsContextObservation;
             internal SettingsRecoveryAdmission SettingsDestination,SettingsRollback;
         }
         private static readonly Regex Id = new Regex("^[A-Za-z0-9._~-]{1,128}$");
@@ -40,6 +40,32 @@ namespace CF7Launcher.Tasks
         private string _unresolved, _unresolvedKind, _unresolvedTarget, _unresolvedDestination;
         private SettingsRecoveryAdmission _unresolvedSettingsDestination,_unresolvedSettingsRollback;
         private bool _writePending, _disposed;
+        private Request _contextObservation;
+        private DateTime _contextObservationExpires;
+        private bool _contextReadPending;
+
+        // Play closes its Web view before arrival. Continue only the original
+        // read-only query so the destination settings owner is actually bound.
+        internal void ObservePendingContext()
+        {
+            lock (_gate)
+            {
+                var accepted = _contextObservation;
+                if (_disposed || accepted == null) return;
+                if (_unresolved != accepted.Token || DateTime.UtcNow >= _contextObservationExpires)
+                { _contextObservation = null; return; }
+                if (_contextReadPending || !_pending.IsReady()) return;
+                var read = new Request { Cmd = "query", Token = accepted.Token, Instance = accepted.Instance,
+                    Kind = accepted.Kind, Target = accepted.Target, Destination = accepted.Destination,
+                    SettingsDestination = accepted.SettingsDestination, SettingsRollback = accepted.SettingsRollback,
+                    IsContextObservation = true };
+                if (!_pending.TryBegin("context." + Guid.NewGuid().ToString("N"), read, out int fid)) return;
+                _contextReadPending = true;
+                var payload = new JObject { ["v"] = 1, ["token"] = read.Token,
+                    ["reconcileKind"] = read.Kind, ["reconcileTarget"] = read.Target };
+                _pending.Send(fid, PanelBridge.BuildFlashCommand("bookshelfQuery", fid, payload).ToString(Formatting.None) + "\0");
+            }
+        }
 
         public BookshelfTask(XmlSocketServer socket) : this(() => socket != null && socket.IsClientReady,
             text => socket != null && socket.TrySend(text)) { }
@@ -131,7 +157,7 @@ namespace CF7Launcher.Tasks
                     if (isWrite)
                     {
                         string kind = Text(payload["kind"]), target = Text(payload["target"]);
-                        if (kind == "play" && target == "repair-campus")
+                        if (kind == "play" && IsPlayableBook(target))
                             normalized["runSlot"] = "bookrun_" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
                                 _runNamespace + ":" + Text(payload["token"])))).Substring(0, 24).ToLowerInvariant();
                         else if ((kind == "switch" && IsPermanentSlot(target))
@@ -199,6 +225,7 @@ namespace CF7Launcher.Tasks
                 int fid = message?["callId"]?.Type == JTokenType.Integer ? message.Value<int>("callId") : 0;
                 if (!_pending.TryComplete(fid, out PanelPendingCall<Request> call)) { respond?.Invoke(null); return; }
                 var request = call.Context;
+                if (request.IsContextObservation) _contextReadPending = false;
                 if (request.IsWrite) _writePending = false;
                 bool envelope = message?["v"]?.Type == JTokenType.Integer && message.Value<int>("v") == 1
                     && Text(message["operation"]) == request.Cmd && Text(message["token"]) == request.Token;
@@ -221,14 +248,26 @@ namespace CF7Launcher.Tasks
                         && Text(message["nextToken"]) != request.Token;
                 if (state && message["exitRequired"] != null)
                     state = message["exitRequired"].Type == JTokenType.Boolean;
+                if (state && message["bookId"] != null)
+                    state = message.Value<bool>("inRun") ? IsPlayableBook(Text(message["bookId"])) : Text(message["bookId"]) == "";
+                if (state && message["pendingBookId"] != null)
+                    state = string.IsNullOrEmpty(Text(message["pendingRun"])) ? Text(message["pendingBookId"]) == "" : IsPlayableBook(Text(message["pendingBookId"]));
+                if (state && message["lastTrialRecord"]?.Type != JTokenType.Null && message["lastTrialRecord"] != null)
+                    state = message["lastTrialRecord"] is JObject trialRecord
+                        && Text(trialRecord["bookId"]) == "lee-trial" && ValidResult(trialRecord, false);
                 if (state && message["records"] != null) state = ValidRecords(message["records"] as JObject);
                 if (state && message["returningResult"]?.Type != JTokenType.Null && message["returningResult"] != null)
                     state = ValidResult(message["returningResult"] as JObject, true);
+                if (state && phase == "switching" && request.Kind == "play" && _contextObservation == null)
+                { _contextObservation = request; _contextObservationExpires = DateTime.UtcNow.AddMinutes(2); }
                 if(state) {
                     _activeSlot=Text(message["activeSlot"]);
                     var admission=contextSettings(request,_activeSlot,Text(message["settingsAuthorityOwner"]));
                     if(admission!=null) {
-                        Action bind=()=>_settingsSourceApplied?.Invoke(admission);
+                        Action bind=()=> {
+                            _settingsSourceApplied?.Invoke(admission);
+                            LogManager.Log("event=bookshelf_settings_bound phase="+phase+" background="+request.IsContextObservation);
+                        };
                         if(_invoke==null)bind();else _invoke(bind);
                     }
                 }
@@ -275,6 +314,7 @@ namespace CF7Launcher.Tasks
         {
             lock (_gate)
             {
+                if (call.Context.IsContextObservation) _contextReadPending = false;
                 if (call.Context.IsWrite) _writePending = false;
                 RevokeOriginal();
                 if (reason != PanelPendingCallEndReason.Cleared)
@@ -288,13 +328,17 @@ namespace CF7Launcher.Tasks
                 if(admission!=null && admission.Context.Slot==slot && admission.Owner==owner)return admission;
             return null;
         }
+        private static bool IsPlayableBook(string bookId) => bookId == "repair-campus" || bookId == "lee-trial";
         private static bool BoundedInteger(JToken value, long maximum)
             => value?.Type == JTokenType.Integer && long.TryParse(value.ToString(), out long number) && number >= 0 && number <= maximum;
         private static bool ValidResult(JObject result, bool pending)
         {
             if (result == null || !Exact(result, "runId", "bookId", "outcome", "elapsedMs", "completedAt", "sp", "reason", "debug")) return false;
             return Text(result["runId"]) is string run && SaveSlotKey.IsValidExisting(run)
-                && Text(result["bookId"]) == "repair-campus"
+                && IsPlayableBook(Text(result["bookId"]))
+                && (Text(result["bookId"]) != "lee-trial" || BoundedInteger(result["sp"], 0)
+                    && result["debug"]?.Type == JTokenType.Boolean && result.Value<bool>("debug")
+                    && (Text(result["reason"]) == "debug" || pending && Text(result["reason"]) == "pending"))
                 && new[] { "victory", "failure", "defeat", "retreat", "abandoned" }.Contains(Text(result["outcome"]))
                 && BoundedInteger(result["elapsedMs"], 86399999) && BoundedInteger(result["completedAt"], 9007199254740991)
                 && BoundedInteger(result["sp"], 1000000) && result["debug"]?.Type == JTokenType.Boolean

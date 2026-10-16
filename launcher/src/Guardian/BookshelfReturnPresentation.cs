@@ -11,7 +11,7 @@ namespace CF7Launcher.Guardian
         private readonly Func<bool> _releasePause, _assertPause;
         private readonly Func<string, bool> _post;
         private readonly Func<DateTime> _now;
-        private readonly Func<bool> _visible;
+        private readonly Func<bool> _visible, _hasForeground;
         private readonly Action _restoreOrder;
         private string _instance;
         private JObject _projection;
@@ -20,12 +20,15 @@ namespace CF7Launcher.Guardian
         private bool _acknowledged;
         private bool _released, _sceneComplete, _sceneRetired, _terminal;
         internal BookshelfReturnPresentation(Func<string, bool> owns, Func<bool> releasePause,
-            Func<bool> assertPause, Func<string, bool> post, Func<bool> visible, Action restoreOrder = null, Func<DateTime> now = null)
-        { _owns = owns; _releasePause = releasePause; _assertPause = assertPause; _post = post; _visible = visible; _restoreOrder = restoreOrder; _now = now ?? (() => DateTime.UtcNow); }
+            Func<bool> assertPause, Func<string, bool> post, Func<bool> visible, Action restoreOrder = null, Func<DateTime> now = null, Func<bool> hasForeground = null)
+        { _owns = owns; _releasePause = releasePause; _assertPause = assertPause; _post = post; _visible = visible; _restoreOrder = restoreOrder; _now = now ?? (() => DateTime.UtcNow); _hasForeground = hasForeground ?? (() => false); }
         internal string Instance => _instance != null && _owns(_instance) ? _instance : null;
         internal bool Active => Instance != null;
         internal bool Loading => Active && !_sceneRetired;
         internal bool CanPresent => Active && _visible();
+        // The retained panel is a separate top-level window. It must prove its exact
+        // live instance and foreground; same-process membership grants no admission.
+        internal bool OwnsForeground => CanPresent && _hasForeground();
         internal void RestoreOrder() { if (CanPresent) _restoreOrder?.Invoke(); }
         internal void RetryPauseRestore() { if (_sceneRetired && !_sceneComplete) CompleteScene(); }
         internal void Observe(string instance, JObject receipt)

@@ -29,9 +29,11 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         org.flashNight.arki.scene.BookRunService.install();
         org.flashNight.arki.scene.BookDefinition.load();
+        org.flashNight.arki.scene.LeeTrialDefinition.load();
     }
     public static function openPanel():Boolean {
         org.flashNight.arki.scene.BookDefinition.load();
+        org.flashNight.arki.scene.LeeTrialDefinition.load();
         if (org.flashNight.arki.ui.SceneTransitionService.isPresentationPending()) return false;
         if (_root.gameworld == undefined || typeof _root.server.sendSocketMessage != "function") return false;
         if (_active != null && _active.phase == "editing") _active.phase = "expired";
@@ -89,14 +91,18 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var run:Object = _root._saveExt.bookRun;
         var feature:Object = _root._saveExt.bookshelf;
         if (kind == "play") {
-            if (!org.flashNight.arki.scene.BookDefinition.ready()) {
-                org.flashNight.arki.scene.BookDefinition.load();
+            if ((p.target !== "repair-campus" && p.target !== "lee-trial")
+                    || typeof p.runSlot != "string" || p.runSlot.indexOf("bookrun_") != 0) return fail(cmd, token, "invalid_target");
+            var trial:Boolean = p.target === "lee-trial";
+            if (trial ? !org.flashNight.arki.scene.LeeTrialDefinition.ready() : !org.flashNight.arki.scene.BookDefinition.ready()) {
+                if (trial) org.flashNight.arki.scene.LeeTrialDefinition.load();
+                else org.flashNight.arki.scene.BookDefinition.load();
                 return fail(cmd, token, "config_unavailable");
             }
-            if (!unlocked() || run != null || feature.active != null) return fail(cmd, token, "locked");
-            if (p.target !== "repair-campus" || typeof p.runSlot != "string" || p.runSlot.indexOf("bookrun_") != 0) return fail(cmd, token, "invalid_target");
-            r.run = {v:1, bookId:"repair-campus", slot:p.runSlot, originSlot:r.slot,
+            if ((!trial && !unlocked()) || run != null || feature.active != null) return fail(cmd, token, "locked");
+            r.run = {v:1, bookId:p.target, slot:p.runSlot, originSlot:r.slot,
                 seed:1 + Math.floor(Math.random() * 2147483645), startedAt:new Date().getTime(), outcome:"active"};
+            if (trial) r.run.debug = true;
             r.destination = p.runSlot;
         } else if (kind == "switch") {
             if (run != null || feature.active != null || p.target == r.slot || p.snapshot == null
@@ -104,7 +110,8 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             r.destination = p.target; r.snapshot = PersistedSnapshot.clone(p.snapshot);
         } else if (kind == "return") {
             if (run == null || run.originSlot !== p.target || p.snapshot.ext.bookshelf.active.slot !== run.slot
-                || p.snapshot.ext.bookshelf.active.originSlot !== p.target) return fail(cmd, token, "invalid_target");
+                || p.snapshot.ext.bookshelf.active.originSlot !== p.target
+                || p.snapshot.ext.bookshelf.active.bookId !== run.bookId) return fail(cmd, token, "invalid_target");
             org.flashNight.arki.scene.BookRunService.abandonIfActive();
             r.fromStage = StageRunSession.canReturnBookContext();
             r.result = PersistedSnapshot.clone(_root._saveExt.bookRun);
@@ -115,7 +122,9 @@ class org.flashNight.arki.ui.BookshelfPanelService {
                 recovered = PersistedSnapshot.clone(feature.active); recovered.outcome = "abandoned";
             }
             if (run != null || feature.active.slot !== p.target || recovered.slot !== p.target
-                || recovered.originSlot !== r.slot || recovered.seed !== feature.active.seed) return fail(cmd, token, "invalid_target");
+                || recovered.originSlot !== r.slot || recovered.seed !== feature.active.seed
+                || recovered.bookId !== feature.active.bookId
+                || (recovered.bookId !== "repair-campus" && recovered.bookId !== "lee-trial")) return fail(cmd, token, "invalid_target");
             r.result = PersistedSnapshot.clone(recovered);
         } else return fail(cmd, token, "invalid_payload");
         if (kind != "settle" && SaveManager.getInstance().settingsProtocolV2()) {
@@ -247,26 +256,33 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         var result:Object = r.result;
         var state:Object = _root._saveExt.bookshelf;
         if (state.active.slot !== result.slot || result.originSlot !== String(_root.savePath)
-            || state.active.seed !== result.seed) { r.phase = "expired"; r.error = "context_changed"; _job = null; return; }
+            || state.active.seed !== result.seed || state.active.bookId !== result.bookId) { r.phase = "expired"; r.error = "context_changed"; _job = null; return; }
         r.waitFor = "reward"; r.phase = "save_pending";
         r.previousFeature = PersistedSnapshot.clone(state);
         if (!RewardStashService.begin(r.token + ".reward", {source:"level_reward", reason:"book_reward",
                 operationId:"book.reward." + result.slot, mergeScope:"operation"}, rewardResolved, r)) return;
         state = _root._saveExt.bookshelf;
-        var quote:Object = org.flashNight.arki.scene.BookRunRules.reward(result, state);
-        _root.技能点数 += quote.sp;
-        state.firstClear = quote.firstClear; state.bestTier = quote.bestTier;
-        state.bestMs = quote.bestMs; state.lastRun = result.slot;
-        state.clears = Number(state.clears || 0) + (quote.sp > 0 ? 1 : 0);
-        state.lastReward = quote.sp; state.active = null;
+        var trial:Boolean = result.bookId === "lee-trial";
+        var quote:Object = trial ? {sp:0, reason:"debug"} : org.flashNight.arki.scene.BookRunRules.reward(result, state);
         var record:Object = org.flashNight.arki.scene.BookRunRules.resultRecord(result, quote, new Date().getTime());
-        var history:Array = [record];
-        if (state.history instanceof Array) {
-            for (var h:Number = 0; h < state.history.length && history.length < 20; h++) {
-                if (state.history[h].runId !== result.slot) history.push(state.history[h]);
+        if (trial) {
+            record.debug = true;
+            state.lastTrialRecord = record;
+        } else {
+            _root.技能点数 += quote.sp;
+            state.firstClear = quote.firstClear; state.bestTier = quote.bestTier;
+            state.bestMs = quote.bestMs;
+            state.clears = Number(state.clears || 0) + (quote.sp > 0 ? 1 : 0);
+            state.lastReward = quote.sp;
+            var history:Array = [record];
+            if (state.history instanceof Array) {
+                for (var h:Number = 0; h < state.history.length && history.length < 20; h++) {
+                    if (state.history[h].runId !== result.slot) history.push(state.history[h]);
+                }
             }
+            state.history = history;
         }
-        state.history = history;
+        state.lastRun = result.slot; state.active = null;
         // 与 SP 和领取凭据一起提交；失败/未知保存不会提前播报到账。
         if (quote.sp > 0) PlayerAssetTransaction.recordEffect("gain", "skillpoint", "技能点", quote.sp,
             {source:"level_reward", reason:"book_reward", operationId:"book.reward." + result.slot, mergeScope:"operation"});
@@ -341,6 +357,8 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             kind:String(r.kind || ""), target:String(r.target || ""),
             outcomePending:org.flashNight.arki.scene.BookRunService.hasUnsettledOutcome(),
             unlocked:unlocked(), inRun:run != null, originSlot:run == null ? "" : String(run.originSlot),
+            bookId:run == null ? "" : String(run.bookId), pendingBookId:feature.active == null ? "" : String(feature.active.bookId),
+            lastTrialRecord:feature.lastTrialRecord == null ? null : PersistedSnapshot.clone(feature.lastTrialRecord),
             runOutcome:run == null ? "" : String(run.outcome), pendingRun:feature.active == null ? "" : String(feature.active.slot),
             reward:r.rewardSaved === true ? Number(r.reward || 0) : 0, lastReward:Number(feature.lastReward || 0),
             records:{bestMs:Number(feature.bestMs || 0), clears:Number(feature.clears || 0),

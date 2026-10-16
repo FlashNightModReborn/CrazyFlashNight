@@ -126,7 +126,13 @@ class org.flashNight.arki.unit.UnitAI.behavior.CombatModule extends FSM_StateMac
             } else if (data.diff_x > 0) {
                 self.方向改变("右");
             }
-            self.状态改变(self.攻击模式 + "攻击");
+            if (self.__enemyActionRuntime.enabled === true) {
+                // 与玩家共用同一动作请求；其他怪物保留原模板入口。
+                org.flashNight.arki.unit.Action.Input.EnemyActionRuntime.request(
+                    self, "basic", "ai", data.target);
+            } else {
+                self.状态改变(self.攻击模式 + "攻击");
+            }
         } else if (!data.standby) {
             var sm = this.superMachine;
             if ((sm.getActionCount() & 1) == 0) {

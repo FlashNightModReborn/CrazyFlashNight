@@ -113,6 +113,18 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(p.Active); Assert.False(p.Loading); Assert.Equal(1, pauses);
         }
         [Fact]
+        public void RetainedForegroundRequiresTheExactVisiblePanelInstance()
+        {
+            string active = "book.1"; bool visible = true, foreground = true;
+            var p = new BookshelfReturnPresentation(i => i == active, () => true,
+                () => true, _ => true, () => visible, hasForeground: () => foreground);
+            p.Observe("book.1", Receipt("switching"));
+            Assert.True(p.OwnsForeground);
+            foreground = false; Assert.False(p.OwnsForeground);
+            foreground = true; visible = false; Assert.False(p.OwnsForeground);
+            visible = true; active = "settings.2"; Assert.False(p.OwnsForeground);
+        }
+        [Fact]
         public void HiddenOrReplacedBookshelfCannotRepairWindowOrder()
         {
             string owner = "book.1"; bool visible = true; int repairs = 0;

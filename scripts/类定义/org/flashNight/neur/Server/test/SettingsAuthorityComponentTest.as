@@ -82,6 +82,35 @@ class org.flashNight.neur.Server.test.SettingsAuthorityComponentTest {
         check(retired.outcome.applyState=="not_applied" && retired.holdActive,"exact query certifies retired operation without releasing Host metadata gate");
         gate.admission="release";
         check(GameSettingsPanelService.execute("authority_gate",gate).success && manager.settingsWriteAllowed(),"exact Host release after journal settlement");
+        // Character switches receive a new trusted owner/VM namespace. Host's
+        // first request is .1 even when a previous character already had a view.
+        var firstOwner:Object=_root.存档系统;
+        var firstSlot:String=_root.savePath;
+        var firstAuthority:Object=manager.getSettingsAuthority();
+        var managerState:Object=manager;
+        _root.savePath="bookrun_fixture"; _root.存档系统={dirtyMark:false};
+        managerState._settingsAuthority=null;
+        SaveManager.installSettingsAuthorityBootstrap({protocol:2,contextId:"ctx.book",saveOwnerId:"owner.book",
+            authorityEpoch:"vm.book",originNamespaceDigest:"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            slot:_root.savePath,writeAdmission:"allowed"});
+        var bookParams:Object={v:2,contextId:"ctx.book",saveOwnerId:"owner.book",authorityEpoch:"vm.book.1"};
+        check(GameSettingsPanelService.execute("snapshot",bookParams).success,
+            "fresh character namespace accepts Host's first generation");
+        check(!firstAuthority.matches(bookParams),"old character authority cannot claim the temporary actor");
+        managerState._settingsAuthority=null;
+        check(manager.getSettingsAuthority().epoch()=="vm.book.2"
+            && !GameSettingsPanelService.execute("snapshot",bookParams).success,
+            "same owner namespace still rejects a retired generation");
+        _root.savePath=firstSlot; _root.存档系统={dirtyMark:false}; managerState._settingsAuthority=null;
+        SaveManager.installSettingsAuthorityBootstrap({protocol:2,contextId:"ctx.return",saveOwnerId:"owner.return",
+            authorityEpoch:"vm.return",originNamespaceDigest:"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            slot:_root.savePath,writeAdmission:"allowed"});
+        check(GameSettingsPanelService.execute("snapshot",{v:2,contextId:"ctx.return",saveOwnerId:"owner.return",
+            authorityEpoch:"vm.return.1"}).success,"returning original character gets the new owner's first generation");
+        _root.存档系统=firstOwner; managerState._settingsAuthority=firstAuthority;
+        SaveManager.installSettingsAuthorityBootstrap({protocol:2,contextId:"ctx.fixture",saveOwnerId:"owner.fixture",
+            authorityEpoch:"vm.fixture",originNamespaceDigest:"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            slot:firstSlot,writeAdmission:"allowed"});
         var keys:Array=[];
         for(var i:Number=0;i<v.keys.length;i++)keys.push({id:v.keys[i][1],keyCode:v.keys[i][2]});
         v.settings.setGlobalVolume=43;

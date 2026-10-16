@@ -979,6 +979,7 @@ class org.flashNight.arki.scene.StageManager {
 
     public function clearStage():Void{
         if(!isActive || isFinished || isFailed) return;
+        if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord clearStage rejected; typed result required");
             return;
@@ -1067,6 +1068,7 @@ class org.flashNight.arki.scene.StageManager {
 
     public function nextStage():Void{
         if(!isActive || isFinished || isFailed) return;
+        if (!org.flashNight.arki.scene.LeeAssaultService.canAdvance()) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord nextStage rejected; typed result required");
             return;

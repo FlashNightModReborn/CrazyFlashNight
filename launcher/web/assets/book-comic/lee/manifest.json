@@ -1,0 +1,57 @@
+{
+  "schema": "lee-assault-comic-art.v1",
+  "generator": "tools/build-lee-assault-art.js",
+  "nativeVectors": true,
+  "sources": [
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_3_BG.swf",
+      "sha256": "059df1c13c45d941e83c9cecb698e4f479f111bd2d3c513514b85cf540838388"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_2_BG.swf",
+      "sha256": "80efba5c45386c3371b92f9dc08552b079a20fc5b76ce7a1fb74d4b5e2c62fe3"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_4_BG.swf",
+      "sha256": "01facfb4b76a9938258028f24bde92d34caaf3d5a736cfc01ff2b46d3fb01def"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_5_BG.swf",
+      "sha256": "ea0aac10702c632e157f242fc876751313d560dda2fd4ce7e4fa3dbad33e96be"
+    },
+    {
+      "file": "flashswf/backgrounds/hthhltnb_5_BG.swf",
+      "sha256": "9e91de9d87d04baa0070a7f1bb056d7295115a8ab0cbd034bb0f09fd423d8d2e"
+    },
+    {
+      "file": "flashswf/arts/things4.swf",
+      "sha256": "49b73781cc8ec9aac0fa0d1bde904c3536c25d716e30509cc604baaede4ac5b6"
+    },
+    {
+      "file": "flashswf/arts/things5.swf",
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    }
+  ],
+  "files": [
+    {
+      "file": "ambush.svg",
+      "sha256": "5fee7d2303f49004e71d93e961d27ce394c83f66408bd6807c901527322e8a36",
+      "bytes": 1957885
+    },
+    {
+      "file": "captured.svg",
+      "sha256": "89beed95429c1f6bdd9e9efad10d3671bce90e60b1940bea3b4025887e773ca1",
+      "bytes": 1172047
+    },
+    {
+      "file": "breakout.svg",
+      "sha256": "4ea26b6fb63d5a6b5a3b0461ce6bdaa0519120fbb635c07ff1c02037b1664a05",
+      "bytes": 1354719
+    },
+    {
+      "file": "victory.svg",
+      "sha256": "daec1c6548a1536af98ed97701d4b1b284f8047990cd092440233fc3192a2cb2",
+      "bytes": 1541464
+    }
+  ]
+}

@@ -196,7 +196,7 @@ _root.加载场景背景 = function (动画名){
 		WeatherSystem.getInstance().configureEnvironment(环境配置);
 		背景层.已更新环境配置 = true;
 	}
-	游戏世界.场景背景url = "flashswf/backgrounds/" + url;
+	游戏世界.场景背景url = org.flashNight.arki.ui.SceneTransitionService.resolveBackgroundUrl(动画名);
 	_global.ASSetPropFlags(游戏世界, ["场景背景url"], 1, false);
 	org.flashNight.arki.ui.SceneTransitionService.loadBackground(游戏世界, 游戏世界.场景背景url, 背景层.外部动画加载壳mc);
 	// if(环境配置.背景元素){
