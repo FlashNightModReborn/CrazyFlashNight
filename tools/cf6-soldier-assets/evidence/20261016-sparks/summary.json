@@ -1,0 +1,151 @@
+{
+  "schema": "cf6-soldier.shield-impact-evidence.v1",
+  "date": "2026-10-16",
+  "effect": {
+    "phaseOne": "击中金属",
+    "breakingHit": "击中金属",
+    "phaseTwo": "initial normal effect, default 飙血",
+    "authority": "Same field as Terminator T800. HitUpdater renders the field; BulletEffectHandler emits blood fragments only for 飙血 / 异形飙血."
+  },
+  "native": {
+    "runId": "2a35747edc0742329949e61422140f36",
+    "passed": 834,
+    "failed": 0,
+    "timelineCases": 66,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "productionOwnership": {
+    "errors": [],
+    "files": 700,
+    "parsed": 0,
+    "cacheHits": 700,
+    "loaderClasses": 716,
+    "closureChecked": true,
+    "policy": "production",
+    "milliseconds": 6635.4341
+  },
+  "changesFromCombatVersion": "Exactly three AS2 lines added for phase-owned hit effect. Movement, damage, weapons, AI timing, and balance parameters unchanged.",
+  "previousCombatEvidence": "../20261016-stability/summary.json",
+  "previousCombatEvidenceSha256": "cc4647da6a8daefa8f2a8a9386a3e8cb9cd163962108f6895a5493a55879cac3",
+  "files": [
+    {
+      "path": "native/publish-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "native/publish-compile_output.txt",
+      "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57",
+      "bytes": 75
+    },
+    {
+      "path": "native/test-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "native/test-compile_output.txt",
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728",
+      "bytes": 19
+    },
+    {
+      "path": "native/test-flashlog.txt",
+      "sha256": "316992bfe5b014c28d9012cf98819e7c04a76777da8a07d899916eed4cca0b20",
+      "bytes": 2730
+    },
+    {
+      "path": "logs/native.log",
+      "sha256": "c872109fa4bcd0d251188e98258f3cd29232c5c0444d949fa3eba162d1044806",
+      "bytes": 2886
+    },
+    {
+      "path": "logs/publish.log",
+      "sha256": "34fa17322074f23320dfa84a1500982afa08d0723db437313d0d8a5b03ceb7ce",
+      "bytes": 1321
+    },
+    {
+      "path": "logs/production-ownership.json",
+      "sha256": "e44b5112e893a75cdb0253aa1954e77f1cc32be252ada0ea006e097ba0ee28e2",
+      "bytes": 185
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1",
+      "bytes": 17867
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/build.py",
+      "sha256": "75d0c0d588037a0e40d28a626b8b03a73a4700a8a322d1b45ca7cf1d5096e8d7",
+      "bytes": 25950
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/native-manifest.json",
+      "sha256": "987d56c9741e21df2a5dba055785b19252a32eb1ae18c17bbd9968e21b0d900c",
+      "bytes": 56934
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/test-host-manifest.json",
+      "sha256": "94a93a2e060796e1ea2a4da6a580fafe7682cc446d1709d41292fefefee62cfc",
+      "bytes": 2949
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/build-test-consumer.py",
+      "sha256": "3816661ce102685f62f116bcf6a83f5014667eed54e6223df24a847e4f5ba617",
+      "bytes": 6246
+    },
+    {
+      "path": "source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "sha256": "62b80ebab8a9ff3e510677b0f5c9fce7112f9fb62b7a23195393c74c0623c62a",
+      "bytes": 46470
+    },
+    {
+      "path": "source/scripts/run-cf6-soldier-asset-tests.ps1",
+      "sha256": "0bd563dc3f83775f54855cb874d545db101a8a2bef4b9c93db0375ed2b1c2927",
+      "bytes": 1702
+    },
+    {
+      "path": "source/scripts/test-runners/cf6-soldier/TestLoader.as.template",
+      "sha256": "a893a78494862945209a548cbaa8d2671f09da4a6f9a42363d18a2c1f3b901cf",
+      "bytes": 345
+    },
+    {
+      "path": "source/flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb",
+      "bytes": 99704
+    },
+    {
+      "path": "source/scripts/Cf6SoldierNativeHost.swf",
+      "sha256": "d073bedcf137927486286a4bdf496ab0b881c06d835b4e3e91ebfb1f140beb83",
+      "bytes": 899050
+    },
+    {
+      "path": "authority/flashswf/arts/things1/LIBRARY/敌人-终结者T800.xml",
+      "sha256": "186c79db8de7cc508d1fc4efdf9f4a05350a419125bc01ffb73cd76fd9bcdd5b",
+      "bytes": 22666
+    },
+    {
+      "path": "authority/scripts/类定义/org/flashNight/arki/component/Effect/BulletEffectHandler.as",
+      "sha256": "912457a4845acc515c7b83d1ddbeed356119d5ca880986d6ee43557bde4abf6b",
+      "bytes": 1249
+    },
+    {
+      "path": "authority/scripts/类定义/org/flashNight/arki/unit/UnitComponent/Updater/HitUpdater.as",
+      "sha256": "4a344ea97d027f61b06cbf94a44562596825f5b1e6e21b32536f09248b1d9c6a",
+      "bytes": 8442
+    },
+    {
+      "path": "source/soldier-project.zip",
+      "sha256": "d50466e8538ba5c04def9e56281972c2568ad21801f55cb0266c3b6af0eab677",
+      "bytes": 371151
+    }
+  ],
+  "boundaries": {
+    "freshNativeBehaviorVerified": true,
+    "freshGameCombatPerformed": false,
+    "freshVisualCapturePerformed": false,
+    "formalRuntimePromoted": false,
+    "standardEntryVerified": false
+  }
+}

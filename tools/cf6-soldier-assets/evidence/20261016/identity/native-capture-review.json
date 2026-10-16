@@ -1,0 +1,77 @@
+{
+  "schema": "cf6-soldier.native-capture-review.v1",
+  "runId": "999980e73ee54d26b4109330b4a6537b",
+  "passed": 335,
+  "failed": 0,
+  "compilerErrors": 0,
+  "compilerWarnings": 0,
+  "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+  "sourceTestSha256": "9e2f592c1ad6a32f596b720c0f13ebf5f7f9adabb07fefa642d7f6a5c7b99065",
+  "agentInspectedAllImages": true,
+  "humanVisualAcceptance": false,
+  "visibleLowerLimbPixels": {
+    "left": 629,
+    "right": 709
+  },
+  "bodyHeight": 134.15,
+  "deathInitialGroundDelta": 0,
+  "nativeGroundRoundingOffset": 0.15,
+  "images": [
+    {
+      "path": "images-r2/airborne-shadow.png",
+      "sha256": "39f32060f5683ef6fb05e8467e55129b08ae8240874d5d48809a6377deb6340d",
+      "bytes": 37764
+    },
+    {
+      "path": "images-r2/death-a0-late.png",
+      "sha256": "a3714648fa99c696d3c8d585ae02911ba1a9a65406a938a01b7987ba2db57b8b",
+      "bytes": 36947
+    },
+    {
+      "path": "images-r2/death-a0-middle.png",
+      "sha256": "3572e37858edf865d3f8a0406abd3b28a8a8f8b65cb0baff0ddedbafb64cd632",
+      "bytes": 38806
+    },
+    {
+      "path": "images-r2/death-a1-late.png",
+      "sha256": "6029d58f0da8be6ebd46d2367ffe91dfe242f90d0f99c4417ee447c749bac9b0",
+      "bytes": 35721
+    },
+    {
+      "path": "images-r2/death-a1-middle.png",
+      "sha256": "75008552cd538a7a7b42035d5ef6dce022bb48247b0d4c94c9e9268da2d67998",
+      "bytes": 42319
+    },
+    {
+      "path": "images-r2/death-a2-late.png",
+      "sha256": "d51e7f8636a7b9e4663815c0b58417a325790470a4c636ecdc0921d16c1b52d1",
+      "bytes": 28797
+    },
+    {
+      "path": "images-r2/death-start.png",
+      "sha256": "ebbaa8d2f576c3c8081d91be59d7f0fe7b813a1c86bbd75780ffe2167fcf5ad0",
+      "bytes": 39663
+    },
+    {
+      "path": "images-r2/down.png",
+      "sha256": "b5cbd26b2266cc062be8b101596ed5dceeced0bcc5e50dbd3e49294227fb9580",
+      "bytes": 29226
+    },
+    {
+      "path": "images-r2/knife.png",
+      "sha256": "da8a52ab66a2e7ebca744edace8e868103e1d256aedb8c068cd86201b75a8a6b",
+      "bytes": 41911
+    },
+    {
+      "path": "images-r2/shoot.png",
+      "sha256": "fca95d72e0621a8fbf4d6b3e91fd5359fddddbaee3a03f945c3606668bc817b8",
+      "bytes": 39468
+    },
+    {
+      "path": "images-r2/stand.png",
+      "sha256": "4f6f412430ee089719f846b5856b5b11e62af195b8ec8a857fae948da91c4529",
+      "bytes": 39680
+    }
+  ],
+  "windowObservation": "CS6 TestLoader activated once after image emission to inspect state; no gameplay input. This fixture is not an FPS benchmark."
+}

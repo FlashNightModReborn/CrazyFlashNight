@@ -1,0 +1,549 @@
+{
+  "schema": "cf6-soldier.two-phase-evidence.v1",
+  "implementation": {
+    "units": [
+      {
+        "id": 466,
+        "defaultPhase": 2
+      },
+      {
+        "id": 467,
+        "defaultPhase": 1
+      }
+    ],
+    "parameter": "特种兵初始阶段",
+    "secondLifeRatio": 0.35,
+    "knifeCriticalChancePercent": 10,
+    "knifeCriticalMultiplier": 6,
+    "knifeExecutePercent": 5,
+    "phaseOneRigid": true,
+    "keepsEquipmentAmmoAndVersion": true,
+    "finalDeathSettlementOnly": true
+  },
+  "native": {
+    "runId": "ec3d3d51bfdd444eaf7e622109764140",
+    "passed": 701,
+    "failed": 0,
+    "actualTimelineCases": 66,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "bodyPlacementsCheckedPerExport": 20,
+    "artCaptures": 10,
+    "agentInspectedCaptures": true,
+    "humanVisualAcceptance": false
+  },
+  "resource": {
+    "path": "flashswf/arts/new/Codex特种兵素材.swf",
+    "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04",
+    "bytes": 98800,
+    "nativeSymbols": 239,
+    "shapes": 132,
+    "sprites": 29,
+    "bitmaps": 0
+  },
+  "unitCandidateCombatVerified": false,
+  "e2eVerified": false,
+  "formalRuntimeDeploymentPerformed": false,
+  "standardEntryVerified": false,
+  "battleQualification": "unqualified: renderer capture/scene reveal prevented every attempted battle from spawning units",
+  "parallelAttempts": [
+    {
+      "revision": "r2",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r2",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r3",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r3",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r4",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r4",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    }
+  ],
+  "foregroundAttempts": [
+    {
+      "revision": "r1",
+      "status": "needs_rerun",
+      "qualified": false,
+      "rows": 1,
+      "spawnedUnits": 0,
+      "resultStatus": "bridge_lost",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "ownedProcessesExited": true,
+      "ownStartupMetadataChanges": 1
+    },
+    {
+      "revision": "r2",
+      "status": "needs_rerun",
+      "qualified": false,
+      "rows": 1,
+      "spawnedUnits": 0,
+      "resultStatus": "bridge_lost",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "ownedProcessesExited": true,
+      "ownStartupMetadataChanges": 1
+    }
+  ],
+  "historicalOrdinaryStrengthResultsApplyToThisVersion": false,
+  "failureEvidence": "../20261016-phases-failures/review.json",
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "57b64c6b428c7a0b4145af149f3928528ed511dfc33566f06a3e8137a9fcc240"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    }
+  ],
+  "archives": [
+    {
+      "path": "source/soldier-project.zip",
+      "sha256": "e8a9de3598d594388bb9ad73ee4df27aa86bfd8d7185a950c976ac45dcbe45da",
+      "bytes": 369181,
+      "entries": 243
+    }
+  ],
+  "copies": [
+    {
+      "path": "native/trace.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\test-flashlog.txt",
+      "bytes": 2220365,
+      "sha256": "23ea297b957a481f09132b48c6e86310bf1ce003ec6dd451bf74e1b9b161af40"
+    },
+    {
+      "path": "native/publish-compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/test-compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/publish-compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\publish-compile_output.txt",
+      "bytes": 75,
+      "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57"
+    },
+    {
+      "path": "native/test-compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\test-compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6-capture.log",
+      "bytes": 2886,
+      "sha256": "7d5b0a3244696d788731c16a4cbe538680c055793e58d2e4603738da9ac3cb0b"
+    },
+    {
+      "path": "native/publish.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\publish-r6.log",
+      "bytes": 1321,
+      "sha256": "a7f02c8ee5c4c5e67228a9d53474ef9351252a92b45e11911c5128160fb1da6c"
+    },
+    {
+      "path": "asloader/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\compile-loader-r1\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "asloader/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\compile-loader-r1\\compile_output.txt",
+      "bytes": 63,
+      "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6"
+    },
+    {
+      "path": "asloader/identity.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\compile-loader-r1\\identity.json",
+      "bytes": 246,
+      "sha256": "adec72d9133ddcc5e421d8c03be9218dfd757a195700b900837e4659d6ae9510"
+    },
+    {
+      "path": "images/shield-break-0-break.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-break-0-break.png",
+      "bytes": 48790,
+      "sha256": "69cf6608ac3e3be155e15a6147634f26cff2e2a532213d8cc6d9b3b41a3b6072"
+    },
+    {
+      "path": "images/shield-break-0-breakReload.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-break-0-breakReload.png",
+      "bytes": 48790,
+      "sha256": "69cf6608ac3e3be155e15a6147634f26cff2e2a532213d8cc6d9b3b41a3b6072"
+    },
+    {
+      "path": "images/shield-break-1-break.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-break-1-break.png",
+      "bytes": 49043,
+      "sha256": "069aaead1c218dd7578151ceba0e6e19dbf7b16fd5e56fdebba9e4d046419ea9"
+    },
+    {
+      "path": "images/shield-break-1-breakReload.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-break-1-breakReload.png",
+      "bytes": 49043,
+      "sha256": "069aaead1c218dd7578151ceba0e6e19dbf7b16fd5e56fdebba9e4d046419ea9"
+    },
+    {
+      "path": "images/shield-knife-0.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-knife-0.png",
+      "bytes": 37097,
+      "sha256": "73536a19585b43cb4ca9ec8b1b1e4ce2f29107327131aa30732cb1b1771bc616"
+    },
+    {
+      "path": "images/shield-knife-1.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-knife-1.png",
+      "bytes": 37567,
+      "sha256": "4adfd0a3bebe69d16eb47347867b0e0bc8a07965f379179d6becde2b2393c90d"
+    },
+    {
+      "path": "images/shield-shoot-0.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-shoot-0.png",
+      "bytes": 34080,
+      "sha256": "6184eedbba4d60e3919009bd883f2d5f1f16d2c780b3f4e3342670a9c83dece3"
+    },
+    {
+      "path": "images/shield-shoot-1.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-shoot-1.png",
+      "bytes": 34478,
+      "sha256": "52910a3daa135e5b3366282800c0193b1cae495271b3bfdb889b09a77f14ed34"
+    },
+    {
+      "path": "images/shield-stand-0.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-stand-0.png",
+      "bytes": 34389,
+      "sha256": "ff55d7cb1a13410e3bf5b139f3d5f8d42612ac631802da4bda256b0f1b9a9428"
+    },
+    {
+      "path": "images/shield-stand-1.png",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r6\\images\\shield-stand-1.png",
+      "bytes": 34846,
+      "sha256": "bcb14f5e096d811229436cb26acbb57e5ca405ff2dc2f66778a0682daafbbab6"
+    },
+    {
+      "path": "input-identity.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\dual-worker-r4\\input-identity.json",
+      "bytes": 2999,
+      "sha256": "e8765044740974ea700951d3cdb1304dd28e041ca994c19ff019746c82e468e2"
+    },
+    {
+      "path": "source/flashswf/arts/new/Codex特种兵素材.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\flashswf\\arts\\new\\Codex特种兵素材.swf",
+      "bytes": 98800,
+      "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/SoldierAI.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\SoldierAI.as",
+      "bytes": 13656,
+      "sha256": "57b64c6b428c7a0b4145af149f3928528ed511dfc33566f06a3e8137a9fcc240"
+    },
+    {
+      "path": "source/scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\逻辑\\单位函数\\单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36819,
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "source/data/enemy_properties/CF6重制敌人.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\enemy_properties\\CF6重制敌人.xml",
+      "bytes": 10525,
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "source/data/units/units.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\units\\units.json",
+      "bytes": 152412,
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "source/data/items/asset_source_map.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\items\\asset_source_map.xml",
+      "bytes": 869317,
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/build.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\build.py",
+      "bytes": 25873,
+      "sha256": "33142da5ac3c5d80279fda4384ab101dcb8e29679e8cca069a345c825e3d512f"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/vector.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\vector.py",
+      "bytes": 3149,
+      "sha256": "355d4e94c78c4cd955742d5a8a8f2c4bf25ab40a370d7bf377c6b118881cda1a"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/balance.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\balance.py",
+      "bytes": 8350,
+      "sha256": "69751f88bd4af374eb7227e43290c0055ace6bb675c8108aa64dca5309e4e080"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/balance-inputs.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\balance-inputs.json",
+      "bytes": 2363,
+      "sha256": "484c6db2b81c61fa094041cba47230e409b22c338cdf4d08ff2af688c374f79c"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/shield-balance-inputs.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\shield-balance-inputs.json",
+      "bytes": 2367,
+      "sha256": "8f87b4da0ab8ddcc438d8eca6227d63e8819476a567ab1ffdf8abaef1de194bf"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/verify.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\verify.py",
+      "bytes": 8168,
+      "sha256": "538998d4cf172ca65fd19496ca468db4e9fd0f1deb7fd738ce725c518680c77c"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/native-manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\native-manifest.json",
+      "bytes": 56721,
+      "sha256": "bc99ecb715e9658b191a31d446291da64e0df41b591b2ef1cc26c981192dc556"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/worker-plan.js",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\worker-plan.js",
+      "bytes": 7604,
+      "sha256": "9fe425fb598f5fa100169c09b9c6aeb8fb539a3e872288f0187cda2caf55bb1a"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/build-test-consumer.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\build-test-consumer.py",
+      "bytes": 5009,
+      "sha256": "925828b99898989565f87a168ed7df7cfe4dc685333bde9afb79f768a3bc6b05"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/test-host-manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\test-host-manifest.json",
+      "bytes": 2845,
+      "sha256": "ba912953da0d7b62e6136bb19a0c10719a20849560034db2661a78f74af1d9a4"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/decode-native-capture.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\decode-native-capture.py",
+      "bytes": 3268,
+      "sha256": "bb4f9b64b90eb171b0809aa5d573a0025ea16a1c8ea9e641d5295b94210b8169"
+    },
+    {
+      "path": "source/scripts/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\Cf6SoldierNativeHost.swf",
+      "bytes": 865089,
+      "sha256": "d3581abdb7314fd19e83e2a5910189d322c0a6906ded8ed089689da8543cb21a"
+    },
+    {
+      "path": "source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\类定义\\org\\flashNight\\arki\\unit\\Action\\Melee\\Cf6SoldierAssetTest.as",
+      "bytes": 39107,
+      "sha256": "8fd3afad3678e94736e60be74ae4107b7ede473a455a573f3d397582b681068c"
+    },
+    {
+      "path": "source/scripts/run-cf6-soldier-asset-tests.ps1",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\run-cf6-soldier-asset-tests.ps1",
+      "bytes": 1702,
+      "sha256": "0bd563dc3f83775f54855cb874d545db101a8a2bef4b9c93db0375ed2b1c2927"
+    },
+    {
+      "path": "source/scripts/test-runners/cf6-soldier/TestLoader-shield-capture.as.template",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\test-runners\\cf6-soldier\\TestLoader-shield-capture.as.template",
+      "bytes": 385,
+      "sha256": "0252e64c7a0fa63225f66e08d739abf8dc148446192cd268170846d35f862e3f"
+    },
+    {
+      "path": "foreground-r1/before.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r1\\before.json",
+      "bytes": 901189,
+      "sha256": "5a86fea97778855eb72a3925601cacb49ed441e966909468d8238a1714c76c29"
+    },
+    {
+      "path": "foreground-r1/before-after.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r1\\before-after.json",
+      "bytes": 761903,
+      "sha256": "f581140eb9d2e4000eec5d04329a68d6649b80477e55bb87cb591649de3876ca"
+    },
+    {
+      "path": "foreground-r1/config.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r1\\config.json",
+      "bytes": 444,
+      "sha256": "b5a41286016630ae166bd0e867d6ef30d8fd323d7ae76350b6d818c93bd91c8d"
+    },
+    {
+      "path": "foreground-r1/manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r1\\manifest.json",
+      "bytes": 21238,
+      "sha256": "0d0bed55ee4a4794ca6aba1e392dce4250b1d3aa3dbe1db35a296926f45a6549"
+    },
+    {
+      "path": "foreground-r1/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r1\\run.log",
+      "bytes": 3120,
+      "sha256": "4101104c947526494223a6aaf2838f43c583aa6f9605c4845a7777d8a9ee524d"
+    },
+    {
+      "path": "foreground-r1/run-report.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T063306Z-soldier-phases-front-r1-20261016-f13342c4-3e83-443e-b637-e6bbb7083d92\\run-report.json",
+      "bytes": 68761,
+      "sha256": "16bf6ca40a1c244338811a10a4ef8315daad836fbf237ba5d5429b78f1744aea"
+    },
+    {
+      "path": "foreground-r1/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T063306Z-soldier-phases-front-r1-20261016-f13342c4-3e83-443e-b637-e6bbb7083d92\\attempt-1-soldier-phases-front-r1-20261016-attempt-aa53251a-c9a8-438b-bc71-c545e42bd45d-results.jsonl",
+      "bytes": 2662,
+      "sha256": "b8474238b7e21666d451421b8fb885a51f8c577c8d5d6226e9848fe4beda7e61"
+    },
+    {
+      "path": "foreground-r2/before.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r2\\before.json",
+      "bytes": 901931,
+      "sha256": "17c47fde513bde6a8c4dba785820584d3e037ea2db89ed6b03cdf0e062de07a2"
+    },
+    {
+      "path": "foreground-r2/before-after.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r2\\before-after.json",
+      "bytes": 762645,
+      "sha256": "7a29cee3211633cd169279a42a621384b07801d595c0143b3a6b80b9e829ac2d"
+    },
+    {
+      "path": "foreground-r2/config.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r2\\config.json",
+      "bytes": 444,
+      "sha256": "1d56759a1f2d3815bb2fbe6749a503965cfebe68943917b2e3841535e180c90d"
+    },
+    {
+      "path": "foreground-r2/manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r2\\manifest.json",
+      "bytes": 21238,
+      "sha256": "8708b8d6971e03d5236435810d9ffb6f866520fa5207600f5db78d99e7f28f01"
+    },
+    {
+      "path": "foreground-r2/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\foreground-r2\\run.log",
+      "bytes": 3120,
+      "sha256": "ad0e2e5ab37ca292481c8ad01d570f1f8b49ff22e99f3103feeba16cee34b91a"
+    },
+    {
+      "path": "foreground-r2/run-report.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f\\run-report.json",
+      "bytes": 69516,
+      "sha256": "c5a1a09fc05170b5b94f3ce547f2265c2dde1abbbe891920d5d495cdd7917fc0"
+    },
+    {
+      "path": "foreground-r2/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f\\attempt-1-soldier-phases-front-r2-20261016-attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d-results.jsonl",
+      "bytes": 2662,
+      "sha256": "c47d375728678973b158247a36fb4cf37a1228a2e374fc76be2dba87520f3e79"
+    }
+  ],
+  "boundaries": [
+    "Native actor, authored timelines and standard damage handlers passed isolated Flash fixtures.",
+    "All attempted game runs entered the candidate runtime but spawned zero battle units; no strength or full-game acceptance is inferred.",
+    "Windows capture stopped at one frame and scene reveal stayed gated; no render or safety gate was bypassed.",
+    "Real save slots were unchanged; ordinary startup metadata changes are separately retained.",
+    "No commit, push or formal runtime promotion was performed."
+  ]
+}

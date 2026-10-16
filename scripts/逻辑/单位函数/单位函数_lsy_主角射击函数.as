@@ -16,6 +16,11 @@ _root.主角函数.手枪射击 = WeaponFireCore.PISTOL_SHOOT;
 _root.主角函数.手枪2射击 = WeaponFireCore.PISTOL2_SHOOT;
 
 
+// 独立固定骨架的武器适配入口；只清理该单位的标准射击调度，不操作库存。
+_root.主角函数.清理射击任务 = function(target:MovieClip):Void {
+    ShootCore.cleanup(target);
+};
+
 // 初始化长枪射击函数
 _root.主角函数.初始化长枪射击函数 = function():Void {
     /*

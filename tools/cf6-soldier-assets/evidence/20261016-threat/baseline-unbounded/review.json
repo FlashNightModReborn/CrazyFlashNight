@@ -1,0 +1,160 @@
+{
+  "schema": "cf6-soldier.unbounded-baseline.v1",
+  "qualified": true,
+  "rows": [
+    {
+      "caseId": "wings-30-blue",
+      "level": 30,
+      "soldierSide": "blue",
+      "winner": "blue",
+      "frames": 198.0,
+      "soldierStartHp": 44298.0,
+      "soldierRemainHp": 40301.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 0.0
+    },
+    {
+      "caseId": "wings-30-red",
+      "level": 30,
+      "soldierSide": "red",
+      "winner": "blue",
+      "frames": 334.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 0.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 1433.0
+    },
+    {
+      "caseId": "wings-60-blue",
+      "level": 60,
+      "soldierSide": "blue",
+      "winner": "blue",
+      "frames": 215.0,
+      "soldierStartHp": 66054.0,
+      "soldierRemainHp": 60660.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 0.0
+    },
+    {
+      "caseId": "wings-60-red",
+      "level": 60,
+      "soldierSide": "red",
+      "winner": "red",
+      "frames": 255.0,
+      "soldierStartHp": 22018.0,
+      "soldierRemainHp": 12113.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 0.0
+    },
+    {
+      "caseId": "wings-99-blue",
+      "level": 99,
+      "soldierSide": "blue",
+      "winner": "blue",
+      "frames": 233.0,
+      "soldierStartHp": 94338.0,
+      "soldierRemainHp": 90221.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 0.0
+    },
+    {
+      "caseId": "wings-99-red",
+      "level": 99,
+      "soldierSide": "red",
+      "winner": "red",
+      "frames": 228.0,
+      "soldierStartHp": 31446.0,
+      "soldierRemainHp": 26398.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 0.0
+    }
+  ],
+  "soldierSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+  "redWins": 2,
+  "redSamples": 3,
+  "blueWins": 3,
+  "blueSamples": 3,
+  "archive": {
+    "path": "baseline-unbounded/raw.zip",
+    "bytes": 523986,
+    "sha256": "13e24daed6aed6db39e16f35097b211637181be58d40fd5427e490e6498c63b8",
+    "files": [
+      {
+        "path": "plan.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\plan.json",
+        "bytes": 1757,
+        "sha256": "b628de8bd54b5defb544d7a5392b016bba6a6fa95a772cab992c4720dcab4b6c"
+      },
+      {
+        "path": "ui-admission.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\ui-admission.json",
+        "bytes": 403,
+        "sha256": "5b3a60abd45b763b5824c447dac350facef6ee259d11ea7c43d1f831a7b6af2d"
+      },
+      {
+        "path": "wings-before-after.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\wings-before-after.json",
+        "bytes": 755454,
+        "sha256": "13dafa64fc445853fdcebc09b5d690f41e476ab00480873c695add251a26e3e7"
+      },
+      {
+        "path": "wings-before.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\wings-before.json",
+        "bytes": 894760,
+        "sha256": "b7b9e032992d08880607137aba9aeddb327d0e2fdfbc66afe8cab19b7ec0fcb0"
+      },
+      {
+        "path": "wings-evidence-config.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\wings-evidence-config.json",
+        "bytes": 460,
+        "sha256": "98f750da1e53a13d9c363a7ed3d46212c7f9503e107b1d34b4867593a8b36d93"
+      },
+      {
+        "path": "wings-manifest.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\wings-manifest.json",
+        "bytes": 15937,
+        "sha256": "90b3c616bfefabfc5c99379274a921afdc084a982ec0e0b307f4f56ebb53240c"
+      },
+      {
+        "path": "wings-run.log",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\wings-threat-baseline\\wings-run.log",
+        "bytes": 2950,
+        "sha256": "d4234e10dd5a56f7cd6118804cec19ea33b0bde91d031e1a48822bcdd1371139"
+      },
+      {
+        "path": "run-report.json",
+        "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T021045Z-soldier-threat-b0-20261016-wings-f3838027-5aaa-477b-9b8a-76766070a852\\run-report.json",
+        "bytes": 69077,
+        "sha256": "d87abac04c28dd44e6a521448203c0c88ca388a5132ebe92a5bd3aa2625f7313"
+      },
+      {
+        "path": "results.jsonl",
+        "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T021045Z-soldier-threat-b0-20261016-wings-f3838027-5aaa-477b-9b8a-76766070a852\\attempt-1-soldier-threat-b0-20261016-wings-attempt-5a94f376-61e5-4053-a9f4-611d8c946a9e-results.jsonl",
+        "bytes": 23508,
+        "sha256": "b4b081a32528199e0fb9e7f6a7e487ad1b6b88426759e8d9ff705ddd3785772e"
+      },
+      {
+        "path": "source/tools/cf6-soldier-assets/SoldierAI.as",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\before-threat-review\\tools\\cf6-soldier-assets\\SoldierAI.as",
+        "bytes": 8700,
+        "sha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084"
+      },
+      {
+        "path": "source/tools/cf6-soldier-assets/native-manifest.json",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\before-threat-review\\tools\\cf6-soldier-assets\\native-manifest.json",
+        "bytes": 45854,
+        "sha256": "9a0d0b568530751da2bfa7079a60955c10fcbccdc84a3b10bd927ff4d2358d08"
+      },
+      {
+        "path": "source/flashswf/arts/new/Codex特种兵素材.swf",
+        "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\before-threat-review\\flashswf\\arts\\new\\Codex特种兵素材.swf",
+        "bytes": 83026,
+        "sha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87"
+      }
+    ]
+  },
+  "boundaries": [
+    "Small independent sample; not paired RNG evidence.",
+    "Original ordinary-entry startup metadata changes are retained separately from protected player saves."
+  ]
+}

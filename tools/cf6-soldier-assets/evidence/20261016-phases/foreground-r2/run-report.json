@@ -1,0 +1,1395 @@
+{
+  "schema": "arena-calibration.unattended-run.v1",
+  "status": "needs_rerun",
+  "batchId": "soldier-phases-front-r2-20261016",
+  "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+  "slot": "cf7_agent_soldier_phases_front_r2",
+  "fresh": false,
+  "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+  "cancelFile": null,
+  "resultPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/attempt-1-soldier-phases-front-r2-20261016-attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d-results.jsonl",
+  "summaryPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/summary.json",
+  "summaryMdPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/summary.md",
+  "rerunManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016-rerun-20261016T064504Z/case-manifest-de782d7cede3a5be9d45672c88fb62479b8955ddd2c22e98c4a1d83a3ece4d22.json",
+  "reportPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/run-report.json",
+  "startedAt": "2026-10-16T06:41:01.711Z",
+  "completedAt": "2026-10-16T06:45:04.585Z",
+  "buildGates": [
+    {
+      "gate": "arena-tools",
+      "command": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tools\\arena-calibration\\run-checks.js",
+      "startedAt": "2026-10-16T06:41:01.818Z",
+      "finishedAt": "2026-10-16T06:41:40.249Z",
+      "exitCode": 0,
+      "signal": null,
+      "ok": true,
+      "stdoutTail": "ntly omit teardown\n[PASS] half-open intervals do not invent concurrency at a handover\n[PASS] isolated fixtures cannot be promoted to live evidence by the measurement CLI\n[PASS] completed batch cannot hide a runner failure\n[PASS] synthetic timeout without a Flash clock is an infrastructure failure\n[PASS] overlapping jobs cannot claim independence while sharing process or save roots\n[PASS] resource closure claim is recomputed from the recorded file set\n[PASS] an unobserved Flash or changed candidate denies lifecycle qualification\n[PASS] process CPU uses the sampled same-process interval and leaves child processes outside scope\n[PASS] missing or null process counters are unknown rather than zero CPU or RAM\n[PASS] PID reuse cannot bridge CPU samples across a new process identity\n[PASS] regressing counters do not produce invented negative or partial CPU estimates\n[PASS] window point samples distinguish background, foreground, hidden and minimized states\n[PASS] requested performance remains distinct from observed inactive or stale display state\n[PASS] coordinator denominator includes group preparation and global protection after all recycling\n[PASS] coordinator timing cannot omit a known startup or shutdown interval\n[PASS] coordinator timing must bind the same receipt bytes used by the measurement\n[PASS] coordinator timing cannot silently drop a failed planned attempt\nWorker P0 metrics: 33/33 passed\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"ownerAndPidFence\":true,\"exactEchoRequired\":true,\"globalSaveAllowlistExact\":true,\"rawTupleMismatchRetainedAndRejected\":true,\"sequentialShardAndRecycling\":true,\"resourceHashRootIndependent\":true}\nWorker projection contracts: 48 checks passed\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"canonicalHelperReused\":true,\"childEnvironmentOnly\":true,\"actualProcessQueries\":0,\"actualHostStarts\":0}\n{\"ok\":true,\"workerEvidence\":\"isolated_fixture\",\"fullSnapshotAlgorithmPreserved\":true,\"httpResponseDuringOtherShardResourceRead\":true,\"genuineTimeoutAndResetRemainFailures\":true,\"noRetry\":true,\"incompleteOrChangedEvidenceRejected\":true}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"frozenReceiptSet\":true,\"exactFreshSlots\":true,\"parallelAllSettled\":true,\"missingReceiptStopsLaterGroups\":true,\"seedSourceMutationPreserved\":true,\"experimentReplayRejected\":true}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"windowsHttpSysRequestQueueOwner\":true,\"kernelPidAloneNotTrusted\":true,\"directChildRecycled\":true,\"productionCredentialsUsed\":false}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"rejectionChecks\":69,\"exactAtomicFaultReceipt\":true,\"unknownDeliveryNeverResubmitted\":true,\"staleTupleNeverRebound\":true,\"neighborSelectedRunAfterKillRequired\":true,\"actualProcessQueries\":0,\"actualTerminations\":0,\"liveIsolationVerified\":false}\n{\"ok\":true,\"check\":\"shadow-model-output-contract\",\"profiles\":3,\"modelInvocations\":4}\n{\"ok\":true,\"check\":\"blind-model-review-contract\",\"modelInvocations\":1}\n{\"ok\":true,\"check\":\"exception-review-output-contract\",\"modelInvocations\":1,\"autoAcceptAuthority\":false}\n{\"ok\":true,\"check\":\"pve-readiness-contract\",\"encounterCodes\":2,\"calibrationObjective\":\"monster_group_to_humanoid_mercenary_equivalence\"}\n{\"ok\":true,\"check\":\"human-pve-session-contract\",\"controlTransport\":\"owned-file-signal\",\"commands\":[\"next\",\"finish\",\"abort\"]}\n{\"ok\":true,\"check\":\"finalize-human-pve-contract\",\"calibrationObjective\":\"monster_group_to_humanoid_mercenary_equivalence\"}\n{\"ok\":true,\"check\":\"active-shard-contract\",\"cases\":4,\"freshRuns\":10}\n{\"ok\":true,\"check\":\"confirmatory-shard-contract\",\"freshRuns\":21,\"targetSamples\":30}\n{\"ok\":true,\"check\":\"gate-f-week-plan-contract\",\"standardCandidateRuns\":55,\"longTimeoutCandidateRuns\":60,\"firstSoakShards\":3,\"sideSwapAlwaysPlanned\":true,\"evidenceBoundTimeoutPromotion\":true,\"invalidTimeoutOverridesRejected\":true,\"infrastructureSoakRequiresHashBoundStableAdmission\":true,\"newWeekPlanRequiresDerivedFactionAdmissionV2\":true,\"wrongSideOrUnobservedDerivedSpawnsRejected\":true,\"everyInfrastructureSoakReplaysDerivedFactionCases\":true,\"allSoaksCoverOrdinaryPayloadFormationLongTimeoutAndHighLevel\":true,\"stochasticC9RetainedInStandardPhases\":true}\n{\n  \"ok\": true,\n  \"check\": \"arena-production-recommendation-contract\",\n  \"formalWrite\": false,\n  \"productionProfile\": {\n    \"spawnDistance\": 650,\n    \"blueFormation\": \"line\",\n    \"redFormation\": \"line\",\n    \"formationSpacing\": 54\n  },\n  \"workbookBandExample\": {\n    \"source\": \"20-25级\",\n    \"tierId\": \"arena-5\"\n  },\n  \"humanOverrideExample\": {\n    \"equivalentHumanoidLevel\": 10,\n    \"tierId\": \"arena-2\"\n  },\n  \"crossTierContinuousFit\": false\n}\n{\n  \"ok\": true,\n  \"check\": \"arena-production-apply-contract\",\n  \"exactHumanBundleHashRequired\": true,\n  \"forceMode\": false,\n  \"rollbackOnVerificationFailure\": true,\n  \"formalWrite\": false\n}\n{\n  \"ok\": true,\n  \"timeoutPolicies\": {\n    \"smoke\": {\n      \"frames\": 3600,\n      \"id\": \"smoke_3600\"\n    },\n    \"exploration\": {\n      \"frames\": 1800,\n      \"id\": \"exploration_1800\"\n    },\n    \"confirmatory\": {\n      \"frames\": 1800,\n      \"id\": \"confirmatory_1800\"\n    }\n  },\n  \"workbookWrite\": false\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.case-manifest.v1\",\n  \"batchId\": \"pilot-2026-10-16-a\",\n  \"manifestHash\": \"sha256:950dbf32076603db9828840292e1d7974f71e4de1c2d8e80550afab1e3f54709\",\n  \"cases\": 1,\n  \"output\": null\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.summary.v1\",\n  \"batchId\": \"pilot-fixture\",\n  \"cases\": 1,\n  \"rows\": 5,\n  \"errors\": 0\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.next-batch.v1\",\n  \"sourceBatchId\": \"pilot-fixture\",\n  \"decisions\": 1,\n  \"planner\": \"rule\"\n}\n{\n  \"ok\": true,\n  \"batchId\": \"unattended-check\",\n  \"agentEntryContract\": \"s:1|ga:<attemptId>\",\n  \"rawResultSchemaValidated\": true,\n  \"manifestCaseBindingsValidated\": true,\n  \"authorityRerunPreserved\": true\n}\n{\"ok\":true,\"check\":\"gate-fctl-contract\",\"commands\":[\"freeze\",\"arm\",\"run\",\"status\",\"revoke\"],\"stdinMode\":\"disabled\",\"defaultMaxShards\":\"all_remaining\"}\n{\n  \"ok\": true,\n  \"checked\": 85,\n  \"schemaInstancesValidated\": true\n}\n",
+      "stderrTail": "",
+      "error": null
+    }
+  ],
+  "preGateShutdown": null,
+  "postRunShutdown": {
+    "port": 1192,
+    "pid": 22888,
+    "stopped": true,
+    "response": {
+      "success": true,
+      "ok": true,
+      "task": "agent_control",
+      "note": "shutdown_requested",
+      "launchState": "Ready",
+      "revealPerformed": true,
+      "socketConnected": true,
+      "gameEnteredObserved": true,
+      "gameEnteredAttemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+      "readyForRuntimeAutomation": true,
+      "runtimeReadyBlockedBy": [],
+      "readyForArenaCalibration": true,
+      "readyBlockedBy": [],
+      "save": {
+        "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+        "slot": "cf7_agent_soldier_phases_front_r2",
+        "decision": "snapshot",
+        "kind": "Snapshot",
+        "source": "json_shadow",
+        "corruptDetail": null
+      },
+      "saveRuntime": {
+        "loaded": true,
+        "savePath": "cf7_agent_soldier_phases_front_r2",
+        "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+        "source": "launcher_snapshot:json_shadow",
+        "role": "fs",
+        "level": 99
+      },
+      "arenaCalibration": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "a28b93270966436184ea8295580b3105",
+        "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+        "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+        "transportPoisoned": true,
+        "state": "failed",
+        "note": null,
+        "batchId": "soldier-phases-front-r2-20261016",
+        "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/results.jsonl",
+        "totalRuns": 7,
+        "completedRuns": 1,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": "Host transport deadline elapsed before AS2 arena calibration response",
+        "lastResult": {
+          "schema": "arena-calibration.result.v1",
+          "workerId": "guardian",
+          "sessionEpoch": "a28b93270966436184ea8295580b3105",
+          "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+          "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+          "batchId": "soldier-phases-front-r2-20261016",
+          "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+          "caseId": "foreground-0",
+          "caseHash": "sha256:d2fd1cd27cc7e3488c68ecc21c4c69f880b0af155efd39608fd09b60e0aaa5d2",
+          "runId": "foreground-0-r001",
+          "repeatIndex": 1,
+          "status": "bridge_lost",
+          "winner": "none",
+          "startedAt": "2026-10-16T06:42:33.0748223Z",
+          "completedAt": "2026-10-16T06:45:03.0930506Z",
+          "requestedSpawnDistance": 650,
+          "blueFormation": "line",
+          "redFormation": "line",
+          "formationSpacing": 54,
+          "phaseSpawnCount": 0,
+          "spawnedUnits": [],
+          "blueSpawnPositions": [],
+          "redSpawnPositions": [],
+          "formationAudit": {},
+          "authorityContext": {
+            "candidateSide": "red",
+            "evidenceLane": "foreground_visible",
+            "initialPhase": 1,
+            "maximumFireFrames": 18,
+            "ordinaryEnemyBalanceBasis": true,
+            "revision": "shield-phases-display-held",
+            "rivalStage": 7,
+            "rivalTier": 8,
+            "shootRestFrames": 30,
+            "sourceBindings": [
+              {
+                "path": "flashswf/arts/new/Codex特种兵素材.swf",
+                "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04"
+              },
+              {
+                "path": "flashswf/arts/new/CodexWings素材.swf",
+                "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+              },
+              {
+                "path": "scripts/asLoader.swf",
+                "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+              },
+              {
+                "path": "data/enemy_properties/CF6重制敌人.xml",
+                "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+              },
+              {
+                "path": "data/units/units.json",
+                "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+              },
+              {
+                "path": "data/items/武器_长枪_突击步枪.xml",
+                "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+              },
+              {
+                "path": "data/items/asset_source_map.xml",
+                "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+              },
+              {
+                "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+                "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+              },
+              {
+                "path": "tools/cf6-soldier-assets/SoldierAI.as",
+                "sha256": "57b64c6b428c7a0b4145af149f3928528ed511dfc33566f06a3e8137a9fcc240"
+              }
+            ],
+            "stage": 7,
+            "tier": 5,
+            "unitId": 467,
+            "weapon": "M4A1战术版"
+          },
+          "blueUnitResults": [],
+          "redUnitResults": [],
+          "frames": null,
+          "durationMs": null,
+          "blue": {
+            "maxHp": 0,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 0,
+            "startCount": 0
+          },
+          "red": {
+            "maxHp": 0,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 0,
+            "startCount": 0
+          },
+          "errors": [
+            {
+              "code": "bridge_lost",
+              "message": "Host transport deadline elapsed before AS2 arena calibration response"
+            }
+          ]
+        }
+      },
+      "activePanel": {
+        "name": null,
+        "instanceId": null
+      }
+    }
+  },
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "pid": 22888,
+    "httpPort": 1192,
+    "verified": true,
+    "expected": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "pid": null,
+      "httpPort": null
+    },
+    "statusEndpointIdentityAvailable": false,
+    "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+  },
+  "savePreflight": {
+    "slot": "cf7_agent_soldier_phases_front_r2",
+    "targetJson": "saves/cf7_agent_soldier_phases_front_r2.json",
+    "seedSource": "saves/cf7_agent_bladebot_seed_r2.json",
+    "seedRole": "fs",
+    "seedLevel": 99,
+    "backups": [],
+    "solBackups": [],
+    "removedSolFiles": [],
+    "wroteSeed": true
+  },
+  "saveProtection": {
+    "before": {
+      "capturedAt": "2026-10-16T06:41:40.279Z",
+      "targetSlot": "cf7_agent_soldier_phases_front_r2",
+      "files": [
+        {
+          "key": "shadow_json:cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae:f3471a5f0366d7ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae",
+          "path": "saves/cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae.json",
+          "sha256": "sha256:a48e0606b7aacad114e30343950f61181bd585b4398a94400b3d325ec0880516",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc:0d8febebf7f58b23",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc",
+          "path": "saves/cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc.json",
+          "sha256": "sha256:e39fce5c88914115036c04a9fec242cd1f399c8192bb4fff95bea3700d46ea07",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4318d5663df64faa9225e1449b91a512:5630bc5a86d3e9a6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4318d5663df64faa9225e1449b91a512",
+          "path": "saves/cf7_agent_aw_4318d5663df64faa9225e1449b91a512.json",
+          "sha256": "sha256:03978cd3e24597343a3e1ad0773b87f3ca48e1573098eaf2567d0b8fae669db8",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b:9dd84d8b5cc1ba2e",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b",
+          "path": "saves/cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b.json",
+          "sha256": "sha256:33514641df35fbc7f1d41aba991d2fa80c439d93ecac58041c7787a732033e4d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671:049d5086d62f722f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671",
+          "path": "saves/cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671.json",
+          "sha256": "sha256:ef8b3d53326c239aedc3698326e1842a4f777e3b976c1655d5709e45fadb7dda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4e92a7eae45e405092895505d4e6357e:92873cb0ebe907b9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4e92a7eae45e405092895505d4e6357e",
+          "path": "saves/cf7_agent_aw_4e92a7eae45e405092895505d4e6357e.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14:fa4e3c4d77a93c90",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14",
+          "path": "saves/cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14.json",
+          "sha256": "sha256:fe84c9e29e985b624e5ea80910af079cca505138704f7abe203f49d59488dd26",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a:2df4d98012c63dc6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a",
+          "path": "saves/cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a.json",
+          "sha256": "sha256:236f02229129395157027dec77c272f3e79b71ccebde79a16cc26d2dafd0985b",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4:0f5d222f0e28cb0c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4",
+          "path": "saves/cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4.json",
+          "sha256": "sha256:e9d2d49440ae7eec51c82f382a7a2d700d2e1937091895464a78fbbd9d91532a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143:9bf882811cfaaa55",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143",
+          "path": "saves/cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143.json",
+          "sha256": "sha256:438e405669093f259e98ebde650cec5cad2c9d6ae0e2834e6aa1575d103f5c0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e:6d1cb80e3267cc06",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e",
+          "path": "saves/cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e.json",
+          "sha256": "sha256:1d637b90eeb74e33e09f84e2c5dc220915900020806a5e68dc7a0139fa5616d6",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe:4c0ec75854636a42",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe",
+          "path": "saves/cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe.json",
+          "sha256": "sha256:e2516a833e971aa4ff88c53bcc77c489af19a6ba03e3eb2315718bce47496b4f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949:cdb261db8b56f6f6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949",
+          "path": "saves/cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949.json",
+          "sha256": "sha256:c46081e2962d09ee997d4114e579371ab28ae8065c4e28925b5f7f70e001b7fb",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a:2e0226a8f005c02b",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a",
+          "path": "saves/cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a.json",
+          "sha256": "sha256:1e9bd3875cb600d0f597bae558406af74fab10bdbbb421daef3e0244b09f697e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5:cdc988b00c2a911d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5",
+          "path": "saves/cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5.json",
+          "sha256": "sha256:761b56e1d34cd037d8b6bb957faff01390eda981d8418ea5940c259f5d9f5ada",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_f4396bb5bc734629badffeefbd92952e:f745ff192edbaaf5",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_f4396bb5bc734629badffeefbd92952e",
+          "path": "saves/cf7_agent_aw_f4396bb5bc734629badffeefbd92952e.json",
+          "sha256": "sha256:56d9f9ccd7b119a23ac81bc7e5fc931a5a5dd75aec0143cd93f112b3e57f24ef",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88:d009b3f4f2f6fcba",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88",
+          "path": "saves/cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88.json",
+          "sha256": "sha256:ad330c032a256ee3410164fc7d4a9ae21ea152a1803110b6e1ebfe450242330c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r2:74f61c9df5c0d35f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r2",
+          "path": "saves/cf7_agent_bladebot_front_r2.json",
+          "sha256": "sha256:b624026587e13833035bcaca38c28c2a6b5cdc4a814d3ccc5c86e3cc9b4b51cd",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r3:676edf6aa6d4a00c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r3",
+          "path": "saves/cf7_agent_bladebot_front_r3.json",
+          "sha256": "sha256:981e614bd48151fa6cb9edb6006d0b3683f89a44f3bb8de385eafacd06f7eff9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4:2bff28032a45b1ae",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4",
+          "path": "saves/cf7_agent_bladebot_front_r4.json",
+          "sha256": "sha256:19178877ac6fbcb67be2be616d3cd3e452c6dacb45e669b2bd89a146d75fcfcc",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4b:a2757089459e8e54",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4b",
+          "path": "saves/cf7_agent_bladebot_front_r4b.json",
+          "sha256": "sha256:27e7ca7840023b41f45ff87c813e635a6ae465fa6de92c4c481461d40d9bf894",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6:1d72916dab48aabb",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6",
+          "path": "saves/cf7_agent_bladebot_front_r6.json",
+          "sha256": "sha256:d1f1b121760227eeed4ae93d5eb5648367aed0a02a06ab02d8e5d78f7030ac0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6b:10bb38e2db8b20ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6b",
+          "path": "saves/cf7_agent_bladebot_front_r6b.json",
+          "sha256": "sha256:9d07daea2aa1ba58ac7a216bd897e65a0b2209e1285af5c8a9b8fa41efbdcdbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6c:68e10fdd7f014d2a",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6c",
+          "path": "saves/cf7_agent_bladebot_front_r6c.json",
+          "sha256": "sha256:91cc5bdcda5798be781b81cacc82b337dffc53b4802a2a59928cf470a39ffcda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6d:ee38fbf4c0e90fbc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6d",
+          "path": "saves/cf7_agent_bladebot_front_r6d.json",
+          "sha256": "sha256:d777d3f766cb29c9173787edae08af2927c5663ae7297b69920acd2fad4a0966",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6e:9ecb10a084e90665",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6e",
+          "path": "saves/cf7_agent_bladebot_front_r6e.json",
+          "sha256": "sha256:2aff808f46d38194b79e916f71650c217c6853f489fef2d89518a69d53bb157f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6f:12c464c5d66f2da0",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6f",
+          "path": "saves/cf7_agent_bladebot_front_r6f.json",
+          "sha256": "sha256:d105e970f8de4cd465a2c5383b14cf46ee07b5f32f1efebd9eee6edda5021a95",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r7a:484c4b266963992d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r7a",
+          "path": "saves/cf7_agent_bladebot_front_r7a.json",
+          "sha256": "sha256:c49926478ced9e9e557b2bd75bc8a1f76046289a3ad5448b47abfa4701e2288e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r8a:9a6dfd74522ad1b4",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r8a",
+          "path": "saves/cf7_agent_bladebot_front_r8a.json",
+          "sha256": "sha256:1fdbdac299589bc4a0d6cc07577a4c86df87f21b968df9100e4ce77f3221b55e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9a:18a4223a76577ee9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9a",
+          "path": "saves/cf7_agent_bladebot_front_r9a.json",
+          "sha256": "sha256:501a79966d50a47bddb334c7f37393abc1749460c9ae803bc375ad27281d4fbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9b:78f0fe4386f1cc58",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9b",
+          "path": "saves/cf7_agent_bladebot_front_r9b.json",
+          "sha256": "sha256:346db0e7944f066730090226ca4d9f66aecb3efd5033a1d6eacc8836ea3609ac",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9c2:e4605c88d1552b1f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9c2",
+          "path": "saves/cf7_agent_bladebot_front_r9c2.json",
+          "sha256": "sha256:929031482d24d262d5d18220c605e02d470023e223d4f4238fc2027d1a7a2283",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9d:1706c338b652bd66",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9d",
+          "path": "saves/cf7_agent_bladebot_front_r9d.json",
+          "sha256": "sha256:fcee7220da785d522f01604202d39a3e8586ffe097204c0cf460f1212e0a32e9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9e:53be14d83a13d262",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9e",
+          "path": "saves/cf7_agent_bladebot_front_r9e.json",
+          "sha256": "sha256:8d2e172c59d1de5358aa09a83836ace54770fd6285887444b38e5e43b622419a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_seed_r2:6239167701dfd119",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_seed_r2",
+          "path": "saves/cf7_agent_bladebot_seed_r2.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_eq_r4_20261016_weapons:f784b48cae422bcc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+          "path": "saves/cf7_agent_soldier_eq_r4_20261016_weapons.json",
+          "sha256": "sha256:2d1d0cf3abdf37cb9d889bb58bc325169dc1fb94b2070420e22d8986879ae302",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_phases_front_r1:5b2161eed3705936",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_phases_front_r1",
+          "path": "saves/cf7_agent_soldier_phases_front_r1.json",
+          "sha256": "sha256:fa50cf961a7deadb28ab5c8ebbb79656876a642f529d037ffec63c26b82f3a3a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1_20261016_cadet:176c119d55d991b1",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1_20261016_cadet",
+          "path": "saves/cf7_agent_soldier_r1_20261016_cadet.json",
+          "sha256": "sha256:8252475fb2e313df15bf3b5ae4d25e597eec09a8ca0f493a3eb01a3ecbaecb6c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1b_20261016_integration:e4db42c369a854d6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1b_20261016_integration",
+          "path": "saves/cf7_agent_soldier_r1b_20261016_integration.json",
+          "sha256": "sha256:381413f4b87394f277144494d25fbaef1bca4b7c68b79ff52dcddda39e8c446d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_b0_20261016_wings:9630c12b201b52ed",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_b0_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_b0_20261016_wings.json",
+          "sha256": "sha256:da50e8913222f76dc9dd8d2775424902e703e0e31528acbaa971ee2d0f7f008d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_p2_20261016_wings:65864b66dc88ef02",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_p2_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_p2_20261016_wings.json",
+          "sha256": "sha256:e0ab1cdfda43cc8c2789d4a43510eb5416ed171d0ae6e3149479ae308865a9b9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_pool_20261016_wings:d0d265e9ec61db17",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_pool_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_pool_20261016_wings.json",
+          "sha256": "sha256:23a840613e88eaf3b5cd3081608b4e3e3942460a0f6e01af9b5a8575f8c07c47",
+          "size": 77823
+        }
+      ],
+      "targetArtifacts": [],
+      "snapshotHash": "sha256:05a1187d67c537e5f8530bd0f0a9a78991c5c08869b924de177214a82f7f46bd"
+    },
+    "after": {
+      "capturedAt": "2026-10-16T06:45:08.297Z",
+      "targetSlot": "cf7_agent_soldier_phases_front_r2",
+      "files": [
+        {
+          "key": "shadow_json:cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae:f3471a5f0366d7ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae",
+          "path": "saves/cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae.json",
+          "sha256": "sha256:a48e0606b7aacad114e30343950f61181bd585b4398a94400b3d325ec0880516",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc:0d8febebf7f58b23",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc",
+          "path": "saves/cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc.json",
+          "sha256": "sha256:e39fce5c88914115036c04a9fec242cd1f399c8192bb4fff95bea3700d46ea07",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4318d5663df64faa9225e1449b91a512:5630bc5a86d3e9a6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4318d5663df64faa9225e1449b91a512",
+          "path": "saves/cf7_agent_aw_4318d5663df64faa9225e1449b91a512.json",
+          "sha256": "sha256:03978cd3e24597343a3e1ad0773b87f3ca48e1573098eaf2567d0b8fae669db8",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b:9dd84d8b5cc1ba2e",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b",
+          "path": "saves/cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b.json",
+          "sha256": "sha256:33514641df35fbc7f1d41aba991d2fa80c439d93ecac58041c7787a732033e4d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671:049d5086d62f722f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671",
+          "path": "saves/cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671.json",
+          "sha256": "sha256:ef8b3d53326c239aedc3698326e1842a4f777e3b976c1655d5709e45fadb7dda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4e92a7eae45e405092895505d4e6357e:92873cb0ebe907b9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4e92a7eae45e405092895505d4e6357e",
+          "path": "saves/cf7_agent_aw_4e92a7eae45e405092895505d4e6357e.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14:fa4e3c4d77a93c90",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14",
+          "path": "saves/cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14.json",
+          "sha256": "sha256:fe84c9e29e985b624e5ea80910af079cca505138704f7abe203f49d59488dd26",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a:2df4d98012c63dc6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a",
+          "path": "saves/cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a.json",
+          "sha256": "sha256:236f02229129395157027dec77c272f3e79b71ccebde79a16cc26d2dafd0985b",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4:0f5d222f0e28cb0c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4",
+          "path": "saves/cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4.json",
+          "sha256": "sha256:e9d2d49440ae7eec51c82f382a7a2d700d2e1937091895464a78fbbd9d91532a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143:9bf882811cfaaa55",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143",
+          "path": "saves/cf7_agent_aw_aae74a4d32ab4820912d79286bcfc143.json",
+          "sha256": "sha256:438e405669093f259e98ebde650cec5cad2c9d6ae0e2834e6aa1575d103f5c0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e:6d1cb80e3267cc06",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e",
+          "path": "saves/cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e.json",
+          "sha256": "sha256:1d637b90eeb74e33e09f84e2c5dc220915900020806a5e68dc7a0139fa5616d6",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe:4c0ec75854636a42",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe",
+          "path": "saves/cf7_agent_aw_ba69aa300b5a4679820eb1806eaf4abe.json",
+          "sha256": "sha256:e2516a833e971aa4ff88c53bcc77c489af19a6ba03e3eb2315718bce47496b4f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949:cdb261db8b56f6f6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949",
+          "path": "saves/cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949.json",
+          "sha256": "sha256:c46081e2962d09ee997d4114e579371ab28ae8065c4e28925b5f7f70e001b7fb",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a:2e0226a8f005c02b",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a",
+          "path": "saves/cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a.json",
+          "sha256": "sha256:1e9bd3875cb600d0f597bae558406af74fab10bdbbb421daef3e0244b09f697e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5:cdc988b00c2a911d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5",
+          "path": "saves/cf7_agent_aw_d6c1a7e910b8454c858959669ccb78f5.json",
+          "sha256": "sha256:761b56e1d34cd037d8b6bb957faff01390eda981d8418ea5940c259f5d9f5ada",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_f4396bb5bc734629badffeefbd92952e:f745ff192edbaaf5",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_f4396bb5bc734629badffeefbd92952e",
+          "path": "saves/cf7_agent_aw_f4396bb5bc734629badffeefbd92952e.json",
+          "sha256": "sha256:56d9f9ccd7b119a23ac81bc7e5fc931a5a5dd75aec0143cd93f112b3e57f24ef",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88:d009b3f4f2f6fcba",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88",
+          "path": "saves/cf7_agent_aw_f5db523ef10a43808a3052084b1d0f88.json",
+          "sha256": "sha256:ad330c032a256ee3410164fc7d4a9ae21ea152a1803110b6e1ebfe450242330c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r2:74f61c9df5c0d35f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r2",
+          "path": "saves/cf7_agent_bladebot_front_r2.json",
+          "sha256": "sha256:b624026587e13833035bcaca38c28c2a6b5cdc4a814d3ccc5c86e3cc9b4b51cd",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r3:676edf6aa6d4a00c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r3",
+          "path": "saves/cf7_agent_bladebot_front_r3.json",
+          "sha256": "sha256:981e614bd48151fa6cb9edb6006d0b3683f89a44f3bb8de385eafacd06f7eff9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4:2bff28032a45b1ae",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4",
+          "path": "saves/cf7_agent_bladebot_front_r4.json",
+          "sha256": "sha256:19178877ac6fbcb67be2be616d3cd3e452c6dacb45e669b2bd89a146d75fcfcc",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4b:a2757089459e8e54",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4b",
+          "path": "saves/cf7_agent_bladebot_front_r4b.json",
+          "sha256": "sha256:27e7ca7840023b41f45ff87c813e635a6ae465fa6de92c4c481461d40d9bf894",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6:1d72916dab48aabb",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6",
+          "path": "saves/cf7_agent_bladebot_front_r6.json",
+          "sha256": "sha256:d1f1b121760227eeed4ae93d5eb5648367aed0a02a06ab02d8e5d78f7030ac0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6b:10bb38e2db8b20ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6b",
+          "path": "saves/cf7_agent_bladebot_front_r6b.json",
+          "sha256": "sha256:9d07daea2aa1ba58ac7a216bd897e65a0b2209e1285af5c8a9b8fa41efbdcdbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6c:68e10fdd7f014d2a",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6c",
+          "path": "saves/cf7_agent_bladebot_front_r6c.json",
+          "sha256": "sha256:91cc5bdcda5798be781b81cacc82b337dffc53b4802a2a59928cf470a39ffcda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6d:ee38fbf4c0e90fbc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6d",
+          "path": "saves/cf7_agent_bladebot_front_r6d.json",
+          "sha256": "sha256:d777d3f766cb29c9173787edae08af2927c5663ae7297b69920acd2fad4a0966",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6e:9ecb10a084e90665",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6e",
+          "path": "saves/cf7_agent_bladebot_front_r6e.json",
+          "sha256": "sha256:2aff808f46d38194b79e916f71650c217c6853f489fef2d89518a69d53bb157f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6f:12c464c5d66f2da0",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6f",
+          "path": "saves/cf7_agent_bladebot_front_r6f.json",
+          "sha256": "sha256:d105e970f8de4cd465a2c5383b14cf46ee07b5f32f1efebd9eee6edda5021a95",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r7a:484c4b266963992d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r7a",
+          "path": "saves/cf7_agent_bladebot_front_r7a.json",
+          "sha256": "sha256:c49926478ced9e9e557b2bd75bc8a1f76046289a3ad5448b47abfa4701e2288e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r8a:9a6dfd74522ad1b4",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r8a",
+          "path": "saves/cf7_agent_bladebot_front_r8a.json",
+          "sha256": "sha256:1fdbdac299589bc4a0d6cc07577a4c86df87f21b968df9100e4ce77f3221b55e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9a:18a4223a76577ee9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9a",
+          "path": "saves/cf7_agent_bladebot_front_r9a.json",
+          "sha256": "sha256:501a79966d50a47bddb334c7f37393abc1749460c9ae803bc375ad27281d4fbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9b:78f0fe4386f1cc58",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9b",
+          "path": "saves/cf7_agent_bladebot_front_r9b.json",
+          "sha256": "sha256:346db0e7944f066730090226ca4d9f66aecb3efd5033a1d6eacc8836ea3609ac",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9c2:e4605c88d1552b1f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9c2",
+          "path": "saves/cf7_agent_bladebot_front_r9c2.json",
+          "sha256": "sha256:929031482d24d262d5d18220c605e02d470023e223d4f4238fc2027d1a7a2283",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9d:1706c338b652bd66",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9d",
+          "path": "saves/cf7_agent_bladebot_front_r9d.json",
+          "sha256": "sha256:fcee7220da785d522f01604202d39a3e8586ffe097204c0cf460f1212e0a32e9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9e:53be14d83a13d262",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9e",
+          "path": "saves/cf7_agent_bladebot_front_r9e.json",
+          "sha256": "sha256:8d2e172c59d1de5358aa09a83836ace54770fd6285887444b38e5e43b622419a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_seed_r2:6239167701dfd119",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_seed_r2",
+          "path": "saves/cf7_agent_bladebot_seed_r2.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_eq_r4_20261016_weapons:f784b48cae422bcc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+          "path": "saves/cf7_agent_soldier_eq_r4_20261016_weapons.json",
+          "sha256": "sha256:2d1d0cf3abdf37cb9d889bb58bc325169dc1fb94b2070420e22d8986879ae302",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_phases_front_r1:5b2161eed3705936",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_phases_front_r1",
+          "path": "saves/cf7_agent_soldier_phases_front_r1.json",
+          "sha256": "sha256:fa50cf961a7deadb28ab5c8ebbb79656876a642f529d037ffec63c26b82f3a3a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1_20261016_cadet:176c119d55d991b1",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1_20261016_cadet",
+          "path": "saves/cf7_agent_soldier_r1_20261016_cadet.json",
+          "sha256": "sha256:8252475fb2e313df15bf3b5ae4d25e597eec09a8ca0f493a3eb01a3ecbaecb6c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1b_20261016_integration:e4db42c369a854d6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1b_20261016_integration",
+          "path": "saves/cf7_agent_soldier_r1b_20261016_integration.json",
+          "sha256": "sha256:381413f4b87394f277144494d25fbaef1bca4b7c68b79ff52dcddda39e8c446d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_b0_20261016_wings:9630c12b201b52ed",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_b0_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_b0_20261016_wings.json",
+          "sha256": "sha256:da50e8913222f76dc9dd8d2775424902e703e0e31528acbaa971ee2d0f7f008d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_p2_20261016_wings:65864b66dc88ef02",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_p2_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_p2_20261016_wings.json",
+          "sha256": "sha256:e0ab1cdfda43cc8c2789d4a43510eb5416ed171d0ae6e3149479ae308865a9b9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_threat_pool_20261016_wings:d0d265e9ec61db17",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_threat_pool_20261016_wings",
+          "path": "saves/cf7_agent_soldier_threat_pool_20261016_wings.json",
+          "sha256": "sha256:23a840613e88eaf3b5cd3081608b4e3e3942460a0f6e01af9b5a8575f8c07c47",
+          "size": 77823
+        }
+      ],
+      "targetArtifacts": [],
+      "snapshotHash": "sha256:05a1187d67c537e5f8530bd0f0a9a78991c5c08869b924de177214a82f7f46bd"
+    },
+    "unchanged": true,
+    "differences": []
+  },
+  "finalAgentStatus": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": null,
+    "launchState": "Ready",
+    "revealPerformed": true,
+    "socketConnected": true,
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+    "readyForRuntimeAutomation": true,
+    "runtimeReadyBlockedBy": [],
+    "readyForArenaCalibration": true,
+    "readyBlockedBy": [],
+    "save": {
+      "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+      "slot": "cf7_agent_soldier_phases_front_r2",
+      "decision": "snapshot",
+      "kind": "Snapshot",
+      "source": "json_shadow",
+      "corruptDetail": null
+    },
+    "saveRuntime": {
+      "loaded": true,
+      "savePath": "cf7_agent_soldier_phases_front_r2",
+      "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+      "source": "launcher_snapshot:json_shadow",
+      "role": "fs",
+      "level": 99
+    },
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "guardian",
+      "sessionEpoch": "a28b93270966436184ea8295580b3105",
+      "assignmentId": null,
+      "attemptId": null,
+      "transportPoisoned": false,
+      "state": "idle",
+      "note": null,
+      "batchId": null,
+      "manifestHash": null,
+      "manifestPath": null,
+      "frozenManifestPath": null,
+      "resultPath": null,
+      "totalRuns": 0,
+      "completedRuns": 0,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": null
+    },
+    "activePanel": {
+      "name": null,
+      "instanceId": null
+    }
+  },
+  "finalArenaStatus": {
+    "success": true,
+    "ok": true,
+    "task": "arena_calibration",
+    "workerId": "guardian",
+    "sessionEpoch": "a28b93270966436184ea8295580b3105",
+    "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+    "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+    "transportPoisoned": true,
+    "state": "failed",
+    "note": null,
+    "batchId": "soldier-phases-front-r2-20261016",
+    "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+    "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+    "frozenManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/case_manifest.json",
+    "resultPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/results.jsonl",
+    "totalRuns": 7,
+    "completedRuns": 1,
+    "currentCaseId": null,
+    "currentRunId": null,
+    "lastError": "Host transport deadline elapsed before AS2 arena calibration response",
+    "lastResult": {
+      "schema": "arena-calibration.result.v1",
+      "workerId": "guardian",
+      "sessionEpoch": "a28b93270966436184ea8295580b3105",
+      "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+      "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+      "batchId": "soldier-phases-front-r2-20261016",
+      "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+      "caseId": "foreground-0",
+      "caseHash": "sha256:d2fd1cd27cc7e3488c68ecc21c4c69f880b0af155efd39608fd09b60e0aaa5d2",
+      "runId": "foreground-0-r001",
+      "repeatIndex": 1,
+      "status": "bridge_lost",
+      "winner": "none",
+      "startedAt": "2026-10-16T06:42:33.0748223Z",
+      "completedAt": "2026-10-16T06:45:03.0930506Z",
+      "requestedSpawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "phaseSpawnCount": 0,
+      "spawnedUnits": [],
+      "blueSpawnPositions": [],
+      "redSpawnPositions": [],
+      "formationAudit": {},
+      "authorityContext": {
+        "candidateSide": "red",
+        "evidenceLane": "foreground_visible",
+        "initialPhase": 1,
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": true,
+        "revision": "shield-phases-display-held",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shootRestFrames": 30,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "57b64c6b428c7a0b4145af149f3928528ed511dfc33566f06a3e8137a9fcc240"
+          }
+        ],
+        "stage": 7,
+        "tier": 5,
+        "unitId": 467,
+        "weapon": "M4A1战术版"
+      },
+      "blueUnitResults": [],
+      "redUnitResults": [],
+      "frames": null,
+      "durationMs": null,
+      "blue": {
+        "maxHp": 0,
+        "remainHp": 0,
+        "aliveCount": 0,
+        "startMaxHp": 0,
+        "startCount": 0
+      },
+      "red": {
+        "maxHp": 0,
+        "remainHp": 0,
+        "aliveCount": 0,
+        "startMaxHp": 0,
+        "startCount": 0
+      },
+      "errors": [
+        {
+          "code": "bridge_lost",
+          "message": "Host transport deadline elapsed before AS2 arena calibration response"
+        }
+      ]
+    }
+  },
+  "attempts": [
+    {
+      "index": 1,
+      "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+      "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+      "batchId": "soldier-phases-front-r2-20261016",
+      "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+      "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+      "expectedRows": 7,
+      "startedAt": "2026-10-16T06:41:40.291Z",
+      "completedAt": "2026-10-16T06:45:03.988Z",
+      "status": "failed",
+      "httpPort": 1192,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "pid": 22888,
+        "httpPort": 1192,
+        "verified": true,
+        "expected": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "pid": null,
+          "httpPort": null
+        },
+        "statusEndpointIdentityAvailable": false,
+        "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+      },
+      "agentStatus": {
+        "success": true,
+        "ok": true,
+        "task": "agent_control",
+        "note": null,
+        "launchState": "Ready",
+        "revealPerformed": true,
+        "socketConnected": true,
+        "gameEnteredObserved": true,
+        "gameEnteredAttemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+        "readyForRuntimeAutomation": true,
+        "runtimeReadyBlockedBy": [],
+        "readyForArenaCalibration": true,
+        "readyBlockedBy": [],
+        "save": {
+          "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+          "slot": "cf7_agent_soldier_phases_front_r2",
+          "decision": "snapshot",
+          "kind": "Snapshot",
+          "source": "json_shadow",
+          "corruptDetail": null
+        },
+        "saveRuntime": {
+          "loaded": true,
+          "savePath": "cf7_agent_soldier_phases_front_r2",
+          "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+          "source": "launcher_snapshot:json_shadow",
+          "role": "fs",
+          "level": 99
+        },
+        "arenaCalibration": {
+          "success": true,
+          "ok": true,
+          "task": "arena_calibration",
+          "workerId": "guardian",
+          "sessionEpoch": "a28b93270966436184ea8295580b3105",
+          "assignmentId": null,
+          "attemptId": null,
+          "transportPoisoned": false,
+          "state": "idle",
+          "note": null,
+          "batchId": null,
+          "manifestHash": null,
+          "manifestPath": null,
+          "frozenManifestPath": null,
+          "resultPath": null,
+          "totalRuns": 0,
+          "completedRuns": 0,
+          "currentCaseId": null,
+          "currentRunId": null,
+          "lastError": null,
+          "lastResult": null
+        },
+        "activePanel": {
+          "name": null,
+          "instanceId": null
+        }
+      },
+      "agentEntryProof": {
+        "slot": "cf7_agent_soldier_phases_front_r2",
+        "attemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17",
+        "handoffLine": 2346,
+        "titleFrameLine": 2357,
+        "enterRequestCount": 1,
+        "gameEnteredObserved": true,
+        "gameEnteredAttemptId": "c23d5f9a28fc4a1fbf8c9ea0bfef5f17"
+      },
+      "batchStart": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "a28b93270966436184ea8295580b3105",
+        "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+        "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+        "transportPoisoned": false,
+        "state": "running",
+        "note": "started",
+        "batchId": "soldier-phases-front-r2-20261016",
+        "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/results.jsonl",
+        "totalRuns": 7,
+        "completedRuns": 0,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": null,
+        "lastResult": null
+      },
+      "finalArenaStatus": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "a28b93270966436184ea8295580b3105",
+        "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+        "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+        "transportPoisoned": true,
+        "state": "failed",
+        "note": null,
+        "batchId": "soldier-phases-front-r2-20261016",
+        "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/case-manifest-b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/results.jsonl",
+        "totalRuns": 7,
+        "completedRuns": 1,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": "Host transport deadline elapsed before AS2 arena calibration response",
+        "lastResult": {
+          "schema": "arena-calibration.result.v1",
+          "workerId": "guardian",
+          "sessionEpoch": "a28b93270966436184ea8295580b3105",
+          "assignmentId": "assignment-0210ffd8-d84d-40e5-8a24-7c444b8a1439",
+          "attemptId": "attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d",
+          "batchId": "soldier-phases-front-r2-20261016",
+          "manifestHash": "sha256:b522db9351c2eccf037e50fc8827bf53c4462a3c9f8508c132789cdb273de136",
+          "caseId": "foreground-0",
+          "caseHash": "sha256:d2fd1cd27cc7e3488c68ecc21c4c69f880b0af155efd39608fd09b60e0aaa5d2",
+          "runId": "foreground-0-r001",
+          "repeatIndex": 1,
+          "status": "bridge_lost",
+          "winner": "none",
+          "startedAt": "2026-10-16T06:42:33.0748223Z",
+          "completedAt": "2026-10-16T06:45:03.0930506Z",
+          "requestedSpawnDistance": 650,
+          "blueFormation": "line",
+          "redFormation": "line",
+          "formationSpacing": 54,
+          "phaseSpawnCount": 0,
+          "spawnedUnits": [],
+          "blueSpawnPositions": [],
+          "redSpawnPositions": [],
+          "formationAudit": {},
+          "authorityContext": {
+            "candidateSide": "red",
+            "evidenceLane": "foreground_visible",
+            "initialPhase": 1,
+            "maximumFireFrames": 18,
+            "ordinaryEnemyBalanceBasis": true,
+            "revision": "shield-phases-display-held",
+            "rivalStage": 7,
+            "rivalTier": 8,
+            "shootRestFrames": 30,
+            "sourceBindings": [
+              {
+                "path": "flashswf/arts/new/Codex特种兵素材.swf",
+                "sha256": "c6211d47bb319aafc1269d81bd8590a382a4733524f33a680495fd6f96104f04"
+              },
+              {
+                "path": "flashswf/arts/new/CodexWings素材.swf",
+                "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+              },
+              {
+                "path": "scripts/asLoader.swf",
+                "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+              },
+              {
+                "path": "data/enemy_properties/CF6重制敌人.xml",
+                "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+              },
+              {
+                "path": "data/units/units.json",
+                "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+              },
+              {
+                "path": "data/items/武器_长枪_突击步枪.xml",
+                "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+              },
+              {
+                "path": "data/items/asset_source_map.xml",
+                "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+              },
+              {
+                "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+                "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+              },
+              {
+                "path": "tools/cf6-soldier-assets/SoldierAI.as",
+                "sha256": "57b64c6b428c7a0b4145af149f3928528ed511dfc33566f06a3e8137a9fcc240"
+              }
+            ],
+            "stage": 7,
+            "tier": 5,
+            "unitId": 467,
+            "weapon": "M4A1战术版"
+          },
+          "blueUnitResults": [],
+          "redUnitResults": [],
+          "frames": null,
+          "durationMs": null,
+          "blue": {
+            "maxHp": 0,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 0,
+            "startCount": 0
+          },
+          "red": {
+            "maxHp": 0,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 0,
+            "startCount": 0
+          },
+          "errors": [
+            {
+              "code": "bridge_lost",
+              "message": "Host transport deadline elapsed before AS2 arena calibration response"
+            }
+          ]
+        }
+      },
+      "resultPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/attempt-1-soldier-phases-front-r2-20261016-attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d-results.jsonl",
+      "resultRows": 1,
+      "summaryPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/attempt-1-soldier-phases-front-r2-20261016-attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d-summary.json",
+      "summaryMdPath": "tmp/arena-calibration/unattended/20261016T064101Z-soldier-phases-front-r2-20261016-8c193c22-4ec3-4cf5-b915-f39e75b7d61f/attempt-1-soldier-phases-front-r2-20261016-attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d-summary.md",
+      "summaryTotals": {
+        "cases": 1,
+        "rows": 1,
+        "errors": 1,
+        "timeouts": 0
+      },
+      "analysisError": null,
+      "rerunManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016-rerun-20261016T064504Z/case-manifest-de782d7cede3a5be9d45672c88fb62479b8955ddd2c22e98c4a1d83a3ece4d22.json",
+      "rerunBatchId": "soldier-phases-front-r2-20261016-rerun-20261016T064504Z",
+      "autoRecovered": false,
+      "error": null,
+      "sourceResultPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016/attempts/attempt-b2af17c3-bfe8-4e2d-84f1-30eaa969a59d/results.jsonl"
+    }
+  ],
+  "rows": 1,
+  "expectedRows": 7,
+  "summaryTotals": {
+    "cases": 1,
+    "rows": 1,
+    "errors": 1,
+    "timeouts": 0
+  },
+  "failures": [
+    {
+      "type": "needs_rerun",
+      "attempt": 1,
+      "batchId": "soldier-phases-front-r2-20261016",
+      "rerunManifestPath": "tmp/arena-calibration/batches/soldier-phases-front-r2-20261016-rerun-20261016T064504Z/case-manifest-de782d7cede3a5be9d45672c88fb62479b8955ddd2c22e98c4a1d83a3ece4d22.json"
+    }
+  ],
+  "recoveryAttemptsUsed": 0,
+  "maxRecoveryAttempts": 0,
+  "error": null,
+  "suggestions": [
+    "Run rerun manifest: tmp/arena-calibration/batches/soldier-phases-front-r2-20261016-rerun-20261016T064504Z/case-manifest-de782d7cede3a5be9d45672c88fb62479b8955ddd2c22e98c4a1d83a3ece4d22.json",
+    "Inspect finalArenaStatus and result JSONL before planning the next exploratory batch."
+  ],
+  "httpPort": 1192
+}

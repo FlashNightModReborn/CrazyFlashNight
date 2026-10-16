@@ -221,6 +221,9 @@ _root.敌人函数.方向改变 = function(新方向) {
     }
 };
 
+// 独立资源的分阶段单位仍委托 asLoader 中的标准击杀权威。
+_root.敌人函数.标准击杀 = org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent.onKill;
+
 _root.敌人函数.状态改变 = function(新状态名) {
     if (this.状态 == 新状态名)
         return; // 已经处于该状态，跳过

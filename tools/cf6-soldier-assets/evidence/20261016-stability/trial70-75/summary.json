@@ -1,0 +1,675 @@
+{
+  "schema": "cf6-soldier.threat-evidence.v1",
+  "experimentId": "soldier-stability-r2-20261016",
+  "qualified": true,
+  "native": {
+    "runId": "61937b32ff864c938bf2582972c4d6d2",
+    "passed": 812,
+    "failed": 0,
+    "cases": 66,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    }
+  ],
+  "rows": [
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-0-30-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 685.0,
+      "soldierStartHp": 13585.0,
+      "soldierRemainHp": 357.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-0-30-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 595.0,
+      "soldierStartHp": 13585.0,
+      "soldierRemainHp": 1550.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-1-60-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "blue",
+      "status": "finished",
+      "frames": 926.0,
+      "soldierStartHp": 20257.0,
+      "soldierRemainHp": 0.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 1674.0,
+      "wingsDamagePercent": 80.85106382978724
+    },
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-1-60-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 736.0,
+      "soldierStartHp": 20257.0,
+      "soldierRemainHp": 2001.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-2-99-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 1020.0,
+      "soldierStartHp": 28931.0,
+      "soldierRemainHp": 7883.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w01",
+      "caseId": "w1-2-99-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "sourceConfiguredReductionPercent": 70,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "blue",
+      "status": "finished",
+      "frames": 932.0,
+      "soldierStartHp": 28931.0,
+      "soldierRemainHp": 0.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 2632.0,
+      "wingsDamagePercent": 78.14135038618055
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-0-30-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "blue",
+      "status": "finished",
+      "frames": 783.0,
+      "soldierStartHp": 13585.0,
+      "soldierRemainHp": 0.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 491.0,
+      "wingsDamagePercent": 92.08575112830431
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-0-30-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 638.0,
+      "soldierStartHp": 13585.0,
+      "soldierRemainHp": 4957.0,
+      "wingsStartHp": 6204.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-1-60-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 781.0,
+      "soldierStartHp": 20257.0,
+      "soldierRemainHp": 2180.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-1-60-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 837.0,
+      "soldierStartHp": 20257.0,
+      "soldierRemainHp": 2635.0,
+      "wingsStartHp": 8742.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-2-99-red",
+      "repeatIndex": 1,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 941.0,
+      "soldierStartHp": 28931.0,
+      "soldierRemainHp": 2441.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    },
+    {
+      "worker": "soldier-w02",
+      "caseId": "w2-2-99-red",
+      "repeatIndex": 2,
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "sourceConfiguredReductionPercent": 75,
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "soldierSide": "red",
+      "winner": "red",
+      "status": "finished",
+      "frames": 1063.0,
+      "soldierStartHp": 28931.0,
+      "soldierRemainHp": 2106.0,
+      "wingsStartHp": 12041.0,
+      "wingsRemainHp": 0.0,
+      "wingsDamagePercent": 100.0
+    }
+  ],
+  "groups": [
+    {
+      "soldierSide": "red",
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "samples": 2,
+      "soldierWins": 2,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    },
+    {
+      "soldierSide": "red",
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "samples": 2,
+      "soldierWins": 1,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 80.85106382978724,
+        "max": 100.0,
+        "mean": 90.42553191489361
+      }
+    },
+    {
+      "soldierSide": "red",
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 70,
+      "samples": 2,
+      "soldierWins": 1,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 78.14135038618055,
+        "max": 100.0,
+        "mean": 89.07067519309027
+      }
+    },
+    {
+      "soldierSide": "red",
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "samples": 2,
+      "soldierWins": 1,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 92.08575112830431,
+        "max": 100.0,
+        "mean": 96.04287556415215
+      }
+    },
+    {
+      "soldierSide": "red",
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "samples": 2,
+      "soldierWins": 2,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    },
+    {
+      "soldierSide": "red",
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "unitId": 467,
+      "initialPhase": 1,
+      "shieldDamageReductionPercent": 75,
+      "samples": 2,
+      "soldierWins": 2,
+      "naturalFinishes": 2,
+      "wingsDamagePercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    }
+  ],
+  "protectedSavesUnchanged": true,
+  "resourcesUnchanged": true,
+  "ownedProcessesExited": true,
+  "physicalWorkers": 2,
+  "wallDurationMs": 251135,
+  "copies": [
+    {
+      "path": "coordinator/experiment-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\experiment-report.json",
+      "bytes": 4468,
+      "sha256": "7524e2023cdb449678aa3d8b6ae5ba7f26c8b68a70da0fcad85d80e7038ed5ee"
+    },
+    {
+      "path": "coordinator/frozen-plan.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\frozen-plan.json",
+      "bytes": 312050,
+      "sha256": "fd7457498a693b324ab937d3f8ed8919cb95522d9d656bcbad4679901e679e7c"
+    },
+    {
+      "path": "coordinator/measurement.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\measurement.json",
+      "bytes": 32670,
+      "sha256": "560f597e85b1147152bbd2944e6100562a6a43411a03940fe178e1edd0b1782c"
+    },
+    {
+      "path": "coordinator/expected-receipts.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "f92046f39e7cc94c70bbcd18a2508722f80572b5c834eaa5a35a4dc21bc32dac"
+    },
+    {
+      "path": "coordinator/threat/group-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\groups\\threat\\group-report.json",
+      "bytes": 2759,
+      "sha256": "09398c79a8445ea74c10c9624f617104f35d6b2b47b022a08a1b5c3033d3d8ab"
+    },
+    {
+      "path": "coordinator/threat/save-protection.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\groups\\threat\\save-protection.json",
+      "bytes": 129759,
+      "sha256": "1ef8f591739c6c1f1122f0e327ebd313e7493be0f3a9d79e5c722987673acc7e"
+    },
+    {
+      "path": "input-identity.json",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\dual-worker-r2\\input-identity.json",
+      "bytes": 3213,
+      "sha256": "d9e836f5256db3d05eb75fb65fd6e9d217481c4d498e67bb60f7be5b2e7a0278"
+    },
+    {
+      "path": "experiment-plan.json",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\dual-worker-r2\\experiment-plan.json",
+      "bytes": 302955,
+      "sha256": "65679526797040b8865a64235da1e3f65c88bd87531f304a871338182ac8a1dd"
+    },
+    {
+      "path": "native/trace.txt",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3\\test-flashlog.txt",
+      "bytes": 2729,
+      "sha256": "8a618c388b1fd32a9ff9f4e4017577154d8da91420af5ad88aba9dc5fcfbc28b"
+    },
+    {
+      "path": "native/publish-compiler_errors.txt",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3\\publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/test-compiler_errors.txt",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3\\test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/publish-compile_output.txt",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3\\publish-compile_output.txt",
+      "bytes": 75,
+      "sha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57"
+    },
+    {
+      "path": "native/test-compile_output.txt",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3\\test-compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/run.log",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\native-r3.log",
+      "bytes": 3314,
+      "sha256": "df3895b2267fee394cab6e74b7cadaf02ef2fb7eaeff62b33033a9db6ddd5141"
+    },
+    {
+      "path": "native/publish.log",
+      "originalPath": "tmp\\cf6-soldier-stability-20261016\\publish-r3.log",
+      "bytes": 1316,
+      "sha256": "a6a9c0c0c9ba2afeecc820171e9443437d06c75f3282b3bcc1b5c12b511709c3"
+    },
+    {
+      "path": "source/flashswf/arts/new/Codex特种兵素材.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\flashswf\\arts\\new\\Codex特种兵素材.swf",
+      "bytes": 99621,
+      "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+    },
+    {
+      "path": "source/data/enemy_properties/CF6重制敌人.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\enemy_properties\\CF6重制敌人.xml",
+      "bytes": 10525,
+      "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+    },
+    {
+      "path": "source/data/units/units.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\units\\units.json",
+      "bytes": 152412,
+      "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+    },
+    {
+      "path": "source/data/items/asset_source_map.xml",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\data\\items\\asset_source_map.xml",
+      "bytes": 869317,
+      "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+    },
+    {
+      "path": "source/scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\逻辑\\单位函数\\单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36819,
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/SoldierAI.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\SoldierAI.as",
+      "bytes": 17674,
+      "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+    },
+    {
+      "path": "source/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\类定义\\org\\flashNight\\arki\\unit\\Action\\Melee\\Cf6SoldierAssetTest.as",
+      "bytes": 46133,
+      "sha256": "f99816fef6bf09bf224cd95202510d2540bf220356b981c19107e3b80e826257"
+    },
+    {
+      "path": "source/scripts/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\Cf6SoldierNativeHost.swf",
+      "bytes": 898959,
+      "sha256": "3e323992e3e808be38d7aeb32a51dbfe53f5a6ff42f6ab24470b6d20a35b19f6"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/native-manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\native-manifest.json",
+      "bytes": 56934,
+      "sha256": "d1456a3899781d10773b3578181eca37e71fd4abd8895fc3c5a6ea70a1150f50"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/worker-plan.js",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\worker-plan.js",
+      "bytes": 8375,
+      "sha256": "4278d8494aeca29e8f47ec938f27df1de802064736615d713dc1c6164652550d"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/build.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\build.py",
+      "bytes": 25950,
+      "sha256": "75d0c0d588037a0e40d28a626b8b03a73a4700a8a322d1b45ca7cf1d5096e8d7"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/balance.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\balance.py",
+      "bytes": 9134,
+      "sha256": "a72d5accba4fb79d73867e4b6047c452dc7cf8578a98514ee27b097ef4d4812d"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/balance-inputs.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\balance-inputs.json",
+      "bytes": 2438,
+      "sha256": "873b371d335d6f2a7173718769f29d6f4a2d10ba39cf2b51f1a9a321546f3240"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/shield-balance-inputs.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\shield-balance-inputs.json",
+      "bytes": 2713,
+      "sha256": "ffe735823ecbd8087177cbd4e092405f26f0f4dd268ff591bfa6ae94c3a2b697"
+    },
+    {
+      "path": "source/tools/cf6-soldier-assets/verify.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-soldier-assets\\verify.py",
+      "bytes": 8168,
+      "sha256": "538998d4cf172ca65fd19496ca468db4e9fd0f1deb7fd738ce725c518680c77c"
+    },
+    {
+      "path": "source/scripts/run-cf6-soldier-asset-tests.ps1",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\run-cf6-soldier-asset-tests.ps1",
+      "bytes": 1702,
+      "sha256": "0bd563dc3f83775f54855cb874d545db101a8a2bef4b9c93db0375ed2b1c2927"
+    },
+    {
+      "path": "source/scripts/test-runners/cf6-soldier/TestLoader-shield-capture.as.template",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\test-runners\\cf6-soldier\\TestLoader-shield-capture.as.template",
+      "bytes": 385,
+      "sha256": "0252e64c7a0fa63225f66e08d739abf8dc148446192cd268170846d35f862e3f"
+    },
+    {
+      "path": "workers/soldier-w01/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ae535c6edb304746865541050e461b9b\\assignment-ae535c6edb304746865541050e461b9b\\attempt-ae535c6edb304746865541050e461b9b\\shard-receipt.json",
+      "bytes": 795405,
+      "sha256": "882c6de653b67606bccc9c2da44b6f36a92d9afef02ae9bb5c97b137b2a18ce6"
+    },
+    {
+      "path": "workers/soldier-w01/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ae535c6edb304746865541050e461b9b\\assignment-ae535c6edb304746865541050e461b9b\\attempt-ae535c6edb304746865541050e461b9b\\raw\\795d506ee15160f27cc6a7d175abc5fe780fac6ad0d2e11c623b68a4cbf16535.jsonl",
+      "bytes": 26567,
+      "sha256": "795d506ee15160f27cc6a7d175abc5fe780fac6ad0d2e11c623b68a4cbf16535"
+    },
+    {
+      "path": "workers/soldier-w01/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ae535c6edb304746865541050e461b9b\\assignment-ae535c6edb304746865541050e461b9b\\attempt-ae535c6edb304746865541050e461b9b\\manifest.json",
+      "bytes": 10245,
+      "sha256": "1e13447174422c94087bb2a1905cd74679f123a75bc9612f7ad050222a150dc4"
+    },
+    {
+      "path": "workers/soldier-w01/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ae535c6edb304746865541050e461b9b\\assignment-ae535c6edb304746865541050e461b9b\\attempt-ae535c6edb304746865541050e461b9b\\launch.json",
+      "bytes": 862,
+      "sha256": "331f672d9747cde305d3626657347f1dec7597113f4193a09ae530ecfdcedb59"
+    },
+    {
+      "path": "workers/soldier-w02/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1231e7ff42ac41c199440345d8d5670d\\assignment-1231e7ff42ac41c199440345d8d5670d\\attempt-1231e7ff42ac41c199440345d8d5670d\\shard-receipt.json",
+      "bytes": 766503,
+      "sha256": "32750242de9cf393118df070968146cae0ecf9efeb61157f8dca6ae0b9ac996a"
+    },
+    {
+      "path": "workers/soldier-w02/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1231e7ff42ac41c199440345d8d5670d\\assignment-1231e7ff42ac41c199440345d8d5670d\\attempt-1231e7ff42ac41c199440345d8d5670d\\raw\\04d800d58e9f0ffffed4f58f6489d18b4bf8f32706b45d2609b17ea81358028c.jsonl",
+      "bytes": 26565,
+      "sha256": "04d800d58e9f0ffffed4f58f6489d18b4bf8f32706b45d2609b17ea81358028c"
+    },
+    {
+      "path": "workers/soldier-w02/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1231e7ff42ac41c199440345d8d5670d\\assignment-1231e7ff42ac41c199440345d8d5670d\\attempt-1231e7ff42ac41c199440345d8d5670d\\manifest.json",
+      "bytes": 10245,
+      "sha256": "7ee33fdb89eba4923edbfe06e58458bc232828f2b28ef28957c747c47ceab617"
+    },
+    {
+      "path": "workers/soldier-w02/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1231e7ff42ac41c199440345d8d5670d\\assignment-1231e7ff42ac41c199440345d8d5670d\\attempt-1231e7ff42ac41c199440345d8d5670d\\launch.json",
+      "bytes": 877,
+      "sha256": "8cd94986cecf4138fbabdd33005361de815ca41c764d7d088977786a292c7420"
+    }
+  ],
+  "archives": [
+    {
+      "path": "source/soldier-project.zip",
+      "bytes": 371039,
+      "sha256": "72429d4f941972b04702c0da6fd8edd4508260d412276d41451e2d8340d02def",
+      "entries": 243
+    }
+  ],
+  "sourceCoverage": "Soldier changed sources, generated XFL and both tested SWFs copied; shared inputs remain hash-bound repository files.",
+  "boundaries": [
+    "Enemy and friendly HP bonus samples are separate.",
+    "No RNG equivalence or speed-up benchmark is claimed.",
+    "Candidate combat evidence is not formal runtime deployment or human visual/gameplay acceptance."
+  ]
+}

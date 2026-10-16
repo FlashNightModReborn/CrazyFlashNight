@@ -1,0 +1,437 @@
+{
+  "schema": "cf6-soldier.frozen-input.v1",
+  "sourceZip": {
+    "name": "02A-baseline-source.zip",
+    "sha256": "5c4b124b2592fb37adde7de398a377a65d38a8021f89fce3d9d5c776a728f47e"
+  },
+  "r4Zip": {
+    "name": "02B-latest-local-source.zip",
+    "sha256": "7c1f8fcff8070917794ae0fb7eed60e53744b732325083240099f9ca053dba27"
+  },
+  "r3R4SvgFilesCompared": 152,
+  "r4ChangedFiles": [
+    "parts/561.svg",
+    "variants/575.svg",
+    "variants/577.svg",
+    "variants/578.svg"
+  ],
+  "ordinaryRoot": 559,
+  "ordinaryBodyFrameCount": 378,
+  "scope": "Ordinary soldier only. R4 shield changes do not affect any imported drawing. No archive scripts or CF6 actions executed.",
+  "members": [
+    {
+      "path": "parts/484.svg",
+      "sha256": "cfd41880144150f9d3e5f6876b286b19235b21c770246ac8b74770a084be2e38",
+      "bytes": 6678,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/484.svg"
+    },
+    {
+      "path": "parts/485.svg",
+      "sha256": "56ef0fd3377f137dff90a7b980c3e289b032d208d04469f8b52c40c90957230c",
+      "bytes": 16668,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/485.svg"
+    },
+    {
+      "path": "parts/486.svg",
+      "sha256": "9e5c3db9493c6b510a35446c8b9f5761c856d823fab2771370807af1af437a4a",
+      "bytes": 13204,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/486.svg"
+    },
+    {
+      "path": "parts/487.svg",
+      "sha256": "82d9558c2e5df44e58fece416fbcb87203994a509fc3f98216ca327f8a9e0077",
+      "bytes": 23182,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/487.svg"
+    },
+    {
+      "path": "parts/488.svg",
+      "sha256": "d3af92224e494727c5265f9f8b0f63836b4a784b08e414e9b9667946be5083b6",
+      "bytes": 17101,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/488.svg"
+    },
+    {
+      "path": "parts/489.svg",
+      "sha256": "7eee4da58bffaf890da8030cc062c0067ee08ac98d21e3ea477983f178316011",
+      "bytes": 18192,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/489.svg"
+    },
+    {
+      "path": "parts/490.svg",
+      "sha256": "88c0efa37bdc314d8d853497390cc6ba25cb7b64b3d41466f613c33835796fae",
+      "bytes": 17494,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/490.svg"
+    },
+    {
+      "path": "parts/491.svg",
+      "sha256": "b569e3666198e8f5bdb5f358017a0fd7a2be01bb7082eed177a16a067edf0429",
+      "bytes": 13683,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/491.svg"
+    },
+    {
+      "path": "parts/493.svg",
+      "sha256": "39c0f1ecedbcdec9488712c81f2eb4b56285d08056a0c0d215198a923423be56",
+      "bytes": 12807,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/493.svg"
+    },
+    {
+      "path": "parts/494.svg",
+      "sha256": "d08aec8281a1e53ddfea869c651c794c1b2b14519c16e0ca72dd884d23f2fefa",
+      "bytes": 18525,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/494.svg"
+    },
+    {
+      "path": "parts/495.svg",
+      "sha256": "36ca589bb2197da660196ce991ef7cb0ff7930e8fd0546acf2597103ddddc1b9",
+      "bytes": 13349,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/495.svg"
+    },
+    {
+      "path": "parts/496.svg",
+      "sha256": "acff4bb6b2e58a1a182d6c953c8f686bc085fdfcd627f2a56782ed08dbfaac02",
+      "bytes": 10046,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/496.svg"
+    },
+    {
+      "path": "parts/497.svg",
+      "sha256": "04fb97f5148e2d7f5b8d437e511e66dd70eef06447ecca7276dfe625eefc9c78",
+      "bytes": 13798,
+      "zipMember": "cf6-special-soldier-redraw-r3/parts/497.svg"
+    },
+    {
+      "path": "variants/508.svg",
+      "sha256": "e60e7512b2e4c8b77a6858643aa80429157a589e44746b8f80ceb878683cbe64",
+      "bytes": 180971,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/508.svg"
+    },
+    {
+      "path": "variants/509.svg",
+      "sha256": "66a46d7a44fc580567acad42471bbf23c57afccb35b215483b4c2581d667026b",
+      "bytes": 180971,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/509.svg"
+    },
+    {
+      "path": "variants/510.svg",
+      "sha256": "dfa88ce3b2a95355489fed64445c713628cd9f5adc24c369ac61967b84cc7cb3",
+      "bytes": 180996,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/510.svg"
+    },
+    {
+      "path": "variants/511.svg",
+      "sha256": "52c9193bbae1a4d80ee56dfd0de35015a77e5ca705269a366862be1cfeda1a9b",
+      "bytes": 180947,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/511.svg"
+    },
+    {
+      "path": "variants/512.svg",
+      "sha256": "2e0712937a7897345f9f5e2e2f1e5049dacbd6be725a62e29e5a3bec7145dd41",
+      "bytes": 180947,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/512.svg"
+    },
+    {
+      "path": "variants/514.svg",
+      "sha256": "103dde06f680844c42957a599dab7cd9b8d832cecde50e131e67a64bfe09edd9",
+      "bytes": 180947,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/514.svg"
+    },
+    {
+      "path": "variants/515.svg",
+      "sha256": "99abf8f34befc29956cebc675a7b2edff05a035ae67f9664d1a38ab3433d4261",
+      "bytes": 180971,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/515.svg"
+    },
+    {
+      "path": "variants/516.svg",
+      "sha256": "368ddc7b78923b4b07e22fbc1ecdb896ed9757854ff857c7c0d61befd85b7216",
+      "bytes": 180971,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/516.svg"
+    },
+    {
+      "path": "preserved/521.svg",
+      "sha256": "a04e72a4e081112a24f8b980d7a7e7084ae170d8f040fd23f22542e3802b8b66",
+      "bytes": 1171,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/521.svg"
+    },
+    {
+      "path": "variants/522.svg",
+      "sha256": "e2d815dd147f03cadad57f1ca60ca99bd56c321cc6ed016d7737d045eb1a79ab",
+      "bytes": 183034,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/522.svg"
+    },
+    {
+      "path": "preserved/523.svg",
+      "sha256": "4acca2b5448216098678a770d41ed1ed98059f0a10660180aca83a841865e450",
+      "bytes": 3280,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/523.svg"
+    },
+    {
+      "path": "variants/524.svg",
+      "sha256": "f075c6b6c521d317295569a9f2c222675113a4337aa28bb673e11e5f3b901b49",
+      "bytes": 185390,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/524.svg"
+    },
+    {
+      "path": "preserved/525.svg",
+      "sha256": "5f992037915f4aca31aa794e09824c0facadb217cecf0f9db3ddcfc98c17ac1a",
+      "bytes": 4650,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/525.svg"
+    },
+    {
+      "path": "variants/526.svg",
+      "sha256": "af6e58638820c5d83580a4592e35713ef93c014d736d630fb53123a6dbda8187",
+      "bytes": 182883,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/526.svg"
+    },
+    {
+      "path": "preserved/527.svg",
+      "sha256": "167cce8db9207fd9ef93f5864bb6d094e050ef5f94e2f187ad37290f09f7217b",
+      "bytes": 4738,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/527.svg"
+    },
+    {
+      "path": "variants/528.svg",
+      "sha256": "edc0085f2d87eaf62cc8b4b67693e5d749040a9354e0e80a9797b9aa8488f7b1",
+      "bytes": 182315,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/528.svg"
+    },
+    {
+      "path": "preserved/529.svg",
+      "sha256": "0f907520be3287147d18a7b9e5aac8508b1fc5122980f111d1d38b9e21741a4f",
+      "bytes": 4452,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/529.svg"
+    },
+    {
+      "path": "variants/530.svg",
+      "sha256": "915729af67125246c43dcbfba5e0f3c81ca1710e80dee5a0edcde9a15bd8fc53",
+      "bytes": 182341,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/530.svg"
+    },
+    {
+      "path": "preserved/531.svg",
+      "sha256": "59661a61b0f381d5939b968535fa79706a01afb86e1bad89a4d4fb24a012bad8",
+      "bytes": 2965,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/531.svg"
+    },
+    {
+      "path": "variants/532.svg",
+      "sha256": "5510023a57023f7739483afa54518130120f9d795c63bab24aeb5b3a12f1b8b7",
+      "bytes": 182348,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/532.svg"
+    },
+    {
+      "path": "preserved/533.svg",
+      "sha256": "2b12198338f53e03eebce39c909bf5c83a5e67d8eb31689f56e6be500000c99c",
+      "bytes": 3674,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/533.svg"
+    },
+    {
+      "path": "variants/534.svg",
+      "sha256": "74d5448c31dac5d0e7949c36d78fe8f2561c7bb7b0c81d749d486c137ea0036c",
+      "bytes": 182105,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/534.svg"
+    },
+    {
+      "path": "preserved/535.svg",
+      "sha256": "747d65cea28bbf91f8c0b92b7a5e7c0a1c36e57ad976095a76ce4691f620470c",
+      "bytes": 3261,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/535.svg"
+    },
+    {
+      "path": "variants/536.svg",
+      "sha256": "a1ef7a848a55d80482e9ec856ee513a738f4f27e65a6b9795894980acc060606",
+      "bytes": 185688,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/536.svg"
+    },
+    {
+      "path": "preserved/537.svg",
+      "sha256": "ac5614bc6e3db96c76ed1bead72cad8b515a668321088159926dd92220629aad",
+      "bytes": 3491,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/537.svg"
+    },
+    {
+      "path": "preserved/538.svg",
+      "sha256": "017fd60a6f0ff653400fe70a4c4c3ab4159458317d4a1382157d24554bb6545d",
+      "bytes": 2591,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/538.svg"
+    },
+    {
+      "path": "preserved/539.svg",
+      "sha256": "e9a1056c745be03aee3832e305e59fb7b47f9307f56c6eead8f5d95ac83c686d",
+      "bytes": 2854,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/539.svg"
+    },
+    {
+      "path": "preserved/540.svg",
+      "sha256": "c0a43317bb761ac754579c05676076e2498cb08650632559f175348c9475e79d",
+      "bytes": 2789,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/540.svg"
+    },
+    {
+      "path": "preserved/541.svg",
+      "sha256": "88869990674fbf83d192a8fbb217c31b7d3af0ba596f894a9763e8896af6569d",
+      "bytes": 2877,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/541.svg"
+    },
+    {
+      "path": "variants/542.svg",
+      "sha256": "1dabf3516bd1dc79c3c9b198ba0167f65fbe9b1cc92d37cd9c439db36afb17d6",
+      "bytes": 184872,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/542.svg"
+    },
+    {
+      "path": "preserved/543.svg",
+      "sha256": "8d17aad4b0f2c6b74024823e430634568b3af75453b46c0c1d3d258ec58235db",
+      "bytes": 1486,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/543.svg"
+    },
+    {
+      "path": "variants/544.svg",
+      "sha256": "ce534c263ed8a107d5d36e14d3d8489d7b49e50abbce3cf8c1787a7bd2bb07e2",
+      "bytes": 183585,
+      "zipMember": "cf6-special-soldier-redraw-r3/variants/544.svg"
+    },
+    {
+      "path": "preserved/545.svg",
+      "sha256": "9d1682252a2944e2039843415c94e9672db9fc27abe80458364d9ad3bd51c73e",
+      "bytes": 1433,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/545.svg"
+    },
+    {
+      "path": "preserved/546.svg",
+      "sha256": "94d8c86ac26d50b9831512c03dcf13eb29d2b2440bd5d5cdf641a958488980fd",
+      "bytes": 1967,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/546.svg"
+    },
+    {
+      "path": "preserved/547.svg",
+      "sha256": "8534cfa50348b5902d80732bc93bd3a2dec3ed0621f566ce8108dde3748c5652",
+      "bytes": 2620,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/547.svg"
+    },
+    {
+      "path": "preserved/548.svg",
+      "sha256": "6445baca231866070b679390848ef12b8be283f135124703056e34e288158aec",
+      "bytes": 4004,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/548.svg"
+    },
+    {
+      "path": "preserved/549.svg",
+      "sha256": "61fa0b20907aa372ad69f66b5e80d882963a06edfd52350e84fadbb2361aec8e",
+      "bytes": 4694,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/549.svg"
+    },
+    {
+      "path": "preserved/550.svg",
+      "sha256": "5e6df01bdb89cda66d24ddcd1086c19c97d84adf790fb846e68a3ed9e980c5c4",
+      "bytes": 4530,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/550.svg"
+    },
+    {
+      "path": "preserved/551.svg",
+      "sha256": "bb5c4a443e438ea1835ae2d2d1cd728e8e4099fa28eba6eb6212b9ac4f178ced",
+      "bytes": 3200,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/551.svg"
+    },
+    {
+      "path": "preserved/552.svg",
+      "sha256": "9f84baafd42010e9edd2426e1ff34e4ac31af3b33b758d07eacdcc6c34023217",
+      "bytes": 3151,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/552.svg"
+    },
+    {
+      "path": "preserved/553.svg",
+      "sha256": "9ac03f7e1a36f92e7bee5964571bdcedbfce1c75153dd22a123481f692071ee0",
+      "bytes": 3037,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/553.svg"
+    },
+    {
+      "path": "preserved/554.svg",
+      "sha256": "82d72c9cec17e19abd2a4c5186d7ba11c7b763e9026fd9039644f34fc6d6eede",
+      "bytes": 3003,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/554.svg"
+    },
+    {
+      "path": "preserved/555.svg",
+      "sha256": "559600a2dd2a3066be4b9a6a2a9415409e24c26d130f364301b950e1af24e3fb",
+      "bytes": 3148,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/555.svg"
+    },
+    {
+      "path": "preserved/556.svg",
+      "sha256": "88a3630a1f1c5d917074838cb81a72dde002a9ac77695fb913ea389137ac9132",
+      "bytes": 2631,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/556.svg"
+    },
+    {
+      "path": "preserved/557.svg",
+      "sha256": "0619979e668673431eda7b5c457474d093b150922c5061a1f9cba9d1d6cfd4f8",
+      "bytes": 2402,
+      "zipMember": "cf6-special-soldier-redraw-r3/preserved/557.svg"
+    },
+    {
+      "path": "README.md",
+      "sha256": "4cab030d0998e04f014ea25a89903f11c45de2f7365f76d67737f7ad62570ddb",
+      "bytes": 6566,
+      "zipMember": "cf6-special-soldier-redraw-r3/README.md"
+    },
+    {
+      "path": "INTEGRATION.md",
+      "sha256": "59a59c406f208c43bf3b76c5107b05ff37cf4932067328639723bb2c1c4e0731",
+      "bytes": 2689,
+      "zipMember": "cf6-special-soldier-redraw-r3/INTEGRATION.md"
+    },
+    {
+      "path": "ART_REVIEW.md",
+      "sha256": "0431362ac5b0726b7e0215b1ce73e29bd2facd0a9ba89edd5b471a0daf84a4ed",
+      "bytes": 1762,
+      "zipMember": "cf6-special-soldier-redraw-r3/ART_REVIEW.md"
+    },
+    {
+      "path": "asset-manifest.json",
+      "sha256": "12e2d3be5692910b33771a6127d25d6793042a40f39248a78d5cc5ce1d033250",
+      "bytes": 55701,
+      "zipMember": "cf6-special-soldier-redraw-r3/asset-manifest.json"
+    },
+    {
+      "path": "reference/identity-manifest.json",
+      "sha256": "f975a2afad408e53d2bb154307c7546670e5b4288306a1542248caac631e2629",
+      "bytes": 42367,
+      "zipMember": "cf6-special-soldier-redraw-r3/reference/identity-manifest.json"
+    },
+    {
+      "path": "reference/timelines.json",
+      "sha256": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0",
+      "bytes": 2618171,
+      "zipMember": "cf6-special-soldier-redraw-r3/reference/timelines.json"
+    },
+    {
+      "path": "reference/reuse-map.json",
+      "sha256": "50ad4cb961d7a392378a82f792447780a9807fefbeb4e5848bbbcdc5682ca79b",
+      "bytes": 55882,
+      "zipMember": "cf6-special-soldier-redraw-r3/reference/reuse-map.json"
+    },
+    {
+      "path": "reference/shape-manifest.json",
+      "sha256": "2adf89aa42aee6f3bf364e9c6e4e35441f5577dad94582f60f521333f92939ef",
+      "bytes": 337059,
+      "zipMember": "cf6-special-soldier-redraw-r3/reference/shape-manifest.json"
+    },
+    {
+      "path": "r4-scope-reference/README.md",
+      "sha256": "c1081d2f0cc7fa01b81b16d92b2cf01a85000195b1c905fb907f7ef9a89a55bd",
+      "bytes": 2800,
+      "zipMember": "cf6-special-soldier-redraw-r4/README.md"
+    },
+    {
+      "path": "r4-scope-reference/qa/ct-correction-check.json",
+      "sha256": "5b137fb9ddc207a4ae19a71a6e4cf7e562e89aa7d3e2c4635bb6e571eb309a32",
+      "bytes": 15876,
+      "zipMember": "cf6-special-soldier-redraw-r4/qa/ct-correction-check.json"
+    },
+    {
+      "path": "r4-scope-reference/qa/r4-independent-scope-check.json",
+      "sha256": "af78d711b167212156271df9fd080c0e0c5c026f37cd017fec8caa657465355e",
+      "bytes": 60031,
+      "zipMember": "cf6-special-soldier-redraw-r4/qa/r4-independent-scope-check.json"
+    }
+  ]
+}

@@ -1,0 +1,565 @@
+{
+  "schema": "cf6-soldier.phase-failures.v1",
+  "native": {
+    "native-failed-r1": "Shield export dependencies compiled to one-frame body placeholders; 639 passed, 36 failed.",
+    "native-failed-r2": "Instrumented reproduction of one-frame body placeholders; 639 passed, 36 failed.",
+    "native-failed-r4": "Full body timelines restored; eight fixture assertions ran before onClipEvent(load); 687 passed, 8 failed.",
+    "native-failed-r5-capture": "Image capture of the same state with eight premature fixture assertions; not a passing suite.",
+    "native-r5-source": "Exact test source retained before correcting the deferred event assertions.",
+    "publish-locked-r3": "Live Test Player retained the shared SWF; Compiler 0/0 did not refresh the target. Canonical StopTestPlayers released it."
+  },
+  "workers": [
+    {
+      "revision": "r2",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r2",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r3",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r3",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r4",
+      "worker": "soldier-w01",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    },
+    {
+      "revision": "r4",
+      "worker": "soldier-w02",
+      "status": "bridge_lost",
+      "rows": 1,
+      "spawnedUnits": 0,
+      "saveProtection": true,
+      "resourcesUnchanged": true,
+      "cleanupVerified": true
+    }
+  ],
+  "cause": "Windows capture stopped after one frame; scene reveal remained gated. No spawned units or combat outcomes in these attempts.",
+  "archive": {
+    "path": "preserved-failures.zip",
+    "bytes": 6190266,
+    "sha256": "64c26ff19ae8d6ac3690ac53387e68ed88d868091f7fab4eef09adc10566b5b1"
+  },
+  "entries": [
+    {
+      "path": "native/native-failed-r1/build.py",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\build.py",
+      "bytes": 25054,
+      "sha256": "0909a44d3052853f1f7b5d121e4f794a6e5f9fd35828530002a796f914e6c019"
+    },
+    {
+      "path": "native/native-failed-r1/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\Cf6SoldierAssetTest.as",
+      "bytes": 38363,
+      "sha256": "b6e8195efa78d35bfce2176c1eb5c812bcda636fb56291cd304bab2c47d1f729"
+    },
+    {
+      "path": "native/native-failed-r1/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\Cf6SoldierNativeHost.swf",
+      "bytes": 864893,
+      "sha256": "2180b89086899611855d1b4f191e0633eba2add53f3fcf0426f33f80f887067a"
+    },
+    {
+      "path": "native/native-failed-r1/Codex特种兵素材.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\Codex特种兵素材.swf",
+      "bytes": 103858,
+      "sha256": "996a1c074c394ff047335f531e1d0a822bc9fd7309fdb681ad4f24b9c2fd0062"
+    },
+    {
+      "path": "native/native-failed-r1/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/native-failed-r1/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/native-failed-r1/flashlog.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\flashlog.txt",
+      "bytes": 4873,
+      "sha256": "b543fccec78e7c16bb3fd915dd8c875d0c1e8def9f290afa550eda18fff7f62f"
+    },
+    {
+      "path": "native/native-failed-r1/native-manifest.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\native-manifest.json",
+      "bytes": 56721,
+      "sha256": "c6440fc04ee70263db324e10480306ce1b23a237defddc42f9dd47771e2bd8da"
+    },
+    {
+      "path": "native/native-failed-r1/SoldierAI.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r1\\SoldierAI.as",
+      "bytes": 13643,
+      "sha256": "4a79121f4b871f6416b7d379b825bc7ab9fc326c9ef15e2d13da9e490482b978"
+    },
+    {
+      "path": "native/native-failed-r2/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r2\\Cf6SoldierAssetTest.as",
+      "bytes": 38846,
+      "sha256": "bef4ddd07af6759015063c16a6cacdd8e1fe0636acbff1ffbc23933d7ba9eec5"
+    },
+    {
+      "path": "native/native-failed-r2/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r2\\Cf6SoldierNativeHost.swf",
+      "bytes": 865092,
+      "sha256": "46eae7cd34f86a86ecff3983c62e0411628a4cb0a5eb64814d6b737a1aa31dc5"
+    },
+    {
+      "path": "native/native-failed-r2/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r2\\compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/native-failed-r2/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r2\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/native-failed-r2/flashlog.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r2\\flashlog.txt",
+      "bytes": 10664,
+      "sha256": "ecd4d8f02e98bc12bb6739582497826a93babe6f107bc87dce59fa48199d6b20"
+    },
+    {
+      "path": "native/native-failed-r4/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r4\\Cf6SoldierAssetTest.as",
+      "bytes": 38846,
+      "sha256": "bef4ddd07af6759015063c16a6cacdd8e1fe0636acbff1ffbc23933d7ba9eec5"
+    },
+    {
+      "path": "native/native-failed-r4/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r4\\Cf6SoldierNativeHost.swf",
+      "bytes": 865100,
+      "sha256": "743ad12e0d3f78c27937b40f871ae16836810b9a63a40d173f91d7ec9cd17a52"
+    },
+    {
+      "path": "native/native-failed-r4/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r4\\compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/native-failed-r4/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r4\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/native-failed-r4/flashlog.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r4\\flashlog.txt",
+      "bytes": 8902,
+      "sha256": "7e415bd98ac2039f109c43d42d10543670ffd825a1095a295aacc9da10de8010"
+    },
+    {
+      "path": "native/native-failed-r5-capture/Cf6SoldierNativeHost.swf",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r5-capture\\Cf6SoldierNativeHost.swf",
+      "bytes": 865095,
+      "sha256": "ea3e70757ce1264f63435b04a03e475e44927354b98dd0f72d1143f47d32449f"
+    },
+    {
+      "path": "native/native-failed-r5-capture/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r5-capture\\compile_output.txt",
+      "bytes": 19,
+      "sha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728"
+    },
+    {
+      "path": "native/native-failed-r5-capture/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r5-capture\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/native-failed-r5-capture/flashlog.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-failed-r5-capture\\flashlog.txt",
+      "bytes": 5637799,
+      "sha256": "088d637f976b6fb25fc70e573f431b704a35242c4c3f7ade9510fef36444fc7c"
+    },
+    {
+      "path": "native/native-r5-source/Cf6SoldierAssetTest.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r5-source\\Cf6SoldierAssetTest.as",
+      "bytes": 38846,
+      "sha256": "bef4ddd07af6759015063c16a6cacdd8e1fe0636acbff1ffbc23933d7ba9eec5"
+    },
+    {
+      "path": "native/native-r5-source/SoldierAI.as",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r5-source\\SoldierAI.as",
+      "bytes": 13643,
+      "sha256": "4a79121f4b871f6416b7d379b825bc7ab9fc326c9ef15e2d13da9e490482b978"
+    },
+    {
+      "path": "native/native-r5-source/TestLoader-shield-capture.as.template",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r5-source\\TestLoader-shield-capture.as.template",
+      "bytes": 346,
+      "sha256": "863a46bc6db3e8f371f604b0bfa861135da0271a9a13c228cee3b185a0b80bda"
+    },
+    {
+      "path": "native/publish-locked-r3/compile_output.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\publish-locked-r3\\compile_output.txt",
+      "bytes": 231,
+      "sha256": "9c6b31ca186c3aa18f4984371ead5dbeaa9e376c1cc5c07ea59338a8784c5349"
+    },
+    {
+      "path": "native/publish-locked-r3/compiler_errors.txt",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\publish-locked-r3\\compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/native-r2.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r2.log",
+      "bytes": 3449,
+      "sha256": "b776485fad76fafebb144a05fb8085879422661f357c144bd0d136dc9eb678c4"
+    },
+    {
+      "path": "native/native-r4.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r4.log",
+      "bytes": 3449,
+      "sha256": "2bbc7aeb2086d142e8b79b177e5170cb8d6aefd30f45071361026363d322cbae"
+    },
+    {
+      "path": "native/native-r5-capture.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\native-r5-capture.log",
+      "bytes": 3449,
+      "sha256": "c6db3c8db00b574d52feaa252a56fe41f507f1022d710c9f6552a323bf6aac84"
+    },
+    {
+      "path": "native/publish-r3.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\publish-r3.log",
+      "bytes": 1229,
+      "sha256": "49170c51ff353f8c5090021d8323087ab85043e57a227f53bb4cebd6ff686bb6"
+    },
+    {
+      "path": "native/publish-r4.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\publish-r4.log",
+      "bytes": 1322,
+      "sha256": "ad094cb0fd71da9fde4128457962a1fdfd9f7588df2c12d2938382a2b1d18556"
+    },
+    {
+      "path": "worker-r2/experiment-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\experiment-report.json",
+      "bytes": 4456,
+      "sha256": "7a57d90436e2ad836b78c4902ed40f2dcf0fd75aa10dcad22d0fee2e757942fb"
+    },
+    {
+      "path": "worker-r2/frozen-plan.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\frozen-plan.json",
+      "bytes": 312011,
+      "sha256": "4affbbe04c970ca271300ebbcf62d4d1f71d4c2bbc83525cd11c92266388b33e"
+    },
+    {
+      "path": "worker-r2/measurement.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\measurement.json",
+      "bytes": 11744,
+      "sha256": "b55771c1f2615cbcc764d5e3d90290fcc9b45698db2a7a39c654c424a57cb5db"
+    },
+    {
+      "path": "worker-r2/expected-receipts.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "2d4253bb4a7a6424d2f27f82442bd438ceb74b8075480fe869d6c24159ae4ae7"
+    },
+    {
+      "path": "worker-r2/threat/group-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\groups\\threat\\group-report.json",
+      "bytes": 2750,
+      "sha256": "6fe73d564fb5ae23afa094dea84caee6ad36424cd3600d82fe19afa480987cc3"
+    },
+    {
+      "path": "worker-r2/threat/save-protection.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r2-20261016\\groups\\threat\\save-protection.json",
+      "bytes": 121883,
+      "sha256": "f462985e1850aa53d39e353c027eda0511ed72dce4dc90b0b4f2861a9576b298"
+    },
+    {
+      "path": "worker-r2/soldier-w1/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-d6c1a7e910b8454c858959669ccb78f5\\assignment-d6c1a7e910b8454c858959669ccb78f5\\attempt-d6c1a7e910b8454c858959669ccb78f5\\shard-receipt.json",
+      "bytes": 790482,
+      "sha256": "342bac9aff7501f84b28b1aa29d312cf07ff5acb6bd6991a541f83f76ce9b3e7"
+    },
+    {
+      "path": "worker-r2/soldier-w1/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-d6c1a7e910b8454c858959669ccb78f5\\assignment-d6c1a7e910b8454c858959669ccb78f5\\attempt-d6c1a7e910b8454c858959669ccb78f5\\raw\\12332a42955a6566ebe4b1001f0f7dcaa1c551772af51152989d18acdda3481c.jsonl",
+      "bytes": 2627,
+      "sha256": "12332a42955a6566ebe4b1001f0f7dcaa1c551772af51152989d18acdda3481c"
+    },
+    {
+      "path": "worker-r2/soldier-w1/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-d6c1a7e910b8454c858959669ccb78f5\\assignment-d6c1a7e910b8454c858959669ccb78f5\\attempt-d6c1a7e910b8454c858959669ccb78f5\\manifest.json",
+      "bytes": 17946,
+      "sha256": "43bc7759d3e51a662b1e8288ef87fafe2d7aa7fa7647e8345b0b034dddfc75c0"
+    },
+    {
+      "path": "worker-r2/soldier-w1/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-d6c1a7e910b8454c858959669ccb78f5\\assignment-d6c1a7e910b8454c858959669ccb78f5\\attempt-d6c1a7e910b8454c858959669ccb78f5\\launch.json",
+      "bytes": 862,
+      "sha256": "2a1dc22fb98df91ce9fde6319fc0505eec4416844397aa2bdf7a5ce91eb2ced1"
+    },
+    {
+      "path": "worker-r2/soldier-w2/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cf7c8538bb3348f6bee98f273f23c0de\\assignment-cf7c8538bb3348f6bee98f273f23c0de\\attempt-cf7c8538bb3348f6bee98f273f23c0de\\shard-receipt.json",
+      "bytes": 765263,
+      "sha256": "b0a66f98ad3fb3f6d0f5fa610db2e5fa7785d69dfe45224fac8fe350edb7a936"
+    },
+    {
+      "path": "worker-r2/soldier-w2/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cf7c8538bb3348f6bee98f273f23c0de\\assignment-cf7c8538bb3348f6bee98f273f23c0de\\attempt-cf7c8538bb3348f6bee98f273f23c0de\\raw\\61de0a4abb979e38fe01fe7286a959d096734a869d7ab95f612954f77ee6618a.jsonl",
+      "bytes": 2621,
+      "sha256": "61de0a4abb979e38fe01fe7286a959d096734a869d7ab95f612954f77ee6618a"
+    },
+    {
+      "path": "worker-r2/soldier-w2/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cf7c8538bb3348f6bee98f273f23c0de\\assignment-cf7c8538bb3348f6bee98f273f23c0de\\attempt-cf7c8538bb3348f6bee98f273f23c0de\\manifest.json",
+      "bytes": 18007,
+      "sha256": "5423ece8959181c52243515ce5ca962eb8a2eae4c494ab9a06a8465b7b5da780"
+    },
+    {
+      "path": "worker-r2/soldier-w2/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cf7c8538bb3348f6bee98f273f23c0de\\assignment-cf7c8538bb3348f6bee98f273f23c0de\\attempt-cf7c8538bb3348f6bee98f273f23c0de\\launch.json",
+      "bytes": 877,
+      "sha256": "5bb7fe225b1695c20f6f22022c504c85e835828f96ba2363fa071c9246a6f591"
+    },
+    {
+      "path": "worker-r2/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\dual-worker-r2.log",
+      "bytes": 283,
+      "sha256": "c4060db0b0bfafee55fea254fbb6e21cebd849051416a9de6320ca38b80ddc7e"
+    },
+    {
+      "path": "worker-r3/experiment-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\experiment-report.json",
+      "bytes": 4456,
+      "sha256": "a6b409887802bb9db239f2cab77ad15d73eb01bf3585cf4bdc0bce6c130a34dc"
+    },
+    {
+      "path": "worker-r3/frozen-plan.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\frozen-plan.json",
+      "bytes": 312013,
+      "sha256": "8fc2b8e2188371258547d523b709c8ec524fcc69d8cb42c4a09e4cb8a48e6ca1"
+    },
+    {
+      "path": "worker-r3/measurement.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\measurement.json",
+      "bytes": 11747,
+      "sha256": "a2cf806df163955cfadf8968f320be28acdbd2079b337df4db477d0eb14658a5"
+    },
+    {
+      "path": "worker-r3/expected-receipts.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "59011500534cafbd43d190db51b3247c03b0ce2019cdda9c67d6fb80809f2b4b"
+    },
+    {
+      "path": "worker-r3/threat/group-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\groups\\threat\\group-report.json",
+      "bytes": 2750,
+      "sha256": "378334e608c1e41baf2520700e23227d4d9ed0858bc480d5c928c183435dcee4"
+    },
+    {
+      "path": "worker-r3/threat/save-protection.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r3-20261016\\groups\\threat\\save-protection.json",
+      "bytes": 123487,
+      "sha256": "4057dc9252f74d457fdf63150f25988b767687ec3e0eda6b14cd726bd6da3168"
+    },
+    {
+      "path": "worker-r3/soldier-w1/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aae74a4d32ab4820912d79286bcfc143\\assignment-aae74a4d32ab4820912d79286bcfc143\\attempt-aae74a4d32ab4820912d79286bcfc143\\shard-receipt.json",
+      "bytes": 791334,
+      "sha256": "eff9c5ddd0dfdd738af33d2753bf102dd52c0192b07fda7548239d47ca3f3019"
+    },
+    {
+      "path": "worker-r3/soldier-w1/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aae74a4d32ab4820912d79286bcfc143\\assignment-aae74a4d32ab4820912d79286bcfc143\\attempt-aae74a4d32ab4820912d79286bcfc143\\raw\\95260aa71e4b1769a0485ef73c589ef82680efc33ffbc6691938a495b56b3a65.jsonl",
+      "bytes": 2629,
+      "sha256": "95260aa71e4b1769a0485ef73c589ef82680efc33ffbc6691938a495b56b3a65"
+    },
+    {
+      "path": "worker-r3/soldier-w1/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aae74a4d32ab4820912d79286bcfc143\\assignment-aae74a4d32ab4820912d79286bcfc143\\attempt-aae74a4d32ab4820912d79286bcfc143\\manifest.json",
+      "bytes": 17958,
+      "sha256": "0584ac241565f1b7c6c1ee4f67d8de51cfeed4b43d54d9a1285651ec2ac16288"
+    },
+    {
+      "path": "worker-r3/soldier-w1/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aae74a4d32ab4820912d79286bcfc143\\assignment-aae74a4d32ab4820912d79286bcfc143\\attempt-aae74a4d32ab4820912d79286bcfc143\\launch.json",
+      "bytes": 862,
+      "sha256": "be74bddb7e98bb4fbe6c0533afc398076343e9805d6fd423ec9cc2db1658a0fb"
+    },
+    {
+      "path": "worker-r3/soldier-w2/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c926838c1064aa1ba4d0c96067949ad\\assignment-3c926838c1064aa1ba4d0c96067949ad\\attempt-3c926838c1064aa1ba4d0c96067949ad\\shard-receipt.json",
+      "bytes": 764193,
+      "sha256": "074880995c8c20d7bbf092c9861ff41985f3c3ffc1ff93d7572e0a64d85861d5"
+    },
+    {
+      "path": "worker-r3/soldier-w2/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c926838c1064aa1ba4d0c96067949ad\\assignment-3c926838c1064aa1ba4d0c96067949ad\\attempt-3c926838c1064aa1ba4d0c96067949ad\\raw\\932f8165931ddd57cfd3979949cd6cc8f70f93590473ce5bf23a41a7818891ae.jsonl",
+      "bytes": 2623,
+      "sha256": "932f8165931ddd57cfd3979949cd6cc8f70f93590473ce5bf23a41a7818891ae"
+    },
+    {
+      "path": "worker-r3/soldier-w2/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c926838c1064aa1ba4d0c96067949ad\\assignment-3c926838c1064aa1ba4d0c96067949ad\\attempt-3c926838c1064aa1ba4d0c96067949ad\\manifest.json",
+      "bytes": 18019,
+      "sha256": "0f77d8d2e9affd2c228988988d2cefbd4627a6cf162506ebae93240e98274f7c"
+    },
+    {
+      "path": "worker-r3/soldier-w2/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c926838c1064aa1ba4d0c96067949ad\\assignment-3c926838c1064aa1ba4d0c96067949ad\\attempt-3c926838c1064aa1ba4d0c96067949ad\\launch.json",
+      "bytes": 877,
+      "sha256": "4e0b92b254b416bbde978a4c52ad661e9f1127a80e2d39fa5c3a3d6fb94a7ad8"
+    },
+    {
+      "path": "worker-r3/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\dual-worker-r3.log",
+      "bytes": 283,
+      "sha256": "44c69cb598afc1774531ebcca71d1ceda26dd7372b861476d945099f08261724"
+    },
+    {
+      "path": "worker-r4/experiment-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\experiment-report.json",
+      "bytes": 4456,
+      "sha256": "f52d93ef1d0b9395c2f381e3bbf28c72431dfb484e0f984967af2c9a604e24a6"
+    },
+    {
+      "path": "worker-r4/frozen-plan.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\frozen-plan.json",
+      "bytes": 312008,
+      "sha256": "f3bbe330bcdb683315e467ad07897335059276c5b81c680ba196b5dc5d844d1a"
+    },
+    {
+      "path": "worker-r4/measurement.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\measurement.json",
+      "bytes": 11738,
+      "sha256": "9435ffa7c7a1fcda3a5cbc6963c0cfc756cbad4593fc0dfeea0ba0df04c01d60"
+    },
+    {
+      "path": "worker-r4/expected-receipts.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\expected-receipts.json",
+      "bytes": 1267,
+      "sha256": "6b7f9fcc689d076827aa073dddc3d655b93b279ff0544d9640b7cdb57059567a"
+    },
+    {
+      "path": "worker-r4/threat/group-report.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\groups\\threat\\group-report.json",
+      "bytes": 2750,
+      "sha256": "24c45fe3a766a7e788030c235333a22eb27f041acc120e0c5cf24f1348bc5f68"
+    },
+    {
+      "path": "worker-r4/threat/save-protection.json",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-phases-r4-20261016\\groups\\threat\\save-protection.json",
+      "bytes": 125091,
+      "sha256": "54a79a04d6cd82623b5897d7da2ffa81c373ae2ed29fbb149966b44f60944e52"
+    },
+    {
+      "path": "worker-r4/soldier-w1/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f5db523ef10a43808a3052084b1d0f88\\assignment-f5db523ef10a43808a3052084b1d0f88\\attempt-f5db523ef10a43808a3052084b1d0f88\\shard-receipt.json",
+      "bytes": 800665,
+      "sha256": "8219c19c2743201c2d8da996caea30f688fd1daf85fa3df8bb6b5d3b3f6a34d0"
+    },
+    {
+      "path": "worker-r4/soldier-w1/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f5db523ef10a43808a3052084b1d0f88\\assignment-f5db523ef10a43808a3052084b1d0f88\\attempt-f5db523ef10a43808a3052084b1d0f88\\raw\\d7fd78e3300108ef8756def6d9fee7718a2ea9c164c630fdf6931a5ccabe7627.jsonl",
+      "bytes": 2624,
+      "sha256": "d7fd78e3300108ef8756def6d9fee7718a2ea9c164c630fdf6931a5ccabe7627"
+    },
+    {
+      "path": "worker-r4/soldier-w1/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f5db523ef10a43808a3052084b1d0f88\\assignment-f5db523ef10a43808a3052084b1d0f88\\attempt-f5db523ef10a43808a3052084b1d0f88\\manifest.json",
+      "bytes": 17928,
+      "sha256": "923bf622007efddb2c56290b23f878513a53e2b110f774734bdebd5498ebad37"
+    },
+    {
+      "path": "worker-r4/soldier-w1/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f5db523ef10a43808a3052084b1d0f88\\assignment-f5db523ef10a43808a3052084b1d0f88\\attempt-f5db523ef10a43808a3052084b1d0f88\\launch.json",
+      "bytes": 862,
+      "sha256": "a0b8070c0ed8be435de9d168f9af75b6b25bd32e56485c904d992df811c3e501"
+    },
+    {
+      "path": "worker-r4/soldier-w2/receipt.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ec0d0f09dcbe47d8b1484ca2ebfdda37\\assignment-ec0d0f09dcbe47d8b1484ca2ebfdda37\\attempt-ec0d0f09dcbe47d8b1484ca2ebfdda37\\shard-receipt.json",
+      "bytes": 771162,
+      "sha256": "4858a0714845f6a4928b381fafc1c779f7d594ecde23867e6fd733ffe9581e94"
+    },
+    {
+      "path": "worker-r4/soldier-w2/results.jsonl",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ec0d0f09dcbe47d8b1484ca2ebfdda37\\assignment-ec0d0f09dcbe47d8b1484ca2ebfdda37\\attempt-ec0d0f09dcbe47d8b1484ca2ebfdda37\\raw\\8ddf803c5053ba58a6d23b58df0c528bec22eb7cb53146067dcd5fd6ff721a97.jsonl",
+      "bytes": 2618,
+      "sha256": "8ddf803c5053ba58a6d23b58df0c528bec22eb7cb53146067dcd5fd6ff721a97"
+    },
+    {
+      "path": "worker-r4/soldier-w2/manifest.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ec0d0f09dcbe47d8b1484ca2ebfdda37\\assignment-ec0d0f09dcbe47d8b1484ca2ebfdda37\\attempt-ec0d0f09dcbe47d8b1484ca2ebfdda37\\manifest.json",
+      "bytes": 17989,
+      "sha256": "c9877af37112fd4057d6cbe2a2b07fa34732a42ca23fab56137857b680536814"
+    },
+    {
+      "path": "worker-r4/soldier-w2/launch.json",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ec0d0f09dcbe47d8b1484ca2ebfdda37\\assignment-ec0d0f09dcbe47d8b1484ca2ebfdda37\\attempt-ec0d0f09dcbe47d8b1484ca2ebfdda37\\launch.json",
+      "bytes": 877,
+      "sha256": "4c168f27b9d926e7940eaef6b3f1a620b8c9c2f5459814295b94ae13f2efdfb5"
+    },
+    {
+      "path": "worker-r4/run.log",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-phases-20261016\\dual-worker-r4.log",
+      "bytes": 392,
+      "sha256": "cb48fa76810ad42378d808cbe845d6830ccb8267e3337f7ca08a4fb8bd85cc2a"
+    },
+    {
+      "path": "capture/worker-1.log",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\logs\\launcher.log",
+      "sourceSha256": "e1a8e94239aae28d8b3ff25fa4b7950231ce84070b20a9d4b7e8cf871e84e79a",
+      "bytes": 7398,
+      "sha256": "2b6b72c8f66524a8339a0af596b5ff5713cd076f9ccb233e13a727621f6398da",
+      "derivedExcerpt": true
+    },
+    {
+      "path": "capture/worker-2.log",
+      "originalPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\logs\\launcher.log",
+      "sourceSha256": "2fc827684bc96ee4d42c3681dd519e6696d1ac69e4dfa3c8f575b855735162f0",
+      "bytes": 22125,
+      "sha256": "a9eda2c79fba37c09f21cea82ee2f9f2a4a8d336b046abe5e2dfe27e0375dacf",
+      "derivedExcerpt": true
+    }
+  ]
+}

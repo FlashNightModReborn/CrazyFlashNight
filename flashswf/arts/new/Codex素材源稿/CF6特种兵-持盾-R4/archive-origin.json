@@ -1,0 +1,107 @@
+{
+  "schema": "cf6-soldier.shield-input.v1",
+  "archiveName": "02B-latest-local-source.zip",
+  "archiveSha256": "7c1f8fcff8070917794ae0fb7eed60e53744b732325083240099f9ca053dba27",
+  "selectedShapeIds": [
+    561,
+    565,
+    566,
+    567,
+    568,
+    569,
+    570,
+    571,
+    572,
+    575,
+    577,
+    578
+  ],
+  "members": [
+    {
+      "path": "parts/561.svg",
+      "bytes": 7065,
+      "sha256": "299021268b92354238d42d96cfff643f2e23813e8ab4a0a9b89d5bf990353bec"
+    },
+    {
+      "path": "variants/565.svg",
+      "bytes": 180971,
+      "sha256": "25ea1c88600f35b6272ea359984be7d4a06010bc23249692a91243f7d100e210"
+    },
+    {
+      "path": "variants/566.svg",
+      "bytes": 180971,
+      "sha256": "a0f0cfa90773948730e8af07624816c99f3cc2023ff3d74b1d96b9696399cf23"
+    },
+    {
+      "path": "variants/567.svg",
+      "bytes": 180996,
+      "sha256": "d90f66a4c06d70d7c35723116b1a99782c7635a51db10801fc1cc0f8fa682047"
+    },
+    {
+      "path": "variants/568.svg",
+      "bytes": 180947,
+      "sha256": "498b8cf4ce38bcb7a91d9ac6667cb77f409baa0d87e803b38855fcbd8ce65a83"
+    },
+    {
+      "path": "variants/569.svg",
+      "bytes": 180947,
+      "sha256": "dcfbcc673c3cb971051ae747732115054bb5ea985fe80ca7c27151a1fa721afd"
+    },
+    {
+      "path": "variants/570.svg",
+      "bytes": 180947,
+      "sha256": "83615bdd7d84e15d0d0698dac9099cc3983e9a346f422f759058374ccbae56d9"
+    },
+    {
+      "path": "variants/571.svg",
+      "bytes": 180971,
+      "sha256": "8bc29775dcb81b197c8f17d47cf0163a429a47ac942f4ce098649a19c0f9782e"
+    },
+    {
+      "path": "variants/572.svg",
+      "bytes": 180971,
+      "sha256": "3b4d9260262f20dde7f9e2d78673f65440a5331c27ec34270743460c9273ba9c"
+    },
+    {
+      "path": "variants/575.svg",
+      "bytes": 8459,
+      "sha256": "6c925a95c401554623f23a4c4f4ccba3a1ba480fff1f2781b1fa42d27d688f15"
+    },
+    {
+      "path": "variants/577.svg",
+      "bytes": 8484,
+      "sha256": "c0dd2013e6a29099a553871d35602dd137f69c1e93ef600c17ee222e71f8180c"
+    },
+    {
+      "path": "variants/578.svg",
+      "bytes": 8496,
+      "sha256": "3013e83b92b17afbe25c7ee659da86402b2479a32945ed96fddd002cb602e6b7"
+    },
+    {
+      "path": "asset-manifest.json",
+      "bytes": 55701,
+      "sha256": "cff89ec58be16c7e3897f96c2731a8ee746903145ab707872640dced70fc6a49"
+    },
+    {
+      "path": "reference/timelines.json",
+      "bytes": 2618171,
+      "sha256": "739d410f16db31343c94fe953ee7a7f4838ac5591855e641f7be754fd5a4b5e0"
+    },
+    {
+      "path": "reference/identity-manifest.json",
+      "bytes": 42367,
+      "sha256": "f975a2afad408e53d2bb154307c7546670e5b4288306a1542248caac631e2629"
+    },
+    {
+      "path": "README.md",
+      "bytes": 2800,
+      "sha256": "c1081d2f0cc7fa01b81b16d92b2cf01a85000195b1c905fb907f7ef9a89a55bd"
+    },
+    {
+      "path": "INTEGRATION.md",
+      "bytes": 859,
+      "sha256": "91037232ebccd00bde09fedf7fd3d86a30b204f02665e73ec8078e8531e61f19"
+    }
+  ],
+  "scope": "Approved R4 CT shield and matching broken shield; ordinary shared artwork remains the frozen R3 source."
+}

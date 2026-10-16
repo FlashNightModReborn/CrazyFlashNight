@@ -1,0 +1,2163 @@
+{
+  "method": "2x atlas-space approximate overlap for identity classification only, quadratic curves sampled at 16 steps. Affine transfer matrices exact. Preserve original target clipping paths for final renders.",
+  "baseIds": [
+    484,
+    485,
+    486,
+    487,
+    488,
+    489,
+    490,
+    491,
+    493,
+    494,
+    495,
+    496,
+    497,
+    561
+  ],
+  "items": [
+    {
+      "shapeId": 277,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#010101"
+        }
+      ]
+    },
+    {
+      "shapeId": 280,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#ff0000"
+        }
+      ]
+    },
+    {
+      "shapeId": 310,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#ff0000"
+        }
+      ]
+    },
+    {
+      "shapeId": 503,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 2,
+          "bitmapId": 502,
+          "classification": "external-weapon-or-shared-effect-not-body-atlas"
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 504,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 2,
+          "bitmapId": 502,
+          "classification": "external-weapon-or-shared-effect-not-body-atlas"
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 505,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 2,
+          "bitmapId": 502,
+          "classification": "external-weapon-or-shared-effect-not-body-atlas"
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 508,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 509,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 510,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7855.25,
+          "coveredByBaseParts": 0.997613061328411,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -20.65778579711914,
+                0.16136703491210724
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 511,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 512,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 514,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 515,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 516,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 521,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 522,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 287.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -80.13540573120117,
+                -51.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 937.25,
+          "coveredByBaseParts": 0.9965324086423046,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99653,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -49.73540573120117,
+                -60.077450561523435
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 525.0,
+          "coveredByBaseParts": 0.9961904761904762,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99619,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -67.03540573120117,
+                -51.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 616.0,
+          "coveredByBaseParts": 0.9991883116883117,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99919,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -57.98540573120117,
+                -53.827450561523435
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 2049.75,
+          "coveredByBaseParts": 0.9993901695328699,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99939,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -50.135405731201175,
+                -55.327450561523435
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 523,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 524,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 161.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -80.13540573120117,
+                -51.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 14.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -49.73540573120117,
+                -60.077450561523435
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 82.5,
+          "coveredByBaseParts": 0.996969696969697,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99697,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -67.03540573120117,
+                -51.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 59.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -89.23540573120117,
+                -57.27745056152344
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 82.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -77.73540573120117,
+                -65.32745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 6,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 100.0,
+          "coveredByBaseParts": 0.9975,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.9975,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -55.285405731201166,
+                -64.57745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 7,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 751.75,
+          "coveredByBaseParts": 0.9940139674093781,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99401,
+              "sourceLocalToTargetLocal": [
+                -0.11305007934570313,
+                -0.2338531494140625,
+                0.2338531494140625,
+                -0.11305007934570313,
+                -60.33079246520997,
+                -86.832087059021
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 8,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.019022369384765626,
+                -0.2590476989746094,
+                0.2590476989746094,
+                0.019022369384765626,
+                -45.54082736968994,
+                -74.38093242645263
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 9,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 168.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.11305007934570313,
+                -0.2338531494140625,
+                0.2338531494140625,
+                -0.11305007934570313,
+                -89.88079246520996,
+                -52.83208705902099
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 10,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 30.75,
+          "coveredByBaseParts": 0.991869918699187,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99187,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -78.03540573120117,
+                -41.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 11,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 2.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.05100936889648437,
+                -0.25426483154296875,
+                0.25426483154296875,
+                0.05100936889648437,
+                -54.3714471435547,
+                -58.82096279144287
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 12,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 983.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.08295669555664062,
+                -0.24570465087890625,
+                0.24570541381835936,
+                -0.08295669555664062,
+                -103.04914112091065,
+                -72.33144802093506
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 525,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 526,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 3.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -55.285405731201166,
+                -64.57745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -90.63540573120117,
+                -42.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 30.75,
+          "coveredByBaseParts": 0.991869918699187,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99187,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -82.53540573120117,
+                -35.677450561523436
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 412.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.2551445007324219,
+                0.0486724853515625,
+                -0.0486724853515625,
+                -0.2551445007324219,
+                -128.10012489318848,
+                -81.38437870025635
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 749.5,
+          "coveredByBaseParts": 0.9866577718478986,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.98666,
+              "sourceLocalToTargetLocal": [
+                -0.21483078002929687,
+                -0.14599761962890626,
+                0.14599838256835937,
+                -0.21483078002929687,
+                -85.07285465240479,
+                -89.15013996124267
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 6,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 985.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.21464309692382813,
+                -0.029044342041015626,
+                0.06308441162109375,
+                -0.2445953369140625,
+                -115.71509155273438,
+                -30.544306869506833
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 527,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 528,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 3.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -55.285405731201166,
+                -64.57745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 983.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.029044342041015626,
+                0.21464309692382813,
+                -0.2445953369140625,
+                -0.06308441162109375,
+                -140.69430686950685,
+                42.71509155273438
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 411.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.2551445007324219,
+                0.0486724853515625,
+                -0.0486724853515625,
+                -0.2551445007324219,
+                -153.10012489318848,
+                -1.3843787002563488
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 748.5,
+          "coveredByBaseParts": 0.9866399465597863,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.98664,
+              "sourceLocalToTargetLocal": [
+                -0.21483078002929687,
+                -0.14599761962890626,
+                0.14599838256835937,
+                -0.21483078002929687,
+                -105.07285465240479,
+                -39.15013996124267
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 529,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 530,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 3.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -55.285405731201166,
+                -64.57745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 745.5,
+          "coveredByBaseParts": 0.9902749832327297,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99027,
+              "sourceLocalToTargetLocal": [
+                -0.2590484619140625,
+                -0.019022369384765626,
+                0.019023895263671875,
+                -0.2590484619140625,
+                -117.48082942962645,
+                26.640767593383792
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 930.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.0821685791015625,
+                0.20040969848632811,
+                -0.2433685302734375,
+                0.06766510009765625,
+                -143.18486618041993,
+                42.700451049804684
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 410.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.08542022705078126,
+                0.24529876708984374,
+                -0.24529876708984374,
+                -0.08542022705078126,
+                -179.7727773284912,
+                37.0803084564209
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 531,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 532,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 3.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.196624755859375,
+                -0.1697235107421875,
+                0.1697235107421875,
+                0.196624755859375,
+                -55.285405731201166,
+                -64.57745056152343
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 933.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.13123855590820313,
+                0.172314453125,
+                -0.2175628662109375,
+                0.1283477783203125,
+                -144.44817390441895,
+                43.44527206420898
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 742.75,
+          "coveredByBaseParts": 0.9962975429148435,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.9963,
+              "sourceLocalToTargetLocal": [
+                -0.16972427368164061,
+                -0.19662551879882811,
+                0.19662704467773437,
+                -0.16972274780273439,
+                -108.42728778839111,
+                43.58544895172119
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.14599761962890626,
+                0.21483230590820312,
+                -0.21483230590820312,
+                -0.14599761962890626,
+                -176.900259513855,
+                36.6229475402832
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 533,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 534,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 933.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.13123855590820313,
+                0.172314453125,
+                -0.2175628662109375,
+                0.1283477783203125,
+                -144.44817390441895,
+                43.44527206420898
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 744.25,
+          "coveredByBaseParts": 0.9929459187101108,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99295,
+              "sourceLocalToTargetLocal": [
+                -0.21483154296875,
+                -0.14599838256835937,
+                0.14599990844726562,
+                -0.21483078002929687,
+                -110.92275165557862,
+                41.29984348297119
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.14599761962890626,
+                0.21483230590820312,
+                -0.21483230590820312,
+                -0.14599761962890626,
+                -176.900259513855,
+                36.6229475402832
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 535,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 536,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 933.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.13123855590820313,
+                0.172314453125,
+                -0.2175628662109375,
+                0.1283477783203125,
+                -144.44817390441895,
+                43.44527206420898
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 744.25,
+          "coveredByBaseParts": 0.9929459187101108,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99295,
+              "sourceLocalToTargetLocal": [
+                -0.21483154296875,
+                -0.14599838256835937,
+                0.14599990844726562,
+                -0.21483078002929687,
+                -110.92275165557862,
+                41.29984348297119
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.14599761962890626,
+                0.21483230590820312,
+                -0.21483230590820312,
+                -0.14599761962890626,
+                -176.900259513855,
+                36.6229475402832
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": [
+        {
+          "fillIndex": 4,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 537,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 538,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 539,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 540,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 541,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 542,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 933.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.13123855590820313,
+                0.172314453125,
+                -0.2175628662109375,
+                0.1283477783203125,
+                -144.44817390441895,
+                43.44527206420898
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 744.25,
+          "coveredByBaseParts": 0.9929459187101108,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99295,
+              "sourceLocalToTargetLocal": [
+                -0.21483154296875,
+                -0.14599838256835937,
+                0.14599990844726562,
+                -0.21483078002929687,
+                -110.92275165557862,
+                41.29984348297119
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.14599761962890626,
+                0.21483230590820312,
+                -0.21483230590820312,
+                -0.14599761962890626,
+                -176.900259513855,
+                36.6229475402832
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": [
+        {
+          "fillIndex": 4,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 543,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 544,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 933.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.13123855590820313,
+                0.172314453125,
+                -0.2175628662109375,
+                0.1283477783203125,
+                -144.44817390441895,
+                43.44527206420898
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 744.25,
+          "coveredByBaseParts": 0.9929459187101108,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 0.99295,
+              "sourceLocalToTargetLocal": [
+                -0.21483154296875,
+                -0.14599838256835937,
+                0.14599990844726562,
+                -0.21483078002929687,
+                -110.92275165557862,
+                41.29984348297119
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 413.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 488,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.14599761962890626,
+                0.21483230590820312,
+                -0.21483230590820312,
+                -0.14599761962890626,
+                -176.900259513855,
+                36.6229475402832
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": [
+        {
+          "fillIndex": 4,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 545,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 546,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 547,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 548,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 549,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 550,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 551,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 552,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 553,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 554,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 555,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 556,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 557,
+      "bitmapFillMappings": [],
+      "solidFills": [
+        {
+          "fillIndex": 1,
+          "color": "#990000"
+        }
+      ]
+    },
+    {
+      "shapeId": 565,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 566,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 567,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7855.25,
+          "coveredByBaseParts": 0.997613061328411,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -20.65778579711914,
+                0.16136703491210724
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 568,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 569,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 570,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.997612377435375,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99761,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -15.307785797119138,
+                0.9113670349121072
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 571,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 572,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 483,
+          "visibleAtlasAreaPx": 7853.0,
+          "coveredByBaseParts": 0.9975805424678467,
+          "overlaps": [
+            {
+              "sourcePart": 485,
+              "atlasVisibleOverlap": 0.99758,
+              "sourceLocalToTargetLocal": [
+                0.1868438720703125,
+                -0.1334075927734375,
+                0.1334075927734375,
+                0.1868438720703125,
+                -30.90778579711914,
+                -1.0886329650878928
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 575,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 906.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.6155892595307918,
+                0.056612903225806456,
+                -0.056612903225806456,
+                0.6155892595307918,
+                3.769496929985337,
+                -17.618323726173013
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 695.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.8030489369501466,
+                0.07385263929618768,
+                -0.07385263929618768,
+                0.8030489369501466,
+                -14.552231442448683,
+                -24.225119913856304
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1487.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.62872892228739,
+                0.057820747800586506,
+                -0.057820747800586506,
+                0.62872892228739,
+                -50.43854339259531,
+                -29.613444510630504
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1195.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.827171004398827,
+                0.07607129765395894,
+                -0.07607129765395894,
+                0.827171004398827,
+                4.625485428885629,
+                6.377159640762457
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1584.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.748000366568915,
+                0.06879032258064516,
+                -0.06879032258064516,
+                0.748000366568915,
+                -8.934773552052786,
+                16.481203537390034
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 6,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1322.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.6625568181818181,
+                0.060932001466275656,
+                -0.060932001466275656,
+                0.6625568181818181,
+                -47.008251237170086,
+                11.872584539956009
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 577,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 912.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.31642503665689153,
+                0.5299376832844575,
+                -0.5299376832844575,
+                0.31642503665689153,
+                18.069931864002932,
+                -27.52859333760997
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 692.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.3656644061583578,
+                -0.35176869501466274,
+                0.35176869501466274,
+                0.3656644061583578,
+                -0.30136817265395877,
+                -53.071669583944285
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1478.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.2832248900293255,
+                -0.2407093108504399,
+                0.2407093108504399,
+                0.2832248900293255,
+                -88.77875151209678,
+                -34.27979650843108
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1191.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.010759714076246334,
+                0.4278198313782991,
+                -0.4278198313782991,
+                -0.010759714076246334,
+                40.49451961143696,
+                6.378087335043988
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1588.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.07151392961876833,
+                0.39352181085043986,
+                -0.39352181085043986,
+                0.07151392961876833,
+                40.405246563416426,
+                38.0581173478739
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 6,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1322.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.19613819648093841,
+                -0.29283449413489737,
+                0.29283449413489737,
+                0.19613819648093841,
+                -81.0193427877566,
+                27.490775247434016
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    },
+    {
+      "shapeId": 578,
+      "bitmapFillMappings": [
+        {
+          "fillIndex": 1,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 897.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.24805168621700882,
+                0.15123625366568916,
+                -0.15123625366568916,
+                -0.24805168621700882,
+                74.7059655883431,
+                -21.9808115377566
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 2,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 693.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                0.15438966275659824,
+                -0.1485300586510264,
+                0.1485300586510264,
+                0.15438966275659824,
+                -6.875934475806453,
+                -13.343853647360707
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 3,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1464.75,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.11664589442815249,
+                -0.12763837976539588,
+                0.12763837976539588,
+                -0.11664589442815249,
+                -134.58481712793255,
+                -28.312014158724338
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 4,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1175.0,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.20464259530791787,
+                0.011862170087976541,
+                -0.011862170087976541,
+                -0.20464259530791787,
+                78.7309821297654,
+                25.13158275293255
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 5,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1589.5,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.19723148826979472,
+                0.0033990102639296187,
+                -0.0033990102639296187,
+                -0.19723148826979472,
+                88.80410089809385,
+                58.77341843841643
+              ]
+            }
+          ]
+        },
+        {
+          "fillIndex": 6,
+          "bitmapId": 560,
+          "visibleAtlasAreaPx": 1312.25,
+          "coveredByBaseParts": 1.0,
+          "overlaps": [
+            {
+              "sourcePart": 561,
+              "atlasVisibleOverlap": 1.0,
+              "sourceLocalToTargetLocal": [
+                -0.12778042521994135,
+                -0.10384622434017596,
+                0.10384622434017596,
+                -0.12778042521994135,
+                -102.39217105021994,
+                57.83619808467742
+              ]
+            }
+          ]
+        }
+      ],
+      "solidFills": []
+    }
+  ]
+}

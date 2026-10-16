@@ -187,3 +187,15 @@ launcher/app.manifest text eol=lf
 /scripts/test-runners/cf6-bladebot/** -text
 /scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6WingsAssetTest.as -text
 /scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as -text
+
+# Ordinary soldier frozen inputs, native project and evidence retain exact bytes.
+/flashswf/arts/new/Codex素材源稿/CF6特种兵-R3/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex特种兵素材/** -text whitespace=cr-at-eol
+/tools/cf6-soldier-assets/** -text whitespace=cr-at-eol
+# Frozen source copies and logs keep their original whitespace for hash verification.
+/tools/cf6-soldier-assets/evidence/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/scripts/run-cf6-soldier-asset-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-soldier/** -text whitespace=-blank-at-eof,cr-at-eol
+/scripts/Cf6SoldierNativeHost/** -text
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as -text
