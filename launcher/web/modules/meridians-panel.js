@@ -192,6 +192,7 @@ var MeridiansPanel = (function() {
     var _requireKey = null;   // 右栏情报清单的内容签名，内容没变就不重建 DOM
     var _busyNodes = {};
     var _scaleHandle = null;
+    var _panelInstanceId = '';
     var _zoom = 1, _panX = 0, _panY = 0;
     var _dragging = false, _dragMoved = false, _dragX = 0, _dragY = 0;
 
@@ -417,19 +418,31 @@ var MeridiansPanel = (function() {
 
     // ── 缩放/平移视图 ──
 
+    // 平移只写 transform 的 translate（pointermove 每帧都走，不碰缩放的自定义属性）。
     function applyView() {
         var r3 = function(v) { return Math.round(v * 1000) / 1000; };
         _refs.canvas.style.transform =
-            'translate(' + r3(_panX) + 'px, ' + r3(_panY) + 'px) scale(' + r3(_zoom) + ')';
+            'translate(' + r3(_panX) + 'px, ' + r3(_panY) + 'px)';
     }
 
+    // 缩放不用 transform scale：合成层带 scale 会把已栅格化的位图整体拉伸，放大后穴位标签就糊了。
+    // 改成按 --mer-zoom 撑开 SVG 布局尺寸，文字与轮廓走矢量重栅格，任何倍率都锐利。
+    function applyZoomSize() {
+        _refs.canvas.style.setProperty('--mer-zoom',
+            Math.round(_zoom * 1000) / 1000);
+    }
+
+    // 横轴上 SVG 由 flex 居中，尺寸从视口中心向外长；纵轴顶对齐，从顶边向下长。
+    // 保持光标下的内容点不动：pan' = u - (u - pan) * (z'/z)，u 是该轴相对缩放原点的偏移。
     function zoomAt(factor, cx, cy) {
         var next = Math.min(ZOOM_MAX, Math.max(ZOOM_MIN, _zoom * factor));
         if (next === _zoom) return;
-        // 保持光标下的内容点不动：pan' = mouse - (mouse - pan) * (z'/z)
-        _panX = cx - (cx - _panX) * (next / _zoom);
-        _panY = cy - (cy - _panY) * (next / _zoom);
+        var ratio = next / _zoom;
+        var ux = cx - _refs.viewport.clientWidth / 2;
+        _panX = ux - (ux - _panX) * ratio;
+        _panY = cy - (cy - _panY) * ratio;
         _zoom = next;
+        applyZoomSize();
         applyView();
         renderMap(); // 点位与文字要按新缩放反算，尺寸才不随缩放变化
     }
@@ -438,6 +451,7 @@ var MeridiansPanel = (function() {
         _zoom = 1;
         _panX = 0;
         _panY = 0;
+        applyZoomSize();
         applyView();
         renderMap();
     }
@@ -468,6 +482,8 @@ var MeridiansPanel = (function() {
         showError('');
 
         initData = initData || {};
+        _panelInstanceId = typeof initData.panelInstanceId === 'string'
+            ? initData.panelInstanceId : '';
         _scaleHandle = (typeof PanelScale !== 'undefined' && PanelScale && PanelScale.attach)
             ? PanelScale.attach(_refs.shell, DESIGN_WIDTH, DESIGN_HEIGHT)
             : null;
@@ -478,11 +494,17 @@ var MeridiansPanel = (function() {
         if (_scaleHandle && _scaleHandle.detach) _scaleHandle.detach();
         _scaleHandle = null;
         _pending = {};
+        _panelInstanceId = '';
     }
 
+    // 本地清理先要留存本次 open 绑定的实例身份，再隐藏 DOM，最后把 close 信封交回宿主：
+    // 宿主的撤幕/HUD 恢复/解除暂停都挂在这条 exact close 上，缺信封就是黑屏。
     function doClose() {
+        var instance = _panelInstanceId;
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');
         Panels.close();
+        Bridge.send({ type: 'panel', cmd: 'close', panel: 'meridians',
+            panelInstanceId: instance });
     }
 
     // ========== 与 AS2 权威往返 ==========
@@ -857,7 +879,7 @@ var MeridiansPanel = (function() {
         _refs.canvas.innerHTML = buildMapSvg();
     }
 
-    // 缩放由外层 CSS transform 施加，所以点位、连线和文字一律按 1/zoom 反缩放：
+    // 缩放由 SVG 自身的布局尺寸施加（见 applyZoomSize），所以点位、连线和文字一律按 1/zoom 反缩放：
     // 屏幕上尺寸恒定，放大只是把身体撑开，让原本挤在一起的穴位自然分开。
     // 标签分左右两列各自排布，保持最小屏幕行距；被推开的标签用引线连回穴位。
     function buildMapSvg() {

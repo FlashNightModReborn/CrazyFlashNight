@@ -3598,11 +3598,16 @@
 /* Arena Panel (角斗场) 样式已迁至 css/workbench/arena.css（双栏工作台迁移 P1c，2026-08-07）。线性历史见 git。 */
 
 /* ── 经脉面板 meridians（archive 配色沿用 intel 同色系）── */
+/* 尺寸锚在 #panel-content 上，不能拿视口量：容器左右各 inset 6%，
+   用 100vw 算出来的面板比容器宽出 12%，窗口一窄右侧关闭按钮就被顶出屏幕外。
+   margin:auto 让面板在容器里居中（100% 时不留空隙，宽屏时不再靠左偏）。 */
 .meridians-panel {
-    width: min(1404px, calc(100vw - 34px));
-    height: min(790px, calc(100vh - 28px));
+    width: min(1404px, 100%);
+    height: min(790px, 100%);
     min-width: 900px;
     min-height: 560px;
+    margin: auto;
+    box-sizing: border-box;
     color: var(--wb-semantic-meridian-text);
     background: var(--wb-semantic-meridian-surface);
     border: 1px solid var(--wb-semantic-meridian-border-panel);
@@ -3738,8 +3743,10 @@
     will-change: transform;
 }
 
+/* 缩放走 SVG 布局尺寸而非 transform scale：scale 会让合成层把已栅格化的文字位图拉伸，
+   放大后穴位标签发虚；按 --mer-zoom 撑开尺寸后文本走矢量栅格化，任何倍率都清晰。 */
 .mer-svg {
-    height: 100%;
+    height: calc(100% * var(--mer-zoom, 1));
     width: auto;
     flex: none;
 }
