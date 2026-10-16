@@ -51,6 +51,14 @@
                 '</div>' +
                 '<div class="stage-select-tabs" id="stage-select-tabs"></div>' +
                 '<div class="stage-select-tools">' +
+                    // 节点语义图例：放在顶栏工具行（不遮挡地图节点/导航），纯展示、不接收指针、不进 Tab 序；
+                    // 形状与颜色同地图信标一一对应。
+                    '<div class="stage-select-legend" id="stage-select-legend" role="note" aria-label="地点图例">' +
+                        '<span class="stage-select-legend-item is-combat"><span class="stage-select-legend-glyph" aria-hidden="true"></span>战斗关卡</span>' +
+                        '<span class="stage-select-legend-item is-route"><span class="stage-select-legend-glyph" aria-hidden="true"></span>友方据点</span>' +
+                        '<span class="stage-select-legend-item is-task"><span class="stage-select-legend-glyph" aria-hidden="true"></span>任务</span>' +
+                        '<span class="stage-select-legend-item is-locked"><span class="stage-select-legend-glyph" aria-hidden="true"></span>未解锁</span>' +
+                    '</div>' +
                     '<div class="stage-select-mod-pod" id="stage-select-mod-pod" role="group" aria-label="选关修改器">' +
                         '<button class="stage-select-mod-btn" id="stage-select-mod-unlock" type="button" aria-pressed="false" title="选关修改器：临时解锁全部关卡（挑战模式自动禁用）" data-audio-cue="navigate">⚡ 全关卡解锁</button>' +
                         '<button class="stage-select-mod-btn is-test-space" id="stage-select-mod-test-space" type="button" title="选关修改器：进入测试空间（挑战模式自动禁用）" data-audio-cue="activate">⌖ 测试空间</button>' +
@@ -700,8 +708,8 @@
         if (S._busyStageName && S._busyStageName === button.stageName) node.classList.add('is-busy');
         node.innerHTML =
             '<span class="stage-select-hit-zone" aria-hidden="true"></span>' +
-            renderStageMarkerSvg() +
-            '<span class="stage-select-stage-name">' + StageSelectCore.escapeHtml(displayName) + '</span>' +
+            renderStageMarkerSvg(isMapEntry) +
+            '<span class="stage-select-stage-name">' + renderStageNameHtml(displayName, isMapEntry) + '</span>' +
             renderStageLockSvg() +
             '<span class="stage-select-task-pulse"></span>' +
             // 打磨批：选中光环独立元素（task-pulse 同族柔和外发光），替代旧 hit-zone 硬 box-shadow 圆环
@@ -865,7 +873,22 @@
         node.style.setProperty('--stage-map-text-height', StageSelectCore.numericCss(text.height, 34.3));
     }
 
-    function renderStageMarkerSvg() {
+    // 节点语义的形状编码（2026-10-16 玩家反馈：副本与友方据点一眼难分）：
+    // 战斗/任务关卡 = 菱形信标；外交据点（entryKind=map）= 圆形信标 + 前进三角内芯。
+    // 形状独立于颜色承载语义，红绿色弱下仍可区分；三段 path 的 class 不变，沿用既有填色规则。
+    function renderStageMarkerSvg(isMapEntry) {
+        if (isMapEntry) {
+            return '<span class="stage-select-marker is-route" aria-hidden="true">' +
+                '<svg class="stage-select-marker-svg" viewBox="-293 -293 586 586" focusable="false">' +
+                    '<path class="stage-select-marker-disc" d="M0 -264 A264 264 0 1 1 0 264 A264 264 0 1 1 0 -264 Z"/>' +
+                    '<path class="stage-select-marker-fill" fill-rule="evenodd" d="' +
+                        'M0 -220 A220 220 0 1 1 0 220 A220 220 0 1 1 0 -220 Z ' +
+                        'M0 -162 A162 162 0 1 0 0 162 A162 162 0 1 0 0 -162 Z' +
+                    '"/>' +
+                    '<path class="stage-select-marker-core" d="M-52 -92 L100 0 L-52 92 Z"/>' +
+                '</svg>' +
+            '</span>';
+        }
         return '<span class="stage-select-marker" aria-hidden="true">' +
             '<svg class="stage-select-marker-svg" viewBox="-293 -293 586 586" focusable="false">' +
                 '<path class="stage-select-marker-disc" d="M0 -264 L264 0 L0 264 L-264 0 Z"/>' +
@@ -876,6 +899,18 @@
                 '<path class="stage-select-marker-core" d="M0 -84 L84 0 L0 84 L-84 0 Z"/>' +
             '</svg>' +
         '</span>';
+    }
+
+    // 外交据点名称以「前往」开头时，把动词降级为小号前缀，让地名成为视觉重心；
+    // textContent 仍是完整原文（无障碍名称与既有文本断言不变）。
+    function renderStageNameHtml(displayName, isMapEntry) {
+        var text = String(displayName || '');
+        var verb = '前往';
+        if (isMapEntry && text.indexOf(verb) === 0 && text.length > verb.length) {
+            return '<span class="stage-select-stage-name-verb">' + verb + '</span>' +
+                StageSelectCore.escapeHtml(text.substr(verb.length));
+        }
+        return StageSelectCore.escapeHtml(text);
     }
 
     function renderStageLockSvg() {

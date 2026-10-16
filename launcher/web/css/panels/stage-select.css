@@ -3195,6 +3195,131 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button 
     box-shadow: 0 0 12px rgba(var(--ss-pin-map-rgb), 0.32);
 }
 
+/* ══ 8. 节点语义可辨识度（2026-10-16 玩家反馈：副本与友方据点第一眼难分）══════════════
+   旧版两类节点只靠 3px 左侧条 + 信标内芯区分，铭牌主体 95% 面积相同。本层在不改风格的前提下：
+   - P0 底板：外交据点（is-map-entry）铭牌改为青绿染色底板 + 青绿细框；战斗关卡保持中性钢灰。
+     明度/冷暖差先于色相被感知，扫视即可分组。
+   - P0 形状：外交据点信标为圆形 + 前进三角内芯（renderer .stage-select-marker.is-route），战斗仍为菱形；
+     形状不依赖颜色，红绿色弱可辨。
+   - P1 文字：「前往」降级为小号前缀标签（.stage-select-stage-name-verb），地名成为视觉重心。
+   - P2 图例：顶栏工具行纯展示图例（pointer-events:none，不进 Tab 序），不占用舞台、不遮挡节点与导航。
+   交互下限：只改 paint 与铭牌内部排版；hit-zone / marker 包络 / 定位变量零改动。
+   闲置态规则以 :not(:hover):not(.is-kb-focus):not(.is-selected) 限定，悬停/焦点/选中继续由第 6 节统一主色接管。 */
+
+/* P0 底板 · 三维 */
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry:not(:hover):not(.is-kb-focus):not(.is-selected) > .stage-select-stage-name {
+    color: rgb(var(--ss-pin-map-text-rgb));
+    background:
+        linear-gradient(90deg, rgba(var(--ss-pin-map-rgb), 0.34) 0%, rgba(var(--ss-pin-map-rgb), 0.16) 48%, rgba(var(--ss-pin-map-rgb), 0.1) 100%),
+        rgba(var(--ss-header-rgb), 0.92);
+    border-color: rgba(var(--ss-pin-map-rgb), 0.7);
+    border-left-color: rgb(var(--ss-pin-map-rgb));
+    box-shadow:
+        0 0 0 1px rgba(var(--ss-black-rgb), 0.6),
+        0 0 10px rgba(var(--ss-pin-map-rgb), 0.18),
+        0 6px 16px rgba(var(--ss-black-rgb), 0.32);
+}
+
+/* P0 底板 · 二维（沿用 Flash 版无框名称，仅把暗色晕染换成青绿晕染） */
+.stage-select-panel.is-runtime:not(.is-diorama) .stage-select-stage-button.is-map-entry .stage-select-stage-name {
+    color: rgb(var(--ss-pin-map-text-rgb));
+    background: radial-gradient(ellipse 62% 80% at 50% 55%, rgba(var(--ss-pin-map-rgb), 0.42) 0%, rgba(var(--ss-pin-map-rgb), 0.18) 55%, rgba(var(--ss-pin-map-rgb), 0) 92%);
+}
+
+/* P0 形状 · 圆形信标：沿用「钢框 + 青绿芯」语义色合同（qa tactical-language-floors 守门），
+   只换圆形外框与前进三角内芯，并加一圈低透明青绿晕光帮助扫视 */
+.stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry > .stage-select-marker.is-route {
+    filter:
+        drop-shadow(0 2px 4px rgba(var(--ss-black-rgb), 0.95))
+        drop-shadow(0 0 5px rgba(var(--ss-pin-map-rgb), 0.5));
+}
+
+html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button.is-map-entry > .stage-select-marker.is-route {
+    filter: drop-shadow(0 1px 2px rgba(var(--ss-black-rgb), 0.9));
+}
+
+/* P1 文字层级：「前往」小号前缀标签 */
+.stage-select-stage-name-verb {
+    display: inline-block;
+    margin-right: 4px;
+    padding: 0 3px;
+    font-size: var(--ss-font-xs);
+    font-weight: 400;
+    line-height: 14px;
+    letter-spacing: 0;
+    vertical-align: 1px;
+    color: rgba(var(--ss-pin-map-text-rgb), 0.86);
+    background: rgba(var(--ss-pin-map-rgb), 0.2);
+    border: 1px solid rgba(var(--ss-pin-map-rgb), 0.6);
+    text-shadow: none;
+}
+
+.stage-select-stage-button.is-selected .stage-select-stage-name-verb,
+.stage-select-panel.is-diorama .stage-select-stage-button:is(:hover, .is-kb-focus) .stage-select-stage-name-verb {
+    color: inherit;
+}
+
+/* P2 图例：仅玩家 runtime 顶栏显示（dev 顶栏保持原网格宽度）；位于工具行最左侧，
+   order:-1 保证在动态插入的「游览地图」等按钮之前 */
+.stage-select-legend {
+    display: none;
+}
+
+.stage-select-panel.is-runtime .stage-select-legend {
+    order: -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    height: 26px;
+    padding: 0 10px;
+    margin-right: 6px;
+    box-sizing: border-box;
+    pointer-events: none;
+    white-space: nowrap;
+    font-family: "Microsoft YaHei", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: var(--ss-font-xs);
+    line-height: 16px;
+    color: rgba(var(--ss-card-name-text-rgb), 0.82);
+    background: rgba(var(--ss-header-rgb), 0.72);
+    border: 1px solid rgba(var(--ss-pin-frame-rgb), 0.18);
+}
+
+.stage-select-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stage-select-legend-glyph {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    box-sizing: border-box;
+    border: 1.5px solid rgb(var(--ss-pin-frame-rgb));
+    background: rgb(var(--ss-pin-combat-rgb));
+    rotate: 45deg;
+}
+
+.stage-select-legend-item.is-route .stage-select-legend-glyph {
+    width: 10px;
+    height: 10px;
+    rotate: 0deg;
+    border-radius: 50%;
+    border-width: 2px;
+    border-color: rgb(var(--ss-pin-frame-rgb));
+    background: rgb(var(--ss-pin-map-rgb));
+}
+
+.stage-select-legend-item.is-task .stage-select-legend-glyph {
+    border-color: rgb(var(--ss-gold-rgb));
+    background: rgb(var(--ss-gold-rgb));
+}
+
+.stage-select-legend-item.is-locked .stage-select-legend-glyph {
+    border-color: rgb(var(--ss-marker-locked-rgb));
+    background: transparent;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name,
     .stage-select-panel.is-diorama .stage-select-stage-button > .stage-select-stage-name::after,
