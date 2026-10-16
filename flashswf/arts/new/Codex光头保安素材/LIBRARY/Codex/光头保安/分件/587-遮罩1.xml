@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/光头保安/分件/587-遮罩1" itemID="6aa00000-28554793" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="587-遮罩1">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!74 -298|67 -291|-6 -258|-46 -228|-66 -220|-146 -149|-217 -71|-226 -51|-256 -11|-262 9|-276 29|-286 59|-295 69|-304 109|-317 129|-323 169|-323 209|-313 229|-226 329|-215 349|-158 409|-126 469|-119 489|-103 509|-98 529|-82 549|-76 569|-44 609|-36 629|74 753|81 769|97 789|104 809|134 842|254 939|274 949|314 981|334 989|374 1020|394 1027|414 1042|434 1049|474 1073|514 1089|534 1101|554 1106|574 1120|594 1123|614 1136|634 1142|674 1144|714 1121|766 1069|804 1009|808 989|814 982|834 966|854 959|924 889|934 859|943 849|952 809|974 802|1014 781|1049 749|1066 729|1072 709|1086 689|1088 669|1094 653|1114 659|1187 669|1214 679|1234 676|1289 629|1346 569|1367 529|1367 489|1352 469|1314 437|1294 431|1265 409|1229 369|1094 237|994 160|974 153|934 125|927 109|924 29|904 -31|858 -91|814 -127|774 -141|674 -147|634 -160|334 -167|294 -201|274 -208|254 -224|238 -231|194 -261|174 -268|134 -295|114 -304|94 -305|74 -298" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/分件/587-遮罩2" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

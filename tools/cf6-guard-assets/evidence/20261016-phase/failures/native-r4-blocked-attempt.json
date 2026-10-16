@@ -1,0 +1,7 @@
+{
+  "status": "blocked_before_compile",
+  "compileAttempted": false,
+  "runLogCreated": false,
+  "observedReason": "Compile state is uncertain; the previous guard run a597863802834c85b4afa9dfba7548a1 had no timely behavior closure.",
+  "recovery": "native-r3-behavior-timeout.zip contains the later exact-marker recovery evidence; the blocked attempt was not a test run."
+}

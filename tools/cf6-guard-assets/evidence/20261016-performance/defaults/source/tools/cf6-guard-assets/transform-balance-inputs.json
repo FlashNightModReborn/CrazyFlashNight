@@ -1,0 +1,94 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "schemaReference": "敌人-大学军校生",
+  "unitId": 469,
+  "linkage": "敌人-CF6变身光头保安",
+  "defaultTransform": true,
+  "phaseParameter": "光头保安变身",
+  "requestedStage": 6,
+  "requestedTier": 3,
+  "fixedByUser": [
+    "阶段",
+    "档次系数"
+  ],
+  "input": {
+    "stage": 6,
+    "tierFactor": 3,
+    "growthFactor": 1,
+    "atkSpeedFactor": 2,
+    "atkMultiplier": 1,
+    "segmentFactor": 6,
+    "speedFactor": 2,
+    "highAtkFactor": 1,
+    "superArmorFactor": 2,
+    "highDefFactor": 1
+  },
+  "flags": {
+    "阶段": 6,
+    "档次系数": 3,
+    "成长系数": 1,
+    "攻速系数": 2,
+    "攻击倍率": 1,
+    "段数系数": 6,
+    "速度系数": 2,
+    "高攻低血防系数": 1,
+    "霸体系数": 2,
+    "高防低血系数": 1
+  },
+  "integerPanel": {
+    "最小经验值": 352,
+    "最大经验值": 2418,
+    "hp_min": 5474,
+    "hp_max": 16380,
+    "空手攻击力_min": 84,
+    "空手攻击力_max": 267,
+    "基本防御力_min": 98,
+    "基本防御力_max": 418
+  },
+  "balanceTarget": "Clearly below the ordinary soldier, but at least 20 percent net HP exchange in qualified comparison samples",
+  "observedBasis": {
+    "rulebook": "tools/cf7-balance-tool/docs/monster-flag-rulebook.md",
+    "speedMean": 55,
+    "attackFirstHitFrames": [
+      41
+    ],
+    "attackLastHitFrames": [
+      41
+    ],
+    "attackTotalFrames": [
+      74
+    ],
+    "windupMean": 40,
+    "tailMean": 33,
+    "tempoTailFactor": 0.2,
+    "weightedTempo": 46.6,
+    "tempoThresholdScale": 1.2,
+    "physicalMultipliers": [
+      1
+    ],
+    "pellets": 3,
+    "bulletKind": "穿刺子弹",
+    "pierceFactor": 2,
+    "effectiveSegments": 6,
+    "measurementScope": "fixed shotgun in the empty-hand attack state; monster panel owns damage",
+    "hitRecoveryFrames": [
+      8,
+      7
+    ],
+    "knockdownAndDownBothDelegate": true,
+    "baseArmorBand": 2,
+    "tenacity": 5,
+    "tenacityDecimal": 0,
+    "temporaryWindupStance": {
+      "frames": [
+        1,
+        41
+      ],
+      "endsImmediatelyAfterShot": true,
+      "damageReduction": 0
+    },
+    "temporaryAttackGuardDoesNotChangeArmorBand": true
+  },
+  "pelletReference": "CF6 original guard timeline uses three pellets. Fixed SPAS12 is native artwork only; enemy damage uses the monster formula.",
+  "scope": "First-life humanoid panel only. Three piercing pellets, no equipment bonuses, critical or shield buff. Second life uses existing unit 460 at inherited level with fresh combat state."
+}

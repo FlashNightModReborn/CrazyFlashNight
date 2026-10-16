@@ -1,0 +1,28 @@
+{
+  "schema": "cf6-guard.name-closeout.v1",
+  "request": "Use the successor identity after transformation; commit and push the accepted guard work.",
+  "displayName": "暴君克隆兽",
+  "oldTitleInherited": false,
+  "nameMatchesExistingUnit460AndEnemyProperties": true,
+  "native": {
+    "runId": "d144b00618db4b60bfb3337de7e5c558",
+    "passed": 488,
+    "failed": 0,
+    "timelineCases": 22,
+    "phaseCases": 11,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "swf": {
+    "path": "source/Codex光头保安素材.swf",
+    "sha256": "58de7ecac69f667f960d9a5b85766d12b12689bdbe363e759155511098c2a2d1",
+    "bytes": 189270
+  },
+  "geometry": "art-equivalence.json",
+  "priorPerformanceAndDefaultGameEvidence": "../20261016-performance/summary.json",
+  "boundaries": [
+    "Fresh name behavior is verified by this native suite. Previous performance/default combat records remain bound to their older SWF. Art XML is identical except scripts in the two actor roots.",
+    "No formal runtime promotion; standard entry new name has not been manually reaccepted."
+  ]
+}

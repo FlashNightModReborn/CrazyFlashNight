@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩2" itemID="6aa00000-59b97aab" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="fa6667a9ef0692df-遮罩2">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!6450 490|6440 510|6436 550|6437 650|6440 670|6455 710|6460 810|6470 830|6480 970|6490 990|6500 1130|6510 1150|6520 1290|6530 1310|6540 1450|6550 1470|6560 1610|6570 1630|6580 1770|6594 1830|6600 1930|6614 1990|6620 2090|6634 2150|6640 2250|6654 2310|6660 2410|6674 2470|6680 2570|6690 2610|6696 2810|6703 2850|6710 2857|6723 2890|6738 2910|6750 2922|6772 2930|6792 2950|6803 2970|6830 2997|6850 3007|6890 3043|6910 3048|6930 3064|6970 3084|6990 3087|7010 3099|7030 3103|7090 3110|7210 3110|7290 3099|7302 3090|7330 3083|7350 3070|7370 3063|7390 3048|7410 3041|7490 2974|7526 2930|7557 2910|7580 2870|7590 2830|7600 2810|7603 2670|7600 2610|7590 2590|7585 2550|7583 2390|7590 2210|7600 2170|7610 1770|7620 1730|7625 1310|7630 1270|7630 1050|7640 1010|7640 690|7643 570|7639 530|7625 490|7610 477|6470 477|6450 490" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩3" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

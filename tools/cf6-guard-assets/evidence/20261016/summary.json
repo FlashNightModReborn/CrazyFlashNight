@@ -1,0 +1,230 @@
+{
+  "schema": "cf6-guard.integration-evidence.v1",
+  "unitId": 468,
+  "stage": 6,
+  "tier": 3,
+  "totalCombatRows": 18,
+  "selectedRevision": "ten-pellets",
+  "selectedSwf": {
+    "path": "flashswf/arts/new/Codex光头保安素材.swf",
+    "sha256": "e31cfc1ab77ae90db05646c0807752d60cb036f7cd7b5078756035a7720fbd43",
+    "bytes": 73837
+  },
+  "native": {
+    "runId": "3db1ad98949c4e80960716142f6ccba1",
+    "passed": 308,
+    "failed": 0,
+    "cases": 22,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "selectedGroups": [
+    {
+      "guardSide": "blue",
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 23.019097927671684,
+        "max": 23.973994311255588,
+        "mean": 23.496546119463638
+      }
+    },
+    {
+      "guardSide": "blue",
+      "level": 60,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 24.00308838223272,
+        "max": 24.90235262058316,
+        "mean": 24.45272050140794
+      }
+    },
+    {
+      "guardSide": "blue",
+      "level": 99,
+      "weapon": "M4A1战术版",
+      "samples": 2,
+      "guardWins": 0,
+      "naturalFinishes": 2,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": {
+        "min": 27.936780512624814,
+        "max": 30.051516886090447,
+        "mean": 28.99414869935763
+      }
+    }
+  ],
+  "trials": [
+    {
+      "path": "baseline/summary.json",
+      "sha256": "87e2dee163723ae97ce5e2d2db3337f3d5173fcfade470236aed0d250a165380",
+      "rows": 6,
+      "qualified": true
+    },
+    {
+      "path": "stance/summary.json",
+      "sha256": "59b8d0f23e82f2f47f1674405a5654b7d4d1437c028e03770ed74bb8429da8c1",
+      "rows": 6,
+      "qualified": true
+    },
+    {
+      "path": "ten-pellets/summary.json",
+      "sha256": "5bff570c0db0e7103e97c6e97c820da395e7cef9e7ed2944e477bf57cbc3862f",
+      "rows": 6,
+      "qualified": true
+    }
+  ],
+  "comparisonTargetMetInObservedSamples": true,
+  "sampleBoundaries": "Six same-level M4A1 tactical ordinary-soldier comparisons, two each at levels 30/60/99, enemy-base HP. No universal win-rate or minimum-damage guarantee.",
+  "initialFailure": {
+    "artifact": "initial-native-failure.zip",
+    "sha256": "64bf9e340e8f3a601193dd2e7291ef95047696b9aec4017cf5d7c7b4695aa007",
+    "bytes": 379392,
+    "files": 18,
+    "nativePassed": 286,
+    "nativeFailed": 1,
+    "cases": 22,
+    "reason": "The first duplicate-fire check ran before the authored shot. The test was moved into the actual callback and an explicit frame-41 producer gate was added. This failed attempt is not a behavior pass."
+  },
+  "visualEvidence": {
+    "captureRunId": "c0705ed1e2fe42a3b14f48227a25f507",
+    "captureSwfSha256": "8a8093fea9373f8483ba71593f5de063e11d9a7170f11d609f7dba41233ea013",
+    "frames": 8,
+    "projectFiles": 141,
+    "unchangedFiles": 140,
+    "scriptOnlyChanges": [
+      "LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml"
+    ],
+    "canonicalXmlEqualWithoutScript": true,
+    "newStanceBehaviorProvenByFinalNativeAndCombatTests": true
+  },
+  "productionOwnership": {
+    "errors": [],
+    "files": 701,
+    "parsed": 0,
+    "cacheHits": 701,
+    "loaderClasses": 716,
+    "closureChecked": true,
+    "policy": "production",
+    "milliseconds": 9650.2846
+  },
+  "protectedSavesUnchanged": true,
+  "resourcesUnchanged": true,
+  "ownedProcessesExited": true,
+  "guardCommitted": false,
+  "runtimePromoted": false,
+  "standardEntryHumanAccepted": false,
+  "copies": [
+    {
+      "path": "images/airborne-shadow.png",
+      "bytes": 14932,
+      "sha256": "6a562e4f64bd1fa5e17904566e511496046321c15e9d9c008f7562ed3d5dd03c",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\airborne-shadow.png"
+    },
+    {
+      "path": "images/death-a0.png",
+      "bytes": 18590,
+      "sha256": "dfd4bfd6b42110b862839fdc502738e8d0ff50b05bd145e9827b5c25193c19e7",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\death-a0.png"
+    },
+    {
+      "path": "images/death-a1.png",
+      "bytes": 22859,
+      "sha256": "be36b9ca3a327f2b9a59ef965efb11eb6dd08c3ca8ecda2b26ae43ad975d0215",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\death-a1.png"
+    },
+    {
+      "path": "images/death-a2.png",
+      "bytes": 21961,
+      "sha256": "e273c2c9fc4be3ddc7f17719ec3ed6520dd137e3566a09abe880408fede7f7d1",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\death-a2.png"
+    },
+    {
+      "path": "images/death-start.png",
+      "bytes": 19969,
+      "sha256": "736bea875b75c0008c1d1e6266e6060a7b2940f022698f7c5da6a9999f01db7a",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\death-start.png"
+    },
+    {
+      "path": "images/shoot-mirrored.png",
+      "bytes": 18640,
+      "sha256": "0d3919ee569540d0b6eeab1ef17676e1d5e9b7eeca31eecba91c5f7d23f6249d",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\shoot-mirrored.png"
+    },
+    {
+      "path": "images/shoot.png",
+      "bytes": 18740,
+      "sha256": "854234cc21c6b60d067de3b0ac2f4f16a8336bbf9ea38e6827183f5793f76cb4",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\shoot.png"
+    },
+    {
+      "path": "images/stand.png",
+      "bytes": 19980,
+      "sha256": "deff52aa89b9642ad1ffa91a72c44a0e9fa283bb893f49c1b33b713941d90547",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\images\\stand.png"
+    },
+    {
+      "path": "visual-source/trace.txt",
+      "bytes": 877303,
+      "sha256": "1065b10ac4eef9c3675429cf9603fb8cceefdbbf26daa1f248d1443c37667d64",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\test-flashlog.txt"
+    },
+    {
+      "path": "visual-source/native-manifest.json",
+      "bytes": 34523,
+      "sha256": "3450d48104dcdbcaa369ae8f088de6565718a12b56bb92db0023328e7ad5712b",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\native-r2\\native-manifest.json"
+    },
+    {
+      "path": "shared-library/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\things-new\\compiler_errors.txt"
+    },
+    {
+      "path": "shared-library/compile_output.txt",
+      "bytes": 65,
+      "sha256": "17d15493877566200ffc214c7e0dfae95911496ef7c0461dc29b25bfc88694e4",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\things-new\\compile_output.txt"
+    },
+    {
+      "path": "shared-library/publish.log",
+      "bytes": 1224,
+      "sha256": "e7909abb25eb85b80eb6f5d2d98f820c24b9bf876d5b2f754d3dbd2c32f18a18",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\things-new.log"
+    },
+    {
+      "path": "checks/production-ownership.json",
+      "bytes": 185,
+      "sha256": "24154640e39cd6a47021b0f1b217dcd9a9f6668c2cfe11f16993680a73a7c3f2",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\production-ownership.json"
+    },
+    {
+      "path": "checks/stop-native-r4.log",
+      "bytes": 228,
+      "sha256": "6d7bb36e02c01d932aaf28b9a2d3a4502d813ce0ea38378d662778493dc579d0",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-guard-20261016\\stop-native-r4.log"
+    },
+    {
+      "path": "support/combat-evidence.py",
+      "bytes": 11426,
+      "sha256": "d58c7e2d4b3373673aa4090475b3736a8c9f2d284cedd1d74fc6d89155705d65",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\combat-evidence.py"
+    },
+    {
+      "path": "support/register.py",
+      "bytes": 2122,
+      "sha256": "77b83fbc56bf64c0f57d9af507dbc160764a4e64f74ef6fbc8fe958aa4af59e3",
+      "originalPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-guard-assets\\register.py"
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "schema": "cf6-guard.evidence-integrity.v1",
+  "files": [
+    {
+      "path": "art-equivalence.json",
+      "bytes": 603,
+      "sha256": "eac436f1649e55d153cf4c2c0358ea2832a8370dedfb8bdcbfdb4348b54c865a"
+    },
+    {
+      "path": "doc-governance.log",
+      "bytes": 3614,
+      "sha256": "629b713c257d2745f27ff984e6de9e063bf0ab0b1a417aec3670344044f98b8d"
+    },
+    {
+      "path": "native/Cf6GuardAssetTest.as",
+      "bytes": 27309,
+      "sha256": "ee0528d3073538b09bf90e8b440a4654a62ae6e65759eadf08ab2835407a08c0"
+    },
+    {
+      "path": "native/publish-compile_output.txt",
+      "bytes": 78,
+      "sha256": "6bf59513f86efc888ebdeeb2772ce65b1e447763d57101f1aa86e2d0a49f745a"
+    },
+    {
+      "path": "native/publish-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/test-compile_output.txt",
+      "bytes": 445,
+      "sha256": "32c49ee66adf310a84c29e87f4585e329e2381b2d9d4997b7a1a400ce0d896e2"
+    },
+    {
+      "path": "native/test-compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native/test-flashlog.txt",
+      "bytes": 488,
+      "sha256": "bea29056869c7ea964aa20b26cbb15a9311c0863f6bdd5ab3f6527a965d940b2"
+    },
+    {
+      "path": "native/TestLoader.swf",
+      "bytes": 861242,
+      "sha256": "f426e0a2b765e3b8078d14163dec8a1712e1bff46be63817c8231f95aac072cd"
+    },
+    {
+      "path": "native.log",
+      "bytes": 2578,
+      "sha256": "d64eb57d9ca0ae8b8e373e6a637184ceb14e202b61539d643f50e372bf0cd2e4"
+    },
+    {
+      "path": "ownership.log",
+      "bytes": 164,
+      "sha256": "2860b6f5a282c4e047cf9865cac354c731480fbe33c823e12278ca61bcab08c4"
+    },
+    {
+      "path": "publish.log",
+      "bytes": 1342,
+      "sha256": "68308da8300da1dfe26806c6c527f9c85591ce70b834fa1f9c929d9e221aaa79"
+    },
+    {
+      "path": "reported-old-name.png",
+      "bytes": 1178780,
+      "sha256": "920c0d78aa9c5b6a24d18364cfeb86c39e3775f403810db2ea005796bc0699f5"
+    },
+    {
+      "path": "source/Codex光头保安素材.swf",
+      "bytes": 189270,
+      "sha256": "58de7ecac69f667f960d9a5b85766d12b12689bdbe363e759155511098c2a2d1"
+    },
+    {
+      "path": "source/GuardTransform.as",
+      "bytes": 3936,
+      "sha256": "8719ac286ff66efa3511ef9dda22866d859e535fa95692c0d5fde38d2f7ec7c2"
+    },
+    {
+      "path": "source/native-manifest.json",
+      "bytes": 60183,
+      "sha256": "0a5630fda4cb2ec4be688bf557164d54513e805c036d3d60a91ee447f908fcc0"
+    },
+    {
+      "path": "source/run-cf6-guard-asset-tests.ps1",
+      "bytes": 1158,
+      "sha256": "aec32a87ac4109e4fbd30bfb0fef9041c0ee097ff2c05bc89ebba402b42d7410"
+    },
+    {
+      "path": "source/TestLoader.as.template",
+      "bytes": 334,
+      "sha256": "8d169087df6b36b2f2e60102980515d6b9ca5a1f099b442548d7c8d877045318"
+    },
+    {
+      "path": "source/transform.py",
+      "bytes": 3809,
+      "sha256": "b12e1ccb4639537858883b64179c7d48bba15d89ae51545e2db374596a74127f"
+    },
+    {
+      "path": "source/verify.py",
+      "bytes": 8674,
+      "sha256": "53a6b229fdc1a3e046e0119e37020b685de99000c9da6e9927d82ab98ded2809"
+    },
+    {
+      "path": "source/敌人-CF6光头保安.xml",
+      "bytes": 32629,
+      "sha256": "c00ef9508b7be28816a01449437aafae2138009fbda598dba37bc2fbc7ad24af"
+    },
+    {
+      "path": "source/敌人-CF6变身光头保安.xml",
+      "bytes": 32646,
+      "sha256": "bd32db76cc1499708b9d16776e28dd40a79777f0ff4703d5843e578f0e3dc2df"
+    },
+    {
+      "path": "stop-test-players.log",
+      "bytes": 228,
+      "sha256": "d06e25630d2a422f70e6556c836d9ff79d67ae8fafbaf3bae43944d8ec02c5aa"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 1126,
+      "sha256": "adba867afef6d40b23009a0e2de04cd5980d0772e666c0f443e3cf2fb8c1c7af"
+    },
+    {
+      "path": "verify.log",
+      "bytes": 1338,
+      "sha256": "acf97e57fb4d331382c7c7c8924293e019ed3b072f31c8822cdef3bc7b15003a"
+    }
+  ]
+}
