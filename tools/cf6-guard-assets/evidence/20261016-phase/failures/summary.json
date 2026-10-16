@@ -1,0 +1,35 @@
+{
+  "schema": "cf6-guard.failed-attempts.v1",
+  "records": [
+    {
+      "path": "native-r1-ground-check.zip",
+      "status": "failed_assertion",
+      "reason": "426 passed and one invalid ground comparison; corrected fixture compared the actual shadow origin. Archived source was reconstructed from the known subsequent fixture edits, not independently hashed before execution.",
+      "bytes": 1450633,
+      "sha256": "32039483f5d03fa6da7b06129f97e2a5472a47d47e7341174d1120f30c5e5e40",
+      "entries": 22
+    },
+    {
+      "path": "native-r3-behavior-timeout.zip",
+      "status": "behavior_timeout",
+      "reason": "Compile 0/0, but no Complete within the explicit 240 second window. Late behavior, stopped-player receipts, stable artifacts, original scratch hash and exact uncertainty-marker recovery are retained; no pass inferred.",
+      "bytes": 1760614,
+      "sha256": "58c506e824217a745f53b784c3a5963571ec27281eb38436e3840033d84ee45a",
+      "entries": 20
+    },
+    {
+      "path": "native-r4-blocked-attempt.json",
+      "status": "blocked_before_compile",
+      "bytes": 381,
+      "sha256": "44e4744b6c588598a16726a2f2d89bf41bb01e92c6d2742796196906802409e1"
+    },
+    {
+      "path": "reverse-plan-preflight.zip",
+      "status": "rejected_before_execution",
+      "reason": "Plan used sequential; the tool requires serial or parallel. No execution-started record exists. A fresh serial plan was created with a new experiment identity.",
+      "bytes": 25972,
+      "sha256": "2353e9261a44c5fc8551916d984ef836d693e164b02373f8a9a81abf51f44d21",
+      "entries": 5
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+=== CF7 Local Development Candidate Build ===
+  Network/cloud policy : skipped; using installed local toolchain and dependency caches.
+  Formal deployment    : not selected and must remain unchanged.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  CANDIDATE BUILD ONLY - NOT DEPLOYED
+  FORMAL RUNTIME WILL NOT BE UPDATED; acceptance must explicitly start the candidate.
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+=== CF7 Runtime Payload Producer ===
+[RuntimeBuildEnv] OK baseline=cf7-win-x64-2026-07-22 dotnet=10.0.300 msvc=19.44.35228.0 rustc=1.96.0/ac68faa20 sdk=10.0.22621.0
+=== CF7 Runtime Producer v2 ===
+  CANDIDATE ONLY - NOT DEPLOYED; FORMAL RUNTIME WILL NOT BE UPDATED.
+  Artifact source : 55BCB122EC0AD784B5BDEADA27D5F4B328F9E60B981EBD74AEA9947209C0B73D
+  Producer recipe : 9F4CA12452FD4BC5B1024CCD69084FE77AE8106F5A211DC6160EF2DFC0BCE405
+  Toolchain lock  : DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36
+  Build identity  : 8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212
+  Candidate       : C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\runtime-candidates\v2\wings-20261015-r1
+  Work root       : C:\Users\fs\AppData\Local\CF7\runtime-build-temp\cf7-runtime-build-work\job-dab618a99109439b999af05ab4712039
+[1/5] Build deterministic miniaudio.dll...
+[2/5] Build deterministic sol_parser.dll...
+[3/5] Build deterministic native bootstrap...
+Build deterministic world compositor and Flash input bridge...
+[4/5] Publish managed Core into isolated output...
+[5/5] Assemble immutable candidate and manifest...
+[FixedWebView2] version=154.0.4258.53 cab=EC12B2DB6423D127FB8E1935D34E2E68ABC70FE8ECB1F6162BA1C1CCC2825F6D files=257 chunks=7
+Runtime candidate producer changed the formal deployment closure. Producer-only builds must never deploy. before=7887A5
+90C92C57057243DAB04D1642A1756F3C1FF00E80408CC1B97E5904362D after=D5534BC67DB30460F4AB19293E99814B4B275E3A5C4FF3E4FA1537
+9722D0C18B
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\build-runtime-
+candidate.ps1:619 char:9
++         throw "Runtime candidate producer changed the formal deployme ...
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Runtime candida...A15379722D0C18B:String) [], RuntimeException
+    + FullyQualifiedErrorId : Runtime candidate producer changed the formal deployment closure. Producer-only builds m 
+   ust never deploy. before=7887A590C92C57057243DAB04D1642A1756F3C1FF00E80408CC1B97E5904362D after=D5534BC67DB30460F4  
+  AB19293E99814B4B275E3A5C4FF3E4FA15379722D0C18B
+ 

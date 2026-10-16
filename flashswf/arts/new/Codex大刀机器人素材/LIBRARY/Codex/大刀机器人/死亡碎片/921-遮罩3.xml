@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/死亡碎片/921-遮罩3" itemID="6aa00000-dd3be10b" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="921-遮罩3">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-2767 1349|-2772 1348[-2835 1353 -2904 1348|-2939 1345|-2941 1347|-2941 1348|-3063 1338[-3067 1471 -3006 1589|-2989 1621|-2677 1747[-2552 1685 -2415 1649|-2338 1629|-2341 1625[-2380 1550 -2453 1488|-2497 1455|-2506 1448|-2508 1446[-2542 1399 -2600 1383|-2600 1382|-2630 1377|-2653 1375|-2654 1376|-2654 1378|-2657 1377|-2687 1368|-2767 1349" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/碎片图集/207ad0e4be8a5376" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.1168381" b="0.2759254" c="-0.275927" d="-0.1168427" tx="-30.55" ty="-44.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

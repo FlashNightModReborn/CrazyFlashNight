@@ -1,0 +1,28 @@
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 10153 bytes, 2026/10/15 23:51:31)
+[INFO] 触发编译... (超时 600s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (7s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-bladebot Start: cc82b8c8f6884b2e8e88c2baad41138f
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/16 0:08:00
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (10172 bytes, 2026/10/16 0:08:00)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 34   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    6865 B  DefineFunction2  (anon)
+    3350 B  DefineFunction2  (anon)
+    2806 B  DefineFunction2  (anon)
+    1350 B  DefineFunction2  (anon)
+    1135 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-bladebot: 大刀机器人原生动作、近战判定、影子和生命周期通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.

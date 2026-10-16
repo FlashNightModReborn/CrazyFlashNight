@@ -1,0 +1,42 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "source": "敌人-不死兽人",
+  "unitId": 463,
+  "linkage": "敌人-CF6蛮蛮",
+  "requestedStage": 7,
+  "requestedTier": 9,
+  "input": {
+    "stage": 7,
+    "speedFactor": 1.0,
+    "atkSpeedFactor": 2.0,
+    "atkMultiplier": 0.8,
+    "segmentFactor": 2.5,
+    "superArmorFactor": 3.0,
+    "tierFactor": 9,
+    "growthFactor": 0.8,
+    "highAtkFactor": 1.0,
+    "highDefFactor": 3.6
+  },
+  "integerPanel": {
+    "最小经验值": 1836,
+    "最大经验值": 8449,
+    "hp_min": 15156,
+    "hp_max": 35062,
+    "空手攻击力_min": 697,
+    "空手攻击力_max": 1503,
+    "基本防御力_min": 566,
+    "基本防御力_max": 1106
+  },
+  "flags": {
+    "阶段": 7,
+    "速度系数": 1.0,
+    "攻速系数": 2.0,
+    "攻击倍率": 0.8,
+    "段数系数": 2.5,
+    "霸体系数": 3.0,
+    "档次系数": 9,
+    "成长系数": 0.8,
+    "高攻低血防系数": 1.0,
+    "高防低血系数": 3.6
+  }
+}

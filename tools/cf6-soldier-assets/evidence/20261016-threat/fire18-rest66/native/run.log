@@ -1,0 +1,36 @@
+{"target": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\Cf6SoldierNativeHost\\Cf6SoldierNativeHost.xfl", "swf": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\Cf6SoldierNativeHost.swf", "imports": 9}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] 编译目标: scripts/Cf6SoldierNativeHost/Cf6SoldierNativeHost.xfl -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\Cf6SoldierNativeHost\Cf6SoldierNativeHost.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\Cf6SoldierNativeHost.swf (基线 856455 bytes, 2026/10/16 8:38:29)
+[INFO] 触发编译... (超时 300s)
+[OK] 编译完成 (59s)
+=== FLASH TRACE OUTPUT ===
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/16 12:15:40
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\Cf6SoldierNativeHost.swf (856979 bytes, 2026/10/16 12:15:37)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/Cf6SoldierNativeHost.swf
+函数总数: 6694   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 15 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+   10257 B  DefineFunction2  (anon)
+    9983 B  DefineFunction2  (anon)
+    6858 B  DefineFunction2  (anon)
+    6733 B  DefineFunction2  (anon)
+    6726 B  DefineFunction2  (anon)
+    6392 B  DefineFunction2  (anon)
+    6226 B  DefineFunction2  (anon)
+    6137 B  DefineFunction2  (anon)
+    6017 B  DefineFunction2  (anon)
+    5975 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-soldier: 普通特种兵原生动作、枪口、近战、影子和死亡分支通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.

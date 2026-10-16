@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/蛮蛮/分件/640-遮罩0" itemID="6aa00000-be76f90a" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="640-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-1146 -2523|-1143 -1778|-1023 -1534[-1140 -400 -1888 444|-1641 1124[-1524 1146 -1437 1217[-1400 1245 -1375 1285[-1350 1325 -1332 1371[-1239 1387 -1150 1415[-757 1551 -448 1841|482 1841[600 1764 686 1662|730 1597[757 1551 770 1495[1549 1279 2068 691|2130 259|1512 11|1079 -730[807 -1534 1141 -2276|1079 -2585|708 -2894[-105 -3163 -899 -2894|-1146 -2523" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/蛮蛮/分件/640-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

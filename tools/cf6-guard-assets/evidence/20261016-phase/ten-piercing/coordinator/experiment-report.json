@@ -1,0 +1,86 @@
+{
+  "schema": "arena-worker.experiment-report.v1",
+  "experimentId": "guard-phase-r1-20261016",
+  "frozenPlanHash": "sha256:64470993f722e9193321caed66a496e3a2ea42c5e8ede3db496f99684c48ebed",
+  "completedAt": "2026-10-16T10:35:09.698Z",
+  "stopped": false,
+  "expectedGroups": 1,
+  "completedGroups": 1,
+  "groups": [
+    {
+      "groupId": "threat",
+      "mode": "parallel",
+      "outcomes": [
+        {
+          "jobId": "guard-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f3b0bf03493f4e30ae6346b491407b2c\\assignment-f3b0bf03493f4e30ae6346b491407b2c\\attempt-f3b0bf03493f4e30ae6346b491407b2c\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:314584e46ec883691ff528c2e3c08964efb53e77729d774772565a9e71384296",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        },
+        {
+          "jobId": "guard-w2",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-739233206090431dafaa095d885f3104\\assignment-739233206090431dafaa095d885f3104\\attempt-739233206090431dafaa095d885f3104\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:7fa83e9ae717fd27bcbe2f88cfc123e2edf5af09b2794f5974134ef210aa122c",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "guard-w01",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        },
+        {
+          "workerId": "guard-w02",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-phase-r1-20261016\\groups\\threat\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-16T10:29:30.846Z",
+      "completedAt": "2026-10-16T10:35:09.641Z",
+      "wallDurationMs": 338795
+    }
+  ],
+  "errors": [],
+  "seedSources": [
+    {
+      "workerId": "guard-w01",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    },
+    {
+      "workerId": "guard-w02",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "measurementPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-phase-r1-20261016\\measurement.json",
+  "qualified": true,
+  "status": "completed"
+}

@@ -33,6 +33,7 @@ namespace CF7Launcher.Bus
     ///   merc_response   JSON async AS2↔C# (佣兵 Web panel 运行态)
     ///   task_response   JSON async AS2↔C# (任务 Web panel 运行态)
     ///   intelligence_response JSON async AS2↔C# (情报 Web panel runtime 状态 / tooltip)
+    ///   meridians_response JSON async AS2↔C# (经脉 Web panel 状态 / 点亮，Flash 权威)
     ///   font_pack       JSON async AS2↔C#  httpCallable=true (字体包按需下载/状态查询)
     ///   native_interaction JSON sync AS2→C#  (NPC 菜单 + 文档 tooltip 原生宿主；不经 WebPanel 暂停路径)
     /// </summary>
@@ -495,7 +496,8 @@ namespace CF7Launcher.Bus
             NativeGuidanceTask nativeGuidanceTask = null,
             SceneTransitionTask sceneTransitionTask = null,
             BookComicTask bookComicTask = null,
-            TabletTask tabletTask = null)
+            TabletTask tabletTask = null,
+            MeridiansTask meridiansTask = null)
         {
             // 平板面板 domain 回包路由（tabletInfraSync/Upgrade、tabletOpenNpcShop、
             // openRagTerminal 均经 socket task "tablet_response" + callId 回执）
@@ -683,6 +685,10 @@ namespace CF7Launcher.Bus
             if (intelligenceTask != null)
                 router.RegisterAsync("intelligence_response", intelligenceTask.HandleFlashResponse);
 
+            // 经脉面板回包路由（状态/点亮，Flash 侧权威裁决）
+            if (meridiansTask != null)
+                router.RegisterAsync("meridians_response", meridiansTask.HandleFlashResponse);
+
             // 黑市鉴定（匿名影子测试）domain 回包路由
             if (blackMarketTask != null)
                 router.RegisterAsync("blackmarket_response", blackMarketTask.HandleFlashResponse);
@@ -811,6 +817,16 @@ namespace CF7Launcher.Bus
                 {
                     JObject callbackPayload = msg["payload"] as JObject;
                     commandRouter.HandleRagBindRefresh(callbackPayload ?? msg);
+                    return null;
+                });
+
+                // AS2 → C# Agent 委托完成事件（G4-1／G4-2）：Host 转发到终端
+                // POST /api/integration/task-completed，由终端自动委派对话修改子 Agent。
+                // 纯通知（query）：不改游戏状态、不回包、exe 不在线静默跳过。
+                router.RegisterSync("rag_task_completed", delegate(JObject msg)
+                {
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    commandRouter.HandleRagTaskCompleted(callbackPayload ?? msg);
                     return null;
                 });
             }
@@ -956,6 +972,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "task_response",        "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "task_delivery",        "json_sync","AS2->C#",false, first);
             first = AppendTask(sb, "intelligence_response","json_async","AS2<->C#",false, first);
+            first = AppendTask(sb, "meridians_response",   "json_async","AS2<->C#",false, first);
             first = AppendTask(sb, "native_interaction","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "world_lighting","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "lutlab.grabFrame","json_async","Web->C#", false, first);
@@ -968,6 +985,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "book_comic_response", "json_async", "AS2->C#", false, first);
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "rag_bind_refresh","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "rag_task_completed","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);

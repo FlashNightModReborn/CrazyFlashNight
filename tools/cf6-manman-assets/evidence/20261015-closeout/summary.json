@@ -1,0 +1,49 @@
+{
+  "schema": "cfn-cf6-closeout-v1",
+  "date": "2026-10-15",
+  "propertiesFile": "data/enemy_properties/CF6重制敌人.xml",
+  "propertyNodeCount": 3,
+  "semanticValuesUnchangedOnMerge": true,
+  "generatorIdempotent": true,
+  "otherNodesAndCommentsBytePreserved": true,
+  "runtimeReadRunId": "4fedf77eeb3f47d19fb33441c29dcaf2",
+  "assetAssertions": 169,
+  "assetCases": 22,
+  "compilerErrors": 0,
+  "compilerWarnings": 0,
+  "retry32K": 0,
+  "files": [
+    {
+      "path": "data-read-r3.log",
+      "sha256": "84eff2c90c5e58f6530979508419a8d764f155961b8ce2d82ee55e4d1e03270c",
+      "bytes": 2348
+    },
+    {
+      "path": "data-flashlog.txt",
+      "sha256": "67cbb323afa789fa3e063518c4bbc62c96f4e780440df65e6e124773eb7fb57a",
+      "bytes": 556
+    },
+    {
+      "path": "data-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "data-read.as.template",
+      "sha256": "084eadaee65156c65559fc7c35f4733755303ef1db7f9bd04a84ffe3b51bc1b2",
+      "bytes": 880
+    }
+  ],
+  "sharedPropertiesSha256": "27c8d64d6438a1bf1953651cbe9019f2508cb049aa5ded449561182be22b3a69",
+  "grenadeReview": {
+    "acceptedByUser": true,
+    "sourceCommit": "7fbeb4b582",
+    "runId": "d7b4e6b11648470a9dc6dc41afe55f91",
+    "hudAssertions": 129,
+    "hotPathAssertions": 19,
+    "freshCompilerErrors": 0,
+    "freshCompilerWarnings": 0,
+    "retry32K": 0
+  },
+  "firstReadOnlyDiagnosticAttempts": "Two templates refused before compilation by the focused-runner admission checks; retained locally in tmp/cf6-closeout-20261015. Final template composes the existing asset suite and real loader."
+}

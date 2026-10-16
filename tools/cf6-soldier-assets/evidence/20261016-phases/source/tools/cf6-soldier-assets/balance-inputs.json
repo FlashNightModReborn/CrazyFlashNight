@@ -1,0 +1,93 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "schemaReference": "敌人-大学军校生",
+  "unitId": 466,
+  "linkage": "敌人-CF6特种兵",
+  "requestedStage": 7,
+  "requestedTier": 5,
+  "fixedByUser": [
+    "阶段",
+    "档次系数"
+  ],
+  "stageTierBasis": "user specified",
+  "initialPhase": 2,
+  "phaseParameter": "特种兵初始阶段",
+  "secondLifeRatio": null,
+  "input": {
+    "stage": 7,
+    "tierFactor": 5,
+    "speedFactor": 2,
+    "atkSpeedFactor": 4,
+    "atkMultiplier": 1,
+    "segmentFactor": 1,
+    "superArmorFactor": 2,
+    "growthFactor": 1,
+    "highAtkFactor": 1,
+    "highDefFactor": 2.2
+  },
+  "flags": {
+    "阶段": 7,
+    "档次系数": 5,
+    "速度系数": 2,
+    "攻速系数": 4,
+    "攻击倍率": 1,
+    "段数系数": 1,
+    "霸体系数": 2,
+    "成长系数": 1,
+    "高攻低血防系数": 1,
+    "高防低血系数": 2.2
+  },
+  "integerPanel": {
+    "最小经验值": 776,
+    "最大经验值": 4433,
+    "hp_min": 7514,
+    "hp_max": 21777,
+    "空手攻击力_min": 268,
+    "空手攻击力_max": 753,
+    "基本防御力_min": 253,
+    "基本防御力_max": 705
+  },
+  "observedBasis": {
+    "rulebook": "tools/cf7-balance-tool/docs/monster-flag-rulebook.md",
+    "speedMean": 60,
+    "attackFirstHitFrames": [
+      14
+    ],
+    "attackLastHitFrames": [
+      14
+    ],
+    "attackTotalFrames": [
+      34
+    ],
+    "windupMean": 13.0,
+    "tailMean": 20.0,
+    "tempoTailFactor": 0.2,
+    "weightedTempo": 17.0,
+    "tempoThresholdScale": 1.2,
+    "physicalMultipliers": [
+      1
+    ],
+    "measurementScope": "knife state only; long-gun equipment states excluded by rulebook",
+    "meleeSegments": 1,
+    "hitRecoveryFrames": [
+      8,
+      7
+    ],
+    "knockdownAndDownBothDelegate": true,
+    "baseArmorBand": 2,
+    "tenacity": 5,
+    "tenacityDecimal": 0,
+    "phaseArmorBands": [
+      2
+    ],
+    "normalImpactUsesRigidGate": false,
+    "phaseOneAuthoredHitRequiresForcedState": false,
+    "knifeCritical": {
+      "chancePercent": 10,
+      "multiplier": 6,
+      "rawExpectedMultiplier": 1.5
+    },
+    "knifeExecutePercent": 5
+  },
+  "scope": "Fixed native body; standard equipment, shared cadet long-gun pool, external units.json data.primary takes priority. Rifle damage and cadence belong to item data; no player inventory is copied."
+}

@@ -1,0 +1,1639 @@
+{
+  "schema": "arena-calibration.unattended-run.v1",
+  "status": "completed",
+  "batchId": "soldier-eq-r4-20261016-weapons",
+  "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+  "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+  "fresh": false,
+  "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+  "cancelFile": null,
+  "resultPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/attempt-1-soldier-eq-r4-20261016-weapons-attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6-results.jsonl",
+  "summaryPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/summary.json",
+  "summaryMdPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/summary.md",
+  "rerunManifestPath": null,
+  "reportPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/run-report.json",
+  "startedAt": "2026-10-16T00:44:19.959Z",
+  "completedAt": "2026-10-16T00:52:54.374Z",
+  "buildGates": [
+    {
+      "gate": "arena-tools",
+      "command": "\"C:\\Program Files\\nodejs\\node.exe\" C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tools\\arena-calibration\\run-checks.js",
+      "startedAt": "2026-10-16T00:44:20.167Z",
+      "finishedAt": "2026-10-16T00:45:24.088Z",
+      "exitCode": 0,
+      "signal": null,
+      "ok": true,
+      "stdoutTail": "ntly omit teardown\n[PASS] half-open intervals do not invent concurrency at a handover\n[PASS] isolated fixtures cannot be promoted to live evidence by the measurement CLI\n[PASS] completed batch cannot hide a runner failure\n[PASS] synthetic timeout without a Flash clock is an infrastructure failure\n[PASS] overlapping jobs cannot claim independence while sharing process or save roots\n[PASS] resource closure claim is recomputed from the recorded file set\n[PASS] an unobserved Flash or changed candidate denies lifecycle qualification\n[PASS] process CPU uses the sampled same-process interval and leaves child processes outside scope\n[PASS] missing or null process counters are unknown rather than zero CPU or RAM\n[PASS] PID reuse cannot bridge CPU samples across a new process identity\n[PASS] regressing counters do not produce invented negative or partial CPU estimates\n[PASS] window point samples distinguish background, foreground, hidden and minimized states\n[PASS] requested performance remains distinct from observed inactive or stale display state\n[PASS] coordinator denominator includes group preparation and global protection after all recycling\n[PASS] coordinator timing cannot omit a known startup or shutdown interval\n[PASS] coordinator timing must bind the same receipt bytes used by the measurement\n[PASS] coordinator timing cannot silently drop a failed planned attempt\nWorker P0 metrics: 33/33 passed\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"ownerAndPidFence\":true,\"exactEchoRequired\":true,\"globalSaveAllowlistExact\":true,\"rawTupleMismatchRetainedAndRejected\":true,\"sequentialShardAndRecycling\":true,\"resourceHashRootIndependent\":true}\nWorker projection contracts: 48 checks passed\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"canonicalHelperReused\":true,\"childEnvironmentOnly\":true,\"actualProcessQueries\":0,\"actualHostStarts\":0}\n{\"ok\":true,\"workerEvidence\":\"isolated_fixture\",\"fullSnapshotAlgorithmPreserved\":true,\"httpResponseDuringOtherShardResourceRead\":true,\"genuineTimeoutAndResetRemainFailures\":true,\"noRetry\":true,\"incompleteOrChangedEvidenceRejected\":true}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"frozenReceiptSet\":true,\"exactFreshSlots\":true,\"parallelAllSettled\":true,\"missingReceiptStopsLaterGroups\":true,\"seedSourceMutationPreserved\":true,\"experimentReplayRejected\":true}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"windowsHttpSysRequestQueueOwner\":true,\"kernelPidAloneNotTrusted\":true,\"directChildRecycled\":true,\"productionCredentialsUsed\":false}\n{\"ok\":true,\"evidenceKind\":\"isolated_fixture\",\"rejectionChecks\":69,\"exactAtomicFaultReceipt\":true,\"unknownDeliveryNeverResubmitted\":true,\"staleTupleNeverRebound\":true,\"neighborSelectedRunAfterKillRequired\":true,\"actualProcessQueries\":0,\"actualTerminations\":0,\"liveIsolationVerified\":false}\n{\"ok\":true,\"check\":\"shadow-model-output-contract\",\"profiles\":3,\"modelInvocations\":4}\n{\"ok\":true,\"check\":\"blind-model-review-contract\",\"modelInvocations\":1}\n{\"ok\":true,\"check\":\"exception-review-output-contract\",\"modelInvocations\":1,\"autoAcceptAuthority\":false}\n{\"ok\":true,\"check\":\"pve-readiness-contract\",\"encounterCodes\":2,\"calibrationObjective\":\"monster_group_to_humanoid_mercenary_equivalence\"}\n{\"ok\":true,\"check\":\"human-pve-session-contract\",\"controlTransport\":\"owned-file-signal\",\"commands\":[\"next\",\"finish\",\"abort\"]}\n{\"ok\":true,\"check\":\"finalize-human-pve-contract\",\"calibrationObjective\":\"monster_group_to_humanoid_mercenary_equivalence\"}\n{\"ok\":true,\"check\":\"active-shard-contract\",\"cases\":4,\"freshRuns\":10}\n{\"ok\":true,\"check\":\"confirmatory-shard-contract\",\"freshRuns\":21,\"targetSamples\":30}\n{\"ok\":true,\"check\":\"gate-f-week-plan-contract\",\"standardCandidateRuns\":55,\"longTimeoutCandidateRuns\":60,\"firstSoakShards\":3,\"sideSwapAlwaysPlanned\":true,\"evidenceBoundTimeoutPromotion\":true,\"invalidTimeoutOverridesRejected\":true,\"infrastructureSoakRequiresHashBoundStableAdmission\":true,\"newWeekPlanRequiresDerivedFactionAdmissionV2\":true,\"wrongSideOrUnobservedDerivedSpawnsRejected\":true,\"everyInfrastructureSoakReplaysDerivedFactionCases\":true,\"allSoaksCoverOrdinaryPayloadFormationLongTimeoutAndHighLevel\":true,\"stochasticC9RetainedInStandardPhases\":true}\n{\n  \"ok\": true,\n  \"check\": \"arena-production-recommendation-contract\",\n  \"formalWrite\": false,\n  \"productionProfile\": {\n    \"spawnDistance\": 650,\n    \"blueFormation\": \"line\",\n    \"redFormation\": \"line\",\n    \"formationSpacing\": 54\n  },\n  \"workbookBandExample\": {\n    \"source\": \"20-25级\",\n    \"tierId\": \"arena-5\"\n  },\n  \"humanOverrideExample\": {\n    \"equivalentHumanoidLevel\": 10,\n    \"tierId\": \"arena-2\"\n  },\n  \"crossTierContinuousFit\": false\n}\n{\n  \"ok\": true,\n  \"check\": \"arena-production-apply-contract\",\n  \"exactHumanBundleHashRequired\": true,\n  \"forceMode\": false,\n  \"rollbackOnVerificationFailure\": true,\n  \"formalWrite\": false\n}\n{\n  \"ok\": true,\n  \"timeoutPolicies\": {\n    \"smoke\": {\n      \"frames\": 3600,\n      \"id\": \"smoke_3600\"\n    },\n    \"exploration\": {\n      \"frames\": 1800,\n      \"id\": \"exploration_1800\"\n    },\n    \"confirmatory\": {\n      \"frames\": 1800,\n      \"id\": \"confirmatory_1800\"\n    }\n  },\n  \"workbookWrite\": false\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.case-manifest.v1\",\n  \"batchId\": \"pilot-2026-10-16-a\",\n  \"manifestHash\": \"sha256:950dbf32076603db9828840292e1d7974f71e4de1c2d8e80550afab1e3f54709\",\n  \"cases\": 1,\n  \"output\": null\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.summary.v1\",\n  \"batchId\": \"pilot-fixture\",\n  \"cases\": 1,\n  \"rows\": 5,\n  \"errors\": 0\n}\n{\n  \"ok\": true,\n  \"schema\": \"arena-calibration.next-batch.v1\",\n  \"sourceBatchId\": \"pilot-fixture\",\n  \"decisions\": 1,\n  \"planner\": \"rule\"\n}\n{\n  \"ok\": true,\n  \"batchId\": \"unattended-check\",\n  \"agentEntryContract\": \"s:1|ga:<attemptId>\",\n  \"rawResultSchemaValidated\": true,\n  \"manifestCaseBindingsValidated\": true,\n  \"authorityRerunPreserved\": true\n}\n{\"ok\":true,\"check\":\"gate-fctl-contract\",\"commands\":[\"freeze\",\"arm\",\"run\",\"status\",\"revoke\"],\"stdinMode\":\"disabled\",\"defaultMaxShards\":\"all_remaining\"}\n{\n  \"ok\": true,\n  \"checked\": 85,\n  \"schemaInstancesValidated\": true\n}\n",
+      "stderrTail": "",
+      "error": null
+    }
+  ],
+  "preGateShutdown": null,
+  "postRunShutdown": {
+    "port": 1192,
+    "pid": 22708,
+    "stopped": true,
+    "response": {
+      "success": true,
+      "ok": true,
+      "task": "agent_control",
+      "note": "shutdown_requested",
+      "launchState": "Ready",
+      "revealPerformed": true,
+      "socketConnected": true,
+      "gameEnteredObserved": true,
+      "gameEnteredAttemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+      "readyForRuntimeAutomation": true,
+      "runtimeReadyBlockedBy": [],
+      "readyForArenaCalibration": true,
+      "readyBlockedBy": [],
+      "save": {
+        "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+        "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+        "decision": "snapshot",
+        "kind": "Snapshot",
+        "source": "json_shadow",
+        "corruptDetail": null
+      },
+      "saveRuntime": {
+        "loaded": true,
+        "savePath": "cf7_agent_soldier_eq_r4_20261016_weapons",
+        "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+        "source": "launcher_snapshot:json_shadow",
+        "role": "fs",
+        "level": 99
+      },
+      "arenaCalibration": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+        "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+        "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+        "transportPoisoned": false,
+        "state": "completed",
+        "note": null,
+        "batchId": "soldier-eq-r4-20261016-weapons",
+        "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/results.jsonl",
+        "totalRuns": 6,
+        "completedRuns": 6,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": null,
+        "lastResult": {
+          "schema": "arena-calibration.result.v1",
+          "workerId": "guardian",
+          "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+          "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+          "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+          "batchId": "soldier-eq-r4-20261016-weapons",
+          "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+          "caseId": "configured-squad-red",
+          "caseHash": "sha256:6c727c834e6b1da1e224c208065796ea7be59a2c68abe1651c435d0009c67b4f",
+          "runId": "configured-squad-red-r001",
+          "repeatIndex": 1,
+          "status": "finished",
+          "winner": "blue",
+          "startedAt": "2026-10-16T00:52:31.1050236Z",
+          "completedAt": "2026-10-16T00:52:52.6448381Z",
+          "requestedSpawnDistance": 650,
+          "blueFormation": "line",
+          "redFormation": "line",
+          "formationSpacing": 54,
+          "phaseSpawnCount": 0,
+          "spawnedUnits": [],
+          "blueSpawnPositions": [
+            {
+              "side": "blue",
+              "index": 0,
+              "unit": "兵种449",
+              "level": 60,
+              "name": "斗兽标定_blue_configured_squad_red_r001_0",
+              "x": 570,
+              "y": 430
+            },
+            {
+              "side": "blue",
+              "index": 1,
+              "unit": "兵种449",
+              "level": 60,
+              "name": "斗兽标定_blue_configured_squad_red_r001_1",
+              "x": 516,
+              "y": 430
+            }
+          ],
+          "redSpawnPositions": [
+            {
+              "side": "red",
+              "index": 0,
+              "unit": "兵种466",
+              "level": 60,
+              "name": "斗兽标定_red_configured_squad_red_r001_0",
+              "x": 1220,
+              "y": 430
+            },
+            {
+              "side": "red",
+              "index": 1,
+              "unit": "兵种466",
+              "level": 60,
+              "name": "斗兽标定_red_configured_squad_red_r001_1",
+              "x": 1274,
+              "y": 430
+            }
+          ],
+          "formationAudit": {
+            "blue": {
+              "count": 2,
+              "minX": 516,
+              "maxX": 570,
+              "minY": 430,
+              "maxY": 430,
+              "xRange": 54,
+              "yRange": 0,
+              "distinctX": 2,
+              "distinctY": 1
+            },
+            "red": {
+              "count": 2,
+              "minX": 1220,
+              "maxX": 1274,
+              "minY": 430,
+              "maxY": 430,
+              "xRange": 54,
+              "yRange": 0,
+              "distinctX": 2,
+              "distinctY": 1
+            }
+          },
+          "authorityContext": {
+            "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+            "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+            "candidateSide": "red",
+            "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+            "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+            "evidenceLane": "interactive_candidate",
+            "explicitLoadout": true,
+            "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+            "rivalDataPath": "data/enemy_properties/大学.xml",
+            "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+            "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+            "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+            "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+            "stage": 7,
+            "tier": 5,
+            "unitsPerSide": 2,
+            "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+          },
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-m4",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390,
+              "remainHp": 32544,
+              "hpPermille": 894,
+              "alive": true
+            },
+            {
+              "sourceId": "cadet-mk18",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390,
+              "remainHp": 33987,
+              "hpPermille": 934,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-m16",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "soldier-ak74",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "frames": 486,
+          "durationMs": 21412,
+          "spawnDistance": 650,
+          "blueX": 570,
+          "redX": 1220,
+          "skillStateAudit": {
+            "blue": [
+              {
+                "unit": "兵种449",
+                "sourceId": "cadet-m4",
+                "name": "斗兽标定_blue_configured_squad_red_r001_0",
+                "observed": false,
+                "state": null
+              },
+              {
+                "unit": "兵种449",
+                "sourceId": "cadet-mk18",
+                "name": "斗兽标定_blue_configured_squad_red_r001_1",
+                "observed": false,
+                "state": null
+              }
+            ],
+            "red": [
+              {
+                "unit": "兵种466",
+                "sourceId": "soldier-m16",
+                "name": "斗兽标定_red_configured_squad_red_r001_0",
+                "observed": false,
+                "state": null
+              },
+              {
+                "unit": "兵种466",
+                "sourceId": "soldier-ak74",
+                "name": "斗兽标定_red_configured_squad_red_r001_1",
+                "observed": false,
+                "state": null
+              }
+            ]
+          },
+          "presentationAudit": {
+            "qualityAtStart": "LOW",
+            "qualityApplied": "LOW",
+            "atStart": {
+              "observed": true,
+              "qualityApplied": "LOW",
+              "performanceLevel": 1,
+              "lastAppliedSoftU": 1,
+              "appliedCommand": 14,
+              "sceneEpoch": 3,
+              "paused": false,
+              "frameRate": 30
+            },
+            "atEnd": {
+              "observed": true,
+              "qualityApplied": "LOW",
+              "performanceLevel": 1,
+              "lastAppliedSoftU": 1,
+              "appliedCommand": 14,
+              "sceneEpoch": 3,
+              "paused": false,
+              "frameRate": 30
+            }
+          },
+          "blue": {
+            "maxHp": 72780,
+            "remainHp": 66531,
+            "aliveCount": 2,
+            "startMaxHp": 72780,
+            "startCount": 2
+          },
+          "red": {
+            "maxHp": 44036,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 44036,
+            "startCount": 2
+          },
+          "errors": []
+        }
+      },
+      "activePanel": {
+        "name": null,
+        "instanceId": null
+      }
+    }
+  },
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "pid": 22708,
+    "httpPort": 1192,
+    "verified": true,
+    "expected": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "pid": null,
+      "httpPort": null
+    },
+    "statusEndpointIdentityAvailable": false,
+    "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+  },
+  "savePreflight": {
+    "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+    "targetJson": "saves/cf7_agent_soldier_eq_r4_20261016_weapons.json",
+    "seedSource": "saves/cf7_agent_bladebot_seed_r2.json",
+    "seedRole": "fs",
+    "seedLevel": 99,
+    "backups": [],
+    "solBackups": [],
+    "removedSolFiles": [],
+    "wroteSeed": true
+  },
+  "saveProtection": {
+    "before": {
+      "capturedAt": "2026-10-16T00:45:24.150Z",
+      "targetSlot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+      "files": [
+        {
+          "key": "shadow_json:cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae:f3471a5f0366d7ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae",
+          "path": "saves/cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae.json",
+          "sha256": "sha256:a48e0606b7aacad114e30343950f61181bd585b4398a94400b3d325ec0880516",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc:0d8febebf7f58b23",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc",
+          "path": "saves/cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc.json",
+          "sha256": "sha256:e39fce5c88914115036c04a9fec242cd1f399c8192bb4fff95bea3700d46ea07",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4318d5663df64faa9225e1449b91a512:5630bc5a86d3e9a6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4318d5663df64faa9225e1449b91a512",
+          "path": "saves/cf7_agent_aw_4318d5663df64faa9225e1449b91a512.json",
+          "sha256": "sha256:03978cd3e24597343a3e1ad0773b87f3ca48e1573098eaf2567d0b8fae669db8",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b:9dd84d8b5cc1ba2e",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b",
+          "path": "saves/cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b.json",
+          "sha256": "sha256:33514641df35fbc7f1d41aba991d2fa80c439d93ecac58041c7787a732033e4d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671:049d5086d62f722f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671",
+          "path": "saves/cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671.json",
+          "sha256": "sha256:ef8b3d53326c239aedc3698326e1842a4f777e3b976c1655d5709e45fadb7dda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4e92a7eae45e405092895505d4e6357e:92873cb0ebe907b9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4e92a7eae45e405092895505d4e6357e",
+          "path": "saves/cf7_agent_aw_4e92a7eae45e405092895505d4e6357e.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14:fa4e3c4d77a93c90",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14",
+          "path": "saves/cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14.json",
+          "sha256": "sha256:fe84c9e29e985b624e5ea80910af079cca505138704f7abe203f49d59488dd26",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a:2df4d98012c63dc6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a",
+          "path": "saves/cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a.json",
+          "sha256": "sha256:236f02229129395157027dec77c272f3e79b71ccebde79a16cc26d2dafd0985b",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4:0f5d222f0e28cb0c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4",
+          "path": "saves/cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4.json",
+          "sha256": "sha256:e9d2d49440ae7eec51c82f382a7a2d700d2e1937091895464a78fbbd9d91532a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e:6d1cb80e3267cc06",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e",
+          "path": "saves/cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e.json",
+          "sha256": "sha256:1d637b90eeb74e33e09f84e2c5dc220915900020806a5e68dc7a0139fa5616d6",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949:cdb261db8b56f6f6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949",
+          "path": "saves/cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949.json",
+          "sha256": "sha256:c46081e2962d09ee997d4114e579371ab28ae8065c4e28925b5f7f70e001b7fb",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a:2e0226a8f005c02b",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a",
+          "path": "saves/cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a.json",
+          "sha256": "sha256:1e9bd3875cb600d0f597bae558406af74fab10bdbbb421daef3e0244b09f697e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r2:74f61c9df5c0d35f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r2",
+          "path": "saves/cf7_agent_bladebot_front_r2.json",
+          "sha256": "sha256:b624026587e13833035bcaca38c28c2a6b5cdc4a814d3ccc5c86e3cc9b4b51cd",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r3:676edf6aa6d4a00c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r3",
+          "path": "saves/cf7_agent_bladebot_front_r3.json",
+          "sha256": "sha256:981e614bd48151fa6cb9edb6006d0b3683f89a44f3bb8de385eafacd06f7eff9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4:2bff28032a45b1ae",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4",
+          "path": "saves/cf7_agent_bladebot_front_r4.json",
+          "sha256": "sha256:19178877ac6fbcb67be2be616d3cd3e452c6dacb45e669b2bd89a146d75fcfcc",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4b:a2757089459e8e54",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4b",
+          "path": "saves/cf7_agent_bladebot_front_r4b.json",
+          "sha256": "sha256:27e7ca7840023b41f45ff87c813e635a6ae465fa6de92c4c481461d40d9bf894",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6:1d72916dab48aabb",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6",
+          "path": "saves/cf7_agent_bladebot_front_r6.json",
+          "sha256": "sha256:d1f1b121760227eeed4ae93d5eb5648367aed0a02a06ab02d8e5d78f7030ac0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6b:10bb38e2db8b20ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6b",
+          "path": "saves/cf7_agent_bladebot_front_r6b.json",
+          "sha256": "sha256:9d07daea2aa1ba58ac7a216bd897e65a0b2209e1285af5c8a9b8fa41efbdcdbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6c:68e10fdd7f014d2a",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6c",
+          "path": "saves/cf7_agent_bladebot_front_r6c.json",
+          "sha256": "sha256:91cc5bdcda5798be781b81cacc82b337dffc53b4802a2a59928cf470a39ffcda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6d:ee38fbf4c0e90fbc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6d",
+          "path": "saves/cf7_agent_bladebot_front_r6d.json",
+          "sha256": "sha256:d777d3f766cb29c9173787edae08af2927c5663ae7297b69920acd2fad4a0966",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6e:9ecb10a084e90665",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6e",
+          "path": "saves/cf7_agent_bladebot_front_r6e.json",
+          "sha256": "sha256:2aff808f46d38194b79e916f71650c217c6853f489fef2d89518a69d53bb157f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6f:12c464c5d66f2da0",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6f",
+          "path": "saves/cf7_agent_bladebot_front_r6f.json",
+          "sha256": "sha256:d105e970f8de4cd465a2c5383b14cf46ee07b5f32f1efebd9eee6edda5021a95",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r7a:484c4b266963992d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r7a",
+          "path": "saves/cf7_agent_bladebot_front_r7a.json",
+          "sha256": "sha256:c49926478ced9e9e557b2bd75bc8a1f76046289a3ad5448b47abfa4701e2288e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r8a:9a6dfd74522ad1b4",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r8a",
+          "path": "saves/cf7_agent_bladebot_front_r8a.json",
+          "sha256": "sha256:1fdbdac299589bc4a0d6cc07577a4c86df87f21b968df9100e4ce77f3221b55e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9a:18a4223a76577ee9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9a",
+          "path": "saves/cf7_agent_bladebot_front_r9a.json",
+          "sha256": "sha256:501a79966d50a47bddb334c7f37393abc1749460c9ae803bc375ad27281d4fbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9b:78f0fe4386f1cc58",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9b",
+          "path": "saves/cf7_agent_bladebot_front_r9b.json",
+          "sha256": "sha256:346db0e7944f066730090226ca4d9f66aecb3efd5033a1d6eacc8836ea3609ac",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9c2:e4605c88d1552b1f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9c2",
+          "path": "saves/cf7_agent_bladebot_front_r9c2.json",
+          "sha256": "sha256:929031482d24d262d5d18220c605e02d470023e223d4f4238fc2027d1a7a2283",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9d:1706c338b652bd66",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9d",
+          "path": "saves/cf7_agent_bladebot_front_r9d.json",
+          "sha256": "sha256:fcee7220da785d522f01604202d39a3e8586ffe097204c0cf460f1212e0a32e9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9e:53be14d83a13d262",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9e",
+          "path": "saves/cf7_agent_bladebot_front_r9e.json",
+          "sha256": "sha256:8d2e172c59d1de5358aa09a83836ace54770fd6285887444b38e5e43b622419a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_seed_r2:6239167701dfd119",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_seed_r2",
+          "path": "saves/cf7_agent_bladebot_seed_r2.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1_20261016_cadet:176c119d55d991b1",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1_20261016_cadet",
+          "path": "saves/cf7_agent_soldier_r1_20261016_cadet.json",
+          "sha256": "sha256:8252475fb2e313df15bf3b5ae4d25e597eec09a8ca0f493a3eb01a3ecbaecb6c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1b_20261016_integration:e4db42c369a854d6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1b_20261016_integration",
+          "path": "saves/cf7_agent_soldier_r1b_20261016_integration.json",
+          "sha256": "sha256:381413f4b87394f277144494d25fbaef1bca4b7c68b79ff52dcddda39e8c446d",
+          "size": 77823
+        }
+      ],
+      "targetArtifacts": [],
+      "snapshotHash": "sha256:8351cf96a0130368bd91d2127d11295195c652cdadbedcdac7c641017b674965"
+    },
+    "after": {
+      "capturedAt": "2026-10-16T00:52:58.915Z",
+      "targetSlot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+      "files": [
+        {
+          "key": "shadow_json:cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae:f3471a5f0366d7ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae",
+          "path": "saves/cf7_agent_aw_2c7a4f4c2d73423eaccb16db3316a3ae.json",
+          "sha256": "sha256:a48e0606b7aacad114e30343950f61181bd585b4398a94400b3d325ec0880516",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc:0d8febebf7f58b23",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc",
+          "path": "saves/cf7_agent_aw_424bb9fa08db43d5b2598bae909d28fc.json",
+          "sha256": "sha256:e39fce5c88914115036c04a9fec242cd1f399c8192bb4fff95bea3700d46ea07",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4318d5663df64faa9225e1449b91a512:5630bc5a86d3e9a6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4318d5663df64faa9225e1449b91a512",
+          "path": "saves/cf7_agent_aw_4318d5663df64faa9225e1449b91a512.json",
+          "sha256": "sha256:03978cd3e24597343a3e1ad0773b87f3ca48e1573098eaf2567d0b8fae669db8",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b:9dd84d8b5cc1ba2e",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b",
+          "path": "saves/cf7_agent_aw_47d75fa93aa3426ab4d4005f6067fb6b.json",
+          "sha256": "sha256:33514641df35fbc7f1d41aba991d2fa80c439d93ecac58041c7787a732033e4d",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671:049d5086d62f722f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671",
+          "path": "saves/cf7_agent_aw_4b728eaf58a34676b6d9d8f2ff803671.json",
+          "sha256": "sha256:ef8b3d53326c239aedc3698326e1842a4f777e3b976c1655d5709e45fadb7dda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_4e92a7eae45e405092895505d4e6357e:92873cb0ebe907b9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_4e92a7eae45e405092895505d4e6357e",
+          "path": "saves/cf7_agent_aw_4e92a7eae45e405092895505d4e6357e.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14:fa4e3c4d77a93c90",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14",
+          "path": "saves/cf7_agent_aw_5a600e7c47a94915b2abd0afcbaf3b14.json",
+          "sha256": "sha256:fe84c9e29e985b624e5ea80910af079cca505138704f7abe203f49d59488dd26",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a:2df4d98012c63dc6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a",
+          "path": "saves/cf7_agent_aw_625437d978634a23a10b1b6d0bd9490a.json",
+          "sha256": "sha256:236f02229129395157027dec77c272f3e79b71ccebde79a16cc26d2dafd0985b",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4:0f5d222f0e28cb0c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4",
+          "path": "saves/cf7_agent_aw_a591829085974b52bd71b0c5dd925dc4.json",
+          "sha256": "sha256:e9d2d49440ae7eec51c82f382a7a2d700d2e1937091895464a78fbbd9d91532a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e:6d1cb80e3267cc06",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e",
+          "path": "saves/cf7_agent_aw_b6518a0bab1540c5b5014cd8af8e273e.json",
+          "sha256": "sha256:1d637b90eeb74e33e09f84e2c5dc220915900020806a5e68dc7a0139fa5616d6",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949:cdb261db8b56f6f6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949",
+          "path": "saves/cf7_agent_aw_ba87a6694ecc4a4d85a3fa07d2051949.json",
+          "sha256": "sha256:c46081e2962d09ee997d4114e579371ab28ae8065c4e28925b5f7f70e001b7fb",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a:2e0226a8f005c02b",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a",
+          "path": "saves/cf7_agent_aw_c5886b15333a4d7382259e64eed5eb2a.json",
+          "sha256": "sha256:1e9bd3875cb600d0f597bae558406af74fab10bdbbb421daef3e0244b09f697e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r2:74f61c9df5c0d35f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r2",
+          "path": "saves/cf7_agent_bladebot_front_r2.json",
+          "sha256": "sha256:b624026587e13833035bcaca38c28c2a6b5cdc4a814d3ccc5c86e3cc9b4b51cd",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r3:676edf6aa6d4a00c",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r3",
+          "path": "saves/cf7_agent_bladebot_front_r3.json",
+          "sha256": "sha256:981e614bd48151fa6cb9edb6006d0b3683f89a44f3bb8de385eafacd06f7eff9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4:2bff28032a45b1ae",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4",
+          "path": "saves/cf7_agent_bladebot_front_r4.json",
+          "sha256": "sha256:19178877ac6fbcb67be2be616d3cd3e452c6dacb45e669b2bd89a146d75fcfcc",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r4b:a2757089459e8e54",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r4b",
+          "path": "saves/cf7_agent_bladebot_front_r4b.json",
+          "sha256": "sha256:27e7ca7840023b41f45ff87c813e635a6ae465fa6de92c4c481461d40d9bf894",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6:1d72916dab48aabb",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6",
+          "path": "saves/cf7_agent_bladebot_front_r6.json",
+          "sha256": "sha256:d1f1b121760227eeed4ae93d5eb5648367aed0a02a06ab02d8e5d78f7030ac0f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6b:10bb38e2db8b20ca",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6b",
+          "path": "saves/cf7_agent_bladebot_front_r6b.json",
+          "sha256": "sha256:9d07daea2aa1ba58ac7a216bd897e65a0b2209e1285af5c8a9b8fa41efbdcdbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6c:68e10fdd7f014d2a",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6c",
+          "path": "saves/cf7_agent_bladebot_front_r6c.json",
+          "sha256": "sha256:91cc5bdcda5798be781b81cacc82b337dffc53b4802a2a59928cf470a39ffcda",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6d:ee38fbf4c0e90fbc",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6d",
+          "path": "saves/cf7_agent_bladebot_front_r6d.json",
+          "sha256": "sha256:d777d3f766cb29c9173787edae08af2927c5663ae7297b69920acd2fad4a0966",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6e:9ecb10a084e90665",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6e",
+          "path": "saves/cf7_agent_bladebot_front_r6e.json",
+          "sha256": "sha256:2aff808f46d38194b79e916f71650c217c6853f489fef2d89518a69d53bb157f",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r6f:12c464c5d66f2da0",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r6f",
+          "path": "saves/cf7_agent_bladebot_front_r6f.json",
+          "sha256": "sha256:d105e970f8de4cd465a2c5383b14cf46ee07b5f32f1efebd9eee6edda5021a95",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r7a:484c4b266963992d",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r7a",
+          "path": "saves/cf7_agent_bladebot_front_r7a.json",
+          "sha256": "sha256:c49926478ced9e9e557b2bd75bc8a1f76046289a3ad5448b47abfa4701e2288e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r8a:9a6dfd74522ad1b4",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r8a",
+          "path": "saves/cf7_agent_bladebot_front_r8a.json",
+          "sha256": "sha256:1fdbdac299589bc4a0d6cc07577a4c86df87f21b968df9100e4ce77f3221b55e",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9a:18a4223a76577ee9",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9a",
+          "path": "saves/cf7_agent_bladebot_front_r9a.json",
+          "sha256": "sha256:501a79966d50a47bddb334c7f37393abc1749460c9ae803bc375ad27281d4fbe",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9b:78f0fe4386f1cc58",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9b",
+          "path": "saves/cf7_agent_bladebot_front_r9b.json",
+          "sha256": "sha256:346db0e7944f066730090226ca4d9f66aecb3efd5033a1d6eacc8836ea3609ac",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9c2:e4605c88d1552b1f",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9c2",
+          "path": "saves/cf7_agent_bladebot_front_r9c2.json",
+          "sha256": "sha256:929031482d24d262d5d18220c605e02d470023e223d4f4238fc2027d1a7a2283",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9d:1706c338b652bd66",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9d",
+          "path": "saves/cf7_agent_bladebot_front_r9d.json",
+          "sha256": "sha256:fcee7220da785d522f01604202d39a3e8586ffe097204c0cf460f1212e0a32e9",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_front_r9e:53be14d83a13d262",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_front_r9e",
+          "path": "saves/cf7_agent_bladebot_front_r9e.json",
+          "sha256": "sha256:8d2e172c59d1de5358aa09a83836ace54770fd6285887444b38e5e43b622419a",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_bladebot_seed_r2:6239167701dfd119",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_bladebot_seed_r2",
+          "path": "saves/cf7_agent_bladebot_seed_r2.json",
+          "sha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1_20261016_cadet:176c119d55d991b1",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1_20261016_cadet",
+          "path": "saves/cf7_agent_soldier_r1_20261016_cadet.json",
+          "sha256": "sha256:8252475fb2e313df15bf3b5ae4d25e597eec09a8ca0f493a3eb01a3ecbaecb6c",
+          "size": 77823
+        },
+        {
+          "key": "shadow_json:cf7_agent_soldier_r1b_20261016_integration:e4db42c369a854d6",
+          "kind": "shadow_json",
+          "slot": "cf7_agent_soldier_r1b_20261016_integration",
+          "path": "saves/cf7_agent_soldier_r1b_20261016_integration.json",
+          "sha256": "sha256:381413f4b87394f277144494d25fbaef1bca4b7c68b79ff52dcddda39e8c446d",
+          "size": 77823
+        }
+      ],
+      "targetArtifacts": [],
+      "snapshotHash": "sha256:8351cf96a0130368bd91d2127d11295195c652cdadbedcdac7c641017b674965"
+    },
+    "unchanged": true,
+    "differences": []
+  },
+  "finalAgentStatus": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": null,
+    "launchState": "Ready",
+    "revealPerformed": true,
+    "socketConnected": true,
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+    "readyForRuntimeAutomation": true,
+    "runtimeReadyBlockedBy": [],
+    "readyForArenaCalibration": true,
+    "readyBlockedBy": [],
+    "save": {
+      "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+      "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+      "decision": "snapshot",
+      "kind": "Snapshot",
+      "source": "json_shadow",
+      "corruptDetail": null
+    },
+    "saveRuntime": {
+      "loaded": true,
+      "savePath": "cf7_agent_soldier_eq_r4_20261016_weapons",
+      "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+      "source": "launcher_snapshot:json_shadow",
+      "role": "fs",
+      "level": 99
+    },
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "guardian",
+      "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+      "assignmentId": null,
+      "attemptId": null,
+      "transportPoisoned": false,
+      "state": "idle",
+      "note": null,
+      "batchId": null,
+      "manifestHash": null,
+      "manifestPath": null,
+      "frozenManifestPath": null,
+      "resultPath": null,
+      "totalRuns": 0,
+      "completedRuns": 0,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": null
+    },
+    "activePanel": {
+      "name": null,
+      "instanceId": null
+    }
+  },
+  "finalArenaStatus": {
+    "success": true,
+    "ok": true,
+    "task": "arena_calibration",
+    "workerId": "guardian",
+    "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+    "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+    "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+    "transportPoisoned": false,
+    "state": "completed",
+    "note": null,
+    "batchId": "soldier-eq-r4-20261016-weapons",
+    "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+    "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+    "frozenManifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/case_manifest.json",
+    "resultPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/results.jsonl",
+    "totalRuns": 6,
+    "completedRuns": 6,
+    "currentCaseId": null,
+    "currentRunId": null,
+    "lastError": null,
+    "lastResult": {
+      "schema": "arena-calibration.result.v1",
+      "workerId": "guardian",
+      "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+      "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+      "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+      "batchId": "soldier-eq-r4-20261016-weapons",
+      "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+      "caseId": "configured-squad-red",
+      "caseHash": "sha256:6c727c834e6b1da1e224c208065796ea7be59a2c68abe1651c435d0009c67b4f",
+      "runId": "configured-squad-red-r001",
+      "repeatIndex": 1,
+      "status": "finished",
+      "winner": "blue",
+      "startedAt": "2026-10-16T00:52:31.1050236Z",
+      "completedAt": "2026-10-16T00:52:52.6448381Z",
+      "requestedSpawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "phaseSpawnCount": 0,
+      "spawnedUnits": [],
+      "blueSpawnPositions": [
+        {
+          "side": "blue",
+          "index": 0,
+          "unit": "兵种449",
+          "level": 60,
+          "name": "斗兽标定_blue_configured_squad_red_r001_0",
+          "x": 570,
+          "y": 430
+        },
+        {
+          "side": "blue",
+          "index": 1,
+          "unit": "兵种449",
+          "level": 60,
+          "name": "斗兽标定_blue_configured_squad_red_r001_1",
+          "x": 516,
+          "y": 430
+        }
+      ],
+      "redSpawnPositions": [
+        {
+          "side": "red",
+          "index": 0,
+          "unit": "兵种466",
+          "level": 60,
+          "name": "斗兽标定_red_configured_squad_red_r001_0",
+          "x": 1220,
+          "y": 430
+        },
+        {
+          "side": "red",
+          "index": 1,
+          "unit": "兵种466",
+          "level": 60,
+          "name": "斗兽标定_red_configured_squad_red_r001_1",
+          "x": 1274,
+          "y": 430
+        }
+      ],
+      "formationAudit": {
+        "blue": {
+          "count": 2,
+          "minX": 516,
+          "maxX": 570,
+          "minY": 430,
+          "maxY": 430,
+          "xRange": 54,
+          "yRange": 0,
+          "distinctX": 2,
+          "distinctY": 1
+        },
+        "red": {
+          "count": 2,
+          "minX": 1220,
+          "maxX": 1274,
+          "minY": 430,
+          "maxY": 430,
+          "xRange": 54,
+          "yRange": 0,
+          "distinctX": 2,
+          "distinctY": 1
+        }
+      },
+      "authorityContext": {
+        "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+        "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+        "candidateSide": "red",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+        "evidenceLane": "interactive_candidate",
+        "explicitLoadout": true,
+        "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 2,
+        "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+      },
+      "blueUnitResults": [
+        {
+          "sourceId": "cadet-m4",
+          "petId": -1,
+          "identifier": "敌人-大学军校生",
+          "resolvedType": "敌人-大学军校生",
+          "level": 60,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 36390,
+          "remainHp": 32544,
+          "hpPermille": 894,
+          "alive": true
+        },
+        {
+          "sourceId": "cadet-mk18",
+          "petId": -1,
+          "identifier": "敌人-大学军校生",
+          "resolvedType": "敌人-大学军校生",
+          "level": 60,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 36390,
+          "remainHp": 33987,
+          "hpPermille": 934,
+          "alive": true
+        }
+      ],
+      "redUnitResults": [
+        {
+          "sourceId": "soldier-m16",
+          "petId": -1,
+          "identifier": "敌人-CF6特种兵",
+          "resolvedType": "敌人-CF6特种兵",
+          "level": 60,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 22018,
+          "remainHp": 0,
+          "hpPermille": 0,
+          "alive": false
+        },
+        {
+          "sourceId": "soldier-ak74",
+          "petId": -1,
+          "identifier": "敌人-CF6特种兵",
+          "resolvedType": "敌人-CF6特种兵",
+          "level": 60,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 22018,
+          "remainHp": 0,
+          "hpPermille": 0,
+          "alive": false
+        }
+      ],
+      "frames": 486,
+      "durationMs": 21412,
+      "spawnDistance": 650,
+      "blueX": 570,
+      "redX": 1220,
+      "skillStateAudit": {
+        "blue": [
+          {
+            "unit": "兵种449",
+            "sourceId": "cadet-m4",
+            "name": "斗兽标定_blue_configured_squad_red_r001_0",
+            "observed": false,
+            "state": null
+          },
+          {
+            "unit": "兵种449",
+            "sourceId": "cadet-mk18",
+            "name": "斗兽标定_blue_configured_squad_red_r001_1",
+            "observed": false,
+            "state": null
+          }
+        ],
+        "red": [
+          {
+            "unit": "兵种466",
+            "sourceId": "soldier-m16",
+            "name": "斗兽标定_red_configured_squad_red_r001_0",
+            "observed": false,
+            "state": null
+          },
+          {
+            "unit": "兵种466",
+            "sourceId": "soldier-ak74",
+            "name": "斗兽标定_red_configured_squad_red_r001_1",
+            "observed": false,
+            "state": null
+          }
+        ]
+      },
+      "presentationAudit": {
+        "qualityAtStart": "LOW",
+        "qualityApplied": "LOW",
+        "atStart": {
+          "observed": true,
+          "qualityApplied": "LOW",
+          "performanceLevel": 1,
+          "lastAppliedSoftU": 1,
+          "appliedCommand": 14,
+          "sceneEpoch": 3,
+          "paused": false,
+          "frameRate": 30
+        },
+        "atEnd": {
+          "observed": true,
+          "qualityApplied": "LOW",
+          "performanceLevel": 1,
+          "lastAppliedSoftU": 1,
+          "appliedCommand": 14,
+          "sceneEpoch": 3,
+          "paused": false,
+          "frameRate": 30
+        }
+      },
+      "blue": {
+        "maxHp": 72780,
+        "remainHp": 66531,
+        "aliveCount": 2,
+        "startMaxHp": 72780,
+        "startCount": 2
+      },
+      "red": {
+        "maxHp": 44036,
+        "remainHp": 0,
+        "aliveCount": 0,
+        "startMaxHp": 44036,
+        "startCount": 2
+      },
+      "errors": []
+    }
+  },
+  "attempts": [
+    {
+      "index": 1,
+      "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+      "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+      "batchId": "soldier-eq-r4-20261016-weapons",
+      "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+      "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+      "expectedRows": 6,
+      "startedAt": "2026-10-16T00:45:24.174Z",
+      "completedAt": "2026-10-16T00:52:53.682Z",
+      "status": "completed",
+      "httpPort": 1192,
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+        "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+        "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+        "pid": 22708,
+        "httpPort": 1192,
+        "verified": true,
+        "expected": {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "pid": null,
+          "httpPort": null
+        },
+        "statusEndpointIdentityAvailable": false,
+        "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+      },
+      "agentStatus": {
+        "success": true,
+        "ok": true,
+        "task": "agent_control",
+        "note": null,
+        "launchState": "Ready",
+        "revealPerformed": true,
+        "socketConnected": true,
+        "gameEnteredObserved": true,
+        "gameEnteredAttemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+        "readyForRuntimeAutomation": true,
+        "runtimeReadyBlockedBy": [],
+        "readyForArenaCalibration": true,
+        "readyBlockedBy": [],
+        "save": {
+          "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+          "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+          "decision": "snapshot",
+          "kind": "Snapshot",
+          "source": "json_shadow",
+          "corruptDetail": null
+        },
+        "saveRuntime": {
+          "loaded": true,
+          "savePath": "cf7_agent_soldier_eq_r4_20261016_weapons",
+          "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+          "source": "launcher_snapshot:json_shadow",
+          "role": "fs",
+          "level": 99
+        },
+        "arenaCalibration": {
+          "success": true,
+          "ok": true,
+          "task": "arena_calibration",
+          "workerId": "guardian",
+          "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+          "assignmentId": null,
+          "attemptId": null,
+          "transportPoisoned": false,
+          "state": "idle",
+          "note": null,
+          "batchId": null,
+          "manifestHash": null,
+          "manifestPath": null,
+          "frozenManifestPath": null,
+          "resultPath": null,
+          "totalRuns": 0,
+          "completedRuns": 0,
+          "currentCaseId": null,
+          "currentRunId": null,
+          "lastError": null,
+          "lastResult": null
+        },
+        "activePanel": {
+          "name": null,
+          "instanceId": null
+        }
+      },
+      "agentEntryProof": {
+        "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+        "attemptId": "f0162b5454b942c1b420fc69fcfbd2ec",
+        "handoffLine": 236,
+        "titleFrameLine": 250,
+        "enterRequestCount": 1,
+        "gameEnteredObserved": true,
+        "gameEnteredAttemptId": "f0162b5454b942c1b420fc69fcfbd2ec"
+      },
+      "batchStart": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+        "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+        "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+        "transportPoisoned": false,
+        "state": "running",
+        "note": "started",
+        "batchId": "soldier-eq-r4-20261016-weapons",
+        "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/results.jsonl",
+        "totalRuns": 6,
+        "completedRuns": 0,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": null,
+        "lastResult": null
+      },
+      "finalArenaStatus": {
+        "success": true,
+        "ok": true,
+        "task": "arena_calibration",
+        "workerId": "guardian",
+        "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+        "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+        "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+        "transportPoisoned": false,
+        "state": "completed",
+        "note": null,
+        "batchId": "soldier-eq-r4-20261016-weapons",
+        "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+        "manifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/case-manifest-5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff.json",
+        "frozenManifestPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/case_manifest.json",
+        "resultPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/results.jsonl",
+        "totalRuns": 6,
+        "completedRuns": 6,
+        "currentCaseId": null,
+        "currentRunId": null,
+        "lastError": null,
+        "lastResult": {
+          "schema": "arena-calibration.result.v1",
+          "workerId": "guardian",
+          "sessionEpoch": "39844dba92574ba4b0f1ae3b8b8c8281",
+          "assignmentId": "assignment-41485e37-b805-4ba6-b51b-f077344a6dd8",
+          "attemptId": "attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6",
+          "batchId": "soldier-eq-r4-20261016-weapons",
+          "manifestHash": "sha256:5bef5d97cc62f524220a5206c4f08a97088a0b05b10494284290dd2a90e7cdff",
+          "caseId": "configured-squad-red",
+          "caseHash": "sha256:6c727c834e6b1da1e224c208065796ea7be59a2c68abe1651c435d0009c67b4f",
+          "runId": "configured-squad-red-r001",
+          "repeatIndex": 1,
+          "status": "finished",
+          "winner": "blue",
+          "startedAt": "2026-10-16T00:52:31.1050236Z",
+          "completedAt": "2026-10-16T00:52:52.6448381Z",
+          "requestedSpawnDistance": 650,
+          "blueFormation": "line",
+          "redFormation": "line",
+          "formationSpacing": 54,
+          "phaseSpawnCount": 0,
+          "spawnedUnits": [],
+          "blueSpawnPositions": [
+            {
+              "side": "blue",
+              "index": 0,
+              "unit": "兵种449",
+              "level": 60,
+              "name": "斗兽标定_blue_configured_squad_red_r001_0",
+              "x": 570,
+              "y": 430
+            },
+            {
+              "side": "blue",
+              "index": 1,
+              "unit": "兵种449",
+              "level": 60,
+              "name": "斗兽标定_blue_configured_squad_red_r001_1",
+              "x": 516,
+              "y": 430
+            }
+          ],
+          "redSpawnPositions": [
+            {
+              "side": "red",
+              "index": 0,
+              "unit": "兵种466",
+              "level": 60,
+              "name": "斗兽标定_red_configured_squad_red_r001_0",
+              "x": 1220,
+              "y": 430
+            },
+            {
+              "side": "red",
+              "index": 1,
+              "unit": "兵种466",
+              "level": 60,
+              "name": "斗兽标定_red_configured_squad_red_r001_1",
+              "x": 1274,
+              "y": 430
+            }
+          ],
+          "formationAudit": {
+            "blue": {
+              "count": 2,
+              "minX": 516,
+              "maxX": 570,
+              "minY": 430,
+              "maxY": 430,
+              "xRange": 54,
+              "yRange": 0,
+              "distinctX": 2,
+              "distinctY": 1
+            },
+            "red": {
+              "count": 2,
+              "minX": 1220,
+              "maxX": 1274,
+              "minY": 430,
+              "maxY": 430,
+              "xRange": 54,
+              "yRange": 0,
+              "distinctX": 2,
+              "distinctY": 1
+            }
+          },
+          "authorityContext": {
+            "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+            "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+            "candidateSide": "red",
+            "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+            "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+            "evidenceLane": "interactive_candidate",
+            "explicitLoadout": true,
+            "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+            "rivalDataPath": "data/enemy_properties/大学.xml",
+            "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+            "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+            "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+            "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+            "stage": 7,
+            "tier": 5,
+            "unitsPerSide": 2,
+            "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority"
+          },
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-m4",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390,
+              "remainHp": 32544,
+              "hpPermille": 894,
+              "alive": true
+            },
+            {
+              "sourceId": "cadet-mk18",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390,
+              "remainHp": 33987,
+              "hpPermille": 934,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-m16",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "soldier-ak74",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "frames": 486,
+          "durationMs": 21412,
+          "spawnDistance": 650,
+          "blueX": 570,
+          "redX": 1220,
+          "skillStateAudit": {
+            "blue": [
+              {
+                "unit": "兵种449",
+                "sourceId": "cadet-m4",
+                "name": "斗兽标定_blue_configured_squad_red_r001_0",
+                "observed": false,
+                "state": null
+              },
+              {
+                "unit": "兵种449",
+                "sourceId": "cadet-mk18",
+                "name": "斗兽标定_blue_configured_squad_red_r001_1",
+                "observed": false,
+                "state": null
+              }
+            ],
+            "red": [
+              {
+                "unit": "兵种466",
+                "sourceId": "soldier-m16",
+                "name": "斗兽标定_red_configured_squad_red_r001_0",
+                "observed": false,
+                "state": null
+              },
+              {
+                "unit": "兵种466",
+                "sourceId": "soldier-ak74",
+                "name": "斗兽标定_red_configured_squad_red_r001_1",
+                "observed": false,
+                "state": null
+              }
+            ]
+          },
+          "presentationAudit": {
+            "qualityAtStart": "LOW",
+            "qualityApplied": "LOW",
+            "atStart": {
+              "observed": true,
+              "qualityApplied": "LOW",
+              "performanceLevel": 1,
+              "lastAppliedSoftU": 1,
+              "appliedCommand": 14,
+              "sceneEpoch": 3,
+              "paused": false,
+              "frameRate": 30
+            },
+            "atEnd": {
+              "observed": true,
+              "qualityApplied": "LOW",
+              "performanceLevel": 1,
+              "lastAppliedSoftU": 1,
+              "appliedCommand": 14,
+              "sceneEpoch": 3,
+              "paused": false,
+              "frameRate": 30
+            }
+          },
+          "blue": {
+            "maxHp": 72780,
+            "remainHp": 66531,
+            "aliveCount": 2,
+            "startMaxHp": 72780,
+            "startCount": 2
+          },
+          "red": {
+            "maxHp": 44036,
+            "remainHp": 0,
+            "aliveCount": 0,
+            "startMaxHp": 44036,
+            "startCount": 2
+          },
+          "errors": []
+        }
+      },
+      "resultPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/attempt-1-soldier-eq-r4-20261016-weapons-attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6-results.jsonl",
+      "resultRows": 6,
+      "summaryPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/attempt-1-soldier-eq-r4-20261016-weapons-attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6-summary.json",
+      "summaryMdPath": "tmp/arena-calibration/unattended/20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567/attempt-1-soldier-eq-r4-20261016-weapons-attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6-summary.md",
+      "summaryTotals": {
+        "cases": 6,
+        "rows": 6,
+        "errors": 0,
+        "timeouts": 1
+      },
+      "analysisError": null,
+      "rerunManifestPath": null,
+      "rerunBatchId": null,
+      "autoRecovered": false,
+      "error": null,
+      "sourceResultPath": "tmp/arena-calibration/batches/soldier-eq-r4-20261016-weapons/attempts/attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6/results.jsonl"
+    }
+  ],
+  "rows": 6,
+  "expectedRows": 6,
+  "summaryTotals": {
+    "cases": 6,
+    "rows": 6,
+    "errors": 0,
+    "timeouts": 1
+  },
+  "failures": [],
+  "recoveryAttemptsUsed": 0,
+  "maxRecoveryAttempts": 0,
+  "error": null,
+  "suggestions": [],
+  "httpPort": 1192
+}

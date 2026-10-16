@@ -1,0 +1,101 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "wings-integration-20261015-donor-60",
+  "createdAt": "2026-10-15T13:40:58.882Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-wings-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "donor-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 60,
+          "sourceId": "wings-enhanced-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种373",
+          "level": 60,
+          "sourceId": "cf7-agent-60"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 2400,
+      "tags": [
+        "wings",
+        "donor",
+        "blue"
+      ],
+      "plannerReason": "与原版闪6特工同等级换边比较；包含素材和阶段档次差异，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2",
+        "candidateSide": "blue",
+        "comparison": "donor",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "edcd5bf3dcb6118b87f38c93625eaaa0b205f1164783747110d42f54747500e5",
+        "mode": "integration",
+        "sourceSwf": "flashswf/arts/new/CodexWings素材.swf",
+        "sourceSwfSha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+        "stage": 7,
+        "tier": 8
+      },
+      "caseHash": "sha256:3c32a0d7630a1132df7f827afab8cafc0e59ff5f8f5e347b68603fcf91f0749f"
+    },
+    {
+      "caseId": "donor-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种373",
+          "level": 60,
+          "sourceId": "cf7-agent-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种464",
+          "level": 60,
+          "sourceId": "wings-enhanced-60"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 2400,
+      "tags": [
+        "wings",
+        "donor",
+        "red"
+      ],
+      "plannerReason": "与原版闪6特工同等级换边比较；包含素材和阶段档次差异，不归因于纯 AI 增益。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2",
+        "candidateSide": "red",
+        "comparison": "donor",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "edcd5bf3dcb6118b87f38c93625eaaa0b205f1164783747110d42f54747500e5",
+        "mode": "integration",
+        "sourceSwf": "flashswf/arts/new/CodexWings素材.swf",
+        "sourceSwfSha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+        "stage": 7,
+        "tier": 8
+      },
+      "caseHash": "sha256:65aaece69a45880c2c1c4281d43b0787bae307d6d22d5ca11582d17b3898d75a"
+    }
+  ],
+  "manifestHash": "sha256:e9a103b91f0fd276615822ebb7f8dac3d2d283534375803206e589686c9ba667"
+}

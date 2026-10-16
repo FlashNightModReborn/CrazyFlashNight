@@ -1,0 +1,11 @@
+{
+  "requestedSpawnDistances": [
+    80,
+    180
+  ],
+  "stage": "manifest-generation-before-worker-start",
+  "outcome": "rejected",
+  "reason": "arena-calibration.case-manifest.v1 spawnDistance minimum is 360",
+  "physicalAttempts": 0,
+  "replacement": "fresh distance360 plan; no schema or runtime gate changed"
+}

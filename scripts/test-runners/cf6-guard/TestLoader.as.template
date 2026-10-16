@@ -1,0 +1,7 @@
+﻿import org.flashNight.arki.unit.Action.Melee.*;
+_root.guardCapture = false;
+_root.cf6GuardAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-guard Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-guard Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6GuardAssetTest.runAllTests();

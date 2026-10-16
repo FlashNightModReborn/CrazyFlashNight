@@ -1,0 +1,39 @@
+FocusedTestRunId cf6-soldier Start: 61937b32ff864c938bf2582972c4d6d2
+[SOLDIER_LIMB_COVERAGE] left=629 right=709
+[SOLDIER_POSE] stand state=长枪站立 frame=1
+[SOLDIER_DEATH_SCALE] standing=134.15 death=134.15 groundDelta=0 ground=0.150000000000006
+[SOLDIER_POSE] death-start state=血腥死 frame=1
+[SOLDIER_MOVEMENT] legacyTargetZ=201 legacyUnitZ=216 reversal=true
+[SOLDIER_MOVEMENT] corrected48FrameDrift=0
+[SOLDIER_GUN_DIAG] unit=_level0.__soldierLibrary.soldierProbe0 name=M4A1战术版 skinKey=枪-长枪-M4A1战术版 holder=_level0.__soldierLibrary.soldierProbe0.man.枪.枪 skin=_level0.__soldierLibrary.soldierProbe0.man.枪.枪.装扮 marker=_level0.__soldierLibrary.soldierProbe0.man.枪.枪.装扮.枪口位置 ref=_level0.__soldierLibrary.soldierProbe0.man.枪.枪.装扮 actorUrl=file:///C|/Program%20Files%20%28x86%29/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/Cf6SoldierNativeHost.swf
+[SOLDIER_POSE] airborne-shadow state=长枪站立 frame=1
+[SOLDIER_POSE] shoot state=长枪攻击 frame=14
+[SOLDIER_POSE] rifle-M4A1改 state=长枪攻击 frame=14
+[SOLDIER_POSE] rifle-AK74战术版 state=长枪攻击 frame=14
+[SOLDIER_POSE] rifle-DD MK18战术版 state=长枪攻击 frame=14
+[SOLDIER_POSE] rifle-AK47 state=长枪攻击 frame=14
+[SOLDIER_POSE] knife state=近战 frame=14
+[SOLDIER_POSE] down state=倒地 frame=20
+[SOLDIER_POSE] reload state=长枪攻击 frame=32
+[SOLDIER_POSE] death-a0-middle state=血腥死 frame=27
+[SOLDIER_POSE] death-a1-middle state=血腥死 frame=85
+[SOLDIER_POSE] death-a2-late state=血腥死 frame=131
+[SOLDIER_POSE] death-a1-late state=血腥死 frame=99
+[SOLDIER_POSE] death-a0-late state=血腥死 frame=51
+[SOLDIER_POSE] shield-stand-0 state=长枪站立 frame=11
+[SOLDIER_POSE] shield-stand-1 state=长枪站立 frame=11
+[SOLDIER_SHIELD_BUFF] multiplier=0.3 input=100 hpLoss=30
+[SOLDIER_POSE] shield-shoot-0 state=长枪攻击 frame=5
+[SOLDIER_POSE] shield-shoot-1 state=长枪攻击 frame=5
+[SOLDIER_POSE] shield-knife-0 state=近战 frame=14
+[SOLDIER_POSE] shield-knife-1 state=近战 frame=14
+[SOLDIER_POSE] shield-break-0-break state=破盾 frame=2
+[SOLDIER_POSE] shield-break-0-breakReload state=破盾 frame=2
+[SOLDIER_POSE] shield-break-1-break state=破盾 frame=2
+[SOLDIER_POSE] shield-break-1-breakReload state=破盾 frame=2
+[SOLDIER_PHASE] case=4 phase=2 hp=350 changes=1 ammo=3
+[SOLDIER_PHASE] case=5 phase=2 hp=350 changes=1 ammo=30
+[SOLDIER_PHASE] case=10 phase=2 hp=350 changes=1 ammo=3
+[SOLDIER_PHASE] case=11 phase=2 hp=350 changes=1 ammo=30
+Cf6SoldierAssetTest: 812 passed, 0 failed; 66 actual timeline cases
+FocusedTestRunId cf6-soldier Complete: 61937b32ff864c938bf2582972c4d6d2

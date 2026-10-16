@@ -1,0 +1,728 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/光头保安/敌人-CF6变身光头保安" itemID="6af00000-75c2d595" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6变身光头保安">
+  <timeline>
+    <DOMTimeline name="敌人-CF6变身光头保安">
+      <layers>
+        <DOMLayer name="状态标签" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" name="空手站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" name="空手行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" name="空手跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" name="空手跳" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728" name="近战" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" name="空手攻击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" name="拾取" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" name="躲闪" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" name="被击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" name="击倒" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="80" keyMode="9728" duration="8">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" name="倒地" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="89" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" name="被投" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="96" keyMode="9728" duration="8">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" name="血腥死" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728" duration="15">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" name="消失" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="130" keyMode="9728" name="变身" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728" duration="84">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="初始化与消失" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[guardDefaultTransform=true;
+攻击模式="空手";x轴攻击范围=0;y轴攻击范围=24;x轴保持距离=340;攻击欲望=3;命中率=20;击中效果="飙血";
+// 固定散弹枪使用怪物空手面板；通用 AI 负责索敌，本单位负责移动与动作时序。
+guardClock=0;guardReadyAt=6;guardTargetName="";guardAttackOwner=null;
+guardShotCount=0;guardAttackCount=0;guardInvalidMuzzleCount=0;
+guardAlignZ=false;guardApproachX=false;guardMovementTarget="";
+guardTuning={shootRange:380,laneRange:24,laneStopRange:12,approachStopRange:340,
+    reactionFrames:6,recoveryFrames:4,maximumTargetHeight:65,pellets:3};
+
+guardClearMovement=function():Void {
+    this.左行=this.右行=this.上行=this.下行=false;
+    this.guardAlignZ=this.guardApproachX=false;
+};
+
+// Generic AI retains targeting. Only this policy supplies inputs consumed by walking.
+guardUpdateMovement=function():Void {
+    this.左行=this.右行=this.上行=this.下行=false;
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(!(target.hp>0) || target===this || target.area==null){this.guardClearMovement();return;}
+    var dx:Number=target._x-this._x,dz:Number=target.Z轴坐标-this.Z轴坐标;
+    if(isNaN(dx) || isNaN(dz)){this.guardClearMovement();return;}
+    if(this.guardMovementTarget!=target._name){
+        this.guardAlignZ=this.guardApproachX=false;this.guardMovementTarget=target._name;
+    }
+    var tune:Object=this.guardTuning,ax:Number=Math.abs(dx),az:Number=Math.abs(dz);
+    if(az>tune.laneRange)this.guardAlignZ=true;
+    else if(az<=tune.laneStopRange)this.guardAlignZ=false;
+    if(ax>tune.shootRange)this.guardApproachX=true;
+    else if(ax<=tune.approachStopRange)this.guardApproachX=false;
+    this.上行=this.guardAlignZ && dz<0;this.下行=this.guardAlignZ && dz>0;
+    this.左行=this.guardApproachX && dx<0;this.右行=this.guardApproachX && dx>0;
+};
+
+行走=function():Void {
+    if(_root.暂停)return;
+    if(_root.控制目标==this._name && _root.控制目标全自动==false){
+        _root.敌人函数.行走.call(this);return;
+    }
+    if(!(this.hp>0) || this.浮空 || this.倒地 || this.硬直中
+        || this.guardAttackOwner!=null){this.guardClearMovement();return;}
+    if(this.状态!="空手站立" && this.状态!="空手行走" && this.状态!="空手跑")return;
+    // Re-evaluate at the movement consumer on every frame, after any generic AI write.
+    this.guardUpdateMovement();
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    var movingX:Boolean=this.左行 || this.右行,movingZ:Boolean=this.上行 || this.下行;
+    var running:Boolean=movingX && Math.abs(target._x-this._x)>this.guardTuning.shootRange;
+    if(movingX){
+        var direction:String=this.右行?"右":"左";this.方向改变(direction);
+        var speedX:Number=running?this.跑X速度:this.行走X速度;
+        this.移动(direction,Math.min(speedX,Math.max(0,Math.abs(target._x-this._x)-this.guardTuning.approachStopRange)));
+    }
+    if(movingZ){
+        var speedZ:Number=running?this.跑Y速度:this.行走Y速度;
+        this.移动(this.下行?"下":"上",Math.min(speedZ,Math.max(0,Math.abs(target.Z轴坐标-this.Z轴坐标)-this.guardTuning.laneStopRange)));
+    }
+    this.状态改变(movingX || movingZ?(running?"空手跑":"空手行走"):"空手站立");
+};
+
+guardReleaseStance=function():Void {
+    var owner:Object=this.guardAttackOwner;
+    if(owner==null || !owner.ownsStance)return;
+    this.刚体=owner.previousRigid;this.免疫击退=owner.previousImmune;owner.ownsStance=false;
+};
+
+guardCancelAttack=function():Void {
+    this.guardReleaseStance();
+    if(this.guardAttackOwner!=null)this.guardAttackOwner.active=false;
+    this.guardAttackOwner=null;this.动作A=false;
+};
+
+// 在旧身体卸载前取消，旧动作不能借用新身体继续开火。
+状态改变=function(next:String):Void {
+    if(this.guardTransform!=null){
+        if(next=="消失"){
+            this.guardTransform.active=false;
+            if(this.guardTransform.child._parent===this._parent)this.guardTransform.child._visible=true;
+        }else return;
+    }
+    if(next=="血腥死" && this.hp<=0 && this.光头保安变身!==false){this.guardStartTransform();return;}
+    if(this.状态==next)return;
+    this.guardCancelAttack();this.状态=next;this.gotoAndStop(next);
+};
+
+guardBeginAttack=function(body:MovieClip):Void {
+    this.guardCancelAttack();
+    if(!(this.hp>0) || (this.状态!="空手攻击" && this.状态!="近战")){body.stop();return;}
+    var token:Object={};body.guardToken=token;
+    this.guardAttackOwner={token:token,active:true,state:this.状态,fired:false,
+        previousRigid:this.刚体===true,previousImmune:this.免疫击退===true,ownsStance:true};
+    // 举枪期间稳住身体；出弹立即撤回，不减免任何伤害。
+    this.刚体=true;this.免疫击退=true;
+    this.guardAttackCount++;this.guardClearMovement();
+};
+
+guardCanAct=function(body:MovieClip):Boolean {
+    var owner:Object=this.guardAttackOwner;
+    return !_root.暂停 && this.hp>0 && owner!=null && owner.active
+        && this.man===body && body.guardToken===owner.token && this.状态==owner.state;
+};
+
+guardFindMuzzle=function(body:MovieClip):Object {
+    var gun:MovieClip=body.guardGun;
+    if(gun==null || gun._parent!==body)return null;
+    // SPAS12 枪口 (302.8,-34.05) 经过唯一 0.6 缩放；无需等待新置入枪身的子层首帧。
+    var p:Object={x:181.68,y:-20.43};gun.localToGlobal(p);
+    p.globalY=p.y;_root.gameworld.globalToLocal(p);
+    return isNaN(p.x) || isNaN(p.y)?null:p;
+};
+
+guardShoot=function(body:MovieClip):Void {
+    if(!this.guardCanAct(body) || body._currentframe!=41 || this.guardAttackOwner.fired)return;
+    var p:Object=this.guardFindMuzzle(body);
+    if(p==null){this.guardInvalidMuzzleCount++;return;}
+    this.guardAttackOwner.fired=true;
+    var bullet:Object=_root.子弹属性初始化(body.guardGun,"穿刺子弹",this);
+    bullet.shootX=p.x;bullet.shootY=p.y;bullet.转换中间y=p.globalY;
+    bullet.声音="re_shotgun_spas12.wav";bullet.霰弹值=this.guardTuning.pellets;bullet.子弹散射度=8;
+    bullet.子弹威力=this.空手攻击力;bullet.子弹速度=25;
+    bullet.Z轴攻击范围=24;bullet.击倒率=10;bullet.发射效果="霰弹枪枪火";
+    bullet.区域定位area=undefined;
+    this.guardShotCount++;_root.子弹区域shoot传递(bullet);this.guardReleaseStance();
+};
+
+guardFinishAttack=function(body:MovieClip):Void {
+    if(!this.guardCanAct(body))return;
+    this.guardCancelAttack();this.guardReadyAt=this.guardClock+this.guardTuning.recoveryFrames;
+    this.动画完毕();
+};
+
+guardTick=function():Void {
+    if(_root.暂停 || this.guardTransform!=null)return;
+    this.guardClock++;
+    if(!isNaN(this.hp) && this.hp<=0){
+        this.guardCancelAttack();
+        if(!this._killed && typeof(_root.敌人函数.标准击杀)=="function")_root.敌人函数.标准击杀(this);
+        else if(this.状态!="血腥死" && this.状态!="消失")this.状态改变("血腥死");
+        return;
+    }
+    var owner:Object=this.guardAttackOwner;
+    if(owner!=null && !this.guardCanAct(this.man)){
+        this.guardCancelAttack();return;
+    }
+    if(!(this.hp>0) || this.倒地 || this.浮空 || this.硬直中)return;
+    if(owner!=null){if(this.man._currentframe>41)this.guardReleaseStance();this.man.nextFrame();return;}
+    if(_root.控制目标==this._name && _root.控制目标全自动==false)return;
+    if(this.状态!="空手站立" && this.状态!="空手行走" && this.状态!="空手跑")return;
+    if((this.guardClock&3)!=0)return;
+    this.x轴攻击范围=0;this.y轴攻击范围=this.guardTuning.laneRange;
+    this.x轴保持距离=this.guardTuning.approachStopRange;
+    if(this.unitAI.data!=null){
+        this.unitAI.data.xrange=0;this.unitAI.data.zrange=this.y轴攻击范围;
+        this.unitAI.data.xdistance=this.x轴保持距离;
+    }
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(!(target.hp>0) || target===this || target.area==null){this.guardClearMovement();return;}
+    var dx:Number=target._x-this._x,dz:Number=target.Z轴坐标-this.Z轴坐标;
+    var height:Number=target.Z轴坐标-target._y;
+    if(target.浮空高度!=undefined && !isNaN(target.浮空高度) && target.浮空高度>0)height+=target.浮空高度;
+    if(isNaN(dx) || isNaN(dz) || isNaN(height))return;
+    if(this.guardTargetName!=target._name){
+        this.guardTargetName=target._name;this.guardReadyAt=this.guardClock+this.guardTuning.reactionFrames;
+    }
+    if(Math.abs(dx)>this.guardTuning.shootRange || Math.abs(dz)>this.guardTuning.laneRange
+        || height>this.guardTuning.maximumTargetHeight || this.guardClock<this.guardReadyAt){
+        this.guardUpdateMovement();return;
+    }
+    this.guardClearMovement();
+    if(dx<0)this.方向改变("左");else if(dx>0)this.方向改变("右");
+    this.状态改变("空手攻击");
+};
+
+// 第一阶段死亡后只尝试生成一次全新暴君；关卡人数由后继单位死亡时结算。
+if(光头保安变身==undefined)光头保安变身=guardDefaultTransform;
+else if(光头保安变身===true || 光头保安变身===1 || 光头保安变身==="true" || 光头保安变身==="1")光头保安变身=true;
+else if(光头保安变身===false || 光头保安变身===0 || 光头保安变身==="false" || 光头保安变身==="0")光头保安变身=false;
+else {
+    trace("[CF6_GUARD_CONFIG_ERROR] invalid 光头保安变身="+光头保安变身);
+    光头保安变身=false;
+}
+if(光头保安变身!==false)不掉钱=true;
+guardTransform=null;
+
+guardStartTransform=function():Void {
+    if(this.guardTransform!=null || this.光头保安变身===false || !(this.hp<=0))return;
+    this.guardCancelAttack();this.guardClearMovement();
+    this.guardTransform={active:true,attempted:false,retired:false,waitFrames:0,
+        world:this._parent,name:this._name+"__tyrant",level:this.等级,
+        side:this.是否为敌人,source:this.产生源,direction:this.方向,x:this._x,z:this.Z轴坐标};
+    this.浮空=this.倒地=false;this.水平速度=this.垂直速度=0;
+    this._y=this.Z轴坐标;this._rotation=0;
+    this.状态="变身";this.gotoAndStop("变身");
+};
+
+guardBeginTransform=function(body:MovieClip):Void {
+    body.stop();
+    var phase:Object=this.guardTransform;
+    if(phase==null || !phase.active || this.man!==body)return;
+    phase.body=body;
+};
+
+guardTransformError=function(reason:String):Void {
+    var phase:Object=this.guardTransform;
+    if(phase==null || phase.error!=undefined)return;
+    phase.error=reason;phase.active=false;
+    trace("[CF6_GUARD_TRANSFORM_ERROR] "+this._name+" "+reason);
+};
+
+guardSpawnTyrant=function(body:MovieClip):Void {
+    var phase:Object=this.guardTransform;
+    if(_root.暂停 || phase==null || !phase.active || phase.attempted || this.man!==body
+        || phase.body!==body || body._currentframe!=70)return;
+    // 先占有本次尝试；返回缺失或初始化超时均不得自动重放。
+    phase.attempted=true;
+    if(phase.world!==_root.gameworld || phase.world[phase.name]!=undefined){
+        this.guardTransformError("world-or-name-conflict");return;
+    }
+    var params:Object={_x:phase.x,_y:phase.z,等级:phase.level,是否为敌人:phase.side,
+        身高:230,产生源:phase.source,名字:"暴君克隆兽",_visible:false};
+    phase.child=_root.加载游戏世界人物("敌人-完全体克隆兽",phase.name,phase.world.getNextHighestDepth(),params);
+    if(phase.child==null){this.guardTransformError("spawn-returned-empty");return;}
+};
+
+guardTransformTick=function(body:MovieClip):Void {
+    var phase:Object=this.guardTransform;
+    if(_root.暂停 || phase==null || !phase.active || phase.retired || phase.body!==body
+        || this.man!==body || this.状态!="变身")return;
+    if(!phase.attempted){body.nextFrame();return;}
+    var child:MovieClip=phase.child;
+    if(phase.world!==_root.gameworld || child._parent!==phase.world || child._name!=phase.name
+        || phase.world[phase.name]!==child){this.guardTransformError("spawn-identity-lost");return;}
+    phase.waitFrames++;
+    if(child.__unitInitializedVersion!=null && child.__unitInitializedVersion===child.version
+        && child.兵种=="敌人-完全体克隆兽" && child.hp满血值>0 && !isNaN(child.hp)){
+        if(child.等级!=phase.level || child.是否为敌人!==phase.side){
+            this.guardTransformError("successor-context-mismatch");return;
+        }
+        child.方向改变(phase.direction);child._visible=true;
+        phase.retired=true;phase.active=false;
+        // 与黑龙相同：第一阶段经验正常结算，人数保留给新单位；不留下重复尸体。
+        this.死亡检测({noCount:true,noCorpse:true});
+    }else if(phase.waitFrames>=30)this.guardTransformError("successor-initialization-timeout");
+};
+
+_root.敌人函数.配置音效("人类",this);
+初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="118">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp=0;guardCancelAttack();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="94">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="私有行为" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="120">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/行为驱动" name="guardDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent.guardTick();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="95">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字信息" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="120">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 32" name="人物文字信息">
+                  <matrix>
+                    <Matrix ty="-150"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="95">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="受击包围盒" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="79">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix a="3.2" d="5.2" tx="-44" ty="-132"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix a="3.2" d="5.2" tx="-44" ty="-132"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix a="5.4" d="1.7" tx="-68" ty="-43"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix a="3.2" d="5.2" tx="-44" ty="-132"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" duration="111">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="通用索敌" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/思考标签">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="186">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/行为驱动" name="控制块">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){if(!_root.暂停)_parent.行走();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="186">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动作" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="1.15" ty="-63.177058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/行走" name="man">
+                  <matrix>
+                    <Matrix tx="19.85" ty="-72.627058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/行走" name="man">
+                  <matrix>
+                    <Matrix tx="19.85" ty="-72.627058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/被投" name="man">
+                  <matrix>
+                    <Matrix tx="16.15" ty="-72.777058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/散弹射击" name="man">
+                  <matrix>
+                    <Matrix tx="4.75" ty="-73.827058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/散弹射击" name="man">
+                  <matrix>
+                    <Matrix tx="4.75" ty="-73.827058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="1.15" ty="-63.177058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="1.15" ty="-63.177058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/被击" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.727058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent.guardCancelAttack();gotoAndPlay("a"+random(2));}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/击飞" name="man">
+                  <matrix>
+                    <Matrix tx="5.5" ty="-70.777058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent.guardCancelAttack();_parent.击飞浮空();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/倒地恢复" name="man">
+                  <matrix>
+                    <Matrix tx="5.5" ty="-70.777058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent.guardCancelAttack();_parent.击飞倒地();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/被投" name="man">
+                  <matrix>
+                    <Matrix tx="16.15" ty="-72.777058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent.guardCancelAttack();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/死亡" name="man">
+                  <matrix>
+                    <Matrix tx="5" ty="-73.727058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent.guardCancelAttack();gotoAndPlay("a"+random(3));}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="130" keyMode="9728" duration="80">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/动作/变身" name="man">
+                  <matrix>
+                    <Matrix tx="3" ty="-77.277058"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="210" keyMode="9728" duration="5">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="全状态接地阴影" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="120">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/CF7/Symbol 2" name="guardShadow">
+                  <matrix>
+                    <Matrix a="0.62" d="0.14"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="95">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

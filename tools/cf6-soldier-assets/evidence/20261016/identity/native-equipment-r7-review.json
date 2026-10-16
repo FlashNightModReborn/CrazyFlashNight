@@ -1,0 +1,79 @@
+{
+  "reviewer": "agent",
+  "reviewedImages": [
+    {
+      "file": "airborne-shadow.png",
+      "sha256": "a8d2b8bc2f12d7c16acdb40f48735eb685fc65e4d455b23b2e338e302dd63abf"
+    },
+    {
+      "file": "death-a0-late.png",
+      "sha256": "1d1671e6ea2d9b4c5419377bf5e51b32316cc6526ee69a251bc12b3807e04cb9"
+    },
+    {
+      "file": "death-a0-middle.png",
+      "sha256": "9c498f0f475ba55fdfbbb1044572ec447f892ed32644e248fb0fdfed02f88abd"
+    },
+    {
+      "file": "death-a1-late.png",
+      "sha256": "44a718fdeb82725f516042ee4f42a5c15417d6bf124887a9752be2a35af0bec0"
+    },
+    {
+      "file": "death-a1-middle.png",
+      "sha256": "2951a22d957a0a413795d7dc064fbe2527e69e69e2ce355ae4f2c9d299d28a39"
+    },
+    {
+      "file": "death-a2-late.png",
+      "sha256": "e60aff6e263db9108cfe2be6952b6c90b98d6de4f25d5d2f88f308060ff63e8a"
+    },
+    {
+      "file": "death-start.png",
+      "sha256": "ac4a8272090a774c26c63b52af1f9893cc8c4731542289cafff25c4a7df09479"
+    },
+    {
+      "file": "down.png",
+      "sha256": "d450cc7d475cafc35f184d09e9e6c674e81b85776544832acb0dbfb9ae548f95"
+    },
+    {
+      "file": "knife.png",
+      "sha256": "784c2bf61d5889859ebd0bfb09d90ecc3b58f2eb26460b5a1abf3cf6f2354816"
+    },
+    {
+      "file": "reload.png",
+      "sha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4"
+    },
+    {
+      "file": "rifle-AK47.png",
+      "sha256": "2c0a52ffb8949cd3d6655a06d445ab636f8a609c7d1a196ce3750626db48610c"
+    },
+    {
+      "file": "rifle-AK74战术版.png",
+      "sha256": "676ead4397ee8140de23dc1a9f4d310be2401847fafc0550381f3d5204dc495a"
+    },
+    {
+      "file": "rifle-DD MK18战术版.png",
+      "sha256": "661d5ebbbceb9c7946d030ec1492f9b494943c36c5bd35b6eac8e74c7bf2e261"
+    },
+    {
+      "file": "rifle-M4A1改.png",
+      "sha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4"
+    },
+    {
+      "file": "shoot.png",
+      "sha256": "b96e753341b421818869c194ead7bc0474176ef1b991fd9b809bc1822ee1b315"
+    },
+    {
+      "file": "stand.png",
+      "sha256": "d47eb9215321f21b9627f2d0b5f8b89202499f9f7ba250050ccf210c398e40d1"
+    }
+  ],
+  "findings": [
+    "All sixteen complete-unit frames were visually inspected at fixed camera scale.",
+    "CF6 body proportions and limbs are present; no body crop includes only the gun.",
+    "Uniform 0.8 weapon attachment retains the hand registration and follows all native poses.",
+    "All four default rifle visuals and external AK47 were inspected.",
+    "Standing/death initial dimensions match; all three death branches retain complete source art.",
+    "Shadow remains grounded under mirrored, rotated airborne pose.",
+    "Reload uses a ready pose, not newly authored hand animation."
+  ],
+  "humanVisualAcceptance": false
+}

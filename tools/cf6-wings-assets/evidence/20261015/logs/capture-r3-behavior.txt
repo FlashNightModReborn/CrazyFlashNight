@@ -1,0 +1,21 @@
+FocusedTestRunId cf6-wings Start: b88b0fd166fa4c74968b6d2545bba806
+[WINGS_IMAGE_BEGIN] stand 640 400
+[WINGS_IMAGE_END] stand
+[WINGS_DEATH_SCALE] side=0 standHeight=145.7 deathHeight=145.7 groundDelta=0
+[WINGS_IMAGE_BEGIN] death-start 640 400
+[WINGS_IMAGE_END] death-start
+[WINGS_DEATH_SCALE] side=1 standHeight=145.7 deathHeight=145.7 groundDelta=0
+[WINGS_IMAGE_BEGIN] shoot 640 400
+[WINGS_IMAGE_END] shoot
+[WINGS_IMAGE_BEGIN] combo 640 400
+[WINGS_IMAGE_END] combo
+[WINGS_IMAGE_BEGIN] flip 640 400
+[WINGS_IMAGE_END] flip
+[WINGS_IMAGE_BEGIN] death-a1-late 640 400
+[WINGS_IMAGE_END] death-a1-late
+[WINGS_IMAGE_BEGIN] death-a2-late 640 400
+[WINGS_IMAGE_END] death-a2-late
+[WINGS_IMAGE_BEGIN] death-a0-late 640 400
+[WINGS_IMAGE_END] death-a0-late
+Cf6WingsAssetTest: 216 passed, 0 failed; 32 actual timeline cases
+FocusedTestRunId cf6-wings Complete: b88b0fd166fa4c74968b6d2545bba806

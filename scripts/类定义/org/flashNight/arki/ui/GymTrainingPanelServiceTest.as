@@ -111,6 +111,10 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
             "cancel preserves all business values");
         check(invoke("finish", running.sessionToken).phase == "cancelled"
             && _root.__gymFlush == 0, "cancelled token cannot later finish");
+        // 内力训练项已下架并故意留索引空洞：旧项目号不得命中重排后的其它收益。
+        var retired:Object = start(open("dummy"), "dummy.3");
+        check(!retired.success && retired.error == "project_unavailable",
+            "retired inner-power row cannot start from its old project id");
     }
 
     private static function testAttributeAndDuplicate():Void {
@@ -278,19 +282,20 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
 
     private static function testOtherStationsAndContext():Void {
         setup();
-        _root.全局健身HP加成 = 1995;
+        // HP/MP 上限练级空间已减半（2000→1000），让出的那一半改由经脉穴位发放。
+        _root.全局健身HP加成 = 995;
         var running:Object = start(open("dumbbell"), "dumbbell.1");
         GymTrainingPanelService._setNowForTests(11000);
         var done:Object = invoke("finish", running.sessionToken);
-        check(done.saved && done.current == 2000 && done.award.amount == 5,
+        check(done.saved && done.current == 1000 && done.award.amount == 5,
             "dumbbell HP cap uses source row and actual gain");
 
         setup();
-        _root.全局健身MP加成 = 1995;
+        _root.全局健身MP加成 = 995;
         running = start(open("squat"), "squat.0");
         GymTrainingPanelService._setNowForTests(11000);
         done = invoke("finish", running.sessionToken);
-        check(done.saved && done.current == 2000 && done.award.amount == 5,
+        check(done.saved && done.current == 1000 && done.award.amount == 5,
             "squat MP cap uses source row and actual gain");
 
         setup();
@@ -359,12 +364,11 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         var beforeDefense:Number = Number(actor.防御力);
         var cases:Array = [
             {station:"dummy", project:"dummy.0", property:"空手攻击力", gain:3},
-            {station:"dummy", project:"dummy.3", property:"内力", gain:20},
             {station:"dumbbell", project:"dumbbell.0", property:"hp满血值", gain:10},
             {station:"squat", project:"squat.0", property:"mp满血值", gain:10},
             {station:"dumbbell", project:"dumbbell.2", property:"防御力", gain:5}
         ];
-        var expected:Object = {空手攻击力:beforeAttack, 内力:beforeInner,
+        var expected:Object = {空手攻击力:beforeAttack,
             hp满血值:1100, mp满血值:120, 防御力:beforeDefense};
         for (i = 0; i < cases.length; i++) {
             var item:Object = cases[i];
@@ -380,14 +384,14 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
                 && actor.hp == 700 && actor.mp == 40,
                 "durably saved " + item.project + " updates current actor without healing");
         }
-        check(_root.__gymBuffSync == 6 && _root.__gymShieldSync == 6
-            && _root.__gymHudHp == 5 && _root.__gymHudMp == 5,
-            "five live projections preserve equipment, Buff/shield bindings and refresh HUD");
+        check(_root.__gymBuffSync == 5 && _root.__gymShieldSync == 5
+            && _root.__gymHudHp == 4 && _root.__gymHudMp == 4,
+            "four live projections preserve equipment, Buff/shield bindings and refresh HUD");
         check(actor.hp满血值 == 1110 && actor.mp满血值 == 130
             && actor.空手攻击力 == beforeAttack + 3
-            && actor.内力 == beforeInner + 20
+            && actor.内力 == beforeInner
             && actor.防御力 == beforeDefense + 5,
-            "live values match all five persisted gym bonuses without compounding");
+            "live values match all four persisted gym bonuses without compounding");
 
         _root.__gymSaveSucceeds = false;
         GymTrainingPanelService._setNowForTests(160000);
@@ -395,14 +399,14 @@ class org.flashNight.arki.ui.GymTrainingPanelServiceTest {
         GymTrainingPanelService._setNowForTests(170000);
         var pending:Object = invoke("finish", pendingRun.sessionToken);
         check(pending.phase == "save_pending" && actor.空手攻击力 == beforeAttack + 3
-            && _root.__gymBuffSync == 6, "failed durable save does not project an unconfirmed live reward");
+            && _root.__gymBuffSync == 5, "failed durable save does not project an unconfirmed live reward");
         _root.__gymSaveSucceeds = true;
         var retried:Object = invoke("retrySave", pendingRun.sessionToken);
         check(retried.saved && actor.空手攻击力 == beforeAttack + 6
-            && _root.__gymBuffSync == 7, "retry projects saved stat exactly once");
+            && _root.__gymBuffSync == 6, "retry projects saved stat exactly once");
         invoke("finish", pendingRun.sessionToken);
         invoke("query", pendingRun.sessionToken);
-        check(actor.空手攻击力 == beforeAttack + 6 && _root.__gymBuffSync == 7,
+        check(actor.空手攻击力 == beforeAttack + 6 && _root.__gymBuffSync == 6,
             "duplicate receipts never reproject live stats");
         actor.removeMovieClip();
     }

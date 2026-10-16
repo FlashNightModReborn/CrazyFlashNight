@@ -1,0 +1,279 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "soldier-r1b-20261016-integration",
+  "createdAt": "2026-10-15T23:35:15.685Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-soldier-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 3600,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "mirror-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-0"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "mirror-60-0"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-soldier",
+        "mirror",
+        "blue"
+      ],
+      "plannerReason": "同配置同等级交换位置，观察动作与自然结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+        "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+        "candidateSide": "blue",
+        "comparison": "mirror",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+        "evidenceLane": "interactive_candidate",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1
+      },
+      "caseHash": "sha256:5c2e2c47635636dd30e8fbb266733ac55497dd716b67ba397d69c2a5d6ba3de4"
+    },
+    {
+      "caseId": "mirror-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "mirror-60-0"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-0"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-soldier",
+        "mirror",
+        "red"
+      ],
+      "plannerReason": "同配置同等级交换位置，观察动作与自然结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+        "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+        "candidateSide": "red",
+        "comparison": "mirror",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+        "evidenceLane": "interactive_candidate",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1
+      },
+      "caseHash": "sha256:fa5c06b6324903adbb5afed51bcd516e71d42e0aa186a424f9737292dbd115af"
+    },
+    {
+      "caseId": "squad-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-0"
+        },
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-1"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-60-0"
+        },
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-60-1"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "squad",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照军校生的持枪实战；不改军校生配置。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+        "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+        "candidateSide": "blue",
+        "comparison": "squad",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+        "evidenceLane": "interactive_candidate",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 2
+      },
+      "caseHash": "sha256:7e20e0e4df2699342c7e468e703b387acfcd3992e0c088dce49175c2d3379914"
+    },
+    {
+      "caseId": "squad-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-60-0"
+        },
+        {
+          "type": "兵种449",
+          "level": 60,
+          "sourceId": "cadet-60-1"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-0"
+        },
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60-1"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-soldier",
+        "squad",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照军校生的持枪实战；不改军校生配置。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+        "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+        "candidateSide": "red",
+        "comparison": "squad",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+        "evidenceLane": "interactive_candidate",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 2
+      },
+      "caseHash": "sha256:80d8f0e52815b1434448a4ca4bd871b114fff7d32173534a34dca5c4c2fe079b"
+    },
+    {
+      "caseId": "cadet-99-red-extended",
+      "blueRoster": [
+        {
+          "type": "兵种449",
+          "level": 99,
+          "sourceId": "cadet-99-0"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 99,
+          "sourceId": "soldier-99-0"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-soldier",
+        "cadet",
+        "red",
+        "extended-independent-run"
+      ],
+      "plannerReason": "保留原超时，另开180秒窗口的新局观察自然结束；不是续写旧结果。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+        "asLoaderSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+        "candidateSide": "red",
+        "comparison": "cadet",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+        "evidenceLane": "interactive_candidate",
+        "previousObservation": "Initial independent 99-level red-side case reached 3600 frames with both units alive; original timeout retained.",
+        "rivalDataPath": "data/enemy_properties/大学.xml",
+        "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+        "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+        "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+        "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+        "sourceSwfSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+        "stage": 7,
+        "tier": 5,
+        "unitsPerSide": 1
+      },
+      "caseHash": "sha256:9a956fdba6d309f76134e8ae015cefe8299cb1695e0827d5a26bc5173233fee0"
+    }
+  ],
+  "manifestHash": "sha256:fc4457f1946bc93e53e6718a73106759644bbeb7e2c5eccaa5eda518d528a1a1"
+}

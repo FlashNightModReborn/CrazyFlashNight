@@ -3596,3 +3596,348 @@
 }
 
 /* Arena Panel (角斗场) 样式已迁至 css/workbench/arena.css（双栏工作台迁移 P1c，2026-08-07）。线性历史见 git。 */
+
+/* ── 经脉面板 meridians（archive 配色沿用 intel 同色系）── */
+/* 尺寸锚在 #panel-content 上，不能拿视口量：容器左右各 inset 6%，
+   用 100vw 算出来的面板比容器宽出 12%，窗口一窄右侧关闭按钮就被顶出屏幕外。
+   margin:auto 让面板在容器里居中（100% 时不留空隙，宽屏时不再靠左偏）。 */
+.meridians-panel {
+    width: min(1404px, 100%);
+    height: min(790px, 100%);
+    min-width: 900px;
+    min-height: 560px;
+    margin: auto;
+    box-sizing: border-box;
+    color: var(--wb-semantic-meridian-text);
+    background: var(--wb-semantic-meridian-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-panel);
+    box-shadow: var(--wb-semantic-meridian-shadow);
+    font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
+    overflow: hidden;
+}
+
+.mer-shell {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    grid-template-rows: auto 1fr auto;
+    width: 100%;
+    height: 100%;
+}
+
+.mer-header {
+    grid-column: 1 / 3;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 18px;
+    background: var(--wb-semantic-meridian-raised-surface);
+    border-bottom: 1px solid var(--wb-semantic-meridian-border-divider);
+}
+
+.mer-heading { display: grid; gap: 3px; margin-right: auto; }
+.mer-title { font-size: 22px; font-weight: 700; }
+.mer-subtitle { font-size: 11px; color: var(--wb-semantic-meridian-secondary-text); }
+
+/* 表头四类收益预算（内力/HP上限/MP上限/防御）逐类独立封顶，框比旧的单项框紧凑。 */
+.mer-budgets { display: flex; gap: 8px; }
+.mer-budgets .mer-total-box { min-width: 78px; padding: 6px 10px; }
+.mer-budgets .mer-total-value { font-size: 15px; }
+
+.mer-total-box,
+.mer-kpoint-box {
+    display: grid;
+    gap: 2px;
+    min-width: 96px;
+    padding: 6px 14px;
+    background: var(--wb-semantic-meridian-counter-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
+}
+
+.mer-total-label,
+.mer-kpoint-label { font-size: 10px; color: var(--wb-semantic-meridian-accent); text-transform: uppercase; }
+.mer-total-value,
+.mer-kpoint-value { font-size: 18px; font-weight: 700; }
+
+.mer-close-btn {
+    width: 30px;
+    height: 30px;
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-control-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
+    cursor: pointer;
+}
+
+.mer-close-btn::before { content: "\00d7"; font-size: 18px; }
+
+.mer-catalog {
+    min-height: 0;
+    padding: 14px 12px;
+    overflow-y: auto;
+    background: var(--wb-semantic-meridian-recessed-surface);
+    border-right: 1px solid var(--wb-semantic-meridian-border-divider-soft);
+}
+
+.mer-catalog-list { display: grid; gap: 8px; }
+
+.mer-catalog-item {
+    display: grid;
+    gap: 3px;
+    padding: 9px 12px;
+    text-align: left;
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-choice-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-choice);
+    cursor: pointer;
+}
+
+.mer-catalog-item.active { background: var(--wb-semantic-meridian-selected-surface); border-color: var(--wb-semantic-meridian-accent); }
+.mer-catalog-name { font-size: 15px; font-weight: 700; }
+.mer-catalog-meta { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
+.mer-catalog-meta.is-locked { color: var(--wb-semantic-meridian-locked-text); }
+
+/* 中间人体图吃满剩余宽度（标签要在两侧腾空），右栏压到约四分之一。 */
+.mer-reader {
+    display: grid;
+    grid-template-columns: minmax(320px, 1fr) minmax(200px, 26%);
+    gap: 0 18px;
+    min-width: 0;
+    min-height: 0;
+    padding: 16px 18px;
+    overflow: hidden;
+}
+
+.mer-map-col {
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: 8px;
+    min-width: 0;
+    min-height: 0;
+}
+
+.mer-status { font-size: 13px; color: var(--wb-semantic-meridian-secondary-text); }
+
+.mer-map {
+    position: relative;
+    min-height: 0;
+    overflow: hidden;
+    border: 1px solid var(--wb-semantic-meridian-border-map);
+    background: var(--wb-semantic-meridian-map-surface);
+}
+
+.mer-zoom-viewport {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+}
+
+.mer-zoom-viewport.is-panning { cursor: grabbing; }
+
+.mer-canvas {
+    width: 100%;
+    height: 100%;
+    transform-origin: 0 0;
+    display: flex;
+    justify-content: center;
+    will-change: transform;
+}
+
+/* 缩放走 SVG 布局尺寸而非 transform scale：scale 会让合成层把已栅格化的文字位图拉伸，
+   放大后穴位标签发虚；按 --mer-zoom 撑开尺寸后文本走矢量栅格化，任何倍率都清晰。 */
+.mer-svg {
+    height: calc(100% * var(--mer-zoom, 1));
+    width: auto;
+    flex: none;
+}
+
+/* 人体轮廓：fill 与描边分层，轮廓由脚本按 v14 临摹路径渲染 */
+.mer-fill { fill: var(--wb-semantic-meridian-body-fill); stroke: none; }
+
+.mer-line {
+    fill: none;
+    stroke: var(--wb-semantic-meridian-body-line);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.mer-zoom-bar {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    gap: 6px;
+}
+
+.mer-zoom-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    line-height: 1;
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-overlay-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
+    cursor: pointer;
+}
+
+.mer-zoom-btn:hover { background: var(--wb-semantic-meridian-control-hover); }
+
+.mer-mgroup { opacity: 0.42; }
+.mer-mgroup.is-active { opacity: 1; }
+.mer-mgroup.is-locked { opacity: 0.26; }
+
+/* 白色=未贯通，绿色=已贯通（两端均贯通的连线转绿） */
+.mer-seg { stroke: var(--wb-semantic-meridian-unlit-fill); stroke-width: 2.4; }
+.mer-seg.is-lit { stroke: var(--wb-semantic-meridian-lit-fill); }
+
+.mer-dot {
+    fill: var(--wb-semantic-meridian-unlit-fill);
+    stroke: var(--wb-semantic-meridian-dot-stroke);
+    stroke-width: 1.5;
+    cursor: pointer;
+}
+
+/* 穴位状态由脚本按"脉内按序 + 情报 + 预算"下发，色板与图例一一对应 */
+.mer-dot.is-lit { fill: var(--wb-semantic-meridian-lit-fill); }
+.mer-dot.is-next { fill: var(--wb-semantic-meridian-unlit-fill); stroke: var(--wb-semantic-meridian-selection-stroke); }
+.mer-dot.is-sealed { fill: var(--wb-semantic-meridian-sealed-fill); stroke: var(--wb-semantic-meridian-dot-stroke); cursor: not-allowed; }
+.mer-dot.is-info { fill: var(--wb-semantic-meridian-info-fill); stroke: var(--wb-semantic-meridian-dot-stroke); cursor: not-allowed; }
+.mer-dot.is-capped { fill: var(--wb-semantic-meridian-capped-fill); stroke: var(--wb-semantic-meridian-error-text); cursor: not-allowed; }
+.mer-dot.is-selected { stroke: var(--wb-semantic-meridian-selection-stroke); stroke-width: 2.5; }
+
+/* 下一穴光环：把"能点的那个"从一片白点里拎出来（半径由脚本按缩放反算） */
+.mer-halo {
+    fill: none;
+    stroke: var(--wb-semantic-meridian-halo-stroke);
+    pointer-events: none;
+}
+
+/* 穴位标签：加粗大号，未贯通白、已贯通绿，与穴位点同色系（字号由脚本按缩放反算） */
+.mer-dot-label {
+    font-size: 20px;
+    font-weight: 700;
+    fill: var(--wb-semantic-meridian-unlit-fill);
+    pointer-events: none;
+}
+
+/* 穴位引线：标签被行距避让推开时仍指得回穴位（宽度由脚本按缩放反算） */
+.mer-leader {
+    fill: none;
+    stroke: var(--wb-semantic-meridian-leader-stroke);
+    stroke-linejoin: round;
+    pointer-events: none;
+}
+
+.mer-dot-label.is-lit { fill: var(--wb-semantic-meridian-lit-fill); }
+.mer-leader.is-dim { stroke: var(--wb-semantic-meridian-leader-stroke-dim); }
+
+.mer-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 16px;
+    font-size: 11px;
+    color: var(--wb-semantic-meridian-muted-text);
+}
+
+.mer-legend-item::before {
+    content: "";
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    margin-right: 5px;
+    border-radius: 50%;
+    vertical-align: -1px;
+}
+
+.mer-legend-body::before { background: var(--wb-semantic-meridian-body-line); }
+.mer-legend-white::before { background: var(--wb-semantic-meridian-unlit-fill); }
+.mer-legend-next::before { background: var(--wb-semantic-meridian-unlit-fill); box-shadow: 0 0 0 2px var(--wb-semantic-meridian-legend-halo); }
+.mer-legend-sealed::before { background: var(--wb-semantic-meridian-sealed-fill); }
+.mer-legend-green::before { background: var(--wb-semantic-meridian-lit-fill); }
+
+.mer-legend-hint { color: var(--wb-semantic-meridian-faint-text); }
+
+/* 右栏：上面是脉络介绍与情报清单，贯注区钉在栏底（作者要求按钮放在右栏下面）。 */
+.mer-side {
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+    padding-right: 4px;
+    overflow-y: auto;
+}
+
+.mer-meridian-head { display: grid; align-content: start; gap: 6px; min-height: 0; }
+.mer-meridian-name { font-size: 19px; font-weight: 700; color: var(--wb-semantic-meridian-heading-text); }
+.mer-meridian-desc { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
+
+/* 情报一物一行：清单名字本来就长，横排会折行错位，逐行才看得清缺哪本。 */
+.mer-require-list { display: grid; gap: 4px; margin-top: 4px; }
+
+.mer-require-chip {
+    padding: 3px 9px;
+    font-size: 11px;
+    background: var(--wb-semantic-meridian-recessed-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
+}
+
+.mer-require-chip.is-held { color: var(--wb-semantic-meridian-positive-text); border-color: var(--wb-semantic-meridian-positive-border); }
+.mer-require-chip.is-missing { color: var(--wb-semantic-meridian-missing-text); border-color: var(--wb-semantic-meridian-missing-border); }
+
+.mer-meridian-progress { font-size: 11px; color: var(--wb-semantic-meridian-muted-text); }
+
+/* 图下动作条：选中穴的身份、收益与 K 价一行给出，贯注按钮在右栏底部
+   （作者要求右栏只留介绍与情报提示，不再逐穴出栏位） */
+.mer-node-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    padding: 8px 12px;
+    background: var(--wb-semantic-meridian-raised-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-node);
+}
+
+.mer-node-bar.is-lit { background: var(--wb-semantic-meridian-lit-surface); border-color: var(--wb-semantic-meridian-accent); }
+.mer-node-bar.is-empty { border-style: dashed; }
+
+.mer-bar-hint { font-size: 12px; color: var(--wb-semantic-meridian-faint-text); }
+.mer-bar-name { font-size: 14px; font-weight: 700; }
+.mer-bar-gain { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
+.mer-bar-cost { font-size: 12px; color: var(--wb-semantic-meridian-secondary-text); }
+
+/* 贯注区：右栏底部一整块，状态原因在上、按钮铺满栏宽，连续贯注时手不用回到图下 */
+.mer-action { display: grid; align-content: end; gap: 6px; }
+.mer-action-state { font-size: 12px; color: var(--wb-semantic-meridian-positive-text); }
+
+.mer-action.is-sealed .mer-action-state,
+.mer-action.is-info .mer-action-state,
+.mer-action.is-capped .mer-action-state,
+.mer-action.is-lit .mer-action-state { color: var(--wb-semantic-meridian-missing-text); }
+
+.mer-action-btn {
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--wb-semantic-meridian-control-text);
+    background: var(--wb-semantic-meridian-control-surface);
+    border: 1px solid var(--wb-semantic-meridian-border-control);
+    cursor: pointer;
+}
+
+.mer-action-btn:hover:enabled { background: var(--wb-semantic-meridian-control-hover); }
+.mer-action-btn:disabled { color: var(--wb-semantic-meridian-disabled-text); background: var(--wb-semantic-meridian-disabled-surface); cursor: default; }
+
+.mer-footer {
+    grid-column: 1 / 3;
+    padding: 8px 18px;
+    background: var(--wb-semantic-meridian-raised-surface);
+    border-top: 1px solid var(--wb-semantic-meridian-border-divider-soft);
+}
+
+.mer-error { min-height: 16px; font-size: 12px; color: var(--wb-semantic-meridian-error-text); }
+.mer-error[hidden],
+.mer-status[hidden] { display: none; }

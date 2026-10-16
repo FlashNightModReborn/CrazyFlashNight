@@ -367,6 +367,7 @@ _root.__boot.f41_1 = function() {
     #include "../逻辑系统分区/战宠系统_WebView.as"
     #include "../逻辑系统分区/佣兵系统_WebView.as"
     #include "../逻辑系统分区/任务系统_WebView.as"
+    #include "../逻辑系统分区/经脉系统_WebView.as"
     #include "../展现/UI交互/UI交互_lsy_鼠标代理.as"
 };
 _root.__boot.f41_2 = function() {

@@ -1,0 +1,59 @@
+{
+  "purpose": "Stage8 tier9 heavy melee miniboss, same-level side swaps; 12 Black Iron and 6 Ark Claw natural fights. No rival edits.",
+  "batches": [
+    {
+      "id": "r7a",
+      "cases": [
+        [
+          "blackiron",
+          30
+        ],
+        [
+          "blackiron",
+          60
+        ],
+        [
+          "arkclaw",
+          30
+        ]
+      ],
+      "mode": "pilot"
+    },
+    {
+      "id": "r7b",
+      "cases": [
+        [
+          "blackiron",
+          30
+        ],
+        [
+          "blackiron",
+          60
+        ],
+        [
+          "blackiron",
+          99
+        ]
+      ],
+      "mode": "confirm"
+    },
+    {
+      "id": "r7c",
+      "cases": [
+        [
+          "blackiron",
+          99
+        ],
+        [
+          "arkclaw",
+          60
+        ],
+        [
+          "arkclaw",
+          99
+        ]
+      ],
+      "mode": "confirm"
+    }
+  ]
+}

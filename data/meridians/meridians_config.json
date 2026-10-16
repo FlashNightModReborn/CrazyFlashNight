@@ -1,0 +1,184 @@
+{
+    "bonusCaps": { "innerPower": 50, "hp": 1000, "mp": 1000, "defense": 500 },
+    "meridians": [
+        {
+            "id": "ren",
+            "name": "任脉",
+            "desc": "阴脉之海。θ-域耦合通道自会阴沿前正中线上行，主一身之阴。",
+            "requiredInfo": ["γ-ECHO病理摘要", "旧世残篇：西南自治区概况"],
+            "nodes": [
+                { "id": "ren-1", "name": "会阴", "cost": 600, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-101", "name": "曲骨", "cost": 600, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-102", "name": "中极", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-2", "name": "关元", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-105", "name": "石门", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-104", "name": "气海", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-106", "name": "阴交", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-107", "name": "神阙", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-108", "name": "水分", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-109", "name": "下脘", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-3", "name": "中脘", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-111", "name": "上脘", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-112", "name": "巨阙", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-113", "name": "鸠尾", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-114", "name": "中庭", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-115", "name": "膻中", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-116", "name": "玉堂", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-117", "name": "紫宫", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-118", "name": "华盖", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-119", "name": "璇玑", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-4", "name": "天突", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-121", "name": "廉泉", "cost": 1200, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "ren-5", "name": "承浆", "cost": 1200, "bonusType": "innerPower", "bonusAmount": 1 }
+            ]
+        },
+        {
+            "id": "du",
+            "name": "督脉",
+            "desc": "阳脉之海。沿脊背上行至巅，主一身之阳。",
+            "requiredInfo": ["ECHO-034的加密日志", "方舟秘钥"],
+            "nodes": [
+                { "id": "du-1", "name": "长强", "cost": 600, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-101", "name": "腰俞", "cost": 600, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-102", "name": "腰阳关", "cost": 600, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-103", "name": "悬枢", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-104", "name": "脊中", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-105", "name": "中枢", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-106", "name": "筋缩", "cost": 700, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-107", "name": "至阳", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-108", "name": "灵台", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-109", "name": "神道", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-110", "name": "身柱", "cost": 800, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-111", "name": "陶道", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-3", "name": "大椎", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-113", "name": "哑门", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-4", "name": "风府", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-115", "name": "脑户", "cost": 900, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-116", "name": "强间", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-117", "name": "后顶", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-5", "name": "百会", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-119", "name": "前顶", "cost": 1000, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-120", "name": "囟会", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-121", "name": "上星", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-122", "name": "神庭", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-123", "name": "印堂", "cost": 1100, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-124", "name": "素髎", "cost": 1200, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-125", "name": "水沟", "cost": 1200, "bonusType": "innerPower", "bonusAmount": 1 },
+                { "id": "du-126", "name": "龈交", "cost": 1200, "bonusType": "innerPower", "bonusAmount": 1 }
+            ]
+        },
+        {
+            "id": "chong",
+            "name": "冲脉",
+            "desc": "十二经之海，又称血海。并足少阴挟脐上行。",
+            "requiredInfo": ["《黑铁书》", "丽丽丝的芯片数据"],
+            "nodes": [
+                { "id": "chong-1", "name": "横骨", "cost": 5000, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-101", "name": "大赫", "cost": 5300, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-102", "name": "气穴", "cost": 5500, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-103", "name": "四满", "cost": 5800, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-104", "name": "中注", "cost": 6000, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-2", "name": "盲俞", "cost": 6300, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-106", "name": "商曲", "cost": 6500, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-107", "name": "石关", "cost": 6800, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-108", "name": "阴都", "cost": 7000, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-109", "name": "腹通谷", "cost": 7300, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-3", "name": "幽门", "cost": 7500, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-4", "name": "步廊", "cost": 7800, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-112", "name": "神封", "cost": 8000, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-113", "name": "灵墟", "cost": 8300, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-5", "name": "神藏", "cost": 8500, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-115", "name": "彧中", "cost": 8800, "bonusType": "hp", "bonusAmount": 50 },
+                { "id": "chong-116", "name": "俞府", "cost": 9000, "bonusType": "hp", "bonusAmount": 50 }
+            ]
+        },
+        {
+            "id": "dai",
+            "name": "带脉",
+            "desc": "束腰而圆，如一，总约诸脉。",
+            "requiredInfo": ["硬化僵尸情报", "超市求生笔记"],
+            "nodes": [
+                { "id": "dai-4", "name": "章门", "cost": 2500, "bonusType": "hp", "bonusAmount": 25 },
+                { "id": "dai-5", "name": "京门", "cost": 2900, "bonusType": "hp", "bonusAmount": 25 },
+                { "id": "dai-1", "name": "带脉", "cost": 3300, "bonusType": "hp", "bonusAmount": 25 },
+                { "id": "dai-2", "name": "五枢", "cost": 3700, "bonusType": "hp", "bonusAmount": 25 },
+                { "id": "dai-3", "name": "维道", "cost": 4100, "bonusType": "hp", "bonusAmount": 25 },
+                { "id": "dai-105", "name": "居髎", "cost": 4500, "bonusType": "hp", "bonusAmount": 25 }
+            ]
+        },
+        {
+            "id": "yinwei",
+            "name": "阴维脉",
+            "desc": "维络诸阴，起于足少阴，循下肢内侧上行。",
+            "requiredInfo": ["Blue的纸条", "Andy档案"],
+            "nodes": [
+                { "id": "yinwei-1", "name": "筑宾", "cost": 6000, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-101", "name": "蠡沟", "cost": 6500, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-102", "name": "急脉", "cost": 7100, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-3", "name": "冲门", "cost": 7600, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-2", "name": "府舍", "cost": 8100, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-4", "name": "大横", "cost": 8700, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-5", "name": "腹哀", "cost": 9200, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-107", "name": "期门", "cost": 9700, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-108", "name": "天突", "cost": 10300, "bonusType": "mp", "bonusAmount": 60 },
+                { "id": "yinwei-109", "name": "廉泉", "cost": 10800, "bonusType": "mp", "bonusAmount": 60 }
+            ]
+        },
+        {
+            "id": "yangwei",
+            "name": "阳维脉",
+            "desc": "维络诸阳，起于足太阳，循下肢外侧上行。",
+            "requiredInfo": ["BPK档案", "翅虎堂徽章"],
+            "nodes": [
+                { "id": "yangwei-1", "name": "金门", "cost": 4000, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-2", "name": "阳交", "cost": 4400, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-3", "name": "绷阳", "cost": 4700, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-103", "name": "膝阳关", "cost": 5100, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-104", "name": "居髎", "cost": 5400, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-105", "name": "五枢", "cost": 5800, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-106", "name": "天髎", "cost": 6100, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-107", "name": "肩井", "cost": 6500, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-4", "name": "本神", "cost": 6800, "bonusType": "mp", "bonusAmount": 40 },
+                { "id": "yangwei-5", "name": "脑空", "cost": 7200, "bonusType": "mp", "bonusAmount": 40 }
+            ]
+        },
+        {
+            "id": "yinqiao",
+            "name": "阴跷脉",
+            "desc": "司目之瞑与下肢之机动，起于然谷之后。",
+            "requiredInfo": ["镜之虎彻制作图纸", "符线溯源笔记"],
+            "nodes": [
+                { "id": "yinqiao-1", "name": "照海", "cost": 3500, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-2", "name": "水泉", "cost": 3700, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-3", "name": "交信", "cost": 3900, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-4", "name": "筑宾", "cost": 4100, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-5", "name": "阴郄", "cost": 4400, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-105", "name": "内关", "cost": 4600, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-106", "name": "廉泉", "cost": 4800, "bonusType": "defense", "bonusAmount": 10 },
+                { "id": "yinqiao-107", "name": "睛明", "cost": 5000, "bonusType": "defense", "bonusAmount": 10 }
+            ]
+        },
+        {
+            "id": "yangqiao",
+            "name": "阳跷脉",
+            "desc": "司目之瞑与轻身善走，起于跟中，循外踝上行。",
+            "requiredInfo": ["机密档案：幻影套装（Phantom Suit）研发日志残卷", "黑铁会信物"],
+            "nodes": [
+                { "id": "yangqiao-1", "name": "申脉", "cost": 10500, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-2", "name": "仆参", "cost": 10800, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-3", "name": "跗阳", "cost": 11200, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-103", "name": "承山", "cost": 11500, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-104", "name": "膝阳关", "cost": 11900, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-4", "name": "居髎", "cost": 12200, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-106", "name": "五枢", "cost": 12600, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-107", "name": "京门", "cost": 12900, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-108", "name": "天髎", "cost": 13300, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-109", "name": "肩贞", "cost": 13600, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-5", "name": "肩髃", "cost": 14000, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-111", "name": "巨骨", "cost": 14300, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-112", "name": "风池", "cost": 14700, "bonusType": "defense", "bonusAmount": 30 },
+                { "id": "yangqiao-113", "name": "睛明", "cost": 15000, "bonusType": "defense", "bonusAmount": 30 }
+            ]
+        }
+    ]
+}

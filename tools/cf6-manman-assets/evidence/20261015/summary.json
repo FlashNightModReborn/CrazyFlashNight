@@ -1,0 +1,1286 @@
+{
+  "schema": "cf6-manman.closeout-evidence.v1",
+  "baselineCommit": "88c53b1327",
+  "scope": "compiled native asset, focused Flash behavior, bounded isolated development combat",
+  "runtimePromoted": false,
+  "humanGameplayAccepted": false,
+  "groups": [
+    {
+      "experimentId": "manman-pilot-r1-20261015",
+      "groupId": "pilot",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/01-experiment.json",
+      "receiptSourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-fd4aad80e6e74187b3113b014f4639c3\\assignment-fd4aad80e6e74187b3113b014f4639c3\\attempt-fd4aad80e6e74187b3113b014f4639c3\\shard-receipt.json",
+      "receiptSha256": "1589a819b9cdc24942319284e5b597d6910e3e9e5c54e4a49797d4ccc74eebc4",
+      "rawFile": "raw/01-pilot.jsonl",
+      "manifestFile": "manifests/01-pilot.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:2a1fb0bca86f064f05f9e96c74a75f486b03c11b326e7dedffd4060c7caa22a0"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "mirror-30-blue",
+          "status": "timeout",
+          "winner": "timeout",
+          "durationMs": 60000.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 14178.0,
+              "hpPermille": 561,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 15644.0,
+              "hpPermille": 619,
+              "alive": true
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": false
+        },
+        {
+          "caseId": "mirror-30-red",
+          "status": "timeout",
+          "winner": "timeout",
+          "durationMs": 59951.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 16586.0,
+              "hpPermille": 656,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 14001.0,
+              "hpPermille": 554,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": false
+        },
+        {
+          "caseId": "orc-30-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 42969.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 22298.0,
+              "hpPermille": 882,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": false
+        },
+        {
+          "caseId": "orc-30-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 41595.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 21990.0,
+              "hpPermille": 870,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": false
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-ai-r2-20261015",
+      "groupId": "mirror-30",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/02-experiment.json",
+      "receiptSourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cc5ad47698324d53a0332ea6a3f85d13\\assignment-cc5ad47698324d53a0332ea6a3f85d13\\attempt-cc5ad47698324d53a0332ea6a3f85d13\\shard-receipt.json",
+      "receiptSha256": "ef302e10b2fa7e0f43ddf12705e7cd4efd46d735e5ea8714bd32604af448557e",
+      "rawFile": "raw/02-mirror-30.jsonl",
+      "manifestFile": "manifests/02-mirror-30.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:bb908ea81d8b11882ea2e588e50b5cdd215ad12862ce4a08492b8cf79eeaae18"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "mirror-30-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 114885.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 4961.0,
+              "hpPermille": 196,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "mirror-30-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 117117.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 4879.0,
+              "hpPermille": 193,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-ai-r2-high-20261015",
+      "groupId": "mirror-60",
+      "qualifiedGroup": true,
+      "experimentQualified": false,
+      "reportFile": "reports/03-experiment.json",
+      "receiptSourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-6adaf3e35df04a7ead3b6edd08c08570\\assignment-6adaf3e35df04a7ead3b6edd08c08570\\attempt-6adaf3e35df04a7ead3b6edd08c08570\\shard-receipt.json",
+      "receiptSha256": "080a588460e3e8b4bf6b2b0d1dc2af1cf773465b76c89bc367456eaae78cd654",
+      "rawFile": "raw/03-mirror-60.jsonl",
+      "manifestFile": "manifests/03-mirror-60.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:bb908ea81d8b11882ea2e588e50b5cdd215ad12862ce4a08492b8cf79eeaae18"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "mirror-60-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 169711.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399.0,
+              "remainHp": 8906.0,
+              "hpPermille": 252,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "mirror-60-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 165116.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399.0,
+              "remainHp": 6264.0,
+              "hpPermille": 177,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-ai-r2-high-20261015",
+      "groupId": "mirror-99",
+      "qualifiedGroup": false,
+      "experimentQualified": false,
+      "reportFile": "reports/03-experiment.json",
+      "receiptSourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-803507c502ae41dfac18d2d8e9b24ba9\\assignment-803507c502ae41dfac18d2d8e9b24ba9\\attempt-803507c502ae41dfac18d2d8e9b24ba9\\shard-receipt.json",
+      "receiptSha256": "389260a2949c1cbaaa482dde00e4ece8ec36631e2da98941b29b95b15a0354ac",
+      "rawFile": "raw/03-mirror-99.jsonl",
+      "manifestFile": "manifests/03-mirror-99.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:bb908ea81d8b11882ea2e588e50b5cdd215ad12862ce4a08492b8cf79eeaae18"
+      },
+      "runtimeResourcesVerified": false,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [
+        {
+          "phase": "protection",
+          "message": "EBUSY: resource busy or locked, open 'C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\asLoader.swf'"
+        }
+      ],
+      "rows": [
+        {
+          "caseId": "mirror-99-blue",
+          "status": "timeout",
+          "winner": "timeout",
+          "durationMs": 180175.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 13914.0,
+              "hpPermille": 287,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 9970.0,
+              "hpPermille": 205,
+              "alive": true
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": false
+        },
+        {
+          "caseId": "mirror-99-red",
+          "status": "timeout",
+          "winner": "timeout",
+          "durationMs": 180999.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 12198.0,
+              "hpPermille": 251,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 17654.0,
+              "hpPermille": 364,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": false
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-isolated99-r2-20261015",
+      "groupId": "mirror-99",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/04-experiment.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8c5cd59319674c9b82753d40fc4bf673\\assignment-8c5cd59319674c9b82753d40fc4bf673\\attempt-8c5cd59319674c9b82753d40fc4bf673\\shard-receipt.json",
+      "receiptSha256": "3a1ddf5aee505a4cf8a20073b0bf42d332e13f0d76dbd9ad9ead66d049132ad3",
+      "rawFile": "raw/04-mirror-99.jsonl",
+      "manifestFile": "manifests/04-mirror-99.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:ff4a542e231faf25ee20b90add3062302f172647159fbdab9f95bd200586b5c8"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "mirror-99-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 232517.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 9616.0,
+              "hpPermille": 198,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "mirror-99-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 235218.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 10852.0,
+              "hpPermille": 223,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-integration-r2-20261015",
+      "groupId": "orc-30",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/05-experiment.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-34e59e0f9be04946aa574aa456264086\\assignment-34e59e0f9be04946aa574aa456264086\\attempt-34e59e0f9be04946aa574aa456264086\\shard-receipt.json",
+      "receiptSha256": "d2a91b9e5d36ba2e50ab28b725a1e09f45127121422374bd6a6e7b8fd5d61a39",
+      "rawFile": "raw/05-orc-30.jsonl",
+      "manifestFile": "manifests/05-orc-30.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:ff4a542e231faf25ee20b90add3062302f172647159fbdab9f95bd200586b5c8"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "orc-30-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 37919.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 22419.0,
+              "hpPermille": 887,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "orc-30-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 37896.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 22534.0,
+              "hpPermille": 891,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-integration-r2-20261015",
+      "groupId": "orc-99",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/05-experiment.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8e98f7f1fc3c472299dc72081e74bb61\\assignment-8e98f7f1fc3c472299dc72081e74bb61\\attempt-8e98f7f1fc3c472299dc72081e74bb61\\shard-receipt.json",
+      "receiptSha256": "0ed33caa0845c46082031bb84ca74e3e92626b94a074ac8b5987d48c8b37f908",
+      "rawFile": "raw/05-orc-99.jsonl",
+      "manifestFile": "manifests/05-orc-99.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:ff4a542e231faf25ee20b90add3062302f172647159fbdab9f95bd200586b5c8"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "orc-99-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 57517.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 43400.0,
+              "hpPermille": 894,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "undead-orc-99",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 16067.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "orc-99-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 54531.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "undead-orc-99",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 16067.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-99",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 48557.0,
+              "remainHp": 43835.0,
+              "hpPermille": 903,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    },
+    {
+      "experimentId": "manman-integration-r2-20261015",
+      "groupId": "mixed-30",
+      "qualifiedGroup": true,
+      "experimentQualified": true,
+      "reportFile": "reports/05-experiment.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b8e6e15786294582995e994c5eaa3a4c\\assignment-b8e6e15786294582995e994c5eaa3a4c\\attempt-b8e6e15786294582995e994c5eaa3a4c\\shard-receipt.json",
+      "receiptSha256": "69b3dbf63fb9501fbc3756b0c50a5f59e326829d204fc44bf5295085a3f41462",
+      "rawFile": "raw/05-mixed-30.jsonl",
+      "manifestFile": "manifests/05-mixed-30.json",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:ff4a542e231faf25ee20b90add3062302f172647159fbdab9f95bd200586b5c8"
+      },
+      "runtimeResourcesVerified": true,
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "seedSourcesUnchanged": true,
+      "errors": [],
+      "rows": [
+        {
+          "caseId": "mixed-30-blue",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 112329.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 7264.0,
+              "hpPermille": 287,
+              "alive": true
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "eligibleForFinalArtifact": true
+        },
+        {
+          "caseId": "mixed-30-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 131797.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "manman-baseline-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "manman-enhanced-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277.0,
+              "remainHp": 2423.0,
+              "hpPermille": 96,
+              "alive": true
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "red",
+          "eligibleForFinalArtifact": true
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "reports/01-experiment.json",
+      "bytes": 2838,
+      "sha256": "1338c86a3e1b73d203bc312d6fb21f1e681da4659099f320b4e20f65b8b87d16",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-pilot-r1-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/01-pilot.jsonl",
+      "bytes": 12855,
+      "sha256": "a8f4be53532660f7296420fd462e59dcb27099f190005357147d66059c6c30b4",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-fd4aad80e6e74187b3113b014f4639c3\\assignment-fd4aad80e6e74187b3113b014f4639c3\\attempt-fd4aad80e6e74187b3113b014f4639c3\\raw\\a8f4be53532660f7296420fd462e59dcb27099f190005357147d66059c6c30b4.jsonl"
+    },
+    {
+      "path": "manifests/01-pilot.json",
+      "bytes": 5900,
+      "sha256": "152901b7ba1679c673fb3b1b54125947658eb6ffedcaeea3b72a518eb3010d9f",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-fd4aad80e6e74187b3113b014f4639c3\\assignment-fd4aad80e6e74187b3113b014f4639c3\\attempt-fd4aad80e6e74187b3113b014f4639c3\\manifest.json"
+    },
+    {
+      "path": "reports/02-experiment.json",
+      "bytes": 2841,
+      "sha256": "7a60f8c432f1cf5bea6c408e10dd1fbd5598a638647c8a9164d9c909545affee",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-ai-r2-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/02-mirror-30.jsonl",
+      "bytes": 6438,
+      "sha256": "9d930a9f352feaa313c97d9f47418a5ecd1cc568431f80bc0fde2fcf12389eee",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cc5ad47698324d53a0332ea6a3f85d13\\assignment-cc5ad47698324d53a0332ea6a3f85d13\\attempt-cc5ad47698324d53a0332ea6a3f85d13\\raw\\9d930a9f352feaa313c97d9f47418a5ecd1cc568431f80bc0fde2fcf12389eee.jsonl"
+    },
+    {
+      "path": "manifests/02-mirror-30.json",
+      "bytes": 3260,
+      "sha256": "55a3a45e0b18097f2d7489b9c99f7761909873711f41b9c808bd2c7c83ecac1e",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cc5ad47698324d53a0332ea6a3f85d13\\assignment-cc5ad47698324d53a0332ea6a3f85d13\\attempt-cc5ad47698324d53a0332ea6a3f85d13\\manifest.json"
+    },
+    {
+      "path": "reports/03-experiment.json",
+      "bytes": 4669,
+      "sha256": "4413e0243de9e4e4149ae30e530441439bc203c60cc64f7be97da57e6bf10bc9",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-ai-r2-high-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/03-mirror-60.jsonl",
+      "bytes": 6448,
+      "sha256": "fab231e73e8971d1d8507d67fe3fd451d89f501ebf73626120aa79002fb14012",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-6adaf3e35df04a7ead3b6edd08c08570\\assignment-6adaf3e35df04a7ead3b6edd08c08570\\attempt-6adaf3e35df04a7ead3b6edd08c08570\\raw\\fab231e73e8971d1d8507d67fe3fd451d89f501ebf73626120aa79002fb14012.jsonl"
+    },
+    {
+      "path": "manifests/03-mirror-60.json",
+      "bytes": 3265,
+      "sha256": "8eafb0c12b7dd05d5e792a01f2da8d8d93a27fc88f7ce35183d6bdc00582020c",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-6adaf3e35df04a7ead3b6edd08c08570\\assignment-6adaf3e35df04a7ead3b6edd08c08570\\attempt-6adaf3e35df04a7ead3b6edd08c08570\\manifest.json"
+    },
+    {
+      "path": "raw/03-mirror-99.jsonl",
+      "bytes": 6473,
+      "sha256": "35edf5f20740d451b7a8c35ea42b3be076021e7d1d8b3f20730a19af8e2e1ac4",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-803507c502ae41dfac18d2d8e9b24ba9\\assignment-803507c502ae41dfac18d2d8e9b24ba9\\attempt-803507c502ae41dfac18d2d8e9b24ba9\\raw\\35edf5f20740d451b7a8c35ea42b3be076021e7d1d8b3f20730a19af8e2e1ac4.jsonl"
+    },
+    {
+      "path": "manifests/03-mirror-99.json",
+      "bytes": 3265,
+      "sha256": "1edd8a02fbdfd896c5aa07351dca92092d40a202543809690b57d7f191b29983",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-803507c502ae41dfac18d2d8e9b24ba9\\assignment-803507c502ae41dfac18d2d8e9b24ba9\\attempt-803507c502ae41dfac18d2d8e9b24ba9\\manifest.json"
+    },
+    {
+      "path": "reports/04-experiment.json",
+      "bytes": 2831,
+      "sha256": "e9314934464b146ba7d47cd7528417f1cfebf139f27d2c936d59f32c78bf6ced",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-isolated99-r2-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/04-mirror-99.jsonl",
+      "bytes": 6456,
+      "sha256": "7f10ce5d20b6dcc68be6627d1b7d8a70ae2122a5775f6bd539ab1cfd128c218c",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8c5cd59319674c9b82753d40fc4bf673\\assignment-8c5cd59319674c9b82753d40fc4bf673\\attempt-8c5cd59319674c9b82753d40fc4bf673\\raw\\7f10ce5d20b6dcc68be6627d1b7d8a70ae2122a5775f6bd539ab1cfd128c218c.jsonl"
+    },
+    {
+      "path": "manifests/04-mirror-99.json",
+      "bytes": 3268,
+      "sha256": "19bdb64ac9c75af79da9956843b7bf86f20b36c86355dc66b85a62c270c5799c",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8c5cd59319674c9b82753d40fc4bf673\\assignment-8c5cd59319674c9b82753d40fc4bf673\\attempt-8c5cd59319674c9b82753d40fc4bf673\\manifest.json"
+    },
+    {
+      "path": "reports/05-experiment.json",
+      "bytes": 6381,
+      "sha256": "bb352ff7adc5b1a2753eb324238b84558da2649375909307e927eb24e262d754",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-integration-r2-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/05-orc-30.jsonl",
+      "bytes": 6414,
+      "sha256": "1936fa9d51ac81cf794bf98978fe82ef62923813dcb2388d54b8421a85373cf3",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-34e59e0f9be04946aa574aa456264086\\assignment-34e59e0f9be04946aa574aa456264086\\attempt-34e59e0f9be04946aa574aa456264086\\raw\\1936fa9d51ac81cf794bf98978fe82ef62923813dcb2388d54b8421a85373cf3.jsonl"
+    },
+    {
+      "path": "manifests/05-orc-30.json",
+      "bytes": 3134,
+      "sha256": "922de7d5bf1923db03cebc3a91414161cc0edbbde859bb1c32cd309889503d44",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-34e59e0f9be04946aa574aa456264086\\assignment-34e59e0f9be04946aa574aa456264086\\attempt-34e59e0f9be04946aa574aa456264086\\manifest.json"
+    },
+    {
+      "path": "raw/05-orc-99.jsonl",
+      "bytes": 6420,
+      "sha256": "ebd82aff6678e8f6b2bbc97e4a1e6c37a6f0e790ee63b7877fc000042b0afb54",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8e98f7f1fc3c472299dc72081e74bb61\\assignment-8e98f7f1fc3c472299dc72081e74bb61\\attempt-8e98f7f1fc3c472299dc72081e74bb61\\raw\\ebd82aff6678e8f6b2bbc97e4a1e6c37a6f0e790ee63b7877fc000042b0afb54.jsonl"
+    },
+    {
+      "path": "manifests/05-orc-99.json",
+      "bytes": 3134,
+      "sha256": "a4423ef32d383fdc410c2add94c9cfefb660f2f306008c343bced0c9d9ae8515",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8e98f7f1fc3c472299dc72081e74bb61\\assignment-8e98f7f1fc3c472299dc72081e74bb61\\attempt-8e98f7f1fc3c472299dc72081e74bb61\\manifest.json"
+    },
+    {
+      "path": "raw/05-mixed-30.jsonl",
+      "bytes": 8366,
+      "sha256": "2c0fb698f8061626486283c332ee0c7060585ccb5322d18e4a6b102f6a390aaf",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b8e6e15786294582995e994c5eaa3a4c\\assignment-b8e6e15786294582995e994c5eaa3a4c\\attempt-b8e6e15786294582995e994c5eaa3a4c\\raw\\2c0fb698f8061626486283c332ee0c7060585ccb5322d18e4a6b102f6a390aaf.jsonl"
+    },
+    {
+      "path": "manifests/05-mixed-30.json",
+      "bytes": 3660,
+      "sha256": "d82c7238b4e2b842005643d4c5581917677bfc146861aa25336501e868079b6b",
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-b8e6e15786294582995e994c5eaa3a4c\\assignment-b8e6e15786294582995e994c5eaa3a4c\\attempt-b8e6e15786294582995e994c5eaa3a4c\\manifest.json"
+    },
+    {
+      "path": "logs/initial-failing-test.txt",
+      "bytes": 336,
+      "sha256": "6d575f36e10258bd05221f33fa0ebfd05cad556e69a50fd2ea0e667956ab80b6",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\tests\\first\\flashlog.txt"
+    },
+    {
+      "path": "logs/fatal-cancel-fixed-test.txt",
+      "bytes": 209,
+      "sha256": "853faf0081a3c31f8d0344889f03897bef938512f3ea5d51f4550bd633c8245d",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\tests\\fatal-cancel-fix\\flashlog.txt"
+    },
+    {
+      "path": "logs/native-publish.log",
+      "bytes": 1304,
+      "sha256": "aafad86cfadf80731534725a18ecec034cd0c08e21f618887646f524f8a452ad",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\native-publish-r2.log"
+    },
+    {
+      "path": "logs/post-tuning-focused.log",
+      "bytes": 2203,
+      "sha256": "8b5fdc5578dd97d2d1633b98b4b40739454d187f42cd046b428449b493a090b4",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\asset-tests-r2.log"
+    },
+    {
+      "path": "logs/refused-concurrent-capture.log",
+      "bytes": 646,
+      "sha256": "27cd35b6f144008ab3ba348bc2187bc9d7add4254110b4f0cc2b91c8d75b22d1",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture.log"
+    },
+    {
+      "path": "logs/final-focused-capture.log",
+      "bytes": 2205,
+      "sha256": "b4932e53bddf748242b38fa35a21b078bd98a909da757eb482796c3c171e158f",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3.log"
+    },
+    {
+      "path": "logs/final-compiler.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3\\compiler_errors.txt"
+    },
+    {
+      "path": "logs/final-static-verify.log",
+      "bytes": 880,
+      "sha256": "4863f29e5f52d1e15a4a5f9996527dc90d36ad4456236e1dac7e66912b7cffcd",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-verify.log"
+    },
+    {
+      "path": "logs/xfl-audit.log",
+      "bytes": 587,
+      "sha256": "f340bdf9b0fb6770ea5910358a7c33a1ab49bac18c4edd81057dac4e3efb1553",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\xfl-audit.log"
+    },
+    {
+      "path": "images/stand.png",
+      "bytes": 28108,
+      "sha256": "ef9f714457509670714d058ab519056143c5e5d8f077166513ffc40f321dcf64",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3\\images\\stand.png"
+    },
+    {
+      "path": "images/cleave-impact.png",
+      "bytes": 21281,
+      "sha256": "805241a75dacc7e161dc7e981e71bb30c2a78b4a63357f312a83802af3c76860",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3\\images\\cleave-impact.png"
+    },
+    {
+      "path": "images/death-late.png",
+      "bytes": 14868,
+      "sha256": "eedd4841c2038b99b83a15b54f09659d94fced1d4fef18157142bf5fc8c0bd10",
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3\\images\\death-late.png"
+    }
+  ],
+  "finalInputs": [
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+      "bytes": 86323
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "91f1a27b31e7f6b07d4df3ff3056343547bb23f80d7ade0e158f84347221b204",
+      "bytes": 113793
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "d5628323cb0a0ceefb3eaefa735fddf7b0f4219377ac9f43eeb22581597ea849",
+      "bytes": 6497
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "sha256": "f7cc4efaabcf9f378eab798d54465dfdb55fc67f99ff844f41865a9b7e38a513",
+      "bytes": 24944
+    },
+    {
+      "path": "tools/cf6-manman-assets/balance-inputs.json",
+      "sha256": "a9b69255b183181fcd7a8b288cba1c0471a1ced8e128f7a74d4ee7f8036cf325",
+      "bytes": 1000
+    },
+    {
+      "path": "data/enemy_properties/CF6蛮蛮.xml",
+      "sha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+      "bytes": 1524
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "8552bcb77b4437c4914d9ef4d5330e819fa708f1c0c6982e06ded60ab19f34af",
+      "bytes": 151303
+    },
+    {
+      "path": "data/enemy_properties/list.xml",
+      "sha256": "e638cac6cde124f321448046bf650fec5dc2888db9ba8cefca268860eeb4a276",
+      "bytes": 687
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "d920b12ffa8737d37fb15be5a02f407a822d138ec76114dae43832e4c0613323",
+      "bytes": 868485
+    }
+  ],
+  "focusedTest": {
+    "runId": "1f7acadddcad4f8f8529aedd7e7379a1",
+    "passed": 125,
+    "failed": 0,
+    "timelineCases": 18,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "sourceSwfSha256": "746e2f1e1ab48458310cbe9d178af065651dfcf7b8b91fef5d7d81fd1e532fbf",
+    "rawTraceSourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-20261015\\final-capture-r3\\flashlog.txt",
+    "rawTraceSha256": "a091f6b08ed86f46f292055fb45b0a7e200cb0ed12bc676ea2bfd236eb8ce28a",
+    "rawTraceBytes": 276948
+  },
+  "counts": {
+    "allPreservedRuns": 18,
+    "finalQualifiedRuns": 12,
+    "finalFinishedRuns": 12,
+    "finalTimeoutRuns": 0
+  },
+  "localWorkerPreservation": {
+    "directory": "tmp/cf6-manman-20261015/isolated-worker-preserved",
+    "manifest": "tmp/cf6-manman-20261015/isolated-worker-preserved/preservation.json",
+    "verifiedFiles": 32,
+    "reason": "Preserve ignored original receipts and diagnostic files before archiving the owned worktree."
+  }
+}

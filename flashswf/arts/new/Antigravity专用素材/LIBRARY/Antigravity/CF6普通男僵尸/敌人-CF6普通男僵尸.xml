@@ -1,0 +1,493 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸" itemID="6af00000-0a74453c" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6普通男僵尸">
+  <timeline>
+    <DOMTimeline name="敌人-CF6普通男僵尸">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" name="空手站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" name="空手行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" name="空手跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" name="空手跳" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="11">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" name="空手攻击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" name="拾取" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" name="躲闪" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" name="被击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="9" name="击倒" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" duration="7" name="倒地" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" name="被投" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="96" keyMode="9728" duration="8">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" name="血腥死" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="105" keyMode="9728" duration="15">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" name="消失" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+if(this.配置音效)
+{
+   this.配置音效("僵尸", this);
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="118">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字信息层" color="#4FFF4F" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="120">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/人物文字信息" name="人物文字信息">
+                  <matrix>
+                    <Matrix tx="1" ty="-170.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="碰撞箱area层" color="#4FFF4F" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="88">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/area框" name="area">
+                  <matrix>
+                    <Matrix a="2.117157" d="5.482483" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/area框" name="area">
+                  <matrix>
+                    <Matrix a="5.723862" d="1.680969" tx="-63.6" ty="-31.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" duration="32">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="思考标签层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/思考标签">
+                  <matrix>
+                    <Matrix tx="-36" ty="16.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="98">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走控制块层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/控制块" name="控制块">
+                  <matrix>
+                    <Matrix a="0.014465" d="0.015854" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="98">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="被投area层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="95">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/被投旋转area" name="area">
+                  <matrix>
+                    <Matrix a="2.117157" d="5.486511"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   this._rotation = _parent.man._rotation;
+}
+]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" duration="23">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动作man层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/行走" name="man">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/行走" name="man">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="12">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/攻击" name="man">
+                  <matrix>
+                    <Matrix tx="4.95" ty="-63.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="-19.05" ty="-57.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay(random(15));
+   躲闪 = true;
+}
+onClipEvent(unload){
+   躲闪 = false;
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/被击" name="man">
+                  <matrix>
+                    <Matrix tx="10.25" ty="-60.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndPlay("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/击倒" name="man">
+                  <matrix>
+                    <Matrix tx="5.7" ty="-60.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent.击飞浮空();
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/倒地" name="man">
+                  <matrix>
+                    <Matrix tx="5.7" ty="-60.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent.击飞倒地();
+}]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/被投" name="man">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   gotoAndStop("a" + random(2));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6普通男僵尸/动作/血腥死" name="man">
+                  <matrix>
+                    <Matrix tx="7.3" ty="-60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   _root.播放音效("僵尸0" + (random(6) + 1) + ".wav");
+   gotoAndPlay("a" + random(3));
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="接地阴影层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="79">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/共用/接地阴影">
+                  <matrix>
+                    <Matrix a="0.319611" d="0.130127" tx="-3.5" ty="-0.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" keyMode="9728" duration="48">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

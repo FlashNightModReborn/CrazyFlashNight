@@ -1,0 +1,781 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Wings/敌人-CF6Wings" itemID="6b080000-bc90b518" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6Wings">
+  <timeline>
+    <DOMTimeline name="敌人-CF6Wings" currentFrame="91" guides="&lt;guidelines&gt;&lt;guideline direction=&quot;h&quot;&gt;3&lt;/guideline&gt;&lt;guideline direction=&quot;v&quot;&gt;0&lt;/guideline&gt;&lt;/guidelines&gt;">
+      <layers>
+        <DOMLayer name="私有控制器" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="125">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/行为驱动" name="wingsDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){ _parent.wingsTick(); }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Labels Layer" color="#CA8E4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="8" name="空手站立" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" name="空手行走" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" name="空手跑" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" name="空手跳" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" name="近战" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" name="空手攻击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" name="拾取" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" name="躲闪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" name="被击" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" name="击倒" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" name="倒地" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" name="被投" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" name="血腥死" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="5" name="消失" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#88F25D">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[x轴攻击范围 = 150;
+y轴攻击范围 = 10;
+x轴保持距离 = 50;
+
+攻击欲望 = 2;
+
+女_攻击呐喊_库 = ["01_kin_a_1-22.wav","02_kin_a_2-22.wav","03_kin_a_3-22.wav","19_kin_nage-22.wav"];
+女_中招呐喊_库 = ["05_kin_d_1-22.wav","06_kin_d_2-22.wav","07_kin_d_3-22.wav","08_kin_d_4-22.wav"];
+女_击倒呐喊_库 = ["女02.wav","09_kin_d_f-22.wav"];
+
+近战技能库 = ["后空翻","斩击"];
+中程技能库 = ["后空翻"];
+远程技能库 = ["射击"];
+
+近战技能随机数 = 近战技能库.length;
+中程技能随机数 = 中程技能库.length;
+远程技能随机数 = 远程技能库.length;
+
+
+初始化敌人模板 = _root.初始化敌人模板;
+初始化敌人模板();
+
+WingsAI模式 = (_arenaCalibrationUnit === true && WingsAI模式 == "baseline") ? "baseline" : "enhanced";
+wingsClock = 0;
+wingsReadyAt = 0;
+wingsNextFlip = 0;
+wingsNextCombo = 0;
+wingsTargetName = "";
+wingsAttackOwner = null;
+wingsAttackCount = 0;
+wingsHitCount = 0;
+wingsInvalidMuzzleCount = 0;
+wingsMuzzleRegistration = null;
+wingsTuning = {shootRange:480, slashRange:115, comboRange:135, flipRange:230,
+    laneRange:24, keepDistance:180, maximumTargetHeight:65,
+    reactionFrames:6, recoveryFrames:2, flipCooldown:75, comboCooldown:55};
+
+wingsCancelAttack = function():Void {
+    if (this.wingsAttackOwner != null) this.wingsAttackOwner.active = false;
+    this.wingsAttackOwner = null;
+};
+
+wingsBeginAttack = function(body:MovieClip, action:String):Void {
+    this.wingsCancelAttack();
+    if (!(this.hp > 0)) { body.stop(); return; }
+    var token:Object = {};
+    body.wingsToken = token;
+    this.wingsAttackOwner = {token:token, action:action, active:true,
+        state:action == "combo" ? "空手攻击" : "近战"};
+    this.wingsAttackCount++;
+    if (action == "flip") this.wingsNextFlip = this.wingsClock + this.wingsTuning.flipCooldown;
+    if (action == "combo") this.wingsNextCombo = this.wingsClock + this.wingsTuning.comboCooldown;
+};
+
+wingsCanAct = function(body:MovieClip):Boolean {
+    var owner:Object = this.wingsAttackOwner;
+    return !_root.暂停 && this.hp > 0 && owner != null && owner.active
+        && this.man === body && body.wingsToken === owner.token && this.状态 == owner.state;
+};
+
+wingsFinishAttack = function(body:MovieClip):Void {
+    var owner:Object = this.wingsAttackOwner;
+    if (owner == null || body.wingsToken !== owner.token) return;
+    this.wingsCancelAttack();
+    this.wingsReadyAt = this.wingsClock + this.wingsTuning.recoveryFrames;
+    this.动画完毕();
+};
+
+// 只遍历本动作拥有的枪刃和静态翻转姿势，枪口取真实嵌套矩阵。
+wingsFindMuzzle = function(body:MovieClip, marker:MovieClip):Object {
+    if (marker == null) return null;
+    var reference:Object = {x:0, y:0};
+    marker.localToGlobal(reference);
+    var scopes:Array = [body];
+    var best:Object = null;
+    var bestDistance:Number = Number.POSITIVE_INFINITY;
+    for (var index:Number = 0; index < scopes.length; index++) {
+        var scope:MovieClip = scopes[index];
+        for (var key:String in scope) {
+            var child = scope[key];
+            if (typeof child != "movieclip" || child._parent !== scope) continue;
+            if (child._name.indexOf("wingsPose") == 0 && index == 0) scopes.push(child);
+            if (child._name.indexOf("wingsGun") != 0) continue;
+            // 刚置入的静态姿势尚未执行子层首帧；注册点来自同一枪刃元件的已加载实例。
+            if (child.枪口 != null && child.枪口._parent === child
+                && !isNaN(child.枪口._x) && !isNaN(child.枪口._y)) {
+                this.wingsMuzzleRegistration = {x:child.枪口._x, y:child.枪口._y};
+            }
+            var registration:Object = this.wingsMuzzleRegistration;
+            if (registration == null) continue;
+            var position:Object = {x:registration.x, y:registration.y};
+            child.localToGlobal(position);
+            var dx:Number = position.x - reference.x;
+            var dy:Number = position.y - reference.y;
+            var distance:Number = dx * dx + dy * dy;
+            if (distance < bestDistance) { bestDistance = distance; best = {x:position.x, y:position.y, globalY:position.y}; }
+        }
+    }
+    if (best != null) _root.gameworld.globalToLocal(best);
+    return best;
+};
+
+wingsShoot = function(body:MovieClip, marker:MovieClip, angle:Number):Void {
+    if (!this.wingsCanAct(body)) return;
+    var muzzle:Object = this.wingsFindMuzzle(body, marker);
+    if (muzzle == null) { this.wingsInvalidMuzzleCount++; this.wingsInvalidMuzzleFrame=body._currentframe; return; }
+    var bullet:Object = _root.子弹属性初始化(marker, "穿刺子弹", this);
+    bullet.shootX = muzzle.x;
+    bullet.shootY = muzzle.y;
+    bullet.转换中间y = muzzle.globalY;
+    bullet.声音 = "shoot.wav";
+    bullet.霰弹值 = 1;
+    bullet.子弹散射度 = 8;
+    bullet.子弹威力 = this.空手攻击力;
+    bullet.子弹速度 = 25;
+    bullet.Z轴攻击范围 = 30;
+    bullet.击倒率 = 10;
+    bullet.角度偏移 = isNaN(angle) ? 0 : angle;
+    bullet.区域定位area = undefined;
+    this.wingsHitCount++;
+    _root.子弹区域shoot传递(bullet);
+};
+
+wingsSlash = function(body:MovieClip, area:MovieClip):Void {
+    if (!this.wingsCanAct(body) || area == null) return;
+    var bullet:Object = _root.子弹属性初始化(area, "近战子弹", this);
+    bullet.声音 = "";
+    bullet.霰弹值 = 1;
+    bullet.子弹散射度 = 0;
+    bullet.子弹威力 = this.空手攻击力;
+    bullet.子弹速度 = 0;
+    bullet.Z轴攻击范围 = 30;
+    bullet.击倒率 = 2;
+    bullet.不硬直 = true;
+    bullet.区域定位area = area;
+    this.wingsHitCount++;
+    _root.子弹区域shoot传递(bullet);
+};
+
+wingsMove = function(body:MovieClip, amount:Number, trackZ:Number):Void {
+    if (!this.wingsCanAct(body)) return;
+    if (amount != 0 && !isNaN(amount)) {
+        var right:Boolean = (this.方向 == "右") == (amount > 0);
+        this.移动(right ? "右" : "左", Math.abs(amount));
+    }
+    if (!(trackZ > 0)) return;
+    var target:MovieClip = _root.gameworld[this.攻击目标];
+    if (!(target.hp > 0)) return;
+    var dz:Number = target.Z轴坐标 - this.Z轴坐标;
+    if (Math.abs(dz) > 2) this.移动(dz < 0 ? "上" : "下", Math.min(trackZ, Math.abs(dz)));
+};
+
+wingsFinishFlip = function(body:MovieClip):Void {
+    if (!this.wingsCanAct(body)) return;
+    var target:MovieClip = _root.gameworld[this.攻击目标];
+    var dx:Number = Math.abs(target._x - this._x);
+    var dz:Number = Math.abs(target.Z轴坐标 - this.Z轴坐标);
+    if (!(target.hp > 0) || target.area == null || isNaN(dx) || isNaN(dz)
+        || dz > this.wingsTuning.laneRange || dx > this.wingsTuning.shootRange) {
+        this.wingsFinishAttack(body);
+        return;
+    }
+    this.近战招式 = dx < 150 ? "斩击" : "射击";
+    this.wingsBeginAttack(body, dx < 150 ? "slash" : "shoot");
+    body.gotoAndPlay(this.近战招式);
+};
+
+wingsChooseAttack = function(dx:Number, dz:Number, height:Number):String {
+    var tune:Object = this.wingsTuning;
+    if (isNaN(dx) || isNaN(dz) || isNaN(height) || dx < 0 || dz < 0
+        || dz > tune.laneRange || height > tune.maximumTargetHeight || this.wingsClock < this.wingsReadyAt) return "none";
+    if (dx <= tune.comboRange && this.wingsClock >= this.wingsNextCombo) return "combo";
+    if (dx <= tune.flipRange && this.wingsClock >= this.wingsNextFlip) return "flip";
+    if (dx <= tune.slashRange) return "slash";
+    if (dx <= tune.shootRange) return "shoot";
+    return "none";
+};
+
+wingsTick = function():Void {
+    if (_root.暂停) return;
+    this.wingsClock++;
+    if (!isNaN(this.hp) && this.hp <= 0) {
+        this.wingsCancelAttack();
+        if (this.状态 != "血腥死" && this.状态 != "消失") this.状态改变("血腥死");
+        return;
+    }
+    var owner:Object = this.wingsAttackOwner;
+    if (owner != null && (this.状态 != owner.state || this.man.wingsToken !== owner.token)) this.wingsCancelAttack();
+    if (this.WingsAI模式 != "enhanced" || !(this.hp > 0) || this.倒地 || this.浮空 || this.硬直中) return;
+    if (_root.控制目标 == this._name && _root.控制目标全自动 == false) return;
+    if (this.状态 != "空手站立" && this.状态 != "空手行走" && this.状态 != "空手跑") return;
+    if ((this.wingsClock & 3) != 0) return;
+    var target:MovieClip = _root.gameworld[this.攻击目标];
+    if (!(target.hp > 0) || target == this || target.area == null) return;
+    var dx:Number = target._x - this._x;
+    var dz:Number = target.Z轴坐标 - this.Z轴坐标;
+    var height:Number = target.Z轴坐标 - target._y;
+    if (isNaN(dx) || isNaN(dz) || isNaN(height)) return;
+    this.x轴攻击范围 = 0;
+    this.y轴攻击范围 = this.wingsTuning.laneRange;
+    this.x轴保持距离 = this.wingsTuning.keepDistance;
+    if (this.unitAI.data != null) {
+        this.unitAI.data.xrange = 0;
+        this.unitAI.data.zrange = this.y轴攻击范围;
+        this.unitAI.data.xdistance = this.x轴保持距离;
+    }
+    if (this.wingsTargetName != target._name) {
+        this.wingsTargetName = target._name;
+        this.wingsReadyAt = this.wingsClock + this.wingsTuning.reactionFrames;
+    }
+    var action:String = this.wingsChooseAttack(Math.abs(dx), Math.abs(dz), height);
+    if (action == "none") {
+        this.左行 = dx < -this.wingsTuning.keepDistance;
+        this.右行 = dx > this.wingsTuning.keepDistance;
+        this.上行 = dz < -6;
+        this.下行 = dz > 6;
+        if (Math.abs(dx) > 280 && this.状态 != "空手跑") this.状态改变("空手跑");
+        return;
+    }
+    this.左行 = this.右行 = this.上行 = this.下行 = false;
+    this.方向改变(dx < 0 ? "左" : "右");
+    this.近战招式 = action == "flip" ? "后空翻" : action == "slash" ? "斩击" : "射击";
+    this.状态改变(action == "combo" ? "空手攻击" : "近战");
+};
+
+if (WingsAI模式 == "enhanced") {
+    x轴攻击范围 = 0;
+    y轴攻击范围 = wingsTuning.laneRange;
+    x轴保持距离 = wingsTuning.keepDistance;
+    if (unitAI.data != null) {
+        unitAI.data.xrange = 0;
+        unitAI.data.zrange = y轴攻击范围;
+        unitAI.data.xdistance = x轴保持距离;
+    }
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="119" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="120" duration="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp = 0;
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#A64F9D">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/怪物通用模板/血条与名称/新版血条位置示意" name="人物文字信息" centerPoint3DX="88" centerPoint3DY="-138.9">
+                  <matrix>
+                    <Matrix tx="1" ty="-168.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#70A2F5" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="88" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/area框/hitbox-area框载体" name="area" centerPoint3DX="-39.85" centerPoint3DY="-10.05">
+                  <matrix>
+                    <Matrix a="0" b="-2.11715698242188" c="5.48248291015625" d="0" tx="-51.95" ty="2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/area框/hitbox-area框载体" name="area" centerPoint3DX="-13.95" centerPoint3DY="-114">
+                  <matrix>
+                    <Matrix a="2.11715698242188" d="5.48248291015625" tx="-26.45" ty="-126.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#B61AB0" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/area框/索敌框载体" centerPoint3DX="23.7" centerPoint3DY="-38.15" name="wingsSensor">
+                  <matrix>
+                    <Matrix a="6.66677856445313" d="0.738861083984375" ty="-122.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (enterFrame) {
+if(_parent.WingsAI模式=="baseline" && !_root.暂停){
+
+    if (this._currentframe == 1 and _root.gameworld[_parent.攻击目标].hp > 0)
+    {
+        距离X = Math.abs(_parent._x - _root.gameworld[_parent.攻击目标]._x);
+        距离Z = Math.abs(_parent.Z轴坐标 - _root.gameworld[_parent.攻击目标].Z轴坐标);
+        距离Y = 距离Z;
+        //有高空招式时激活下列内容
+        //敌方高度 = _root.gameworld[_parent.攻击目标].Z轴坐标 - _root.gameworld[_parent.攻击目标]._y;
+        if (this.hitTest(_root.gameworld[_parent.攻击目标].area) and 距离Z <= _parent.y轴攻击范围)
+        {
+            play();
+            if (random(_parent.攻击欲望) == 0)
+            {
+                /*有残血技能时激活下方内容，注意调整触发的距离X的范围
+                if(_parent.hp <  _parent.hp满血值*0.3 && 距离X >= 0 && 距离X < 500  && _parent.残血技能随机数 > 0)
+                {
+                    _parent.近战招式 =  _parent.残血技能库[random(_parent.残血技能随机数)];
+                    _parent.状态改变("近战");
+                }else
+                */
+                /*有斩杀技能时激活下方内容，注意调整触发的距离X的范围
+                if(_root.gameworld[_parent.攻击目标].hp <  _root.gameworld[_parent.攻击目标].hp满血值*0.3  && 距离X < 600 && _parent.残血技能随机数 > 0)
+                {
+                    _parent.近战招式 =   _parent.斩杀技能库[random(_parent.斩杀技能随机数)];
+                    _parent.状态改变("近战");
+                }else
+                */
+                if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("左");
+                }
+                else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("右");
+                }
+
+                if (距离X < 150)
+                {
+                    if (_parent.近战技能随机数 > 0)
+                    {
+                        _parent.近战招式 = _parent.近战技能库[random(_parent.近战技能随机数)];
+                        _parent.状态改变("近战");
+                    }else{
+                        _parent.状态改变("空手攻击");
+                    }
+                }
+                else if (距离X < 230 and _parent.中程技能随机数 > 0)
+                {
+
+                    _parent.近战招式 = _parent.中程技能库[random(_parent.中程技能随机数)];
+                    _parent.状态改变("近战");
+                }
+                else if (_parent.远程技能随机数 > 0 and 距离X < 500 )
+                {
+                    _parent.近战招式 = _parent.远程技能库[random(_parent.远程技能随机数)];
+                    _parent.状态改变("近战");
+                }
+                else if (_parent.超远程技能随机数 > 0 and 距离X >= 500 )
+                {
+                    _parent.近战招式 = _parent.超远程技能库[random(_parent.超远程技能随机数)];
+                    _parent.状态改变("近战");
+                }
+            }
+
+        }
+        /*有高空招式时激活下方内容
+        else if (敌方高度 > 80 and _parent.高空技能随机数 > 0 and 距离Z <= _parent.y轴攻击范围 * 5)
+        {
+
+            if (random(_parent.攻击欲望) == 0)
+            {
+                if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("左");
+                }
+                else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("右");
+                }
+                //可以调整触发的距离X
+                if (距离X < 200 && 距离Z <= _parent.y轴攻击范围)
+                {
+                    _parent.高空招式 = _parent.高空技能库[random(_parent.高空技能随机数)];
+                    if (敌方高度 > 200 and _parent.等级 >= 50 and _parent.高空招式 == "中空连招")
+                    {
+                        _parent.高空招式 = "高空连招";
+                    }
+                    _parent.状态改变("空手跳");
+                }
+            }
+        }
+        */
+        /*有身后招式时激活下列内容
+        else if (距离X < 130 and 距离Z <= _parent.y轴攻击范围)
+        {
+            if (_parent.身后技能随机数 > 0 and random(_parent.攻击欲望) == 0)
+            {
+                _parent.近战招式 = _parent.身后技能库[random(_parent.身后技能随机数)];
+                _parent.状态改变("近战");
+            }
+        }
+        */
+        /*有横向招式时激活下列内容
+        else if (距离X < 220 and _parent.横向技能随机数 > 0 and 距离Z <= 90 and random(_parent.攻击欲望 * 2) == 0)
+        {
+
+            if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+            {
+                _parent.方向改变("左");
+            }
+            else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+            {
+                _parent.方向改变("右");
+            }
+            _parent.近战招式 = _parent.横向技能库[random(_parent.横向技能随机数)];
+            _parent.状态改变("近战");
+        }
+        */
+        /*有范围外招式时激活下列内容
+        else
+        {
+            if (_parent.范围外技能随机数 > 0 and random(_parent.攻击欲望 * 15) == 0)
+            {
+                if (_parent._x > _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("左");
+                }
+                else if (_parent._x < _root.gameworld[_parent.攻击目标]._x)
+                {
+                    _parent.方向改变("右");
+                }
+                _parent.近战招式 = _parent.范围外技能库[random(_parent.范围外技能随机数)];
+                _parent.状态改变("近战");
+            }
+        }
+        */
+
+    }
+
+}
+}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="96" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#EDD155" locked="true" outline="true" useOutlineView="true">
+          <frames>
+            <DOMFrame index="0" duration="29" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/通用ai元件/行走ai载体" name="控制块" centerPoint3DX="120" centerPoint3DY="130.5">
+                  <matrix>
+                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-31.5" ty="-21"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){
+   _parent.行走();
+}
+]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/思考标签" centerPoint3DX="-32" centerPoint3DY="22.95">
+                  <matrix>
+                    <Matrix tx="-34.5" ty="20.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="96" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#BEE1FA" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/动作/站立" centerPoint3DX="30" centerPoint3DY="-67.3" name="man">
+                  <matrix>
+                    <Matrix tx="30" ty="-67.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 855" centerPoint3DX="305" centerPoint3DY="136.45" name="man">
+                  <matrix>
+                    <Matrix tx="296.95" ty="132.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/跑步" centerPoint3DX="28.05" centerPoint3DY="-64.55" name="man">
+                  <matrix>
+                    <Matrix tx="20" ty="-68.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" duration="8" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 856" selected="true" centerPoint3DX="28.5" centerPoint3DY="-67.05" name="man">
+                  <matrix>
+                    <Matrix tx="12.9" ty="-67.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 861" centerPoint3DX="28.5" centerPoint3DY="-67.05" name="man">
+                  <matrix>
+                    <Matrix tx="32" ty="-59.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" duration="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/动作/站立" centerPoint3DX="28.5" centerPoint3DY="-67.05" name="man">
+                  <matrix>
+                    <Matrix tx="28.5" ty="-67.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" duration="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 862" name="man" selected="true" centerPoint3DX="28.5" centerPoint3DY="-67.05">
+                  <matrix>
+                    <Matrix tx="30.95" ty="-63.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="79" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 863" selected="true" centerPoint3DX="17.2" centerPoint3DY="-79.55" name="man">
+                  <matrix>
+                    <Matrix tx="3" ty="-81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent.击飞浮空();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="88" duration="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/起身" centerPoint3DX="10.05" centerPoint3DY="-84.4" name="man">
+                  <matrix>
+                    <Matrix tx="3" ty="-81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent (load) {
+    _parent.击飞倒地();
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="95" duration="9" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/闪6特工/MovieClip/sprite 863" centerPoint3DX="17.2" centerPoint3DY="-79.55" name="man">
+                  <matrix>
+                    <Matrix tx="3" ty="-81"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="104" duration="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/动作/死亡" centerPoint3DX="28.5" centerPoint3DY="-67.05" name="man">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="16.5" ty="-64.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent.wingsCancelAttack(); gotoAndPlay("a"+random(3)); }]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC">
+          <frames>
+            <DOMFrame index="0" duration="120" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/CF7/诺亚克隆兽/阴影" centerPoint3DX="86.65" centerPoint3DY="86.65" name="wingsShadow" symbolType="movie clip">
+                  <matrix>
+                    <Matrix a="0.322402954101563" d="0.131256103515625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="120" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

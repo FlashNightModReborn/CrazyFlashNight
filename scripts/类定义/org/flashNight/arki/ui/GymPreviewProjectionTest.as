@@ -31,11 +31,12 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
     }
 
     private static function testProgressBoundaries():Void {
-        assertPreview("dummy", 0, 34, "0,1,2,3,7,8,9", "dummy progress 0");
-        assertPreview("dummy", 67, 34, "0,1,2,3,7,8,9", "dummy before progress 68");
-        assertPreview("dummy", 68, 34, "0,1,2,3,4,5,7,8,9", "dummy at progress 68");
-        assertPreview("dummy", 119, 34, "0,1,2,3,4,5,7,8,9", "dummy before progress 120");
-        assertPreview("dummy", 120, 34, "0,1,2,3,4,5,6,7,8,9", "dummy at progress 120");
+        // 木人桩索引 3（内力训练）已下架且故意留空洞，所以项目列表缺 3。
+        assertPreview("dummy", 0, 34, "0,1,2,7,8,9", "dummy progress 0");
+        assertPreview("dummy", 67, 34, "0,1,2,7,8,9", "dummy before progress 68");
+        assertPreview("dummy", 68, 34, "0,1,2,4,5,7,8,9", "dummy at progress 68");
+        assertPreview("dummy", 119, 34, "0,1,2,4,5,7,8,9", "dummy before progress 120");
+        assertPreview("dummy", 120, 34, "0,1,2,4,5,6,7,8,9", "dummy at progress 120");
 
         assertPreview("dumbbell", 0, 34, "0,1,2,7,8,9", "dumbbell progress 0");
         assertPreview("dumbbell", 67, 34, "0,1,2,7,8,9", "dumbbell before progress 68");
@@ -51,9 +52,9 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
     }
 
     private static function testLevelBoundaries():Void {
-        assertPreview("dummy", 0, 35, "0,1,2,3,7,8,9,10,11", "dummy at level 35");
-        assertPreview("dummy", 0, 49, "0,1,2,3,7,8,9,10,11", "dummy before level 50");
-        assertPreview("dummy", 0, 50, "0,1,2,3,7,8,9,10,11,12", "dummy at level 50");
+        assertPreview("dummy", 0, 35, "0,1,2,7,8,9,10,11", "dummy at level 35");
+        assertPreview("dummy", 0, 49, "0,1,2,7,8,9,10,11", "dummy before level 50");
+        assertPreview("dummy", 0, 50, "0,1,2,7,8,9,10,11,12", "dummy at level 50");
 
         assertPreview("dumbbell", 0, 35, "0,1,2,7,8,9,10,11", "dumbbell at level 35");
         assertPreview("dumbbell", 0, 49, "0,1,2,7,8,9,10,11", "dumbbell before level 50");
@@ -101,14 +102,14 @@ class org.flashNight.arki.ui.GymPreviewProjectionTest {
         var dumbbell:Object = GymPreviewProjection.buildPreview("dumbbell");
         var dumbbellFirst:Object = projectAt(dumbbell, 0);
         check(dumbbellFirst.rewardLabel == "HP上限" && dumbbellFirst.rewardAmount == 10
-                && dumbbellFirst.cost == 50000 && dumbbellFirst.cap == 2000,
+                && dumbbellFirst.cost == 50000 && dumbbellFirst.cap == 1000,
             "dumbbell opener uses the actual HP catalog");
 
         prepareFixture(0, 34);
         var squat:Object = GymPreviewProjection.buildPreview("squat");
         var squatFirst:Object = projectAt(squat, 0);
         check(squatFirst.rewardLabel == "MP上限" && squatFirst.rewardAmount == 10
-                && squatFirst.cost == 50000 && squatFirst.cap == 2000,
+                && squatFirst.cost == 50000 && squatFirst.cap == 1000,
             "squat opener uses the actual MP catalog");
     }
 

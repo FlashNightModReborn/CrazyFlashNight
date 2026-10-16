@@ -1,0 +1,199 @@
+{
+  "schema": "cf6-wings.shadow-fix-evidence.v1",
+  "cause": [
+    "donor shadow only covered root frames 1..79, disappearing in knockdown/down/thrown/death",
+    "legacy shadow registered on the wrong ancestor and used the player-rig baseline",
+    "initial body-only captures did not include the root shadow"
+  ],
+  "before": {
+    "swfSha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+    "runId": "6afb7abf3f1440eb90d8b4cb9458d066",
+    "passed": 224,
+    "failed": 165
+  },
+  "after": {
+    "swfSha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107",
+    "bytes": 97328,
+    "runId": "90e1887e4e2e491e99585fe61cafdab8",
+    "passed": 389,
+    "failed": 0,
+    "actualActionCases": 32,
+    "shadowStateCases": 28,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "imageInspected": true
+  },
+  "intermediateTimeout": {
+    "runId": "49835c6486854245bd9a4e375f47b883",
+    "wrapperOutcome": "failed-timeout",
+    "lateTrace": "389 passed, 0 failed",
+    "recovery": "after-r1-recovery.json"
+  },
+  "changedNativeSymbols": [
+    "LIBRARY/Codex/Wings/CF7/诺亚克隆兽/阴影.xml",
+    "LIBRARY/Codex/Wings/敌人-CF6Wings.xml"
+  ],
+  "combatAISourceUnchanged": true,
+  "priorCombatEvidence": "../20261015/combat-summary.json",
+  "priorCombatDoesNotBindNewSwf": true,
+  "sourceBindings": [
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "sha256": "518f047556cfa6e13f470b99d0183355156e79b5945216e3a9f69f0799cd762a"
+    },
+    {
+      "path": "tools/cf6-wings-assets/native-manifest.json",
+      "sha256": "a4a04702aa38d1474d01db4c7f6680c807d47c9835bfb38ced14f2e687730d95"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6WingsAssetTest.as",
+      "sha256": "959ad4d298db3685bab32554467e7d3710bde08648a02be85a89f3d7aced8eae"
+    },
+    {
+      "path": "scripts/run-cf6-wings-asset-tests.ps1",
+      "sha256": "4312c38f86568ee47d350e0e86f144c695b7ed898b077fe194f592c66378e2cc"
+    }
+  ],
+  "losslessTraces": [
+    {
+      "path": "logs/before-flashlog.txt.gz",
+      "originalSha256": "20a6398999f9cd9c48d911733ef6a18d835a5bff9c2bed0def5dfcd4bb0f0558",
+      "originalBytes": 499843
+    },
+    {
+      "path": "logs/after-r1-raw-late.txt.gz",
+      "originalSha256": "2bc54439b69c35f07f4662ca232030065c531dcddcdf1fc1f3425db74b80128a",
+      "originalBytes": 530388
+    },
+    {
+      "path": "logs/after-r2-flashlog.txt.gz",
+      "originalSha256": "b8b0a34bdeaae6c957c5d5d7f759f0dbf65761513ef71d918e8646e98b837cc1",
+      "originalBytes": 464657
+    }
+  ],
+  "files": [
+    {
+      "path": "after-r1-recovery.json",
+      "sha256": "5dcd792331c7f2405689d2d3d941910f6fe7da1afeccd1c7356c33ce6cb7f8cc",
+      "bytes": 658
+    },
+    {
+      "path": "images/before-shadow-states.png",
+      "sha256": "95cdb1bddb48571f2c2d0e4cc0093b16d0a7623f3e445eeeca44b5fa5d8947dc",
+      "bytes": 107585
+    },
+    {
+      "path": "images/shadow-states.png",
+      "sha256": "e50fe12416c8c161d0b9a099ca20ffb9b08db96b2022edd550917429396a836c",
+      "bytes": 101926
+    },
+    {
+      "path": "logs/after-r1-compile_output.txt",
+      "sha256": "b224fa71f92c3205e9905fa9db2ff9b67aae7c185117a8e24e80f1a5200cb87b",
+      "bytes": 87
+    },
+    {
+      "path": "logs/after-r1-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/after-r1-raw-late.txt.gz",
+      "sha256": "9e9a4ad264f39a3ee3b21ccb8497cb8efc0451ae698a0cf3ec53d4f4f29998a8",
+      "bytes": 107545
+    },
+    {
+      "path": "logs/after-r1-stop-player.log",
+      "sha256": "20a5b0461934fe9864a6fef6d29a220225b0f26e0bafce71da57d0c1ad463564",
+      "bytes": 228
+    },
+    {
+      "path": "logs/after-r1-uncertain-marker.txt",
+      "sha256": "53f5973e9211d6bc9b45baa68816fabecdce8cc09d32a89fdc773569c2361a89",
+      "bytes": 228
+    },
+    {
+      "path": "logs/after-r2-compile_output.txt",
+      "sha256": "97af3c1bffb10e28f296961455b37f199fba4765488f8d9fc893188d6cd9ece8",
+      "bytes": 87
+    },
+    {
+      "path": "logs/after-r2-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/after-r2-flashlog.txt.gz",
+      "sha256": "722ee7d47341e8993f2c806c31f20c27739cfcd30d17da6b4988699cc6073811",
+      "bytes": 101264
+    },
+    {
+      "path": "logs/after-tests-r1.log",
+      "sha256": "1ac743db9e1af4acdce59d64c294b3b8bbf8c361c32759b74a6f60f2bda14903",
+      "bytes": 2650
+    },
+    {
+      "path": "logs/after-tests-r2.log",
+      "sha256": "2a31deaaf3e6bc5b0f2cb6baa576161ad7c16797a0d2812b37dee7fb39f6f232",
+      "bytes": 2197
+    },
+    {
+      "path": "logs/before-compile_output.txt",
+      "sha256": "b9c94ad92166156c3c7379d1626c126d755b67b1481db46573001856fda4fe45",
+      "bytes": 87
+    },
+    {
+      "path": "logs/before-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/before-flashlog.txt.gz",
+      "sha256": "002772415c573513a0f2d9656a566dc2056a77e7211ac0d9d8b677bd89f48e84",
+      "bytes": 106320
+    },
+    {
+      "path": "logs/before-tests.log",
+      "sha256": "e9298bbffcf45eb3a59416b510e6c3ae8f0db615adf00f1f60d272d566ba5d6b",
+      "bytes": 2772
+    },
+    {
+      "path": "logs/final-stop-player.log",
+      "sha256": "daf283c319bf219259cac5784d88513bed90b427412bc194201c7eeef821ef0b",
+      "bytes": 228
+    },
+    {
+      "path": "logs/native-compile_output.txt",
+      "sha256": "ce7869fa55bb74191b60c5f774d1ff6dbe9026ebcd2a9562fb4239b210fb57aa",
+      "bytes": 71
+    },
+    {
+      "path": "logs/native-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    },
+    {
+      "path": "logs/native-publish-r2.log",
+      "sha256": "69787ae4958e248667fd418cedab4e8f72deac1e8beb7aad7460688ebaa3b9e5",
+      "bytes": 1297
+    },
+    {
+      "path": "logs/native-publish.log",
+      "sha256": "285fdc2513e1e90001c41cafa4670c421c56484d941ce574419330148d3c4b44",
+      "bytes": 1297
+    },
+    {
+      "path": "logs/native-r2-compile_output.txt",
+      "sha256": "ce7869fa55bb74191b60c5f774d1ff6dbe9026ebcd2a9562fb4239b210fb57aa",
+      "bytes": 71
+    },
+    {
+      "path": "logs/native-r2-compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27
+    }
+  ],
+  "humanVisualAcceptance": "pending",
+  "commitPushOrFormalRuntimePromotion": false
+}

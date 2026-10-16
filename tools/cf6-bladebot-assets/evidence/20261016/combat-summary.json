@@ -1,0 +1,1232 @@
+{
+  "schema": "cf6-bladebot.final-combat-evidence.v1",
+  "unitId": 465,
+  "stage": 8,
+  "tier": 9,
+  "finalInputHashes": {
+    "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+    "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+    "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+    "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+  },
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "pid": 31268,
+    "httpPort": 1192,
+    "verified": true,
+    "expected": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "pid": null,
+      "httpPort": null
+    },
+    "statusEndpointIdentityAvailable": false,
+    "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+  },
+  "cohortScope": "Fully natural, qualified recheck batches; entire initial120-second r9b batch retained separately",
+  "naturalFinishes": 18,
+  "cohortTimeouts": 0,
+  "automaticRecoveryAttempts": 0,
+  "priorSameConfigurationBatch": {
+    "batchId": "bladebot-front-r9b-20261016",
+    "evidencePrefix": "combat/foreground/20261015T190820Z-r9b-20261016",
+    "qualification": false,
+    "naturalFinishes": 4,
+    "timeouts": 2,
+    "results": [
+      {
+        "caseId": "blackiron-30-blue",
+        "runId": "blackiron-30-blue-r001",
+        "status": "finished",
+        "candidateSide": "blue",
+        "winner": "blue",
+        "candidateWon": true,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 18345.0,
+          "remainHp": 3546.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 18345.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 17728.0,
+          "remainHp": 0.0,
+          "aliveCount": 0.0,
+          "startMaxHp": 17728.0,
+          "startCount": 1.0
+        },
+        "level": 30,
+        "frames": 2575.0,
+        "durationMs": 86113.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "blue",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      },
+      {
+        "caseId": "blackiron-30-red",
+        "runId": "blackiron-30-red-r001",
+        "status": "finished",
+        "candidateSide": "red",
+        "winner": "red",
+        "candidateWon": true,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 18345.0,
+          "remainHp": 6266.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 18345.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 17728.0,
+          "remainHp": 0.0,
+          "aliveCount": 0.0,
+          "startMaxHp": 17728.0,
+          "startCount": 1.0
+        },
+        "level": 30,
+        "frames": 2198.0,
+        "durationMs": 73731.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "red",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      },
+      {
+        "caseId": "blackiron-60-blue",
+        "runId": "blackiron-60-blue-r001",
+        "status": "finished",
+        "candidateSide": "blue",
+        "winner": "blue",
+        "candidateWon": true,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 27004.0,
+          "remainHp": 8496.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 27004.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 25457.0,
+          "remainHp": 0.0,
+          "aliveCount": 0.0,
+          "startMaxHp": 25457.0,
+          "startCount": 1.0
+        },
+        "level": 60,
+        "frames": 2675.0,
+        "durationMs": 89732.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "blue",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      },
+      {
+        "caseId": "blackiron-60-red",
+        "runId": "blackiron-60-red-r001",
+        "status": "finished",
+        "candidateSide": "red",
+        "winner": "red",
+        "candidateWon": true,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 27004.0,
+          "remainHp": 8323.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 27004.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 25457.0,
+          "remainHp": 0.0,
+          "aliveCount": 0.0,
+          "startMaxHp": 25457.0,
+          "startCount": 1.0
+        },
+        "level": 60,
+        "frames": 2586.0,
+        "durationMs": 86434.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "red",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      },
+      {
+        "caseId": "blackiron-99-blue",
+        "runId": "blackiron-99-blue-r001",
+        "status": "timeout",
+        "candidateSide": "blue",
+        "winner": "timeout",
+        "candidateWon": false,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 38261.0,
+          "remainHp": 8885.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 38261.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 35505.0,
+          "remainHp": 2921.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 35505.0,
+          "startCount": 1.0
+        },
+        "level": 99,
+        "frames": 3600.0,
+        "durationMs": 121773.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "blue",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      },
+      {
+        "caseId": "blackiron-99-red",
+        "runId": "blackiron-99-red-r001",
+        "status": "timeout",
+        "candidateSide": "red",
+        "winner": "timeout",
+        "candidateWon": false,
+        "comparison": "blackiron",
+        "candidate": {
+          "maxHp": 38261.0,
+          "remainHp": 9945.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 38261.0,
+          "startCount": 1.0
+        },
+        "rival": {
+          "maxHp": 35505.0,
+          "remainHp": 3571.0,
+          "aliveCount": 1.0,
+          "startMaxHp": 35505.0,
+          "startCount": 1.0
+        },
+        "level": 99,
+        "frames": 3600.0,
+        "durationMs": 123153.0,
+        "errors": [],
+        "authorityContext": {
+          "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+          "candidateSide": "red",
+          "comparison": "blackiron",
+          "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+          "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+          "evidenceLane": "interactive_candidate",
+          "mode": "confirm",
+          "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+          "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+          "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+          "stage": 8,
+          "tier": 9
+        }
+      }
+    ]
+  },
+  "allSameConfigurationRuns": {
+    "total": 24,
+    "naturalFinishes": 22,
+    "timeouts": 2
+  },
+  "finalObservationWindowsFrames": {
+    "blackiron30And60": 3600,
+    "blackiron99": 5400,
+    "arkclaw": 3600
+  },
+  "blackIronWins": 12,
+  "blackIronMatches": 12,
+  "arkClawMatches": 6,
+  "matrix": [
+    {
+      "rival": "blackiron",
+      "level": 30,
+      "matches": 4,
+      "candidateWins": 4,
+      "candidateRemainingHpPercent": {
+        "min": 22.769146906514038,
+        "max": 31.57263559553012,
+        "mean": 28.359225947124557
+      },
+      "rivalNetHpLostPercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    },
+    {
+      "rival": "blackiron",
+      "level": 60,
+      "matches": 4,
+      "candidateWins": 4,
+      "candidateRemainingHpPercent": {
+        "min": 24.740779143830544,
+        "max": 38.69426751592357,
+        "mean": 33.819989631165754
+      },
+      "rivalNetHpLostPercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    },
+    {
+      "rival": "blackiron",
+      "level": 99,
+      "matches": 4,
+      "candidateWins": 4,
+      "candidateRemainingHpPercent": {
+        "min": 9.997125009801103,
+        "max": 22.471968845560752,
+        "mean": 18.076500875565195
+      },
+      "rivalNetHpLostPercent": {
+        "min": 100.0,
+        "max": 100.0,
+        "mean": 100.0
+      }
+    },
+    {
+      "rival": "arkclaw",
+      "level": 30,
+      "matches": 2,
+      "candidateWins": 0,
+      "candidateRemainingHpPercent": {
+        "min": 0.0,
+        "max": 0.0,
+        "mean": 0.0
+      },
+      "rivalNetHpLostPercent": {
+        "min": 15.221023043674265,
+        "max": 15.274057967171384,
+        "mean": 15.247540505422824
+      }
+    },
+    {
+      "rival": "arkclaw",
+      "level": 60,
+      "matches": 2,
+      "candidateWins": 0,
+      "candidateRemainingHpPercent": {
+        "min": 0.0,
+        "max": 0.0,
+        "mean": 0.0
+      },
+      "rivalNetHpLostPercent": {
+        "min": 16.665013981714694,
+        "max": 17.795450488864205,
+        "mean": 17.23023223528945
+      }
+    },
+    {
+      "rival": "arkclaw",
+      "level": 99,
+      "matches": 2,
+      "candidateWins": 0,
+      "candidateRemainingHpPercent": {
+        "min": 0.0,
+        "max": 0.0,
+        "mean": 0.0
+      },
+      "rivalNetHpLostPercent": {
+        "min": 18.972650823761374,
+        "max": 21.18926346920791,
+        "mean": 20.080957146484643
+      }
+    }
+  ],
+  "results": [
+    {
+      "caseId": "blackiron-30-blue",
+      "runId": "blackiron-30-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 4177.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 17728.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 17728.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 2459.0,
+      "durationMs": 82281.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "blackiron-30-red",
+      "runId": "blackiron-30-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 5523.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 17728.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 17728.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 2330.0,
+      "durationMs": 77935.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "arkclaw-30-blue",
+      "runId": "arkclaw-30-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "red",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 37711.0,
+        "remainHp": 31951.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 37711.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 1554.0,
+      "durationMs": 52979.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "arkclaw-30-red",
+      "runId": "arkclaw-30-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "blue",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 37711.0,
+        "remainHp": 31971.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 37711.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 1608.0,
+      "durationMs": 57754.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "blackiron-60-blue",
+      "runId": "blackiron-60-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 6681.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 25457.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 25457.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 2846.0,
+      "durationMs": 96993.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "blackiron-60-red",
+      "runId": "blackiron-60-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 10334.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 25457.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 25457.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 2471.0,
+      "durationMs": 85476.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9a-20261016"
+    },
+    {
+      "caseId": "blackiron-99-blue",
+      "runId": "blackiron-99-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 7494.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 35505.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 35505.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 4067.0,
+      "durationMs": 135958.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9,
+        "timeoutExtensionOf": "bladebot-front-r9b-20261016"
+      },
+      "batchId": "bladebot-front-r9c2-20261016"
+    },
+    {
+      "caseId": "blackiron-99-blue",
+      "runId": "blackiron-99-blue-r002",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 8598.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 35505.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 35505.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 3755.0,
+      "durationMs": 126223.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9,
+        "timeoutExtensionOf": "bladebot-front-r9b-20261016"
+      },
+      "batchId": "bladebot-front-r9c2-20261016"
+    },
+    {
+      "caseId": "blackiron-99-red",
+      "runId": "blackiron-99-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 3825.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 35505.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 35505.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 4295.0,
+      "durationMs": 144358.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9,
+        "timeoutExtensionOf": "bladebot-front-r9b-20261016"
+      },
+      "batchId": "bladebot-front-r9c2-20261016"
+    },
+    {
+      "caseId": "blackiron-99-red",
+      "runId": "blackiron-99-red-r002",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 7748.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 35505.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 35505.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 3938.0,
+      "durationMs": 133336.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9,
+        "timeoutExtensionOf": "bladebot-front-r9b-20261016"
+      },
+      "batchId": "bladebot-front-r9c2-20261016"
+    },
+    {
+      "caseId": "blackiron-30-blue",
+      "runId": "blackiron-30-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 5318.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 17728.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 17728.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 2422.0,
+      "durationMs": 81212.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9d-20261016"
+    },
+    {
+      "caseId": "blackiron-30-red",
+      "runId": "blackiron-30-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 18345.0,
+        "remainHp": 5792.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 18345.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 17728.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 17728.0,
+        "startCount": 1.0
+      },
+      "level": 30,
+      "frames": 2283.0,
+      "durationMs": 76446.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9d-20261016"
+    },
+    {
+      "caseId": "blackiron-60-blue",
+      "runId": "blackiron-60-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "blue",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 9067.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 25457.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 25457.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 2585.0,
+      "durationMs": 86218.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9d-20261016"
+    },
+    {
+      "caseId": "blackiron-60-red",
+      "runId": "blackiron-60-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "red",
+      "candidateWon": true,
+      "comparison": "blackiron",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 10449.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 25457.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 25457.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 2514.0,
+      "durationMs": 84660.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9d-20261016"
+    },
+    {
+      "caseId": "arkclaw-60-blue",
+      "runId": "arkclaw-60-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "red",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 50423.0,
+        "remainHp": 42020.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 50423.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 1751.0,
+      "durationMs": 60133.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9e-20261016"
+    },
+    {
+      "caseId": "arkclaw-60-red",
+      "runId": "arkclaw-60-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "blue",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 27004.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 27004.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 50423.0,
+        "remainHp": 41450.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 50423.0,
+        "startCount": 1.0
+      },
+      "level": 60,
+      "frames": 1632.0,
+      "durationMs": 55347.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9e-20261016"
+    },
+    {
+      "caseId": "arkclaw-99-blue",
+      "runId": "arkclaw-99-blue-r001",
+      "status": "finished",
+      "candidateSide": "blue",
+      "winner": "red",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 66949.0,
+        "remainHp": 54247.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 66949.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 1777.0,
+      "durationMs": 61731.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9e-20261016"
+    },
+    {
+      "caseId": "arkclaw-99-red",
+      "runId": "arkclaw-99-red-r001",
+      "status": "finished",
+      "candidateSide": "red",
+      "winner": "blue",
+      "candidateWon": false,
+      "comparison": "arkclaw",
+      "candidate": {
+        "maxHp": 38261.0,
+        "remainHp": 0.0,
+        "aliveCount": 0.0,
+        "startMaxHp": 38261.0,
+        "startCount": 1.0
+      },
+      "rival": {
+        "maxHp": 66949.0,
+        "remainHp": 52763.0,
+        "aliveCount": 1.0,
+        "startMaxHp": 66949.0,
+        "startCount": 1.0
+      },
+      "level": 99,
+      "frames": 1962.0,
+      "durationMs": 67282.0,
+      "errors": [],
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "arkclaw",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "batchId": "bladebot-front-r9e-20261016"
+    }
+  ],
+  "batches": [
+    {
+      "batchId": "bladebot-front-r9a-20261016",
+      "evidencePrefix": "combat/foreground/20261015T185804Z-r9a-20261016",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "allGlobalFilesUnchanged": false,
+      "canonicalShutdown": true
+    },
+    {
+      "batchId": "bladebot-front-r9c2-20261016",
+      "evidencePrefix": "combat/foreground/20261015T192218Z-r9c2-20261016",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "allGlobalFilesUnchanged": false,
+      "canonicalShutdown": true
+    },
+    {
+      "batchId": "bladebot-front-r9d-20261016",
+      "evidencePrefix": "combat/foreground/20261015T193423Z-r9d-20261016",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "allGlobalFilesUnchanged": false,
+      "canonicalShutdown": true
+    },
+    {
+      "batchId": "bladebot-front-r9e-20261016",
+      "evidencePrefix": "combat/foreground/20261015T194309Z-r9e-20261016",
+      "resourcesUnchanged": true,
+      "playerSaveFilesUnchanged": true,
+      "allGlobalFilesUnchanged": false,
+      "canonicalShutdown": true
+    }
+  ],
+  "limitations": [
+    "A finite same-level 1v1 development sample, not a universal win-rate guarantee.",
+    "The first99-level pair timed out at3600 frames with both units alive. Those rows and the whole batch remain unqualified; later5400-frame matches are separate runs, not rewritten outcomes.",
+    "Ark Claw net HP lost is based on ending HP, not a cumulative per-hit damage counter.",
+    "Ordinary foreground candidate runs used recorded Shift-only startup/visibility input; no combat commands.",
+    "Resource qualification covers the recorded scan set; completeResourceClosure is not upgraded.",
+    "Player data remained unchanged. The test checkout startup-version marker changed and that difference is retained.",
+    "Human appearance/combat feel and standard-entry acceptance remain open. No formal runtime promotion."
+  ]
+}

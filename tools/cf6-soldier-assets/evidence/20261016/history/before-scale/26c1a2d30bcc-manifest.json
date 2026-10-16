@@ -1,0 +1,20 @@
+{
+  "reason": "Native frame review: match cadet long-gun attachment scale while retaining CF6 grip registration",
+  "files": [
+    {
+      "source": "tools/cf6-soldier-assets/build.py",
+      "archive": "build.py",
+      "sha256": "ce74425dd1c6074408c81e731cd5101e170c8fdaad9ccf557e7431fdd5d5288b"
+    },
+    {
+      "source": "tools/cf6-soldier-assets/native-manifest.json",
+      "archive": "native-manifest.json",
+      "sha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275"
+    },
+    {
+      "source": "flashswf/arts/new/Codex特种兵素材.swf",
+      "archive": "Codex特种兵素材.swf",
+      "sha256": "9ae5ad2e1929bd5fa9eb52ee95ff576cac6a772800c03d748ac15dd6545eaf0f"
+    }
+  ]
+}

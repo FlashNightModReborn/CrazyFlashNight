@@ -1,0 +1,358 @@
+{
+  "schema": "arena-worker.p0-measurement.v1",
+  "measuredAt": "2026-10-16T11:14:48.873Z",
+  "planHash": "sha256:a086828d653c4f958006345439147727ba88d524ff7a426d3595d67f7cea6136",
+  "evidenceLevel": "candidate_measurement",
+  "qualified": true,
+  "groups": [
+    {
+      "groupId": "reverse-recheck",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 3,
+      "counts": {
+        "observed": 3,
+        "finished": 3,
+        "strengthSamples": 3,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 452771,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 452053,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\guard-phase-r4-reverse-20261016\\groups\\reverse-recheck\\group-report.json",
+        "reportSha256": "sha256:6c5a85ee1aa42aa2bbce3a8491a77482ec9eb9650db13a63949f4e29c809b9b0",
+        "startedAt": "2026-10-16T11:07:16.068Z",
+        "completedAt": "2026-10-16T11:14:48.839Z",
+        "wallDurationMs": 452771
+      },
+      "workloadHash": "sha256:c27d0263c1b29e4aaf89cef76b19a9a947fdba884273d3ec90e4a30c78e0caa5",
+      "runtimeKey": "sha256:7e6a6fa8c6147c482604e2455acd8914044f86ea6db70a9f06d3a268f9072bd6",
+      "observedStrengthSamplesPerHour": 23.853117801272607,
+      "qualifiedStrengthSamplesPerHour": 23.853117801272607,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-30a8d05323084fb2a6e269589d3eaf0a\\assignment-30a8d05323084fb2a6e269589d3eaf0a\\attempt-30a8d05323084fb2a6e269589d3eaf0a\\shard-receipt.json",
+          "receiptSha256": "sha256:3646b5c13552b2470ef4811b150d45dd653cdc539b91e73d3952a8c6f7577e0a",
+          "identity": {
+            "workerId": "guard-w02",
+            "sessionEpoch": "session-30a8d05323084fb2a6e269589d3eaf0a",
+            "assignmentId": "assignment-30a8d05323084fb2a6e269589d3eaf0a",
+            "attemptId": "attempt-30a8d05323084fb2a6e269589d3eaf0a",
+            "batchId": "guard-phase-r4-reverse-20261016",
+            "manifestHash": "sha256:ebac94de14e1fdf1daecb194d9efd52ed2a31e681b3f1fe4ded83a6619fbfc3a"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 3,
+            "finished": 3,
+            "strengthSamples": 3,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "reverse-recheck",
+            "condition": "reverse-shutdown-recheck",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 452053,
+          "cadence": [
+            {
+              "runId": "reverse-r4-red-30-r001",
+              "frames": 3202,
+              "durationMs": 106724,
+              "framesPerSecond": 30.002623589820473,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "reverse-r4-red-60-r001",
+              "frames": 4089,
+              "durationMs": 136349,
+              "framesPerSecond": 29.989218842822464,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "reverse-r4-red-99-r001",
+              "frames": 4357,
+              "durationMs": 146227,
+              "framesPerSecond": 29.79613887996061,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "reverse-r4-red-30-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种466",
+                    "sourceId": "soldier-30",
+                    "name": "斗兽标定_blue_reverse_r4_red_30_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种468",
+                    "sourceId": "guard-30",
+                    "name": "斗兽标定_red_reverse_r4_red_30_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-完全体克隆兽",
+                    "sourceId": "",
+                    "name": "斗兽标定_red_reverse_r4_red_30_r001_0__tyrant",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "reverse-r4-red-60-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种466",
+                    "sourceId": "soldier-60",
+                    "name": "斗兽标定_blue_reverse_r4_red_60_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种468",
+                    "sourceId": "guard-60",
+                    "name": "斗兽标定_red_reverse_r4_red_60_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-完全体克隆兽",
+                    "sourceId": "",
+                    "name": "斗兽标定_red_reverse_r4_red_60_r001_0__tyrant",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "reverse-r4-red-99-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种466",
+                    "sourceId": "soldier-99",
+                    "name": "斗兽标定_blue_reverse_r4_red_99_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种468",
+                    "sourceId": "guard-99",
+                    "name": "斗兽标定_red_reverse_r4_red_99_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-完全体克隆兽",
+                    "sourceId": "",
+                    "name": "斗兽标定_red_reverse_r4_red_99_r001_0__tyrant",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 163,
+              "counts": {
+                "backgroundVisible": 82,
+                "foreground": 75,
+                "minimized": 0,
+                "hidden": 5,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 163,
+              "unavailableSamples": 6,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 156
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 163,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 26212,
+                      "processStartUtcTicks": "639277456487332906",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 163,
+                    "cpuSamples": 163,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T11:07:40.2505581Z",
+                      "endedAt": "2026-10-16T11:14:34.3682370Z",
+                      "elapsedMs": 414118,
+                      "cpuTimeMs": 33046.875,
+                      "averageLogicalCores": 0.07980062445969506
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 637698048,
+                    "sampledPeakPrivateMemoryBytes": 506318848
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 163,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 24504,
+                      "processStartUtcTicks": "639277456603144153",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 162,
+                    "cpuSamples": 162,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T11:07:42.4528683Z",
+                      "endedAt": "2026-10-16T11:14:34.3649099Z",
+                      "elapsedMs": 411912,
+                      "cpuTimeMs": 178828.125,
+                      "averageLogicalCores": 0.4341415763561149
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 499404800,
+                    "sampledPeakPrivateMemoryBytes": 474624000
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": []
+}

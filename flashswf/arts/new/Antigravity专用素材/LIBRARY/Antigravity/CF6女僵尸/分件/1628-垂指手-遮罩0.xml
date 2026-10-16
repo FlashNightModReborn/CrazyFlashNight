@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Antigravity/CF6女僵尸/分件/1628-垂指手-遮罩0" itemID="6af00000-b01d8b0f" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1628-垂指手-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#4FFF4F" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!605 -280[331 -134 -115 -150|-115 -140[-106 -61 -127 -16[-135 0 -135 20|-135 40|-135 60|-135 80[479 417 1065 160[935 116 785 120|724 82|685 60|945 40|980 65|985 80|1065 100[1122 143 1166 199|1181 222[1224 306 1285 280[1260 255 1275 210|1285 220|1305 240[1363 207 1403 194|1425 190[1435 190 1445 200[1472 128 1420 50[1334 -79 1189 -148|1185 -160[1132 -187 1068 -209[1065 -210 1065 -220[864 -279 605 -280" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生矢量内容" color="#4FFF4F" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Antigravity/CF6女僵尸/分件/1628-垂指手-遮罩1" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

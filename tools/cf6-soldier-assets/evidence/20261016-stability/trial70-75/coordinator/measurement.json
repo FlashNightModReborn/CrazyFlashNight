@@ -1,0 +1,925 @@
+{
+  "schema": "arena-worker.p0-measurement.v1",
+  "measuredAt": "2026-10-16T08:09:07.354Z",
+  "planHash": "sha256:17ffe4305c77696c0692786b5d73efcd6a8211d6a05daedc62b6afc3d8f606d0",
+  "evidenceLevel": "candidate_measurement",
+  "qualified": true,
+  "groups": [
+    {
+      "groupId": "threat",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 2,
+      "observedReceipts": 2,
+      "expectedConcurrency": 2,
+      "observedConcurrency": 2,
+      "expectedRuns": 12,
+      "counts": {
+        "observed": 12,
+        "finished": 12,
+        "strengthSamples": 12,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 251135,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 250635,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\soldier-stability-r2-20261016\\groups\\threat\\group-report.json",
+        "reportSha256": "sha256:09398c79a8445ea74c10c9624f617104f35d6b2b47b022a08a1b5c3033d3d8ab",
+        "startedAt": "2026-10-16T08:04:56.173Z",
+        "completedAt": "2026-10-16T08:09:07.308Z",
+        "wallDurationMs": 251135
+      },
+      "workloadHash": "sha256:050710bc36e219e90ad81e3196494aea46f5b49544d25f89697b3fbd6ce83586",
+      "runtimeKey": "sha256:485ab8763cab7876181795c795d9f822eabed515265bede8afb04deafa574129",
+      "observedStrengthSamplesPerHour": 172.0190335875127,
+      "qualifiedStrengthSamplesPerHour": 172.0190335875127,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ae535c6edb304746865541050e461b9b\\assignment-ae535c6edb304746865541050e461b9b\\attempt-ae535c6edb304746865541050e461b9b\\shard-receipt.json",
+          "receiptSha256": "sha256:882c6de653b67606bccc9c2da44b6f36a92d9afef02ae9bb5c97b137b2a18ce6",
+          "identity": {
+            "workerId": "soldier-w01",
+            "sessionEpoch": "session-ae535c6edb304746865541050e461b9b",
+            "assignmentId": "assignment-ae535c6edb304746865541050e461b9b",
+            "attemptId": "attempt-ae535c6edb304746865541050e461b9b",
+            "batchId": "soldier-stability-r2-20261016-w1",
+            "manifestHash": "sha256:8823242f4fb76cf0e2707f324d11c9028c6cb8981b1dada02d3e0cf90d7f69fc"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 6,
+            "finished": 6,
+            "strengthSamples": 6,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "threat",
+            "condition": "stable-aim-shield-reduction70-vs75",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 250477,
+          "cadence": [
+            {
+              "runId": "w1-0-30-red-r001",
+              "frames": 685,
+              "durationMs": 22817,
+              "framesPerSecond": 30.021475215847833,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w1-0-30-red-r002",
+              "frames": 595,
+              "durationMs": 20251,
+              "framesPerSecond": 29.38126512270999,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w1-1-60-red-r001",
+              "frames": 926,
+              "durationMs": 30790,
+              "framesPerSecond": 30.074699577784994,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w1-1-60-red-r002",
+              "frames": 736,
+              "durationMs": 24487,
+              "framesPerSecond": 30.05676481398293,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w1-2-99-red-r001",
+              "frames": 1020,
+              "durationMs": 34047,
+              "framesPerSecond": 29.958586659617588,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w1-2-99-red-r002",
+              "frames": 932,
+              "durationMs": 31011,
+              "framesPerSecond": 30.05385185901777,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "w1-0-30-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-30",
+                    "name": "斗兽标定_blue_w1_0_30_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-30",
+                    "name": "斗兽标定_red_w1_0_30_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w1-0-30-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-30",
+                    "name": "斗兽标定_blue_w1_0_30_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-30",
+                    "name": "斗兽标定_red_w1_0_30_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w1-1-60-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-60",
+                    "name": "斗兽标定_blue_w1_1_60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-60",
+                    "name": "斗兽标定_red_w1_1_60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w1-1-60-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-60",
+                    "name": "斗兽标定_blue_w1_1_60_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-60",
+                    "name": "斗兽标定_red_w1_1_60_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w1-2-99-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-99",
+                    "name": "斗兽标定_blue_w1_2_99_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-99",
+                    "name": "斗兽标定_red_w1_2_99_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w1-2-99-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-99",
+                    "name": "斗兽标定_blue_w1_2_99_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-99",
+                    "name": "斗兽标定_red_w1_2_99_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 45,
+              "counts": {
+                "backgroundVisible": 40,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 4,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 45,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 39
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 45,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 19536,
+                      "processStartUtcTicks": "639277347103765541",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 45,
+                    "cpuSamples": 45,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T08:05:31.3722459Z",
+                      "endedAt": "2026-10-16T08:08:51.6496802Z",
+                      "elapsedMs": 200277,
+                      "cpuTimeMs": 21828.125,
+                      "averageLogicalCores": 0.10898967430109299
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 634515456,
+                    "sampledPeakPrivateMemoryBytes": 508215296
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 45,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 25096,
+                      "processStartUtcTicks": "639277347314249921",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 44,
+                    "cpuSamples": 44,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T08:05:33.6383105Z",
+                      "endedAt": "2026-10-16T08:08:51.6450970Z",
+                      "elapsedMs": 198007,
+                      "cpuTimeMs": 109921.875,
+                      "averageLogicalCores": 0.555141358638836
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 511217664,
+                    "sampledPeakPrivateMemoryBytes": 490721280
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1231e7ff42ac41c199440345d8d5670d\\assignment-1231e7ff42ac41c199440345d8d5670d\\attempt-1231e7ff42ac41c199440345d8d5670d\\shard-receipt.json",
+          "receiptSha256": "sha256:32750242de9cf393118df070968146cae0ecf9efeb61157f8dca6ae0b9ac996a",
+          "identity": {
+            "workerId": "soldier-w02",
+            "sessionEpoch": "session-1231e7ff42ac41c199440345d8d5670d",
+            "assignmentId": "assignment-1231e7ff42ac41c199440345d8d5670d",
+            "attemptId": "attempt-1231e7ff42ac41c199440345d8d5670d",
+            "batchId": "soldier-stability-r2-20261016-w2",
+            "manifestHash": "sha256:141f48116d57a2faec010e2403af1be4dcdb04e1fc3e9b1420d26d40317bab44"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 6,
+            "finished": 6,
+            "strengthSamples": 6,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "threat",
+            "condition": "stable-aim-shield-reduction70-vs75",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 247713,
+          "cadence": [
+            {
+              "runId": "w2-0-30-red-r001",
+              "frames": 783,
+              "durationMs": 26086,
+              "framesPerSecond": 30.01610059035498,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w2-0-30-red-r002",
+              "frames": 638,
+              "durationMs": 21933,
+              "framesPerSecond": 29.08858797246159,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w2-1-60-red-r001",
+              "frames": 781,
+              "durationMs": 25975,
+              "framesPerSecond": 30.06737247353224,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w2-1-60-red-r002",
+              "frames": 837,
+              "durationMs": 27855,
+              "framesPerSecond": 30.048465266558967,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w2-2-99-red-r001",
+              "frames": 941,
+              "durationMs": 31325,
+              "framesPerSecond": 30.039904229848364,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            },
+            {
+              "runId": "w2-2-99-red-r002",
+              "frames": 1063,
+              "durationMs": 35378,
+              "framesPerSecond": 30.04692181581774,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "w2-0-30-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-30",
+                    "name": "斗兽标定_blue_w2_0_30_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-30",
+                    "name": "斗兽标定_red_w2_0_30_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w2-0-30-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-30",
+                    "name": "斗兽标定_blue_w2_0_30_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-30",
+                    "name": "斗兽标定_red_w2_0_30_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w2-1-60-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-60",
+                    "name": "斗兽标定_blue_w2_1_60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-60",
+                    "name": "斗兽标定_red_w2_1_60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w2-1-60-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-60",
+                    "name": "斗兽标定_blue_w2_1_60_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-60",
+                    "name": "斗兽标定_red_w2_1_60_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w2-2-99-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-99",
+                    "name": "斗兽标定_blue_w2_2_99_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-99",
+                    "name": "斗兽标定_red_w2_2_99_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            },
+            {
+              "runId": "w2-2-99-red-r002",
+              "repeatIndex": 2,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种464",
+                    "sourceId": "wings-99",
+                    "name": "斗兽标定_blue_w2_2_99_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种467",
+                    "sourceId": "soldier-99",
+                    "name": "斗兽标定_red_w2_2_99_red_r002_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 45,
+              "counts": {
+                "backgroundVisible": 40,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 4,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 45,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 40
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 45,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 21676,
+                      "processStartUtcTicks": "639277347097616717",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 45,
+                    "cpuSamples": 45,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T08:05:26.5167289Z",
+                      "endedAt": "2026-10-16T08:08:46.4477094Z",
+                      "elapsedMs": 199931,
+                      "cpuTimeMs": 21265.625,
+                      "averageLogicalCores": 0.1063648208631978
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 638296064,
+                    "sampledPeakPrivateMemoryBytes": 510189568
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 45,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 16844,
+                      "processStartUtcTicks": "639277347265767992",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\soldier-worker2\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 44,
+                    "cpuSamples": 44,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T08:05:31.3526706Z",
+                      "endedAt": "2026-10-16T08:08:46.4438632Z",
+                      "elapsedMs": 195091,
+                      "cpuTimeMs": 107250,
+                      "averageLogicalCores": 0.5497434530552409
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 493408256,
+                    "sampledPeakPrivateMemoryBytes": 472760320
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": []
+}

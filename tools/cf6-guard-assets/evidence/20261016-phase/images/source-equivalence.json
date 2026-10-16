@@ -1,0 +1,81 @@
+{
+  "schema": "cf6-guard.visual-source-equivalence.v1",
+  "comparedFiles": 480,
+  "byteIdentical": 479,
+  "scriptOnlyChanges": [
+    "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml"
+  ],
+  "afterScriptRemovalCanonicalXmlEqual": true,
+  "captureRunId": "72f3e318e519490ea9c4484bcde056ab",
+  "captureSwfSha256": "387548f9c52435f650bd30fb70460c7f3e4b1f1e0f21864799eecbd29630e301",
+  "currentSwfSha256": "f42607dcfe6a70573d4c2086bea8d1191f53f50a7f4613464b4b34eedcb6100c",
+  "boundary": "Images bind the passed ten-piercing capture run and identical art; final three-piercing behavior is verified in its own native and combat runs.",
+  "images": [
+    {
+      "path": "airborne-shadow.png",
+      "sha256": "6a562e4f64bd1fa5e17904566e511496046321c15e9d9c008f7562ed3d5dd03c",
+      "bytes": 14932
+    },
+    {
+      "path": "death-a0.png",
+      "sha256": "dfd4bfd6b42110b862839fdc502738e8d0ff50b05bd145e9827b5c25193c19e7",
+      "bytes": 18590
+    },
+    {
+      "path": "death-a1.png",
+      "sha256": "e273c2c9fc4be3ddc7f17719ec3ed6520dd137e3566a09abe880408fede7f7d1",
+      "bytes": 21961
+    },
+    {
+      "path": "death-a2.png",
+      "sha256": "dfd4bfd6b42110b862839fdc502738e8d0ff50b05bd145e9827b5c25193c19e7",
+      "bytes": 18590
+    },
+    {
+      "path": "death-start.png",
+      "sha256": "736bea875b75c0008c1d1e6266e6060a7b2940f022698f7c5da6a9999f01db7a",
+      "bytes": 19969
+    },
+    {
+      "path": "shoot-mirrored.png",
+      "sha256": "0d3919ee569540d0b6eeab1ef17676e1d5e9b7eeca31eecba91c5f7d23f6249d",
+      "bytes": 18640
+    },
+    {
+      "path": "shoot.png",
+      "sha256": "854234cc21c6b60d067de3b0ac2f4f16a8336bbf9ea38e6827183f5793f76cb4",
+      "bytes": 18740
+    },
+    {
+      "path": "stand.png",
+      "sha256": "deff52aa89b9642ad1ffa91a72c44a0e9fa283bb893f49c1b33b713941d90547",
+      "bytes": 19980
+    },
+    {
+      "path": "transform-end-mirrored.png",
+      "sha256": "a80efc1e49b6f4fbe69169e66a5fbe3903ff95540309e6d2e1c89e23c5ff2aa6",
+      "bytes": 46699
+    },
+    {
+      "path": "transform-end.png",
+      "sha256": "51c736a92e93c3d26cf514aa01922608162d152fca5c169172024f333947052f",
+      "bytes": 46560
+    },
+    {
+      "path": "transform-mid-mirrored.png",
+      "sha256": "ae5916cb95062104dc08d75b32d5c28eb66f7e84d926927b75a9fd61951c8ff1",
+      "bytes": 44130
+    },
+    {
+      "path": "transform-mid.png",
+      "sha256": "ab06c0601e2b709a902998b0998ffc5cbe79e47f027a6104bbb4586f370f02f6",
+      "bytes": 44385
+    },
+    {
+      "path": "transform-start.png",
+      "sha256": "c4b61224e58db375a2364784a80be9cacb7740436ec8a91cd60d7f92de79cba9",
+      "bytes": 20042
+    }
+  ],
+  "trace": "../ten-piercing/native/trace.txt"
+}

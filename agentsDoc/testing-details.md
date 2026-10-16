@@ -104,6 +104,7 @@
 
 **生产 SWF 类归属门**：`node tools/audit-as2-class-embedding.js`（`single-ownership` 为同义入口）按打包配置选取全部生产 SWF，以 ExportAssets 对应 sprite/DoInitAction 识别真实类定义。asLoader 之外的 `org.flashNight.*` 及与 loader 同名的默认包类均失败，字节相同也不放行；完整模式同时核对 RSL 依赖存在且唯一。历史副本和测试工程按实际打包配置排除，不能因扩展名为 SWF 就把非运行工程混入生产证明。
 单件编译后使用 `--swf <产物相对路径>`，只验证该产物与 main/asLoader 的类边界，报告明确标 `closureChecked=false`；最终打包消费实际复制文件清单，CI 对随仓发行闭包独立检查。`swf-metadata.js` 与函数尺寸门复用按内容哈希和解析版本缓存的元数据，缓存校验失败自动回读产物；缓存不存 verdict、不代替 fresh 编译或行为。首次建缓存/规则升级需完整解析，日常迭代不重复全仓解析。
+历史路径 `flashswf/gk-1-s.swf` 是主时间轴通过 `XML.load()` 读取的 UTF-16LE 文本配置。类型识别仅对该精确路径开放，要求 BOM、完整字节对、既有字段闭集且各出现一次、分号结束，并拒绝控制字符、其他路径文本及伪装成该配置的 SWF；不把某次文件长度固定为永久类型标记。这个结构检查不验证字段值的业务有效性，也不得输出配置正文。
 `--policy core-ownership` 仅作两件核心文件诊断；`child-only` / `dual-build` 是历史兼容诊断，不可代替生产归属验收。解析器/缓存/归属负例为 `node tools/test-swf-metadata.js`。原有 AVM1 64KB 能力边界继续成立。
 
 **对外表述边界**：可以说「已完成 Flash CS6 自动化 smoke 验证」/「已触发编译并拿到新鲜 trace」（TestLoader）/「asLoader 发布编译 0 错误、SWF 已重生成」（publish 模式）。缺少新鲜 trace、编译器错误面板或 IDE 复核时不得说「已编译通过」；但 asLoader publish 本就无 trace，以 `0 个错误` + SWF 刷新为准。若 AS2 逻辑改动选择 `main`，必须说明触及主 FLA / 资产 / linkage / 主时间轴，否则应使用 asLoader / TestLoader。
@@ -1151,6 +1152,10 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 
 ### 启动、Flash smoke 与离线专项工具（美术相关）
 
+- 蛮斧刽子手（CF6 蛮蛮）：`python -X utf8 -B tools/cf6-manman-assets/verify.py`、`scripts/run-cf6-manman-asset-tests.ps1`；包含左右死亡切换的同坐标尺寸回归，`-Capture` 固定比例保留父层矩阵。真实伤害与 AI 换边比较走隔离 Worker。装配、受击中断、捕获及实战边界见 [接入工具](../tools/cf6-manman-assets/README.md)。
+- Wings：`python -X utf8 -B tools/cf6-wings-assets/verify.py`、`scripts/run-cf6-wings-asset-tests.ps1`；左右真实动作覆盖枪口嵌套矩阵、后空翻静态姿势首帧、打断、三分支死亡、同尺度切换，以及根层影子的全状态、开关和接地。`-Capture` 输出身体八图加整单位影子图，`-ShadowCapture` 只输出影子图，默认等待 600 秒，仍要求唯一闭合 runId 与 Compiler 0/0。隔离 AI 换边与原版特工比较见 [接入工具](../tools/cf6-wings-assets/README.md)。
+- 大刀机器人原生装配与近战：`scripts/run-cf6-bladebot-asset-tests.ps1`；加 `-Capture` 导出固定取景的整单位图，覆盖刀孔、碎片、全状态接地影子与中断后不出刀。来源、受控生成及两组对手的实战边界见 [大刀机器人装配](../tools/cf6-bladebot-assets/README.md)。
+- CF6 两阶段特种兵：`scripts/run-cf6-soldier-asset-tests.ps1`；顶层 RSL 宿主加载真实身体和玩家长枪，覆盖装备与弹药、移动稳定、匕首暴击斩杀、持盾减伤与受击火花、破盾续命、最终结算和全状态影子，包含独立于外框的四肢像素检查。装备与固定身体的边界、遮罩修复和隔离实战见 [特种兵装配](../tools/cf6-soldier-assets/README.md)。
 - 犀牛静态地图摆件：`python -X utf8 tools/rhino-map-assets/build.py --check`、三张 XFL 治理与显式 CS6 publish；车号、坐标与原生/实机边界见 [rhino-map-assets](../tools/rhino-map-assets/README.md)。
 - 武器分件动画：`python -X utf8 -B tools/weapon-animation/test_xfl_recoil.py`、`scripts/run-weapon-animation-tests.ps1`（机器钉死 AS2 37 项逻辑 + 15 项真实 XML/物品/素材与生产生命周期装卸集成）；原生逐帧矩阵、独立 SWF 导出与体验边界见 [动画工具](../tools/weapon-animation/README.md)。
 - 素材工作台：`python -X utf8 -B tools/asset-workbench/test_core.py`、原生 `AssetWorkbenchTaskTests`，真实 GUI / 三件 3XD 实测见 [工作台验证](../tools/asset-workbench/README.md#验证与本地体验)。

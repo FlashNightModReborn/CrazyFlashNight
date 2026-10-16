@@ -2720,6 +2720,7 @@ class Program
         TaskTask taskTask = new TaskTask(socketServer);
         taskTask.SetDeliveryPresenter(rightContext);
         IntelligenceTask intelligenceTask = new IntelligenceTask(projectRoot, socketServer);
+        MeridiansTask meridiansTask = new MeridiansTask(socketServer);
         // 黑市鉴定（匿名影子测试）：AS2 权威注释通道，仅 tooltip 一跳
         BlackMarketTask blackMarketTask = new BlackMarketTask(socketServer);
         ArchiveTask archiveTask;
@@ -2874,7 +2875,7 @@ class Program
 
         using (PerfTrace.Scope("task.registry_register_all"))
         {
-            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask);
+            TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask);
         }
         StartupDiagnostics.Mark("task.registry_register_all_ok");
 
@@ -2913,6 +2914,7 @@ class Program
         webOverlay.SetMercTask(mercTask);
         webOverlay.SetTaskTask(taskTask);
         webOverlay.SetIntelligenceTask(intelligenceTask);
+        webOverlay.SetMeridiansTask(meridiansTask);
         webOverlay.SetBlackMarketTask(blackMarketTask);
         webOverlay.SetPanelStateCallback(form.HandlePanelStateChanged);
         form.SetWebOverlay(webOverlay);
@@ -3067,6 +3069,7 @@ class Program
             mapDomainTask.Dispose();
             stageSelectTask.Dispose();
             intelligenceTask.Dispose();
+            meridiansTask.Dispose();
             blackMarketTask.Dispose();
             socketServer.SetFrameHandler(null);
             socketServer.SetNotchHandler(null);
@@ -4108,6 +4111,7 @@ class Program
         try { mapDomainTask.Dispose(); } catch { }
         try { stageSelectTask.Dispose(); } catch { }
         try { intelligenceTask.Dispose(); } catch { }
+        try { meridiansTask.Dispose(); } catch { }
         try { blackMarketTask.Dispose(); } catch { }
         try { socketServer.Dispose(); } catch { }
         try { httpServer.Dispose(); } catch { }

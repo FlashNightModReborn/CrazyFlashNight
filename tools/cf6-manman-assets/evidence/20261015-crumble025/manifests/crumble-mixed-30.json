@@ -1,0 +1,139 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "manman-crumble-r3b-20261015-crumble-mixed-30",
+  "createdAt": "2026-10-15T10:11:39.308Z",
+  "buildCommit": "88c53b13271111cd99a253ba2fe6d690f964734c",
+  "planner": {
+    "name": "cf6-manman-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "crumble-mixed-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "candidate-on-30",
+          "parameters": {
+            "蛮蛮击溃模式": "on"
+          }
+        },
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "reference-off-30",
+          "parameters": {
+            "蛮蛮击溃模式": "off"
+          }
+        },
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "manman",
+        "crumble",
+        "mixed",
+        "blue"
+      ],
+      "plannerReason": "两队均为 enhanced 蛮蛮加不死兽人，只切换候选蛮蛮的击溃。",
+      "spawnDistance": 650,
+      "blueFormation": "column",
+      "redFormation": "column",
+      "formationSpacing": 70,
+      "authorityContext": {
+        "aiSourceSha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+        "candidateCrumblePercent": 0.25,
+        "candidateSide": "blue",
+        "comparison": "mixed",
+        "crumblePercent": 0.25,
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "crumble",
+        "referenceCrumblePercent": 0,
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:1d01cd873f266ae1f285540ffaa30d860053ae56d1716083d998ac981c596fa2"
+    },
+    {
+      "caseId": "crumble-mixed-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "reference-off-30",
+          "parameters": {
+            "蛮蛮击溃模式": "off"
+          }
+        },
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种463",
+          "level": 30,
+          "sourceId": "candidate-on-30",
+          "parameters": {
+            "蛮蛮击溃模式": "on"
+          }
+        },
+        {
+          "type": "兵种125",
+          "level": 30,
+          "sourceId": "undead-orc-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "manman",
+        "crumble",
+        "mixed",
+        "red"
+      ],
+      "plannerReason": "两队均为 enhanced 蛮蛮加不死兽人，只切换候选蛮蛮的击溃。",
+      "spawnDistance": 650,
+      "blueFormation": "column",
+      "redFormation": "column",
+      "formationSpacing": 70,
+      "authorityContext": {
+        "aiSourceSha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+        "candidateCrumblePercent": 0.25,
+        "candidateSide": "red",
+        "comparison": "mixed",
+        "crumblePercent": 0.25,
+        "dataSha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+        "mode": "crumble",
+        "referenceCrumblePercent": 0,
+        "sourceSwf": "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "sourceSwfSha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+        "stage": 7,
+        "tier": 9
+      },
+      "caseHash": "sha256:92610714b4f0b26bd67467be5631d18cdf444408c49d34c41662fac12cb8b863"
+    }
+  ],
+  "manifestHash": "sha256:b94d2f9ff59896b536d8262e2aa2022a92e362a7ecee99a708de017043b882a5"
+}

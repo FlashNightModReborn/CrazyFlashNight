@@ -1,0 +1,536 @@
+{
+  "schema": "cf6-manman.crumble-evidence.v1",
+  "experimentId": "manman-crumble-r3b-20261015",
+  "crumblePercentPerActualHit": 0.25,
+  "artRevision": "CF6 Manman R2",
+  "aiModeBothSides": "enhanced",
+  "stage": 7,
+  "tier": 9,
+  "runtimePromoted": false,
+  "humanGameplayAccepted": false,
+  "groups": [
+    {
+      "groupId": "control-60",
+      "rawFile": "raw/control-60.jsonl",
+      "manifestFile": "manifests/control-60.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9c6d9fc13e5a49eeb23e404bcab05fb8\\assignment-9c6d9fc13e5a49eeb23e404bcab05fb8\\attempt-9c6d9fc13e5a49eeb23e404bcab05fb8\\shard-receipt.json",
+      "receiptSha256": "7c2e0ea3b6217c48ee388db98195137c21ddba9342fc18e5cbbac54fcb054de6",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:d7ad4a21d436dca088ea6ee248f557282ce624fedcd47553cd2c4183c58d42cf"
+      },
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "runtimeResourcesVerified": true,
+      "rows": [
+        {
+          "caseId": "control-60-blue",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 172765,
+          "blueUnitResults": [
+            {
+              "sourceId": "candidate-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "reference-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 407,
+              "hpPermille": 11,
+              "alive": true
+            }
+          ],
+          "candidateSide": "blue",
+          "comparison": "control",
+          "candidateCrumblePercent": 0,
+          "referenceCrumblePercent": 0
+        },
+        {
+          "caseId": "control-60-red",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 166742,
+          "blueUnitResults": [
+            {
+              "sourceId": "reference-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 778,
+              "hpPermille": 22,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "candidate-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "red",
+          "comparison": "control",
+          "candidateCrumblePercent": 0,
+          "referenceCrumblePercent": 0
+        }
+      ]
+    },
+    {
+      "groupId": "crumble-60",
+      "rawFile": "raw/crumble-60.jsonl",
+      "manifestFile": "manifests/crumble-60.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-432ad068fd654185bcb3def4ed6f1a50\\assignment-432ad068fd654185bcb3def4ed6f1a50\\attempt-432ad068fd654185bcb3def4ed6f1a50\\shard-receipt.json",
+      "receiptSha256": "392b77da8893053a175998ba5486532e43132ba3a212e5a9f13ddb74ca0e2533",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:d7ad4a21d436dca088ea6ee248f557282ce624fedcd47553cd2c4183c58d42cf"
+      },
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "runtimeResourcesVerified": true,
+      "rows": [
+        {
+          "caseId": "crumble-60-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 127157,
+          "blueUnitResults": [
+            {
+              "sourceId": "candidate-on-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 8861,
+              "hpPermille": 250,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "reference-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "comparison": "crumble",
+          "candidateCrumblePercent": 0.25,
+          "referenceCrumblePercent": 0
+        },
+        {
+          "caseId": "crumble-60-red",
+          "status": "finished",
+          "winner": "red",
+          "durationMs": 131930,
+          "blueUnitResults": [
+            {
+              "sourceId": "reference-off-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "candidate-on-60",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 35399,
+              "remainHp": 7585,
+              "hpPermille": 214,
+              "alive": true
+            }
+          ],
+          "candidateSide": "red",
+          "comparison": "crumble",
+          "candidateCrumblePercent": 0.25,
+          "referenceCrumblePercent": 0
+        }
+      ]
+    },
+    {
+      "groupId": "crumble-mixed-30",
+      "rawFile": "raw/crumble-mixed-30.jsonl",
+      "manifestFile": "manifests/crumble-mixed-30.json",
+      "receiptSourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3a7a3ab0cd874b05a63030aeda9949c5\\assignment-3a7a3ab0cd874b05a63030aeda9949c5\\attempt-3a7a3ab0cd874b05a63030aeda9949c5\\shard-receipt.json",
+      "receiptSha256": "ec66e1e58ad644c9501a0362c051715bfb5af9f51502eec31466b9f37c3a99af",
+      "runtimeIdentity": {
+        "runtimeMode": "isolated_candidate",
+        "processPath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\manman-20261015-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+        "coreSha256": "57BA168FF7C8EC58FA5C79FBF7FD85ADE220C68D103D17CA46C408ADCEA021A6",
+        "buildIdentity": "4C5E3EB14546ACB4968296657538133C6EB90C1E32AF36560C7BEF1F973E81F8",
+        "payloadClosure": "A156466ACD21F112210301FDEA100E73F4142B966C4FF2707391F82A93AB44CF",
+        "verified": true
+      },
+      "resourceClosure": {
+        "scope": "observed_runtime_resources",
+        "completeResourceClosure": false,
+        "mainSwfSha256": "sha256:e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+        "asLoaderSha256": "sha256:333ceed38d9925928d5f5205554deb78e4bbfaadd15ad34dc3de81cef33bc04a",
+        "closureHash": "sha256:d7ad4a21d436dca088ea6ee248f557282ce624fedcd47553cd2c4183c58d42cf"
+      },
+      "cleanupVerified": true,
+      "globalSaveUnchanged": true,
+      "runtimeResourcesVerified": true,
+      "rows": [
+        {
+          "caseId": "crumble-mixed-30-blue",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 66458,
+          "blueUnitResults": [
+            {
+              "sourceId": "candidate-on-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277,
+              "remainHp": 2581,
+              "hpPermille": 102,
+              "alive": true
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050,
+              "remainHp": 3406,
+              "hpPermille": 376,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "reference-off-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "blue",
+          "comparison": "mixed",
+          "candidateCrumblePercent": 0.25,
+          "referenceCrumblePercent": 0
+        },
+        {
+          "caseId": "crumble-mixed-30-red",
+          "status": "finished",
+          "winner": "blue",
+          "durationMs": 78852,
+          "blueUnitResults": [
+            {
+              "sourceId": "reference-off-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277,
+              "remainHp": 4502,
+              "hpPermille": 178,
+              "alive": true
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050,
+              "remainHp": 4794,
+              "hpPermille": 530,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "candidate-on-30",
+              "petId": -1,
+              "identifier": "敌人-CF6蛮蛮",
+              "resolvedType": "敌人-CF6蛮蛮",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 25277,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "undead-orc-30",
+              "petId": -1,
+              "identifier": "敌人-不死兽人",
+              "resolvedType": "敌人-不死兽人",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 9050,
+              "remainHp": 0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "candidateSide": "red",
+          "comparison": "mixed",
+          "candidateCrumblePercent": 0.25,
+          "referenceCrumblePercent": 0
+        }
+      ]
+    }
+  ],
+  "files": [
+    {
+      "path": "experiment-report.json",
+      "sha256": "9fce33226013ed4fa45b787dede9a5c6f72a70a8eb8dd42d9bb071e174e2050d",
+      "bytes": 6417,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\manman-crumble-r3b-20261015\\experiment-report.json"
+    },
+    {
+      "path": "raw/control-60.jsonl",
+      "sha256": "a9f452ac82b210aff21c397ec9ebd0fcd9921de7f1339726d83093ac2a91efb2",
+      "bytes": 6610,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9c6d9fc13e5a49eeb23e404bcab05fb8\\assignment-9c6d9fc13e5a49eeb23e404bcab05fb8\\attempt-9c6d9fc13e5a49eeb23e404bcab05fb8\\raw\\a9f452ac82b210aff21c397ec9ebd0fcd9921de7f1339726d83093ac2a91efb2.jsonl"
+    },
+    {
+      "path": "manifests/control-60.json",
+      "sha256": "881965a05bbc16178ec009b3aa1dff425c948decac8c5659f6af1cced6a8771f",
+      "bytes": 3739,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9c6d9fc13e5a49eeb23e404bcab05fb8\\assignment-9c6d9fc13e5a49eeb23e404bcab05fb8\\attempt-9c6d9fc13e5a49eeb23e404bcab05fb8\\manifest.json"
+    },
+    {
+      "path": "raw/crumble-60.jsonl",
+      "sha256": "dc612822a8fbb67564456c57780065b720845546d4f11f5823495320e2e39a32",
+      "bytes": 6618,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-432ad068fd654185bcb3def4ed6f1a50\\assignment-432ad068fd654185bcb3def4ed6f1a50\\attempt-432ad068fd654185bcb3def4ed6f1a50\\raw\\dc612822a8fbb67564456c57780065b720845546d4f11f5823495320e2e39a32.jsonl"
+    },
+    {
+      "path": "manifests/crumble-60.json",
+      "sha256": "b760bcb33cc2607ff530bcd0ffb14956f7b32f403bbe1d0a8bf6faa99ce9de31",
+      "bytes": 3741,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-432ad068fd654185bcb3def4ed6f1a50\\assignment-432ad068fd654185bcb3def4ed6f1a50\\attempt-432ad068fd654185bcb3def4ed6f1a50\\manifest.json"
+    },
+    {
+      "path": "raw/crumble-mixed-30.jsonl",
+      "sha256": "dd6a32a979bec6326a57a04a4d2d6f68f4f320eaff18f152efa9a0558040a7eb",
+      "bytes": 8733,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3a7a3ab0cd874b05a63030aeda9949c5\\assignment-3a7a3ab0cd874b05a63030aeda9949c5\\attempt-3a7a3ab0cd874b05a63030aeda9949c5\\raw\\dd6a32a979bec6326a57a04a4d2d6f68f4f320eaff18f152efa9a0558040a7eb.jsonl"
+    },
+    {
+      "path": "manifests/crumble-mixed-30.json",
+      "sha256": "e0d58afbd0c0d84780fd6ed872c3e2eb68933945a6788d713eed4060b703c0fe",
+      "bytes": 4111,
+      "sourcePath": "C:\\Users\\fs\\.codex\\worktrees\\manman-crumble\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3a7a3ab0cd874b05a63030aeda9949c5\\assignment-3a7a3ab0cd874b05a63030aeda9949c5\\attempt-3a7a3ab0cd874b05a63030aeda9949c5\\manifest.json"
+    },
+    {
+      "path": "logs/native-publish.log",
+      "sha256": "d4393e3fab420bbbd0c5030b5f59de9a5a336d8f00686566c18ab2462f6c18c3",
+      "bytes": 1303,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\native-publish.log"
+    },
+    {
+      "path": "logs/asset-tests.log",
+      "sha256": "e87a27a3b379bac8564b8e14875b42514abab0d680d4f3facf4b3d59f8af6f4c",
+      "bytes": 2203,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\asset-tests.log"
+    },
+    {
+      "path": "logs/asset-test-trace.txt",
+      "sha256": "fb5c56a26bbb6477e7d8047228c9c8d8d9c83ede1a55684a9f0b6268f2ab7cc4",
+      "bytes": 209,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\asset-tests\\flashlog.txt"
+    },
+    {
+      "path": "logs/asset-test-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\asset-tests\\compiler_errors.txt"
+    },
+    {
+      "path": "logs/hp-impact-tests.log",
+      "sha256": "7ac16820b0f14970d6616cd0fb42e99bd6fddbb4e0e9a61f814cd778089213a2",
+      "bytes": 15017,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\hp-impact-tests.log"
+    },
+    {
+      "path": "logs/hp-impact-trace.txt",
+      "sha256": "c44a6604a44bec70f91a6ef59396d2226f3c923bf852d2b78295749072a0f990",
+      "bytes": 12958,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\hp-impact-tests\\flashlog.txt"
+    },
+    {
+      "path": "logs/hp-impact-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "bytes": 27,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\hp-impact-tests\\compiler_errors.txt"
+    },
+    {
+      "path": "logs/static-verify.log",
+      "sha256": "34b3eb3131477c396abfe17d157b2c16cc6e562aaf2bba6b88cd86d6d473394a",
+      "bytes": 882,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\static-verify.log"
+    },
+    {
+      "path": "logs/rejected-plan-attempt.log",
+      "sha256": "cc4c36820ae8afe29dd39f90c96a4849b9d91864dc604c15e003b754b8e923aa",
+      "bytes": 209,
+      "sourcePath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-manman-crumble-20261015\\experiment-run.log"
+    }
+  ],
+  "observedSummary": {
+    "finishedRuns": 6,
+    "controlMeanDurationMs": 169753.5,
+    "crumbleMeanDurationMs": 129543.5,
+    "sampleMeanDurationReduction": 0.23687287743698948,
+    "crumbleWins": 2,
+    "mixedCrumbleWins": 1,
+    "statisticalSignificanceClaimed": false,
+    "liveMaximumHpMeasuredByArena": false,
+    "hpPermilleMeaning": "remaining HP divided by initial max HP; does not expose live maximum HP after crumble"
+  },
+  "inputs": [
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "cb3dd909ac5c728e6d6fd7b0355d527219f14806eeff10c63cb1f2293ab90b81",
+      "bytes": 86402
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5",
+      "bytes": 6739
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b6fdae250d0628562945c182f7221a75bd72909bbc363f0c16b4dbb4673f56a2",
+      "bytes": 19963
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "sha256": "c1d3f26a25a15d5ea3c5ebd38c6106132db2d347a0f38f0790595569f282f7fd",
+      "bytes": 24944
+    },
+    {
+      "path": "data/enemy_properties/CF6蛮蛮.xml",
+      "sha256": "0b574604aa39e9b73246e5cbf588396ad158c6331eae98270ecf0cb3a54e4b9b",
+      "bytes": 1524
+    }
+  ],
+  "tests": {
+    "assetAssertions": 158,
+    "assetTimelineCases": 22,
+    "hpImpactAssertions": 159,
+    "failed": 0,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "localWorkerPreservation": {
+    "directory": "tmp/cf6-manman-crumble-20261015/worker-preserved",
+    "manifestSha256": "bb304d64da7421918c1021139b5c085950be23764417c7d3c97d9d472c1d5e2b",
+    "verifiedFiles": 31
+  }
+}

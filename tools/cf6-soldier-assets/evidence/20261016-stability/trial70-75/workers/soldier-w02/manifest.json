@@ -1,0 +1,296 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "soldier-stability-r2-20261016-w2",
+  "createdAt": "2026-10-16T08:04:49.835Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-soldier-two-worker-threat",
+    "version": 2
+  },
+  "arenaMode": "calibration",
+  "repeat": 2,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "w2-0-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种467",
+          "level": 30,
+          "sourceId": "soldier-30",
+          "parameters": {
+            "特种兵持盾减伤率": 75,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 2,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "完整持盾两阶段预设略强于Wings；固定长枪同级对照，实际结果单独核验。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "initialPhase": 1,
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": false,
+        "revision": "stable-aim-shield-reduction70-vs75",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shieldDamageReductionPercent": 75,
+        "shootRestFrames": 30,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "slightly_above_wings",
+        "tier": 5,
+        "unitId": 467,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:777fdd5d9efdc69d5f2e30ee9a33a50f3a74781fdb5ba558830190418a2d0716"
+    },
+    {
+      "caseId": "w2-1-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 60,
+          "sourceId": "wings-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种467",
+          "level": 60,
+          "sourceId": "soldier-60",
+          "parameters": {
+            "特种兵持盾减伤率": 75,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 2,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "完整持盾两阶段预设略强于Wings；固定长枪同级对照，实际结果单独核验。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "initialPhase": 1,
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": false,
+        "revision": "stable-aim-shield-reduction70-vs75",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shieldDamageReductionPercent": 75,
+        "shootRestFrames": 30,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "slightly_above_wings",
+        "tier": 5,
+        "unitId": 467,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:0428289f936b8cb17dc3bcf882353ec9e1c6691dde5fbb28ceb0cfe214366358"
+    },
+    {
+      "caseId": "w2-2-99-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 99,
+          "sourceId": "wings-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种467",
+          "level": 99,
+          "sourceId": "soldier-99",
+          "parameters": {
+            "特种兵持盾减伤率": 75,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 2,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-soldier",
+        "bounded-fire",
+        "wings-threat",
+        "red"
+      ],
+      "plannerReason": "完整持盾两阶段预设略强于Wings；固定长枪同级对照，实际结果单独核验。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "initialPhase": 1,
+        "maximumFireFrames": 18,
+        "ordinaryEnemyBalanceBasis": false,
+        "revision": "stable-aim-shield-reduction70-vs75",
+        "rivalStage": 7,
+        "rivalTier": 8,
+        "shieldDamageReductionPercent": 75,
+        "shootRestFrames": 30,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "fd324f6e9c1c0cd08a3bb130715ab105777a0f889ca32bb835c6a5a84851ae7f"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "dbb5981c1d33cd234c48ff789c73b868f37832d8e7e94350e143008a163a85b6"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "2c561771dbe4602cb12b823e44b69390dff622c31e8021afb970b7317e75c20f"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "78639094255cfecc9550c4a04b1af3046519d6dd2341c70831105d842e1e058d"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "d18fa15e2b2c6d9fca40042c3e702ec35c0cd3179c1fd32cea0c8fbc73f62e1e"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "slightly_above_wings",
+        "tier": 5,
+        "unitId": 467,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:8990927a7767f46b8b06b27fe4f4582421fde711a8a0b10878da0c57e3458a2c"
+    }
+  ],
+  "manifestHash": "sha256:141f48116d57a2faec010e2403af1be4dcdb04e1fc3e9b1420d26d40317bab44"
+}

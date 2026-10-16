@@ -1,0 +1,353 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "guard-baseline-r1-20261016-w1",
+  "createdAt": "2026-10-16T09:18:01.461Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-guard-two-worker-comparison",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "w1-0-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种468",
+          "level": 30,
+          "sourceId": "guard-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 30,
+          "sourceId": "soldier-30",
+          "parameters": {
+            "特种兵初始阶段": 2,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-guard",
+        "fixed-shotgun",
+        "ordinary-soldier",
+        "blue"
+      ],
+      "plannerReason": "双方均按普通敌人生命基线出战；保安明显较弱但应换走至少20%生命。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "guardHpMultiplier": 1,
+        "revision": "guard-original-41-74-stage6-tier3",
+        "rivalPhase": 2,
+        "rivalStage": 7,
+        "rivalTier": 5,
+        "rivalUnitId": 466,
+        "soldierHpMultiplier": 1,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex光头保安素材.swf",
+            "sha256": "8a8093fea9373f8483ba71593f5de063e11d9a7170f11d609f7dba41233ea013"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardAI.as",
+            "sha256": "bdf4cc8c85394ede99321feea93d045c4077431fd842403d09bf33865b9c7029"
+          },
+          {
+            "path": "tools/cf6-guard-assets/native-manifest.json",
+            "sha256": "3450d48104dcdbcaa369ae8f088de6565718a12b56bb92db0023328e7ad5712b"
+          },
+          {
+            "path": "tools/cf6-guard-assets/balance-inputs.json",
+            "sha256": "18e354cbaecb25f698ecda8854b8c69c5c39661a89f39f36fb5c456affc51498"
+          },
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "be4296c9a5947fcffab84885b4752a9e6777bda758317b4afe701d276e24f6eb"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+          }
+        ],
+        "stage": 6,
+        "targetPosition": "clearly_below_ordinary_soldier_with_twenty_percent_exchange",
+        "tier": 3,
+        "unitId": 468,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:51a777753b18e2e2109a49f646c794d2e5ddc6071348a9b02f20df68c1fd58e5"
+    },
+    {
+      "caseId": "w1-1-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种468",
+          "level": 60,
+          "sourceId": "guard-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 60,
+          "sourceId": "soldier-60",
+          "parameters": {
+            "特种兵初始阶段": 2,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-guard",
+        "fixed-shotgun",
+        "ordinary-soldier",
+        "blue"
+      ],
+      "plannerReason": "双方均按普通敌人生命基线出战；保安明显较弱但应换走至少20%生命。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "guardHpMultiplier": 1,
+        "revision": "guard-original-41-74-stage6-tier3",
+        "rivalPhase": 2,
+        "rivalStage": 7,
+        "rivalTier": 5,
+        "rivalUnitId": 466,
+        "soldierHpMultiplier": 1,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex光头保安素材.swf",
+            "sha256": "8a8093fea9373f8483ba71593f5de063e11d9a7170f11d609f7dba41233ea013"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardAI.as",
+            "sha256": "bdf4cc8c85394ede99321feea93d045c4077431fd842403d09bf33865b9c7029"
+          },
+          {
+            "path": "tools/cf6-guard-assets/native-manifest.json",
+            "sha256": "3450d48104dcdbcaa369ae8f088de6565718a12b56bb92db0023328e7ad5712b"
+          },
+          {
+            "path": "tools/cf6-guard-assets/balance-inputs.json",
+            "sha256": "18e354cbaecb25f698ecda8854b8c69c5c39661a89f39f36fb5c456affc51498"
+          },
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "be4296c9a5947fcffab84885b4752a9e6777bda758317b4afe701d276e24f6eb"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+          }
+        ],
+        "stage": 6,
+        "targetPosition": "clearly_below_ordinary_soldier_with_twenty_percent_exchange",
+        "tier": 3,
+        "unitId": 468,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:d30a13032bc98fc80b84a7f9539162e82199cd59b4d36b0ade0d072047b0b8cf"
+    },
+    {
+      "caseId": "w1-2-99-blue",
+      "blueRoster": [
+        {
+          "type": "兵种468",
+          "level": 99,
+          "sourceId": "guard-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种466",
+          "level": 99,
+          "sourceId": "soldier-99",
+          "parameters": {
+            "特种兵初始阶段": 2,
+            "长枪": "M4A1战术版"
+          }
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 1800,
+      "tags": [
+        "cf6-guard",
+        "fixed-shotgun",
+        "ordinary-soldier",
+        "blue"
+      ],
+      "plannerReason": "双方均按普通敌人生命基线出战；保安明显较弱但应换走至少20%生命。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "guardHpMultiplier": 1,
+        "revision": "guard-original-41-74-stage6-tier3",
+        "rivalPhase": 2,
+        "rivalStage": 7,
+        "rivalTier": 5,
+        "rivalUnitId": 466,
+        "soldierHpMultiplier": 1,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex光头保安素材.swf",
+            "sha256": "8a8093fea9373f8483ba71593f5de063e11d9a7170f11d609f7dba41233ea013"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "9e0463156985a10619d69146bac7e1a90f2897982c622e4e347aa48007ceb422"
+          },
+          {
+            "path": "tools/cf6-guard-assets/GuardAI.as",
+            "sha256": "bdf4cc8c85394ede99321feea93d045c4077431fd842403d09bf33865b9c7029"
+          },
+          {
+            "path": "tools/cf6-guard-assets/native-manifest.json",
+            "sha256": "3450d48104dcdbcaa369ae8f088de6565718a12b56bb92db0023328e7ad5712b"
+          },
+          {
+            "path": "tools/cf6-guard-assets/balance-inputs.json",
+            "sha256": "18e354cbaecb25f698ecda8854b8c69c5c39661a89f39f36fb5c456affc51498"
+          },
+          {
+            "path": "flashswf/arts/new/Codex特种兵素材.swf",
+            "sha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb"
+          },
+          {
+            "path": "flashswf/arts/new/CodexWings素材.swf",
+            "sha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "50c7f8a583e60563952148115bb049544c078c6f86e6407b3c33866b9e675844"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "be4296c9a5947fcffab84885b4752a9e6777bda758317b4afe701d276e24f6eb"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "cc020147b3f5ec03d6fd72652abcae3d52da74bf8963d6e4111f52f06eb5cfc7"
+          },
+          {
+            "path": "data/items/武器_长枪_突击步枪.xml",
+            "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "8ace3cbcf59e1e8f718fefd75c3b3ec805e777acfe6bb33a3202b1f5e69ad81f"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+            "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+          },
+          {
+            "path": "tools/cf6-soldier-assets/SoldierAI.as",
+            "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+          }
+        ],
+        "stage": 6,
+        "targetPosition": "clearly_below_ordinary_soldier_with_twenty_percent_exchange",
+        "tier": 3,
+        "unitId": 468,
+        "weapon": "M4A1战术版"
+      },
+      "caseHash": "sha256:89a647187785238baa9fcea1d50dba5eb02909a96a1759d66fe6673d7e5770bc"
+    }
+  ],
+  "manifestHash": "sha256:111d04f604abf665cb1ea59b69605169b91c0b5fd33ff96116d0c06a40f2584e"
+}

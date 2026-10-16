@@ -1,0 +1,17 @@
+{
+  "schema": "arena-worker.launch.v1",
+  "workerId": "soldier-w01",
+  "sessionEpoch": "session-90a6cac5500c4b39ace7830c91064619",
+  "projectRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight",
+  "stateRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-worker\\session-90a6cac5500c4b39ace7830c91064619",
+  "saveRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\saves",
+  "outputRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration",
+  "swfOrigin": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\CRAZYFLASHER7MercenaryEmpire.swf",
+  "slot": "cf7_agent_aw_90a6cac5500c4b39ace7830c91064619",
+  "performance": {
+    "preset": "performance",
+    "mode": "fixed",
+    "maxRenderHeight": 180
+  },
+  "allowFaultInjection": false
+}

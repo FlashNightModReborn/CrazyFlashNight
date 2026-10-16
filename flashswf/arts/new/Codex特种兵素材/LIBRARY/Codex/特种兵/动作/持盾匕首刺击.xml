@@ -1,0 +1,1869 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/特种兵/动作/持盾匕首刺击" itemID="6af00000-73685159">
+  <timeline>
+    <DOMTimeline name="持盾匕首刺击">
+      <layers>
+        <DOMLayer name="攻击生命周期" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.soldierBeginAttack(this,"knife");]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="32">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.soldierFinishAttack(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="真实近战判定" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="13">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/CF7/Symbol 195" name="攻击点">
+                  <matrix>
+                    <Matrix a="4.04" d="5.4" tx="10.3" ty="-1.499893"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ _parent._parent.soldierStab(_parent,this); }]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728" duration="20">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_32" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-15.05" ty="-8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-21.8" ty="-7.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-42.85" ty="-6.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-38.35" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-36.35" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-37.35" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-29.35" ty="-8.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/561" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="-15.05" ty="-8.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_31" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203568" b="0.106293" c="-0.106293" d="0.203568" tx="-45.7" ty="28.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_30" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225677" b="0.041855" c="-0.041855" d="0.225677" tx="-57.8" ty="51.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_29" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-17.2" ty="21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_28" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229385" b="-0.013107" c="0.013107" d="0.229385" tx="-21.15" ty="49.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_27" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229218" b="0.008118" c="-0.008118" d="0.229218" tx="-43.95" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_26" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.107666" b="-0.20195" c="0.20195" d="-0.107666" tx="-32" ty="-23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.125626" b="-0.190918" c="0.190918" d="0.125626" tx="-52.75" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.211823" b="-0.0849" c="0.0849" d="0.211823" tx="-63.25" ty="-31.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.211823" b="-0.0849" c="0.0849" d="0.211823" tx="-53" ty="-30.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.211823" b="-0.0849" c="0.0849" d="0.211823" tx="-47.65" ty="-29.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.211823" b="-0.0849" c="0.0849" d="0.211823" tx="-63.25" ty="-31.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_25" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222946" b="-0.052521" c="0.052521" d="0.222946" tx="-14.7" ty="-33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223511" b="0.048737" c="-0.048737" d="0.223511" tx="-35.7" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.124725" b="0.19133" c="-0.19133" d="0.124725" tx="-57.35" ty="-14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.124725" b="0.19133" c="-0.19133" d="0.124725" tx="-47.1" ty="-13.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.124725" b="0.19133" c="-0.19133" d="0.124725" tx="-41.75" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.124725" b="0.19133" c="-0.19133" d="0.124725" tx="-57.35" ty="-14.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_24" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.202057" b="-0.106674" c="0.106674" d="0.202057" tx="-43.25" ty="-43.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.207428" b="0.09494" c="-0.09494" d="0.207428" tx="-43.3" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111603" b="0.198563" c="-0.198563" d="0.111603" tx="-43.35" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111603" b="0.198563" c="-0.198563" d="0.111603" tx="-33.1" ty="-41.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111603" b="0.198563" c="-0.198563" d="0.111603" tx="-27.75" ty="-41.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.111603" b="0.198563" c="-0.198563" d="0.111603" tx="-43.35" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_22" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.34343" b="0.010483" c="-0.010483" d="0.34343" tx="-10.75" ty="-33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.289078" b="0.184769" c="-0.184769" d="0.289078" tx="-30" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.121429" b="0.319717" c="-0.319717" d="0.121429" tx="-53.75" ty="-9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.121429" b="0.319717" c="-0.319717" d="0.121429" tx="-43.5" ty="-8.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.121429" b="0.319717" c="-0.319717" d="0.121429" tx="-38.15" ty="-7.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.121429" b="0.319717" c="-0.319717" d="0.121429" tx="-53.75" ty="-9.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_21" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203568" b="0.106293" c="-0.106293" d="0.203568" tx="-45.7" ty="28.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203568" b="0.106293" c="-0.106293" d="0.203568" tx="-45.6" ty="29.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203568" b="0.106293" c="-0.106293" d="0.203568" tx="-46.25" ty="29.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.203568" b="0.106293" c="-0.106293" d="0.203568" tx="-45.7" ty="28.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_20" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="30">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.225677" b="0.041855" c="-0.041855" d="0.225677" tx="-57.8" ty="51.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_19" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-17.2" ty="21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-6.95" ty="22.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-1.6" ty="23.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/497" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-17.2" ty="21.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_18" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.115494" b="-0.19751" c="0.19751" d="-0.115494" tx="-2.1" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222107" b="-0.05336" c="0.05336" d="0.222107" tx="-17.25" ty="-16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229385" b="-0.013107" c="0.013107" d="0.229385" tx="-21.15" ty="49.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229385" b="-0.013107" c="0.013107" d="0.229385" tx="-10.9" ty="50.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229385" b="-0.013107" c="0.013107" d="0.229385" tx="-5.55" ty="51.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/496" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229385" b="-0.013107" c="0.013107" d="0.229385" tx="-21.15" ty="49.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.216003" b="-0.075668" c="0.075668" d="0.216003" tx="15.95" ty="-32.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.097916" b="0.206787" c="-0.206787" d="0.097916" tx="-12.3" ty="1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229218" b="0.008118" c="-0.008118" d="0.229218" tx="-43.95" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205719" b="0.100784" c="-0.100784" d="0.205719" tx="-33.7" ty="3.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.179993" b="0.141449" c="-0.141449" d="0.179993" tx="-28.35" ty="4.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/495" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.229218" b="0.008118" c="-0.008118" d="0.229218" tx="-43.95" ty="2.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-38.7" ty="-2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-28.45" ty="-1.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-23.1" ty="-0.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-38.7" ty="-2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255127" b="0.052734" c="-0.052734" d="0.255127" tx="-26.55" ty="-48.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255127" b="0.052734" c="-0.052734" d="0.255127" tx="-16.3" ty="-47.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255127" b="0.052734" c="-0.052734" d="0.255127" tx="-10.95" ty="-46.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255127" b="0.052734" c="-0.052734" d="0.255127" tx="-26.55" ty="-48.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22229" b="0.056534" c="-0.056534" d="0.22229" tx="-36.75" ty="-15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22229" b="0.056534" c="-0.056534" d="0.22229" tx="-26.5" ty="-13.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="11">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22229" b="0.056534" c="-0.056534" d="0.22229" tx="-21.15" ty="-13.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22229" b="0.056534" c="-0.056534" d="0.22229" tx="-36.75" ty="-15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/565" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="22">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.125626" b="-0.190918" c="0.190918" d="0.125626" tx="-52.75" ty="-21.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/494" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.107666" b="-0.20195" c="0.20195" d="-0.107666" tx="-32" ty="-23.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222549" b="-0.054321" c="0.054321" d="0.222549" tx="-18.2" ty="-10.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/566" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/567" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/568" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/569" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/570" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/571" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223511" b="0.048737" c="-0.048737" d="0.223511" tx="-35.7" ty="-9.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/493" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222946" b="-0.052521" c="0.052521" d="0.222946" tx="-14.7" ty="-33.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192871" b="-0.121964" c="0.121964" d="0.192871" tx="-29.45" ty="-30.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.036896" b="-0.224823" c="0.224823" d="0.036896" tx="-20.5" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.224304" b="-0.036911" c="0.036911" d="-0.224304" tx="13" ty="-40.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.213348" b="0.077545" c="-0.077545" d="-0.213348" tx="10.85" ty="-53.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.014557" b="-0.226349" c="0.226349" d="-0.014557" tx="20.55" ty="-32.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.167557" b="-0.152328" c="0.152328" d="0.167557" tx="9.45" ty="-14.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.036896" b="-0.224823" c="0.224823" d="0.036896" tx="-20.5" ty="-16.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.207428" b="0.09494" c="-0.09494" d="0.207428" tx="-43.3" ty="-43.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.202057" b="-0.106674" c="0.106674" d="0.202057" tx="-43.25" ty="-43.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.029938" b="0.226151" c="-0.226151" d="0.029938" tx="-19.15" ty="-13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218002" b="0.065689" c="-0.065689" d="0.218002" tx="-2" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.003937" b="-0.226974" c="0.226974" d="0.003937" tx="16.55" ty="-60.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.045319" b="-0.221909" c="0.221909" d="-0.045319" tx="3.6" ty="-72.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.205795" b="-0.094162" c="0.094162" d="0.205795" tx="39.35" ty="-32.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.201645" b="0.101944" c="-0.101944" d="0.201645" tx="21.35" ty="-0.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.218002" b="0.065689" c="-0.065689" d="0.218002" tx="-2" ty="-13.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/572" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.214005" b="0.080582" c="-0.080582" d="0.214005" tx="2.55" ty="-11.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.084229" b="-0.21196" c="0.21196" d="0.084229" tx="17.45" ty="-65.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.084229" b="-0.21196" c="0.21196" d="0.084229" tx="2" ty="-78.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.193207" b="-0.120544" c="0.120544" d="0.193207" tx="42.8" ty="-34.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.214401" b="0.075684" c="-0.075684" d="0.214401" tx="25.05" ty="1.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.214005" b="0.080582" c="-0.080582" d="0.214005" tx="2.55" ty="-11.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222549" b="-0.054321" c="0.054321" d="0.222549" tx="-18.2" ty="-10.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.289078" b="0.184769" c="-0.184769" d="0.289078" tx="-30" ty="-9.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/武器/可配置长枪" name="枪">
+                  <matrix>
+                    <Matrix a="0.34343" b="0.010483" c="-0.010483" d="0.34343" tx="-10.75" ty="-33.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192871" b="-0.121964" c="0.121964" d="0.192871" tx="-29.45" ty="-30.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.222107" b="-0.05336" c="0.05336" d="0.222107" tx="-17.25" ty="-16"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/491" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.115494" b="-0.19751" c="0.19751" d="-0.115494" tx="-2.1" ty="-22.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.029938" b="0.226151" c="-0.226151" d="0.029938" tx="-19.15" ty="-13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.097916" b="0.206787" c="-0.206787" d="0.097916" tx="-12.3" ty="1.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/490" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.216003" b="-0.075668" c="0.075668" d="0.216003" tx="15.95" ty="-32.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="28">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/489" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.227905" b="0.030167" c="-0.030167" d="0.227905" tx="-38.7" ty="-2.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="28">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/488" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.255127" b="0.052734" c="-0.052734" d="0.255127" tx="-26.55" ty="-48.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="28">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/487" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22229" b="0.056534" c="-0.056534" d="0.22229" tx="-36.75" ty="-15.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.17067" b="-0.152084" c="0.152084" d="0.17067" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228104" b="-0.000595" c="0.000595" d="0.228104" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.153839" b="0.167923" c="-0.167923" d="0.153839" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223083" b="0.044006" c="-0.044006" d="0.223083" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.05368" b="-0.220245" c="0.220245" d="-0.05368" tx="-9.1" ty="-35.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.175339" b="-0.143112" c="0.143112" d="-0.175339" tx="-3.75" ty="-34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.022278" b="-0.224884" c="0.224884" d="0.022278" tx="-3.75" ty="-34.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189346" b="-0.122681" c="0.122681" d="0.189346" tx="-3.9" ty="-35.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223083" b="0.044006" c="-0.044006" d="0.223083" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.153839" b="0.167923" c="-0.167923" d="0.153839" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228104" b="-0.000595" c="0.000595" d="0.228104" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/486" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.17067" b="-0.152084" c="0.152084" d="0.17067" tx="-17.85" ty="-37.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186844" b="-0.133408" c="0.133408" d="0.186844" tx="-30.95" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="24">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/485" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186844" b="-0.133408" c="0.133408" d="0.186844" tx="-30.95" ty="-1.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.188919" b="-0.130005" c="0.130005" d="0.188919" tx="-26.95" ty="-8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="24">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="6">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/特种兵/分件/484" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.188919" b="-0.130005" c="0.130005" d="0.188919" tx="-26.95" ty="-8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

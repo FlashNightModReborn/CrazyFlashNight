@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/f5affe00802f7309" itemID="71340000-2f612762" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/f5affe00802f7309" itemID="71340000-2f612762" symbolType="graphic">
   <timeline>
     <DOMTimeline name="f5affe00802f7309">
       <layers>
-        <DOMLayer name="Layer 1" color="#AFC2E2">
+        <DOMLayer name="Layer 1" color="#AFC2E2" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements>
@@ -14,7 +13,8 @@
                     </FillStyle>
                   </fills>
                   <edges>
-                    <Edge fillStyle0="1" edges="!-1026 -1129[-1026 -735 -933 -239!-933 -239[-824 342 -621 852!-621 852[-329 1588 91 2025!91 2025[150 1646 367 1005!367 1005[457 968 1025 854!1025 854[377 465 -97 -267!-97 -267[-572 -1000 -696 -1393!-696 -1393[-820 -1786 -833 -2025!-833  -2025[-893 -1913 -941 -1746!-941 -1746[-1026 -1447 -1026 -1129"/>
+                    <Edge fillStyle0="1" edges="!-1026 -1129[-1026 -735 -933 -239!-933 -239[-824 342 -621 852!-621 852[-329 1588 91 2025!91 2025[150 1646 367 1005!367 1005[457 968 1025 854!1025 854[377 465 -97 -267!-97 -267[-572 -1000 -696 -1393!-696 -1393[-820 -1786 -833 -2025!-833
+ -2025[-893 -1913 -941 -1746!-941 -1746[-1026 -1447 -1026 -1129"/>
                   </edges>
                 </DOMShape>
               </elements>

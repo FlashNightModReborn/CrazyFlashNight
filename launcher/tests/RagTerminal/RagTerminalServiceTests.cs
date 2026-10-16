@@ -414,6 +414,71 @@ namespace CF7Launcher.Tests.RagTerminal
             Assert.Equal("{\"slot_key\":\"save1\",\"progress\":{\"tasks_finished\":[21]}}",
                 handler.Bodies[1]);
         }
+
+        [Fact]
+        public async Task TaskCompletedSkipsSilentlyWhenExeOffline()
+        {
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"status\":\"booting\"}"));
+            var started = new List<string>();
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, started.Add);
+
+            await service.NotifyTaskCompletedAsync("save1", 213501, "Andy Law");
+
+            Assert.Empty(started);
+            HttpRequestMessage probe = Assert.Single(handler.Requests);
+            Assert.Equal("/api/health", probe.RequestUri.AbsolutePath);
+        }
+
+        [Fact]
+        public async Task TaskCompletedPostsSingleEventAndToleratesFailure()
+        {
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json("{\"ok\":false}", HttpStatusCode.BadGateway));
+            var started = new List<string>();
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, started.Add);
+
+            await service.NotifyTaskCompletedAsync("save1", 213501, "Andy Law");
+
+            Assert.Empty(started);
+            Assert.Equal(2, handler.Requests.Count);
+            Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
+            Assert.Equal("/api/integration/task-completed", handler.Requests[1].RequestUri.AbsolutePath);
+            Assert.Equal("{\"slot_key\":\"save1\",\"task_id\":213501,\"npc\":\"Andy Law\"}",
+                handler.Bodies[1]);
+        }
+
+        [Fact]
+        public async Task TaskCompletedNotAcceptedStillPostsOnceWithoutRetry()
+        {
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json(
+                    "{\"ok\":true,\"accepted\":false,\"detail\":\"任务 213501 已委派过，静默跳过\",\"job_id\":\"\"}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            await service.NotifyTaskCompletedAsync("save1", 213501, null);
+
+            Assert.Equal(2, handler.Requests.Count);
+            // npc 缺省落成空串（终端以任务记录里的 get_npc 为权威），且绝不因 accepted=false 重发。
+            Assert.Equal("{\"slot_key\":\"save1\",\"task_id\":213501,\"npc\":\"\"}", handler.Bodies[1]);
+        }
+
+        [Fact]
+        public async Task TaskCompletedRejectsInvalidSlotOrTaskWithoutHttp()
+        {
+            var handler = new RagHttpStub(request => RagHttpStub.Json("{\"status\":\"ok\"}"));
+            var started = new List<string>();
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, started.Add);
+
+            await service.NotifyTaskCompletedAsync("bad/slot", 213501, "Andy Law");
+            await service.NotifyTaskCompletedAsync("", 213501, "Andy Law");
+            await service.NotifyTaskCompletedAsync("save1", 0, "Andy Law");
+            await service.NotifyTaskCompletedAsync("save1", -213501, "Andy Law");
+
+            Assert.Empty(started);
+            Assert.Empty(handler.Requests);
+        }
     }
 
     /// <summary>共享 HTTP 桩：记录请求与 body，响应由 responder 决定；零真实网络。</summary>

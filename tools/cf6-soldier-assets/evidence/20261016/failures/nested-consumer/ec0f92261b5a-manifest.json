@@ -1,0 +1,42 @@
+{
+  "status": "failed",
+  "runId": "5c0b4a10b9674c6396cd89ef5eebf194",
+  "finding": "Individual import fixture did not expose the expected dynamic attachment scope; replace with actual game anchors",
+  "files": [
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\compiler_errors.txt",
+      "archive": "compiler_errors.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\compile_output.txt",
+      "archive": "compile_output.txt",
+      "sha256": "101440135c92eaf1d0aec1cfef001bae822988e47e0caf6c292a8e53950fa816"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\TestLoader.swf",
+      "archive": "TestLoader.swf",
+      "sha256": "19e5df98101cd408525f7fd56fa6e5e9e31e74daeb091dde06c4d2a04b00e73d"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\scripts\\类定义\\org\\flashNight\\arki\\unit\\Action\\Melee\\Cf6SoldierAssetTest.as",
+      "archive": "Cf6SoldierAssetTest.as",
+      "sha256": "9a2196fe1ec178e5f4df6aa8750b9a29377cb7cfcd7630d6b5d4ef3d420d96c1"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-equipment-consumer\\Consumer.swf",
+      "archive": "Consumer.swf",
+      "sha256": "c06ebb205f4ffbd6c7ef21aece574a9be7285f8c7645dca6bd58c617aca67a78"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-equipment-consumer\\source-manifest.json",
+      "archive": "source-manifest.json",
+      "sha256": "2db4249a8168f8866a1236fd6593d84c4993ab64c1c56b981802a51ccc4851b1"
+    },
+    {
+      "path": "C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\Logs\\flashlog.txt",
+      "archive": "flashlog.txt",
+      "sha256": "ed9e34e355c0a862f67b5de1fe8853aeb5ae178db2c4de524f5f6136d57aad57"
+    }
+  ]
+}

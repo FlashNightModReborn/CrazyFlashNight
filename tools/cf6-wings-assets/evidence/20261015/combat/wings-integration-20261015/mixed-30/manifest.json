@@ -1,0 +1,125 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "wings-integration-20261015-mixed-30",
+  "createdAt": "2026-10-15T13:40:59.066Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-wings-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 1800,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "mixed-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-enhanced-30"
+        },
+        {
+          "type": "兵种373",
+          "level": 30,
+          "sourceId": "cf7-agent-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-baseline-30",
+          "parameters": {
+            "WingsAI模式": "baseline"
+          }
+        },
+        {
+          "type": "兵种373",
+          "level": 30,
+          "sourceId": "cf7-agent-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "wings",
+        "mixed",
+        "blue"
+      ],
+      "plannerReason": "两队各为 Wings 与原版特工，纵深错位，观察换目标和死亡后收尾。",
+      "spawnDistance": 650,
+      "blueFormation": "column",
+      "redFormation": "column",
+      "formationSpacing": 70,
+      "authorityContext": {
+        "aiSourceSha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2",
+        "candidateSide": "blue",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "edcd5bf3dcb6118b87f38c93625eaaa0b205f1164783747110d42f54747500e5",
+        "mode": "mixed",
+        "sourceSwf": "flashswf/arts/new/CodexWings素材.swf",
+        "sourceSwfSha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+        "stage": 7,
+        "tier": 8
+      },
+      "caseHash": "sha256:cc96b086d48dceafd421114b9836c499c800b4b1e52fd63cc07846695ad44c9f"
+    },
+    {
+      "caseId": "mixed-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-baseline-30",
+          "parameters": {
+            "WingsAI模式": "baseline"
+          }
+        },
+        {
+          "type": "兵种373",
+          "level": 30,
+          "sourceId": "cf7-agent-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种464",
+          "level": 30,
+          "sourceId": "wings-enhanced-30"
+        },
+        {
+          "type": "兵种373",
+          "level": 30,
+          "sourceId": "cf7-agent-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "wings",
+        "mixed",
+        "red"
+      ],
+      "plannerReason": "两队各为 Wings 与原版特工，纵深错位，观察换目标和死亡后收尾。",
+      "spawnDistance": 650,
+      "blueFormation": "column",
+      "redFormation": "column",
+      "formationSpacing": 70,
+      "authorityContext": {
+        "aiSourceSha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2",
+        "candidateSide": "red",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "edcd5bf3dcb6118b87f38c93625eaaa0b205f1164783747110d42f54747500e5",
+        "mode": "mixed",
+        "sourceSwf": "flashswf/arts/new/CodexWings素材.swf",
+        "sourceSwfSha256": "1aee513798cd7646075ed6d76209a77b1f26f3a82cbc58af4fa235fdaf8b7813",
+        "stage": 7,
+        "tier": 8
+      },
+      "caseHash": "sha256:38c775bd5adf56aa246d750660f474f1d81ffbe0a87ed6f666ceacc877983dcc"
+    }
+  ],
+  "manifestHash": "sha256:b969e07a82ade56f4bac6d69af8b1a19ef881a860ccb8a36934b976f8d7857dd"
+}

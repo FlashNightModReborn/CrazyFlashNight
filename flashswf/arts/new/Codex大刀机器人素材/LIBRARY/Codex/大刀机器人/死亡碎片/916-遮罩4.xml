@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/死亡碎片/916-遮罩4" itemID="6aa00000-829ddf75" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="916-遮罩4">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-995 -541|-997 -530|-998 -527[-1029 -478 -1021 -418|-1021 -417|-1014 -387|-1007 -366|-1005 -365|-1004 -365|-1004 -363|-1001 -331|-986 -251|-986 -245[-956 -189 -934 -124|-923 -90|-921 -89|-920 -89[-896 -33 -881 27[-757 -21 -672 -124|-650 -152|-655 -489[-761 -581 -847 -692|-895 -755|-898 -752[-953 -686 -980 -594|-995 -541" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/碎片图集/207ad0e4be8a5376" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.2999878" b="0" c="0" d="0.2999878" tx="-194.8" ty="-68.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

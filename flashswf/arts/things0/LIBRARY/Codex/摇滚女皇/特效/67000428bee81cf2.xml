@@ -1,9 +1,8 @@
-<?xml version='1.0' encoding='utf-8'?>
-<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/67000428bee81cf2" itemID="71340000-976a6bd9" symbolType="graphic">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/摇滚女皇/特效/67000428bee81cf2" itemID="6ad09edb-00000d31" symbolType="graphic">
   <timeline>
     <DOMTimeline name="67000428bee81cf2" currentFrame="2">
       <layers>
-        <DOMLayer name="图层_3" color="#FF800A">
+        <DOMLayer name="图层_3" color="#FF800A" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <elements>
@@ -50,7 +49,7 @@
                     <Matrix c="-0.63031005859375" d="0.732696533203125" tx="-35.4" ty="-69.65"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="181.6" y="182.5"/>
+                    <Point x="181.55" y="182.5"/>
                   </transformationPoint>
                   <color>
                     <Color tintMultiplier="0.01" tintColor="#FF0000"/>

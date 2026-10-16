@@ -1,0 +1,443 @@
+{
+  "schema": "cf6-guard.native-render-comparison.v1",
+  "beforeRunId": "6e9c7f20dc184713a1e295fa8d1424ba",
+  "afterRunId": "0a6df16d9c9d46c38c787005fadf2800",
+  "traceHashes": {
+    "before": "88b4c131b8dfa4b458feb4f9dbf4e4ccfc7c0eea2d7987aabd6eefecc5b549cc",
+    "after": "a0b6ee563eea29f8c6bfcf22b1c716c4d515a0d0e78a2ba5e9ff0185f7b60f5b"
+  },
+  "workload": "One isolated Flash MovieClip at 480x360; BitmapData.draw; first draw and five clear/redraw samples per selected frame; no combat/save I/O",
+  "limits": "Native draw cost only, not game frame time or physical-machine acceptance. Preclipped vector edges can change subpixel antialiasing.",
+  "rows": [
+    {
+      "frame": 1,
+      "before": {
+        "firstMs": 3,
+        "repeatMs": [
+          2,
+          4,
+          3,
+          3,
+          3
+        ],
+        "repeatMedianMs": 3,
+        "visibleGridSamples": 238
+      },
+      "after": {
+        "firstMs": 7,
+        "repeatMs": [
+          6,
+          6,
+          4,
+          5,
+          4
+        ],
+        "repeatMedianMs": 5,
+        "visibleGridSamples": 238
+      },
+      "pixelIdentical": true,
+      "beforeBounds": [
+        187,
+        145,
+        294,
+        307
+      ],
+      "afterBounds": [
+        187,
+        145,
+        294,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.0,
+      "repeatMedianReductionPercent": -66.667
+    },
+    {
+      "frame": 40,
+      "before": {
+        "firstMs": 3,
+        "repeatMs": [
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "repeatMedianMs": 3,
+        "visibleGridSamples": 298
+      },
+      "after": {
+        "firstMs": 4,
+        "repeatMs": [
+          4,
+          3,
+          11,
+          9,
+          5
+        ],
+        "repeatMedianMs": 5,
+        "visibleGridSamples": 298
+      },
+      "pixelIdentical": true,
+      "beforeBounds": [
+        187,
+        133,
+        301,
+        307
+      ],
+      "afterBounds": [
+        187,
+        133,
+        301,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.0,
+      "repeatMedianReductionPercent": -66.667
+    },
+    {
+      "frame": 43,
+      "before": {
+        "firstMs": 28,
+        "repeatMs": [
+          27,
+          27,
+          26,
+          28,
+          25
+        ],
+        "repeatMedianMs": 27,
+        "visibleGridSamples": 341
+      },
+      "after": {
+        "firstMs": 7,
+        "repeatMs": [
+          5,
+          6,
+          4,
+          5,
+          4
+        ],
+        "repeatMedianMs": 5,
+        "visibleGridSamples": 341
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        187,
+        123,
+        301,
+        307
+      ],
+      "afterBounds": [
+        187,
+        123,
+        301,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.28074,
+      "repeatMedianReductionPercent": 81.481
+    },
+    {
+      "frame": 46,
+      "before": {
+        "firstMs": 127,
+        "repeatMs": [
+          128,
+          133,
+          153,
+          132,
+          129
+        ],
+        "repeatMedianMs": 132,
+        "visibleGridSamples": 528
+      },
+      "after": {
+        "firstMs": 7,
+        "repeatMs": [
+          6,
+          7,
+          5,
+          7,
+          6
+        ],
+        "repeatMedianMs": 6,
+        "visibleGridSamples": 528
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        187,
+        89,
+        312,
+        307
+      ],
+      "afterBounds": [
+        187,
+        89,
+        312,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 1,
+      "meanRgbDifferenceOnVisibleUnion": 1.17664,
+      "repeatMedianReductionPercent": 95.455
+    },
+    {
+      "frame": 49,
+      "before": {
+        "firstMs": 346,
+        "repeatMs": [
+          356,
+          367,
+          360,
+          346,
+          351
+        ],
+        "repeatMedianMs": 356,
+        "visibleGridSamples": 577
+      },
+      "after": {
+        "firstMs": 8,
+        "repeatMs": [
+          7,
+          7,
+          7,
+          5,
+          6
+        ],
+        "repeatMedianMs": 7,
+        "visibleGridSamples": 580
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        164,
+        92,
+        325,
+        307
+      ],
+      "afterBounds": [
+        164,
+        92,
+        325,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 3,
+      "meanRgbDifferenceOnVisibleUnion": 1.12569,
+      "repeatMedianReductionPercent": 98.034
+    },
+    {
+      "frame": 52,
+      "before": {
+        "firstMs": 103,
+        "repeatMs": [
+          97,
+          102,
+          97,
+          100,
+          94
+        ],
+        "repeatMedianMs": 97,
+        "visibleGridSamples": 515
+      },
+      "after": {
+        "firstMs": 5,
+        "repeatMs": [
+          7,
+          4,
+          9,
+          6,
+          5
+        ],
+        "repeatMedianMs": 6,
+        "visibleGridSamples": 516
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        145,
+        94,
+        341,
+        307
+      ],
+      "afterBounds": [
+        145,
+        94,
+        341,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.46813,
+      "repeatMedianReductionPercent": 93.814
+    },
+    {
+      "frame": 55,
+      "before": {
+        "firstMs": 146,
+        "repeatMs": [
+          116,
+          115,
+          115,
+          110,
+          127
+        ],
+        "repeatMedianMs": 115,
+        "visibleGridSamples": 533
+      },
+      "after": {
+        "firstMs": 7,
+        "repeatMs": [
+          6,
+          7,
+          8,
+          7,
+          7
+        ],
+        "repeatMedianMs": 7,
+        "visibleGridSamples": 535
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        156,
+        111,
+        352,
+        307
+      ],
+      "afterBounds": [
+        156,
+        111,
+        352,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.47252,
+      "repeatMedianReductionPercent": 93.913
+    },
+    {
+      "frame": 58,
+      "before": {
+        "firstMs": 375,
+        "repeatMs": [
+          367,
+          355,
+          324,
+          331,
+          300
+        ],
+        "repeatMedianMs": 331,
+        "visibleGridSamples": 550
+      },
+      "after": {
+        "firstMs": 8,
+        "repeatMs": [
+          6,
+          7,
+          10,
+          8,
+          7
+        ],
+        "repeatMedianMs": 7,
+        "visibleGridSamples": 547
+      },
+      "pixelIdentical": false,
+      "beforeBounds": [
+        153,
+        119,
+        327,
+        307
+      ],
+      "afterBounds": [
+        153,
+        119,
+        327,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.98165,
+      "repeatMedianReductionPercent": 97.885
+    },
+    {
+      "frame": 61,
+      "before": {
+        "firstMs": 3,
+        "repeatMs": [
+          3,
+          4,
+          3,
+          4,
+          3
+        ],
+        "repeatMedianMs": 3,
+        "visibleGridSamples": 444
+      },
+      "after": {
+        "firstMs": 5,
+        "repeatMs": [
+          4,
+          6,
+          5,
+          5,
+          6
+        ],
+        "repeatMedianMs": 5,
+        "visibleGridSamples": 444
+      },
+      "pixelIdentical": true,
+      "beforeBounds": [
+        187,
+        126,
+        302,
+        307
+      ],
+      "afterBounds": [
+        187,
+        126,
+        302,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.0,
+      "repeatMedianReductionPercent": -66.667
+    },
+    {
+      "frame": 70,
+      "before": {
+        "firstMs": 5,
+        "repeatMs": [
+          4,
+          5,
+          4,
+          4,
+          5
+        ],
+        "repeatMedianMs": 4,
+        "visibleGridSamples": 443
+      },
+      "after": {
+        "firstMs": 7,
+        "repeatMs": [
+          7,
+          6,
+          7,
+          6,
+          14
+        ],
+        "repeatMedianMs": 7,
+        "visibleGridSamples": 443
+      },
+      "pixelIdentical": true,
+      "beforeBounds": [
+        187,
+        126,
+        302,
+        307
+      ],
+      "afterBounds": [
+        187,
+        126,
+        302,
+        307
+      ],
+      "silhouetteOutsideOnePixel": 0,
+      "meanRgbDifferenceOnVisibleUnion": 0.0,
+      "repeatMedianReductionPercent": -75.0
+    }
+  ]
+}

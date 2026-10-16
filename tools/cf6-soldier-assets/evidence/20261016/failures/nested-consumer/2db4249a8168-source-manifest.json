@@ -1,0 +1,53 @@
+{
+  "schema": "cf6-soldier.equipment-consumer.v1",
+  "imports": {
+    "敌人-CF6特种兵": "flashswf/arts/new/Codex特种兵素材.swf",
+    "枪-长枪-M4A1改": "flashswf/arts/things.swf",
+    "枪-长枪-AK74战术版": "flashswf/arts/things.swf",
+    "枪-长枪-M4A1战术版": "flashswf/arts/things.swf",
+    "枪-长枪-DD MK18战术版": "flashswf/arts/new/Au的素材.swf",
+    "枪-长枪-AK47": "flashswf/arts/things.swf"
+  },
+  "files": [
+    {
+      "path": "LIBRARY/Import0.xml",
+      "sha256": "f93fe6d9902020b72106d73420b1bb77c9ef264207896f0d2e73dfc357f40a07"
+    },
+    {
+      "path": "LIBRARY/Import1.xml",
+      "sha256": "f7e9bdbc0dd7546f3c30c320c02fdd22084da826a98c021451121007b3e24401"
+    },
+    {
+      "path": "LIBRARY/Import2.xml",
+      "sha256": "50a79595a305870328e1ff35d4e3a9a9912e12e339cefe3298b575c71e2f0984"
+    },
+    {
+      "path": "LIBRARY/Import3.xml",
+      "sha256": "4eabf0570fde150b1d5ed8e2923e6debd41896ac5932cbc44aa77d3571ec550f"
+    },
+    {
+      "path": "LIBRARY/Import4.xml",
+      "sha256": "65e9cab3ef90cd622f06a9be74edd4e5cc8d1065391cbf713bd831d70195742e"
+    },
+    {
+      "path": "LIBRARY/Import5.xml",
+      "sha256": "dd1e640bd29e934744e22a33c9e21a35c4a7d5bbf3a756e2a35f23e92e91acc0"
+    },
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "45d433a0735e23618c68858deea049b8eaffdec4f53a8ab69b24688f30944992"
+    },
+    {
+      "path": "Consumer.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "1a3ecc5739948359ee219c574b6bc10097b2b36b20ff3566d9ef3d4b3582664f"
+    }
+  ]
+}

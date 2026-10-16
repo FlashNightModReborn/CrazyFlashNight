@@ -403,6 +403,12 @@
          'modules/intelligence-panel.js'],
         noop);
 
+    // ── meridians（经脉）──
+    // 数据权威在 AS2 MeridianPanelService（state/light 两命令），Web 只做呈现与意图收集。
+    Panels.registerLazy('meridians',
+        ['modules/meridians-panel.js'],
+        noop);
+
     // ── arena ──
     // P2 起接入 workbench 共享层，闭包构成/顺序固定（team 同款）：共享层（lifecycle/focus/primitives/
     // profile/shell/components；arena 不消费 inspection-viewport，不列入）→ 领域模块 → 壳（arena-panel）。

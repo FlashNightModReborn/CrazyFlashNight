@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩16" itemID="6aa00000-231e3c1b" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="d48e8ce542122a09-遮罩16">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!6430 5150|6410 5157|6390 5172|6370 5180|6290 5243|6246 5290|6200 5350|6193 5370|6178 5390|6170 5417|6160 5430|6150 5475|6141 5490|6130 5570|6130 5590|6135 5610|6274 5750|6310 5801|6323 5830|6361 5890|6443 5990|6470 6017|6570 6101|6690 6177|6790 6224|6810 6228|6830 6242|6922 6270|6930 6277|6950 6283|6990 6290|7010 6300|7030 6299|7050 6285|7101 6230|7108 6210|7122 6190|7130 6155|7150 6130|7170 6120|7197 6090|7222 6050|7230 6015|7244 5990|7270 5977|7317 5930|7337 5890|7350 5850|7370 5859|7450 5863|7490 5837|7514 5810|7542 5770|7550 5742|7559 5730|7560 5710|7530 5672|7490 5640|7470 5632|7430 5601|7410 5593|7370 5563|7350 5554|7330 5537|7282 5510|7270 5499|7250 5490|7210 5460|7190 5452|7163 5430|7140 5330|7130 5319|7117 5290|7099 5270|7050 5232|6650 5230|6630 5234|6610 5220|6590 5214|6570 5200|6537 5190|6530 5183|6497 5170|6490 5163|6470 5156|6430 5150" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩17" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

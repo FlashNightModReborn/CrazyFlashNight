@@ -1,0 +1,287 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "bladebot-front-r9b-20261016",
+  "createdAt": "2026-10-15T18:57:26.962Z",
+  "buildCommit": "8a0e79a1b3b09e3c7320f88fbc0b96dc804479d6",
+  "planner": {
+    "name": "cf6-bladebot-development",
+    "version": 1
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 3600,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "blackiron-30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种465",
+          "level": 30,
+          "sourceId": "bladebot-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种347",
+          "level": 30,
+          "sourceId": "blackiron-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:5656c74621b6cb67ffe4518bdf56ef1b02a5d3ab8946159a1ac983f55664bae1"
+    },
+    {
+      "caseId": "blackiron-30-red",
+      "blueRoster": [
+        {
+          "type": "兵种347",
+          "level": 30,
+          "sourceId": "blackiron-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种465",
+          "level": 30,
+          "sourceId": "bladebot-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:d2c2e6e06b2b05cfb584f5734c7c47868c0fd6d4d4556e3703996047831e9575"
+    },
+    {
+      "caseId": "blackiron-60-blue",
+      "blueRoster": [
+        {
+          "type": "兵种465",
+          "level": 60,
+          "sourceId": "bladebot-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种347",
+          "level": 60,
+          "sourceId": "blackiron-60"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:2230f0522a951ec1f1303cef246e18af5423a5af34bc5c09ab17708a7552a373"
+    },
+    {
+      "caseId": "blackiron-60-red",
+      "blueRoster": [
+        {
+          "type": "兵种347",
+          "level": 60,
+          "sourceId": "blackiron-60"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种465",
+          "level": 60,
+          "sourceId": "bladebot-60"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:4a5295977199cb15152a88c0a0c5794749bdda66a0a521f85415d50f6c36b524"
+    },
+    {
+      "caseId": "blackiron-99-blue",
+      "blueRoster": [
+        {
+          "type": "兵种465",
+          "level": 99,
+          "sourceId": "bladebot-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种347",
+          "level": 99,
+          "sourceId": "blackiron-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "blue"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "blue",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:53d4b0519ac364bad48951b96cd6b835fc84f6f00b9fae42e778e1336e6e44a1"
+    },
+    {
+      "caseId": "blackiron-99-red",
+      "blueRoster": [
+        {
+          "type": "兵种347",
+          "level": 99,
+          "sourceId": "blackiron-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种465",
+          "level": 99,
+          "sourceId": "bladebot-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "bladebot",
+        "blackiron",
+        "red"
+      ],
+      "plannerReason": "同等级交换红蓝，对照黑铁会改造人（诺亚试验体α）；只调整大刀机器人，双方使用真实命中结算。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "aiSourceSha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92",
+        "candidateSide": "red",
+        "comparison": "blackiron",
+        "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+        "dataSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+        "evidenceLane": "interactive_candidate",
+        "mode": "confirm",
+        "rivalDataPath": "data/enemy_properties/诺亚新敌人.xml",
+        "rivalDataSha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b",
+        "sourceSwf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "sourceSwfSha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8",
+        "stage": 8,
+        "tier": 9
+      },
+      "caseHash": "sha256:36c628898c97bd06f0316f167a32df2266225f2623b5ddc89e6344b38f307d6d"
+    }
+  ],
+  "manifestHash": "sha256:4abc6112bbfa57099b7af645cef8e8bb5eaed325b793584659d4b1934bd23bfd"
+}

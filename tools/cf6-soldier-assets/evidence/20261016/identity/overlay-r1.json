@@ -1,0 +1,98 @@
+{
+  "resourceRoot": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight",
+  "preservedPrevious": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\worker-before-r1",
+  "frozenInputs": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\frozen-r1",
+  "files": [
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sourceSha256": "51fde12a2e86d6d0539fcc72cb5f5914dde07ccba76e8a70ae51c059e43cacfa",
+      "bytes": 85868,
+      "previousSha256": null,
+      "changed": true
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sourceSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+      "bytes": 113865,
+      "previousSha256": "46bee41dbbf0f47d59a2e29e0874619c3ffeec4af568816d0fdc39915435c9f3",
+      "changed": true
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sourceSha256": "8f8adb33e46b429bea2a1a605365992ee5bf54e850a793339f96b9559e995d96",
+      "bytes": 9024,
+      "previousSha256": "51cc64832e4b05e31383bc61a56b8953b9222594c92d9991f2025eef97f64e40",
+      "changed": true
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sourceSha256": "6551c42621270eaa955477da0712d96f989d2883de9892a1c3386c66558599d1",
+      "bytes": 869169,
+      "previousSha256": "0988d23e47cea39a0ce42ac7eecad8d0630374a3da5ce7b64dfd99b0f3567d17",
+      "changed": true
+    },
+    {
+      "path": "data/units/units.json",
+      "sourceSha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4",
+      "bytes": 152111,
+      "previousSha256": "747bcfbcec8829e216e0b37a3cd2850856c0ce0da106f414f205361833a43000",
+      "changed": true
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "sourceSha256": "4d7858b4534e31f956f61fa1807a19279ec92361cc5838134545ba931caa91d4",
+      "bytes": 54745,
+      "previousSha256": "e561a157fd0fc3e469487d16e0b09d0955f71190dbfc7da60115b2921372e28b",
+      "changed": true
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+      "bytes": 6381,
+      "previousSha256": null,
+      "changed": true
+    },
+    {
+      "path": "tools/cf6-soldier-assets/balance-inputs.json",
+      "sourceSha256": "a443b6af8a09ef282d3c47387fb83c28ec63aa449ba3a308ced63dbf60c4afd2",
+      "bytes": 1850,
+      "previousSha256": null,
+      "changed": true
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sourceSha256": "cab67825faa2612bba99e825e746c68479a2a94e689a43d047b088680db72794",
+      "bytes": 5995971,
+      "previousSha256": "5699d116e9b2bed5edf1b36f4403c26ad3263880921b08e42297232a97367ad9",
+      "changed": true
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sourceSha256": "416f18e740717a6b9ee701e63dcbb6eee6bf606f7ce964707a18b281df96602d",
+      "bytes": 107414,
+      "previousSha256": "19ef16b8bf176bbfa44a2695c24f551077b66cdeb46d292f504866ed33d68fcb",
+      "changed": true
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.swf",
+      "sourceSha256": "e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "bytes": 207353,
+      "previousSha256": "e5696c8afe2217b1d1e6f59e9519a557e52d70be6ec6739814af930026960975",
+      "changed": false
+    },
+    {
+      "path": "data/enemy_properties/大学.xml",
+      "sourceSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+      "bytes": 12164,
+      "previousSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+      "changed": false
+    },
+    {
+      "path": "flashswf/arts/new/大学人员.swf",
+      "sourceSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+      "bytes": 1789114,
+      "previousSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+      "changed": false
+    }
+  ]
+}

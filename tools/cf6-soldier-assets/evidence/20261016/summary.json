@@ -1,0 +1,3528 @@
+{
+  "schema": "cf6-soldier.evidence.v1",
+  "unitId": 466,
+  "stage": 7,
+  "tier": 5,
+  "native": {
+    "passed": 517,
+    "failed": 0,
+    "cases": 52,
+    "runId": "6d354d82c8434d84968fc0a9dcdf6b42",
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0,
+    "images": 16,
+    "bodyWeaponScale": 0.8,
+    "swfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87"
+  },
+  "combat": [
+    {
+      "batchId": "soldier-eq-r4-20261016-weapons",
+      "status": "completed",
+      "summaryTotals": {
+        "cases": 6,
+        "rows": 6,
+        "errors": 0,
+        "timeouts": 1
+      },
+      "sourceGeneration": "standard-player-weapons",
+      "rows": [
+        {
+          "caseId": "cadet-30-blue",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1539.0,
+          "durationMs": 56475.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-30-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 44298.0,
+              "remainHp": 28374.0,
+              "hpPermille": 641,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-30-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 8215.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-30-red",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1375.0,
+          "durationMs": 50727.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-30-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 24645.0,
+              "remainHp": 19083.0,
+              "hpPermille": 774,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-30-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 14766.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "external-ak47-blue",
+          "status": "timeout",
+          "winner": "timeout",
+          "frames": 3600.0,
+          "durationMs": 131277.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-external",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 66054.0,
+              "remainHp": 10350.0,
+              "hpPermille": 157,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-reference",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 6851.0,
+              "hpPermille": 565,
+              "alive": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "external-ak47-red",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1406.0,
+          "durationMs": 50965.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-reference",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 35013.0,
+              "hpPermille": 962,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-external",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "configured-squad-blue",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1083.0,
+          "durationMs": 50278.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-m16",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 66054.0,
+              "remainHp": 34884.0,
+              "hpPermille": 528,
+              "alive": true
+            },
+            {
+              "sourceId": "soldier-ak74",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 66054.0,
+              "remainHp": 37327.0,
+              "hpPermille": 565,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-m4",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "cadet-mk18",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "configured-squad-red",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 486.0,
+          "durationMs": 21412.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-m4",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 32544.0,
+              "hpPermille": 894,
+              "alive": true
+            },
+            {
+              "sourceId": "cadet-mk18",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 33987.0,
+              "hpPermille": 934,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-m16",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "soldier-ak74",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        }
+      ]
+    },
+    {
+      "batchId": "soldier-r1-20261016-cadet",
+      "status": "completed",
+      "summaryTotals": {
+        "cases": 6,
+        "rows": 6,
+        "errors": 0,
+        "timeouts": 1
+      },
+      "sourceGeneration": "superseded-fixed-handgun",
+      "rows": [
+        {
+          "caseId": "cadet-30-blue",
+          "status": "finished",
+          "winner": "red",
+          "frames": 297.0,
+          "durationMs": 11550.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-30-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 14766.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-30-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 8215.0,
+              "remainHp": 6927.0,
+              "hpPermille": 843,
+              "alive": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-30-red",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 281.0,
+          "durationMs": 10004.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-30-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 24645.0,
+              "remainHp": 23368.0,
+              "hpPermille": 948,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-30-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 30,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 14766.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-60-blue",
+          "status": "finished",
+          "winner": "red",
+          "frames": 1822.0,
+          "durationMs": 68630.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-60-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 7484.0,
+              "hpPermille": 617,
+              "alive": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-60-red",
+          "status": "finished",
+          "winner": "red",
+          "frames": 2071.0,
+          "durationMs": 75984.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-60-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 2639.0,
+              "hpPermille": 120,
+              "alive": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-99-blue",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1784.0,
+          "durationMs": 65158.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-99-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 31446.0,
+              "remainHp": 13205.0,
+              "hpPermille": 420,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-99-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 17220.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-99-red",
+          "status": "timeout",
+          "winner": "timeout",
+          "frames": 3600.0,
+          "durationMs": 132277.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-99-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 51660.0,
+              "remainHp": 11218.0,
+              "hpPermille": 217,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-99-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 31446.0,
+              "remainHp": 12581.0,
+              "hpPermille": 400,
+              "alive": true
+            }
+          ],
+          "errors": []
+        }
+      ]
+    },
+    {
+      "batchId": "soldier-r1b-20261016-integration",
+      "status": "completed",
+      "summaryTotals": {
+        "cases": 5,
+        "rows": 5,
+        "errors": 0,
+        "timeouts": 0
+      },
+      "sourceGeneration": "superseded-fixed-handgun",
+      "rows": [
+        {
+          "caseId": "mirror-60-blue",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1848.0,
+          "durationMs": 61872.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 268.0,
+              "hpPermille": 12,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "mirror-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "mirror-60-red",
+          "status": "finished",
+          "winner": "draw",
+          "frames": 1964.0,
+          "durationMs": 69266.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "mirror-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "squad-60-blue",
+          "status": "finished",
+          "winner": "red",
+          "frames": 777.0,
+          "durationMs": 41822.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "soldier-60-1",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "cadet-60-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 10676.0,
+              "hpPermille": 880,
+              "alive": true
+            },
+            {
+              "sourceId": "cadet-60-1",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 12130.0,
+              "remainHp": 9867.0,
+              "hpPermille": 813,
+              "alive": true
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "squad-60-red",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 931.0,
+          "durationMs": 35190.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-60-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 34106.0,
+              "hpPermille": 937,
+              "alive": true
+            },
+            {
+              "sourceId": "cadet-60-1",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 36390.0,
+              "remainHp": 35694.0,
+              "hpPermille": 981,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-60-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            },
+            {
+              "sourceId": "soldier-60-1",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 60,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 22018.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        },
+        {
+          "caseId": "cadet-99-red-extended",
+          "status": "finished",
+          "winner": "blue",
+          "frames": 1143.0,
+          "durationMs": 40114.0,
+          "blueUnitResults": [
+            {
+              "sourceId": "cadet-99-0",
+              "petId": -1,
+              "identifier": "敌人-大学军校生",
+              "resolvedType": "敌人-大学军校生",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 51660.0,
+              "remainHp": 46310.0,
+              "hpPermille": 896,
+              "alive": true
+            }
+          ],
+          "redUnitResults": [
+            {
+              "sourceId": "soldier-99-0",
+              "petId": -1,
+              "identifier": "敌人-CF6特种兵",
+              "resolvedType": "敌人-CF6特种兵",
+              "level": 99,
+              "strategicPromotions": [],
+              "strategicPromotionsValid": true,
+              "startMaxHp": 31446.0,
+              "remainHp": 0.0,
+              "hpPermille": 0,
+              "alive": false
+            }
+          ],
+          "errors": []
+        }
+      ]
+    }
+  ],
+  "currentCombatQualified": false,
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "pid": 22708,
+    "httpPort": 1192,
+    "verified": true,
+    "expected": {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "pid": null,
+      "httpPort": null
+    },
+    "statusEndpointIdentityAvailable": false,
+    "identitySource": "launcher_ports.pid + Get-Process.Path + Core DLL SHA-256 + runtime manifest"
+  },
+  "protectedPlayerFilesUnchanged": true,
+  "resourceClosureUnchanged": true,
+  "startupMetadataChanges": [
+    {
+      "key": "shadow_file:.launcher-version-marker.json:7bd1d3587a17b41c",
+      "change": "modified",
+      "beforeSha256": "sha256:bd00a427a9473a2998ea9f81fab5758fab9ca6770df1083ddeaa0ea4da396cef",
+      "afterSha256": "sha256:961776ec34fc3700a2ce4a0e9f73c0806bd495b68bcae2adbebfcb279f2326f3"
+    }
+  ],
+  "losslessCopies": [
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\airborne-shadow.png",
+      "archived": "images/airborne-shadow.png",
+      "sourceBytes": 48516,
+      "sourceSha256": "a8d2b8bc2f12d7c16acdb40f48735eb685fc65e4d455b23b2e338e302dd63abf",
+      "archivedBytes": 48516,
+      "archivedSha256": "a8d2b8bc2f12d7c16acdb40f48735eb685fc65e4d455b23b2e338e302dd63abf",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-a0-late.png",
+      "archived": "images/death-a0-late.png",
+      "sourceBytes": 37582,
+      "sourceSha256": "1d1671e6ea2d9b4c5419377bf5e51b32316cc6526ee69a251bc12b3807e04cb9",
+      "archivedBytes": 37582,
+      "archivedSha256": "1d1671e6ea2d9b4c5419377bf5e51b32316cc6526ee69a251bc12b3807e04cb9",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-a0-middle.png",
+      "archived": "images/death-a0-middle.png",
+      "sourceBytes": 48393,
+      "sourceSha256": "9c498f0f475ba55fdfbbb1044572ec447f892ed32644e248fb0fdfed02f88abd",
+      "archivedBytes": 48393,
+      "archivedSha256": "9c498f0f475ba55fdfbbb1044572ec447f892ed32644e248fb0fdfed02f88abd",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-a1-late.png",
+      "archived": "images/death-a1-late.png",
+      "sourceBytes": 39332,
+      "sourceSha256": "44a718fdeb82725f516042ee4f42a5c15417d6bf124887a9752be2a35af0bec0",
+      "archivedBytes": 39332,
+      "archivedSha256": "44a718fdeb82725f516042ee4f42a5c15417d6bf124887a9752be2a35af0bec0",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-a1-middle.png",
+      "archived": "images/death-a1-middle.png",
+      "sourceBytes": 50909,
+      "sourceSha256": "2951a22d957a0a413795d7dc064fbe2527e69e69e2ce355ae4f2c9d299d28a39",
+      "archivedBytes": 50909,
+      "archivedSha256": "2951a22d957a0a413795d7dc064fbe2527e69e69e2ce355ae4f2c9d299d28a39",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-a2-late.png",
+      "archived": "images/death-a2-late.png",
+      "sourceBytes": 37329,
+      "sourceSha256": "e60aff6e263db9108cfe2be6952b6c90b98d6de4f25d5d2f88f308060ff63e8a",
+      "archivedBytes": 37329,
+      "archivedSha256": "e60aff6e263db9108cfe2be6952b6c90b98d6de4f25d5d2f88f308060ff63e8a",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\death-start.png",
+      "archived": "images/death-start.png",
+      "sourceBytes": 46084,
+      "sourceSha256": "ac4a8272090a774c26c63b52af1f9893cc8c4731542289cafff25c4a7df09479",
+      "archivedBytes": 46084,
+      "archivedSha256": "ac4a8272090a774c26c63b52af1f9893cc8c4731542289cafff25c4a7df09479",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\down.png",
+      "archived": "images/down.png",
+      "sourceBytes": 37571,
+      "sourceSha256": "d450cc7d475cafc35f184d09e9e6c674e81b85776544832acb0dbfb9ae548f95",
+      "archivedBytes": 37571,
+      "archivedSha256": "d450cc7d475cafc35f184d09e9e6c674e81b85776544832acb0dbfb9ae548f95",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\knife.png",
+      "archived": "images/knife.png",
+      "sourceBytes": 50860,
+      "sourceSha256": "784c2bf61d5889859ebd0bfb09d90ecc3b58f2eb26460b5a1abf3cf6f2354816",
+      "archivedBytes": 50860,
+      "archivedSha256": "784c2bf61d5889859ebd0bfb09d90ecc3b58f2eb26460b5a1abf3cf6f2354816",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\reload.png",
+      "archived": "images/reload.png",
+      "sourceBytes": 41486,
+      "sourceSha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4",
+      "archivedBytes": 41486,
+      "archivedSha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\rifle-AK47.png",
+      "archived": "images/rifle-AK47.png",
+      "sourceBytes": 41254,
+      "sourceSha256": "2c0a52ffb8949cd3d6655a06d445ab636f8a609c7d1a196ce3750626db48610c",
+      "archivedBytes": 41254,
+      "archivedSha256": "2c0a52ffb8949cd3d6655a06d445ab636f8a609c7d1a196ce3750626db48610c",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\rifle-AK74战术版.png",
+      "archived": "images/rifle-AK74战术版.png",
+      "sourceBytes": 46356,
+      "sourceSha256": "676ead4397ee8140de23dc1a9f4d310be2401847fafc0550381f3d5204dc495a",
+      "archivedBytes": 46356,
+      "archivedSha256": "676ead4397ee8140de23dc1a9f4d310be2401847fafc0550381f3d5204dc495a",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\rifle-DD MK18战术版.png",
+      "archived": "images/rifle-DD MK18战术版.png",
+      "sourceBytes": 43774,
+      "sourceSha256": "661d5ebbbceb9c7946d030ec1492f9b494943c36c5bd35b6eac8e74c7bf2e261",
+      "archivedBytes": 43774,
+      "archivedSha256": "661d5ebbbceb9c7946d030ec1492f9b494943c36c5bd35b6eac8e74c7bf2e261",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\rifle-M4A1改.png",
+      "archived": "images/rifle-M4A1改.png",
+      "sourceBytes": 41486,
+      "sourceSha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4",
+      "archivedBytes": 41486,
+      "archivedSha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\shoot.png",
+      "archived": "images/shoot.png",
+      "sourceBytes": 46166,
+      "sourceSha256": "b96e753341b421818869c194ead7bc0474176ef1b991fd9b809bc1822ee1b315",
+      "archivedBytes": 46166,
+      "archivedSha256": "b96e753341b421818869c194ead7bc0474176ef1b991fd9b809bc1822ee1b315",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-equipment-r7\\stand.png",
+      "archived": "images/stand.png",
+      "sourceBytes": 46103,
+      "sourceSha256": "d47eb9215321f21b9627f2d0b5f8b89202499f9f7ba250050ccf210c398e40d1",
+      "archivedBytes": 46103,
+      "archivedSha256": "d47eb9215321f21b9627f2d0b5f8b89202499f9f7ba250050ccf210c398e40d1",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\Cf6SoldierAssetTest.as",
+      "archived": "native/final/743a9f35a691-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 28303,
+      "sourceSha256": "743a9f35a691cb3e5c01313f1790347ca1cbac7d9a0f70450685df206b222770",
+      "archivedBytes": 8404,
+      "archivedSha256": "2c1564428c7932414153e5a9a0826ec316d1c8e0e2f8f436f0b7c4e13fb53470",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\Cf6SoldierNativeHost.swf",
+      "archived": "native/final/77bc5e68e90d-Cf6SoldierNativeHost.swf.gz",
+      "sourceBytes": 856455,
+      "sourceSha256": "77bc5e68e90dbcfb81ad7a1a96e7adbb4ff4c69f431107c2205a0124055ca6d4",
+      "archivedBytes": 856622,
+      "archivedSha256": "6d4e38313802892b9eaf031056fae7ee40404c9b35174a84346f7de58ac5a871",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\compile_output.txt",
+      "archived": "native/final/35955f6452e5-compile_output.txt.gz",
+      "sourceBytes": 19,
+      "sourceSha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728",
+      "archivedBytes": 39,
+      "archivedSha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\compiler_errors.txt",
+      "archived": "native/final/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\flashlog.txt",
+      "archived": "native/final/083da279efe6-flashlog.txt.gz",
+      "sourceBytes": 3412838,
+      "sourceSha256": "083da279efe6e403f7d8c423d3b4a57941e07f52861d01e2afd66110200b6727",
+      "archivedBytes": 706121,
+      "archivedSha256": "6d9e34f801de28ed34b1e01f7f8bdf619fbadb0acf44588c1d4b830afeb20edb",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r7-pass\\manifest.json",
+      "archived": "native/final/93fd5bf84972-manifest.json",
+      "sourceBytes": 1222,
+      "sourceSha256": "93fd5bf849726525c8e7b121def2da8fa198057d989b973476552361f918d485",
+      "archivedBytes": 1222,
+      "archivedSha256": "93fd5bf849726525c8e7b121def2da8fa198057d989b973476552361f918d485",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r7-compiler\\compile_output.txt",
+      "archived": "native/final-compiler/e9a2093b286a-compile_output.txt.gz",
+      "sourceBytes": 75,
+      "sourceSha256": "e9a2093b286ab31107b660956b407b7d0d861385a4c47686e26a30192fe72b57",
+      "archivedBytes": 89,
+      "archivedSha256": "ed1bda401c633fbbaf7e2ccd20f726f76b61a2d635b6c6f5521e2d95feb395ca",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r7-compiler\\compiler_errors.txt",
+      "archived": "native/final-compiler/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-late-completion\\compile_output.txt",
+      "archived": "native/logic-late-completion/89abf2a02804-compile_output.txt.gz",
+      "sourceBytes": 63,
+      "sourceSha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6",
+      "archivedBytes": 75,
+      "archivedSha256": "d794bd77bb98a4ba387ccdec81c186909567814559f0d1c1aaaebeb89610efd4",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-late-completion\\compile_state_uncertain.marker",
+      "archived": "native/logic-late-completion/f0274dc3c400-compile_state_uncertain.marker",
+      "sourceBytes": 106,
+      "sourceSha256": "f0274dc3c4000a19203ae9864adc0ca0a6578e1f2fe50b899a73a146020baf3e",
+      "archivedBytes": 106,
+      "archivedSha256": "f0274dc3c4000a19203ae9864adc0ca0a6578e1f2fe50b899a73a146020baf3e",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-late-completion\\compiler_errors.txt",
+      "archived": "native/logic-late-completion/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-late-completion\\publish_done.marker",
+      "archived": "native/logic-late-completion/2689367b205c-publish_done.marker",
+      "sourceBytes": 2,
+      "sourceSha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+      "archivedBytes": 2,
+      "archivedSha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-late-completion\\receipt.json",
+      "archived": "native/logic-late-completion/3942ebe51282-receipt.json",
+      "sourceBytes": 1223,
+      "sourceSha256": "3942ebe512826615360dd10162e1a5374d0e42b0f8bc4a87b306c894fc813716",
+      "archivedBytes": 1223,
+      "archivedSha256": "3942ebe512826615360dd10162e1a5374d0e42b0f8bc4a87b306c894fc813716",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r7-publish.log",
+      "archived": "logs/native-equipment-r7-publish.log.gz",
+      "sourceBytes": 1317,
+      "sourceSha256": "5e3e5163a22a2df406c4b65aecf9e8a843ba349bd4a5a87ba7bddbb93f7d0135",
+      "archivedBytes": 731,
+      "archivedSha256": "e9321c4021f1f1d76bb00679296be8e88157e3e1d627134a8782eea1b46b74e0",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r7-capture.log",
+      "archived": "logs/native-equipment-r7-capture.log.gz",
+      "sourceBytes": 2883,
+      "sourceSha256": "02cf3ef8894caffdefb12b25e99c60d7b1394153cb673b75658f0197f026637b",
+      "archivedBytes": 1232,
+      "archivedSha256": "d8a462ada081d5fc8aa7da3ef19a342cc1f3be74000c0bb9a80ea1360b521c17",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\asloader-equipment-r3-publish.log",
+      "archived": "logs/asloader-equipment-r3-publish.log.gz",
+      "sourceBytes": 1047,
+      "sourceSha256": "77c6f7e40d1992e3a95db7257629c151f0f48d3f47eb670aa4c95ffad3a05125",
+      "archivedBytes": 694,
+      "archivedSha256": "cc5f4f554608f6e4baa8ccbe1e7cd0e9810e77185c837b43352a0a05da90bdc0",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r3-tests.log",
+      "archived": "logs/native-equipment-r3-tests.log.gz",
+      "sourceBytes": 3308,
+      "sourceSha256": "c9745e1bb6067ae2f40e9884ded560a05462d2d6229f02f75c8da81d573a4da9",
+      "archivedBytes": 1554,
+      "archivedSha256": "5a935a76cf7f78a7b3649cb9c3f6557f36847c756262ce552d57730d974c2065",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r3b-diagnostic.log",
+      "archived": "logs/native-equipment-r3b-diagnostic.log.gz",
+      "sourceBytes": 3888,
+      "sourceSha256": "21a90a2743001173691b5e07faa991de37d38905bd42217537fefac0a8f2f2d5",
+      "archivedBytes": 1781,
+      "archivedSha256": "f3120eeec8e28518c62fed1b4221ea4a3ba92f2ccefa645a0a0b7c4e3a6060dd",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r4-tests.log",
+      "archived": "logs/native-equipment-r4-tests.log.gz",
+      "sourceBytes": 4639,
+      "sourceSha256": "590b2728cb01594c1ff1378c86389114bbce7498141a8522fad54a25e1f101fc",
+      "archivedBytes": 1611,
+      "archivedSha256": "069fec0fef2aff5d06d1eecfeed6f9ae1847d45e9808c963870bbd07732ef010",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r5-tests.log",
+      "archived": "logs/native-equipment-r5-tests.log.gz",
+      "sourceBytes": 2682,
+      "sourceSha256": "6410ecc5434b4c888070b11d13611f3f7f46379c768e222fa5fa89025ecb3207",
+      "archivedBytes": 1206,
+      "archivedSha256": "760cb643260ef059625c869d14103c66701bac0d4cbae19bcabd5f6a47a7da3d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r6-capture.log",
+      "archived": "logs/native-equipment-r6-capture.log.gz",
+      "sourceBytes": 1055,
+      "sourceSha256": "c9c4b8bfdf95e68fc2fd2dd8fda4df625ecb2f39e1b0a7cf6bacee9e4ac7e481",
+      "archivedBytes": 454,
+      "archivedSha256": "a1493e1629a68442e5ab464faf01043f2a078d10c6b7220c416a699f4ecaf3f0",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r6b-capture.log",
+      "archived": "logs/native-equipment-r6b-capture.log.gz",
+      "sourceBytes": 2883,
+      "sourceSha256": "67002dc2406db6e6a1bc19e1aa4e3b01c867d42c1b3d3a643965b4ca4fed2a0c",
+      "archivedBytes": 1233,
+      "archivedSha256": "aa3b3ae5e925fb30b110860a68759d06b9f65484970dde188342ad1c810c1f71",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\worker-equipment-r4-verify.log",
+      "archived": "logs/worker-equipment-r4-verify.log.gz",
+      "sourceBytes": 922,
+      "sourceSha256": "5e510b3a3b914db832a2bc3b4d4c00c9251d31d137fb6d2b2c2fa65e5980c771",
+      "archivedBytes": 592,
+      "archivedSha256": "60f179597eb18b294677524d724f533e698d1a9c8c07f545fb6e994651eda6a2",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\build.py",
+      "archived": "failures/geometry/836f92e352f4-build.py.gz",
+      "sourceBytes": 17928,
+      "sourceSha256": "836f92e352f4df1d71bda4068d7b7fff38d285ce246ee304028253be5680023e",
+      "archivedBytes": 6396,
+      "archivedSha256": "26826a5e26c2629b12406de7faae75785601a6cd7029a98588f0f88e8e21b4fc",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\Cf6SoldierAssetTest.as",
+      "archived": "failures/geometry/ef0101c61752-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 19470,
+      "sourceSha256": "ef0101c617520907d4dc9be57514b1c1069674593f5c545bd442fdbf8786e3d0",
+      "archivedBytes": 6082,
+      "archivedSha256": "5db1bd24d6a898066c053327eb68f6b73ceec38b98f6105e92a306aaae96b3e5",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\Codex特种兵素材.swf",
+      "archived": "failures/geometry/c0f50a472a30-Codex特种兵素材.swf.gz",
+      "sourceBytes": 85898,
+      "sourceSha256": "c0f50a472a30fe0cfa6473f23ba6e3f5cb7cfb4bf39de2ba1961dce2773de6b6",
+      "archivedBytes": 84830,
+      "archivedSha256": "c5605bcc29a113e4cf9a20cdfce050bbe718d61f1eb4fe5eb8d6ec3c9ea37dbe",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\finding.json",
+      "archived": "failures/geometry/e6f3b34248ee-finding.json",
+      "sourceBytes": 1707,
+      "sourceSha256": "e6f3b34248ee129016fab4c72995bae01f50bfc8f405bd3b0add7ade335614f7",
+      "archivedBytes": 1707,
+      "archivedSha256": "e6f3b34248ee129016fab4c72995bae01f50bfc8f405bd3b0add7ade335614f7",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\native-manifest.json",
+      "archived": "failures/geometry/ef31be2e6a9a-native-manifest.json",
+      "sourceBytes": 46332,
+      "sourceSha256": "ef31be2e6a9a4aa931d5793ecee11f8d29e3ede0146f2a03df786991de2adbf7",
+      "archivedBytes": 46332,
+      "archivedSha256": "ef31be2e6a9a4aa931d5793ecee11f8d29e3ede0146f2a03df786991de2adbf7",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\regeneration-recovery.json",
+      "archived": "failures/geometry/c2def7ced632-regeneration-recovery.json",
+      "sourceBytes": 7346,
+      "sourceSha256": "c2def7ced632e24a783837a782cd4249b0eb9883e2d5ba12324840b2905ce356",
+      "archivedBytes": 7346,
+      "archivedSha256": "c2def7ced632e24a783837a782cd4249b0eb9883e2d5ba12324840b2905ce356",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\SoldierAI.as",
+      "archived": "failures/geometry/e500057b6ae8-SoldierAI.as.gz",
+      "sourceBytes": 6381,
+      "sourceSha256": "e500057b6ae829dd635b7ef3ad78dc5a4c143383455567acb09b015de9b793dc",
+      "archivedBytes": 2144,
+      "archivedSha256": "b4fdc2e10c1b4be6dd26860b21ebf5a41f24eb22adb718446664f298df4a4311",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩0.xml",
+      "archived": "failures/geometry/93f358d93b0f-b165311d19074d14-遮罩0.xml.gz",
+      "sourceBytes": 18003,
+      "sourceSha256": "93f358d93b0fb4ed87126ce531660da5fb3f9f1f8096414c21d1d0c47d3b4aa6",
+      "archivedBytes": 2110,
+      "archivedSha256": "0bdc719e6955b406f11282f31357af0e4da37f1fd92fe1d0bd6432ca8e7f5913",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩1.xml",
+      "archived": "failures/geometry/159f25d8b160-b165311d19074d14-遮罩1.xml.gz",
+      "sourceBytes": 2094,
+      "sourceSha256": "159f25d8b160d611bf2db835654519d303b7c804c5f6f88a118902cf90942848",
+      "archivedBytes": 885,
+      "archivedSha256": "c32332b43b04ab8ea6fa2c4b2c41274dc1007d6ea54d66972c842d4510632342",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩10.xml",
+      "archived": "failures/geometry/ab51f6fabdbd-b165311d19074d14-遮罩10.xml.gz",
+      "sourceBytes": 2146,
+      "sourceSha256": "ab51f6fabdbddaa33c710362a586d0a9383f245817329cf6f0c1332088286ba9",
+      "archivedBytes": 909,
+      "archivedSha256": "de0d241b90b4c197aea9ca83fd6df701e71661752e372634e9b73b1d32ec172a",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩11.xml",
+      "archived": "failures/geometry/ae03e5dc0a29-b165311d19074d14-遮罩11.xml.gz",
+      "sourceBytes": 19197,
+      "sourceSha256": "ae03e5dc0a29af2f1a9c1e91b5dc1ea437411d26c6135b02e68c9da74e6871f0",
+      "archivedBytes": 3000,
+      "archivedSha256": "8eea1eacc5b09a98681c25acb80dba966f1a696e9cba7e678b5443623d41aaba",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩12.xml",
+      "archived": "failures/geometry/7c3f7823e5ce-b165311d19074d14-遮罩12.xml.gz",
+      "sourceBytes": 2316,
+      "sourceSha256": "7c3f7823e5ce1ccb60d17e07c5dd6c21cc2c75c0840bf578d63ba1e63634e504",
+      "archivedBytes": 982,
+      "archivedSha256": "b9c21020bec001bde1067e8b44627e5599c60280e1c403184ebd3ccb2bb4b61f",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩13.xml",
+      "archived": "failures/geometry/7fc6de8219e2-b165311d19074d14-遮罩13.xml.gz",
+      "sourceBytes": 14662,
+      "sourceSha256": "7fc6de8219e2b215dc1e7afaf3acdbb42d6e28e2902f375137163cc59e299758",
+      "archivedBytes": 2872,
+      "archivedSha256": "a30d0cf31947ffcdd1f9b1cf70ba1c59f92bc77bfd986b883bd76f48739c99b6",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩14.xml",
+      "archived": "failures/geometry/1d11af8554aa-b165311d19074d14-遮罩14.xml.gz",
+      "sourceBytes": 2216,
+      "sourceSha256": "1d11af8554aa800bee2c8439ef286be7e9e7c7b60256291f14bcdaad32849091",
+      "archivedBytes": 939,
+      "archivedSha256": "a4ff6ced611316818fcab928be2152f3f2779f8b5c733890ca002db56c33a450",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩15.xml",
+      "archived": "failures/geometry/8dba93ffc319-b165311d19074d14-遮罩15.xml.gz",
+      "sourceBytes": 26240,
+      "sourceSha256": "8dba93ffc319d6a72a4978387fe2d56b2a414c9aa8b12bb71d2ee8d6234b891f",
+      "archivedBytes": 3658,
+      "archivedSha256": "5c75323e8f253777ccdcfd0e155d3acb4e1dba2aef827a379e2bc8a99f94e8ac",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩16.xml",
+      "archived": "failures/geometry/5204068f80c4-b165311d19074d14-遮罩16.xml.gz",
+      "sourceBytes": 2149,
+      "sourceSha256": "5204068f80c4af3e9d2af41aa2e702bd0687ab61acdcdabd8b20da23107fa1b5",
+      "archivedBytes": 913,
+      "archivedSha256": "089cb1af170242d0f499c42a3631dbab9f3af559f3b6dc95076b737643215f0d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩17.xml",
+      "archived": "failures/geometry/71666e7ab5b9-b165311d19074d14-遮罩17.xml.gz",
+      "sourceBytes": 18003,
+      "sourceSha256": "71666e7ab5b9bb85f8896c7dda633fb074770a12518e6016b2ec5ccf34cc7eca",
+      "archivedBytes": 3116,
+      "archivedSha256": "7f3f1883023aa3df41935cbbe398603dee28851a75a171e48b456a7b1f3f633e",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩18.xml",
+      "archived": "failures/geometry/df82b611a5ac-b165311d19074d14-遮罩18.xml.gz",
+      "sourceBytes": 2111,
+      "sourceSha256": "df82b611a5ac8614e3e2695cdb8edd75c92cf778b69e170895e5152f8551f488",
+      "archivedBytes": 888,
+      "archivedSha256": "10f38b1593f46fcb5ca6191aa247ef2358b0bd8f40b379be27bd8eb55c908307",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩19.xml",
+      "archived": "failures/geometry/d348470f49e6-b165311d19074d14-遮罩19.xml.gz",
+      "sourceBytes": 13125,
+      "sourceSha256": "d348470f49e6248cad804c9da59b3fcb120b503045a5c11847478048b8dd1b14",
+      "archivedBytes": 2556,
+      "archivedSha256": "7907b3434bbc7aaeaaa9cd696ae39d253d75e9c2c5229475d73a333df812bcbc",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩2.xml",
+      "archived": "failures/geometry/5d9195df76e0-b165311d19074d14-遮罩2.xml.gz",
+      "sourceBytes": 26736,
+      "sourceSha256": "5d9195df76e0dc13e9d245a6d18449f9ffda7286155882c4fe87dbf291a68fb3",
+      "archivedBytes": 3918,
+      "archivedSha256": "c2a4800ab4914fd5ae9468000df4bdd5e46c0e92f91fdabcc75ca3adedc2f642",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩20.xml",
+      "archived": "failures/geometry/367e001bef8d-b165311d19074d14-遮罩20.xml.gz",
+      "sourceBytes": 2220,
+      "sourceSha256": "367e001bef8d753309bf701bd100008387b46b5e7494a5ee5ab1732cf71a3937",
+      "archivedBytes": 944,
+      "archivedSha256": "77e742b02b0be9d7e20c5f3003fb6617b0b2d40b5fcdc2089b573adcb6dedc53",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩21.xml",
+      "archived": "failures/geometry/55bfa2a3cdfe-b165311d19074d14-遮罩21.xml.gz",
+      "sourceBytes": 20529,
+      "sourceSha256": "55bfa2a3cdfe464ad522c960c257be1bb3cc39d97804a8f0b9663fec501581b2",
+      "archivedBytes": 3351,
+      "archivedSha256": "28fbd3e329a2c647e9cf842a22dd2bb3326c7d774ad20c0f64929baea45a3b2d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩3.xml",
+      "archived": "failures/geometry/e6ca44dcc5a7-b165311d19074d14-遮罩3.xml.gz",
+      "sourceBytes": 2250,
+      "sourceSha256": "e6ca44dcc5a78a524cd3a24532dc834ea4776a27810392ae8ad28b84e4774514",
+      "archivedBytes": 957,
+      "archivedSha256": "7ad9eb83b4b17dbf36c3de62b766c078c93577edbd7b33a87076c7e344c0d132",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩4.xml",
+      "archived": "failures/geometry/ba17cee7aaa4-b165311d19074d14-遮罩4.xml.gz",
+      "sourceBytes": 17569,
+      "sourceSha256": "ba17cee7aaa435f88c79cbb128337ce7ffe5ab662aa4ada7b96512f43c764747",
+      "archivedBytes": 3086,
+      "archivedSha256": "d11b5c8074bbb38be5bcce1314e1c78c6427e30400c5b90c0428e248a1ef833c",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩5.xml",
+      "archived": "failures/geometry/829c483696d8-b165311d19074d14-遮罩5.xml.gz",
+      "sourceBytes": 62511,
+      "sourceSha256": "829c483696d8c2606aef10b743b244ea086a897e433b3fbb87de3ae0ff803cd3",
+      "archivedBytes": 6164,
+      "archivedSha256": "09cee90f1327b01b9b36be0e9471e2382e6ecc97c5480dbe40e48ecce3c60ba5",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩6.xml",
+      "archived": "failures/geometry/e774f27bce59-b165311d19074d14-遮罩6.xml.gz",
+      "sourceBytes": 53955,
+      "sourceSha256": "e774f27bce599893da121bef6d6f7c77d7e58fd0869691c0245e49e4238ac67a",
+      "archivedBytes": 5217,
+      "archivedSha256": "19786ab56644171cf82d36ef88df93a61729b192cd8c23101ba90fb923b7569b",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩7.xml",
+      "archived": "failures/geometry/1d45fccf2c3b-b165311d19074d14-遮罩7.xml.gz",
+      "sourceBytes": 43204,
+      "sourceSha256": "1d45fccf2c3b4bd20fbd131bd7c989a7739bc5b5807e43c14779e3e0c6bfbe05",
+      "archivedBytes": 4611,
+      "archivedSha256": "252a186849fa772871a4ca6fece93523f91e6232eb9e01b34963912ac58c9856",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩8.xml",
+      "archived": "failures/geometry/4b4a54fd56b0-b165311d19074d14-遮罩8.xml.gz",
+      "sourceBytes": 2136,
+      "sourceSha256": "4b4a54fd56b0856265c446c401410229448f98bfcb18accde26f5561aa9f0c6c",
+      "archivedBytes": 900,
+      "archivedSha256": "84dec42533109473c89c5348abe8023f69ff401ed6f82810554e3e019d16759e",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14-遮罩9.xml",
+      "archived": "failures/geometry/ff117c711390-b165311d19074d14-遮罩9.xml.gz",
+      "sourceBytes": 21960,
+      "sourceSha256": "ff117c711390d498a21ebe04017001e0031f5981fab43a1faea166435a60d89a",
+      "archivedBytes": 3544,
+      "archivedSha256": "d3fbd1d4ce0712c9389ba9dc895434eaad39de67443daf2928a661a58ba8eeec",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\superseded-native\\LIBRARY\\Codex\\特种兵\\共用矢量图集\\b165311d19074d14.xml",
+      "archived": "failures/geometry/aa2da6805dd1-b165311d19074d14.xml.gz",
+      "sourceBytes": 6318,
+      "sourceSha256": "aa2da6805dd1fb6a8dbe79473f2c82ef3ebadd1b2f7f4f6f6eb9ea25b6286ddf",
+      "archivedBytes": 592,
+      "archivedSha256": "413d78239187e8f32ae961670e8f42f9642af7368a484ce0fe0a54096611c8fb",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-r1-visual-failure\\vector.py",
+      "archived": "failures/geometry/ad0003b4ce1b-vector.py.gz",
+      "sourceBytes": 2169,
+      "sourceSha256": "ad0003b4ce1bf42804e51d79fa9393b7132d225cd784146fae3bb7e2453a5f5f",
+      "archivedBytes": 1025,
+      "archivedSha256": "e67de334e3dede1994ebe475aa166cf15d9c5893913bf285f23eb9a20f922de2",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\airborne-shadow.png",
+      "archived": "failures/geometry-images/6435226f59e6-airborne-shadow.png",
+      "sourceBytes": 24878,
+      "sourceSha256": "6435226f59e673312d4d237d1ece5098e4067381959d2dbcd607b5f5d7e7da89",
+      "archivedBytes": 24878,
+      "archivedSha256": "6435226f59e673312d4d237d1ece5098e4067381959d2dbcd607b5f5d7e7da89",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-a0-late.png",
+      "archived": "failures/geometry-images/55e17f9e4ee4-death-a0-late.png",
+      "sourceBytes": 23047,
+      "sourceSha256": "55e17f9e4ee45ef224cc4e02f80f9aa3060694a8ab02a359e3b0f3fcdeb25111",
+      "archivedBytes": 23047,
+      "archivedSha256": "55e17f9e4ee45ef224cc4e02f80f9aa3060694a8ab02a359e3b0f3fcdeb25111",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-a0-middle.png",
+      "archived": "failures/geometry-images/39266a6de42b-death-a0-middle.png",
+      "sourceBytes": 28284,
+      "sourceSha256": "39266a6de42bc9362ce32b51bc9bae25b243e873240481de118bb2a1584a5fd9",
+      "archivedBytes": 28284,
+      "archivedSha256": "39266a6de42bc9362ce32b51bc9bae25b243e873240481de118bb2a1584a5fd9",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-a1-late.png",
+      "archived": "failures/geometry-images/692444e45b58-death-a1-late.png",
+      "sourceBytes": 23544,
+      "sourceSha256": "692444e45b584bd3b4b7e335fc62f41b4a74e1f97707372374637fe1b1f7e3e1",
+      "archivedBytes": 23544,
+      "archivedSha256": "692444e45b584bd3b4b7e335fc62f41b4a74e1f97707372374637fe1b1f7e3e1",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-a1-middle.png",
+      "archived": "failures/geometry-images/11da9f99ac00-death-a1-middle.png",
+      "sourceBytes": 28916,
+      "sourceSha256": "11da9f99ac00707e550290ac5a1cd8f54b49c83042fae32ea149921a5d62eca6",
+      "archivedBytes": 28916,
+      "archivedSha256": "11da9f99ac00707e550290ac5a1cd8f54b49c83042fae32ea149921a5d62eca6",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-a2-late.png",
+      "archived": "failures/geometry-images/99169655bcdf-death-a2-late.png",
+      "sourceBytes": 21518,
+      "sourceSha256": "99169655bcdfd604f9af080cb80d9ededcda3b5951bdec9c42062f17467698cd",
+      "archivedBytes": 21518,
+      "archivedSha256": "99169655bcdfd604f9af080cb80d9ededcda3b5951bdec9c42062f17467698cd",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\death-start.png",
+      "archived": "failures/geometry-images/2e3be9848b8c-death-start.png",
+      "sourceBytes": 26511,
+      "sourceSha256": "2e3be9848b8cfb8e4d9423c7243e9faa535c31cede92e1e8476aa9fe857fad46",
+      "archivedBytes": 26511,
+      "archivedSha256": "2e3be9848b8cfb8e4d9423c7243e9faa535c31cede92e1e8476aa9fe857fad46",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\down.png",
+      "archived": "failures/geometry-images/a3f24d51f54d-down.png",
+      "sourceBytes": 21618,
+      "sourceSha256": "a3f24d51f54dcb8aca73f67927513bcbd432b4bfaff54564971c4c3db525c4c6",
+      "archivedBytes": 21618,
+      "archivedSha256": "a3f24d51f54dcb8aca73f67927513bcbd432b4bfaff54564971c4c3db525c4c6",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\knife.png",
+      "archived": "failures/geometry-images/2e11cb8a221c-knife.png",
+      "sourceBytes": 26481,
+      "sourceSha256": "2e11cb8a221c3b5ed9e4151244d19b785278c5904caabe11985ae6878875f9eb",
+      "archivedBytes": 26481,
+      "archivedSha256": "2e11cb8a221c3b5ed9e4151244d19b785278c5904caabe11985ae6878875f9eb",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\shoot.png",
+      "archived": "failures/geometry-images/9c20a4354b3e-shoot.png",
+      "sourceBytes": 25886,
+      "sourceSha256": "9c20a4354b3ee9c75ebd168d839ed5116060f91e415f1e8f0e0e2417d7c93d34",
+      "archivedBytes": 25886,
+      "archivedSha256": "9c20a4354b3ee9c75ebd168d839ed5116060f91e415f1e8f0e0e2417d7c93d34",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\images-r1\\stand.png",
+      "archived": "failures/geometry-images/f1995f689a5b-stand.png",
+      "sourceBytes": 26508,
+      "sourceSha256": "f1995f689a5b2f1d69cbcf7a89bc19635af01c1de057f49a507404f9dcb3feff",
+      "archivedBytes": 26508,
+      "archivedSha256": "f1995f689a5b2f1d69cbcf7a89bc19635af01c1de057f49a507404f9dcb3feff",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\Cf6SoldierAssetTest.as",
+      "archived": "failures/separate-libraries/817c940a3200-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 26299,
+      "sourceSha256": "817c940a3200806080c8b00263abd0df694ca43722c8fe4e8b84e6801fe00632",
+      "archivedBytes": 7871,
+      "archivedSha256": "51acaee4bfb2be487bbb034beed1ce68c365adb029ae4ce9f674588dddee7a6e",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\Codex特种兵素材.swf",
+      "archived": "failures/separate-libraries/9ae5ad2e1929-Codex特种兵素材.swf.gz",
+      "sourceBytes": 83019,
+      "sourceSha256": "9ae5ad2e1929bd5fa9eb52ee95ff576cac6a772800c03d748ac15dd6545eaf0f",
+      "archivedBytes": 82024,
+      "archivedSha256": "d9a8d78f19658db993eaa22a9ea536273de88460f6de44bbf4777a3ef750c642",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\compile_output.txt",
+      "archived": "failures/separate-libraries/8713affb9b6e-compile_output.txt.gz",
+      "sourceBytes": 447,
+      "sourceSha256": "8713affb9b6e845c9f3e6577ee1d7616417358c92e0ce29a3c54ea762c38d23d",
+      "archivedBytes": 201,
+      "archivedSha256": "4d5fa63e2daf4c7ddb7efe601de03d2ad29d9bc390d3a3eb9704fdcfe24d17de",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\compiler_errors.txt",
+      "archived": "failures/separate-libraries/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\flashlog.txt",
+      "archived": "failures/separate-libraries/3363de819413-flashlog.txt.gz",
+      "sourceBytes": 5615,
+      "sourceSha256": "3363de819413df96f0024aaa0159ea34b5ce16da5dd9fa1f553d8bec5015bd42",
+      "archivedBytes": 895,
+      "archivedSha256": "80a9ebdd458cdf07547cb41dcc1339da0832db9fe507b1472f0801d3be52d4b6",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\manifest.json",
+      "archived": "failures/separate-libraries/28aafa5097cd-manifest.json",
+      "sourceBytes": 2382,
+      "sourceSha256": "28aafa5097cd45f44db90121ef3fb0363996cc8f337115185189ad9522c150a7",
+      "archivedBytes": 2382,
+      "archivedSha256": "28aafa5097cd45f44db90121ef3fb0363996cc8f337115185189ad9522c150a7",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\native-manifest.json",
+      "archived": "failures/separate-libraries/9a09bac0d1da-native-manifest.json",
+      "sourceBytes": 45737,
+      "sourceSha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275",
+      "archivedBytes": 45737,
+      "archivedSha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3-failed-fixture\\TestLoader.swf",
+      "archived": "failures/separate-libraries/3f769acf9ab2-TestLoader.swf.gz",
+      "sourceBytes": 858658,
+      "sourceSha256": "3f769acf9ab279ca64eff69fdce36c1df12c3bf3ecb3be8d1fdfaccf138de3a2",
+      "archivedBytes": 858734,
+      "archivedSha256": "e5b52778a9404e68bdd7d92153837d13a82299af77df90062db8f835e67eadb3",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\Cf6SoldierAssetTest.as",
+      "archived": "failures/linkage-diagnostic/3e4b9d0546e5-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 26925,
+      "sourceSha256": "3e4b9d0546e528705bc6ca6d025706284477d56e62b2d7b0f72c203fa9c32421",
+      "archivedBytes": 8065,
+      "archivedSha256": "3e1d3c1d6e1b81b24cbc3d991cdee31246c560de787d3e5b4ad77f66e9f1f2f6",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\compile_output.txt",
+      "archived": "failures/linkage-diagnostic/18a21d01661c-compile_output.txt.gz",
+      "sourceBytes": 447,
+      "sourceSha256": "18a21d01661ced161c64c0f03a324311a49172352cfd127638fb8e58caceaff7",
+      "archivedBytes": 200,
+      "archivedSha256": "44d3cb522b930ab5736c330a7c387d42c71af2f9246fcc3ec8edf3892633c8b9",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\compiler_errors.txt",
+      "archived": "failures/linkage-diagnostic/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\flashlog.txt",
+      "archived": "failures/linkage-diagnostic/09317cb63157-flashlog.txt.gz",
+      "sourceBytes": 6135,
+      "sourceSha256": "09317cb63157c8df935b0ad056935e8427faadac87db9420585e666bbcd0d968",
+      "archivedBytes": 1166,
+      "archivedSha256": "74ca3d334e9a9fc525b76da391cc6b454d4ec6fdc938a5c2b97fa5f3a9a6e96d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\manifest.json",
+      "archived": "failures/linkage-diagnostic/6d61f2479cba-manifest.json",
+      "sourceBytes": 1652,
+      "sourceSha256": "6d61f2479cbac4580eb7eb14a59b6838b249b16bedd1136e4d55135a030e7682",
+      "archivedBytes": 1652,
+      "archivedSha256": "6d61f2479cbac4580eb7eb14a59b6838b249b16bedd1136e4d55135a030e7682",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r3b-failed-fixture\\TestLoader.swf",
+      "archived": "failures/linkage-diagnostic/592bc05d261b-TestLoader.swf.gz",
+      "sourceBytes": 858945,
+      "sourceSha256": "592bc05d261bd137d2afef75a3863148a4de6e24c60c0c80b895324e5c01a926",
+      "archivedBytes": 859020,
+      "archivedSha256": "7c469a81681c257c5cd0c83b2314d65dc148ee678c59dde2d0a91fc0acccbd3f",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\Cf6SoldierAssetTest.as",
+      "archived": "failures/nested-consumer/9a2196fe1ec1-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 26235,
+      "sourceSha256": "9a2196fe1ec178e5f4df6aa8750b9a29377cb7cfcd7630d6b5d4ef3d420d96c1",
+      "archivedBytes": 7899,
+      "archivedSha256": "b60bdc5a670cc0f4c3165ca543c4b0512f52dec8e8dac3ddc6ab236bdde61334",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\compile_output.txt",
+      "archived": "failures/nested-consumer/101440135c92-compile_output.txt.gz",
+      "sourceBytes": 447,
+      "sourceSha256": "101440135c92eaf1d0aec1cfef001bae822988e47e0caf6c292a8e53950fa816",
+      "archivedBytes": 201,
+      "archivedSha256": "a3d75c83cb53e331ede2a7add66e529bb35f2403e53da46b43e52798ff0ed4a6",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\compiler_errors.txt",
+      "archived": "failures/nested-consumer/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\Consumer.swf",
+      "archived": "failures/nested-consumer/c06ebb205f4f-Consumer.swf.gz",
+      "sourceBytes": 798,
+      "sourceSha256": "c06ebb205f4ffbd6c7ef21aece574a9be7285f8c7645dca6bd58c617aca67a78",
+      "archivedBytes": 821,
+      "archivedSha256": "ecd3acdf8aff9f0031760530efdf5742d757e55a6e8747c4f73d8193bacfb29c",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\flashlog.txt",
+      "archived": "failures/nested-consumer/ed9e34e355c0-flashlog.txt.gz",
+      "sourceBytes": 21129,
+      "sourceSha256": "ed9e34e355c0a862f67b5de1fe8853aeb5ae178db2c4de524f5f6136d57aad57",
+      "archivedBytes": 2180,
+      "archivedSha256": "5d324786c27a8d24da0fac23e811a517902204cdb4bab62c373f1c4397b65560",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\manifest.json",
+      "archived": "failures/nested-consumer/ec0f92261b5a-manifest.json",
+      "sourceBytes": 2269,
+      "sourceSha256": "ec0f92261b5a30878f92f8e5a6e53c614fb4617b5e28a2ac1af0f44972a7dbc2",
+      "archivedBytes": 2269,
+      "archivedSha256": "ec0f92261b5a30878f92f8e5a6e53c614fb4617b5e28a2ac1af0f44972a7dbc2",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\source-manifest.json",
+      "archived": "failures/nested-consumer/2db4249a8168-source-manifest.json",
+      "sourceBytes": 1829,
+      "sourceSha256": "2db4249a8168f8866a1236fd6593d84c4993ab64c1c56b981802a51ccc4851b1",
+      "archivedBytes": 1829,
+      "archivedSha256": "2db4249a8168f8866a1236fd6593d84c4993ab64c1c56b981802a51ccc4851b1",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r4-failed-fixture\\TestLoader.swf",
+      "archived": "failures/nested-consumer/19e5df98101c-TestLoader.swf.gz",
+      "sourceBytes": 858691,
+      "sourceSha256": "19e5df98101cd408525f7fd56fa6e5e9e31e74daeb091dde06c4d2a04b00e73d",
+      "archivedBytes": 858776,
+      "archivedSha256": "cd840c21e03c577403f9668a91617a303e4d6c49b47820b392262496d9656693",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-before-gun-scale\\build.py",
+      "archived": "history/before-scale/ce74425dd1c6-build.py.gz",
+      "sourceBytes": 20333,
+      "sourceSha256": "ce74425dd1c6074408c81e731cd5101e170c8fdaad9ccf557e7431fdd5d5288b",
+      "archivedBytes": 7170,
+      "archivedSha256": "f56eb02e4b19e70929fe23c8b22a272cea890341a601317f3d7e94034f8610d0",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-before-gun-scale\\Codex特种兵素材.swf",
+      "archived": "history/before-scale/9ae5ad2e1929-Codex特种兵素材.swf.gz",
+      "sourceBytes": 83019,
+      "sourceSha256": "9ae5ad2e1929bd5fa9eb52ee95ff576cac6a772800c03d748ac15dd6545eaf0f",
+      "archivedBytes": 82024,
+      "archivedSha256": "d9a8d78f19658db993eaa22a9ea536273de88460f6de44bbf4777a3ef750c642",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-before-gun-scale\\manifest.json",
+      "archived": "history/before-scale/26c1a2d30bcc-manifest.json",
+      "sourceBytes": 735,
+      "sourceSha256": "26c1a2d30bcc9b0f5cf74ca9e80240572289898a3f22b6d198791d255bf37133",
+      "archivedBytes": 735,
+      "archivedSha256": "26c1a2d30bcc9b0f5cf74ca9e80240572289898a3f22b6d198791d255bf37133",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-before-gun-scale\\native-manifest.json",
+      "archived": "history/before-scale/9a09bac0d1da-native-manifest.json",
+      "sourceBytes": 45737,
+      "sourceSha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275",
+      "archivedBytes": 45737,
+      "archivedSha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\Cf6SoldierAssetTest.as",
+      "archived": "history/48-cases/65aabb760e11-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 25747,
+      "sourceSha256": "65aabb760e11069193e35001c863e5060955d7ee2a8c9f257a2b69c3aca6a926",
+      "archivedBytes": 7821,
+      "archivedSha256": "910fcba3583973696acb4af2eb826cbc614cd36d44d858dae760c38a7f75f4e8",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\Cf6SoldierNativeHost.swf",
+      "archived": "history/48-cases/619de505c0b5-Cf6SoldierNativeHost.swf.gz",
+      "sourceBytes": 855664,
+      "sourceSha256": "619de505c0b5987eaa9f64dd2fb7879a5641d5d6e04068c7d9831d19b1672915",
+      "archivedBytes": 855812,
+      "archivedSha256": "15fd3f8381ec5c0c23531088c4f913acbdba2b7ce1f93eb61ea1781c310921e1",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\compile_output.txt",
+      "archived": "history/48-cases/35955f6452e5-compile_output.txt.gz",
+      "sourceBytes": 19,
+      "sourceSha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728",
+      "archivedBytes": 39,
+      "archivedSha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\compiler_errors.txt",
+      "archived": "history/48-cases/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\flashlog.txt",
+      "archived": "history/48-cases/7b6ab316860e-flashlog.txt.gz",
+      "sourceBytes": 1747,
+      "sourceSha256": "7b6ab316860e10004a5363263fdc9835266309aecc36aa5f8afa4697d777cdc5",
+      "archivedBytes": 707,
+      "archivedSha256": "1bf759261fd8ccbddbd60f12ab54f12d448f6f183f9f867ccb7d71ee2e59bf88",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r5-pass\\manifest.json",
+      "archived": "history/48-cases/ee29d4d6303f-manifest.json",
+      "sourceBytes": 1110,
+      "sourceSha256": "ee29d4d6303faa0bf0e266c218da2a3a77fd71188f2e101d90b34e2a163786b0",
+      "archivedBytes": 1110,
+      "archivedSha256": "ee29d4d6303faa0bf0e266c218da2a3a77fd71188f2e101d90b34e2a163786b0",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\Cf6SoldierAssetTest.as",
+      "archived": "history/full-size-guns/743a9f35a691-Cf6SoldierAssetTest.as.gz",
+      "sourceBytes": 28303,
+      "sourceSha256": "743a9f35a691cb3e5c01313f1790347ca1cbac7d9a0f70450685df206b222770",
+      "archivedBytes": 8404,
+      "archivedSha256": "2c1564428c7932414153e5a9a0826ec316d1c8e0e2f8f436f0b7c4e13fb53470",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\Cf6SoldierNativeHost.swf",
+      "archived": "history/full-size-guns/d17eeeaa1707-Cf6SoldierNativeHost.swf.gz",
+      "sourceBytes": 856449,
+      "sourceSha256": "d17eeeaa17072e589a4111d0e91536e3e79639f3696033fb14b02f54e2f91e38",
+      "archivedBytes": 856618,
+      "archivedSha256": "557a9838fb15c82afc95ca7a46a538414e0fc16f3b05a5e5b285cebcbf24bd53",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\compile_output.txt",
+      "archived": "history/full-size-guns/35955f6452e5-compile_output.txt.gz",
+      "sourceBytes": 19,
+      "sourceSha256": "35955f6452e552067bbcd2b93fd9a449fc5d9b2e566a2d5c6bc09b22a54e3728",
+      "archivedBytes": 39,
+      "archivedSha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\compiler_errors.txt",
+      "archived": "history/full-size-guns/6d64657e843c-compiler_errors.txt.gz",
+      "sourceBytes": 27,
+      "sourceSha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3",
+      "archivedBytes": 46,
+      "archivedSha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\flashlog.txt",
+      "archived": "history/full-size-guns/b4f529cc3632-flashlog.txt.gz",
+      "sourceBytes": 3623053,
+      "sourceSha256": "b4f529cc3632320629abb2b8c7f03914c6c800d2d6e21cbf81bf63f02cc9d328",
+      "archivedBytes": 745735,
+      "archivedSha256": "9fa752c6a1ede21f3e293940d03fbabdb2a2e581769e65b64e28b52feee85cf5",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\equipment-r6-pass\\manifest.json",
+      "archived": "history/full-size-guns/fc306eaf509d-manifest.json",
+      "sourceBytes": 1222,
+      "sourceSha256": "fc306eaf509d3ec14c0f37391d8226954fa6e9f431bf03b73838da94cf891a2c",
+      "archivedBytes": 1222,
+      "archivedSha256": "fc306eaf509d3ec14c0f37391d8226954fa6e9f431bf03b73838da94cf891a2c",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\overlay-r1.json",
+      "archived": "identity/overlay-r1.json",
+      "sourceBytes": 4053,
+      "sourceSha256": "d7272f323c967cbfe55e5c2d591961d9db7233cd8de729372e889bae4ba6b7f1",
+      "archivedBytes": 4053,
+      "archivedSha256": "d7272f323c967cbfe55e5c2d591961d9db7233cd8de729372e889bae4ba6b7f1",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\overlay-equipment-r3.json",
+      "archived": "identity/overlay-equipment-r3.json",
+      "sourceBytes": 5589,
+      "sourceSha256": "6519c235af2648e34429c10cc3f9e27bee8d6df6ddec949db9969a37b0d751ea",
+      "archivedBytes": 5589,
+      "archivedSha256": "6519c235af2648e34429c10cc3f9e27bee8d6df6ddec949db9969a37b0d751ea",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\overlay-equipment-r4.json",
+      "archived": "identity/overlay-equipment-r4.json",
+      "sourceBytes": 5594,
+      "sourceSha256": "bfd81d437b6bbe3ae73075b077bdffe42b8a04bb6a0ec5793e64ca558506bbfc",
+      "archivedBytes": 5594,
+      "archivedSha256": "bfd81d437b6bbe3ae73075b077bdffe42b8a04bb6a0ec5793e64ca558506bbfc",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-capture-review.json",
+      "archived": "identity/native-capture-review.json",
+      "sourceBytes": 2527,
+      "sourceSha256": "f37accedad4fc36ec6d4ae60272a83e8fbf1a9a8e6cf58ae2a45c8aedd4fe662",
+      "archivedBytes": 2527,
+      "archivedSha256": "f37accedad4fc36ec6d4ae60272a83e8fbf1a9a8e6cf58ae2a45c8aedd4fe662",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\native-equipment-r7-review.json",
+      "archived": "identity/native-equipment-r7-review.json",
+      "sourceBytes": 2839,
+      "sourceSha256": "926c3eb63e6c57a8a0e47b809d8a92645b0673409bf763b6a2f609328498c4b6",
+      "archivedBytes": 2839,
+      "archivedSha256": "926c3eb63e6c57a8a0e47b809d8a92645b0673409bf763b6a2f609328498c4b6",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\plan.json",
+      "archived": "combat/current/plan.json",
+      "sourceBytes": 2050,
+      "sourceSha256": "62396b31fb6bee6f4816ca32047b26ee9f4f3e0a5a400ba0781a96a584d7d1ed",
+      "archivedBytes": 2050,
+      "archivedSha256": "62396b31fb6bee6f4816ca32047b26ee9f4f3e0a5a400ba0781a96a584d7d1ed",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-before-after.json",
+      "archived": "combat/current/weapons-before-after.json",
+      "sourceBytes": 754662,
+      "sourceSha256": "56315b21ecbfa4be21361f201fed9658981b4bb16fb8e5ee5fd03a4e2b3b338d",
+      "archivedBytes": 754662,
+      "archivedSha256": "56315b21ecbfa4be21361f201fed9658981b4bb16fb8e5ee5fd03a4e2b3b338d",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-before.json",
+      "archived": "combat/current/weapons-before.json",
+      "sourceBytes": 893968,
+      "sourceSha256": "0e477eeabbb74ed777ac82b1ced55702446baa8cba54ee8a1a91bce903f8921b",
+      "archivedBytes": 893968,
+      "archivedSha256": "0e477eeabbb74ed777ac82b1ced55702446baa8cba54ee8a1a91bce903f8921b",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-evidence-config.json",
+      "archived": "combat/current/weapons-evidence-config.json",
+      "sourceBytes": 458,
+      "sourceSha256": "fa004005e25267146a7f17ae37d35e2389ea3edb4f6aa51927ad306d54e2d8b0",
+      "archivedBytes": 458,
+      "archivedSha256": "fa004005e25267146a7f17ae37d35e2389ea3edb4f6aa51927ad306d54e2d8b0",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-manifest.json",
+      "archived": "combat/current/weapons-manifest.json",
+      "sourceBytes": 14008,
+      "sourceSha256": "5b7a9705bb7f796d861ca6d31ce3d1c1e1d910fbf1d2dc964134c7de9387daba",
+      "archivedBytes": 14008,
+      "archivedSha256": "5b7a9705bb7f796d861ca6d31ce3d1c1e1d910fbf1d2dc964134c7de9387daba",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-ui-admission.json",
+      "archived": "combat/current/weapons-ui-admission.json",
+      "sourceBytes": 3794,
+      "sourceSha256": "ecb01299a36494faef896cebf31ea8d374edd5171530756d989d162ca6625030",
+      "archivedBytes": 3794,
+      "archivedSha256": "ecb01299a36494faef896cebf31ea8d374edd5171530756d989d162ca6625030",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r3\\preparation-only.json",
+      "archived": "combat/prepared-only/preparation-only.json",
+      "sourceBytes": 182,
+      "sourceSha256": "3bb8142cec8d23d4f7be8b73c720e6925d98e605b595eacead2954aa604118df",
+      "archivedBytes": 182,
+      "archivedSha256": "3bb8142cec8d23d4f7be8b73c720e6925d98e605b595eacead2954aa604118df",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-before-after.json",
+      "archived": "combat/fixed-gun/cadet-before-after.json",
+      "sourceBytes": 753075,
+      "sourceSha256": "97ec4e7e05e32903e131cd2df6427f3af315d2fa4bdcba2a49ad44b2723d0854",
+      "archivedBytes": 753075,
+      "archivedSha256": "97ec4e7e05e32903e131cd2df6427f3af315d2fa4bdcba2a49ad44b2723d0854",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-before.json",
+      "archived": "combat/fixed-gun/cadet-before.json",
+      "sourceBytes": 892386,
+      "sourceSha256": "e9077039f575349977a61dd9c2726c4940c995828ddd09da22ecda9ac6992fae",
+      "archivedBytes": 892386,
+      "archivedSha256": "e9077039f575349977a61dd9c2726c4940c995828ddd09da22ecda9ac6992fae",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-evidence-config.json",
+      "archived": "combat/fixed-gun/cadet-evidence-config.json",
+      "sourceBytes": 441,
+      "sourceSha256": "a11fd20f82d8b7b89074278d7927e45f26be6666311c6c5df1b5171ead313068",
+      "archivedBytes": 441,
+      "archivedSha256": "a11fd20f82d8b7b89074278d7927e45f26be6666311c6c5df1b5171ead313068",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-manifest.json",
+      "archived": "combat/fixed-gun/cadet-manifest.json",
+      "sourceBytes": 11501,
+      "sourceSha256": "91d661c10878fdc66757bb9dd17dfc6d0e30728485cb85363b257d4383f91bc3",
+      "archivedBytes": 11501,
+      "archivedSha256": "91d661c10878fdc66757bb9dd17dfc6d0e30728485cb85363b257d4383f91bc3",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\cadet-ui-admission.json",
+      "archived": "combat/fixed-gun/cadet-ui-admission.json",
+      "sourceBytes": 3925,
+      "sourceSha256": "266ee2b7ed28379d734de864bbd2d21f637eb0ad115817571921ecc820c64a4f",
+      "archivedBytes": 3925,
+      "archivedSha256": "266ee2b7ed28379d734de864bbd2d21f637eb0ad115817571921ecc820c64a4f",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\extended-window-review-plan.json",
+      "archived": "combat/fixed-gun/extended-window-review-plan.json",
+      "sourceBytes": 530,
+      "sourceSha256": "cd1b111d51fb2a5f64ea6a647bb63bbbcb3db1b863e32854492917e7beab0da5",
+      "archivedBytes": 530,
+      "archivedSha256": "cd1b111d51fb2a5f64ea6a647bb63bbbcb3db1b863e32854492917e7beab0da5",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\integration-before-after.json",
+      "archived": "combat/fixed-gun/integration-before-after.json",
+      "sourceBytes": 753868,
+      "sourceSha256": "73ee6f182125692e597b99e9cee0919b4bd36f11d48da0836bb0f763904774c4",
+      "archivedBytes": 753868,
+      "archivedSha256": "73ee6f182125692e597b99e9cee0919b4bd36f11d48da0836bb0f763904774c4",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\integration-before.json",
+      "archived": "combat/fixed-gun/integration-before.json",
+      "sourceBytes": 893174,
+      "sourceSha256": "a3f81d15a000f1893f7392344da731a4e5c851a03830ae1d100a3968215ef646",
+      "archivedBytes": 893174,
+      "archivedSha256": "a3f81d15a000f1893f7392344da731a4e5c851a03830ae1d100a3968215ef646",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\integration-evidence-config.json",
+      "archived": "combat/fixed-gun/integration-evidence-config.json",
+      "sourceBytes": 454,
+      "sourceSha256": "23beee4464186780b82f38ee9d3f992f969bb9814c877f98d371468203b53fb3",
+      "archivedBytes": 454,
+      "archivedSha256": "23beee4464186780b82f38ee9d3f992f969bb9814c877f98d371468203b53fb3",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\integration-manifest.json",
+      "archived": "combat/fixed-gun/integration-manifest.json",
+      "sourceBytes": 10286,
+      "sourceSha256": "3b5da2f6d9da057264ab9f7faffe6b9387736cdde34ea223f52bf66bf2a8c094",
+      "archivedBytes": 10286,
+      "archivedSha256": "3b5da2f6d9da057264ab9f7faffe6b9387736cdde34ea223f52bf66bf2a8c094",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\integration-ui-admission.json",
+      "archived": "combat/fixed-gun/integration-ui-admission.json",
+      "sourceBytes": 3753,
+      "sourceSha256": "4ad55e63b217a70597be221fed932343ae17880202d475e671889f2fc4fb6333",
+      "archivedBytes": 3753,
+      "archivedSha256": "4ad55e63b217a70597be221fed932343ae17880202d475e671889f2fc4fb6333",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\mixed-evidence-config.json",
+      "archived": "combat/fixed-gun/mixed-evidence-config.json",
+      "sourceBytes": 441,
+      "sourceSha256": "770693b5e94a185111a3f5f5173782068ed8c2ca8a00c5d2187d2ec86c388568",
+      "archivedBytes": 441,
+      "archivedSha256": "770693b5e94a185111a3f5f5173782068ed8c2ca8a00c5d2187d2ec86c388568",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\mixed-manifest.json",
+      "archived": "combat/fixed-gun/mixed-manifest.json",
+      "sourceBytes": 8242,
+      "sourceSha256": "038ab40879be4763d20cc6eeee251052d59092f7b16d5d9d088d57fc956820c5",
+      "archivedBytes": 8242,
+      "archivedSha256": "038ab40879be4763d20cc6eeee251052d59092f7b16d5d9d088d57fc956820c5",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-r1\\plan.json",
+      "archived": "combat/fixed-gun/plan.json",
+      "sourceBytes": 2346,
+      "sourceSha256": "30baeb5f3d2a81025828bcefe25e344f2d1ac033e7c9208841a56dbd90042dcc",
+      "archivedBytes": 2346,
+      "archivedSha256": "30baeb5f3d2a81025828bcefe25e344f2d1ac033e7c9208841a56dbd90042dcc",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567\\run-report.json",
+      "archived": "combat/current-run/run-report.json",
+      "sourceBytes": 72637,
+      "sourceSha256": "ba121a9ffb2045080f187b072edc0edb0486d163456465286ad3444e21371bb8",
+      "archivedBytes": 72637,
+      "archivedSha256": "ba121a9ffb2045080f187b072edc0edb0486d163456465286ad3444e21371bb8",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261016T004420Z-soldier-eq-r4-20261016-weapons-29e050d5-2925-4316-9047-549af255a567\\attempt-1-soldier-eq-r4-20261016-weapons-attempt-25b2804e-2144-41c1-aed9-1a8abcd323c6-results.jsonl",
+      "archived": "combat/current-run/results.jsonl.gz",
+      "sourceBytes": 25484,
+      "sourceSha256": "c3b27065d520d9a9a88c2c68bc01859c34a92d1aefd122504fbc90efa51b44fd",
+      "archivedBytes": 3042,
+      "archivedSha256": "44861af7ea96fb9b4ec8fca21de42eb72a890b51ae333e5a39d2e9db231c3eb1",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261015T232214Z-soldier-r1-20261016-cadet-d0ecfaa2-140a-4871-b9fa-bff8405fb8f7\\run-report.json",
+      "archived": "combat/fixed-gun-runs/soldier-r1-20261016-cadet/run-report.json",
+      "sourceBytes": 64635,
+      "sourceSha256": "936df9ad556e4545c143377329a0d22d58935e8e301d606f934de931cf36f35e",
+      "archivedBytes": 64635,
+      "archivedSha256": "936df9ad556e4545c143377329a0d22d58935e8e301d606f934de931cf36f35e",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261015T232214Z-soldier-r1-20261016-cadet-d0ecfaa2-140a-4871-b9fa-bff8405fb8f7\\attempt-1-soldier-r1-20261016-cadet-attempt-bc79c73e-d8c4-449b-bfef-57aa83df2986-results.jsonl",
+      "archived": "combat/fixed-gun-runs/soldier-r1-20261016-cadet/results.jsonl.gz",
+      "sourceBytes": 22220,
+      "sourceSha256": "e6a24364ec692a408613dbbe0463ef1e9bc1a10b1688be1bf628ed8c34551d14",
+      "archivedBytes": 2683,
+      "archivedSha256": "a3d7b49a4d4592e7d534ff6f988a16ba5624c11efb6370fdb2392e8c0ce378e5",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261015T233632Z-soldier-r1b-20261016-integration-ac2b756a-e92c-46b9-8eeb-65307249cf79\\run-report.json",
+      "archived": "combat/fixed-gun-runs/soldier-r1b-20261016-integration/run-report.json",
+      "sourceBytes": 66274,
+      "sourceSha256": "2ba3c5dcef9bd50c29378c40fc7032dd02d69bbbc1b9a60f1fcd86da0ada95ac",
+      "archivedBytes": 66274,
+      "archivedSha256": "2ba3c5dcef9bd50c29378c40fc7032dd02d69bbbc1b9a60f1fcd86da0ada95ac",
+      "lossless": true,
+      "compression": null
+    },
+    {
+      "source": "C:\\Users\\fs\\.codex\\worktrees\\wings-combat\\CrazyFlashNight\\tmp\\arena-calibration\\unattended\\20261015T233632Z-soldier-r1b-20261016-integration-ac2b756a-e92c-46b9-8eeb-65307249cf79\\attempt-1-soldier-r1b-20261016-integration-attempt-6a312b27-4827-479e-a97e-574775ecea1b-results.jsonl",
+      "archived": "combat/fixed-gun-runs/soldier-r1b-20261016-integration/results.jsonl.gz",
+      "sourceBytes": 20659,
+      "sourceSha256": "2fadee6058317305fbf7f2b8a6597552a2467f1ebb3fb0469d4d4a5a24b6c0da",
+      "archivedBytes": 2719,
+      "archivedSha256": "af06eef16096c291ec84544f181f05b9e764370dd8f9d0d62b17e8fb7ee0f09d",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\metadata-before-line-normalization\\build.py",
+      "archived": "history/metadata-normalization/before-build.py.gz",
+      "sourceBytes": 20358,
+      "sourceSha256": "1164d6ec2ae349443f66fca2b4763f21c401b0174bb7f649f881dace32cec165",
+      "archivedBytes": 7181,
+      "archivedSha256": "70dd899326a2ff9b792e5a116cde7e45307a9bab6af2cb508a55cc634a3f27a6",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\metadata-before-line-normalization\\native-manifest.json",
+      "archived": "history/metadata-normalization/before-native-manifest.json.gz",
+      "sourceBytes": 45737,
+      "sourceSha256": "f6408a48302e43092163b19d65e25d75320bf99ab71dde724af375d89c2ee8ce",
+      "archivedBytes": 12312,
+      "archivedSha256": "71202959215bb595d38ca566fb20df81d4b13850392998546567caea4868fcba",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\metadata-before-line-normalization\\README.md",
+      "archived": "history/metadata-normalization/before-README.md.gz",
+      "sourceBytes": 10068,
+      "sourceSha256": "b0aabd9869cfc9c839fadd3b714a7ef93e8b796ef5360a71d62c1f6ca3d50e7f",
+      "archivedBytes": 5518,
+      "archivedSha256": "18a222f02873b98143f8cdc998715cf4e8ceba3fe1441300f9a45a07e48878b1",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\metadata-before-line-normalization\\summary.json",
+      "archived": "history/metadata-normalization/before-summary.json.gz",
+      "sourceBytes": 156874,
+      "sourceSha256": "11c285916263e4be32230b2a8ec544e6b61b77110e5310689dcc8753ab185660",
+      "archivedBytes": 26867,
+      "archivedSha256": "86f0331f97fa8eb147efce82502660e30275435a760d74bbeae154f20e85fd1b",
+      "lossless": true,
+      "compression": "gzip"
+    },
+    {
+      "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\metadata-before-line-normalization\\verification.json",
+      "archived": "history/metadata-normalization/before-verification.json.gz",
+      "sourceBytes": 214,
+      "sourceSha256": "418917b74286ba21079184e747997a683fcec16e338e030caa18624d8efd349c",
+      "archivedBytes": 180,
+      "archivedSha256": "e76dde7f9b6599d720fec9f05dbd6f3a3a3855e4de9e521c6b171343123868fd",
+      "lossless": true,
+      "compression": "gzip"
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 9024,
+      "sha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "bytes": 869169,
+      "sha256": "6551c42621270eaa955477da0712d96f989d2883de9892a1c3386c66558599d1"
+    },
+    {
+      "path": "data/items/武器_长枪_突击步枪.xml",
+      "bytes": 116442,
+      "sha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a"
+    },
+    {
+      "path": "data/units/units.json",
+      "bytes": 152111,
+      "sha256": "cafeee76d6cd2152bdaf13c910ada73d7514fff6d9f90351e71a66c86906e0f4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 83026,
+      "sha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "bytes": 7911,
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things-new.fla",
+      "bytes": 541512,
+      "sha256": "42c1d772da8a572af130ed9d2a515456ea30a3e67e68b558423167d4ca970618"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "bytes": 113865,
+      "sha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "bytes": 817,
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "bytes": 1017,
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "bytes": 1071,
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "bytes": 1053,
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "bytes": 920,
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "bytes": 1530,
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "bytes": 1477,
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "bytes": 1023,
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "bytes": 977,
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "bytes": 815,
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "bytes": 4827,
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "bytes": 6368,
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "bytes": 1722,
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "bytes": 1172,
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 107414,
+      "sha256": "416f18e740717a6b9ee701e63dcbb6eee6bf606f7ce964707a18b281df96602d"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/Cf6SoldierNativeHost.xfl",
+      "bytes": 10,
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/DOMDocument.xml",
+      "bytes": 5609,
+      "sha256": "c078e642b3f80bde3d2e64200d0ad6ca4ba7ef90ea7404be0495874248a6e29d"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import0.xml",
+      "bytes": 652,
+      "sha256": "1e04ffeda5825f07da258bb6167106d608e3d5b67fb536c8c77945c40f985f6b"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import1.xml",
+      "bytes": 660,
+      "sha256": "ebc19a6d1a605938e9e10f3793ffdc580bc330c841342164cc0d423839758605"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import2.xml",
+      "bytes": 678,
+      "sha256": "d681dc95e8f82c3568d8c9c5e4e7b92653a4e733caecb6ac0a67a5a902f685b5"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import3.xml",
+      "bytes": 677,
+      "sha256": "8268bef8305c1ac31c2fe8a2ff9f365f77980cd46e1bba6c279c2eb26c85c8b6"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import4.xml",
+      "bytes": 658,
+      "sha256": "b250b1319855601502ab4e67282fbae57f3711bc3d35db6820c9b42a508357dc"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import5.xml",
+      "bytes": 664,
+      "sha256": "e19cd121e25bf0a885079049dc30a16edac1dcb0736773a061a407eaee85677d"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import6.xml",
+      "bytes": 664,
+      "sha256": "84a253fa752fb23ed1736a95bc27ff4ec7004085b5183015a83e8248dc14676d"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import7.xml",
+      "bytes": 676,
+      "sha256": "542b95f4fcf09e8337f5cb71abfab113beee7381cdc1feb0f99d8321783f9b7c"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/LIBRARY/Import8.xml",
+      "bytes": 655,
+      "sha256": "1e62ec417e9cd44748f2fa7ab88630a389051f09ff4b7390d85bba34969917dc"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/MobileSettings.xml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "scripts/Cf6SoldierNativeHost/PublishSettings.xml",
+      "bytes": 7935,
+      "sha256": "41d79e954f45723feefabadc7d40916250ba958f12c9f6bbe1a449e7a550d2cd"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 5996081,
+      "sha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a"
+    },
+    {
+      "path": "scripts/run-cf6-soldier-asset-tests.ps1",
+      "bytes": 1535,
+      "sha256": "3052d4375a34e1abbf527156fdc3e2736a8895251f2a81ae515c8639c4f5c5cc"
+    },
+    {
+      "path": "scripts/test-runners/cf6-soldier/TestLoader-capture.as.template",
+      "bytes": 346,
+      "sha256": "863a46bc6db3e8f371f604b0bfa861135da0271a9a13c228cee3b185a0b80bda"
+    },
+    {
+      "path": "scripts/test-runners/cf6-soldier/TestLoader.as.template",
+      "bytes": 345,
+      "sha256": "a893a78494862945209a548cbaa8d2671f09da4a6f9a42363d18a2c1f3b901cf"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6SoldierAssetTest.as",
+      "bytes": 28303,
+      "sha256": "743a9f35a691cb3e5c01313f1790347ca1cbac7d9a0f70450685df206b222770"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_装备引用配置.as",
+      "bytes": 522,
+      "sha256": "5be48bc04b973e17310b9a4399d4d124655121431d04470647de3340fda29937"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as",
+      "bytes": 8200,
+      "sha256": "f372d4c59f32140b2de2312eb9ec82f748a034c379f28c8f9fcc17851b43d03e"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as",
+      "bytes": 37085,
+      "sha256": "47322c07ba1c4e8d7dd1fce23affb15891d7c852f03a1c9cea30590f40e4e9da"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "bytes": 7833,
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "bytes": 21471,
+      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/README.md",
+      "bytes": 10219,
+      "sha256": "daafd8299c7b670c3b69af009daa5b700911de07f70bb14317e566b7bd9a45f2"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "bytes": 8700,
+      "sha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/arena-plan.js",
+      "bytes": 6194,
+      "sha256": "e549921e2f19702856f0cd6a389af782e4f3d2465e68ce174e624ac7d09fcf99"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/balance-inputs.json",
+      "bytes": 1954,
+      "sha256": "7800f080590155bd2cddb0f6ea2ee63773f910325df133f0dd3cc01c66ceac2e"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/balance.py",
+      "bytes": 7074,
+      "sha256": "153dadd0a49edb3c1b4c8873ea56bb68163173ee6824bc7e2f4d850398b97acc"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build-test-consumer.py",
+      "bytes": 4929,
+      "sha256": "ad021e4f3393914e7698bae370f3c97594a8d6567f100970c248b72b43b93ce7"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "bytes": 20803,
+      "sha256": "0c75e8a50dd394b435a89de0547ee5d0a6c661f91ca26b19eef067007c5d470d"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/decode-native-capture.py",
+      "bytes": 2997,
+      "sha256": "3575d2b407d0c6c552136898fb4e463bc2e0c1914115cc54c956868b1cb254f6"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/foreground-evidence.js",
+      "bytes": 7026,
+      "sha256": "1378516fbe1446ff78ff9f9796847fd1209c5f97ef55774f06f6e405d418b91c"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "bytes": 45854,
+      "sha256": "9a0d0b568530751da2bfa7079a60955c10fcbccdc84a3b10bd927ff4d2358d08"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/test-host-manifest.json",
+      "bytes": 2628,
+      "sha256": "746c1cf50b6f20ab469c0fcc33900bf5e265cb6bfca8fd6bbab3e3bbd645b71f"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/test_vector.py",
+      "bytes": 3502,
+      "sha256": "0bf13aebe71ed4033659e3093440ac9db21de20a5f51d6e810a17a1c9be426ea"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/vector.py",
+      "bytes": 3149,
+      "sha256": "355d4e94c78c4cd955742d5a8a8f2c4bf25ab40a370d7bf377c6b118881cda1a"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/verify.py",
+      "bytes": 4816,
+      "sha256": "a74d2c4689cc8a9d97fe133e3a43626a09a3876f7afa659ee009914c1f3b722b"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "bytes": 3101,
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "bytes": 58657,
+      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "bytes": 54745,
+      "sha256": "4d7858b4534e31f956f61fa1807a19279ec92361cc5838134545ba931caa91d4"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "bytes": 17500,
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "bytes": 18850,
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    }
+  ],
+  "files": [
+    {
+      "path": "combat/current/plan.json",
+      "bytes": 2050,
+      "sha256": "62396b31fb6bee6f4816ca32047b26ee9f4f3e0a5a400ba0781a96a584d7d1ed"
+    },
+    {
+      "path": "combat/current/weapons-before-after.json",
+      "bytes": 754662,
+      "sha256": "56315b21ecbfa4be21361f201fed9658981b4bb16fb8e5ee5fd03a4e2b3b338d"
+    },
+    {
+      "path": "combat/current/weapons-before.json",
+      "bytes": 893968,
+      "sha256": "0e477eeabbb74ed777ac82b1ced55702446baa8cba54ee8a1a91bce903f8921b"
+    },
+    {
+      "path": "combat/current/weapons-evidence-config.json",
+      "bytes": 458,
+      "sha256": "fa004005e25267146a7f17ae37d35e2389ea3edb4f6aa51927ad306d54e2d8b0"
+    },
+    {
+      "path": "combat/current/weapons-manifest.json",
+      "bytes": 14008,
+      "sha256": "5b7a9705bb7f796d861ca6d31ce3d1c1e1d910fbf1d2dc964134c7de9387daba"
+    },
+    {
+      "path": "combat/current/weapons-ui-admission.json",
+      "bytes": 3794,
+      "sha256": "ecb01299a36494faef896cebf31ea8d374edd5171530756d989d162ca6625030"
+    },
+    {
+      "path": "combat/current-run/results.jsonl.gz",
+      "bytes": 3042,
+      "sha256": "44861af7ea96fb9b4ec8fca21de42eb72a890b51ae333e5a39d2e9db231c3eb1"
+    },
+    {
+      "path": "combat/current-run/run-report.json",
+      "bytes": 72637,
+      "sha256": "ba121a9ffb2045080f187b072edc0edb0486d163456465286ad3444e21371bb8"
+    },
+    {
+      "path": "combat/fixed-gun/cadet-before-after.json",
+      "bytes": 753075,
+      "sha256": "97ec4e7e05e32903e131cd2df6427f3af315d2fa4bdcba2a49ad44b2723d0854"
+    },
+    {
+      "path": "combat/fixed-gun/cadet-before.json",
+      "bytes": 892386,
+      "sha256": "e9077039f575349977a61dd9c2726c4940c995828ddd09da22ecda9ac6992fae"
+    },
+    {
+      "path": "combat/fixed-gun/cadet-evidence-config.json",
+      "bytes": 441,
+      "sha256": "a11fd20f82d8b7b89074278d7927e45f26be6666311c6c5df1b5171ead313068"
+    },
+    {
+      "path": "combat/fixed-gun/cadet-manifest.json",
+      "bytes": 11501,
+      "sha256": "91d661c10878fdc66757bb9dd17dfc6d0e30728485cb85363b257d4383f91bc3"
+    },
+    {
+      "path": "combat/fixed-gun/cadet-ui-admission.json",
+      "bytes": 3925,
+      "sha256": "266ee2b7ed28379d734de864bbd2d21f637eb0ad115817571921ecc820c64a4f"
+    },
+    {
+      "path": "combat/fixed-gun/extended-window-review-plan.json",
+      "bytes": 530,
+      "sha256": "cd1b111d51fb2a5f64ea6a647bb63bbbcb3db1b863e32854492917e7beab0da5"
+    },
+    {
+      "path": "combat/fixed-gun/integration-before-after.json",
+      "bytes": 753868,
+      "sha256": "73ee6f182125692e597b99e9cee0919b4bd36f11d48da0836bb0f763904774c4"
+    },
+    {
+      "path": "combat/fixed-gun/integration-before.json",
+      "bytes": 893174,
+      "sha256": "a3f81d15a000f1893f7392344da731a4e5c851a03830ae1d100a3968215ef646"
+    },
+    {
+      "path": "combat/fixed-gun/integration-evidence-config.json",
+      "bytes": 454,
+      "sha256": "23beee4464186780b82f38ee9d3f992f969bb9814c877f98d371468203b53fb3"
+    },
+    {
+      "path": "combat/fixed-gun/integration-manifest.json",
+      "bytes": 10286,
+      "sha256": "3b5da2f6d9da057264ab9f7faffe6b9387736cdde34ea223f52bf66bf2a8c094"
+    },
+    {
+      "path": "combat/fixed-gun/integration-ui-admission.json",
+      "bytes": 3753,
+      "sha256": "4ad55e63b217a70597be221fed932343ae17880202d475e671889f2fc4fb6333"
+    },
+    {
+      "path": "combat/fixed-gun/mixed-evidence-config.json",
+      "bytes": 441,
+      "sha256": "770693b5e94a185111a3f5f5173782068ed8c2ca8a00c5d2187d2ec86c388568"
+    },
+    {
+      "path": "combat/fixed-gun/mixed-manifest.json",
+      "bytes": 8242,
+      "sha256": "038ab40879be4763d20cc6eeee251052d59092f7b16d5d9d088d57fc956820c5"
+    },
+    {
+      "path": "combat/fixed-gun/plan.json",
+      "bytes": 2346,
+      "sha256": "30baeb5f3d2a81025828bcefe25e344f2d1ac033e7c9208841a56dbd90042dcc"
+    },
+    {
+      "path": "combat/fixed-gun-runs/soldier-r1-20261016-cadet/results.jsonl.gz",
+      "bytes": 2683,
+      "sha256": "a3d7b49a4d4592e7d534ff6f988a16ba5624c11efb6370fdb2392e8c0ce378e5"
+    },
+    {
+      "path": "combat/fixed-gun-runs/soldier-r1-20261016-cadet/run-report.json",
+      "bytes": 64635,
+      "sha256": "936df9ad556e4545c143377329a0d22d58935e8e301d606f934de931cf36f35e"
+    },
+    {
+      "path": "combat/fixed-gun-runs/soldier-r1b-20261016-integration/results.jsonl.gz",
+      "bytes": 2719,
+      "sha256": "af06eef16096c291ec84544f181f05b9e764370dd8f9d0d62b17e8fb7ee0f09d"
+    },
+    {
+      "path": "combat/fixed-gun-runs/soldier-r1b-20261016-integration/run-report.json",
+      "bytes": 66274,
+      "sha256": "2ba3c5dcef9bd50c29378c40fc7032dd02d69bbbc1b9a60f1fcd86da0ada95ac"
+    },
+    {
+      "path": "combat/prepared-only/preparation-only.json",
+      "bytes": 182,
+      "sha256": "3bb8142cec8d23d4f7be8b73c720e6925d98e605b595eacead2954aa604118df"
+    },
+    {
+      "path": "failures/geometry/159f25d8b160-b165311d19074d14-遮罩1.xml.gz",
+      "bytes": 885,
+      "sha256": "c32332b43b04ab8ea6fa2c4b2c41274dc1007d6ea54d66972c842d4510632342"
+    },
+    {
+      "path": "failures/geometry/1d11af8554aa-b165311d19074d14-遮罩14.xml.gz",
+      "bytes": 939,
+      "sha256": "a4ff6ced611316818fcab928be2152f3f2779f8b5c733890ca002db56c33a450"
+    },
+    {
+      "path": "failures/geometry/1d45fccf2c3b-b165311d19074d14-遮罩7.xml.gz",
+      "bytes": 4611,
+      "sha256": "252a186849fa772871a4ca6fece93523f91e6232eb9e01b34963912ac58c9856"
+    },
+    {
+      "path": "failures/geometry/367e001bef8d-b165311d19074d14-遮罩20.xml.gz",
+      "bytes": 944,
+      "sha256": "77e742b02b0be9d7e20c5f3003fb6617b0b2d40b5fcdc2089b573adcb6dedc53"
+    },
+    {
+      "path": "failures/geometry/4b4a54fd56b0-b165311d19074d14-遮罩8.xml.gz",
+      "bytes": 900,
+      "sha256": "84dec42533109473c89c5348abe8023f69ff401ed6f82810554e3e019d16759e"
+    },
+    {
+      "path": "failures/geometry/5204068f80c4-b165311d19074d14-遮罩16.xml.gz",
+      "bytes": 913,
+      "sha256": "089cb1af170242d0f499c42a3631dbab9f3af559f3b6dc95076b737643215f0d"
+    },
+    {
+      "path": "failures/geometry/55bfa2a3cdfe-b165311d19074d14-遮罩21.xml.gz",
+      "bytes": 3351,
+      "sha256": "28fbd3e329a2c647e9cf842a22dd2bb3326c7d774ad20c0f64929baea45a3b2d"
+    },
+    {
+      "path": "failures/geometry/5d9195df76e0-b165311d19074d14-遮罩2.xml.gz",
+      "bytes": 3918,
+      "sha256": "c2a4800ab4914fd5ae9468000df4bdd5e46c0e92f91fdabcc75ca3adedc2f642"
+    },
+    {
+      "path": "failures/geometry/71666e7ab5b9-b165311d19074d14-遮罩17.xml.gz",
+      "bytes": 3116,
+      "sha256": "7f3f1883023aa3df41935cbbe398603dee28851a75a171e48b456a7b1f3f633e"
+    },
+    {
+      "path": "failures/geometry/7c3f7823e5ce-b165311d19074d14-遮罩12.xml.gz",
+      "bytes": 982,
+      "sha256": "b9c21020bec001bde1067e8b44627e5599c60280e1c403184ebd3ccb2bb4b61f"
+    },
+    {
+      "path": "failures/geometry/7fc6de8219e2-b165311d19074d14-遮罩13.xml.gz",
+      "bytes": 2872,
+      "sha256": "a30d0cf31947ffcdd1f9b1cf70ba1c59f92bc77bfd986b883bd76f48739c99b6"
+    },
+    {
+      "path": "failures/geometry/829c483696d8-b165311d19074d14-遮罩5.xml.gz",
+      "bytes": 6164,
+      "sha256": "09cee90f1327b01b9b36be0e9471e2382e6ecc97c5480dbe40e48ecce3c60ba5"
+    },
+    {
+      "path": "failures/geometry/836f92e352f4-build.py.gz",
+      "bytes": 6396,
+      "sha256": "26826a5e26c2629b12406de7faae75785601a6cd7029a98588f0f88e8e21b4fc"
+    },
+    {
+      "path": "failures/geometry/8dba93ffc319-b165311d19074d14-遮罩15.xml.gz",
+      "bytes": 3658,
+      "sha256": "5c75323e8f253777ccdcfd0e155d3acb4e1dba2aef827a379e2bc8a99f94e8ac"
+    },
+    {
+      "path": "failures/geometry/93f358d93b0f-b165311d19074d14-遮罩0.xml.gz",
+      "bytes": 2110,
+      "sha256": "0bdc719e6955b406f11282f31357af0e4da37f1fd92fe1d0bd6432ca8e7f5913"
+    },
+    {
+      "path": "failures/geometry/aa2da6805dd1-b165311d19074d14.xml.gz",
+      "bytes": 592,
+      "sha256": "413d78239187e8f32ae961670e8f42f9642af7368a484ce0fe0a54096611c8fb"
+    },
+    {
+      "path": "failures/geometry/ab51f6fabdbd-b165311d19074d14-遮罩10.xml.gz",
+      "bytes": 909,
+      "sha256": "de0d241b90b4c197aea9ca83fd6df701e71661752e372634e9b73b1d32ec172a"
+    },
+    {
+      "path": "failures/geometry/ad0003b4ce1b-vector.py.gz",
+      "bytes": 1025,
+      "sha256": "e67de334e3dede1994ebe475aa166cf15d9c5893913bf285f23eb9a20f922de2"
+    },
+    {
+      "path": "failures/geometry/ae03e5dc0a29-b165311d19074d14-遮罩11.xml.gz",
+      "bytes": 3000,
+      "sha256": "8eea1eacc5b09a98681c25acb80dba966f1a696e9cba7e678b5443623d41aaba"
+    },
+    {
+      "path": "failures/geometry/ba17cee7aaa4-b165311d19074d14-遮罩4.xml.gz",
+      "bytes": 3086,
+      "sha256": "d11b5c8074bbb38be5bcce1314e1c78c6427e30400c5b90c0428e248a1ef833c"
+    },
+    {
+      "path": "failures/geometry/c0f50a472a30-Codex特种兵素材.swf.gz",
+      "bytes": 84830,
+      "sha256": "c5605bcc29a113e4cf9a20cdfce050bbe718d61f1eb4fe5eb8d6ec3c9ea37dbe"
+    },
+    {
+      "path": "failures/geometry/c2def7ced632-regeneration-recovery.json",
+      "bytes": 7346,
+      "sha256": "c2def7ced632e24a783837a782cd4249b0eb9883e2d5ba12324840b2905ce356"
+    },
+    {
+      "path": "failures/geometry/d348470f49e6-b165311d19074d14-遮罩19.xml.gz",
+      "bytes": 2556,
+      "sha256": "7907b3434bbc7aaeaaa9cd696ae39d253d75e9c2c5229475d73a333df812bcbc"
+    },
+    {
+      "path": "failures/geometry/df82b611a5ac-b165311d19074d14-遮罩18.xml.gz",
+      "bytes": 888,
+      "sha256": "10f38b1593f46fcb5ca6191aa247ef2358b0bd8f40b379be27bd8eb55c908307"
+    },
+    {
+      "path": "failures/geometry/e500057b6ae8-SoldierAI.as.gz",
+      "bytes": 2144,
+      "sha256": "b4fdc2e10c1b4be6dd26860b21ebf5a41f24eb22adb718446664f298df4a4311"
+    },
+    {
+      "path": "failures/geometry/e6ca44dcc5a7-b165311d19074d14-遮罩3.xml.gz",
+      "bytes": 957,
+      "sha256": "7ad9eb83b4b17dbf36c3de62b766c078c93577edbd7b33a87076c7e344c0d132"
+    },
+    {
+      "path": "failures/geometry/e6f3b34248ee-finding.json",
+      "bytes": 1707,
+      "sha256": "e6f3b34248ee129016fab4c72995bae01f50bfc8f405bd3b0add7ade335614f7"
+    },
+    {
+      "path": "failures/geometry/e774f27bce59-b165311d19074d14-遮罩6.xml.gz",
+      "bytes": 5217,
+      "sha256": "19786ab56644171cf82d36ef88df93a61729b192cd8c23101ba90fb923b7569b"
+    },
+    {
+      "path": "failures/geometry/ef0101c61752-Cf6SoldierAssetTest.as.gz",
+      "bytes": 6082,
+      "sha256": "5db1bd24d6a898066c053327eb68f6b73ceec38b98f6105e92a306aaae96b3e5"
+    },
+    {
+      "path": "failures/geometry/ef31be2e6a9a-native-manifest.json",
+      "bytes": 46332,
+      "sha256": "ef31be2e6a9a4aa931d5793ecee11f8d29e3ede0146f2a03df786991de2adbf7"
+    },
+    {
+      "path": "failures/geometry/ff117c711390-b165311d19074d14-遮罩9.xml.gz",
+      "bytes": 3544,
+      "sha256": "d3fbd1d4ce0712c9389ba9dc895434eaad39de67443daf2928a661a58ba8eeec"
+    },
+    {
+      "path": "failures/geometry-images/11da9f99ac00-death-a1-middle.png",
+      "bytes": 28916,
+      "sha256": "11da9f99ac00707e550290ac5a1cd8f54b49c83042fae32ea149921a5d62eca6"
+    },
+    {
+      "path": "failures/geometry-images/2e11cb8a221c-knife.png",
+      "bytes": 26481,
+      "sha256": "2e11cb8a221c3b5ed9e4151244d19b785278c5904caabe11985ae6878875f9eb"
+    },
+    {
+      "path": "failures/geometry-images/2e3be9848b8c-death-start.png",
+      "bytes": 26511,
+      "sha256": "2e3be9848b8cfb8e4d9423c7243e9faa535c31cede92e1e8476aa9fe857fad46"
+    },
+    {
+      "path": "failures/geometry-images/39266a6de42b-death-a0-middle.png",
+      "bytes": 28284,
+      "sha256": "39266a6de42bc9362ce32b51bc9bae25b243e873240481de118bb2a1584a5fd9"
+    },
+    {
+      "path": "failures/geometry-images/55e17f9e4ee4-death-a0-late.png",
+      "bytes": 23047,
+      "sha256": "55e17f9e4ee45ef224cc4e02f80f9aa3060694a8ab02a359e3b0f3fcdeb25111"
+    },
+    {
+      "path": "failures/geometry-images/6435226f59e6-airborne-shadow.png",
+      "bytes": 24878,
+      "sha256": "6435226f59e673312d4d237d1ece5098e4067381959d2dbcd607b5f5d7e7da89"
+    },
+    {
+      "path": "failures/geometry-images/692444e45b58-death-a1-late.png",
+      "bytes": 23544,
+      "sha256": "692444e45b584bd3b4b7e335fc62f41b4a74e1f97707372374637fe1b1f7e3e1"
+    },
+    {
+      "path": "failures/geometry-images/99169655bcdf-death-a2-late.png",
+      "bytes": 21518,
+      "sha256": "99169655bcdfd604f9af080cb80d9ededcda3b5951bdec9c42062f17467698cd"
+    },
+    {
+      "path": "failures/geometry-images/9c20a4354b3e-shoot.png",
+      "bytes": 25886,
+      "sha256": "9c20a4354b3ee9c75ebd168d839ed5116060f91e415f1e8f0e0e2417d7c93d34"
+    },
+    {
+      "path": "failures/geometry-images/a3f24d51f54d-down.png",
+      "bytes": 21618,
+      "sha256": "a3f24d51f54dcb8aca73f67927513bcbd432b4bfaff54564971c4c3db525c4c6"
+    },
+    {
+      "path": "failures/geometry-images/f1995f689a5b-stand.png",
+      "bytes": 26508,
+      "sha256": "f1995f689a5b2f1d69cbcf7a89bc19635af01c1de057f49a507404f9dcb3feff"
+    },
+    {
+      "path": "failures/linkage-diagnostic/09317cb63157-flashlog.txt.gz",
+      "bytes": 1166,
+      "sha256": "74ca3d334e9a9fc525b76da391cc6b454d4ec6fdc938a5c2b97fa5f3a9a6e96d"
+    },
+    {
+      "path": "failures/linkage-diagnostic/18a21d01661c-compile_output.txt.gz",
+      "bytes": 200,
+      "sha256": "44d3cb522b930ab5736c330a7c387d42c71af2f9246fcc3ec8edf3892633c8b9"
+    },
+    {
+      "path": "failures/linkage-diagnostic/3e4b9d0546e5-Cf6SoldierAssetTest.as.gz",
+      "bytes": 8065,
+      "sha256": "3e1d3c1d6e1b81b24cbc3d991cdee31246c560de787d3e5b4ad77f66e9f1f2f6"
+    },
+    {
+      "path": "failures/linkage-diagnostic/592bc05d261b-TestLoader.swf.gz",
+      "bytes": 859020,
+      "sha256": "7c469a81681c257c5cd0c83b2314d65dc148ee678c59dde2d0a91fc0acccbd3f"
+    },
+    {
+      "path": "failures/linkage-diagnostic/6d61f2479cba-manifest.json",
+      "bytes": 1652,
+      "sha256": "6d61f2479cbac4580eb7eb14a59b6838b249b16bedd1136e4d55135a030e7682"
+    },
+    {
+      "path": "failures/linkage-diagnostic/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "failures/nested-consumer/101440135c92-compile_output.txt.gz",
+      "bytes": 201,
+      "sha256": "a3d75c83cb53e331ede2a7add66e529bb35f2403e53da46b43e52798ff0ed4a6"
+    },
+    {
+      "path": "failures/nested-consumer/19e5df98101c-TestLoader.swf.gz",
+      "bytes": 858776,
+      "sha256": "cd840c21e03c577403f9668a91617a303e4d6c49b47820b392262496d9656693"
+    },
+    {
+      "path": "failures/nested-consumer/2db4249a8168-source-manifest.json",
+      "bytes": 1829,
+      "sha256": "2db4249a8168f8866a1236fd6593d84c4993ab64c1c56b981802a51ccc4851b1"
+    },
+    {
+      "path": "failures/nested-consumer/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "failures/nested-consumer/9a2196fe1ec1-Cf6SoldierAssetTest.as.gz",
+      "bytes": 7899,
+      "sha256": "b60bdc5a670cc0f4c3165ca543c4b0512f52dec8e8dac3ddc6ab236bdde61334"
+    },
+    {
+      "path": "failures/nested-consumer/c06ebb205f4f-Consumer.swf.gz",
+      "bytes": 821,
+      "sha256": "ecd3acdf8aff9f0031760530efdf5742d757e55a6e8747c4f73d8193bacfb29c"
+    },
+    {
+      "path": "failures/nested-consumer/ec0f92261b5a-manifest.json",
+      "bytes": 2269,
+      "sha256": "ec0f92261b5a30878f92f8e5a6e53c614fb4617b5e28a2ac1af0f44972a7dbc2"
+    },
+    {
+      "path": "failures/nested-consumer/ed9e34e355c0-flashlog.txt.gz",
+      "bytes": 2180,
+      "sha256": "5d324786c27a8d24da0fac23e811a517902204cdb4bab62c373f1c4397b65560"
+    },
+    {
+      "path": "failures/separate-libraries/28aafa5097cd-manifest.json",
+      "bytes": 2382,
+      "sha256": "28aafa5097cd45f44db90121ef3fb0363996cc8f337115185189ad9522c150a7"
+    },
+    {
+      "path": "failures/separate-libraries/3363de819413-flashlog.txt.gz",
+      "bytes": 895,
+      "sha256": "80a9ebdd458cdf07547cb41dcc1339da0832db9fe507b1472f0801d3be52d4b6"
+    },
+    {
+      "path": "failures/separate-libraries/3f769acf9ab2-TestLoader.swf.gz",
+      "bytes": 858734,
+      "sha256": "e5b52778a9404e68bdd7d92153837d13a82299af77df90062db8f835e67eadb3"
+    },
+    {
+      "path": "failures/separate-libraries/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "failures/separate-libraries/817c940a3200-Cf6SoldierAssetTest.as.gz",
+      "bytes": 7871,
+      "sha256": "51acaee4bfb2be487bbb034beed1ce68c365adb029ae4ce9f674588dddee7a6e"
+    },
+    {
+      "path": "failures/separate-libraries/8713affb9b6e-compile_output.txt.gz",
+      "bytes": 201,
+      "sha256": "4d5fa63e2daf4c7ddb7efe601de03d2ad29d9bc390d3a3eb9704fdcfe24d17de"
+    },
+    {
+      "path": "failures/separate-libraries/9a09bac0d1da-native-manifest.json",
+      "bytes": 45737,
+      "sha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275"
+    },
+    {
+      "path": "failures/separate-libraries/9ae5ad2e1929-Codex特种兵素材.swf.gz",
+      "bytes": 82024,
+      "sha256": "d9a8d78f19658db993eaa22a9ea536273de88460f6de44bbf4777a3ef750c642"
+    },
+    {
+      "path": "history/48-cases/35955f6452e5-compile_output.txt.gz",
+      "bytes": 39,
+      "sha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2"
+    },
+    {
+      "path": "history/48-cases/619de505c0b5-Cf6SoldierNativeHost.swf.gz",
+      "bytes": 855812,
+      "sha256": "15fd3f8381ec5c0c23531088c4f913acbdba2b7ce1f93eb61ea1781c310921e1"
+    },
+    {
+      "path": "history/48-cases/65aabb760e11-Cf6SoldierAssetTest.as.gz",
+      "bytes": 7821,
+      "sha256": "910fcba3583973696acb4af2eb826cbc614cd36d44d858dae760c38a7f75f4e8"
+    },
+    {
+      "path": "history/48-cases/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "history/48-cases/7b6ab316860e-flashlog.txt.gz",
+      "bytes": 707,
+      "sha256": "1bf759261fd8ccbddbd60f12ab54f12d448f6f183f9f867ccb7d71ee2e59bf88"
+    },
+    {
+      "path": "history/48-cases/ee29d4d6303f-manifest.json",
+      "bytes": 1110,
+      "sha256": "ee29d4d6303faa0bf0e266c218da2a3a77fd71188f2e101d90b34e2a163786b0"
+    },
+    {
+      "path": "history/before-scale/26c1a2d30bcc-manifest.json",
+      "bytes": 735,
+      "sha256": "26c1a2d30bcc9b0f5cf74ca9e80240572289898a3f22b6d198791d255bf37133"
+    },
+    {
+      "path": "history/before-scale/9a09bac0d1da-native-manifest.json",
+      "bytes": 45737,
+      "sha256": "9a09bac0d1da4da6100f355eee3e6d9edce52b2173e54fe66351753cf380e275"
+    },
+    {
+      "path": "history/before-scale/9ae5ad2e1929-Codex特种兵素材.swf.gz",
+      "bytes": 82024,
+      "sha256": "d9a8d78f19658db993eaa22a9ea536273de88460f6de44bbf4777a3ef750c642"
+    },
+    {
+      "path": "history/before-scale/ce74425dd1c6-build.py.gz",
+      "bytes": 7170,
+      "sha256": "f56eb02e4b19e70929fe23c8b22a272cea890341a601317f3d7e94034f8610d0"
+    },
+    {
+      "path": "history/full-size-guns/35955f6452e5-compile_output.txt.gz",
+      "bytes": 39,
+      "sha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2"
+    },
+    {
+      "path": "history/full-size-guns/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "history/full-size-guns/743a9f35a691-Cf6SoldierAssetTest.as.gz",
+      "bytes": 8404,
+      "sha256": "2c1564428c7932414153e5a9a0826ec316d1c8e0e2f8f436f0b7c4e13fb53470"
+    },
+    {
+      "path": "history/full-size-guns/b4f529cc3632-flashlog.txt.gz",
+      "bytes": 745735,
+      "sha256": "9fa752c6a1ede21f3e293940d03fbabdb2a2e581769e65b64e28b52feee85cf5"
+    },
+    {
+      "path": "history/full-size-guns/d17eeeaa1707-Cf6SoldierNativeHost.swf.gz",
+      "bytes": 856618,
+      "sha256": "557a9838fb15c82afc95ca7a46a538414e0fc16f3b05a5e5b285cebcbf24bd53"
+    },
+    {
+      "path": "history/full-size-guns/fc306eaf509d-manifest.json",
+      "bytes": 1222,
+      "sha256": "fc306eaf509d3ec14c0f37391d8226954fa6e9f431bf03b73838da94cf891a2c"
+    },
+    {
+      "path": "history/metadata-normalization/before-build.py.gz",
+      "bytes": 7181,
+      "sha256": "70dd899326a2ff9b792e5a116cde7e45307a9bab6af2cb508a55cc634a3f27a6"
+    },
+    {
+      "path": "history/metadata-normalization/before-native-manifest.json.gz",
+      "bytes": 12312,
+      "sha256": "71202959215bb595d38ca566fb20df81d4b13850392998546567caea4868fcba"
+    },
+    {
+      "path": "history/metadata-normalization/before-README.md.gz",
+      "bytes": 5518,
+      "sha256": "18a222f02873b98143f8cdc998715cf4e8ceba3fe1441300f9a45a07e48878b1"
+    },
+    {
+      "path": "history/metadata-normalization/before-summary.json.gz",
+      "bytes": 26867,
+      "sha256": "86f0331f97fa8eb147efce82502660e30275435a760d74bbeae154f20e85fd1b"
+    },
+    {
+      "path": "history/metadata-normalization/before-verification.json.gz",
+      "bytes": 180,
+      "sha256": "e76dde7f9b6599d720fec9f05dbd6f3a3a3855e4de9e521c6b171343123868fd"
+    },
+    {
+      "path": "identity/native-capture-review.json",
+      "bytes": 2527,
+      "sha256": "f37accedad4fc36ec6d4ae60272a83e8fbf1a9a8e6cf58ae2a45c8aedd4fe662"
+    },
+    {
+      "path": "identity/native-equipment-r7-review.json",
+      "bytes": 2839,
+      "sha256": "926c3eb63e6c57a8a0e47b809d8a92645b0673409bf763b6a2f609328498c4b6"
+    },
+    {
+      "path": "identity/overlay-equipment-r3.json",
+      "bytes": 5589,
+      "sha256": "6519c235af2648e34429c10cc3f9e27bee8d6df6ddec949db9969a37b0d751ea"
+    },
+    {
+      "path": "identity/overlay-equipment-r4.json",
+      "bytes": 5594,
+      "sha256": "bfd81d437b6bbe3ae73075b077bdffe42b8a04bb6a0ec5793e64ca558506bbfc"
+    },
+    {
+      "path": "identity/overlay-r1.json",
+      "bytes": 4053,
+      "sha256": "d7272f323c967cbfe55e5c2d591961d9db7233cd8de729372e889bae4ba6b7f1"
+    },
+    {
+      "path": "images/airborne-shadow.png",
+      "bytes": 48516,
+      "sha256": "a8d2b8bc2f12d7c16acdb40f48735eb685fc65e4d455b23b2e338e302dd63abf"
+    },
+    {
+      "path": "images/death-a0-late.png",
+      "bytes": 37582,
+      "sha256": "1d1671e6ea2d9b4c5419377bf5e51b32316cc6526ee69a251bc12b3807e04cb9"
+    },
+    {
+      "path": "images/death-a0-middle.png",
+      "bytes": 48393,
+      "sha256": "9c498f0f475ba55fdfbbb1044572ec447f892ed32644e248fb0fdfed02f88abd"
+    },
+    {
+      "path": "images/death-a1-late.png",
+      "bytes": 39332,
+      "sha256": "44a718fdeb82725f516042ee4f42a5c15417d6bf124887a9752be2a35af0bec0"
+    },
+    {
+      "path": "images/death-a1-middle.png",
+      "bytes": 50909,
+      "sha256": "2951a22d957a0a413795d7dc064fbe2527e69e69e2ce355ae4f2c9d299d28a39"
+    },
+    {
+      "path": "images/death-a2-late.png",
+      "bytes": 37329,
+      "sha256": "e60aff6e263db9108cfe2be6952b6c90b98d6de4f25d5d2f88f308060ff63e8a"
+    },
+    {
+      "path": "images/death-start.png",
+      "bytes": 46084,
+      "sha256": "ac4a8272090a774c26c63b52af1f9893cc8c4731542289cafff25c4a7df09479"
+    },
+    {
+      "path": "images/down.png",
+      "bytes": 37571,
+      "sha256": "d450cc7d475cafc35f184d09e9e6c674e81b85776544832acb0dbfb9ae548f95"
+    },
+    {
+      "path": "images/knife.png",
+      "bytes": 50860,
+      "sha256": "784c2bf61d5889859ebd0bfb09d90ecc3b58f2eb26460b5a1abf3cf6f2354816"
+    },
+    {
+      "path": "images/reload.png",
+      "bytes": 41486,
+      "sha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4"
+    },
+    {
+      "path": "images/rifle-AK47.png",
+      "bytes": 41254,
+      "sha256": "2c0a52ffb8949cd3d6655a06d445ab636f8a609c7d1a196ce3750626db48610c"
+    },
+    {
+      "path": "images/rifle-AK74战术版.png",
+      "bytes": 46356,
+      "sha256": "676ead4397ee8140de23dc1a9f4d310be2401847fafc0550381f3d5204dc495a"
+    },
+    {
+      "path": "images/rifle-DD MK18战术版.png",
+      "bytes": 43774,
+      "sha256": "661d5ebbbceb9c7946d030ec1492f9b494943c36c5bd35b6eac8e74c7bf2e261"
+    },
+    {
+      "path": "images/rifle-M4A1改.png",
+      "bytes": 41486,
+      "sha256": "da2394198e32f6380a1e0c277518ca6ddbea821d1c4d8a81fa43360db51482c4"
+    },
+    {
+      "path": "images/shoot.png",
+      "bytes": 46166,
+      "sha256": "b96e753341b421818869c194ead7bc0474176ef1b991fd9b809bc1822ee1b315"
+    },
+    {
+      "path": "images/stand.png",
+      "bytes": 46103,
+      "sha256": "d47eb9215321f21b9627f2d0b5f8b89202499f9f7ba250050ccf210c398e40d1"
+    },
+    {
+      "path": "logs/asloader-equipment-r3-publish.log.gz",
+      "bytes": 694,
+      "sha256": "cc5f4f554608f6e4baa8ccbe1e7cd0e9810e77185c837b43352a0a05da90bdc0"
+    },
+    {
+      "path": "logs/native-equipment-r3-tests.log.gz",
+      "bytes": 1554,
+      "sha256": "5a935a76cf7f78a7b3649cb9c3f6557f36847c756262ce552d57730d974c2065"
+    },
+    {
+      "path": "logs/native-equipment-r3b-diagnostic.log.gz",
+      "bytes": 1781,
+      "sha256": "f3120eeec8e28518c62fed1b4221ea4a3ba92f2ccefa645a0a0b7c4e3a6060dd"
+    },
+    {
+      "path": "logs/native-equipment-r4-tests.log.gz",
+      "bytes": 1611,
+      "sha256": "069fec0fef2aff5d06d1eecfeed6f9ae1847d45e9808c963870bbd07732ef010"
+    },
+    {
+      "path": "logs/native-equipment-r5-tests.log.gz",
+      "bytes": 1206,
+      "sha256": "760cb643260ef059625c869d14103c66701bac0d4cbae19bcabd5f6a47a7da3d"
+    },
+    {
+      "path": "logs/native-equipment-r6-capture.log.gz",
+      "bytes": 454,
+      "sha256": "a1493e1629a68442e5ab464faf01043f2a078d10c6b7220c416a699f4ecaf3f0"
+    },
+    {
+      "path": "logs/native-equipment-r6b-capture.log.gz",
+      "bytes": 1233,
+      "sha256": "aa3b3ae5e925fb30b110860a68759d06b9f65484970dde188342ad1c810c1f71"
+    },
+    {
+      "path": "logs/native-equipment-r7-capture.log.gz",
+      "bytes": 1232,
+      "sha256": "d8a462ada081d5fc8aa7da3ef19a342cc1f3be74000c0bb9a80ea1360b521c17"
+    },
+    {
+      "path": "logs/native-equipment-r7-publish.log.gz",
+      "bytes": 731,
+      "sha256": "e9321c4021f1f1d76bb00679296be8e88157e3e1d627134a8782eea1b46b74e0"
+    },
+    {
+      "path": "logs/worker-equipment-r4-verify.log.gz",
+      "bytes": 592,
+      "sha256": "60f179597eb18b294677524d724f533e698d1a9c8c07f545fb6e994651eda6a2"
+    },
+    {
+      "path": "native/final/083da279efe6-flashlog.txt.gz",
+      "bytes": 706121,
+      "sha256": "6d9e34f801de28ed34b1e01f7f8bdf619fbadb0acf44588c1d4b830afeb20edb"
+    },
+    {
+      "path": "native/final/35955f6452e5-compile_output.txt.gz",
+      "bytes": 39,
+      "sha256": "06c9dfb72d3afee3716fdabc5c8449d243a3a405cee3292d96e3a5040bc05cd2"
+    },
+    {
+      "path": "native/final/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "native/final/743a9f35a691-Cf6SoldierAssetTest.as.gz",
+      "bytes": 8404,
+      "sha256": "2c1564428c7932414153e5a9a0826ec316d1c8e0e2f8f436f0b7c4e13fb53470"
+    },
+    {
+      "path": "native/final/77bc5e68e90d-Cf6SoldierNativeHost.swf.gz",
+      "bytes": 856622,
+      "sha256": "6d4e38313802892b9eaf031056fae7ee40404c9b35174a84346f7de58ac5a871"
+    },
+    {
+      "path": "native/final/93fd5bf84972-manifest.json",
+      "bytes": 1222,
+      "sha256": "93fd5bf849726525c8e7b121def2da8fa198057d989b973476552361f918d485"
+    },
+    {
+      "path": "native/final-compiler/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "native/final-compiler/e9a2093b286a-compile_output.txt.gz",
+      "bytes": 89,
+      "sha256": "ed1bda401c633fbbaf7e2ccd20f726f76b61a2d635b6c6f5521e2d95feb395ca"
+    },
+    {
+      "path": "native/logic-late-completion/2689367b205c-publish_done.marker",
+      "bytes": 2,
+      "sha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df"
+    },
+    {
+      "path": "native/logic-late-completion/3942ebe51282-receipt.json",
+      "bytes": 1223,
+      "sha256": "3942ebe512826615360dd10162e1a5374d0e42b0f8bc4a87b306c894fc813716"
+    },
+    {
+      "path": "native/logic-late-completion/6d64657e843c-compiler_errors.txt.gz",
+      "bytes": 46,
+      "sha256": "cf9b706c27e255ce0e87d9d42630e9fa4b8e1c3bbbbb53f3a04ae2908505122d"
+    },
+    {
+      "path": "native/logic-late-completion/89abf2a02804-compile_output.txt.gz",
+      "bytes": 75,
+      "sha256": "d794bd77bb98a4ba387ccdec81c186909567814559f0d1c1aaaebeb89610efd4"
+    },
+    {
+      "path": "native/logic-late-completion/f0274dc3c400-compile_state_uncertain.marker",
+      "bytes": 106,
+      "sha256": "f0274dc3c4000a19203ae9864adc0ca0a6578e1f2fe50b899a73a146020baf3e"
+    }
+  ],
+  "boundaries": [
+    "Native weapons use existing player equipment and NPC ammunition. Actual fixture initialization and game initialization are separate evidence.",
+    "Agent inspected 16 native captures; human visual/gameplay acceptance remains open.",
+    "Old fixed-handgun tests and fights are historical only. Failed fixtures and the timed-out-then-completed publish remain recorded.",
+    "Candidate runtime identity is explicit; no formal runtime promotion and no standard-entry human acceptance claimed."
+  ],
+  "metadataRevision": {
+    "reason": "Normalize shared runtime AS2 contract hashes for LF/CRLF checkout equivalence; no native source or runtime bytes changed",
+    "previousSummarySha256": "11c285916263e4be32230b2a8ec544e6b61b77110e5310689dcc8753ab185660",
+    "verification": {
+      "nativeOutputsByteIdentical": true,
+      "projectFilesByteIdentical": true,
+      "sharedAs2LFAndCRLFEquivalent": true,
+      "runtimeSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87"
+    }
+  }
+}

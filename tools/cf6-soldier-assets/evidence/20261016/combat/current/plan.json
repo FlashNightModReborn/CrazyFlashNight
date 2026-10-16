@@ -1,0 +1,35 @@
+{
+  "schema": "cf6-soldier.foreground-plan.v1",
+  "source": {
+    "sourceSwf": "flashswf/arts/new/Codex特种兵素材.swf",
+    "sourceSwfSha256": "a19fe74e747bc26a8dbb2652236f0326294c39cba6085e408f051873c21adc87",
+    "aiSourceSha256": "47135c2b45f4610052a82b5f2ca10de559eb34f91d1598855df85336c16f9084",
+    "stage": 7,
+    "tier": 5,
+    "dataPath": "data/enemy_properties/CF6重制敌人.xml",
+    "dataSha256": "6da3a8bbadec79c109c0bd5bc9854d9ba467411753e6e8b06add1d2deaed0051",
+    "rivalDataPath": "data/enemy_properties/大学.xml",
+    "rivalDataSha256": "de0ea73d2097cc802437d352ee99749ba8313418915bafb7bf2c2418f6393b67",
+    "rivalSwfSha256": "8dc006506daac4c25990020d84234dc321b1edc5c63308532e175f05f808847a",
+    "asLoaderSha256": "a43376540fe35e0eb9498d65cf4e81bb51027e793656ecba8acdfb9914ceae7a",
+    "rifleDataSha256": "efffa04aa2d12579ba0e9f7a7ffbc6a862e78cd237d80f3acc8bd363f098752a",
+    "weaponSource": "shared cadet long-gun pool; explicit unit parameters take priority",
+    "sharedSwfSha256": "ff54dbc1900062c3ea0572126b89388f93528436f0bee941bb64b9da4e1e44c4",
+    "evidenceLane": "interactive_candidate"
+  },
+  "plans": [
+    {
+      "batchId": "soldier-eq-r4-20261016-weapons",
+      "manifestPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-manifest.json",
+      "evidenceConfigPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-soldier-20261016\\combat-equipment-r4\\weapons-evidence-config.json",
+      "slot": "cf7_agent_soldier_eq_r4_20261016_weapons",
+      "cases": 6,
+      "worstCaseCombatMs": 720000
+    }
+  ],
+  "boundaries": [
+    "Ordinary visible-window candidate; no background performance qualification.",
+    "Fresh dedicated slots and frozen resources required; no automatic retries or result relabeling.",
+    "Uses standard long-gun equipment and the cadet default pool. NPC reload does not consume player inventory."
+  ]
+}

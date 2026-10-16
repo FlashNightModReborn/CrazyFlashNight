@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/Wings/分件/849-遮罩0" itemID="6aa00000-56872c5f" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="849-遮罩0">
+      <layers>
+        <DOMLayer name="轮廓遮罩" color="#9A5E59" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-212 29|-255 64|-272 69|-272 169|-272 209[-418 382 -358 670[-352 699 -352 729[-294 781 -245 843|-212 869[-202 1019 -178 1150[-172 1179 -172 1209[-162 1312 -72 1229[-72 1059 -82 890[-85 847 -52 849[154 985 265 1310|268 1329[559 1477 968 1429|968 1289|968 1249[840 1026 588 929|376 515[368 499 348 489[344 273 275 136[260 107 228 109|228 9|228 -31[123 -156 -152 -111[-221 -90 -213 9|-212 29" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原生色块与线条" color="#9A5E59" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/Wings/分件/849-遮罩1" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="0"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

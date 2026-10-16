@@ -1,0 +1,166 @@
+{
+  "schema": "cf6-guard.field-fix.v1",
+  "issue": [
+    "transformation stutter",
+    "missing inherited name",
+    "two configurable catalog variants"
+  ],
+  "beforeSwf": {
+    "sha256": "f42607dcfe6a70573d4c2086bea8d1191f53f50a7f4613464b4b34eedcb6100c",
+    "bytes": 161955
+  },
+  "afterSwf": {
+    "sha256": "c90a6eb3209a8e295fb9af76bc7efb4cd5534c2d03086bf29ba1e9f574677c28",
+    "bytes": 189309
+  },
+  "nativeSymbols": {
+    "before": 476,
+    "after": 185
+  },
+  "optimization": "Offline vector intersections remove all nested runtime masks from six torn-atlas drawings; frozen SVG and authored timeline unchanged.",
+  "vectorsOnly": true,
+  "variantDefaults": [
+    {
+      "linkage": "敌人-CF6光头保安",
+      "unitId": 468,
+      "defaultTransform": false
+    },
+    {
+      "linkage": "敌人-CF6变身光头保安",
+      "unitId": 469,
+      "defaultTransform": true
+    }
+  ],
+  "displayInheritance": [
+    "名字",
+    "称号"
+  ],
+  "nativeTests": {
+    "runId": "854eff0186c145da82562cb23b623fe0",
+    "passed": 488,
+    "failed": 0,
+    "cases": 22,
+    "transformationCases": 11,
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32K": 0
+  },
+  "performance": "comparison/summary.json",
+  "performanceFinalRunHadConcurrentIsolatedWorker": true,
+  "pixelComparison": {
+    "unmodifiedFramesIdentical": [
+      1,
+      40,
+      61,
+      70
+    ],
+    "allBoundsIdentical": true,
+    "tornFrameMaxMeanRgbDifference": 1.17664,
+    "maxSilhouettePixelsOutsideOnePixel": 3,
+    "preAnchorFixAndFinalProbePixelsIdentical": true
+  },
+  "defaultVariantGameRuns": [
+    {
+      "worker": "guard-fix-w01",
+      "caseId": "normal-default",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "red",
+      "unitId": 468,
+      "linkage": "敌人-CF6光头保安",
+      "defaultWithoutParameter": true,
+      "transformation": false,
+      "phaseSpawnCount": 0.0,
+      "successor": null,
+      "status": "finished",
+      "frames": 497.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 8486.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 42.5301368007585
+    },
+    {
+      "worker": "guard-fix-w01",
+      "caseId": "transform-default",
+      "repeatIndex": 1,
+      "workerQualified": true,
+      "level": 30,
+      "weapon": "M4A1战术版",
+      "guardSide": "blue",
+      "winner": "blue",
+      "unitId": 469,
+      "linkage": "敌人-CF6变身光头保安",
+      "defaultWithoutParameter": true,
+      "transformation": true,
+      "phaseSpawnCount": 1.0,
+      "successor": {
+        "linkage": "敌人-完全体克隆兽",
+        "level": 30,
+        "side": "blue",
+        "spawnFrame": 532,
+        "aggregateReportedMaxHp": 10578.0,
+        "remainHp": 10227.0,
+        "aliveCount": 1.0
+      },
+      "status": "finished",
+      "frames": 1177.0,
+      "guardStartHp": 11019.0,
+      "guardRemainHp": 0.0,
+      "soldierStartHp": 14766.0,
+      "soldierRemainHp": 0.0,
+      "soldierHpMultiplier": 1,
+      "soldierDamagePercent": 100.0
+    }
+  ],
+  "gameEvidence": "defaults/summary.json",
+  "gameQualified": true,
+  "failureEvidence": [
+    {
+      "path": "failures/second-export-placeholder",
+      "qualified": false,
+      "compilerErrors": 0,
+      "reason": "The off-stage second exported root compiled shared man bodies as one-frame placeholders. Static binary timeline validation rejected it; a stopped second anchor frame fixed dependency loading."
+    },
+    {
+      "kind": "generator-error",
+      "published": false,
+      "message": "TypeError: Argument 'element' has incorrect type (expected lxml.etree._Element, got lxml.etree._ElementTree)",
+      "resolution": "Use parsed root element; regenerated from unchanged manifest-owned project after verifying identity."
+    }
+  ],
+  "boundaries": [
+    "BitmapData.draw cost is not complete game frame time; samples are small and system load is not controlled.",
+    "Clipped contours preserve visible drawing with small subpixel antialias differences.",
+    "Candidate game runs verified registration and defaults; physical standard-entry experience has not been accepted by a human.",
+    "No formal runtime promotion, commit or push. Existing running game was not restarted."
+  ],
+  "validation": {
+    "ownMonsterFormulaAndRegistration": true,
+    "arenaCatalogDerivedCheck": true,
+    "xmlRoundtrip": {
+      "generatedAt": "2026-10-16T12:16:14.143Z",
+      "checkedFiles": 1,
+      "passed": 1,
+      "failed": 0,
+      "failures": []
+    },
+    "productionSwfOwnership": {
+      "errors": 0,
+      "files": 701,
+      "loaderClasses": 716,
+      "closureChecked": true
+    },
+    "docGovernancePassed": true,
+    "trackedDiffWhitespacePassed": true,
+    "additionalWholeWeaponGate": {
+      "passed": false,
+      "failure": "Existing guitar flamethrower source digest mismatch; unchanged HEAD files",
+      "evidence": "checks/preexisting-weapon-gate.json"
+    }
+  }
+}

@@ -409,6 +409,12 @@ _root.提交任务完成状态 = function(id, chain) {
             && typeof _root.agent.推送绑定刷新 == "function") {
         _root.agent.推送绑定刷新();
     }
+    // G4-1：Agent 委托（id 200001–300000）完成即推事件给终端，终端据此自动委派对话修改；
+    // 区间外的任务由 推送任务完成 内部直接返回。同样 best-effort、不等应答、不弹提示。
+    if (_root.agent != undefined && _root.agent != null
+            && typeof _root.agent.推送任务完成 == "function") {
+        _root.agent.推送任务完成(id);
+    }
 }
 
 _root.UpdateTaskProgress = function(id) {

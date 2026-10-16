@@ -1014,6 +1014,16 @@ namespace CF7Launcher.Guardian
             };
         }
 
+        internal static JObject BuildMeridiansProductionInitData()
+        {
+            return new JObject
+            {
+                ["mode"] = "prod",
+                ["source"] = "runtime",
+                ["debug"] = false
+            };
+        }
+
         internal static bool TryNormalizeCharacterBuildReturnFocusAction(
             string value,
             out string normalized)
@@ -3078,6 +3088,12 @@ namespace CF7Launcher.Guardian
                         BuildIntelligenceProductionInitData()
                             .ToString(Formatting.None));
                     break;
+                case "MERIDIANS":
+                    OpenPanel(
+                        "meridians",
+                        BuildMeridiansProductionInitData()
+                            .ToString(Formatting.None));
+                    break;
                 case "SKILLS":
                     LogManager.Log("[Router] SKILLS clicked");
                     LogManager.Log("event=skill_panel_open_requested source=notch");
@@ -4886,6 +4902,84 @@ namespace CF7Launcher.Guardian
                 return;
             }
             service.RefreshBindingInBackground(slotKey, character, progress, scene, player);
+        }
+
+        /// <summary>rag_task_completed（G4-1／G4-2）：Agent 委托完成事件的转发通道。
+        /// 纯通知（query）——不改任何游戏状态、不回包；载荷畸形、服务未接线或 exe 不在线
+        /// 都只在 Host 侧留痕，绝不回 toast 打断游戏流程。</summary>
+        internal void HandleRagTaskCompleted(JObject data)
+        {
+            string slotKey;
+            int taskId;
+            string npc;
+            string rejectReason;
+            if (!TryParseRagTaskCompleted(data, out slotKey, out taskId, out npc, out rejectReason))
+            {
+                LogManager.Log("[Router] rag_task_completed rejected reason=" + rejectReason);
+                return;
+            }
+            RagTerminal.RagTerminalService service = _ragTerminalService;
+            if (service == null)
+            {
+                LogManager.Log("[Router] rag_task_completed skipped: service not wired");
+                return;
+            }
+            service.NotifyTaskCompletedInBackground(slotKey, taskId, npc);
+        }
+
+        /// <summary>完成事件载荷白名单：savePath 必填非空字符串、taskId 必填正整数、
+        /// npc 可选字符串（缺省空串——终端以任务记录里的 get_npc 为权威，本字段只作兜底）；
+        /// 未知键整包拒收。委托 id 区间闸在 AS2 发送侧，Host 只做形状校验、不复制该常量。
+        /// taskId 同时收 Integer 与 Float（要求值为整数），与相邻的投影数字白名单
+        /// RagChatNumberField 同口径——不把线格式绑死在 AS2 序列化器的数字写法上。</summary>
+        internal static bool TryParseRagTaskCompleted(JObject data, out string slotKey,
+            out int taskId, out string npc, out string rejectReason)
+        {
+            slotKey = null; taskId = 0; npc = ""; rejectReason = null;
+            if (data == null) { rejectReason = "missing_payload"; return false; }
+            foreach (JProperty property in data.Properties())
+            {
+                if (property.Name != "savePath" && property.Name != "taskId"
+                    && property.Name != "npc")
+                {
+                    rejectReason = "unknown_field:" + property.Name;
+                    return false;
+                }
+            }
+            JToken savePath = data["savePath"];
+            if (savePath == null || savePath.Type != JTokenType.String
+                || string.IsNullOrEmpty(savePath.Value<string>()))
+            {
+                rejectReason = "savePath_invalid";
+                return false;
+            }
+            slotKey = savePath.Value<string>();
+            JToken idToken = data["taskId"];
+            if (idToken == null
+                || (idToken.Type != JTokenType.Integer && idToken.Type != JTokenType.Float))
+            {
+                rejectReason = "taskId_invalid";
+                return false;
+            }
+            double rawTaskId = idToken.Value<double>();
+            if (!double.IsFinite(rawTaskId) || Math.Floor(rawTaskId) != rawTaskId
+                || rawTaskId < 1 || rawTaskId > int.MaxValue)
+            {
+                rejectReason = "taskId_out_of_range";
+                return false;
+            }
+            taskId = (int)rawTaskId;
+            JToken npcToken = data["npc"];
+            if (npcToken != null && npcToken.Type != JTokenType.Null)
+            {
+                if (npcToken.Type != JTokenType.String)
+                {
+                    rejectReason = "npc_invalid";
+                    return false;
+                }
+                npc = npcToken.Value<string>();
+            }
+            return true;
         }
 
         private void CompleteRagChatOpen(RagTerminal.RagTerminalService service, string slotKey,

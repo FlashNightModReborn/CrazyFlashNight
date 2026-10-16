@@ -1,0 +1,42 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "source": "敌人-闪6特工",
+  "unitId": 464,
+  "linkage": "敌人-CF6Wings",
+  "requestedStage": 7,
+  "requestedTier": 8,
+  "input": {
+    "speedFactor": 3.0,
+    "atkSpeedFactor": 5.0,
+    "atkMultiplier": 1.0,
+    "segmentFactor": 8.1,
+    "stage": 7,
+    "superArmorFactor": 2.0,
+    "tierFactor": 8,
+    "growthFactor": 1.0,
+    "highAtkFactor": 3.2,
+    "highDefFactor": 3.0
+  },
+  "integerPanel": {
+    "最小经验值": 1364,
+    "最大经验值": 7668,
+    "hp_min": 3667,
+    "hp_max": 8658,
+    "空手攻击力_min": 363,
+    "空手攻击力_max": 990,
+    "基本防御力_min": 189,
+    "基本防御力_max": 420
+  },
+  "flags": {
+    "速度系数": 3.0,
+    "攻速系数": 5.0,
+    "攻击倍率": 1.0,
+    "段数系数": 8.1,
+    "阶段": 7,
+    "霸体系数": 2.0,
+    "档次系数": 8,
+    "成长系数": 1.0,
+    "高攻低血防系数": 3.2,
+    "高防低血系数": 3.0
+  }
+}
