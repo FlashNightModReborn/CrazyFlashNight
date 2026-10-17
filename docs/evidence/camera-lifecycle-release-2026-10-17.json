@@ -1,0 +1,121 @@
+{
+  "schema": "cf7-camera-lifecycle-release-evidence.v1",
+  "evidenceRole": "Historical release receipt; current deployment truth remains the runtime manifest and signed consensus.",
+  "date": "2026-10-17",
+  "issue": "https://github.com/FlashNightModReborn/CrazyFlashNight/issues/144",
+  "implementationCommit": "b5bd1f2039eace9c62a5f19112669993082907fa",
+  "sourceCommit": "1ab8c8959aeab831bebb43469a935fd240c98552",
+  "sourceTag": "runtime-build-v2/20261017-camera-lifecycle-v3",
+  "deploymentCommit": "347531e911dd347f7b0dc79077106f10c963ad30",
+  "requestId": "D9C5CDDDD5A5AB073F9CE7DAB8EECBA098A8A6C9FDA5103D0AFAC537FDA38EB3",
+  "releaseTreeOid": "b6e98ac731fe37e075d070dec90af380d7868aff",
+  "artifactSourceHash": "19C5D484924CBACB1E2C3BB36141EFB9902B895D0A1A9C7E82EF73A5D0C9C2FA",
+  "producerRecipeHash": "3EF0A1E235EEC785CEE3B61D34BB29234DCBCCFF296C7CDEE4E2C27686917E3B",
+  "toolchainLockHash": "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+  "policyHash": "2286750390C4490F4334A8D47881977FD369554910302D006216FE96B91C264B",
+  "buildIdentityHash": "EF768CBB04B91E5ED284BCFFB037EAA771A70A5617AD6F163B3B35AE77CEC60F",
+  "payloadClosureHash": "545E82D6C0DECF30F8F9C7314ACFBCA450C7DF7F38D2D84BCEC6F3692B2614EA",
+  "nativePayloadChanged": false,
+  "payloadFiles": 43,
+  "builders": [
+    {
+      "kind": "github-oidc",
+      "identity": "A47C42FE2DB4775D2C527A6F586206479C19E098F25D5A87B19A4E087EE180EC",
+      "faultDomain": "github-hosted-windows"
+    },
+    {
+      "kind": "local-x509",
+      "identity": "EB5D32E04B6EE8697850314E19698DE1A3FACFFCCC6418A12CF7FEDE6033CDA5",
+      "faultDomain": "physical-host-b"
+    }
+  ],
+  "cloudBuild": {
+    "runId": 39027647010,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39027647010",
+    "conclusion": "success",
+    "proofMode": "attestation-only; replayed against the actual local CAS candidate during promotion"
+  },
+  "policy": {
+    "passed": true,
+    "checksPassed": 47,
+    "checksTotal": 47,
+    "receiptSha256": "D0E58CE526EE067F88C9A2580B542C98CC643A12DA0DC8626EB89F354D05CC4C"
+  },
+  "promotion": {
+    "status": "promoted",
+    "promotedAtUtc": "2026-10-17T11:22:41.1190274Z",
+    "signers": 2,
+    "faultDomains": 2,
+    "fullInstallVerificationPassed": true,
+    "previousBundlePreservedOutsideWorktree": true
+  },
+  "sourceAudit": {
+    "runId": 39028069073,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39028069073",
+    "conclusion": "success",
+    "state": "source-ahead",
+    "deploymentChanged": false
+  },
+  "sourceAs2Audit": {
+    "runId": 39028068899,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39028068899",
+    "conclusion": "success"
+  },
+  "deploymentAudit": {
+    "runId": 39028682808,
+    "url": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39028682808",
+    "conclusion": "success",
+    "state": "promoted",
+    "deploymentChanged": true,
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "asLoader": {
+    "path": "scripts/asLoader.swf",
+    "sha256": "D1A55EC49E125921E56D7DE7E171B13603E914806205F82F4679983B424E5407",
+    "size": 6080422,
+    "compiler": "0 errors / 0 warnings",
+    "owningXfl": "scripts/asLoader/asLoader.xfl",
+    "actionReadbackChecksPassed": 12
+  },
+  "validation": {
+    "nativeAvm1AssertionsPassed": 2239,
+    "cameraSourceFixtureChecks": 124,
+    "stageAdmissionSourceChecks": 38,
+    "browserFixtureChecks": 381,
+    "fixturesAreGameE2e": false
+  },
+  "acceptance": {
+    "maintainerAcceptedIsolatedCandidate": true,
+    "fullReleaseAuthorized": true,
+    "detailedHumanScenarioResultsSeparatelyReported": false
+  },
+  "formalEntry": {
+    "status": "formal-entry-scene-and-normal-exit-smoke-passed",
+    "candidateSelectorUsed": false,
+    "runtimeMode": "formal_runtime",
+    "coreDllSha256": "15553AD7D1704E6FA4A54DE8F9E5C7BC53E88413B3D1D3C5ACC282EA7400F3F9",
+    "asLoaderSha256": "D1A55EC49E125921E56D7DE7E171B13603E914806205F82F4679983B424E5407",
+    "sceneObserved": "A兵团·宿舍",
+    "sceneRevealAndHudObserved": true,
+    "normalWindowCloseObserved": true,
+    "exitCode": 0,
+    "startedUtc": "2026-10-17T11:26:43.1918832Z",
+    "exitedUtc": "2026-10-17T11:31:19.3263464Z",
+    "fullRooftopModifierAndFullscreenJourneyRepeated": false,
+    "automatedMovementDeliveryVerified": false,
+    "realPlayerSlotsUsed": false,
+    "isolatedSaveJsonFilesChanged": 2,
+    "saveRestartGameE2eClaimed": false
+  },
+  "retainedFailure": {
+    "requestId": "B894B7ADAD31BA13FC1CA8BA8352C01C2A19E6E6117D82BBD9D1D2D4C734F869",
+    "sourceTag": "runtime-build-v2/20261017-camera-lifecycle-v2",
+    "policyPassed": 46,
+    "policyTotal": 47,
+    "failedCheck": "material-catalog-current",
+    "resolution": "Official derive updated only the existing 九龙 item input digest and aggregate source digest; dictionary bytes and accepted camera artifact unchanged.",
+    "supersededByRequestId": "D9C5CDDDD5A5AB073F9CE7DAB8EECBA098A8A6C9FDA5103D0AFAC537FDA38EB3"
+  },
+  "distributionBoundary": "2.718 DEV / UNSTABLE incremental repair; no new stable package or GitHub Release."
+}
