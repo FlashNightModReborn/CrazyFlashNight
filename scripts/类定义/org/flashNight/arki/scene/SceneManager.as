@@ -4,6 +4,7 @@ import org.flashNight.gesh.depth.DepthManager;
 import flash.display.BitmapData;
 import flash.geom.Point;
 
+import org.flashNight.arki.scene.SharedScenePlacement;
 import org.flashNight.arki.scene.SceneInteractionManager;
 import org.flashNight.arki.scene.SceneCollisionManager;
 import org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter;
@@ -17,6 +18,8 @@ class org.flashNight.arki.scene.SceneManager {
     public static var instance:SceneManager; // 单例引用
 
     public var gameworld:MovieClip; // 当前gameworld
+    private var cleanupWorldIdentity:Object;
+    public var cleanupBlockedReason:String;
     private var active:Boolean; // 控制更新函数是否执行
     
     /**
@@ -38,6 +41,8 @@ class org.flashNight.arki.scene.SceneManager {
      */
     public function initGameWorld(_gw:MovieClip):Void{
         gameworld = _gw;
+        cleanupWorldIdentity = _gw.__stageReturnWorldIdentity;
+        cleanupBlockedReason = "";
         org.flashNight.arki.item.MapChestStashService.beginWorld(gameworld);
 
         // ── 钉定 authored 实例深度（必须在 DepthManager 与 地图/子弹区域 等运行时层创建之前）──
@@ -194,12 +199,19 @@ class org.flashNight.arki.scene.SceneManager {
     /*
      * 移除gameworld及其组件
      */
+    public function preflightCleanup():Boolean {
+        if (gameworld == null) return true;
+        return SharedScenePlacement.preflightDetach(gameworld,cleanupWorldIdentity)
+            && org.flashNight.arki.camera.HorizontalScroller.canReleaseScene(gameworld,cleanupWorldIdentity);
+    }
     public function removeGameWorld():Boolean{
+        cleanupBlockedReason = "";
         // transient loot 必须先于 target/dispatcher 销毁进入 EXPIRED，并释放 recovery 强引用。
         // pending journal / mandatory effect / transport handoff 尚未收敛时必须保持整个
         // gameworld 存活，让 socket/query 与下一帧重试仍有机会完成权威事务。
         var lootExpiry:Object = LootContainerService.expireScene("scene_cleanup");
         if (lootExpiry == null || lootExpiry.success !== true) {
+            cleanupBlockedReason = "loot_pending";
             if (gameworld != null
                     && gameworld.__sceneCleanupBlockedReported !== true) {
                 gameworld.__sceneCleanupBlockedReported = true;
@@ -208,6 +220,19 @@ class org.flashNight.arki.scene.SceneManager {
                         : String(lootExpiry.error || lootExpiry.reason
                             || lootExpiry.state || "unknown"));
             }
+            return false;
+        }
+
+        if (!preflightCleanup()) {
+            cleanupBlockedReason = "placement_invariant";
+            publishSceneLifecycleDiagnostic(cleanupBlockedReason,SharedScenePlacement.lastError);
+            return false;
+        }
+        var releasedIdentity:Object = cleanupWorldIdentity;
+        var scope:Object = org.flashNight.arki.camera.HorizontalScroller.sceneScope(gameworld,releasedIdentity);
+        if (gameworld != null && (!SharedScenePlacement.returnSlot(gameworld,releasedIdentity)
+                || !org.flashNight.arki.camera.HorizontalScroller.releaseScene(gameworld,releasedIdentity,scope))) {
+            cleanupBlockedReason = "placement_invariant";
             return false;
         }
 
@@ -265,10 +290,13 @@ class org.flashNight.arki.scene.SceneManager {
             DepthManager.instance.dispose();
         }
 
-        gameworld.swapDepths(_root.getNextHighestDepth());
+        if (gameworld.__sharedScenePlacementLease == undefined)
+            gameworld.swapDepths(_root.getNextHighestDepth());
         gameworld.removeMovieClip();
+        SharedScenePlacement.detached(gameworld,releasedIdentity);
         DepthManager.instance = null;
         gameworld = null;
+        cleanupWorldIdentity = undefined;
         return true;
     }
 

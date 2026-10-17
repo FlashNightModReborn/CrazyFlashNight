@@ -267,6 +267,8 @@ class org.flashNight.arki.ui.SceneTransitionService {
                 || s.readyIdentity !== _root.gameworld.__stageReturnWorldIdentity
                 || s.targetScene != WorldLightingBridge.sceneNumber()) return;
         if (!backgroundReady(s)) return;
+        if (s.cameraScope == undefined) s.cameraScope = org.flashNight.arki.camera.HorizontalScroller.sceneScope(s.readyWorld,s.readyIdentity);
+        if (!org.flashNight.arki.camera.HorizontalScroller.hasInitialPose(s.readyWorld,s.readyIdentity,s.cameraScope)) return;
         org.flashNight.dev.PanelTiming.finish("transition.reveal_requested",s.timingStarted,_sequence);
         s.phase = "reveal"; s.revision++; publish();
     }

@@ -216,3 +216,6 @@ tools/settings-recovery-smoke/bin/
 tools/settings-recovery-smoke/obj/
 tools/input-hook-diagnostic/bin/
 tools/input-hook-diagnostic/obj/
+
+# Rebuilt native camera regression movie; XFL and suite remain source.
+/scripts/CameraLifecycleHost.swf

@@ -121,10 +121,13 @@ _root.加载我方人物 = function(地点X, 地点Y){
 	_root.加载佣兵(地点X,地点Y);
 	_root.加载宠物(地点X,地点Y);
 
+    org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(就绪世界,就绪身份,就绪世界[_root.控制目标]);
 	EventBus.instance.publish("SceneReady", 就绪世界, 到达令牌, 就绪身份);
 }
 
 _root.加载主角和战宠 = function(地点X, 地点Y){
+    var 玩家世界:MovieClip = _root.gameworld;
+    var 玩家世界身份:Object = 玩家世界.__stageReturnWorldIdentity;
 	var 出生配置:Object = org.flashNight.arki.scene.ControlledEnemyLifecycle.createSpawn(_root, 地点X, 地点Y, true);
 	if (出生配置 == null) return;
 	_root.加载游戏世界人物(出生配置.identifier, _root.控制目标, _root.gameworld.getNextHighestDepth(), 出生配置.parameters);
@@ -132,6 +135,7 @@ _root.加载主角和战宠 = function(地点X, 地点Y){
 	_root.玩家信息界面.刷新mp显示();
 	// _root.添加其他玩家();
 	_root.加载宠物(地点X,地点Y);
+    org.flashNight.arki.camera.HorizontalScroller.onPlayerBound(玩家世界,玩家世界身份,玩家世界[_root.控制目标]);
 }
 
 // issue #7 bug4：从 加载佣兵 抽出的「单佣兵进场」，供 handleDeploy 即时上人复用。
@@ -807,17 +811,33 @@ _root.跳转地图 = function(跳转帧, 返回令牌:String){
                 _root.加载共享场景("wuxianguotu_1");
                 _root.开启生存模式();
             }
-        } else _root.gotoAndPlay(场景显示帧);
+        } else {
+            if (!org.flashNight.arki.scene.SharedScenePlacement.retireIdle(_root)) {
+                _root.发布消息("[CameraPlacement] " + org.flashNight.arki.scene.SharedScenePlacement.lastError);
+                _root.淡出动画.gotoAndStop("加载失败");
+                return;
+            }
+            _root.gotoAndPlay(场景显示帧);
+        }
         return;
     }
+    if (!org.flashNight.arki.scene.SharedScenePlacement.retireIdle(_root)) {
+                _root.发布消息("[CameraPlacement] " + org.flashNight.arki.scene.SharedScenePlacement.lastError);
+                _root.淡出动画.gotoAndStop("加载失败");
+                return;
+            }
 	_root.gotoAndPlay(跳转帧);
 }
 
 
 _root.加载共享场景 = function(加载场景名){
 	var 场景初始值:Object = org.flashNight.arki.scene.StageReturnFlow.sceneInit(加载场景名);
-	var gw:MovieClip = _root.attachMovie(加载场景名, "gameworld", _root.getNextHighestDepth(), 场景初始值);
-	gw.swapDepths(_root.gameworld层级定位器);
+	var gw:MovieClip = org.flashNight.arki.scene.SharedScenePlacement.attach(_root,加载场景名,场景初始值);
+    if (gw == undefined) {
+        _root.发布消息("[CameraPlacement] " + org.flashNight.arki.scene.SharedScenePlacement.lastError);
+        _root.淡出动画.gotoAndStop("加载失败");
+        return;
+    }
 	gw.场景名 = 加载场景名;
 	SceneManager.instance.initGameWorld(gw);
     org.flashNight.arki.scene.SceneTransitionGuard.rememberSharedSceneFrame(_root, 加载场景名);
@@ -876,13 +896,14 @@ _root.清除游戏世界组件 = function(清理请求:Object):Boolean{
 		if (_root.淡出动画 != undefined && typeof _root.淡出动画.stop == "function") {
 			_root.淡出动画.stop();
 		}
-		_root.__安排游戏世界清理重试(清理请求);
+        if (SceneManager.instance.cleanupBlockedReason === "loot_pending")
+            _root.__安排游戏世界清理重试(清理请求);
 		return false;
 	}
 	
 	// 清除游戏世界相关组件
 	CollisionLayerRenderer.clearAll();
-	_root.gameworld层级定位器.removeMovieClip();
+	// 定位器低槽由 SceneManager 成对归还；仅真正跳帧前显式退役。
 	_root.层级管理器.检查层级范围();
 	_root.卸载后景();
 

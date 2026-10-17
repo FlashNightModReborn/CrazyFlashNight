@@ -111,11 +111,17 @@ _root.gameCommands["togglePause"] = function() {
 };
 
 _root.gameCommands["toggleSettings"] = function() {
+    var 相机诊断:Boolean = org.flashNight.arki.scene.StageRunSession.cameraObservationActive();
+    var 原显隐:Boolean = _root.修改工具界面._visible;
     if (_root.修改工具界面._visible || _root.isChallengeMode()) {
         _root.修改工具界面._visible = false;
     } else {
         _root.修改工具界面._visible = true;
     }
+    if (相机诊断) org.flashNight.arki.scene.StageRunSession.cameraDiag("menu_toggle",
+        "before=" + 原显隐 + " visible=" + _root.修改工具界面._visible
+        + " menuDepth=" + _root.修改工具界面.getDepth() + " worldDepth=" + _root.gameworld.getDepth());
+
 };
 
 _root.gameCommands["openShop"] = function() {

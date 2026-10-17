@@ -103,6 +103,7 @@ _root.帧计时器.初始化任务栈 = function():Void {
         _root.帧计时器.unitUpdateWheel.tick(); // 单位的 update 事件发布后于调度器执行
         SceneManager.instance.update(); // 场景管理器 update 函数
         WaveSpawner.instance.tick(); // 暂时把刷怪挂在这边
+        org.flashNight.arki.camera.HorizontalScroller.observeDriver();
         StageManager.instance.tick(); // 波次结算后推进跨子图计时池，同帧通关优先
         // _root.服务器.发布服务器消息("frameUpdate")
         // _root.服务器.发布服务器消息(_root.场景进入位置名)
@@ -640,6 +641,7 @@ _root.帧计时器.stageWatcher.onFullScreen = function(nowFull:Boolean):Void {
     EventBus.getInstance().publish("FlashFullScreenChanged", nowFull);
 };
 _root.帧计时器.stageWatcher.onResize = function():Void {
+    org.flashNight.arki.camera.HorizontalScroller.onViewportChanged();
     // 记录舞台大小变化
     _root.发布消息("Flash 大小状态变更: ", Stage.width, Stage.height);
 };
@@ -799,6 +801,11 @@ _root.cleanupForRestart = function():Boolean {
         return false;
     }
 
+    if (SceneManager.instance != null && !SceneManager.instance.preflightCleanup()) {
+        _root.发布消息("[cleanupForRestart] 场景显示槽预检失败，保持运行时完整。");
+        return false;
+    }
+
     // -------------------------
     // 1. 清理 StageManager (关卡管理器)
     // -------------------------
@@ -833,6 +840,8 @@ _root.cleanupForRestart = function():Boolean {
         }
         _root.发布消息("[cleanupForRestart] SceneManager disposed");
     }
+
+    if (!org.flashNight.arki.scene.SharedScenePlacement.retireIdle(_root)) return false;
 
     // -------------------------
     // 5. 清理 WaveSpawner (刷怪器)

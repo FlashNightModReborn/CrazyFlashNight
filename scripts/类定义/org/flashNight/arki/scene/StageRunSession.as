@@ -12,6 +12,9 @@ import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
  * 领取事务始终由 AS2 决定。Web 只接收返回基地后的只读战报和 Loot authority。
  */
 class org.flashNight.arki.scene.StageRunSession {
+    private static var _cameraDiagSession:String = "";
+    private static var _cameraDiagCount:Number = 0;
+
     private static var MAX_KILL_TYPES:Number = 96;
     private static var MAX_INDIVIDUAL_KILLS:Number = 128;
     private static var MAX_ALLIES:Number = 64;
@@ -1578,6 +1581,19 @@ class org.flashNight.arki.scene.StageRunSession {
         observeFocus("input_sample", "", fields + " coalescedFrames=" + _focusInputSkipped
             + " frame=" + Number(_root.帧计时器.当前帧数));
         _focusInputSkipped = 0;
+    }
+
+    public static function cameraObservationActive():Boolean { return focusObservationActive(); }
+    public static function cameraDiag(eventName:String, detail:String):Void {
+        if (!focusObservationActive() || _root.server.isSocketConnected !== true) return;
+        if (_cameraDiagSession !== _focusSession) { _cameraDiagSession = _focusSession; _cameraDiagCount = 0; }
+        if (_cameraDiagCount > 255) return;
+        _cameraDiagCount++;
+        try {
+            _root.server.sendServerMessage("[FocusTraceAS2] session=" + _focusSession
+                + " seq=" + _cameraDiagCount + " timer=" + getTimer() + " event=camera_" + eventName
+                + " intentId= detail=" + detail + " budget=camera mode=bounded");
+        } catch (cameraObservationError) { }
     }
 
     private static function observeFocus(eventName:String, intentId:String, detail:String):Void {

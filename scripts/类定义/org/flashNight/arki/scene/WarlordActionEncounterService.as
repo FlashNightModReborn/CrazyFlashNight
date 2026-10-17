@@ -629,7 +629,7 @@ class org.flashNight.arki.scene.WarlordActionEncounterService {
                 run.cameraReleased = false;
             } else {
                 run.cameraReleased = HorizontalScroller
-                    .releaseScene(run.world) === true;
+                    .releaseScene(run.world,run.cameraWorldIdentity,run.cameraScope) === true;
             }
         } catch (cameraError) {
             run.cameraReleased = false;
@@ -1007,8 +1007,8 @@ class org.flashNight.arki.scene.WarlordActionEncounterService {
         camera._x = CENTER_X;
         camera._y = CENTER_Y;
         _root.控制目标 = "军阀动作镜头";
-        HorizontalScroller.onSceneChanged();
-        HorizontalScroller.switchFollowTo(camera);
+        _active.cameraWorldIdentity = world.__stageReturnWorldIdentity;
+        _active.cameraScope = HorizontalScroller.bindExplicitScene(world,_active.cameraWorldIdentity,camera,_active,true);
         _global.ASSetPropFlags(world,
             ["军阀动作镜头", "军阀动作源"], 1, false);
     }
@@ -1728,6 +1728,7 @@ class org.flashNight.arki.scene.WarlordActionEncounterService {
         avatar.controlReleased = false;
         _root.控制目标 = avatar.mc._name;
         _root.控制目标全自动 = false;
+        HorizontalScroller.onPlayerBound(run.world,run.cameraWorldIdentity,avatar.mc);
         if (switchCamera) HorizontalScroller.switchFollowTo(avatar.mc);
         return true;
     }

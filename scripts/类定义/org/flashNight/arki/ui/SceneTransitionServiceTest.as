@@ -1,4 +1,5 @@
 ﻿import org.flashNight.arki.ui.SceneTransitionService;
+import org.flashNight.arki.camera.HorizontalScroller;
 import org.flashNight.neur.Event.EventBus;
 class org.flashNight.arki.ui.SceneTransitionServiceTest {
     private static var passed:Number;
@@ -13,6 +14,19 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
     }
     private static function check(ok:Boolean,label:String):Void {
         if (ok) passed++; else {failed++; trace("[SceneTransition FAIL] "+label);}
+    }
+    private static var cameraHolder:MovieClip;
+    private static var cameraSequence:Number;
+    private static function cameraWorld(token:String, commit:Boolean):MovieClip {
+        var w:MovieClip=cameraHolder.createEmptyMovieClip("world"+(++cameraSequence),cameraSequence);
+        _root.gameworld=w;
+        w.__stageReturnWorldIdentity={};w.__stageReturnToken=token == undefined ? "" : token;
+        w.背景长=2400;w.背景高=800;
+        var hero:MovieClip=w.createEmptyMovieClip("hero",1);hero._x=1200;hero._y=400;
+        _root.控制目标="hero";
+        HorizontalScroller.onSceneChanged(w,w.__stageReturnToken,w.__stageReturnWorldIdentity);
+        if(commit !== false) HorizontalScroller.update();
+        return w;
     }
     private static function fixture(frame:Number):Object {
         counters = {plays:0,stops:0,retries:0,returns:0,jumps:0};
@@ -29,7 +43,12 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
             stages:_root.初期关卡列表,flag:_root.关卡标志,progress:_root.主线任务进度,
             returned:_root.从加载失败返回,entry:_root.场景进入位置名,
             saveExt:_root._saveExt,battle:_root.当前为战斗地图,
-            transitioning:_root.场景转换中,calibration:_root.斗兽标定模式};
+            transitioning:_root.场景转换中,calibration:_root.斗兽标定模式,
+            cameraTimer:_root.帧计时器,cameraSky:_root.天空盒,cameraControl:_root.控制目标,
+            cameraScale:_root.basicZoomScale,cameraToggle:_root.cameraZoomToggle,cameraParallax:_root.启用后景};
+        cameraSequence=0;cameraHolder=_root.createEmptyMovieClip("__transitionCameraFixture",_root.getNextHighestDepth());
+        _root.天空盒=cameraHolder.createEmptyMovieClip("sky",10000);_root.天空盒.地平线高度=240;
+        _root.帧计时器={当前帧数:0,offsetTolerance:0};_root.basicZoomScale=1;_root.cameraZoomToggle=false;_root.启用后景=false;
         SceneTransitionService.sendOverride = function(p:Object):Boolean {sent.push(p); return true;};
         _root._saveExt=null; _root.当前为战斗地图=false;
         _root.场景转换中=false; _root.斗兽标定模式=false;
@@ -50,7 +69,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         _root.加载背景列表=null;
         check(SceneTransitionService.backgroundList().length==10,"legacy default image count");
         var fade:Object=fixture(5); _root.淡出动画=fade;
-        _root.gameworld={__stageReturnWorldIdentity:{}};
+        _root.gameworld=cameraWorld(undefined,true);
         SceneTransitionService.begin(fade); var cover:Object=sent[sent.length-1];
         check(cover.phase=="cover" && cover.revision==1,"common entry publishes cover");
         var beforeBegin:Number=sent.length;
@@ -87,10 +106,14 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         check(sent[sent.length-1].phase=="loading","frame 30 does not manufacture SceneReady");
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"",_root.gameworld.__stageReturnWorldIdentity);
         check(sent[sent.length-1].phase=="loading","old-world ready event rejected");
-        _root.gameworld={__stageReturnWorldIdentity:{}};
+        _root.gameworld=cameraWorld(undefined,false);
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"",{});
         check(sent[sent.length-1].phase=="loading","rebound world path with foreign ordinary identity rejected");
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"",_root.gameworld.__stageReturnWorldIdentity);
+        check(sent[sent.length-1].phase=="loading","Ready without initial camera pose stays covered");
+        HorizontalScroller.update();SceneTransitionService.awaitReveal(fade);
+        check(HorizontalScroller.hasInitialPose(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity,
+            HorizontalScroller.sceneScope(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity)),"exact initial pose satisfies reveal fence");
         var reveal:Object=sent[sent.length-1];
         check(reveal.phase=="reveal","new-world ready requests Host capture fence");
         var before:Number=counters.plays;
@@ -111,7 +134,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         fade=fixture(5); _root.淡出动画=fade;
         SceneTransitionService.begin(fade); cover=sent[sent.length-1];
         SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
-        _root.gameworld={__stageReturnWorldIdentity:{}};
+        _root.gameworld=cameraWorld("return.token",true);
         fade._currentframe=30;
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"return.token",_root.gameworld.__stageReturnWorldIdentity);
         reveal=sent[sent.length-1];
@@ -200,6 +223,11 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
             "unmanaged legacy cleanup can resume its original fade timeline");
         testCalibrationPresentation();
         testBackgroundPresentation();
+        HorizontalScroller.releaseScene(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity,
+            HorizontalScroller.sceneScope(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity));
+        cameraHolder.removeMovieClip();
+        _root.帧计时器=old.cameraTimer;_root.天空盒=old.cameraSky;_root.控制目标=old.cameraControl;
+        _root.basicZoomScale=old.cameraScale;_root.cameraZoomToggle=old.cameraToggle;_root.启用后景=old.cameraParallax;
         _root.淡出动画=old.fade; _root.gameworld=old.world; _root.加载背景列表=old.data;
         _root.初期关卡列表=old.stages; _root.关卡标志=old.flag; _root.主线任务进度=old.progress;
         _root.从加载失败返回=old.returned; _root.场景进入位置名=old.entry;
@@ -215,10 +243,10 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
     private static function pendingBackground():Object {
         SceneTransitionService.clear();
         var fade:Object=fixture(5);_root.淡出动画=fade;
-        _root.gameworld={__stageReturnWorldIdentity:{}};
+        _root.gameworld=cameraWorld(undefined,true);
         SceneTransitionService.begin(fade);var cover:Object=sent[sent.length-1];
         SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
-        _root.gameworld={__stageReturnWorldIdentity:{}};
+        _root.gameworld=cameraWorld(undefined,true);
         var target:Object={};
         _root.gameworld.背景={外部动画加载壳mc:target};
         SceneTransitionService.loadBackground(_root.gameworld,"fixture.swf",target);
@@ -290,7 +318,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         var fade:Object=fixture(5); _root.淡出动画=fade;
         SceneTransitionService.begin(fade); var cover:Object=sent[sent.length-1];
         SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
-        _root.gameworld={__stageReturnWorldIdentity:{}}; fade._currentframe=30;
+        _root.gameworld=cameraWorld(undefined,true); fade._currentframe=30;
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"return.token",_root.gameworld.__stageReturnWorldIdentity);
         var reveal:Object=sent[sent.length-1];
         SceneTransitionService.presented({requestId:reveal.requestId,revision:reveal.revision,kind:"revealed"});
@@ -325,6 +353,12 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
                 batchId:"batch01",manifestHash:"manifest01",caseId:"case01",caseHash:"casehash01",runId:"run01",repeatIndex:1}};
     }
     private static function readyCalibration(value:Object):Boolean {
+        value.world.背景长=2400;value.world.背景高=800;
+        var camera:MovieClip=value.world.camera;
+        if(camera==undefined) camera=value.world.createEmptyMovieClip("camera",5);
+        camera._x=1200;camera._y=400;
+        HorizontalScroller.bindExplicitScene(value.world,value.identity,camera,value.owner,true);
+        HorizontalScroller.update();
         return SceneTransitionService.calibrationWorldReady(value.world,value.identity,value.fade,
             value.projection,value.owner,value.context,onCalibrationReleased);
     }

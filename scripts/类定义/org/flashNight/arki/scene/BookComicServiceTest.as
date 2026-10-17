@@ -9,7 +9,20 @@ class org.flashNight.arki.scene.BookComicServiceTest {
     private static function check(value:Boolean, message:String):Void {
         if (value) passed++; else { failed++; trace("[FAIL] BookComic: " + message); }
     }
+    private static function releaseFixtureCamera():Void {
+        var w:MovieClip=_root.gameworld;
+        org.flashNight.arki.camera.HorizontalScroller.releaseScene(w,w.__stageReturnWorldIdentity,
+            org.flashNight.arki.camera.HorizontalScroller.sceneScope(w,w.__stageReturnWorldIdentity));
+    }
+    private static function commitFixtureCamera(w:MovieClip,identity:Object):Void {
+        w.背景长=2400;w.背景高=800;
+        var target:MovieClip=w.createEmptyMovieClip("__comicCamera",w.getNextHighestDepth());
+        target._x=1200;target._y=400;
+        org.flashNight.arki.camera.HorizontalScroller.bindExplicitScene(w,identity,target,identity,true);
+        org.flashNight.arki.camera.HorizontalScroller.update();
+    }
     private static function setup():Void {
+        releaseFixtureCamera();
         BookComicService.onTransportDisconnected();
         if (_root.gameworld != undefined) _root.gameworld.removeMovieClip();
         _root.gameworld = _root.createEmptyMovieClip("comicFixtureWorld", 9287);
@@ -121,6 +134,7 @@ class org.flashNight.arki.scene.BookComicServiceTest {
             BookRunService.playChapter(0); BookRunService.presentChapter();
             check(_root.__comicRequest == null && _root.暂停 === false,
                 "chapter arrival cannot pause or open a comic before the loading curtain exits");
+            commitFixtureCamera(_root.gameworld,identity);
             _root.淡出动画._currentframe = 30; transition.awaitReveal(_root.淡出动画);
             packet = _root.__comicCurtain;
             transition.presented({requestId:packet.requestId,revision:packet.revision,kind:"revealed"});
@@ -148,6 +162,7 @@ class org.flashNight.arki.scene.BookComicServiceTest {
             check(_root.__comicRequest == null && _root.暂停 === false,
                 "save switch cancels a delayed chapter without starting another save's comic");
         } finally {
+            releaseFixtureCamera();
             transition.clear(); transition.sendOverride = oldSend;
             _root.淡出动画 = oldFade; _root.场景转换中 = oldTransition; _root.加载背景列表 = oldBackground;
         }

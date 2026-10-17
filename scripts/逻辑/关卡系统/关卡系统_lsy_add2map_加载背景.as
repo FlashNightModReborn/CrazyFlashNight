@@ -230,4 +230,4 @@ _root.basicZoomScale = 1;
 
 EventBus.getInstance().subscribe("SceneReady", HorizontalScroller.onSceneChanged, HorizontalScroller); 
 EventBus.getInstance().subscribe("FlashFullScreenChanged", HorizontalScroller.onFullScreenChanged, HorizontalScroller); 
-EventBus.getInstance().subscribe("SceneReady", ZoomController.resetState, ZoomController);
+// Zoom reset 归属通过身份校验的新 camera scope，不再作为匿名 SceneReady 副作用。

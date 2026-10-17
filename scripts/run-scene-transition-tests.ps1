@@ -10,8 +10,8 @@ $focusedRun=@{
         'scripts/类定义/org/flashNight/arki/scene/StageReturnFlow.as'
         'scripts/类定义/org/flashNight/arki/weather/WorldLightingBridge.as'
     )
-    ExpectedTracePatterns=@('(?m)^SceneTransitionServiceTest Tests Passed: 101\r?$','(?m)^SceneTransitionServiceTest Tests Failed: 0\r?$')
-    SuccessSummary='U12 scene-transition AS2 guards passed (101 checks).'
+    ExpectedTracePatterns=@('(?m)^SceneTransitionServiceTest Tests Passed: 103\r?$','(?m)^SceneTransitionServiceTest Tests Failed: 0\r?$')
+    SuccessSummary='U12 scene-transition AS2 guards passed (103 checks).'
     TimeoutSeconds=$TimeoutSeconds
     SkipCompile=$SkipCompile
 }

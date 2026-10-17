@@ -1973,8 +1973,8 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
         camera._x = CALIBRATION_CENTER_X;
         camera._y = CALIBRATION_CENTER_Y;
         resetCalibrationSkybox();
-        HorizontalScroller.onSceneChanged();
-        HorizontalScroller.switchFollowTo(camera);
+        HorizontalScroller.bindExplicitScene(gw,gw.__stageReturnWorldIdentity,camera,
+            gw.__stageReturnWorldIdentity,true);
 
         _global.ASSetPropFlags(gw, ["_arenaCalibrationStage", "斗兽标定镜头", "出生地", "deadbody", "佣兵已进场"], 1, false);
     }

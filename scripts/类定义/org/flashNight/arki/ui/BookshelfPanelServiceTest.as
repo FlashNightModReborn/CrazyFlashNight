@@ -9,7 +9,13 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
     private static function check(value:Boolean, message:String):Void {
         if (value) passed++; else { failed++; trace("[FAIL] Bookshelf: " + message); }
     }
+    private static function releaseFixtureCamera():Void {
+        var w:MovieClip=_root.gameworld;
+        org.flashNight.arki.camera.HorizontalScroller.releaseScene(w,w.__stageReturnWorldIdentity,
+            org.flashNight.arki.camera.HorizontalScroller.sceneScope(w,w.__stageReturnWorldIdentity));
+    }
     private static function setup():Void {
+        releaseFixtureCamera();
         BookshelfPanelService._resetForTests();
         if (_root.gameworld != undefined) _root.gameworld.removeMovieClip();
         _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld", 9230);
@@ -44,6 +50,15 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
     private static function open():String {
         BookshelfPanelService.openPanel();
         return new LiteJSON().parse(_root.__bookWire).initData.token;
+    }
+    /** Run the production camera commit, rather than bypassing the reveal fence. */
+    private static function commitReturnCamera(identity:Object):Void {
+        var w:MovieClip=_root.gameworld;
+        w.__stageReturnToken="";w.背景长=2400;w.背景高=800;
+        var target:MovieClip=w.createEmptyMovieClip("__bookCamera",w.getNextHighestDepth());
+        target._x=1200;target._y=400;
+        org.flashNight.arki.camera.HorizontalScroller.bindExplicitScene(w,identity,target,identity,true);
+        org.flashNight.arki.camera.HorizontalScroller.update();
     }
     private static function pumpReturnJobs():Void {
         var jobs:Array = _root.__bookReturnJobs;
@@ -86,6 +101,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
                 _root.gameworld.removeMovieClip();
                 _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld", 9230);
                 var identity:Object = StageReturnFlow.worldIdentity(_root.gameworld);
+                commitReturnCamera(identity);
                 org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
                 org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
                 pumpReturnJobs();
@@ -108,10 +124,12 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             }
             // 迟到的自动开窗仍受槽位及真实 MovieClip 的独立身份约束。
             _root.__bookReturnOpens = 0;
+            commitReturnCamera(identity);
             org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
             _root.savePath = "book_fixture_other";
             pumpReturnJobs();
             check(_root.__bookReturnOpens == 0, "changed slot cancels a queued return opener");
+            commitReturnCamera(identity);
             org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
             _root.gameworld.removeMovieClip();
             _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld", 9230);
@@ -170,6 +188,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
                 fade._currentframe = 17; fade.__returnFadeActive = false;
                 _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld", 9230);
                 var identity:Object = StageReturnFlow.worldIdentity(_root.gameworld);
+                commitReturnCamera(identity);
                 org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
                 org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
                 pumpReturnJobs();
@@ -213,6 +232,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             _root.gameworld.removeMovieClip();
             _root.gameworld = _root.createEmptyMovieClip("bookFixtureWorld", 9230);
             identity = StageReturnFlow.worldIdentity(_root.gameworld);
+            commitReturnCamera(identity);
             org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady", _root.gameworld, "", identity);
             org.flashNight.arki.scene.BookRunService.queueStart();
             pumpReturnJobs();
@@ -529,6 +549,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             saveClass.getInstance = oldGet; stageClass.canNavigateAwayFromStage = oldNav;
             assetClass.current = oldCurrent; assetClass.recordEffect = oldEffect; rewardClass.begin = oldBegin; rewardClass.end = oldEnd;
             BookshelfPanelService._resetForTests();
+            releaseFixtureCamera();
             if (_root.gameworld != undefined) _root.gameworld.removeMovieClip();
         }
         trace("BookshelfPanelServiceTest Tests Passed: " + passed);

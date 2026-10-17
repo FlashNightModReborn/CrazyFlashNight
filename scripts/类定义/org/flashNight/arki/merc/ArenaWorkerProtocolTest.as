@@ -211,6 +211,7 @@ class org.flashNight.arki.merc.ArenaWorkerProtocolTest {
             check(last().errors[0].code == "stage_transition_pending" && echoes(last(), foreign)
                 && service["_pendingStageRequest"] === value.ticket && revealSpawns == 0,
                 "another run cannot displace the committed presentation waiter");
+            org.flashNight.arki.camera.HorizontalScroller.update();
             value.fade._currentframe = 30; SceneTransitionService.awaitReveal(value.fade);
             var reveal:Object = transitionMessages[transitionMessages.length - 1];
             check(reveal.phase == "reveal" && revealSpawns == 0 && value.world.斗兽标定时钟 == undefined,
@@ -288,6 +289,9 @@ class org.flashNight.arki.merc.ArenaWorkerProtocolTest {
             ArenaCalibrationService.testOnlySetPendingRun(undefined);
             SceneTransitionService.clear();
             SceneTransitionService.sendOverride = oldSend;
+            var cameraWorld:MovieClip=_root.gameworld;
+            org.flashNight.arki.camera.HorizontalScroller.releaseScene(cameraWorld,cameraWorld.__stageReturnWorldIdentity,
+                org.flashNight.arki.camera.HorizontalScroller.sceneScope(cameraWorld,cameraWorld.__stageReturnWorldIdentity));
             holder.removeMovieClip(); manager.gameworld = oldManagerWorld;
             weather.enableDayNightCycle = oldCycle;
             StageRunSession.resetForRestart();
@@ -299,7 +303,12 @@ class org.flashNight.arki.merc.ArenaWorkerProtocolTest {
         SceneTransitionService.clear(); ArenaCalibrationService.testOnlySetPendingRun(undefined);
         StageRunSession.resetForRestart();
         _root.当前为战斗地图 = false; _root.场景转换中 = false; _root.斗兽标定模式 = false;
-        if (holder.world != undefined) holder.world.removeMovieClip();
+        if (holder.world != undefined) {
+            var priorWorld:MovieClip=holder.world;
+            org.flashNight.arki.camera.HorizontalScroller.releaseScene(priorWorld,priorWorld.__stageReturnWorldIdentity,
+                org.flashNight.arki.camera.HorizontalScroller.sceneScope(priorWorld,priorWorld.__stageReturnWorldIdentity));
+            priorWorld.removeMovieClip();
+        }
         var previous:MovieClip = holder.createEmptyMovieClip("world", 1); _root.gameworld = previous;
         var previousIdentity:Object = StageReturnFlow.worldIdentity(previous);
         var fade:Object = {_currentframe:1, play:function():Void {}, stop:function():Void {},
@@ -331,7 +340,8 @@ class org.flashNight.arki.merc.ArenaWorkerProtocolTest {
         return true;
     }
     private static function finishRevealFixture(value:Object):Void {
-        value.fade._currentframe = 30; SceneTransitionService.awaitReveal(value.fade);
+        org.flashNight.arki.camera.HorizontalScroller.update();
+            value.fade._currentframe = 30; SceneTransitionService.awaitReveal(value.fade);
         var reveal:Object = transitionMessages[transitionMessages.length - 1];
         SceneTransitionService.presented({requestId:reveal.requestId, revision:reveal.revision, kind:"revealed"});
         value.fade._currentframe = 36; SceneTransitionService.tick();

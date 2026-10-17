@@ -2229,7 +2229,7 @@ class org.flashNight.neur.Server.SaveManager {
     private static var FFFD_CHAR:String = String.fromCharCode(0xFFFD);
 
     /**
-     * 旧时间轴兼容入口。旧 UI 仍保留 30 帧人工 SceneReady；Web 建角必须改走
+     * 旧时间轴兼容入口。旧 UI 不再用 30ms 人工 SceneReady 认领尚未建立的新世界；Web 建角必须改走
      * prepareNewCharacter() -> flushNow() -> startNewCharacterTutorial(..., false, ...)，
      * 只采信场景加载完真实主角后发布的 SceneReady。
      */
@@ -2517,20 +2517,10 @@ class org.flashNight.neur.Server.SaveManager {
                         return;
                     }
 
-                    // fade 已接受即为转场提交点；先封闭回调，再调度 SceneReady，
-                    // 调度器投影抛错不得反向撤销已接受的 fade/StageManager preload。
+                    // fade 已接受即为转场提交点；人物加载完成后再发布带身份的真实 SceneReady。
                     settled = true;
                     if (onTransitionAccepted != null) onTransitionAccepted();
-                    if (scheduleSyntheticSceneReady) {
-                        try {
-                            _root.帧计时器.添加单次任务(function():Void {
-                                EventBus.instance.publish("SceneReady");
-                            }, 30);
-                        } catch (sceneReadyScheduleError) {
-                            trace("[SaveManager.newCharacter] SceneReady schedule failed: "
-                                + sceneReadyScheduleError);
-                        }
-                    }
+                    // 真实人物加载器负责带 world/identity 的 SceneReady；不再调度匿名事件。
                 }, failOnce, startToken);
         } catch (loadStartError) {
             trace("[SaveManager.newCharacter] tutorial load failed: " + loadStartError);
@@ -3633,6 +3623,7 @@ class org.flashNight.neur.Server.SaveManager {
         }
         if (s.cameraZoomToggle || s.cameraZoomToggle === false) _root.cameraZoomToggle = s.cameraZoomToggle;
         if (!isNaN(s.basicZoomScale)) _root.basicZoomScale = s.basicZoomScale;
+        org.flashNight.arki.camera.HorizontalScroller.refreshConfiguration();
         if (s.是否阴影 || s.是否阴影 === false) _root.是否阴影 = s.是否阴影;
         if (s.是否视觉元素 || s.是否视觉元素 === false) _root.是否视觉元素 = s.是否视觉元素;
         var ws:WeatherSystem = WeatherSystem.getInstance();

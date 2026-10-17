@@ -3474,6 +3474,18 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         delete _root.__reportSaveResult;
     }
 
+    private static function releaseCurtainCamera():Void {
+        var w:MovieClip=_root.gameworld;
+        org.flashNight.arki.camera.HorizontalScroller.releaseScene(w,w.__stageReturnWorldIdentity,
+            org.flashNight.arki.camera.HorizontalScroller.sceneScope(w,w.__stageReturnWorldIdentity));
+    }
+    private static function commitCurtainCamera(w:MovieClip,identity:Object):Void {
+        w.背景长=2400;w.背景高=800;
+        var target:MovieClip=w.createEmptyMovieClip("__curtainCamera",w.getNextHighestDepth());
+        target._x=1200;target._y=400;
+        org.flashNight.arki.camera.HorizontalScroller.bindExplicitScene(w,identity,target,identity,true);
+        org.flashNight.arki.camera.HorizontalScroller.update();
+    }
     /** 真实 SceneReady include + 返回身份 + U12 撤幕 + 报告投递；资产只用隔离 mock owner。 */
     private static function testCurtainSettlementHandoff(outcome:String, rewardCount:Number):Void {
         resetWorld(0);
@@ -3527,6 +3539,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         assertTrue(state.settlement == "stashed" && state.inventory == null, "presentation delay preserves durable source finality " + outcome);
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
         assertEquals(0, _transitionPanelCalls, "duplicate ready does not bypass the presentation fence " + outcome);
+        commitCurtainCamera(returnedWorld,readyIdentity);
         fade._currentframe = 30;
         transition.awaitReveal(fade);
         var reveal:Object = _transitionMessages[_transitionMessages.length-1];
@@ -3542,7 +3555,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         transition.clear();
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",returnedWorld,token,readyIdentity);
         assertEquals(1, _transitionPanelCalls, "late ready and duplicate clear never redispatch the report " + outcome);
-        fixture.removeMovieClip();
+        releaseCurtainCamera();fixture.removeMovieClip();
         _root.淡出动画 = savedFade;
         transition.sendOverride = oldSend;
     }
@@ -3618,6 +3631,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
         _root.当前为战斗地图 = false; _root.控制目标 = "__absent_parallel_hero";
         fade._currentframe = 30; fade.__returnFadeActive = false;
         var identity:Object = flow.worldIdentity(world);
+        commitCurtainCamera(world,identity);
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",world,token,identity);
         transition.awaitReveal(fade);
         var ready:Object = _transitionMessages[_transitionMessages.length-1];
@@ -3659,7 +3673,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
             "presentation never rerolls or reclaims the stored reward " + mode + outcome);
         org.flashNight.neur.Event.EventBus.getInstance().publish("SceneReady",world,token,identity);
         assertEquals(mode == "manage" ? 1 : 0,_transitionPanelCalls,"late arrival cannot reopen a report " + mode + outcome);
-        fixture.removeMovieClip(); _root.淡出动画 = savedFade; transition.sendOverride = oldSend;
+        releaseCurtainCamera();fixture.removeMovieClip(); _root.淡出动画 = savedFade; transition.sendOverride = oldSend;
     }
 
     private static function testEarlyBoundReportClose():Void {
@@ -4746,6 +4760,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     }
 
     private static function resetWorld(reviveCoins:Number):Void {
+        releaseCurtainCamera();
         if (_testHero != undefined) {
             _testHero.removeMovieClip();
             _testHero = undefined;
@@ -4860,6 +4875,7 @@ class org.flashNight.arki.scene.StageRunSessionTest {
     }
 
     private static function restoreWorld():Void {
+        releaseCurtainCamera();
         SaveManager.getInstance()._configureSaveFlowForTest({beforeLocalCommit:null, flushResult:true});
         if (RewardStashService.pendingOperationId() != "") RewardStashService.resume(RewardStashService.pendingOperationId());
         SaveManager.getInstance()._configureSaveFlowForTest({flushResult:undefined});
