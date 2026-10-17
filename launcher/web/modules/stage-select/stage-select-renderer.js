@@ -56,6 +56,7 @@
                     '<div class="stage-select-legend" id="stage-select-legend" role="note" aria-label="地点图例">' +
                         '<span class="stage-select-legend-item is-combat"><span class="stage-select-legend-glyph" aria-hidden="true"></span>战斗关卡</span>' +
                         '<span class="stage-select-legend-item is-route"><span class="stage-select-legend-glyph" aria-hidden="true"></span>友方据点</span>' +
+                        '<span class="stage-select-legend-item is-region-jump"><span class="stage-select-legend-glyph" aria-hidden="true"></span>区域跳转</span>' +
                         '<span class="stage-select-legend-item is-task"><span class="stage-select-legend-glyph" aria-hidden="true"></span>任务</span>' +
                         '<span class="stage-select-legend-item is-locked"><span class="stage-select-legend-glyph" aria-hidden="true"></span>未解锁</span>' +
                     '</div>' +
@@ -698,9 +699,9 @@
         if (button.x > 790) node.classList.add('is-edge-right');
         if (!state.unlocked) {
             node.classList.add('is-locked');
-            // 锁定节点仍可聚焦：aria-disabled + 名称后缀让焦点可读锁定态，原因文案由检查器展示。
+            // 锁定节点仍可聚焦：aria-disabled + 通用占位名称让焦点可读锁定态，原因文案由检查器展示。
             node.setAttribute('aria-disabled', 'true');
-            node.setAttribute('aria-label', displayName + '（未解锁）');
+            node.setAttribute('aria-label', state.pending ? '等待同步解锁状态' : displayName);
         } else if (state.forceUnlocked) {
             node.classList.add('is-force-unlocked');
         }
@@ -779,7 +780,7 @@
             node.classList.remove('is-kb-focus');
             updateCardVisibility();
         });
-        var cardAnchor = direct ? null : createCardAnchor(button, state, detail, sizing, displayName);
+        var cardAnchor = direct || !state.unlocked ? null : createCardAnchor(button, state, detail, sizing, displayName);
         StageSelectDiorama.place(button, node, cardAnchor, sizing.cardHeight);
         return { node: node, anchor: cardAnchor };
     }
@@ -928,6 +929,7 @@
     }
 
     function renderDifficulties(button, state, tabbable) {
+        if (!state.unlocked) return '';
         // hover 卡内按钮是鼠标快捷路径（tabIndex=-1 不进 Tab 序）；检查器内按钮承接键盘路径。
         var tabAttr = tabbable === false ? ' tabindex="-1"' : '';
         if (button && button.entryKind === 'map') {
@@ -961,7 +963,13 @@
             node.setAttribute('data-nav-id', nav.id);
             node.setAttribute('data-action-kind', nav.actionKind || '');
             node.setAttribute('data-library-item', nav.libraryItemName || '');
-            node.textContent = getNavDisplayLabel(nav, visualKind);
+            if (visualKind === 'region-jump') {
+                node.setAttribute('aria-label', getNavDisplayLabel(nav, visualKind));
+                node.innerHTML = '<span class="stage-select-nav-caption"><span class="stage-select-nav-eyebrow">查看区域</span>'
+                    + '<span class="stage-select-nav-target">' + StageSelectCore.escapeHtml(nav.targetFrameLabel || '') + '</span></span>';
+            } else {
+                node.textContent = getNavDisplayLabel(nav, visualKind);
+            }
             StageSelectDiorama.placeNav(nav,node);
             node.addEventListener('click', function(e) {
                 e.stopPropagation();
@@ -980,6 +988,7 @@
     }
 
     function getNavVisualKind(nav) {
+        if (nav && nav.actionKind === 'localFrame') return 'region-jump';
         var item = nav && nav.libraryItemName || '';
         if (item === '选关界面UI/Symbol 3308') return 'entry-yellow';
         if (item === '试炼场深处按钮') return 'entry-red';
@@ -992,6 +1001,7 @@
 
     function getNavDisplayLabel(nav, visualKind) {
         var target = nav && nav.targetFrameLabel || '';
+        if (visualKind === 'region-jump') return '查看区域：' + target;
         if (visualKind === 'entry-yellow' || visualKind === 'entry-red') return '进入' + target;
         if (visualKind === 'return') return '返回';
         if (visualKind === 'return-garage') return '回A兵团车库';

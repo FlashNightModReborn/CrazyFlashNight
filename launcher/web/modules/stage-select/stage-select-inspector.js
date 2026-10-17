@@ -91,13 +91,18 @@
         var previewAsset = VM.getPreviewAsset(button);
         var resolvedPreview = StageSelectCore.resolveAssetUrl(previewAsset.url || button.previewUrl || '');
         var isMap = button.entryKind === 'map';
-        var stageTypeText = state.stageType || button.stageType || (isMap ? '外交地图' : '');
+        var stageTypeText = state.unlocked ? (state.stageType || button.stageType || (isMap ? '外交地图' : '')) : '';
         S._inspectorEl.setAttribute('aria-label', '关卡决策：' + displayName);
         S._inspectorNameEl.textContent = displayName;
         S._inspectorTypeEl.textContent = stageTypeText;
         S._inspectorTypeEl.hidden = !stageTypeText;
-        S._inspectorPreviewEl.src = resolvedPreview;
-        S._inspectorPreviewEl.alt = displayName + ' 预览';
+        if (state.unlocked) {
+            S._inspectorPreviewEl.src = resolvedPreview;
+            S._inspectorPreviewEl.alt = displayName + ' 预览';
+        } else {
+            S._inspectorPreviewEl.removeAttribute('src');
+            S._inspectorPreviewEl.alt = '';
+        }
         if (S._inspectorPreviewEl.parentElement) {
             S._inspectorPreviewEl.parentElement.setAttribute('data-preview-tier', previewAsset.tier);
         }
@@ -117,7 +122,7 @@
             // 逐关锁定原因（2026-08-16 专项）：snapshot stageDetails[].lockReason 由 AS2
             // StageSelectPanelService.buildLockReason 生成（仅锁定时非空，字段恒在）；
             // 空串 / 旧快照缺字段时回退通用文案。
-            S._inspectorLockEl.textContent = state.lockReason
+            S._inspectorLockEl.textContent = state.pending ? '正在同步地点解锁状态…' : state.lockReason
                 ? '未解锁：' + state.lockReason
                 : '未解锁：该关卡尚未开放，继续推进主线或完成前置条件后可进入。';
             S._inspectorLockEl.hidden = false;

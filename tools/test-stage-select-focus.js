@@ -18,7 +18,7 @@ async function main() {
         await page.goto(origin+'/modules/stage-select/dev/harness.html?viewport=1024x576&fixture=allUnlocked');
         await page.evaluate(()=>{document.body.classList.add('stage-select-qa');document.querySelector('#debug-log')?.remove();document.querySelector('#qa-panel')?.remove();StageSelectHarnessHost.open({mode:'runtime',frameLabel:'基地门口'});});
         await idle();
-        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':{detail:'僵尸喜爱黑暗的环境，于是地铁站成为了整个废城最为凶险的地区。',task:true,highestDifficulty:'修罗'}}}));
+        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:StageSelectCore.state._runtimeSnapshot.unlockedStages,stageDetails:{'地铁站':{detail:'僵尸喜爱黑暗的环境，于是地铁站成为了整个废城最为凶险的地区。',task:true,highestDifficulty:'修罗'}}}));
         await select('stage_0_9');
         const stats=await page.evaluate(()=>StageSelectDiorama.stats());
         assert.equal(stats.focusId,'stage_0_9'); assert.equal(stats.highlighted,'stage_0_9');
@@ -31,7 +31,7 @@ async function main() {
         await page.getByRole('tab',{name:'情报',exact:true}).click();
         assert.match(await page.locator('.stage-focus-content').innerText(),/通关后解锁/);
         assert.equal(await page.locator('.stage-focus-reward').count(),0);
-        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':{clearHistory:{cleared:true,difficulties:['修罗']}}}}));
+        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:StageSelectCore.state._runtimeSnapshot.unlockedStages,stageDetails:{'地铁站':{clearHistory:{cleared:true,difficulties:['修罗']}}}}));
         assert.ok(await page.locator('.stage-focus-reward').count()>0);
         assert.ok(await page.locator('.stage-focus-enemy').count()>0);
         assert.match(await page.locator('.stage-focus-history').innerText(),/修罗/);
@@ -40,7 +40,7 @@ async function main() {
         await page.locator('#stage-select-inspector-difficulties [data-difficulty="冒险"]').click();
         assert.equal(await page.evaluate(()=>StageSelectHarnessHost.enterMessages.length),sent);
         assert.match(await page.locator('#stage-focus-enter').innerText(),/冒险/);
-        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({stageDetails:{'地铁站':{clearHistory:{cleared:false,difficulties:[]}}}}));
+        await page.evaluate(()=>StageSelectPanel._debugApplySnapshot({unlockedStages:StageSelectCore.state._runtimeSnapshot.unlockedStages,stageDetails:{'地铁站':{clearHistory:{cleared:false,difficulties:[]}}}}));
         assert.equal(await page.locator('.stage-focus-reward').count(),0);
         assert.match(await page.locator('#stage-focus-enter').innerText(),/冒险/);
         report.checks.push('unrecorded/task recommendation never reveals intel; true clear reveals; history removal clears DOM; selected mode survives refresh');

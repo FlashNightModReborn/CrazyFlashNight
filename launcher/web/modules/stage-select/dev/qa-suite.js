@@ -441,7 +441,7 @@ var StageSelectHarnessQA = (function() {
                 host.open({ mode: 'runtime', debug: false });
                 return waitRuntime(api).then(function() {
                     StageSelectPanel._debugSetFrame('基地车库', 'qa-nav-pad');
-                    var entry = document.querySelector('.stage-select-nav-button.is-entry-yellow, .stage-select-nav-button.is-entry-red');
+                    var entry = document.querySelector('.stage-select-nav-button.is-region-jump');
                     api.assert(!!entry, 'entry nav button exists in 基地车库');
                     var cs = getComputedStyle(entry);
                     var padL = parseFloat(cs.paddingLeft);
@@ -466,7 +466,7 @@ var StageSelectHarnessQA = (function() {
                     return 'nav buttons breathe';
                 });
             }],
-            ['runtime-scene-entry-anchor', 'runtime scene-entry ring keeps original map anchor', function() {
+            ['runtime-scene-entry-anchor', 'runtime region-jump marker keeps the same map anchor as dev', function() {
                 host.setViewport('1366x768');
                 host.open({ mode: 'dev' });
                 return waitReady(api).then(function() {
@@ -779,11 +779,11 @@ var StageSelectHarnessQA = (function() {
                     lockedButton.focus();
                     api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-marker')).display !== 'none', 'locked marker remains visible on focus');
                     api.assert(getComputedStyle(lockedButton.querySelector('.stage-select-stage-name')).visibility !== 'hidden', 'locked label remains visible on focus');
-                    // P2：锁定卡永不打开但 DOM 仍在锚点层，合成 click 走同一条 blocked 路径
+                    // 锁定地点不创建带预览/详情/难度的卡；显式激活仍由同一入口拒绝。
                     var lockedAnchor = findCardAnchor(lockedButton.getAttribute('data-stage-id'));
-                    difficulty = lockedAnchor && lockedAnchor.querySelector('.stage-select-difficulty');
-                    api.assert(!!difficulty, 'difficulty button exists');
-                    difficulty.click();
+                    api.assert(!lockedAnchor, 'locked stage has no preview or difficulty card');
+                    api.assertEqual(lockedButton.querySelector('.stage-select-stage-name').textContent, '未解锁地点', 'locked stage name concealed');
+                    StageSelectInspector.requestStageActivation(StageSelectViewModel.findStageButtonById(lockedButton.getAttribute('data-stage-id')), '简单', null);
                     var state = StageSelectPanel._debugGetState();
                     api.assert(!!state.lastDifficultyClick, 'difficulty click recorded locally');
                     api.assertEqual(state.lastDifficultyClick.blocked, 'locked', 'locked click blocked');
@@ -1144,12 +1144,16 @@ var StageSelectHarnessQA = (function() {
                     });
                 });
             }],
-            ['hit-test', 'top controls and sample stage buttons are usable', function() {
+            ['hit-test', 'runtime top controls and sample stage buttons are usable', function() {
                 host.setViewport(getHitTestViewport());
-                host.open();
-                return waitReady(api).then(function() {
+                host.open({ mode: 'runtime', debug: false });
+                return waitRuntime(api).then(function() {
                     assertHit(api, document.querySelector('.stage-select-close-btn'), 'close button');
-                    assertHit(api, document.querySelector('.stage-select-tab.is-active'), 'active tab');
+                    var toggle = document.querySelector('.stage-select-frame-toggle');
+                    assertHit(api, toggle, 'region menu toggle');
+                    toggle.click();
+                    assertHit(api, document.querySelector('.stage-select-tab.is-active'), 'active region menu item');
+                    toggle.click();
                     var buttons = document.querySelectorAll('.stage-select-stage-button');
                     var checked = 0;
                     [].some.call(buttons, function(button) {
@@ -2161,8 +2165,7 @@ var StageSelectHarnessQA = (function() {
             var frame = StageSelectData.getFrame(label);
             var navs = frame && frame.navButtons || [];
             for (var j = 0; j < navs.length; j += 1) {
-                var item = navs[j].libraryItemName || '';
-                if (item.indexOf('选关界面UI/Symbol ') === 0 && item !== '选关界面UI/Symbol 3308') {
+                if (navs[j].actionKind === 'localFrame') {
                     return { frameLabel: label, id: navs[j].id };
                 }
             }
@@ -2172,7 +2175,7 @@ var StageSelectHarnessQA = (function() {
     }
 
     function measureSceneEntryMarker(api, navId) {
-        var el = document.querySelector('.stage-select-nav-button.is-scene-entry[data-nav-id="' + navId + '"]');
+        var el = document.querySelector('.stage-select-nav-button.is-region-jump[data-nav-id="' + navId + '"]');
         api.assert(!!el, 'scene-entry nav node exists: ' + navId);
         var stage = document.getElementById('stage-select-stage');
         api.assert(!!stage, 'stage node exists');

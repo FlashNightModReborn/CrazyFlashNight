@@ -185,7 +185,7 @@ var StageSelectDiorama = (function() {
         node.style.setProperty('--diorama-label-x', pin.labelX + 'px');
         node.style.setProperty('--diorama-label-y', pin.labelY + 'px');
         var label=node.querySelector('.stage-select-stage-name');
-        if(pin.shortLabel && label){
+        if(pin.shortLabel && label && StageSelectViewModel.getStageState(button.stageName).unlocked){
             // Only the map caption is abbreviated; accessible names and all gameplay data stay full.
             if(!node.hasAttribute('aria-label'))node.setAttribute('aria-label',label.textContent);
             label.textContent=pin.shortLabel;node.dataset.compactLabel='true';

@@ -62,7 +62,7 @@ async function main() {
         assert.deepEqual(layout.failures, []);
         assert.deepEqual(layout.overlaps, []);
         report.checks.push('all 32 marker/name centers hit correct entry; no overlap or overflow');
-        await page.evaluate(() => StageSelectPanel._debugApplySnapshot({ stageDetails: { '第一防线': {
+        await page.evaluate(() => StageSelectPanel._debugApplySnapshot({unlockedStages:StageSelectCore.state._runtimeSnapshot.unlockedStages,stageDetails: { '第一防线': {
             detail: '军警为阻止蜂拥而来的僵尸所设立的第一道防线，现在已经变成僵尸游荡的场所了', limitDetail: ''
         } } }));
         // 实际悬停并检查重叠区域的命中层级，防止地点名称/标记穿到卡片正文上。
@@ -155,7 +155,7 @@ async function main() {
         await ready();
         report.checks.push('switch away hides 3D; context loss exposes retry, no 2D fallback; retry recovers');
         await page.evaluate(() => {
-            StageSelectPanel._debugApplySnapshot({ unlockedStages: { '新手练习场': false },
+            StageSelectPanel._debugApplySnapshot({ unlockedStages: { ...StageSelectCore.state._runtimeSnapshot.unlockedStages, '新手练习场': false },
                 stageDetails: { '新手练习场': { lockReason: '三维测试锁定原因' } } });
         });
         const lockedHit = await page.locator('[data-stage-id="stage_0_0"] > .stage-select-hit-zone').boundingBox();

@@ -777,6 +777,8 @@ Host admission 一旦接受，后续 pause socket false/throw 不反转成功边
 
 **URL 参数**：`?qa=1` 自动断言 / `?case=` 单条 / `?scenario=` 脚本场景 / `?dump=1` 结构化输出。
 
+**健身房与选关投影回归**：`node tools/test-gym-helmet-preview.js` 使用真实换装资源覆盖全包覆头盔、男女角色、三种动作、原发型保留与实例释放；`node tools/test-stage-select-visibility.js` 覆盖权威快照到达前的等待态、锁定名称/短标签/详情/提示隐藏、演习解锁及区域跳转的图例、键盘与最低画布。运行时测试快照须显式携带 `unlockedStages`；缺少该关卡的条目保持等待态，不能用 fixture 默认开放兜底。两者是 Edge + mock Host 证据，不代签游戏标准入口或存档回归。
+
 **双栏工作台共享门**：另按 [workbench-ui-system.md](workbench-ui-system.md) 运行 `node tools/audit-workbench-ui.js --strict-warnings`、66 场景（48 shared synthetic + 18 Arena 生产闭包两阶段）`node tools/run-workbench-visual-atlas.js --strict-warnings`、`node tools/test-panel-lazy-loader-browser.js`（真实 Edge 中间依赖一次 503 后重试）、
 20 项 `node tools/run-item-grid-visual-matrix.js` 与受影响 feature harness（66/20 等文本计数待核：阈值来源为历史文本，未找到当前机器真源）。
 Tuning/整备/面包屑加固还固定运行 `node tools/test-equipment-tuning-confirmation.js`、`node tools/test-equipment-tuning-interaction.js`、`node tools/test-equipment-tuning-source-marker.js`、`node tools/test-inventory-workbench-preparation-menu.js`、`node tools/test-workbench-profile.js`、`node tools/test-workbench-ui-ratchet.js`；

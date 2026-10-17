@@ -3269,10 +3269,10 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button.
     order: -1;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 9px;
     height: 26px;
-    padding: 0 10px;
-    margin-right: 6px;
+    padding: 0 8px;
+    margin-right: 4px;
     box-sizing: border-box;
     pointer-events: none;
     white-space: nowrap;
@@ -3308,6 +3308,71 @@ html.perf-low-effects .stage-select-panel.is-diorama .stage-select-stage-button.
     border-width: 2px;
     border-color: rgb(var(--ss-pin-frame-rgb));
     background: rgb(var(--ss-pin-map-rgb));
+}
+
+/* 区域跳转按 localFrame 语义展示，二维与三维共用钢蓝箭头。 */
+.stage-select-panel .stage-select-nav-button.is-region-jump,
+.stage-select-panel.is-diorama .stage-select-nav-button.is-region-jump {
+    transform: translate(-50%, -50%);
+    width: 150px;
+    min-width: 140px;
+    height: 44px;
+    padding: 4px 12px 4px 30px;
+    border: 1px solid rgba(var(--ss-pin-jump-rgb), 0.88);
+    color: rgb(var(--ss-pin-jump-text-rgb));
+    background: rgba(var(--ss-header-rgb), 0.96);
+    box-shadow: 0 3px 10px rgba(var(--ss-black-rgb), 0.82), inset 3px 0 0 rgb(var(--ss-pin-jump-rgb));
+    font-size: var(--ss-font-base);
+    line-height: 16px;
+    text-align: left;
+}
+
+.stage-select-nav-caption {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.stage-select-nav-eyebrow {
+    color: rgb(var(--ss-pin-jump-rgb));
+    font-size: var(--ss-font-xs);
+    line-height: 12px;
+}
+
+.stage-select-nav-target {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.stage-select-legend-item.is-region-jump .stage-select-legend-glyph,
+.stage-select-nav-button.is-region-jump::before {
+    content: "";
+    width: 14px;
+    height: 12px;
+    border: 0;
+    border-radius: 0;
+    rotate: 0deg;
+    background: rgb(var(--ss-pin-jump-rgb));
+    clip-path: polygon(0 28%, 55% 28%, 55% 0, 100% 50%, 55% 100%, 55% 72%, 0 72%);
+}
+
+.stage-select-nav-button.is-region-jump::before {
+    position: absolute;
+    left: 10px;
+    top: calc(50% - 6px);
+}
+
+.stage-select-panel .stage-select-nav-button.is-region-jump:hover,
+.stage-select-panel .stage-select-nav-button.is-region-jump:focus-visible {
+    border-color: rgb(var(--ss-focus-rgb));
+    color: rgb(var(--ss-white-rgb));
+}
+
+.stage-select-nav-button.is-region-jump:focus-visible {
+    outline: 2px solid rgb(var(--ss-focus-rgb));
+    outline-offset: 3px;
 }
 
 .stage-select-legend-item.is-task .stage-select-legend-glyph {

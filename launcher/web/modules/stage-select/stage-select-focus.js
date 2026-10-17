@@ -100,8 +100,10 @@ var StageSelectFocus = (function() {
         releaseContent();var generation=contentGeneration;
         tooltipScope=PanelTooltip.createScope('stage-focus',{profile:'dense-inspect'});
         S._inspectorNameEl.tabIndex=0;history.tabIndex=0;
-        tip(S._inspectorNameEl,current.button.stageName+' · '+stageTypeText);
-        if (isMap) {
+        tip(S._inspectorNameEl,state.unlocked ? current.button.stageName+' · '+stageTypeText : StageSelectViewModel.getStageDisplayName(current.button));
+        if (!state.unlocked) {
+            tip(history,state.pending ? '等待同步' : '未解锁');
+        } else if (isMap) {
             tip(history,'非交战安全区域 · 可直接前往交互');
         } else {
             tip(history,info ? '已通关 · '+state.clearHistory.difficulties.join(' / ') : '暂无通关记录');
@@ -112,6 +114,11 @@ var StageSelectFocus = (function() {
         });
         content.setAttribute('aria-labelledby','stage-focus-tab-'+tab);
         content.replaceChildren();
+        tabs.hidden = !state.unlocked;
+        if (!state.unlocked) {
+            content.innerHTML = '<p class="stage-focus-empty">' + StageSelectCore.buildStageDetail(current.button, state).html + '</p>';
+            return;
+        }
         if (tab === 'brief') {
             var previewAsset = StageSelectViewModel.getPreviewAsset(current.button);
             var resolvedPreview = StageSelectCore.resolveAssetUrl(previewAsset.url || current.button.previewUrl || '');
@@ -173,7 +180,10 @@ var StageSelectFocus = (function() {
         if (changed) { tab='brief'; mode=isMap ? '' : (state.task ? state.highestDifficulty : '简单'); }
         if (!isMap && StageSelectViewModel.isChallengeMode()) mode='地狱';
         S._el.classList.add('is-stage-focused'); surface.hidden=false;
-        if (isMap) {
+        if (!state.unlocked) {
+            history.textContent = state.pending ? '等待同步' : '未解锁';
+            history.setAttribute('aria-label', history.textContent);
+        } else if (isMap) {
             history.textContent='外交据点';
             history.setAttribute('aria-label','外交据点 · 非交战安全区域');
         } else {
@@ -199,7 +209,7 @@ var StageSelectFocus = (function() {
             var vx=Math.max(0, Math.min(1024 - zoomW, Math.round(point.x - zoomW * 0.5)));
             var vy=Math.max(0, Math.min(576 - zoomH, Math.round(point.y - zoomH * 0.5)));
             var reticlePath='M '+(point.x-36)+' '+point.y+' L '+(point.x-12)+' '+point.y+' M '+(point.x+12)+' '+point.y+' L '+(point.x+36)+' '+point.y+' M '+point.x+' '+(point.y-36)+' L '+point.x+' '+(point.y-12)+' M '+point.x+' '+(point.y+12)+' L '+point.x+' '+(point.y+36);
-            map.innerHTML='<svg viewBox="'+vx+' '+vy+' '+zoomW+' '+zoomH+'" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".78"/><path d="'+reticlePath+'" class="stage-focus-map-reticle"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(buttonData.stageName)+'</div>';
+            map.innerHTML='<svg viewBox="'+vx+' '+vy+' '+zoomW+' '+zoomH+'" role="img" aria-label="当前地点位置"><image href="'+escape(src)+'" x="'+rect.x+'" y="'+rect.y+'" width="'+rect.w+'" height="'+rect.h+'" preserveAspectRatio="none" opacity=".78"/><path d="'+reticlePath+'" class="stage-focus-map-reticle"/><circle cx="'+point.x+'" cy="'+point.y+'" r="22" class="stage-focus-map-ring"/><circle cx="'+point.x+'" cy="'+point.y+'" r="5" class="stage-focus-map-dot"/></svg><div class="stage-focus-map-caption">'+escape(state.unlocked ? buttonData.stageName : StageSelectViewModel.getStageDisplayName(buttonData))+'</div>';
         }
         if(window.StageSelectCameraEditor)StageSelectCameraEditor.refreshButtons();
     }

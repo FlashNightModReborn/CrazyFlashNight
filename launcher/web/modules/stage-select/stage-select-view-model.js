@@ -142,9 +142,13 @@ var StageSelectViewModel = (function() {
     function getStageState(stageName) {
         var stages = S._fixture && S._fixture.stages || {};
         var base = stages[stageName] || {};
+        var unlocks = S._runtimeSnapshot && S._runtimeSnapshot.unlockedStages;
+        var pending = isRuntimeMode() && (!unlocks || !Object.prototype.hasOwnProperty.call(unlocks, stageName));
+        var fixtureUnlocked = typeof base.unlocked === 'undefined' ? true : !!base.unlocked;
         var state = {
-            unlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
-            nativeUnlocked: typeof base.unlocked === 'undefined' ? true : !!base.unlocked,
+            pending: pending,
+            unlocked: isRuntimeMode() ? false : fixtureUnlocked,
+            nativeUnlocked: isRuntimeMode() ? false : fixtureUnlocked,
             forceUnlocked: false,
             task: !!base.task,
             highestDifficulty: base.highestDifficulty || '简单',
@@ -177,7 +181,7 @@ var StageSelectViewModel = (function() {
         if (S._runtimeSnapshot && S._runtimeSnapshot.nativeUnlockedStages && Object.prototype.hasOwnProperty.call(S._runtimeSnapshot.nativeUnlockedStages, stageName)) {
             state.nativeUnlocked = !!S._runtimeSnapshot.nativeUnlockedStages[stageName];
         }
-        if (isForceUnlockActive()) {
+        if (!state.pending && isForceUnlockActive()) {
             state.forceUnlocked = !state.nativeUnlocked;
             state.unlocked = true;
         }
@@ -262,6 +266,10 @@ var StageSelectViewModel = (function() {
     }
 
     function getStageDisplayName(button) {
+        if (button && button.stageName) {
+            var state = getStageState(button.stageName);
+            if (!state.unlocked) return state.pending ? '等待同步' : (isDirectEntry(button) ? '未解锁' : '未解锁地点');
+        }
         var directText = button && button.directLayout && button.directLayout.text && button.directLayout.text.label || '';
         if ((button && button.entryKind) === 'map' && directText) return directText;
         if (button && typeof button.displayName === 'string' && button.displayName) return button.displayName;

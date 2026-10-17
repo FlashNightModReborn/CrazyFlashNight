@@ -221,6 +221,10 @@
     }
 
     function buildStageDetail(button, state) {
+        if (!state.unlocked) {
+            var hiddenText = state.pending ? '正在同步地点解锁状态…' : '该地点尚未解锁，继续推进主线或完成前置条件后查看。';
+            return { html: escapeHtml(hiddenText), rawText: hiddenText };
+        }
         var parts = [];
         var detail = flashHtmlToText(state.detail || button.detail || '');
         var limit = flashHtmlToText(state.limitDetail || '');

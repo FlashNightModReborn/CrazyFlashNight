@@ -15,7 +15,7 @@
     var FRAME_RATE = 30;
     var REQUIRED_BODY_FIELDS = [
         '身体','上臂','左下臂','右下臂','左手','右手','屁股',
-        '左大腿','右大腿','小腿','脚','脸型','发型'
+        '左大腿','右大腿','小腿','脚','脸型'
     ];
     var WEAPON_FIELDS = {
         '长枪_装扮':true,
@@ -450,7 +450,8 @@
         var state = root.CharacterAppearancePreview.buildStateFromEquipment(
             motionPackage.dressup,
             { gender:gender, equipment:portrait.equipment, appearance:appearance, rig:'battle', stateLabel:'空手站立' });
-        if (!state || !state.keyMap || state.keyMap['脸型'] !== portrait.face || !state.keyMap['发型']) return null;
+        if (!state || !state.keyMap || state.keyMap['脸型'] !== portrait.face
+                || (state.hairHidden !== true && !state.keyMap['发型'])) return null;
 
         var usedFields = allFieldsUsed(motionPackage);
         var equipmentSlots = Object.keys(portrait.equipment);
@@ -488,7 +489,8 @@
         var rigGender = gender;
         Object.keys(requiredFields).forEach(function(field) {
             if (assetsByField[field]) return;
-            if (WEAPON_FIELDS[field]) {
+            // 全包覆头盔主动隐藏发型；不能补回默认发型或把它判为缺件。
+            if (WEAPON_FIELDS[field] || (field === '发型' && state.hairHidden === true)) {
                 assetsByField[field] = null;
                 return;
             }
