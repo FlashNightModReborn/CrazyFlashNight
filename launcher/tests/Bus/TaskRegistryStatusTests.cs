@@ -132,6 +132,23 @@ namespace CF7Launcher.Tests.Bus
         }
 
         [Fact]
+        public void RagDialogueChanged_IsSyncSocketOnlyMetadata()
+        {
+            JObject changed = null;
+            var status = JObject.Parse(
+                TaskRegistry.ToStatusJson(true, 3000, 3001));
+            foreach (JObject task in (JArray)status["tasks"])
+                if ((string)task["name"] == "rag_dialogue_changed")
+                    changed = task;
+
+            Assert.NotNull(changed);
+            Assert.Equal("json_sync", (string)changed["transport"]);
+            Assert.Equal("AS2->C#", (string)changed["direction"]);
+            Assert.False((bool)changed["httpCallable"]);
+            Assert.False(TaskRegistry.IsHttpCallable("rag_dialogue_changed"));
+        }
+
+        [Fact]
         public void WorkbenchOpenRequestId_IsAcceptedOnlyForExactNativeBuildTuple()
         {
             JObject request =

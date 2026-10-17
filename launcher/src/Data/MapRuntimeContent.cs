@@ -49,13 +49,19 @@ namespace CF7Launcher.Data
             Bootstrap = BuildBootstrap();
         }
         /// <summary>只重建任务目录层。地图定义与世界源沿用本实例，作者保存地图后仍须重启才切换。校验失败直接抛出，调用方保留旧内容。
-        /// slotKey 非空时同批增读该存档的任务覆盖层（data/rag/agent_saves/&lt;slotKey&gt;/）；两个文件缺失＝该存档无增量。</summary>
+        /// slotKey 非空时同批增读该存档的任务覆盖层（data/rag/agent_saves/&lt;slotKey&gt;/）；文件缺失＝该存档无增量。
+        /// 文本源顺序固定：agent_text.json 在前、task_text_overrides.json 在后——同 key 后者整份覆盖前者（后写赢），不可调换。</summary>
         public MapRuntimeContent ReloadTasks(string root, string slotKey = null)
         {
             var catalog = string.IsNullOrEmpty(slotKey)
                 ? MapTaskCatalog.Load(root)
                 : MapTaskCatalog.Load(root, null,
-                    new[] { MapTaskCatalog.AgentSaveTaskSource(slotKey) }, new[] { MapTaskCatalog.AgentSaveTextSource(slotKey) });
+                    new[] { MapTaskCatalog.AgentSaveTaskSource(slotKey) },
+                    new[]
+                    {
+                        MapTaskCatalog.AgentSaveTextSource(slotKey),
+                        MapTaskCatalog.AgentSaveTextOverrideSource(slotKey)
+                    });
             catalog.ValidateBindings(Definition);
             return new MapRuntimeContent(this, catalog);
         }

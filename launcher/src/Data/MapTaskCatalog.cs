@@ -93,6 +93,9 @@ namespace CF7Launcher.Data
         /// <summary>按存档任务覆盖层落点（data/rag/agent_saves/&lt;slotKey&gt;/）的两个源文件相对路径，与后端写盘同名。</summary>
         public static string AgentSaveTaskSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_tasks.json";
         public static string AgentSaveTextSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_text.json";
+        /// <summary>任务文本覆盖层（G4-7）：后端按存档写出的 key 级整份覆盖。必须排在 agent_text.json 之后读取，
+        /// 同 key 后写赢；这个顺序是覆盖语义的唯一保证。</summary>
+        public static string AgentSaveTextOverrideSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/task_text_overrides.json";
         /// <summary>逐文件比对任务源字节，返回变化清单（含 list.xml 与基建目录）。热重载据此只让游戏侧重读真正变化的文件。</summary>
         public static List<string> ChangedSources(MapTaskCatalog before, MapTaskCatalog after)
         {

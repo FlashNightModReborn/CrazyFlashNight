@@ -57,6 +57,23 @@
     "hostForward": "RagTerminalService.NotifyTaskCompletedAsync -> POST http://127.0.0.1:7077/api/integration/task-completed with {slot_key, task_id, npc}",
     "semantics": "query; changes no game state and awaits no reply. Best-effort: single POST with no retry (the terminal owns idempotency per (slot_key, task_id)), never launches the exe, exe offline silently skipped, malformed payload / unwired service / post failure all log-only and never toast back to AS2. Response is always 200 with {ok, accepted, detail, job_id}; accepted=false is normal (slot mismatch, no rewrite marker, rate limit) and the Host only logs it"
   },
+  "dialogueChanged": {
+    "versionSignal": "data/rag/sync_state.json 的 dialogue_version（与 task_publish_version 同一把写锁、同一文件，缺键按 0）",
+    "as2ToHost": {
+      "task": "rag_dialogue_changed",
+      "transport": "json_sync, AS2->C#, httpCallable=false, fire-and-forget",
+      "payload": "{savePath: string, dialogueVersion: integer} — Host 白名单 TryParseRagDialogueChanged 未知键整包拒收；dialogueVersion 必须是非负整数",
+      "sendPoint": "通信_aka_Agent联动.as 轮询同步状态：同一次 LoadVars 读取解析两个版本，dialogue_version 与基线不同即发一次；首次读取只建立基线，槽位变化重置基线，发送失败不推进基线、下一轮 7 秒轮询重试",
+      "hostEffect": "savePath 必须等于 AgentSaveContext.CurrentSlotKey，否则忽略并记日志；命中后只调 AgentDialogueOverrides.Invalidate()（base XML 与 DataCache 一律不动）"
+    },
+    "hostToAs2": {
+      "gameCommand": "agentDialogueChanged",
+      "transport": "gameCommand（Host->AS2 cmd），best-effort 单次，发送失败只记日志",
+      "payload": "{savePath: string, dialogueVersion: integer}",
+      "handler": "_root.gameCommands[\"agentDialogueChanged\"] → _root.agent.处理对话覆盖层变更 → _root.agent.刷新已绑定NPC对话（只遍历登记表；不重载 base XML、不清 DataCache）",
+      "semantics": "query；不改游戏状态。回执丢失时当前场景保持旧对话，直到下一次 dialogue_version 变化或 NPC 重新初始化"
+    }
+  },
   "webCommands": {},
   "hostClose": {
     "message": "{type:'panel',cmd:'close',panel:'ragchat'}",

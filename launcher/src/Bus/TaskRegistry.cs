@@ -829,6 +829,17 @@ namespace CF7Launcher.Bus
                     commandRouter.HandleRagTaskCompleted(callbackPayload ?? msg);
                     return null;
                 });
+
+                // AS2 → C# 对话覆盖层变更信号（G4-5）：后端改写 dialogue_overrides.json 并 bump
+                // sync_state.json 的 dialogue_version 后，Host 使覆盖层缓存失效，再用
+                // gameCommand agentDialogueChanged 让 AS2 重绑当前场景已绑定的 NPC 对话。
+                // query 语义：不改游戏状态、不计应答；载荷畸形/槽位不符一律只留痕。
+                router.RegisterSync("rag_dialogue_changed", delegate(JObject msg)
+                {
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    commandRouter.HandleRagDialogueChanged(callbackPayload ?? msg);
+                    return null;
+                });
             }
 
             // 存档 shadow 备份
@@ -986,6 +997,7 @@ namespace CF7Launcher.Bus
             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "rag_bind_refresh","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "rag_task_completed","json_sync", "AS2->C#", false, first);
+            first = AppendTask(sb, "rag_dialogue_changed","json_sync", "AS2->C#", false, first);
             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);

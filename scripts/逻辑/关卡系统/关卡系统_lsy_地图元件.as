@@ -325,6 +325,68 @@ _root.地图元件.地图元件破碎动画 = function(scope:MovieClip, fragment
     }
 };
 
+// NPC 默认对话的查询与绑定（初始绑定与覆盖层热失效后的重绑共用同一条路径）。
+// 非强制：已有默认对话直接返回；首次绑定先用 [] 占位，防止同一个 NPC 重复发查询。
+// 强制刷新：不动旧数组、不动 NPC对话已绑定，直到新结果成功返回——对话按钮不会短暂失效。
+// 请求代际：每次发起前自增，回调先比对代际，旧响应不可能覆盖新响应。
+_root.查询并绑定NPC默认对话 = function(目标:MovieClip, 强制刷新:Boolean):Void {
+    // 回调工厂：MC 引用、请求代际、对话键都用形参保存。CS6 会把普通局部变量放进寄存器，
+    // 异步回调按变量名读取时会丢（MapPanelService.makeResponse 同一前例）。
+    function 构建回调(ref:MovieClip, 请求代际:Number, 对话键:String):Function {
+        return function(response:Object):Void {
+            if (ref._parent == null) return;  // MC 已销毁
+            if (ref.__对话请求代际 !== 请求代际) return;  // 旧响应：丢弃，不覆盖新响应
+            ref.__对话查询在途 = false;
+            if (response != undefined && response != null && response.success) {
+                var assembled:Array = [];
+                if (response.result != null && response.result.length > 0) {
+                    for (var i:Number = 0; i < response.result.length; i++) {
+                        assembled[i] = _root.组装单次对话(response.result[i]);
+                    }
+                }
+                if (assembled.length > 0) {
+                    // 原子替换数组：只影响下一次点击，已经显示在对话框里的文本不动。
+                    ref.默认对话 = assembled;
+                    ref.NPC对话已绑定 = true;
+                } else if (ref.默认对话 == null || ref.默认对话.length == 0) {
+                    // 空结果绝不覆盖已有的非空对话；占位空数组保持并置绑定成功。
+                    ref.默认对话 = [];
+                    ref.NPC对话已绑定 = true;
+                }
+                return;
+            }
+            // 失败：重绑保留旧对话；没有已落地对话时把占位 [] 还原成 null，允许后续重试。
+            if (ref.NPC对话已绑定 !== true
+                    && (ref.默认对话 == null || ref.默认对话.length == 0)) {
+                ref.默认对话 = null;
+            }
+            _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", 对话键,
+                "error:", (response == null) ? "empty_response" : response.error);
+        };
+    }
+    if (目标 == undefined || 目标 == null) return;
+    if (!强制刷新 && 目标.默认对话 != null) return;
+    var npcNameStr:String = (目标.NPC对话名 == undefined || 目标.NPC对话名 == null)
+        ? String(目标.名字) : String(目标.NPC对话名);
+    if (npcNameStr == "" || npcNameStr == "undefined") return;
+    if (!强制刷新) {
+        目标.默认对话 = [];  // 占位
+    }
+    // 登记在发起时完成：首次查询失败也能在下一次覆盖层变化时被重试。
+    if (_root.agent != undefined && typeof _root.agent.登记对话NPC == "function") {
+        _root.agent.登记对话NPC(目标);
+    }
+    var previousGen:Number = Number(目标.__对话请求代际);
+    var gen:Number = isNaN(previousGen) ? 1 : previousGen + 1;
+    目标.__对话请求代际 = gen;
+    目标.__对话查询在途 = true;
+    org.flashNight.neur.Server.DataQueryService.query(
+        "npc_dialogue",
+        {key: npcNameStr, taskProgress: _root.主线任务进度},
+        构建回调(目标, gen, npcNameStr)
+    );
+};
+
 // NPC
 //_root.初始化NPC(this);
 _root.初始化NPC = function(目标) {
@@ -385,34 +447,9 @@ _root.初始化NPC = function(目标) {
     目标.NPC商店检索名 = npcShopName;
     目标.NPC技能检索名 = npcSkillName;
 
-    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）
+    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）；热失效重绑走同一个函数。
     // 注意：AS2 中 _name 作局部变量名会引发编译器冲突
-    if (目标.默认对话 == null) {
-        var npcNameStr:String = npcDialogueName;
-        if (npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
-            目标.默认对话 = [];  // 占位
-            var npcRef:MovieClip = 目标;
-            org.flashNight.neur.Server.DataQueryService.query(
-                "npc_dialogue",
-                {key: npcNameStr, taskProgress: _root.主线任务进度},
-                function(response:Object):Void {
-                    if (npcRef._parent == null) return;  // MC 已销毁
-                    if (response.success) {
-                        if (response.result != null && response.result.length > 0) {
-                            var assembled:Array = [];
-                            for (var i:Number = 0; i < response.result.length; i++) {
-                                assembled[i] = _root.组装单次对话(response.result[i]);
-                            }
-                            npcRef.默认对话 = assembled;
-                        }
-                        npcRef.NPC对话已绑定 = true;
-                    } else {
-                        _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", npcNameStr, "error:", response.error);
-                    }
-                }
-            );
-        }
-    }
+    _root.查询并绑定NPC默认对话(目标, false);
 
         // _root.服务器.发布服务器消息("NPC默认对话: " + ObjectUtil.stringify(目标.默认对话));
     if (目标.物品栏 == null)

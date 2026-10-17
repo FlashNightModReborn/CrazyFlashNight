@@ -117,6 +117,14 @@ namespace CF7Launcher.Tests.Tasks
             Assert.DoesNotContain("200001", ((JArray)switched["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
             Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
                 ((JArray)switched["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+            // 任务文本覆盖层（G4-7）走同一条链：新槽第一次出现覆盖层即进变化清单，且只列该文件。
+            string slotBOverlay = Path.Combine(root, "data", "rag", "agent_saves", "slotB");
+            Directory.CreateDirectory(slotBOverlay);
+            File.WriteAllText(Path.Combine(slotBOverlay, "task_text_overrides.json"), "{\"$AGENT_T1\":\"覆盖文本\"}");
+            var overrideSync = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotB'}"), 1, () => true);
+            Assert.True(overrideSync["result"].Value<bool>("changed"));
+            Assert.Equal(new[] { "data/rag/agent_saves/slotB/task_text_overrides.json" },
+                ((JArray)overrideSync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
         }
         [Fact]
         public void TaskSyncTreatsNonSlotSavePathAsNoOverlayAndRejectsNonString()

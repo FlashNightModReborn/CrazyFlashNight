@@ -4927,6 +4927,42 @@ namespace CF7Launcher.Guardian
             service.NotifyTaskCompletedInBackground(slotKey, taskId, npc);
         }
 
+        /// <summary>rag_dialogue_changed（G4-5）：后端改写对话覆盖层并 bump dialogue_version 后的热失效信号。
+        /// 只清 <see cref="Data.AgentDialogueOverrides"/> 的覆盖层缓存（base XML / DataCache 一律不动），
+        /// 再用 gameCommand agentDialogueChanged 通知 AS2 重绑当前场景已绑定的 NPC。
+        /// 载荷畸形、绑定槽位不符或回执发不出去都只在 Host 侧留痕，绝不回 toast 打断游戏。</summary>
+        internal void HandleRagDialogueChanged(JObject data)
+        {
+            string slotKey;
+            int dialogueVersion;
+            string rejectReason;
+            if (!TryParseRagDialogueChanged(data, out slotKey, out dialogueVersion, out rejectReason))
+            {
+                LogManager.Log("[Router] rag_dialogue_changed rejected reason=" + rejectReason);
+                return;
+            }
+            // 槽位必须与当前绑定一致：旧槽位的迟到消息不能清掉当前槽位的覆盖层缓存。
+            string boundSlot = RagTerminal.AgentSaveContext.CurrentSlotKey;
+            if (string.IsNullOrEmpty(boundSlot)
+                || !string.Equals(boundSlot, slotKey, StringComparison.Ordinal))
+            {
+                LogManager.Log("[Router] rag_dialogue_changed ignored: slot_mismatch bound="
+                    + (boundSlot ?? "<null>") + " payload=" + slotKey);
+                return;
+            }
+            // 该操作只是清一个进程级字典，命令处理线程直接做即可，不排后台任务。
+            Data.AgentDialogueOverrides.Invalidate();
+            bool delivered = TrySendGameCommand("agentDialogueChanged",
+                "\"savePath\":\"" + EscapeJsonString(slotKey) + "\",\"dialogueVersion\":"
+                + dialogueVersion.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            if (!delivered)
+            {
+                // AS2 侧按「回执丢失＝当前场景保持旧对话」处理，不重试轰炸。
+                LogManager.Log("[Router] rag_dialogue_changed ack undelivered slot=" + slotKey
+                    + " version=" + dialogueVersion);
+            }
+        }
+
         /// <summary>完成事件载荷白名单：savePath 必填非空字符串、taskId 必填正整数、
         /// npc 可选字符串（缺省空串——终端以任务记录里的 get_npc 为权威，本字段只作兜底）；
         /// 未知键整包拒收。委托 id 区间闸在 AS2 发送侧，Host 只做形状校验、不复制该常量。
@@ -4979,6 +5015,48 @@ namespace CF7Launcher.Guardian
                 }
                 npc = npcToken.Value<string>();
             }
+            return true;
+        }
+
+        /// <summary>对话覆盖层变更信号载荷白名单：savePath 必填非空字符串（与 rag_task_completed 同口径，
+        /// 由调用方拿它与绑定槽位精确比对）、dialogueVersion 必填非负整数（Integer 与整值 Float 都收，
+        /// 与 taskId 同口径）；未知键整包拒收。</summary>
+        internal static bool TryParseRagDialogueChanged(JObject data, out string slotKey,
+            out int dialogueVersion, out string rejectReason)
+        {
+            slotKey = null; dialogueVersion = 0; rejectReason = null;
+            if (data == null) { rejectReason = "missing_payload"; return false; }
+            foreach (JProperty property in data.Properties())
+            {
+                if (property.Name != "savePath" && property.Name != "dialogueVersion")
+                {
+                    rejectReason = "unknown_field:" + property.Name;
+                    return false;
+                }
+            }
+            JToken savePath = data["savePath"];
+            if (savePath == null || savePath.Type != JTokenType.String
+                || string.IsNullOrEmpty(savePath.Value<string>()))
+            {
+                rejectReason = "savePath_invalid";
+                return false;
+            }
+            slotKey = savePath.Value<string>();
+            JToken versionToken = data["dialogueVersion"];
+            if (versionToken == null
+                || (versionToken.Type != JTokenType.Integer && versionToken.Type != JTokenType.Float))
+            {
+                rejectReason = "dialogueVersion_invalid";
+                return false;
+            }
+            double rawVersion = versionToken.Value<double>();
+            if (!double.IsFinite(rawVersion) || Math.Floor(rawVersion) != rawVersion
+                || rawVersion < 0 || rawVersion > int.MaxValue)
+            {
+                rejectReason = "dialogueVersion_out_of_range";
+                return false;
+            }
+            dialogueVersion = (int)rawVersion;
             return true;
         }
 
@@ -6587,6 +6665,14 @@ namespace CF7Launcher.Guardian
             // 与 WebOverlayForm.TrySendGameCommand 一致：先校验 IsClientReady，再走 TrySend 真实回传 false。
             // 不能依赖 Send() —— Send 在无连接时只是 return（不抛），会让 router 误判 panel 打开成功。
             string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"}\0";
+            if (_gameCommandSenderOverride != null) return _gameCommandSenderOverride(payload);
+            if (_socketServer == null || !_socketServer.IsClientReady) return false;
+            return _socketServer.TrySend(payload);
+        }
+
+        private bool TrySendGameCommand(string action, string extraJsonFields)
+        {
+            string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0";
             if (_gameCommandSenderOverride != null) return _gameCommandSenderOverride(payload);
             if (_socketServer == null || !_socketServer.IsClientReady) return false;
             return _socketServer.TrySend(payload);

@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using CF7Launcher.Data;
 using CF7Launcher.Guardian;
 using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
@@ -9499,6 +9501,211 @@ namespace CF7Launcher.Tests.Guardian
                 JObject.Parse("{\"savePath\":\"save1\",\"taskId\":1e30}"),
                 out slotKey, out taskId, out npc, out rejectReason));
             Assert.Equal("taskId_out_of_range", rejectReason);
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_InvalidatesOverlayCacheAndAcksExactFields()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            string root = Path.Combine(Path.GetTempPath(), "cf7-dialogue-changed-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(Path.Combine(root, "data", "rag", "agent_saves", "slotA"));
+            try
+            {
+                AgentSaveContext.Set("slotA");
+                File.WriteAllText(Path.Combine(root, "data", "rag", "agent_saves", "slotA",
+                    AgentDialogueOverrides.OverlayFileName), "{overrides:[]}");
+                // 先让覆盖层缓存里真的留一条 (root, slotA) 解析结果：缓存命中是进程级状态，只能这样观测失效。
+                new AgentDialogueOverrides(root).Apply("slotA",
+                    new Dictionary<string, List<DialogueGroup>> { ["某人"] = new List<DialogueGroup>() });
+                Assert.Equal(1, AgentDialogueOverrides.CachedSlotCount);
+
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3}"));
+
+                Assert.Equal(0, AgentDialogueOverrides.CachedSlotCount);
+                JObject wire = Assert.Single(commands);
+                Assert.Equal("cmd", wire.Value<string>("task"));
+                Assert.Equal("agentDialogueChanged", wire.Value<string>("action"));
+                Assert.Equal("slotA", wire.Value<string>("savePath"));
+                Assert.Equal(3, wire.Value<int>("dialogueVersion"));
+                Assert.False(harnessR.Host.IsPanelOpen);   // 热失效不动任何面板
+            }
+            finally
+            {
+                AgentSaveContext.Clear();
+                AgentDialogueOverrides.Invalidate();
+                try { Directory.Delete(root, true); }
+                catch (IOException) { }
+                catch (UnauthorizedAccessException) { }
+            }
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_SlotMismatchOrUnboundSendsNothing()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            try
+            {
+                AgentSaveContext.Clear();
+                // 未绑定槽位：不认任何覆盖层信号（standalone 行为不变）。
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3}"));
+                AgentSaveContext.Set("slotB");
+                // 旧槽位的迟到消息不能清当前槽位的覆盖层缓存，也不回执。
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":4}"));
+                Assert.Empty(commands);
+            }
+            finally
+            {
+                AgentSaveContext.Clear();
+                AgentDialogueOverrides.Invalidate();
+            }
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_MalformedPayloadStaysSilent()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            try
+            {
+                AgentSaveContext.Set("slotA");
+                r.HandleRagDialogueChanged(null);
+                r.HandleRagDialogueChanged(JObject.Parse("{\"dialogueVersion\":3}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"\",\"dialogueVersion\":3}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":123,\"dialogueVersion\":3}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\"}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":\"3\"}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":-1}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3.5}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":1e30}"));
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3,\"extra\":1}"));
+                // 信封未拆（payload 还在外层）属畸形载荷：注册委托必须先把 payload 取出来。
+                r.HandleRagDialogueChanged(JObject.Parse(
+                    "{\"payload\":{\"savePath\":\"slotA\",\"dialogueVersion\":3}}"));
+                Assert.Empty(commands);
+                Assert.False(harnessR.Host.IsPanelOpen);
+            }
+            finally
+            {
+                AgentSaveContext.Clear();
+            }
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_AckUndeliveredOnlyLogsAndNeverThrows()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);   // 没有 socketServer，也没设 sender override
+            using var harnessR = new HostHarness(r);
+            var logs = new List<string>();
+            LogManager.SetSink(logs.Add);
+            try
+            {
+                AgentSaveContext.Set("slotA");
+                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":5}"));
+                Assert.Contains(logs, line => line.Contains("ack undelivered"));
+                Assert.False(harnessR.Host.IsPanelOpen);
+            }
+            finally
+            {
+                LogManager.ResetSink();
+                AgentSaveContext.Clear();
+            }
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_PayloadEnvelopeIsUnwrappedBeforeRouting()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            using var harnessR = new HostHarness(r);
+            var commands = new List<JObject>();
+            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
+            try
+            {
+                AgentSaveContext.Set("slotA");
+                // 与 TaskRegistry 注册委托同构：msg["payload"] 先取出，取不到才退回 msg。
+                var router = new CF7Launcher.Bus.MessageRouter();
+                router.RegisterSync("rag_dialogue_changed", delegate(JObject msg)
+                {
+                    JObject callbackPayload = msg["payload"] as JObject;
+                    r.HandleRagDialogueChanged(callbackPayload ?? msg);
+                    return null;
+                });
+                router.ProcessMessage(
+                    "{\"task\":\"rag_dialogue_changed\",\"payload\":{\"savePath\":\"slotA\",\"dialogueVersion\":7}}",
+                    null);
+
+                JObject wire = Assert.Single(commands);
+                Assert.Equal("agentDialogueChanged", wire.Value<string>("action"));
+                Assert.Equal(7, wire.Value<int>("dialogueVersion"));
+                Assert.False(harnessR.Host.IsPanelOpen);
+            }
+            finally
+            {
+                AgentSaveContext.Clear();
+                AgentDialogueOverrides.Invalidate();
+            }
+        }
+
+        [Fact]
+        public void RAGCHAT_DialogueChanged_PayloadWhitelist()
+        {
+            string slotKey;
+            int dialogueVersion;
+            string rejectReason;
+
+            Assert.True(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":0}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("save1", slotKey);
+            Assert.Equal(0, dialogueVersion);
+            Assert.Null(rejectReason);
+
+            // 整值 Float 与 taskId 同口径；小数、负数、越界一律拒收。
+            Assert.True(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":12.0}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal(12, dialogueVersion);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":1.5}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("dialogueVersion_out_of_range", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":-1}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("dialogueVersion_out_of_range", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(null,
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("missing_payload", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"dialogueVersion\":3}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("savePath_invalid", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":\"3\"}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("dialogueVersion_invalid", rejectReason);
+
+            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
+                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":3,\"npc\":\"甲\"}"),
+                out slotKey, out dialogueVersion, out rejectReason));
+            Assert.Equal("unknown_field:npc", rejectReason);
         }
 
         [Fact]

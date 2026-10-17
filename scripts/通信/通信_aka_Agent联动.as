@@ -1,8 +1,19 @@
-﻿// Agent 联动：不调用 _root.服务器；data/rag/sync_state.json 的 task_publish_version 与 _root.agent.last_task_publish_version（初始 0）比较，非战斗图轮询热更。
+﻿// Agent 联动：不调用 _root.服务器；data/rag/sync_state.json 的 task_publish_version 与
+// _root.agent.last_task_publish_version（初始 0）比较，非战斗图轮询热更。
+// 同一份 raw 还解析 dialogue_version（后端改写对话覆盖层后 bump）：变化时经
+// rag_dialogue_changed 通知 Host 失效覆盖层缓存，Host 回 gameCommand agentDialogueChanged
+// 让当前场景已绑定的 NPC 重绑对话。base XML / DataCache 永不清除。
 
 _root.agent = {};
 _root.agent.npc_state_db_exists = false;
 _root.agent.last_task_publish_version = null;
+// 对话覆盖层版本基线：null＝本次槽位还没取过基线；槽位变化会重新置 null。
+_root.agent.last_dialogue_version = null;
+_root.agent.dialogue_version_slot = null;
+// 当前场景已绑定的 NPC 登记表（进程级）：热失效只遍历它，不遍历 _root / 全地图 MC。
+_root.agent.dialogue_npcs = [];
+_root.agent.dialogue_refresh_busy = false;
+_root.agent.dialogue_refresh_pending = false;
 _root.agent.sync_poll_busy = false;
 _root.agent.sync_apply_busy = false;
 // 宿主已换任务内容而游戏侧重载未落地时为 true；下一轮无条件整目录重载补齐。
@@ -12,6 +23,7 @@ _root.agent.REL_SYNC_STATE = "data/rag/sync_state.json";
 _root.agent.REL_NPC_STATE_DB = "data/rag/npc_state_db.json";
 _root.agent.REL_LAUNCH_BAT = "data/rag/launch_cfn_rag.bat";
 _root.agent.KEY_TASK_PUBLISH_VERSION = "task_publish_version";
+_root.agent.KEY_DIALOGUE_VERSION = "dialogue_version";
 // 槽位目录同步（G2-3②）：已对齐槽位与防重入。null＝从未对齐。
 _root.agent.slot_catalog_aligned = null;
 _root.agent.slot_catalog_busy = false;
@@ -20,7 +32,9 @@ _root.agent.slot_catalog_busy = false;
 _root.agent.AGENT_TASK_ID_MIN = 200001;
 _root.agent.AGENT_TASK_ID_MAX = 300000;
 
-_root.agent.读取任务发布版本号 = function(raw:String):Number {
+// 通用版本号读取：同一份 sync_state.json raw 按 key 取值。缺键/非数字一律按 0，
+// 旧格式（没有 dialogue_version）因此不会每轮都被当成变化。
+_root.agent.读取同步版本号 = function(raw:String, key:String):Number {
     if (raw == undefined || raw.length == 0) {
         return 0;
     }
@@ -29,8 +43,8 @@ _root.agent.读取任务发布版本号 = function(raw:String):Number {
     if (obj == undefined || obj == null || typeof obj != "object") {
         return 0;
     }
-    var v = obj[_root.agent.KEY_TASK_PUBLISH_VERSION];
-    if (v == undefined) {
+    var v = obj[key];
+    if (v == undefined || v == null) {
         return 0;
     }
     var n:Number = Number(v);
@@ -38,6 +52,10 @@ _root.agent.读取任务发布版本号 = function(raw:String):Number {
         return 0;
     }
     return n;
+};
+
+_root.agent.读取任务发布版本号 = function(raw:String):Number {
+    return _root.agent.读取同步版本号(raw, _root.agent.KEY_TASK_PUBLISH_VERSION);
 };
 
 _root.agent.检测npc状态库文件 = function():Void {
@@ -111,24 +129,41 @@ _root.agent.轮询同步状态 = function():Void {
     var r:Object = _root.agent;
     lv.onData = function(raw:String):Void {
         r.sync_poll_busy = false;
+        // 槽位变化（读档/换档）：旧槽位的版本号不能带到新槽位，对话版本基线作废，
+        // 下一次成功读取重新取基线。任务版本基线沿用既有语义（不在此重置）。
+        var currentSlot:String = (_root.savePath == undefined || _root.savePath == null)
+            ? "" : String(_root.savePath);
+        if (r.dialogue_version_slot !== currentSlot) {
+            r.dialogue_version_slot = currentSlot;
+            r.last_dialogue_version = null;
+        }
         if (raw == undefined || raw.length == 0) {
             r.last_task_publish_version = 0;
+            r.last_dialogue_version = 0;
             return;
         }
-        var fileVer:Number = r.读取任务发布版本号(raw);
-        if (isNaN(fileVer)) {
-            r.last_task_publish_version = 0;
-            return;
-        }
+        // 同一次读取解析两个版本：task 没变不能挡住 dialogue。
+        var fileVer:Number = r.读取同步版本号(raw, r.KEY_TASK_PUBLISH_VERSION);
+        var dialogueVer:Number = r.读取同步版本号(raw, r.KEY_DIALOGUE_VERSION);
         if (r.last_task_publish_version == null) {
+            // 首次成功读取：两个版本都只作基线，不触发任何事件。
             r.last_task_publish_version = fileVer;
+            r.last_dialogue_version = dialogueVer;
             return;
         }
-        if (fileVer == r.last_task_publish_version) {
-            return;
+        if (fileVer != r.last_task_publish_version) {
+            _root.发布消息("正在接收终端任务数据……");
+            _root.agent.同步任务热更新(fileVer);
         }
-        _root.发布消息("正在接收终端任务数据……");
-        _root.agent.同步任务热更新(fileVer);
+        if (r.last_dialogue_version == null) {
+            r.last_dialogue_version = dialogueVer;
+        } else if (dialogueVer != r.last_dialogue_version) {
+            // 数值与基线不同即触发一次（文件刷新/重建导致回退也照发），发送成功才推进基线，
+            // 断线时下一轮 7 秒轮询自然重试。best-effort：不弹任何提示，只 trace。
+            if (_root.agent.发送对话覆盖层变更(dialogueVer)) {
+                r.last_dialogue_version = dialogueVer;
+            }
+        }
     };
     lv.load(fullPath);
 };
@@ -608,6 +643,90 @@ _root.agent.任务发布NPC = function(taskId:String):String {
     return String(taskData.get_npc);
 };
 
+// G4-5：dialogue_version 变化 → AS2→Host 的轻量命令（query 语义，与 rag_bind_refresh /
+// rag_task_completed 同族）：不改游戏状态、不等 exe 应答、不等 Host 回执。
+// 通道不可用（server 未就绪 / 断线 / 空槽位）返回 false，调用方不推进版本基线，下一轮轮询重试。
+_root.agent.发送对话覆盖层变更 = function(dialogueVersion:Number):Boolean {
+    if (_root.server == undefined || _root.server == null) return false;
+    if (typeof _root.server.sendTaskToNode != "function") return false;
+    if (_root.server.isSocketConnected !== true) return false;
+    var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (savePath == "") return false;
+    var ver:Number = Number(dialogueVersion);
+    if (!isFinite(ver)) ver = 0;
+    var sent:Boolean = _root.server.sendTaskToNode("rag_dialogue_changed",
+        {savePath: savePath, dialogueVersion: ver}, null);
+    if (sent !== true) {
+        trace("[Agent] rag_dialogue_changed 发送失败，下一轮轮询重试。");
+        return false;
+    }
+    return true;
+};
+
+// 当前场景 NPC 登记表：只收真正走过 _root.查询并绑定NPC默认对话 的 NPC（佣兵不走这条绑定）。
+// 查询发起时就登记，首次查询失败也能在下一次覆盖层变化时重试。
+_root.agent.登记对话NPC = function(npc:MovieClip):Void {
+    if (npc == undefined || npc == null) return;
+    var list:Array = _root.agent.dialogue_npcs;
+    if (!(list instanceof Array)) {
+        list = [];
+        _root.agent.dialogue_npcs = list;
+    }
+    for (var i:Number = 0; i < list.length; i++) {
+        if (list[i] === npc) return;
+    }
+    list.push(npc);
+};
+
+// 覆盖层热失效后的当前场景重绑：只遍历登记表，不遍历 _root / 全地图；
+// 场景切换后旧 MC 的 _parent 失效，靠这里的清理逻辑剔除（不依赖手写 remove 钩子）。
+// busy + pending 合并连续版本变化；每个 NPC 的请求代际保证旧响应不会覆盖新响应。
+_root.agent.刷新已绑定NPC对话 = function():Void {
+    var r:Object = _root.agent;
+    if (typeof _root.查询并绑定NPC默认对话 != "function") return;
+    if (r.dialogue_refresh_busy == true) {
+        r.dialogue_refresh_pending = true;
+        return;
+    }
+    r.dialogue_refresh_busy = true;
+    var list:Array = r.dialogue_npcs;
+    var alive:Array = [];
+    var targets:Array = [];
+    if (list instanceof Array) {
+        for (var i:Number = 0; i < list.length; i++) {
+            var npc:MovieClip = list[i];
+            if (npc == undefined || npc == null) continue;
+            if (npc._parent == null) continue;
+            alive.push(npc);
+            if (npc.NPC对话已绑定 === true || npc.__对话查询在途 === true) {
+                targets.push(npc);
+            }
+        }
+    }
+    r.dialogue_npcs = alive;
+    for (var j:Number = 0; j < targets.length; j++) {
+        _root.查询并绑定NPC默认对话(targets[j], true);
+    }
+    r.dialogue_refresh_busy = false;
+    if (r.dialogue_refresh_pending == true) {
+        r.dialogue_refresh_pending = false;
+        _root.agent.刷新已绑定NPC对话();
+    }
+};
+
+// Host→AS2 回执处理：只做当前场景重绑——不重载 base XML、不清 DataCache、不改任务数据。
+// savePath 为空视为同槽位（Host 已按绑定槽位校验过）；不一致＝旧槽位的迟到消息，直接忽略。
+_root.agent.处理对话覆盖层变更 = function(params:Object):Void {
+    var incoming:String = (params == undefined || params.savePath == undefined || params.savePath == null)
+        ? "" : String(params.savePath);
+    var current:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
+    if (incoming != "" && incoming !== current) {
+        trace("[Agent] 忽略旧槽位的对话覆盖层变更回执：" + incoming + " 当前：" + current);
+        return;
+    }
+    _root.agent.刷新已绑定NPC对话();
+};
+
 // G2-3②：换槽位后的任务目录对齐。宿主按新 savePath 重读覆盖层并回变化清单，
 // 游戏侧只重载真正变化的文件（silent=true 不弹提示、不推进任务发布版本号）。
 // 失败 trace-only；下一轮 7 秒轮询的对齐检查会重试，task_reload_owed 防止
@@ -743,6 +862,14 @@ _root.gameCommands["openRagTerminal"] = function(params:Object):Void {
     if (_root.平板回执 != undefined) {
         _root.平板回执(params, {task:"tablet_response", ok:true});
     }
+};
+
+// G4-5 回执：Host 已让覆盖层缓存失效（dialogue_version 变化 → rag_dialogue_changed），
+// 本命令让当前场景已绑定的 NPC 重绑对话。两向两命令：AS2→Host 是 rag_dialogue_changed，
+// Host→AS2 是本 gameCommand（不要把它当成 AS2→Host 命令用）。
+// 边界：回执丢失时当前场景会保持旧对话，直到下一次覆盖层版本变化或 NPC 重新初始化。
+_root.gameCommands["agentDialogueChanged"] = function(params:Object):Void {
+    _root.agent.处理对话覆盖层变更(params);
 };
 
 _root.agent.检测npc状态库文件();

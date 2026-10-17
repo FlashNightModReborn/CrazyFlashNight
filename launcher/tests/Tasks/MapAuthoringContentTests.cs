@@ -249,6 +249,49 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { source, source }, null));
             Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { "data/rag/agent_saves/../secret/agent_tasks.json" }, null));
         }
+        [Fact]
+        public void TextOverrideSourceLoadsAfterAgentTextAndFailsClosed()
+        {
+            var baseline = MapTaskCatalog.Load(root);
+            string agentText = MapTaskCatalog.AgentSaveTextSource("slotA");
+            string overrideText = MapTaskCatalog.AgentSaveTextOverrideSource("slotA");
+            Assert.Equal("data/rag/agent_saves/slotA/task_text_overrides.json", overrideText);
+
+            // 覆盖层文件缺失：与现状逐字一致（摘要不变，也不进 SourceBytes）。
+            var missing = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
+            Assert.Equal(baseline.Digest, missing.Digest);
+            Assert.DoesNotContain(overrideText, missing.SourceBytes.Keys);
+
+            // 只有 agent_text.json：行为与现状一致。
+            Put(agentText, "{\"$K\":\"终端文本\"}");
+            var textOnly = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
+            Assert.Equal("终端文本", (string)textOnly.Texts["$K"]);
+
+            // 只有 task_text_overrides.json：也能单独加载。
+            File.Delete(PathFor(agentText));
+            Put(overrideText, "{\"$K\":\"覆盖层文本\"}");
+            var overrideOnly = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
+            Assert.Equal("覆盖层文本", (string)overrideOnly.Texts["$K"]);
+
+            // 两个都在且同 key：排在后面的覆盖层整份赢；未被覆盖的 key 保留增量的值。
+            Put(agentText, "{\"$K\":\"终端文本\",\"$ONLY\":\"仅在增量\"}");
+            var both = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
+            Assert.Equal("覆盖层文本", (string)both.Texts["$K"]);
+            Assert.Equal("仅在增量", (string)both.Texts["$ONLY"]);
+            // 顺序反过来就失去覆盖语义——MapRuntimeContent 的固定顺序是唯一保证。
+            var reversed = MapTaskCatalog.Load(root, null, null, new[] { overrideText, agentText });
+            Assert.Equal("终端文本", (string)reversed.Texts["$K"]);
+
+            // 变化清单覆盖新源：只改覆盖层就只列它。
+            Put(overrideText, "{\"$K\":\"覆盖层文本·改\"}");
+            Assert.Equal(new[] { overrideText },
+                MapTaskCatalog.ChangedSources(both, MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText })));
+
+            // 覆盖层损坏沿用既有 fail-closed：整次加载失败，不静默吞掉。
+            Put(overrideText, "{\"$K\":");
+            Assert.ThrowsAny<Newtonsoft.Json.JsonException>(
+                () => MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText }));
+        }
         public void Dispose()
         {
             string expected = Path.Combine(Path.GetTempPath(), "cf7-map-content-test-");
