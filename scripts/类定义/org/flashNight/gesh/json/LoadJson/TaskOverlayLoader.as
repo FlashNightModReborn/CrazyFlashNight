@@ -2,7 +2,7 @@
 
 /**
  * 任务覆盖层读取器（G2-2）：按当前存档槽位读取 data/rag/agent_saves/<slot>/ 下的
- * Agent 增量文件（agent_tasks.json / agent_text.json）。覆盖层与基础 list.xml 目录
+ * Agent 增量文件（agent_tasks.json / agent_text.json / task_text_overrides.json）。覆盖层与基础 list.xml 目录
  * 完全分离：不进 entries、不走 ownedEntries，由领域 loader 显式持有路径并单独判断变化。
  *
  * fail-closed 口径（§2.0.8）：文件缺失＝该存档无增量，静默跳过（onReady(null)）；
@@ -14,6 +14,7 @@ class org.flashNight.gesh.json.LoadJson.TaskOverlayLoader {
     public static var DIRECTORY:String = "data/rag/agent_saves/";
     public static var TASK_FILE:String = "agent_tasks.json";
     public static var TEXT_FILE:String = "agent_text.json";
+    public static var TEXT_OVERRIDE_FILE:String = "task_text_overrides.json";
 
     /**
      * 解析当前存档的覆盖层文件相对路径；无存档或槽位形态非法时返回 null。

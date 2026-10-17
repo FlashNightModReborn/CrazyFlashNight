@@ -157,22 +157,35 @@ class org.flashNight.gesh.json.LoadJson.TaskTextLoader extends BaseXMLLoader {
     }
 
     /**
-     * 在基础合并结果之上应用当前存档的覆盖层（G2-2）。文件缺失＝该存档无增量，
-     * 直接用基础数据；解析失败＝TaskOverlayLoader 已报错并回 null，同样回退基础数据。
+     * 在基础合并结果之上依次应用当前存档的两层覆盖（G2-2 / G4-7）：
+     * 先 agent_text.json 任务增量，再 task_text_overrides.json 既有文本覆盖（后者赢）。
+     * 任一层文件缺失＝该层无增量；解析失败＝TaskOverlayLoader 已报错并回 null；
+     * 两种情况都保留上一层结果，绝不拿半份数据覆盖。回调恰好执行一次。
      */
     private function applyOverlay(onDone:Function):Void {
         var self:TaskTextLoader = this;
         var base:Object = this.baseData;
-        var overlayPath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.TEXT_FILE);
-        if (overlayPath == null) {
-            this.combinedData = base;
-            if (onDone != null) onDone();
+        var textPath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.TEXT_FILE);
+        var overridePath:String = TaskOverlayLoader.resolvePath(TaskOverlayLoader.TEXT_OVERRIDE_FILE);
+
+        var applyOverrides:Function = function(textData:Object):Void {
+            var merged:Object = (textData == null) ? base : self.mergeOverlayText(base, textData);
+            if (overridePath == null) {
+                self.combinedData = merged;
+                if (onDone != null) onDone();
+                return;
+            }
+            TaskOverlayLoader.load(overridePath, function(overrides:Object):Void {
+                self.combinedData = (overrides == null) ? merged : self.mergeOverlayText(merged, overrides);
+                if (onDone != null) onDone();
+            });
+        };
+
+        if (textPath == null) {
+            applyOverrides(null);
             return;
         }
-        TaskOverlayLoader.load(overlayPath, function(overlay:Object):Void {
-            self.combinedData = (overlay == null) ? base : self.mergeOverlayText(base, overlay);
-            if (onDone != null) onDone();
-        });
+        TaskOverlayLoader.load(textPath, applyOverrides);
     }
 
     /** 文本覆盖层按 key 覆盖基础 dict；覆盖层键总是赢。 */
