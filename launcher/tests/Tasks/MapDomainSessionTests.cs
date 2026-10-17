@@ -324,6 +324,65 @@ namespace CF7Launcher.Tests.Tasks
                 Assert.Null(response["result"]["admission"]["frame"]);
             }
         }
+        [Fact]
+        public void AutoAcceptFollowsExplicitNextTaskId()
+        {
+            var definition = Definition();
+            var tasks = JObject.Parse(@"{'200001':{id:200001,chain:'委托',get_npc:'药师',finish_npc:'铁匠',next_task_id:200002},
+                '200002':{id:200002,chain:'委托',get_npc:'铁匠',finish_npc:'药师'}}");
+            var endpoints = new JObject();
+            foreach (var p in tasks.Properties()) endpoints[p.Name] = new JObject { ["get"] = new JObject(), ["finish"] = new JObject() };
+
+            var projected = MapNpcTaskProjection.Build(definition, tasks, endpoints, "");
+            Assert.Equal("200002", (string)projected["autoAccept"]["200001"]["nextTaskId"]);
+            Assert.True(projected["autoAccept"]["200001"].Value<bool>("allowed"));
+            Assert.Null(projected["autoAccept"]["200002"]);
+        }
+        [Fact]
+        public void MalformedNextTaskIdIsSkippedWithoutThrowing()
+        {
+            var definition = Definition();
+            var tasks = JObject.Parse(@"{'900001':{id:900001,chain:'委托',get_npc:'甲',finish_npc:'老甲',next_task_id:999999},
+                '900002':{id:900002,chain:'委托',get_npc:'甲',finish_npc:'老甲',next_task_id:'abc'},
+                '900003':{id:900003,chain:'委托',get_npc:'甲',finish_npc:'老甲',next_task_id:900003},
+                '900004':{id:900004,chain:'委托',get_npc:'甲',finish_npc:'老甲'}}");
+            var endpoints = new JObject();
+            foreach (var p in tasks.Properties()) endpoints[p.Name] = new JObject { ["get"] = new JObject(), ["finish"] = new JObject() };
+
+            var projected = MapNpcTaskProjection.Build(definition, tasks, endpoints, "");
+            Assert.Null(projected["autoAccept"]["900001"]);
+            Assert.Null(projected["autoAccept"]["900002"]);
+            Assert.Null(projected["autoAccept"]["900003"]);
+            Assert.Null(projected["autoAccept"]["900004"]);
+        }
+        [Fact]
+        public void ExplicitNextTaskIdOverridesChainDerivedEntry()
+        {
+            var definition = Definition();
+            var tasks = JObject.Parse(@"{'910001':{id:910001,chain:'委托#1',get_npc:'甲',finish_npc:'老甲',next_task_id:910003},
+                '910002':{id:910002,chain:'委托#2',get_npc:'老甲',finish_npc:'甲'},
+                '910003':{id:910003,chain:'委托',get_npc:'老甲',finish_npc:'甲'}}");
+            var endpoints = new JObject();
+            foreach (var p in tasks.Properties()) endpoints[p.Name] = new JObject { ["get"] = new JObject(), ["finish"] = new JObject() };
+
+            var projected = MapNpcTaskProjection.Build(definition, tasks, endpoints, "");
+            Assert.Equal("910003", (string)projected["autoAccept"]["910001"]["nextTaskId"]);
+            // chain 派生原为 910001 -> 910002，被显式字段覆盖
+            Assert.NotEqual("910002", (string)projected["autoAccept"]["910001"]["nextTaskId"]);
+        }
+        [Fact]
+        public void ExplicitPairingIsBlockedWhenNextNpcDiffers()
+        {
+            var definition = Definition();
+            var tasks = JObject.Parse(@"{'920001':{id:920001,chain:'委托',get_npc:'甲',finish_npc:'老甲',next_task_id:920002},
+                '920002':{id:920002,chain:'委托',get_npc:'乙',finish_npc:'甲'}}");
+            var endpoints = new JObject();
+            foreach (var p in tasks.Properties()) endpoints[p.Name] = new JObject { ["get"] = new JObject(), ["finish"] = new JObject() };
+
+            var projected = MapNpcTaskProjection.Build(definition, tasks, endpoints, "");
+            Assert.Equal("920002", (string)projected["autoAccept"]["920001"]["nextTaskId"]);
+            Assert.False(projected["autoAccept"]["920001"].Value<bool>("allowed"));
+        }
         public void Dispose()
         {
             // task_sync 会写进程级槽位上下文（对话覆盖层据此定位）：清掉，不外溢到其他用例。

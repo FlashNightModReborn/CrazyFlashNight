@@ -42,6 +42,37 @@ namespace CF7Launcher.Data
                     autoAccept[finished.Name] = new JObject { ["nextTaskId"] = next.Name, ["allowed"] = allowed };
                 }
             }
+            // 显式配对：next_task_id 覆盖同一 finished 任务的 chain 派生条目。
+            // 与上面 chain 分支的 allowed 判据同口径——下一段必须在完成 NPC 处接取。
+            foreach (var p in tasks.Properties())
+            {
+                if (p.Value is not JObject finishedTask) continue;
+                JToken raw = finishedTask["next_task_id"];
+                if (raw == null) continue;
+                string nextId;
+                if (raw.Type == JTokenType.Integer) nextId = raw.Value<long>().ToString(System.Globalization.CultureInfo.InvariantCulture);
+                else if (raw.Type == JTokenType.String && int.TryParse((string)raw, out _)) nextId = ((string)raw).Trim();
+                else continue;
+                if (nextId == p.Name || tasks[nextId] is not JObject nextTask) continue;
+                bool allowed;
+                if (finishedTask["finish_endpoint"] is not JObject && nextTask["get_endpoint"] is not JObject)
+                {
+                    string finishNpc = finishedTask.Value<string>("finish_npc") ?? "", nextNpc = nextTask.Value<string>("get_npc") ?? "";
+                    string finishPlace = finishedTask.Value<string>("finish_npc_hotspot") ?? "", nextPlace = nextTask.Value<string>("get_npc_hotspot") ?? "";
+                    allowed = nextNpc != "" && nextNpc == finishNpc && (nextPlace == "" || (finishPlace != "" &&
+                        MapEndpointResolver.FindLocation(definition, finishPlace) != "" &&
+                        MapEndpointResolver.FindLocation(definition, finishPlace) == MapEndpointResolver.FindLocation(definition, nextPlace)));
+                }
+                else
+                {
+                    var finishedEndpoint = endpoints[p.Name]?["finish"] as JObject;
+                    var nextEndpoint = endpoints[nextId]?["get"] as JObject;
+                    allowed = currentLocation != "" && finishedEndpoint != null && nextEndpoint != null
+                        && Names(definition, finishedTask, "finish", finishedEndpoint, currentLocation)
+                            .Intersect(Names(definition, nextTask, "get", nextEndpoint, currentLocation), StringComparer.Ordinal).Any();
+                }
+                autoAccept[p.Name] = new JObject { ["nextTaskId"] = nextId, ["allowed"] = allowed };
+            }
             return new JObject { ["npcTasks"] = npcTasks, ["autoAccept"] = autoAccept };
         }
         private static IEnumerable<string> Names(JObject definition, JObject task, string role, JObject endpoint, string currentLocation)
