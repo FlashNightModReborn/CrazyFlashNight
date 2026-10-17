@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人动画合集/敌人-大学军校生" itemID="69dd0eed-00003010" linkageExportForAS="true" linkageIdentifier="敌人-大学军校生" lastModified="1791735376" lastUniqueIdentifier="44">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="敌人动画合集/敌人-大学军校生" itemID="69dd0eed-00003010" linkageExportForAS="true" linkageIdentifier="敌人-大学军校生" lastModified="1791735376" lastUniqueIdentifier="45">
   <timeline>
-    <DOMTimeline name="敌人-大学军校生">
+    <DOMTimeline name="敌人-大学军校生" currentFrame="10">
       <layers>
         <DOMLayer name="Labels_Layer" color="#B5F5B0" locked="true" autoNamed="false">
           <frames>
@@ -328,7 +328,7 @@ x轴保持距离 = 100;
           <frames>
             <DOMFrame index="0" duration="9" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="军阀派精英/sprite/待机动作" name="man" centerPoint3DX="232.3" centerPoint3DY="217.65">
+                <DOMSymbolInstance libraryItemName="军阀派精英/sprite/待机动作" name="man" selected="true" centerPoint3DX="232.3" centerPoint3DY="217.65">
                   <matrix>
                     <Matrix a="0.277084350585938" d="0.2769775390625" tx="3.4" ty="-62.3"/>
                   </matrix>

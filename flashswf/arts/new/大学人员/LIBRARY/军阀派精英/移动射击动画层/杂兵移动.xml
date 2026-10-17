@@ -1,4 +1,4 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派精英/移动射击动画层/杂兵移动" itemID="693fca8b-0000eed5" lastModified="1776238294" lastUniqueIdentifier="181">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="军阀派精英/移动射击动画层/杂兵移动" itemID="693fca8b-0000eed5" lastModified="1792215943" lastUniqueIdentifier="182">
   <timeline>
     <DOMTimeline name="杂兵移动">
       <layers>
@@ -329,11 +329,11 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer_7" color="#008EFD" current="true" isSelected="true">
+        <DOMLayer name="Layer_7" color="#008EFD">
           <frames>
             <DOMFrame index="0" duration="3" tweenType="motion" motionTweenSnap="true" keyMode="22017">
               <elements>
-                <DOMSymbolInstance libraryItemName="军阀派精英/主角肢体素材/长枪" name="枪" selected="true" centerPoint3DX="106.2" centerPoint3DY="46.6">
+                <DOMSymbolInstance libraryItemName="军阀派精英/主角肢体素材/长枪" name="枪" centerPoint3DX="106.2" centerPoint3DY="46.6">
                   <matrix>
                     <Matrix a="0.97686767578125" b="0.21124267578125" c="-0.21124267578125" d="0.97686767578125" tx="-20.9" ty="-33.55"/>
                   </matrix>
@@ -1263,6 +1263,25 @@
                   <transformationPoint>
                     <Point x="-0.05" y="0.05"/>
                   </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="图层 2" color="#9933CC" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="军阀派精英/主角肢体素材/Symbol 3" centerPoint3DX="61.45" centerPoint3DY="319.45">
+                  <matrix>
+                    <Matrix a="1.37506103515625" d="0.559799194335938" tx="-25.2" ty="232.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
