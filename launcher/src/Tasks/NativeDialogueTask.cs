@@ -45,6 +45,10 @@ namespace CF7Launcher.Tasks
         internal Action<long, Action> BookRetryScheduler;
         /// <summary>closing 重试时钟注入点（参照 widget TypingClock）。</summary>
         internal Func<long> BookRetryClock;
+        /// <summary>插话输入框是否持有焦点（特性开关 dialogueInterjectEnabled 打开后由输入层接线）。
+        /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 不再被吞），
+        /// 且 widget 的 advance 输入被丢弃。默认 null = 关闭，既有行为不变。</summary>
+        internal Func<bool> InterjectInputFocused;
 
         // 回调收到的位图由 task 在 widget 克隆后释放。资源解析不拥有剧情推进权。
         internal Action<NativeDialogueFrame, JObject, Action<Bitmap>> LoadPortrait;
@@ -386,7 +390,9 @@ namespace CF7Launcher.Tasks
             var linesArray = p["lines"] as JArray;
             if (linesArray == null || linesArray.Count < 1)
                 return RejectAck(p, "malformed", applied);
-            if (session.RowCount + linesArray.Count > 4096)
+            // 容量与 restartIndex 都按播放序列（含本地增强行）判定；AS2 的 rowCount
+            // 口径只由 session.RowCount（wire 行）承担。
+            if (session.PlaybackCount + linesArray.Count > 4096)
                 return RejectAck(p, "oversize", applied);
             var lines = new NativeDialogueBookSession.Line[linesArray.Count];
             for (int i = 0; i < lines.Length; i++)
@@ -396,7 +402,7 @@ namespace CF7Launcher.Tasks
             if (p["restartIndex"] != null
                 && !Int(p, "restartIndex", 0, int.MaxValue, out restartIndex))
                 return RejectAck(p, "malformed", applied);
-            if (restartIndex >= session.RowCount + lines.Length)
+            if (restartIndex >= session.PlaybackCount + lines.Length)
                 return RejectAck(p, "malformed", applied);
             session.ApplyAppend(lines, restartIndex, (int)epoch);
             return AcceptAck(p, (int)epoch, null);
@@ -656,6 +662,8 @@ namespace CF7Launcher.Tasks
             if (current == null || frame.RequestId != current.RequestId || frame.SceneId != current.SceneId
                 || frame.Revision != current.Revision || !_inputAllowed()
                 || (verb != "advance" && verb != "close" && verb != "finish")) return;
+            // 插话输入框持有焦点时只挡推进（close 是显式关闭意图，不挡）。
+            if (verb == "advance" && InterjectInputActive) return;
             var session = _bookSession;
             if (session != null && session.RequestId == current.RequestId
                 && session.SceneId == current.SceneId)
@@ -686,6 +694,8 @@ namespace CF7Launcher.Tasks
         {
             var frame = _current;
             if (frame == null || !_widget.Visible || !_inputAllowed()) return null;
+            // 文字输入期间不抢占任何对话键：Enter 归输入框（IME 组词确认），Esc 不关对话。
+            if (InterjectInputActive) return null;
             bool close = virtualKey == 27;
             int advanceKey = _bookSession != null ? _bookSession.AdvanceKey : _advanceKey;
             if (!close && virtualKey != 13 && virtualKey != advanceKey) return null;
@@ -702,6 +712,25 @@ namespace CF7Launcher.Tasks
                 catch (ObjectDisposedException) { }
                 catch (InvalidOperationException) { }
             };
+        }
+
+        /// <summary>测试观测：当前 book 会话（无会话为 null）。</summary>
+        internal NativeDialogueBookSession BookSessionForTest { get { return _bookSession; } }
+
+        /// <summary>插话输入焦点门读取（异常按未聚焦处理，绝不因输入层故障卡死推进）。</summary>
+        private bool InterjectInputActive
+        {
+            get
+            {
+                Func<bool> probe = InterjectInputFocused;
+                if (probe == null) return false;
+                try { return probe(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[NativeDialogue] interject focus probe: " + ex.Message);
+                    return false;
+                }
+            }
         }
 
         public void HandleTransportDisconnected()

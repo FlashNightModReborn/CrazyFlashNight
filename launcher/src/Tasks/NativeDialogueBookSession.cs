@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using CF7Launcher.Guardian;
@@ -30,6 +31,10 @@ namespace CF7Launcher.Tasks
             internal string Name, Title, Text;
             internal string PortraitKey, Expression;
             internal bool IsDoll;
+            /// <summary>AS2 原始行号（0 基）；-1 = Host 本地增强行（插话新增/改写拆分）。
+            /// 只有 >=0 的行会推进 <see cref="CurrentWireIndex"/>；finish/close 的分支
+            /// 全部按原始行号取值，增强行不改变 AS2 的 rowCount 口径。</summary>
+            internal int WireIndex = -1;
             /// <summary>加载路径用原始 appearance（LoadPortraitWithRect 内部自行归一化）。</summary>
             internal JObject Appearance;
             /// <summary>doll 行预取用的已归一化外观；static 行为 null。</summary>
@@ -46,6 +51,12 @@ namespace CF7Launcher.Tasks
         internal readonly long TransportEpoch;
 
         private Line[] _lines;
+        /// <summary>AS2 原始行（book + 合法 append），按 wire 顺序；与 <see cref="_lines"/>
+        /// （播放序列，含本地增强行）分开维护。WireRowCount 只读它。</summary>
+        private readonly List<Line> _wireRows = new List<Line>();
+        /// <summary>当前播放点对应的原始行号上界（进过 Present 的最大 WireIndex）。
+        /// close 的 finalIndex 取它；增强行不推进。</summary>
+        private int _currentWire;
         private int _index;
         private int _revision;                  // 本地单调：每次 ShowFrame ++
         private int _appliedEpoch = 1;          // 已应用行集代际（book=1，append 连续 ++）
@@ -71,13 +82,32 @@ namespace CF7Launcher.Tasks
             Mode = mode;
             _advanceKey = advanceKey;
             _lines = lines ?? throw new ArgumentNullException(nameof(lines));
+            for (int i = 0; i < _lines.Length; i++)
+            {
+                _lines[i].WireIndex = i;
+                _wireRows.Add(_lines[i]);
+            }
             TransportEpoch = transportEpoch;
         }
 
         internal int AppliedEpoch { get { return _appliedEpoch; } }
         internal int AdvanceKey { get { return _advanceKey; } }
-        internal int RowCount { get { return _lines.Length; } }
+        /// <summary>AS2 口径行数（wire 原始行）。本地增强行不计入：ack/status 与
+        /// advance_past_end 的 finalIndex 基准都必须是它。</summary>
+        internal int RowCount { get { return _wireRows.Count; } }
+        /// <summary>本地播放序列长度（AS2 原始行 + 本地增强行）。</summary>
+        internal int PlaybackCount { get { return _lines.Length; } }
         internal int Index { get { return _index; } }
+        /// <summary>close 用的原始行号：当前播放点已到达的最大 wire 行号，钳在原始范围内。</summary>
+        internal int CurrentWireIndex
+        {
+            get
+            {
+                int last = _wireRows.Count - 1;
+                if (last < 0) return 0;
+                return Math.Max(0, Math.Min(_currentWire, last));
+            }
+        }
         internal HostState State { get { return _state; } }
         /// <summary>冻结的终态请求串（含 \0）；非 closing 为 null。重试逐字节重发。</summary>
         internal string FrozenWire { get { return _frozenWire; } }
@@ -88,6 +118,7 @@ namespace CF7Launcher.Tasks
         internal void Begin(int startIndex)
         {
             _index = startIndex;
+            _currentWire = ClampWire(startIndex);
             Present();
         }
 
@@ -98,6 +129,44 @@ namespace CF7Launcher.Tasks
             if (_state != HostState.Active) return;
             if (_index + 1 < _lines.Length) { _index++; Present(); return; }
             EnterClosing("advance_past_end");
+        }
+
+        /// <summary>
+        /// 本地增强：从 startIndex 起替换后续播放序列（原地插入/改写/跳过）。
+        /// - startIndex 是**播放序列**下标（0..PlaybackCount），替换点之前保持不动；
+        /// - replacement 每条都是播放行；携带 WireIndex >= 0 表示"这条占用了某条原始行"，
+        ///   -1 表示纯本地新增（不推进原始行号）；
+        /// - resumeOriginalIndex = 增强行播完后接回的原始行号（0..WireRowCount）；
+        ///   null = 不接回原文，增强序列播完即组末。
+        /// 不改变 AppliedEpoch：本地增强不是 AS2 代际，append 的 baseEpoch 仍按 wire 代际。
+        /// 返回 false = 状态/下标非法，播放序列保持不变。
+        /// </summary>
+        internal bool ReplaceFrom(int startIndex, Line[] replacement, int? resumeOriginalIndex)
+        {
+            if (_state != HostState.Active) return false;
+            if (startIndex < 0 || startIndex > _lines.Length) return false;
+            if (replacement == null) replacement = new Line[0];
+            int resume = resumeOriginalIndex ?? _wireRows.Count;
+            if (resume < 0 || resume > _wireRows.Count) return false;
+            for (int i = 0; i < replacement.Length; i++)
+            {
+                if (replacement[i] == null) return false;
+                if (replacement[i].WireIndex >= _wireRows.Count) return false;
+            }
+
+            var merged = new List<Line>(_lines.Length - startIndex
+                + replacement.Length + (_wireRows.Count - resume));
+            for (int i = 0; i < startIndex; i++) merged.Add(_lines[i]);
+            for (int i = 0; i < replacement.Length; i++) merged.Add(replacement[i]);
+            for (int i = resume; i < _wireRows.Count; i++) merged.Add(_wireRows[i]);
+            if (merged.Count < 1) return false;
+
+            _lines = merged.ToArray();
+            _index = Math.Min(startIndex, _lines.Length - 1);
+            _retryToken++;                  // 播放序列变了：在途重试回调失效
+            _frozenWire = null;
+            Present();
+            return true;
         }
 
         /// <summary>widget close / 终态意图输入：active → closing（reason=close）；
@@ -122,6 +191,12 @@ namespace CF7Launcher.Tasks
             Array.Copy(_lines, merged, _lines.Length);
             Array.Copy(extra, 0, merged, _lines.Length, extra.Length);
             _lines = merged;
+            // wire 口径：append 的每一行都是 AS2 原始行，行号续在既有 wire 行之后。
+            for (int i = 0; i < extra.Length; i++)
+            {
+                extra[i].WireIndex = _wireRows.Count;
+                _wireRows.Add(extra[i]);
+            }
             _appliedEpoch = epoch;
             _retryToken++;                  // 取消在途重试回调
             _frozenWire = null;
@@ -144,6 +219,9 @@ namespace CF7Launcher.Tasks
         {
             _revision++;
             var line = _lines[_index];
+            // 原始行号只在真正走到 AS2 原始行时推进；本地增强行沿用当前值
+            // （close 取"当前值"，advance_past_end 恒取 WireRowCount-1）。
+            if (line.WireIndex >= 0) _currentWire = line.WireIndex;
             var frame = new NativeDialogueFrame
             {
                 RequestId = RequestId,
@@ -171,17 +249,31 @@ namespace CF7Launcher.Tasks
             _task.PrefetchBookLine(this, _lines[index]);
         }
 
+        /// <summary>把任意下标钳进原始行范围（startIndex/当前值都可能越界）。</summary>
+        private int ClampWire(int wireIndex)
+        {
+            int last = _wireRows.Count - 1;
+            if (last < 0) return 0;
+            return Math.Max(0, Math.Min(wireIndex, last));
+        }
+
         private void EnterClosing(string reason)
         {
             _state = HostState.Closing;
+            // AS2 校验口径（NativeDialogueService.handleV2Action）：
+            //   advance_past_end 要求 finalIndex == AS2 rowCount-1（原始行数，非增强行数）；
+            //   close 要求 finalIndex ∈ [0, rowCount-1]。
             // 冻结语义：epoch/finalIndex/reason 在入 closing 当下定死，
             // 之后任何重试都逐字节重发同一份请求，绝不从变化后的状态重拼。
+            int finalIndex = string.Equals(reason, "advance_past_end", StringComparison.Ordinal)
+                ? _wireRows.Count - 1
+                : CurrentWireIndex;
             var command = new JObject
             {
                 ["task"] = "cmd", ["action"] = "nativeDialogueAction",
                 ["requestId"] = RequestId, ["sceneId"] = SceneId,
                 ["verb"] = "finish", ["epoch"] = _appliedEpoch,
-                ["finalIndex"] = _lines.Length - 1, ["reason"] = reason
+                ["finalIndex"] = finalIndex, ["reason"] = reason
             };
             _frozenWire = command.ToString(Formatting.None) + "\0";
             _task.TrySendBookFrozen(this);

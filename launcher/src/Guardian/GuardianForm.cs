@@ -917,6 +917,15 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
+        /// 插话输入框焦点同步（dialogueInterjectEnabled 打开时由输入层调用）：
+        /// true = 输入框持有焦点，低级钩子全局放行按键，游戏热键与对话推进键都不生效。
+        /// </summary>
+        public void SetTextInputActive(bool active)
+        {
+            if (_kbHook != null) _kbHook.SetTextInputActive(active);
+        }
+
+        /// <summary>
         /// 面板状态变化回调（由 WebOverlayForm 调用，可能来自任意线程）。
         /// 仅切换 _panelEscEnabled 标志，不动态改绑 ESC 回调。
         /// </summary>

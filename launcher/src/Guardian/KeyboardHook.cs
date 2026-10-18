@@ -138,6 +138,13 @@ namespace CF7Launcher.Guardian
         private readonly HashSet<uint> _dialogueConsumedKeys = new HashSet<uint>();
         public void SetDialogueKeyProbe(Func<uint, Action> probe) { _dialogueKeyProbe = probe; }
         public void SetInteractionEscapeProbe(Func<bool> probe) { _interactionEscProbe = probe; }
+
+        // 文字输入态（插话输入框持有焦点）：全局放行所有按键——既不吃游戏热键
+        // (W/R/P/O/F/Q/Ctrl+*)，也不吃对话推进键与 Esc；IME 才能正常收字。
+        // 默认 false，只有 dialogueInterjectEnabled 打开后输入层才会置 true。
+        private volatile bool _textInputActive;
+        public bool TextInputActive { get { return _textInputActive; } }
+        public void SetTextInputActive(bool active) { _textInputActive = active; }
         public bool InteractionEscActive
         {
             get
@@ -267,6 +274,15 @@ namespace CF7Launcher.Guardian
                 ReconcileKeyState(vk, down);
                 bool repeated = down && !_physicalKeysDown.Add(vk);
                 if (up) _physicalKeysDown.Remove(vk);
+
+                // 文字输入期间全部放行：清掉本键的历史消费标记，保证退出输入后
+                // 第一次真实按键不会被"已消费"状态误吞。
+                if (_textInputActive)
+                {
+                    _shortcutConsumedKeys.Remove(vk);
+                    _dialogueConsumedKeys.Remove(vk);
+                    return TraceDecision(vk, msg, lParam, false);
+                }
 
                 if (_shortcutConsumedKeys.Contains(vk))
                 {
