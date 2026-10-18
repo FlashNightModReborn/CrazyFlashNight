@@ -1,0 +1,9 @@
+{
+  "firstAttempt": "head-level30.log",
+  "firstComparison": "head-level30-trace-diff.log",
+  "firstComparisonExitCode": 1,
+  "cause": "The first extraction included only BootstrapAS-prefixed messages, omitting task-data/task-text completion events which use the XmlSocket toast channel. Both events exist in the original source log at lines 420 and 421.",
+  "correction": "Retain the failed prefix-only excerpt and comparison; additionally include the two exact allowlisted toast wire messages from the same receipt time interval. Do not modify the golden, trace-diff rules, original archive, or game execution.",
+  "secondAttempt": "The next extractor attempted json.loads on every XmlSocket:JSON line and failed on an unrelated non-JSON diagnostic line before producing a new excerpt. Its script and stdout are retained. The final extractor first selects only lines containing either of the two required completion messages, then strictly parses and checks task=toast and the exact payload. Malformed selected messages still fail.",
+  "gameRerun": false
+}

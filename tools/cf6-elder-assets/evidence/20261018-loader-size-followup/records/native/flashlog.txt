@@ -1,0 +1,116 @@
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId boot-sequencer Start: d0cc55cdee5a4c24b8e78850f392ab9a
+=== BootSequencerTest start ===
+[PASS] (S0) GlobalInitializer.initialize() 调用一次
+[PASS] (S0) 初始化后进入 S_SYNCCODE
+[PASS] (c) shim 缺失 → state=HALT
+[PASS] (c) bootFailed=shim_missing
+[PASS] (c) [BootstrapAS] shim missing 日志
+[PASS] (c) 玩家文案 启动器通信 shim 缺失
+[PASS] (b) socket 超时 → state=HALT
+[PASS] (b) bootFailed=socket_connect_timeout
+[PASS] (b) [BootstrapAS] socket timeout 日志
+[PASS] (b) 玩家文案 启动器连接超时
+[PASS] socket ready → hsPhase=2
+[PASS] socket ready → startHandshake() 一次
+[PASS] socket ready → _bootstrapHandshakeFired
+[PASS] [BootstrapAS] firing handshake
+[PASS] 握手失败 → state=HALT
+[PASS] 握手失败 → bootFailed=handshake_failed
+[PASS] 握手失败 [BootstrapAS] 日志含因 boom
+[PASS] (a) gate: 读取本地存盘() 触发一次
+[PASS] (a) gate 自旋时未 sendReady
+[PASS] (a) gate=true → 留在 phase2 自旋
+[PASS] (a) 自旋不重复 preload（_bootstrapPreloadFired 幂等）
+[PASS] (a) gate 放行 → sendReady 一次
+[PASS] (a) gate 放行 → gotoAndStop(boot_check)
+[PASS] (a) gate 放行 → hsPhase=3 等主 SWF resume
+[PASS] (S5) ParseTaskData 收到两份原始引用
+[PASS] (S5) 任务解析后清空 host raw 数据
+[PASS] (S5) guide fire-and-forget 发起并解析成功回调
+[PASS] (S5) 不等待 guide，直接进入 S_SYNCSYS
+[PASS] (S7) sync logic → f48 文案 → misc loaders 保序且同 tick
+[PASS] (S7) 完成后进入 S_FANOUT
+[PASS] (S9) 同 tick 发起合成表/材料目录/竞技场掉落三个加载，未就绪不 handoff
+[PASS] (S9) catalog-first 反序仅 material catalog ready 不得 handoff
+[PASS] (S9) craft/catalog 就绪但 arena 门未齐，不得提前建索引或 handoff
+[PASS] (S9) shop/kshop 即使已有对象形状，未收到成功完成信号也只能等待
+[PASS] (S9) 合成表与 name→recipe 字典按原引用落地
+[PASS] (S9) 分类顺序、材料档案与竞技场掉落 catalog 按原引用落地
+[PASS] (S9) 缺省 recipe.value 保持旧语义补为 1
+[PASS] (S9) ItemObtainIndex 收到 crafting/shop/kshop/arena 原引用
+[PASS] (S9) 静态索引完成后只幂等恢复一次 enemy/base/challenge 已发现来源
+[PASS] (S9) 三个成功回调均发可观测事件
+[PASS] (S9) 显式 v2 停用店空 catalog 仍提供 identity；其余依赖 ready 后进入 S_HANDOFF
+[PASS] (S9) provider itemDataFailed exact fail-closed
+[PASS] (S9) itemDataFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider enemyPropertiesFailed exact fail-closed
+[PASS] (S9) enemyPropertiesFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider legacyMaterialDictionaryFailed exact fail-closed
+[PASS] (S9) legacyMaterialDictionaryFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider mapDomainFailed exact fail-closed
+[PASS] (S9) mapDomainFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider equipmentModFailed exact fail-closed
+[PASS] (S9) equipmentModFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider shopCatalogFailed exact fail-closed
+[PASS] (S9) shopCatalogFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider kshopCatalogFailed exact fail-closed
+[PASS] (S9) kshopCatalogFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) provider arenaDropRulesFailed exact fail-closed
+[PASS] (S9) arenaDropRulesFailed halt 后迟到 success 不得 handoff
+[PASS] (S9) ready 信号后的畸形目录仍以对应 exact reason fail-closed
+[PASS] (S9) ready 信号后的畸形目录仍以对应 exact reason fail-closed
+[PASS] (S9) ready 信号后的畸形目录仍以对应 exact reason fail-closed
+[PASS] (S9) ready 信号后的畸形目录仍以对应 exact reason fail-closed
+[PASS] (S9) craft loader failure + peer late success remains halted
+[PASS] (S9) catalog loader failure + peer late success remains halted
+[PASS] (S9) arena loader failure + peer late success remains halted
+[PASS] (S8→S9) item raw first 必须等待 equipment config settled
+[PASS] (S8→S9) config settled 后只 apply item payload 一次并置 ready
+[PASS] (S8→S9) config first 但 item raw 未到时不得空 apply
+[PASS] (S8→S9) config-first 反序在 raw 到达后恰一次 apply
+[PASS] (S10) handoff 发 HANDOFF_PLAY（event=handoff）
+[PASS] (S10) _root.play() 先于卸载
+[PASS] (S10) host.removeMovieClip()
+[PASS] (S10) 调用顺序严格为 _root.play() → host.removeMovieClip()
+[PASS] (S10) handoff → state=HALT
+[PASS] (S10) 释放 _instance（同会话可重挂）
+[PASS] (g) run() 幂等：已存在实例时不重建
+[PASS] (e) S6 phase0 跑 s6_pre
+[PASS] (e/race) 首层慢加载: pending 久=0 且未起飞过 → 过 30 帧仍不抽 loader
+[PASS] (e/race) 未观测到 pending>0 → sawPending=false
+[PASS] (e) 观测到 pending>0 → sawPending；在途不放行
+[PASS] (e) pending 仍>0 → 继续等
+[PASS] (e) 加载落地(pending=0) + 曾起飞 → 进抽干相位
+[PASS] (e) 逐 tick 保序抽干
+[PASS] (e) 队空 → s6_post + 推进
+[PASS] (e/ceiling) 无二级加载 <150 帧不放行
+[PASS] (e/ceiling) 149 帧仍等
+[PASS] (e/ceiling) sysWait=150 兜底放行 → 进抽干相位
+[PASS] (e/ceiling) 队空 → s6_post + 推进
+[PASS] (e/current) sysWait 精确计到 30 才放行
+[PASS] (e/current) phase2 前 malformed queue.current 仍缺失
+[PASS] (e/current) current 缺失时归零并正常抽 1 个 loader
+[PASS] (e/current) 队空 → s6_post + 推进
+=== BootSequencerTest: 91 passed, 0 failed ===
+=== BootSequencerTest end ===
+========== BootstrapHandshakeTest START ==========
+[PASS] start_transitions: state=WaitResp
+[PASS] success: done latched
+[PASS] success: onSuccess called
+[PASS] success: state=Success
+[PASS] done_latch: onSuccess called exactly once, got 1
+[PASS] invalid_response: reason=invalid_response
+[PASS] invalid_response: state=Failed
+[PASS] timeout: reason=timeout
+[PASS] timeout: state=Failed
+[PASS] custom_timeout: reason=timeout
+[PASS] custom_timeout: state=Failed
+[PASS] sender_timeout: timeoutMs=60000
+========== BootstrapHandshakeTest END: 12/12 passed, 0 failed ==========
+FocusedTestRunId boot-sequencer Complete: d0cc55cdee5a4c24b8e78850f392ab9a

@@ -1,0 +1,207 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "cf6-loader-c6-head-20261018-l99-w1",
+  "createdAt": "2026-10-18T11:37:28.700Z",
+  "buildCommit": "0392d8144c20d62261b01df54e6787b845f75e73",
+  "planner": {
+    "name": "cf6-headbot-arkclaw",
+    "version": 2
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 3600,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "level99-blue",
+      "blueRoster": [
+        {
+          "type": "兵种472",
+          "level": 99,
+          "sourceId": "headbot-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种286",
+          "level": 99,
+          "sourceId": "arkclaw-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-headbot",
+        "arkclaw",
+        "wave",
+        "blue"
+      ],
+      "plannerReason": "同等级、交换阵营检验大头机器人稳定击败方舟爪豪的定位；保留全部重复、败局与超时。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "candidateUnitId": 472,
+        "level": 99,
+        "rivalUnitId": 286,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+            "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+            "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "ff9290d7918bccda94cf7e0c98517b0f234c5a3236a104d433d1e77f45004b70"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380"
+          },
+          {
+            "path": "data/enemy_properties/诺亚新敌人.xml",
+            "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "79024eb7274d9fac3716e1a043340d117245e5d56209f93f84e857df52de22cc"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "de53e94da1875124b1811dcf963f4509d6f1f2101ea42cf9956689b4725bfbac"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+            "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/build.py",
+            "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/native-manifest.json",
+            "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/balance-inputs.json",
+            "sha256": "c4f7455d5ac201d8da5ac797cb8878834f8615d33560b50be0740117875cea40"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "stable_wins_over_arkclaw",
+        "tier": 16,
+        "variant": "wave"
+      },
+      "caseHash": "sha256:0a23574745beef5b227c0b8b4cee9c6aa694c3f54b2d0d2b16cf33f5aab623c1"
+    },
+    {
+      "caseId": "level99-red",
+      "blueRoster": [
+        {
+          "type": "兵种286",
+          "level": 99,
+          "sourceId": "arkclaw-99"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种472",
+          "level": 99,
+          "sourceId": "headbot-99"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 3600,
+      "tags": [
+        "cf6-headbot",
+        "arkclaw",
+        "wave",
+        "red"
+      ],
+      "plannerReason": "同等级、交换阵营检验大头机器人稳定击败方舟爪豪的定位；保留全部重复、败局与超时。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "candidateUnitId": 472,
+        "level": 99,
+        "rivalUnitId": 286,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+            "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+            "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "ff9290d7918bccda94cf7e0c98517b0f234c5a3236a104d433d1e77f45004b70"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380"
+          },
+          {
+            "path": "data/enemy_properties/诺亚新敌人.xml",
+            "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "79024eb7274d9fac3716e1a043340d117245e5d56209f93f84e857df52de22cc"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "de53e94da1875124b1811dcf963f4509d6f1f2101ea42cf9956689b4725bfbac"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+            "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/build.py",
+            "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/native-manifest.json",
+            "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/balance-inputs.json",
+            "sha256": "c4f7455d5ac201d8da5ac797cb8878834f8615d33560b50be0740117875cea40"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "stable_wins_over_arkclaw",
+        "tier": 16,
+        "variant": "wave"
+      },
+      "caseHash": "sha256:aba4f337f60e4fa03770f18e272880be396d3bc62dd3a748669d53c4aeae7598"
+    }
+  ],
+  "manifestHash": "sha256:56c03cd644b1410418d9a33643f5976c70a78e155c13e9d448c46004b032df60"
+}

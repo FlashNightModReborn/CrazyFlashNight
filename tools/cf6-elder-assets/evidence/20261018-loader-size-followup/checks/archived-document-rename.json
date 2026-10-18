@@ -1,0 +1,23 @@
+{
+  "reason": "Frozen document snapshots preserve original relative links as data. They are not active documentation at the archive location. No original document bytes were rewritten.",
+  "files": [
+    {
+      "from": "documentation/before/tools/cf6-elder-assets/README.md",
+      "to": "documentation/before/tools/cf6-elder-assets/README.md.txt",
+      "sha256": "54f610249dea6e0baae3897b6ace0e4f6b90324a78ec3a08e24626e2a9eb1de9",
+      "bytesUnchanged": true
+    },
+    {
+      "from": "documentation/before/tools/cf6-headbot-assets/README.md",
+      "to": "documentation/before/tools/cf6-headbot-assets/README.md.txt",
+      "sha256": "a0851f614d0ee1619ee761b3bf8dcf0b38303ace96778453760a94e36f063cdf",
+      "bytesUnchanged": true
+    },
+    {
+      "from": "documentation/before/docs/asLoader-README.md",
+      "to": "documentation/before/docs/asLoader-README.md.txt",
+      "sha256": "501de87946de594733992cdf5e7282f809d8bd8fb01d24eaad0497fcef887a0d",
+      "bytesUnchanged": true
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	﻿2026-10-18T11:11:46.6083683Z ##[group]Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6084347Z ^[[36;1mnode tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3^[[0m
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6147546Z shell: /usr/bin/bash -e {0}
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6147826Z ##[endgroup]
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6881858Z === AVM1 函数体 64KB 门 ===  scripts/asLoader.swf
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6883511Z 函数总数: 13020   阈值(--max): 60000 字节 (UI16 上限 65535)
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6883829Z 
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6884129Z 最大的 3 个函数体:
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6884912Z    60668 B  DefineFunction2  (anon)  ✗超限
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6885841Z    53041 B  DefineFunction2  (anon)  ⚠接近
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6886256Z    46796 B  DefineFunction2  (anon)
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6886597Z 
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6887074Z ✗ 1 个函数体 >= 60000 B（接近/超 UI16 64KB 上限，运行时会坏）：
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6887546Z     60668 B  (anon)  @ DoAction[sprite=1 frame=0]
+ownership	Run node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 3	2026-10-18T11:11:46.6946076Z ##[error]Process completed with exit code 1.

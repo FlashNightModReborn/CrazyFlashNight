@@ -1,0 +1,22 @@
+{
+  "experimentId": "cf6-loader-c6-elder-20261018",
+  "outputDirectory": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\loader-size-followup\\arena-elder",
+  "variant": "two-phase",
+  "levels": [
+    60,
+    80,
+    100
+  ],
+  "repeat": 1,
+  "workers": [
+    {
+      "projectRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "candidateRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json"
+    }
+  ],
+  "rivals": [
+    "beastking",
+    "exusiai"
+  ]
+}

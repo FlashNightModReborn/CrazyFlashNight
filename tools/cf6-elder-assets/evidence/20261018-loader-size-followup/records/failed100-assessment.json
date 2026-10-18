@@ -1,0 +1,41 @@
+{
+  "qualifiedForFreshIsolatedRetry": true,
+  "failedExperiment": "cf6-loader-c6-elder-20261018",
+  "failedGroup": "beastking-level100",
+  "errors": [
+    {
+      "phase": "execution",
+      "message": "Worker endpoint ownership probe unavailable; no credential was sent"
+    },
+    {
+      "phase": "abort_or_result",
+      "message": "Worker endpoint ownership probe unavailable; no credential was sent"
+    }
+  ],
+  "resultPath": null,
+  "rows": 0,
+  "startAcknowledgementObserved": false,
+  "batchStartedAtIsPreRequestTimestamp": true,
+  "failureOccursBeforeCredentialReadAndHttpTransport": true,
+  "ownershipProbeCause": "Unknown nonzero/terminated probe process; the existing sanitized error does not distinguish exit failure from its 15000ms timeout.",
+  "hostAndFlashExited": true,
+  "protectedSavesUnchanged": true,
+  "resourcesUnchanged": true,
+  "privateArchiveSha256": "203353820db5d43a7ffe0edb6f6c1c82b9b7be6b48cdee513877b58a70fae896",
+  "privateLogSha256": "97f762afeb428b1fbedda4f540db7784a58f4a4105258dc24abc828d64a21505",
+  "boundary": "Preserve the failed attempt; do not mark it completed, reuse its session, replay persistence writes, bypass endpoint ownership, or change its timeout. Only run the missing two isolated arena cases under a new identity.",
+  "sourceBindings": [
+    {
+      "path": "tools/arena-calibration/lib/arena-worker-endpoint.js",
+      "sha256": "589c93650ebf5cd4b9060c23f0071f8bffddd0857d5662cef3a1ec1a258724c6"
+    },
+    {
+      "path": "tools/arena-calibration/lib/arena-worker-client.js",
+      "sha256": "7101a264951b7302af0951298d84adb6f93b77dac63db2ec7462eaaf5d403b12"
+    },
+    {
+      "path": "tools/arena-calibration/run-worker-shard.js",
+      "sha256": "cace56abf36c80a0f80bad39367367c36b115a4e9f32ccd528fe3d630cb1228d"
+    }
+  ]
+}

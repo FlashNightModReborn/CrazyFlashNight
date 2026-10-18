@@ -1,0 +1,27 @@
+PASS FWS class definitions
+PASS CWS matches FWS definitions
+PASS truncated header rejected
+PASS wrong declared size rejected
+PASS truncated tag rejected
+PASS unsupported signature rejected
+PASS RSL metadata preserved
+PASS nested function sizes share the metadata scan
+PASS truncated function body rejected
+PASS first parse then content hit
+PASS artifact change invalidates cache
+PASS valid JSON cache damage is reparsed
+PASS project class outside loader fails even with identical payload
+PASS new project class outside loader fails
+PASS default package loader class protected
+PASS resource without classes passes
+PASS missing RSL fails full closure
+PASS changed-file check explicitly omits closure
+PASS missing loader rejected
+PASS path outside root rejected
+PASS historical text config accepts variable field lengths
+PASS historical text config rejects wrong encoding and truncated code unit
+PASS historical text config requires unique known fields and complete framing
+PASS actual SWF cannot use the historical text-config exception
+PASS text config at another asset path is not exempt
+PASS invalid text-config diagnostics never include field values
+SWF metadata tests: 26 passed

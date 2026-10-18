@@ -1,0 +1,236 @@
+{
+  "qualified": true,
+  "records": [
+    {
+      "kind": "head",
+      "group": "level30",
+      "session": "9dac8556d04c4183800350e6f3d0efef",
+      "sourceArchive": "diagnostic-cf7_agent_aw_9dac8556d04c4183800350e6f3d0efef-20261018-194132.zip",
+      "sourceArchiveSha256": "c8814ae619318c2932b56b6b9eea702a4325792edfe0be988965cd995dbfd3e7",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "88cb3d5b06c122e96ce13ffd127836f688071d377e8387909a2065e0f76a135d",
+      "hostStartedAt": "2026-10-18T11:37:48.3987343Z",
+      "lifecycleCompletedAt": "2026-10-18T11:41:48.365Z",
+      "excerpt": "head-level30-complete-wire.log",
+      "excerptSha256": "2d41344e99c2e75e368850a1cdc930d3df7c8fc5bd9cc8d9ed877d69747a7931",
+      "events": [
+        {
+          "sourceLine": 383,
+          "localTime": "19:38:05.169",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 392,
+          "localTime": "19:38:05.978",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 392,
+          "localTime": "19:38:05.978",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 392,
+          "localTime": "19:38:05.978",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 392,
+          "localTime": "19:38:05.978",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 392,
+          "localTime": "19:38:05.978",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 420,
+          "localTime": "19:38:07.345",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 421,
+          "localTime": "19:38:11.176",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 432,
+          "localTime": "19:38:14.646",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 432,
+          "localTime": "19:38:14.646",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 440,
+          "localTime": "19:38:16.479",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 444,
+          "localTime": "19:38:17.198",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "head-level30-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "head",
+      "group": "level60",
+      "session": "2e66ad40378847e6a4ffcdfb0efc0f5f",
+      "sourceArchive": "diagnostic-cf7_agent_aw_2e66ad40378847e6a4ffcdfb0efc0f5f-20261018-194509.zip",
+      "sourceArchiveSha256": "df2ffe59383c15137a507436d9162213f5f33a5cc27b4d9801221362d439ccdf",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "501d77ae8acdf3e02ad2fc06d5b99ca6e73fd2913b236d1ccce21b1e173ff3db",
+      "hostStartedAt": "2026-10-18T11:42:01.9999239Z",
+      "lifecycleCompletedAt": "2026-10-18T11:45:22.615Z",
+      "excerpt": "head-level60-complete-wire.log",
+      "excerptSha256": "78366779a7c5c93017e3dcf8614116d399fb38b7c64733539e490f416e4bcc24",
+      "events": [
+        {
+          "sourceLine": 2273,
+          "localTime": "19:42:16.120",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 2285,
+          "localTime": "19:42:16.812",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 2285,
+          "localTime": "19:42:16.812",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 2285,
+          "localTime": "19:42:16.812",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 2285,
+          "localTime": "19:42:16.812",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 2285,
+          "localTime": "19:42:16.812",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 2312,
+          "localTime": "19:42:18.434",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 2313,
+          "localTime": "19:42:22.727",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 2324,
+          "localTime": "19:42:25.612",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 2324,
+          "localTime": "19:42:25.612",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 2329,
+          "localTime": "19:42:26.750",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 2336,
+          "localTime": "19:42:27.412",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "head-level60-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "head",
+      "group": "level99",
+      "session": "f637509874ee4a56ac0ed603edcd2fe9",
+      "sourceArchive": "diagnostic-cf7_agent_aw_f637509874ee4a56ac0ed603edcd2fe9-20261018-194846.zip",
+      "sourceArchiveSha256": "df849f12648483c36216e5a7297400f1653c8d83535da81f28017fb633a95917",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "f6a18db994473863230f93631ad468dbc738a06b5fbbcaeef96789eed6dfa081",
+      "hostStartedAt": "2026-10-18T11:45:35.3568301Z",
+      "lifecycleCompletedAt": "2026-10-18T11:49:00.813Z",
+      "excerpt": "head-level99-complete-wire.log",
+      "excerptSha256": "97d68cda9494c48135f5aeb8b75f8746ea6c982c4119acdbe867637d6e35cbf9",
+      "events": [
+        {
+          "sourceLine": 3941,
+          "localTime": "19:45:49.680",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 3950,
+          "localTime": "19:45:50.278",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 3950,
+          "localTime": "19:45:50.278",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 3950,
+          "localTime": "19:45:50.278",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 3950,
+          "localTime": "19:45:50.278",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 3950,
+          "localTime": "19:45:50.278",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 3978,
+          "localTime": "19:45:51.701",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 3979,
+          "localTime": "19:45:55.764",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 3990,
+          "localTime": "19:45:58.588",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 3990,
+          "localTime": "19:45:58.588",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 3995,
+          "localTime": "19:45:59.884",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 3998,
+          "localTime": "19:46:00.432",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "head-level99-complete-wire-trace-diff.log"
+    }
+  ]
+}

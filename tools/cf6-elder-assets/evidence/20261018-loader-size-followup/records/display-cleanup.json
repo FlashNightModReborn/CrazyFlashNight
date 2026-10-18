@@ -1,0 +1,24 @@
+{
+  "qualified": true,
+  "displayHoldActive": false,
+  "persistentPowerPlanChanged": false,
+  "released": {
+    "event": "display_request_released",
+    "utc": "2026-10-18T12:17:21.5000879Z",
+    "pid": 10312,
+    "threadId": 9572,
+    "state": 1,
+    "result": 2147483651,
+    "holdRequested": true
+  },
+  "subscriptionEnded": {
+    "event": "subscription_ended",
+    "utc": "2026-10-18T12:17:21.5000879Z",
+    "pid": 10312,
+    "threadId": 9572,
+    "state": 1,
+    "result": 0,
+    "holdRequested": true
+  },
+  "lastLiveCompletedAt": "2026-10-18T12:17:21.329000+00:00"
+}

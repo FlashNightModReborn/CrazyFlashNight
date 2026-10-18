@@ -1,0 +1,115 @@
+{
+  "schema": "cf6-loader-size-followup.v1",
+  "qualified": true,
+  "recordedAtUtc": "2026-10-18T12:20:04.675871+00:00",
+  "baseCommit": "dabd11a89570125b6fe2125aa45b5ccaf2d60cd2",
+  "reason": "Repair the existing AS2 artifact ownership function-size CI gate without changing combat tuning.",
+  "loaderC6": {
+    "startedUtc": "2026-10-18T11:32:55.7997645Z",
+    "completedUtc": "2026-10-18T11:35:48.9391675Z",
+    "exitCode": 0,
+    "target": "publish",
+    "beforeSha256": "CC58FA63FEC10D844E8C0D710A7337B54B013F610AC1624810B44D0F89BB8401",
+    "sha256": "FF9290D7918BCCDA94CF7E0C98517B0F234C5A3236A104D433D1E77F45004B70",
+    "bytes": 6104855,
+    "editorPid": 20176,
+    "editorStartUtc": "2026-10-17T14:06:44.6668016Z"
+  },
+  "functionSize": {
+    "priorF3": 60668,
+    "f3_1": 45559,
+    "f3_2": 15472,
+    "largestCurrent": 53041,
+    "maximumAllowedExclusive": 60000
+  },
+  "compiledClasses": {
+    "unchanged": 727,
+    "changed": [
+      "org.flashNight.neur.Server.ServerManager"
+    ],
+    "added": 0,
+    "removed": 0
+  },
+  "nativeBoot": {
+    "passed": 103,
+    "failed": 0,
+    "runId": "d0cc55cdee5a4c24b8e78850f392ab9a",
+    "compilerErrors": 0,
+    "compilerWarnings": 0,
+    "retry32k": 0
+  },
+  "actualCandidateBoots": {
+    "countWithValidatedFightResults": 9,
+    "totalHostAttempts": 10,
+    "eventOrderEquivalentToGolden": true,
+    "proof": "records/boot-proof/summary.json"
+  },
+  "currentBeastObservation": {
+    "rows": 6,
+    "naturalLosses": 6,
+    "observedRageNotifications": 6,
+    "proof": "records/beast-near-death.json"
+  },
+  "headIntegration": {
+    "rows": 6,
+    "wins": 6,
+    "losses": 0,
+    "timeouts": 0,
+    "fullStrengthMatrix": false
+  },
+  "elderIntegration": {
+    "rows": 12,
+    "wins": 0,
+    "losses": 12,
+    "timeouts": 0,
+    "fullStrengthMatrix": false
+  },
+  "priorC5Calibration": {
+    "path": "../20261017-calibration",
+    "headRows": 18,
+    "headWins": 18,
+    "elderRows": 36,
+    "elderWins": 2,
+    "elderLosses": 34,
+    "filesUnchanged": {
+      "qualified": true,
+      "commit": "dabd11a89570125b6fe2125aa45b5ccaf2d60cd2",
+      "integritySha256": "9bf2da89fbbaa07b62bbdd2d7b0f8a66ea49376b62a7283a042e9ba578857d5c",
+      "filesVerified": 4773,
+      "totalBytes": 864144154,
+      "boundary": "Every frozen C5 file remains unchanged. C5 live-root validation is historical after replacing the current loader with C6."
+    }
+  },
+  "displayCleanup": {
+    "qualified": true,
+    "displayHoldActive": false,
+    "persistentPowerPlanChanged": false,
+    "released": {
+      "event": "display_request_released",
+      "utc": "2026-10-18T12:17:21.5000879Z",
+      "pid": 10312,
+      "threadId": 9572,
+      "state": 1,
+      "result": 2147483651,
+      "holdRequested": true
+    },
+    "subscriptionEnded": {
+      "event": "subscription_ended",
+      "utc": "2026-10-18T12:17:21.5000879Z",
+      "pid": 10312,
+      "threadId": 9572,
+      "state": 1,
+      "result": 0,
+      "holdRequested": true
+    },
+    "lastLiveCompletedAt": "2026-10-18T12:17:21.329000+00:00"
+  },
+  "formalRuntimePromoted": false,
+  "retainedFailedAttempts": 1,
+  "failedAttemptAssessment": "records/failed100-assessment.json",
+  "displayScopes": [
+    "display-scopes/display-qualified-20261018-r10",
+    "display-scopes/display-qualified-20261018-r11"
+  ],
+  "boundary": "C6 is an actual executed isolated-candidate loader. No new complete strength matrix, formal Host runtime promotion, standard-entry acceptance, physical input/audio or low-end performance claim."
+}

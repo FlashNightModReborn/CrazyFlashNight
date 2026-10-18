@@ -1,0 +1,82 @@
+{
+  "qualified": true,
+  "records": [
+    {
+      "kind": "elder-retry",
+      "group": "beastking-level100",
+      "session": "965474e1dd7c41188c5703754edc15fa",
+      "sourceArchive": "diagnostic-cf7_agent_aw_965474e1dd7c41188c5703754edc15fa-20261018-201654.zip",
+      "sourceArchiveSha256": "67e2fd839e3dc3e5b032b4df6ed28f6b6d5e46bbc1b5cbccda6dffee302dc382",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "05e6eefae8469fb6e677e7a5ad2c1cf55b57c4478cf0e9d36442c2795b121c80",
+      "hostStartedAt": "2026-10-18T12:11:27.3460412Z",
+      "lifecycleCompletedAt": "2026-10-18T12:17:20.823Z",
+      "excerpt": "elder-retry-beastking-level100-complete-wire.log",
+      "excerptSha256": "6e075480536dcd40aefe3d8fbd0a0ccd69f35e49341d9fd96ff52df555e2afee",
+      "events": [
+        {
+          "sourceLine": 4121,
+          "localTime": "20:11:48.008",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 4135,
+          "localTime": "20:11:48.622",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 4135,
+          "localTime": "20:11:48.622",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 4135,
+          "localTime": "20:11:48.622",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 4135,
+          "localTime": "20:11:48.622",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 4135,
+          "localTime": "20:11:48.622",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 4161,
+          "localTime": "20:11:50.743",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 4162,
+          "localTime": "20:11:56.048",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 4173,
+          "localTime": "20:11:59.325",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 4173,
+          "localTime": "20:11:59.325",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 4181,
+          "localTime": "20:12:00.986",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 4185,
+          "localTime": "20:12:01.911",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-retry-beastking-level100-complete-wire-trace-diff.log"
+    }
+  ]
+}

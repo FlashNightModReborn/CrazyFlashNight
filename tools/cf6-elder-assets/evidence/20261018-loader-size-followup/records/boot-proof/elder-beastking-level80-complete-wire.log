@@ -1,0 +1,12 @@
+19:53:59.198 [BootstrapAS] handshake stage entered, _bootstrap=true server=true
+19:53:59.795 [BootstrapAS] socket ready, firing handshake
+19:53:59.795 [BootstrapAS] handshake hs=Success
+19:53:59.795 [BootstrapAS] firing preload
+19:53:59.795 [BootstrapAS] sending ready ack
+19:53:59.795 [BootstrapAS] bootstrap complete, jumping boot_check
+19:54:01.336 [XmlSocket:JSON] {"payload":"任务数据加载完毕","task":"toast"}
+19:54:05.606 [XmlSocket:JSON] {"payload":"任务文本加载完毕","task":"toast"}
+19:54:08.741 [BootstrapAS] 材料档案目录加载完毕
+19:54:08.741 [BootstrapAS] 竞技场掉落规则加载完毕
+19:54:10.184 [BootstrapAS] 合成表数据加载完毕
+19:54:10.747 [BootstrapAS] event=handoff

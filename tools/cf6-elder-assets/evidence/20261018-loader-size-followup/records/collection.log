@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\cf6-combat-calibration-20261017\loader-size-followup\collect-followup-v2.py", line 34, in <module>
+    assert '32K retry=0, compiler 0/0' in (D/'boot-sequencer-runner.log').read_text('utf-8-sig')
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\fs\AppData\Local\Programs\Python\Python312\Lib\pathlib.py", line 1028, in read_text
+    return f.read()
+           ^^^^^^^^
+  File "<frozen codecs>", line 322, in decode
+  File "C:\Users\fs\AppData\Local\Programs\Python\Python312\Lib\encodings\utf_8_sig.py", line 69, in _buffer_decode
+    return codecs.utf_8_decode(input, errors, final)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+UnicodeDecodeError: 'utf-8' codec can't decode byte 0xff in position 0: invalid start byte

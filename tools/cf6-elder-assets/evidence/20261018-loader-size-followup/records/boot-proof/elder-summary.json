@@ -1,0 +1,390 @@
+{
+  "qualified": true,
+  "records": [
+    {
+      "kind": "elder",
+      "group": "beastking-level60",
+      "session": "a523df9bf36941c49d75c14a741945dc",
+      "sourceArchive": "diagnostic-cf7_agent_aw_a523df9bf36941c49d75c14a741945dc-20261018-195307.zip",
+      "sourceArchiveSha256": "769d4c8cae5c8191a65f8bd161e041a2ff8715cb0b255330160c6163f50bfa94",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "01e5aa01abe057c06810f72e82f2fab3ad6dee3a12cd1ac4bc2b62bb414e499c",
+      "hostStartedAt": "2026-10-18T11:49:14.3618853Z",
+      "lifecycleCompletedAt": "2026-10-18T11:53:26.926Z",
+      "excerpt": "elder-beastking-level60-complete-wire.log",
+      "excerptSha256": "f207680b6901208ca213d8ea4de6d504f11738a7d2e34c842bead7fe2204e35d",
+      "events": [
+        {
+          "sourceLine": 5629,
+          "localTime": "19:49:30.352",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 5638,
+          "localTime": "19:49:30.875",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 5638,
+          "localTime": "19:49:30.875",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 5638,
+          "localTime": "19:49:30.875",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 5638,
+          "localTime": "19:49:30.875",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 5638,
+          "localTime": "19:49:30.875",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 5666,
+          "localTime": "19:49:32.333",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 5667,
+          "localTime": "19:49:36.068",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 5678,
+          "localTime": "19:49:38.877",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 5678,
+          "localTime": "19:49:38.877",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 5683,
+          "localTime": "19:49:39.905",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 5690,
+          "localTime": "19:49:40.383",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-beastking-level60-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "elder",
+      "group": "beastking-level80",
+      "session": "ceffc45bce89428f949ec328978fcbd4",
+      "sourceArchive": "diagnostic-cf7_agent_aw_ceffc45bce89428f949ec328978fcbd4-20261018-195819.zip",
+      "sourceArchiveSha256": "b497b7fc5b48fe73c59f7c063cff83d29da9a5b773a93b07cc5919d613a9551f",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "5df734e731f3bad3fb45fbeb75c37ca27a5ac01ee80e0d828e1f31f66009a33b",
+      "hostStartedAt": "2026-10-18T11:53:42.0107764Z",
+      "lifecycleCompletedAt": "2026-10-18T11:58:35.804Z",
+      "excerpt": "elder-beastking-level80-complete-wire.log",
+      "excerptSha256": "6b4fe43f39cd68da0eb8b53eadc851f323ff07eee5196b06779e6de0fcf67474",
+      "events": [
+        {
+          "sourceLine": 7553,
+          "localTime": "19:53:59.198",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 7562,
+          "localTime": "19:53:59.795",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 7562,
+          "localTime": "19:53:59.795",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 7562,
+          "localTime": "19:53:59.795",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 7562,
+          "localTime": "19:53:59.795",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 7562,
+          "localTime": "19:53:59.795",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 7590,
+          "localTime": "19:54:01.336",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 7591,
+          "localTime": "19:54:05.606",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 7602,
+          "localTime": "19:54:08.741",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 7602,
+          "localTime": "19:54:08.741",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 7610,
+          "localTime": "19:54:10.184",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 7613,
+          "localTime": "19:54:10.747",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-beastking-level80-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "elder",
+      "group": "exusiai-level100",
+      "session": "ab7d911bc2f44999858edc88c0fbcbfd",
+      "sourceArchive": "diagnostic-cf7_agent_aw_ab7d911bc2f44999858edc88c0fbcbfd-20261018-200854.zip",
+      "sourceArchiveSha256": "42bd9ff6d0ec04f0bfbbeda3962ab4008bb93299c09dd5d29f88ccbebabb0f6d",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "55710213c0289001fb677fdd7c0a5f693ef06ca8a6a70f4d0b463a2574211032",
+      "hostStartedAt": "2026-10-18T12:06:39.6800133Z",
+      "lifecycleCompletedAt": "2026-10-18T12:09:09.215Z",
+      "excerpt": "elder-exusiai-level100-complete-wire.log",
+      "excerptSha256": "80c9917cb71ef305daa0cccf637b8f052bb1cf914e2f7092fe3be9032bddfd5e",
+      "events": [
+        {
+          "sourceLine": 2860,
+          "localTime": "20:06:58.662",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 2874,
+          "localTime": "20:06:59.453",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 2874,
+          "localTime": "20:06:59.453",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 2874,
+          "localTime": "20:06:59.453",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 2874,
+          "localTime": "20:06:59.453",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 2874,
+          "localTime": "20:06:59.453",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 2900,
+          "localTime": "20:07:01.589",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 2901,
+          "localTime": "20:07:06.396",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 2912,
+          "localTime": "20:07:10.451",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 2912,
+          "localTime": "20:07:10.451",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 2921,
+          "localTime": "20:07:13.128",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 2926,
+          "localTime": "20:07:14.703",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-exusiai-level100-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "elder",
+      "group": "exusiai-level60",
+      "session": "8df50ee99d2c4964b5077ed3ecfbf604",
+      "sourceArchive": "diagnostic-cf7_agent_aw_8df50ee99d2c4964b5077ed3ecfbf604-20261018-200332.zip",
+      "sourceArchiveSha256": "56f07517dbfb2507427ceb5371854c623c976901a8f223a7ae9494c1055ec7aa",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "8b3e10b79f044393c58efd9271d9132f0a4e2378390098540068f11bc96c224d",
+      "hostStartedAt": "2026-10-18T12:01:22.9655841Z",
+      "lifecycleCompletedAt": "2026-10-18T12:03:47.072Z",
+      "excerpt": "elder-exusiai-level60-complete-wire.log",
+      "excerptSha256": "07d186356ed3cb6e47574146c9b25316b99283980f861b6afbd3eb2b2320f4b6",
+      "events": [
+        {
+          "sourceLine": 391,
+          "localTime": "20:01:44.166",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 402,
+          "localTime": "20:01:44.767",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 402,
+          "localTime": "20:01:44.767",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 402,
+          "localTime": "20:01:44.767",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 402,
+          "localTime": "20:01:44.767",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 402,
+          "localTime": "20:01:44.767",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 427,
+          "localTime": "20:01:46.436",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 428,
+          "localTime": "20:01:50.374",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 439,
+          "localTime": "20:01:53.740",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 439,
+          "localTime": "20:01:53.740",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 447,
+          "localTime": "20:01:54.910",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 450,
+          "localTime": "20:01:55.439",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-exusiai-level60-complete-wire-trace-diff.log"
+    },
+    {
+      "kind": "elder",
+      "group": "exusiai-level80",
+      "session": "a5d4146dff7c434b95afbeb829fa5b00",
+      "sourceArchive": "diagnostic-cf7_agent_aw_a5d4146dff7c434b95afbeb829fa5b00-20261018-200607.zip",
+      "sourceArchiveSha256": "d9957e81f1e2417ae2e67d02bd2ab320dcedfcc64f0b585fbadd3390ae42e43e",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "49041ba8cd06966f164719837957b4a4ee17864611801f1c06c59cb635eacca8",
+      "hostStartedAt": "2026-10-18T12:04:03.0750772Z",
+      "lifecycleCompletedAt": "2026-10-18T12:06:22.292Z",
+      "excerpt": "elder-exusiai-level80-complete-wire.log",
+      "excerptSha256": "5d1418865ccbe12bec6717d9f284004fca39dc361b457e1abb8ec3c3481e9472",
+      "events": [
+        {
+          "sourceLine": 1626,
+          "localTime": "20:04:18.637",
+          "message": "[BootstrapAS] handshake stage entered, _bootstrap=true server=true"
+        },
+        {
+          "sourceLine": 1638,
+          "localTime": "20:04:19.203",
+          "message": "[BootstrapAS] socket ready, firing handshake"
+        },
+        {
+          "sourceLine": 1638,
+          "localTime": "20:04:19.203",
+          "message": "[BootstrapAS] handshake hs=Success"
+        },
+        {
+          "sourceLine": 1638,
+          "localTime": "20:04:19.203",
+          "message": "[BootstrapAS] firing preload"
+        },
+        {
+          "sourceLine": 1638,
+          "localTime": "20:04:19.203",
+          "message": "[BootstrapAS] sending ready ack"
+        },
+        {
+          "sourceLine": 1638,
+          "localTime": "20:04:19.203",
+          "message": "[BootstrapAS] bootstrap complete, jumping boot_check"
+        },
+        {
+          "sourceLine": 1665,
+          "localTime": "20:04:20.967",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务数据加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 1666,
+          "localTime": "20:04:25.862",
+          "message": "[XmlSocket:JSON] {\"payload\":\"任务文本加载完毕\",\"task\":\"toast\"}"
+        },
+        {
+          "sourceLine": 1677,
+          "localTime": "20:04:29.903",
+          "message": "[BootstrapAS] 材料档案目录加载完毕"
+        },
+        {
+          "sourceLine": 1677,
+          "localTime": "20:04:29.903",
+          "message": "[BootstrapAS] 竞技场掉落规则加载完毕"
+        },
+        {
+          "sourceLine": 1685,
+          "localTime": "20:04:31.808",
+          "message": "[BootstrapAS] 合成表数据加载完毕"
+        },
+        {
+          "sourceLine": 1689,
+          "localTime": "20:04:32.437",
+          "message": "[BootstrapAS] event=handoff"
+        }
+      ],
+      "traceDiffExitCode": 0,
+      "comparisonLog": "elder-exusiai-level80-complete-wire-trace-diff.log"
+    }
+  ]
+}

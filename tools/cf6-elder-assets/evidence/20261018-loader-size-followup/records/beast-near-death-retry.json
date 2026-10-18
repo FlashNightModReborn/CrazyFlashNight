@@ -1,0 +1,62 @@
+{
+  "experiment": "cf6-loader-c6-b100-retry1-20261018",
+  "wholeExperimentFinal": true,
+  "rows": [
+    {
+      "group": "beastking-level100",
+      "runId": "level100-blue-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 3712.0,
+      "startedAt": "2026-10-18T12:12:14.0898870Z",
+      "completedAt": "2026-10-18T12:14:26.5902139Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T20:14:04.448000+08:00",
+          "lineNumber": 5066,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "67e2fd839e3dc3e5b032b4df6ed28f6b6d5e46bbc1b5cbccda6dffee302dc382",
+          "sourceEntrySha256": "05e6eefae8469fb6e677e7a5ad2c1cf55b57c4478cf0e9d36442c2795b121c80",
+          "runId": "level100-blue-r001"
+        }
+      ],
+      "resultSha256": "6c140f9cb45ebcb64ef71aa6fe0c95dec6ef38de1b16ab71bf775f6525de9f14"
+    },
+    {
+      "group": "beastking-level100",
+      "runId": "level100-red-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 3918.0,
+      "startedAt": "2026-10-18T12:14:26.5976525Z",
+      "completedAt": "2026-10-18T12:16:46.6212453Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T20:16:35.049000+08:00",
+          "lineNumber": 6035,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "67e2fd839e3dc3e5b032b4df6ed28f6b6d5e46bbc1b5cbccda6dffee302dc382",
+          "sourceEntrySha256": "05e6eefae8469fb6e677e7a5ad2c1cf55b57c4478cf0e9d36442c2795b121c80",
+          "runId": "level100-red-r001"
+        }
+      ],
+      "resultSha256": "6c140f9cb45ebcb64ef71aa6fe0c95dec6ef38de1b16ab71bf775f6525de9f14"
+    }
+  ],
+  "observedBeastRageNotifications": 2,
+  "unattributedNotifications": [],
+  "sourceContract": {
+    "path": "flashswf/arts/things5/LIBRARY/敌人-方舟兽王.xml",
+    "sha256": "e5faffe047fd4c3988f25f9fd4c0253863dad44d6ee391b6532c6af5b6e83d7a",
+    "thresholdRatio": 0.2,
+    "branchCount": 3
+  },
+  "diagnosticIndexSha256": "e7010cb02983ce0ea8e7075934cc891e6fdd9a4e46073efc89a19cc5ad5ca959",
+  "boundary": "Literal XmlSocket toast notifications only, matched first to the exact receipt host interval and then to a unique raw battle startedAt..completedAt interval. Each accepted fight has exactly one initial opponent. Beast source sets its rage flag before this unique notification; no HP-only or damage-only inference is used. Zero notifications do not establish that rage never occurred. Unattributed notifications are excluded."
+}

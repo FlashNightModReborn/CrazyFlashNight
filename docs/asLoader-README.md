@@ -1,7 +1,7 @@
 # asLoader 启动架构 · 导览与待测
 
 **文档角色**：asLoader 启动子系统的**入口导览**（反直觉架构的心智地图 + 验证状态 + 测试入口）。深层细节下沉到设计 / 施工 doc，本文只回答「这是什么、为什么这么怪、验了什么、还要测什么」。
-**最后核对代码基线**：commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` + 当前审阅修复工作树（2026-07-25）；下列“当前”结论均以该工作树为对象。
+**最后核对代码基线**：commit `dabd11a89570125b6fe2125aa45b5ccaf2d60cd2` + 2026-10-18 通信段修复工作树。§5 保留 commit `b4d1267d51e5bdf4957fe56d21f6ee2c0a5049de` 后 2026-07-25 工作树的历史验证；历史计数和运行回执不代表现役产物，当前数值以重新生成、SWF 扫描及对应执行记录为准。
 **深层 doc**：[架构设计](asLoader重构-架构设计-2026-06-15.md)（为什么这么设计 + P0-P6 路线）· [BootSequencer 构建标准](asLoader-BootSequencer-构建标准-2026-06-16.md)（启动契约 + §5 边界 runbook）· [asLoader / TestLoader 维护性路线](asLoader-TestLoader维护性重构-架构路线-2026-07-24.md)（维护性施工路线；阶段状态以该文档为准，当前构建入口与门禁以本文为准）。
 
 ## 0. TL;DR（先读这段）
@@ -30,9 +30,11 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 
 2026-09-06 地图域切流后的新鲜发布检测到 `f36_9` 为 60,843 B；已沿顶层方案边界拆成 `单位函数_aka_战宠进阶.as` 与 `单位函数_aka_战宠进阶_扩展.as`，由 `frame36` 的 `f36_9 → f36_11 → f36_10` 连续装配，仍是先完整战宠进阶、再护盾。两段规范化拼接与拆分前原文完全一致，未改方案、数值或调用顺序；唯一顶层局部变量没有跨片引用。需要完整方案的直接 include 测试必须按相同顺序包含两段。拆分不放宽 `codeSize < 60000` 门。
 
+2026-10-18 的 CI 检出通信段 `f3` 为 60,668 B，超过既有 60,000 B 门槛，尚未达到 UI16 的 65,535 B 上限。`frame3.as` 现沿 Agent 注册边界拆成 `f3_1 → f3_2`：先执行通信、计时器、存档桥接与任务定义，再注册 Agent 接口。两段仍由同一 `s1_syncCode` 同步调用，相对拆分前的同一主线源码，两段的函数体拼接完全一致；九个 include 没有顶层局部变量或具名函数声明，不引入跨段捕获。`BOOT_SOURCES`、启动状态机和业务脚本未因拆分改写。 本轮新产物的两段分别为 45,559 / 15,472 B，全部函数最大 53,041 B；新鲜 Compiler `0/0`、103 项启动／握手断言、9 次实际候选启动的事件顺序及 18 场集成均通过，详见 [C6 补充证据](../tools/cf6-elder-assets/evidence/20261018-loader-size-followup/README.md)。C5 的完整强度统计保留原执行身份；本次未发布新的正式 Host runtime。
+
 - `BOOT_SOURCES` 是唯一 live 输入表：当前 29 项（13 staged + 16 loader-fire），数组顺序就是 phase 内的确定执行顺序；不得再建平行 frame 清单、stage 接线表或独立 manifest。
 - `node tools/assemble-collapsed-frame.js` 写生成物；`node tools/assemble-collapsed-frame.js --check` **不写文件**，按字节确认生成物可由当前表与规则精确重建。两种模式都会严格检查所有输入的 UTF-8 BOM、`frameNN.as` 根目录 exact-match、phase / shape、受控 envelope、具体 import 白名单、定义 / 调用唯一性，并要求 `BootSequencer.run(this)` 是唯一且最后的启动动作。
-- 生成器会报告 canonical 源闭包度量：剥除每个源文件 BOM、把 CRLF/CR 规范为 LF，并计入 staged/loader-fire 自身源体，避免 checkout 行尾改变调查值。`70,000 B` 只用于突出复核候选，不是 hard gate，也没有 exact no-growth 例外；源字节与 AVM1 `codeSize` 不存在可证明的单调边界，不能让注释或格式增长变成构建 ratchet。当前高于提示线的是 `f3=149298 B`、`f36_2=121117 B`、`f37_7=76380 B`，仍须结合新鲜 SWF `codeSize` 扫描与行为证据判断是否拆分。
+- 生成器会报告 canonical 源闭包度量：剥除每个源文件 BOM、把 CRLF/CR 规范为 LF，并计入 staged/loader-fire 自身源体，避免 checkout 行尾改变调查值。`70,000 B` 只用于突出复核候选，不是 hard gate，也没有 exact no-growth 例外；源字节与 AVM1 `codeSize` 不存在可证明的单调边界，不能让注释或格式增长变成构建 ratchet。高于提示线的项目以本轮生成器输出为准，仍须结合新鲜 SWF `codeSize` 扫描与行为证据判断是否拆分。
 
 ## 2. Boot 流（S0-S10）
 
@@ -55,7 +57,7 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 3. **异步 preload→consume 靠帧间隔**，塌缩压紧 tick 须加显式等待门（见 S6）。
 4. **大小写 typo 被并集头更严格类型解析暴露**（多帧时该上下文未 typed-resolve 不报，塌缩后报编译错）。
 
-## 5. 验证状态（历史 boot 行为基线 2026-06-17；当前施工树 fresh 复核 2026-07-25）
+## 5. 历史验证状态（boot 行为基线 2026-06-17；当时工作树复核 2026-07-25）
 
 | 项 | 状态 |
 |---|---|
@@ -73,6 +75,7 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 - **改 boot 同步逻辑**：从 `BOOT_SOURCES` 的语义名定位 live source（新增顶层 source 时只改这张表，不建平行清单）→ 改源 `.as` → `node tools/assemble-collapsed-frame.js` → `node tools/assemble-collapsed-frame.js --check` → `node tools/check-bom.js` → `powershell -File scripts/compile_test.ps1 -Target publish -TimeoutSeconds 180`。只改外置 `.as` 时显式 `-Target` 会从盘读取，无需额外手工重开；只有改 `asLoader.xml` 帧数/层数/symbol 等时间轴结构时，才先让 CS6 **不保存关闭并重开**，避免内存旧版 clobber 磁盘。没有本轮新鲜 `compiler_errors.txt` `0/0`、目标 SWF 刷新，以及所需的 trace / Output Panel 副本或 IDE 复核时，不声称“编译通过”。
 - **改 / 增装备生命周期函数**：编译真源是 `scripts/asLoaderManifest/frame37.as`（f37_N chunk），**不是**旧 `装备函数列表.as`（已删）。用途索引 / API 快查 / 新增 8 步见 `scripts/逻辑/装备函数/README.md`；改完依次跑生成、`--check`、BOM 与 `node tools/validate-equip-fn-coverage.js`，再由 CS6 对 asLoader 执行显式 `-Target publish`；只有同时改时间轴/XML 结构才手工重开。
 - **改 BootSequencer / bootstrap handshake**：直接改类或 shim → 先跑 TestLoader（BootSequencerTest + BootstrapHandshakeTest）→ 重编 publish（publish 模式无 trace，看 `0 错误` + SWF 刷新）。
+- **asLoader 发布后的大小门**：对本轮产物执行 `node tools/swf-function-sizes.js scripts/asLoader.swf --max 60000 --top 15`，与 CI 同门槛；普通 publish 的 `0/0` 和 SWF 刷新不包含这项通过结论。若拆分启动 chunk，还需保序与作用域核查、BootSequencer/握手 suite 和绑定新加载器身份的实际启动行为。
 - **trace 门**：`node tools/trace-diff.js diff <golden> <new>`（事件序列 LCS 等价，容时间戳/批处理）。
 - **边界**：构建标准 doc **§5.1** 七边界表（触发 → 期望 `[BootstrapAS]` 信号 → 判据）。
 - **回退 / 追溯**：只以 Git 记录为准，并把 symbol、`BootSequencer`、生成器、live manifest 与生成物作为同一装配闭包回退；不要复活 pre-collapse 备份或 9 个旧 history frame，也不要只还原其中一个文件。

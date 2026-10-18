@@ -31,7 +31,8 @@ import org.flashNight.neur.Server.*;
 import org.flashNight.sara.*;
 
 if (_root.__boot == undefined) _root.__boot = {};
-_root.__boot.f3 = function() {
+// 同一 S1 阶段保序同步执行；Agent 注册独立成段，给 AVM1 单函数体留出余量。
+_root.__boot.f3_1 = function() {
     打印加载内容("加载通信代码……");
 
     #include "../通信/通信_fs_lsy_XML数据解析.as"
@@ -42,6 +43,9 @@ _root.__boot.f3 = function() {
     #include "../通信/通信_fs_bootstrap.as"
     #include "../通信/通信_鸡蛋_XML与JSON解析.as"
     #include "../通信/通信_鸡蛋_任务系统.as"
+};
+_root.__boot.f3_2 = function() {
     #include "../通信/通信_aka_Agent联动.as"
 };
-_root.__boot.f3();
+_root.__boot.f3_1();
+_root.__boot.f3_2();
