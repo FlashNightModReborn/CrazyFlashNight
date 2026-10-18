@@ -481,9 +481,10 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             resolver.beginPending = function():Void {};
             _root.__pushMapHudState = function():Void {};
             _root.关卡结束界面 = {_visible:1};
-            _root.淡出动画 = {淡出跳转帧:function(frame:String):Void {
+            _root.淡出动画 = {淡出跳转帧:function(frame:String):Boolean {
                 org.flashNight.arki.map.MapDomainBridgeTest._fadeCount++;
                 org.flashNight.arki.map.MapDomainBridgeTest._frame = frame;
+                return true;
             }};
 
             var oldB:Number = start();
@@ -515,6 +516,16 @@ class org.flashNight.arki.map.MapDomainBridgeTest {
             reply(sameLocation, {projection:{snapshot:{version:4,currentHotspotId:"alpha"}, currentLocationId:"alpha", taskEndpoints:{}, placements:{}}});
             check(_result.ok === true && _fadeCount == 1, "same-location ordinary navigation succeeds without another fade");
 
+            var acceptedFade:Function=_root.淡出动画.淡出跳转帧;
+            var pendingCount:Number=0;
+            resolver.beginPending=function():Void { pendingCount++; };
+            _root.淡出动画.淡出跳转帧=function():Boolean { return false; };
+            _root.场景进入位置名="原入口"; _root.关卡结束界面._visible=1;
+            var rejectedFade:Number=start(); reply(rejectedFade,{});
+            check(_result.ok===false && _result.error=="navigation_busy" && pendingCount==0
+                && _root.场景进入位置名=="原入口" && _root.关卡结束界面._visible==1,
+                "rejected fade keeps map open, entrance and pending destination unchanged");
+            _root.淡出动画.淡出跳转帧=acceptedFade;
             var firstWaiter:Number = 0, secondWaiter:Number = 0;
             bridge._waiters = [{sceneEpoch:bridge._sceneEpoch,ids:[],callback:function():Void {
                 firstWaiter++; MapDomainBridge.snapshot(function():Void { secondWaiter++; });

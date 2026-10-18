@@ -26,6 +26,11 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         _root.gameCommands["bookshelfSnapshot"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("snapshot", p); };
         _root.gameCommands["bookshelfCommit"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("commit", p); };
         _root.gameCommands["bookshelfQuery"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("query", p); };
+        _root.gameCommands["intelligenceLeeStory"] = function(p:Object):Void {
+            var result:Object = org.flashNight.arki.ui.BookshelfPanelService.openLeeStory(p);
+            result.task="intelligence_response"; result.callId=p.callId;
+            _root.UI系统.商城WebView.sendResponse(result);
+        };
         EventBus.getInstance().subscribe("SceneReady", onSceneReady, null);
         org.flashNight.arki.scene.BookRunService.install();
         org.flashNight.arki.scene.BookDefinition.load();
@@ -38,8 +43,34 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         if (_root.gameworld == undefined || typeof _root.server.sendSocketMessage != "function") return false;
         if (_active != null && _active.phase == "editing") _active.phase = "expired";
         var r:Object = newSession();
-        return _root.server.sendSocketMessage(PanelRequestEnvelope.build("bookshelf", "world_bookshelf", [],
-            [{name:"token", value:r.token}])) !== false;
+        var extras:Array = [{name:"token", value:r.token}];
+        if (_root._saveExt.bookRun.bookId === "lee-trial")
+            extras.push({name:"view", value:"lee-result"});
+        return _root.server.sendSocketMessage(PanelRequestEnvelope.build("bookshelf", "world_bookshelf", [], extras)) !== false;
+    }
+    /** 阅读资格取当前角色的情报与生效被动；页面传来的等级或解锁标志没有权威。 */
+    public static function leeStoryUnlocked(root:Object):Boolean {
+        var skill:Object=root.主角被动技能.解密;
+        var intel:Object=root.收集品栏.情报;
+        if(skill.启用 !== true || !(Number(skill.等级)>=5) || typeof intel.toObject!="function") return false;
+        return Number(intel.toObject()["黑龙令"])>=4;
+    }
+    public static function openLeeStory(p:Object):Object {
+        org.flashNight.arki.scene.LeeTrialDefinition.load();
+        if(p.itemName!=="黑龙令" || p.pageKey!=="5") return {success:false,error:"invalid_payload"};
+        // 只签发/找回能力，不打开面板、不写档。已发出的出发或整理仍用旧 token 核对，不能另开一局。
+        if (_active.leeEntry === true && ((_active.kind === "play" && _active.target === "lee-trial")
+                || (_active.kind === "settle" && String(_active.target).indexOf("bookrun_") == 0)))
+            return {success:true, token:_active.token};
+        if(!leeStoryUnlocked(_root) || _root._saveExt.bookRun!=null)
+            return {success:false,error:"locked"};
+        if(_root._saveExt.bookshelf.active!=null && _root._saveExt.bookshelf.active.bookId!=="lee-trial")
+            return {success:false,error:"other_run_active"};
+        if(!canSwitch() || _root.gameworld==undefined) return {success:false,error:"busy"};
+        var r:Object=_active;
+        if(r==null || !same(r) || r.phase!="editing" || r.leeEntry!==true) r=newSession();
+        r.leeEntry=true;
+        return {success:true, token:r.token};
     }
     private static function newSession():Object {
         var r:Object = {token:"bookshelf." + new Date().getTime() + "." + getTimer() + "." + (++_seq), phase:"editing",
@@ -99,10 +130,14 @@ class org.flashNight.arki.ui.BookshelfPanelService {
                 else org.flashNight.arki.scene.BookDefinition.load();
                 return fail(cmd, token, "config_unavailable");
             }
-            if ((!trial && !unlocked()) || run != null || feature.active != null) return fail(cmd, token, "locked");
+            if ((trial ? r.leeEntry !== true || !leeStoryUnlocked(_root) : !unlocked())
+                    || run != null || feature.active != null) return fail(cmd, token, "locked");
             r.run = {v:1, bookId:p.target, slot:p.runSlot, originSlot:r.slot,
                 seed:1 + Math.floor(Math.random() * 2147483645), startedAt:new Date().getTime(), outcome:"active"};
-            if (trial) r.run.debug = true;
+            if (trial) {
+                r.run.debug = true;
+                r.run.leeLoadout = org.flashNight.arki.skill.LeeSkillLoadout.copySlots(feature.leeLoadout);
+            }
             r.destination = p.runSlot;
         } else if (kind == "switch") {
             if (run != null || feature.active != null || p.target == r.slot || p.snapshot == null
@@ -124,6 +159,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             if (run != null || feature.active.slot !== p.target || recovered.slot !== p.target
                 || recovered.originSlot !== r.slot || recovered.seed !== feature.active.seed
                 || recovered.bookId !== feature.active.bookId
+                || (r.leeEntry === true && recovered.bookId !== "lee-trial")
                 || (recovered.bookId !== "repair-campus" && recovered.bookId !== "lee-trial")) return fail(cmd, token, "invalid_target");
             r.result = PersistedSnapshot.clone(recovered);
         } else return fail(cmd, token, "invalid_payload");
@@ -268,6 +304,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
         if (trial) {
             record.debug = true;
             state.lastTrialRecord = record;
+            state.leeLoadout = org.flashNight.arki.skill.LeeSkillLoadout.copySlots(result.leeLoadout);
         } else {
             _root.技能点数 += quote.sp;
             state.firstClear = quote.firstClear; state.bestTier = quote.bestTier;
@@ -348,7 +385,9 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             && (r.restored === true ? r.slot : r.destination) === String(_root.savePath)
             && r.arrivalOwner === StageReturnFlow.worldIdentity(_root.gameworld);
         if ((r.phase == "applied" || r.phase == "expired") && _job == null && r === _active && (same(r) || returned)) {
-            var fresh:Object = newSession(); fresh.slots = r.slots; r.nextToken = fresh.token;
+            var fresh:Object = newSession(); fresh.slots = r.slots;
+            if (r.leeEntry === true) fresh.leeEntry = true;
+            r.nextToken = fresh.token;
         }
         return {v:1, operation:cmd, token:r.token, phase:r.phase, success:r.phase != "expired" && r.phase != "save_pending",
             settingsAuthorityOwner:SaveManager.getInstance().getSettingsAuthority() == null ? null : SaveManager.getInstance().getSettingsAuthority().ownerId(),
@@ -356,7 +395,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
             activeSlot:String(_root.savePath), role:String(_root.角色名), canSwitch:canSwitch() && _job == null,
             kind:String(r.kind || ""), target:String(r.target || ""),
             outcomePending:org.flashNight.arki.scene.BookRunService.hasUnsettledOutcome(),
-            unlocked:unlocked(), inRun:run != null, originSlot:run == null ? "" : String(run.originSlot),
+            unlocked:unlocked(), leeEntry:r.leeEntry === true && leeStoryUnlocked(_root), inRun:run != null, originSlot:run == null ? "" : String(run.originSlot),
             bookId:run == null ? "" : String(run.bookId), pendingBookId:feature.active == null ? "" : String(feature.active.bookId),
             lastTrialRecord:feature.lastTrialRecord == null ? null : PersistedSnapshot.clone(feature.lastTrialRecord),
             runOutcome:run == null ? "" : String(run.outcome), pendingRun:feature.active == null ? "" : String(feature.active.slot),

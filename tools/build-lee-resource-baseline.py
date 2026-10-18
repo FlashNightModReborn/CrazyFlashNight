@@ -147,12 +147,39 @@ def build(root=ROOT):
             stage['Wave']['SubWave'] = groups + source_waves
         stage['Event'] = [dict(EventName='Start',Message='攻入黑龙堂 · '+str(index+1)+'/4')]
     dialogue = json.loads((root / 'data/books/lee-assault-dialogue.json').read_text(encoding='utf-8'))
-    required_beats = {f'lee-{beat}-{i}' for beat in ('entry','clear','after') for i in range(4)}
-    required_beats |= {f'lee-after-{i}-revived' for i in range(3)} | {'lee-awaken'}
+    required_beats = set()
+    required_beats.add('lee-entry-0')
+    required_beats.add('lee-clear-0')
+    required_beats.add('lee-after-0')
+    required_beats.add('lee-after-0-dodged')
+    required_beats.add('lee-after-0-revived')
+    required_beats.add('lee-entry-1')
+    required_beats.add('lee-entry-1-revived')
+    required_beats.add('lee-clear-1')
+    required_beats.add('lee-clear-1-observe')
+    required_beats.add('lee-clear-1-revived')
+    required_beats.add('lee-awaken-early')
+    required_beats.add('lee-after-1')
+    required_beats.add('lee-after-1-dodged')
+    required_beats.add('lee-after-1-revived')
+    required_beats.add('lee-entry-2-awakened')
+    required_beats.add('lee-entry-2')
+    required_beats.add('lee-entry-2-revived')
+    required_beats.add('lee-clear-2-awakened')
+    required_beats.add('lee-clear-2')
+    required_beats.add('lee-clear-2-observe')
+    required_beats.add('lee-clear-2-revived')
+    required_beats.add('lee-after-2-awakened')
+    required_beats.add('lee-awaken-late')
+    required_beats.add('lee-after-2')
+    required_beats.add('lee-entry-3-early')
+    required_beats.add('lee-entry-3-late')
+    required_beats.add('lee-clear-3')
+    required_beats.add('lee-after-3')
     assert dialogue['schema'] == 'lee-assault-dialogue.v1' and set(dialogue['beats']) == required_beats
     for rows in dialogue['beats'].values():
         assert isinstance(rows,list) and 1 <= len(rows) <= 6
-        assert all(row['name'] == 'Lee' and row['char'] == 'Lee' and isinstance(row['text'],str)
+        assert all(row['name'] in ('Lee', '黑龙') and row['char'] == row['name'] and isinstance(row['text'],str)
                    and 0 < len(row['text']) <= 500 for row in rows)
     public_rules = {k:v for k,v in assault.items() if k not in ('corpseRosters','finalReserve')}
     public_rules['dialogues'] = dialogue['beats']

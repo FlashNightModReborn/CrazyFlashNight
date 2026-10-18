@@ -31,6 +31,7 @@ var IntelligencePanel = (function() {
     var _panelInstanceId = '';
     var _canReturnCharacterBuild = false;
     var _returnNavigationTimer = null;
+    var _leeStory = null;
     
     var _glossaryCatalog = [];          // 名词列表（已按 requires 过滤）
     var _glossaryLockedCount = 0;       // 因条件未满足仍隐藏的名词数
@@ -217,6 +218,7 @@ var IntelligencePanel = (function() {
     }
 
     function onOpen(el, initData) {
+        clearLeeEntryRequest();
         _snapshot = null;
         _bundleByName = {};
         _selectedPage = 0;
@@ -226,6 +228,10 @@ var IntelligencePanel = (function() {
         initData = initData || {};
         _panelInstanceId = typeof initData.panelInstanceId === 'string'
             ? initData.panelInstanceId : '';
+        if (window.LeeStoryEntry) _leeStory = new window.LeeStoryEntry({instance:_panelInstanceId,
+            prepare:function(done) { return sendRequest('open_lee_story', {itemName:'黑龙令',pageKey:'5',panelInstanceId:_panelInstanceId}, done); },
+            status:function(text) { if (_refs) _refs.status.textContent = text; },
+            close:function() { doClose(true); }});
         _canReturnCharacterBuild = initData.canReturnCharacterBuild === true
             && initData.navigationOrigin === 'character_build'
             && !!_panelInstanceId;
@@ -298,6 +304,7 @@ var IntelligencePanel = (function() {
     }
 
     function onClose() {
+        clearLeeEntryRequest();
         if (_returnNavigationTimer !== null) {
             clearTimeout(_returnNavigationTimer);
             _returnNavigationTimer = null;
@@ -467,10 +474,21 @@ var IntelligencePanel = (function() {
         msg.panel = 'intelligence';
         msg.cmd = cmd;
         msg.callId = callId;
-        Bridge.send(msg);
+        if (Bridge.send(msg) === false && cmd === 'open_lee_story') {
+            var request = _pending[callId];
+            delete _pending[callId];
+            request.callback({success:false,error:'disconnected'});
+        }
+        return callId;
+    }
+
+    function clearLeeEntryRequest() {
+        if (_leeStory) _leeStory.destroy();
+        _leeStory = null;
     }
 
     function hasReturnBlockingRequest() {
+        if (_leeStory && _leeStory.blocked()) return true;
         for (var callId in _pending) {
             if (!Object.prototype.hasOwnProperty.call(_pending, callId)) continue;
             var cmd = _pending[callId] && _pending[callId].cmd;
@@ -1067,6 +1085,10 @@ var IntelligencePanel = (function() {
         } else {
             appendLegacyHtml(_refs.content, renderText, _snapshot.pcName || _pcName);
         }
+        if (_runtimeMode && _currentItemName === '黑龙令' && page.pageKey === '5'
+                && canDecrypt && _showPlain && _panelInstanceId) {
+            if (_leeStory) _leeStory.mount(_refs.content);
+        }
         _refs.content.scrollTop = 0;
     }
 
@@ -1199,11 +1221,12 @@ var IntelligencePanel = (function() {
         target.appendChild(el);
     }
 
-    function doClose() {
+    function doClose(accepted) {
+        if (accepted !== true && _leeStory && _leeStory.blocked()) return false;
         var instance = _panelInstanceId;
         if (window.BootstrapAudio) window.BootstrapAudio.cue('back');  // 语义音效：关闭
-        Panels.close();
-        Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence', panelInstanceId: instance });
+        if (Bridge.send({ type: 'panel', cmd: 'close', panel: 'intelligence', panelInstanceId: instance }) === false) return false;
+        Panels.close(); return true;
     }
 
     function requestCharacterBuild() {

@@ -400,11 +400,15 @@ class org.flashNight.arki.map.MapDomainBridge {
         if (String(_projection.currentLocationId) == String(admission.locationId)) {
             ctx.callback(true, ""); return;
         }
+        var previousEntrance = _root.场景进入位置名;
+        _root.场景进入位置名 = "出生地";
+        if (_root.淡出动画.淡出跳转帧(String(admission.frame)) !== true) {
+            _root.场景进入位置名 = previousEntrance;
+            ctx.callback(false, "navigation_busy"); return;
+        }
         _navigationBusyUntil = getTimer() + 1500;
         org.flashNight.arki.map.MapHotspotResolver.beginPending(String(admission.hotspotId));
         _root.关卡结束界面._visible = 0;
-        _root.场景进入位置名 = "出生地";
-        _root.淡出动画.淡出跳转帧(String(admission.frame));
         ctx.callback(true, "");
     }
 

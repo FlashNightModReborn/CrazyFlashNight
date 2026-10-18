@@ -5294,14 +5294,17 @@ namespace CF7Launcher.Guardian
         }
 
         // intelligence 回包通道在 composition 会话期间指向 surface；会话结束归还本 overlay。
+        private Func<Action<string>> _leeResponseLeaseProvider;
         internal void AcquireIntelligenceResponseChannel(Func<Action<string>> post)
         {
             if (post == null) return;
+            _leeResponseLeaseProvider = post;
             if (_intelligenceTask != null) _intelligenceTask.SetResponseLeaseProvider(post);
         }
 
         internal void RestoreIntelligenceResponseChannel()
         {
+            _leeResponseLeaseProvider = null;
             if (_intelligenceTask != null) _intelligenceTask.SetResponseLeaseProvider(CaptureResponseSink);
         }
 
@@ -7728,6 +7731,13 @@ namespace CF7Launcher.Guardian
             if (domainRoute == PanelDomainRoute.BookComic) { if (!HasExactActivePanelOwnerBinding(parsed, "book-comic")) { RespondPanelDomainError(parsed, "panel_instance_expired"); return; } _bookComicTask?.HandleWebRequest(cmd, parsed); return; }
             if (domainRoute == PanelDomainRoute.Bookshelf)
             {
+                if (messagePanel == "intelligence")
+                {
+                    if (HasExactActivePanelOwnerBinding(parsed, "intelligence") && BookshelfTask.IsLeeEnvelope(parsed))
+                        _bookshelfTask?.HandleLeeWebRequest(cmd, parsed,
+                            _leeResponseLeaseProvider?.Invoke() ?? CaptureResponseSink());
+                    return;
+                }
                 if (!HasExactActivePanelOwnerBinding(parsed, "bookshelf"))
                 { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
                 if (cmd == "transitionPresented" || cmd == "transitionAction")
@@ -8789,6 +8799,7 @@ namespace CF7Launcher.Guardian
                 case "state":
                 case "light":
                 case "bundle":
+                case "open_lee_story":
                 case "glossary_catalog":
                 case "glossary_snapshot":
                 case "preview":
@@ -8861,6 +8872,9 @@ namespace CF7Launcher.Guardian
                         }
                         else if (panel == "intelligence")
                         {
+                            // Opening the hidden chapter is an intent from this exact reader instance.
+                            if (cmd == "open_lee_story" && !HasExactActivePanelOwnerBinding(parsed, "intelligence"))
+                            { RespondPanelDomainError(parsed, "panel_instance_expired"); return; }
                             LogManager.Log("[Panel] Routing cmd=" + cmd + " to IntelligenceTask, _intelligenceTask=" + (_intelligenceTask != null ? "ok" : "NULL"));
                             if (_intelligenceTask != null) _intelligenceTask.HandleWebRequest(cmd, parsed);
                         }

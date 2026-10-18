@@ -27,6 +27,23 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
+        public void LeeStoryIntentForwardsOnlyTargetAndUsesAuthoritativeReply()
+        {
+            var sent=new List<string>();var posted=new List<string>();
+            using var task=new IntelligenceTask(_root,()=>true,sent.Add);
+            task.SetPostToWeb(posted.Add);
+            task.HandleWebRequest("open_lee_story",new JObject { ["callId"]="lee-1",["itemName"]="黑龙令",["pageKey"]="5",["decryptLevel"]=999,["unlocked"]=true });
+            var command=JObject.Parse(Assert.Single(sent).TrimEnd('\0'));
+            Assert.Equal("intelligenceLeeStory",command.Value<string>("action"));
+            Assert.Null(command["decryptLevel"]);Assert.Null(command["unlocked"]);
+            task.HandleFlashResponse(new JObject { ["task"]="intelligence_response",["callId"]=command["callId"],["success"]=false,["error"]="locked" },_=>{});
+            var reply=JObject.Parse(Assert.Single(posted));
+            Assert.False(reply.Value<bool>("success"));Assert.Equal("locked",reply.Value<string>("error"));
+            Assert.Equal("open_lee_story",reply.Value<string>("cmd"));
+            task.HandleWebRequest("open_lee_story",new JObject { ["callId"]="lee-2",["itemName"]="资料",["pageKey"]="5" });
+            Assert.Single(sent);Assert.Equal("invalid_payload",JObject.Parse(posted[1]).Value<string>("error"));
+        }
+        [Fact]
         public void CatalogAndSnapshot_ParseDictionaryTextAndUnlocks()
         {
             WriteDictionary(

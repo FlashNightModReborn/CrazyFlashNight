@@ -395,6 +395,62 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             for (k = 0; k < keys.length; k++) _root[keys[k]] = saved[keys[k]];
         }
     }
+    private static function testLeeEntry():Void {
+        var passive:Object=_root.主角被动技能, intel:Object=_root.收集品栏;
+        var definition:Object=org.flashNight.arki.scene.LeeTrialDefinition, ready:Function=definition.ready;
+        try {
+            setup();definition.ready=function():Boolean{return true;};
+            _root.主角被动技能={解密:{等级:4,启用:true}};
+            _root.收集品栏={情报:{toObject:function():Object{return {黑龙令:4};}}};
+            check(BookshelfPanelService.openLeeStory({itemName:"黑龙令",pageKey:"5"}).error=="locked"
+                && _root.__bookWire=="","below maximum decrypt cannot open the hidden entry");
+            _root.主角被动技能.解密.等级=5;
+            var token:String=open();
+            check(BookshelfPanelService.execute("commit",{v:1,token:token,kind:"play",target:"lee-trial",runSlot:"bookrun_gate_fixture"}).error=="locked"
+                && _root.__bookFades==0,"ordinary bookshelf token cannot bypass intelligence entry even at level five");
+            _root.__bookWire = "";
+            var entered:Object=BookshelfPanelService.openLeeStory({itemName:"黑龙令",pageKey:"5"});
+            token=entered.token;
+            check(_root.__bookWire == "" && _root.__bookFades == 0 && fake.replacements == 0,
+                "reading Lee entry does not open bookshelf, switch worlds or replace saves");
+            check(entered.success && BookshelfPanelService.execute("snapshot",{v:1,token:token}).leeEntry===true,
+                "collected final page and active maximum decrypt issue the exact chapter session");
+            _root.主角被动技能.解密.启用=false;
+            check(BookshelfPanelService.execute("commit",{v:1,token:token,kind:"play",target:"lee-trial",runSlot:"bookrun_gate_fixture"}).error=="locked"
+                && _root.__bookFades==0,"launch rechecks authoritative eligibility after opening");
+            _root.主角被动技能.解密.启用=true;
+            var started:Object=BookshelfPanelService.execute("commit",{v:1,token:token,kind:"play",target:"lee-trial",runSlot:"bookrun_gate_fixture"});
+            check(started.phase == "save_pending" && _root.__bookFades == 0, "direct entry waits for durable source save");
+            started=BookshelfPanelService.execute("query",{v:1,token:token});
+            check(started.phase == "switching" && _root.__bookFades == 1, "reader starts one direct challenge transition");
+            var retry:Object=BookshelfPanelService.openLeeStory({itemName:"黑龙令",pageKey:"5"});
+            check(retry.token == token && _root.__bookFades == 1, "reader retry recovers the accepted token without replay");
+            setup();
+            var interrupted:Object={slot:"bookrun_lee_leftover",originSlot:"book_fixture_a",seed:31,bookId:"lee-trial",outcome:"active",debug:true,
+                leeLoadout:["","basic","rush","strongRush","a1","a2","","hop","","","",""]};
+            _root._saveExt.bookshelf={active:interrupted};
+            open();
+            check(new LiteJSON().parse(_root.__bookWire).initData.view == undefined,
+                "opening room bookshelf on main character does not hijack view into lee-result");
+            entered=BookshelfPanelService.openLeeStory({itemName:"黑龙令",pageKey:"5"});
+            check(entered.success, "interrupted Lee run does not lock out intelligence Lee entry");
+            token=entered.token;
+            started=BookshelfPanelService.execute("commit",{v:1,token:token,kind:"settle",target:interrupted.slot,missingRun:true});
+            check(started.phase == "save_pending", "intelligence entry can settle its own interrupted Lee run");
+            started=BookshelfPanelService.execute("query",{v:1,token:token});
+            check(started.phase == "applied" && started.nextToken != "" && _root._saveExt.bookshelf.active == null,
+                "interrupted Lee run settles cleanly and issues successor token");
+            token=started.nextToken;
+            check(BookshelfPanelService.execute("snapshot",{v:1,token:token}).leeEntry === true,
+                "successor token after Lee settle retains Lee entry capability");
+            started=BookshelfPanelService.execute("commit",{v:1,token:token,kind:"play",target:"lee-trial",runSlot:"bookrun_after_settle"});
+            started=BookshelfPanelService.execute("query",{v:1,token:token});
+            check(started.phase == "switching" && _root.__bookFades == 1,
+                "settled Lee entry immediately chains into a new direct challenge");
+            setup(); _root._saveExt.bookRun={bookId:"lee-trial",outcome:"failure"}; open();
+            check(new LiteJSON().parse(_root.__bookWire).initData.view == "lee-result", "Lee return requests only the dedicated result view");
+        } finally { definition.ready=ready;_root.主角被动技能=passive;_root.收集品栏=intel; }
+    }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var result:Object;
@@ -416,6 +472,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
         };
         rewardClass.end = function() { org.flashNight.arki.ui.BookshelfPanelServiceTest.fixtureSave().pending = true; return {}; };
         try {
+            testLeeEntry();
             setup(); var token:String = open();
             check(BookshelfPanelService.execute("snapshot", {v:1,token:token}).unlocked, "metro completion unlocks playable book");
             check(BookshelfPanelService.execute("commit", {v:1,token:token,kind:"play",target:"repair-campus",runSlot:"bookrun_fixture",sp:900}).error == "invalid_payload", "extra reward write rejected");
@@ -521,6 +578,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
                 clears:9, lastReward:45, history:universityHistory};
             var trialResult:Object = PersistedSnapshot.clone(trialActive);
             trialResult.outcome = "victory"; trialResult.elapsedMs = 12000;
+            trialResult.leeLoadout=["","basic","rush","strongRush","a1","a2","","hop","","","",""];
             result = BookshelfPanelService.execute("commit", {v:1,token:token,kind:"settle",target:trialActive.slot,snapshot:{ext:{bookRun:trialResult}}});
             check(result.phase == "save_pending" && _root.技能点数 == 100 && _root.__bookEffects.length == 0,
                 "Lee trial uses the durable receipt transaction without an SP asset effect");
@@ -530,6 +588,7 @@ class org.flashNight.arki.ui.BookshelfPanelServiceTest {
             check(result.phase == "applied" && result.lastTrialRecord.bookId == "lee-trial"
                     && result.lastTrialRecord.sp == 0 && result.lastTrialRecord.debug === true,
                 "trial result keeps its book identity and zero-reward receipt");
+            check(_root._saveExt.bookshelf.leeLoadout[7]=="hop" && _root._saveExt.bookshelf.leeLoadout!==trialResult.leeLoadout,"confirmed result persists a copied Lee preference for future runs");
             check(result.records.bestMs == 500000 && result.records.clears == 9
                     && result.records.history.length == 1 && result.records.history[0].runId == "campus_kept"
                     && result.lastReward == 45,

@@ -114,13 +114,13 @@ try {
     }
     $counts=switch ($Suite) {
         'camera' { @{CameraLifecycleTest=166} }
-        'scene-transition' { @{SceneTransitionServiceTest=103} }
+        'scene-transition' { @{SceneTransitionServiceTest=107} }
         'stage-return' { @{StageReturnFlowTest=119} }
         'arena-worker-protocol' { @{ArenaWorkerProtocolTest=52} }
         'map-loot' { @{LootContainerServiceTest=198;LootMaterializationPlannerTest=12;StageRunSessionTest=920} }
         'lee-trial' { @{LeeAssaultRulesTest=39;LeeTrialTelemetryTest=5;SceneTransitionGuardHandoffTest=20} }
         'warlord-action-encounter' { @{ActionEncounterRunnerTest=97} }
-        'bookshelf' { @{BookRunRulesTest=59;BookshelfPanelServiceTest=93;BookIterationTest=22;BookComicServiceTest=34} }
+        'bookshelf' { @{BookRunRulesTest=59;BookshelfPanelServiceTest=109;BookIterationTest=22;BookComicServiceTest=40} }
     }
     foreach ($test in $counts.Keys) {
         if ([regex]::Matches($trace,('(?m)^'+$test+' Tests Passed: '+$counts[$test]+'\r?$')).Count -ne 1) { throw ('Native suite assertion count differs: '+$test) }

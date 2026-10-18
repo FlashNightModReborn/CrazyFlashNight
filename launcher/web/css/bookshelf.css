@@ -166,3 +166,15 @@
 .bookshelf-panel .v4-layout-label{position:absolute;bottom:8px;left:12px;color:#b1c0ce;font-size:12px;pointer-events:none}
 .bookshelf-panel .v4-archive-detail{white-space:pre-line;line-height:1.7;margin-top:8px;overflow-wrap:anywhere}
 .bookshelf-panel .v4-archive-detail button{display:block;margin:5px 0;width:100%;text-align:left}
+
+/* Lee keeps the shared return handshake but presents only this challenge. */
+.bookshelf-panel.lee-result-panel { background:radial-gradient(ellipse at 76% 45%, #30291c, #121518 67%); }
+.lee-result-panel .bookshelf-body { grid-template-columns:minmax(0,1fr); }
+.lee-result-panel #bookshelf-directory, .lee-result-panel #bookshelf-toggle-nav { display:none; }
+.lee-result-panel #bookshelf-detail { position:relative; max-width:850px; margin:24px auto; padding:26px 42px; border-left:3px solid #ac8540; }
+.lee-result-panel .lee-result-kicker { color:#b69b63; letter-spacing:5px; font-size:13px; margin:0 0 12px; }
+.lee-result-panel .lee-result-outcome { font-size:32px; letter-spacing:2px; margin:0 0 20px; }
+.lee-result-panel .lee-result-description { font-size:20px; line-height:1.7; }
+.lee-result-panel .lee-result-time { margin:22px 0; color:#ecd6a9; font-size:20px; font-variant-numeric:tabular-nums; }
+.lee-result-panel .lee-result-save { color:#b8b3a8; line-height:1.7; max-width:630px; }
+.lee-result-panel .lee-result-seal { position:absolute; right:0; top:12px; border:3px solid #ad775040; color:#b5884c48; font-size:48px; padding:12px; transform:rotate(-8deg); pointer-events:none; }

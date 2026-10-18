@@ -216,11 +216,11 @@ class org.flashNight.arki.camera.CameraLifecycleTest {
             detachShared();cycles++;
             if (cycles<10) {beginShared();return;}
             check(SharedScenePlacement.retireIdle(_root),"forward navigation explicitly retires idle anchor");
-            phase=1;waitFrames=0;_root.gotoAndStop(13);return;
+            phase=1;waitFrames=0;_root.gotoAndPlay(2);return;
         }
         if (phase===1) {
-            if (waitFrames<3) return;
-            check(_root._currentframe===13 && _root.gameworld层级定位器._parent===_root,"forward frame establishes new authored anchor");
+            if (waitFrames<14) return;
+            check(_root._currentframe===13 && _root.gameworld层级定位器._parent===_root,"forward play traverses loading frames and establishes new authored anchor");
             lowDepth=_root.gameworld层级定位器.getDepth();beginShared();phase=2;return;
         }
         if (phase===2) {

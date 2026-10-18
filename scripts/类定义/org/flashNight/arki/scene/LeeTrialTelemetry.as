@@ -2,7 +2,7 @@
 import org.flashNight.arki.scene.StageManager;
 import org.flashNight.arki.scene.StageReturnFlow;
 
-/** 只观察本轮原生战斗；无存档、回血、冷却、输入或奖励写入。 */
+/** 只观察本轮原生战斗；仅供主动读取，不向玩家发布调试文字，也不写存档或战斗状态。 */
 class org.flashNight.arki.scene.LeeTrialTelemetry {
     private static var _record:Object;
     private static var _owner:Object;
@@ -88,13 +88,7 @@ class org.flashNight.arki.scene.LeeTrialTelemetry {
             _room.cleared = true;
             _room.clearHp = _room.endHp;
             _room.clearMs = _room.elapsedMs;
-            announce(_room);
         }
-    }
-    private static function announce(room:Object):Void {
-        _root.发布消息("资源基线 " + (room.index + 1) + "/4：HP " + Math.round(room.entryHp)
-            + " → " + Math.round(room.endHp) + "，最低 " + Math.round(room.minHp)
-            + "，" + (Math.round(room.elapsedMs / 100) / 10) + "秒");
     }
     private static function closeRoom(outcome:String):Void {
         if (_room != null && _room.outcome === "active") _room.outcome = outcome;
@@ -105,7 +99,6 @@ class org.flashNight.arki.scene.LeeTrialTelemetry {
         closeRoom(outcome);
         if (_room != null) {
             if (outcome === "victory") { _room.cleared = true; _room.clearHp = _room.endHp; _room.clearMs = _room.elapsedMs; }
-            announce(_room);
         }
         _record.outcome = outcome;
         _record.elapsedMs = BookRunClock.elapsed(_root._saveExt.bookRun);

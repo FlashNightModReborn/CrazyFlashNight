@@ -340,6 +340,28 @@ class org.flashNight.arki.ui.SceneTransitionService {
         }
         // Unknown delivery / denied authority stays locked; no timer replays navigation.
     }
+    /** 只观察加载停滞；绝不越过清场/持久写屏障，也不自动重放跳图。 */
+    private static function watchLoading(s:Object, now:Number):Void {
+        if(s.phase!="loading") return;
+        var frame:Number=s.fade._currentframe;
+        var world:Object=_root.gameworld.__stageReturnWorldIdentity;
+        if(s.waitFrame!==frame || s.waitRootFrame!==_root._currentframe || s.waitWorld!==world
+                || s.waitReady!==s.worldReady || s.waitAt==undefined || now<s.waitAt) {
+            s.waitFrame=frame; s.waitRootFrame=_root._currentframe; s.waitWorld=world;
+            s.waitReady=s.worldReady; s.waitAt=now; s.waitReported=false;
+        }
+        if(now-s.waitAt<30000 || s.waitReported===true) return;
+        s.waitReported=true;
+        var message:String="[SceneTransition] loading_stalled request="+s.requestId
+            +" fade="+frame+" root="+_root._currentframe+" target="+s.fade.跳转帧
+            +" world="+_root.gameworld.场景名+" ready="+s.worldReady
+            +" placement="+org.flashNight.arki.scene.SharedScenePlacement.diagnostics().state;
+        trace(message);
+        if(typeof _root.server.sendServerMessage=="function") _root.server.sendServerMessage(message);
+        // 第30帧已经经过清场和初始化收尾；只进入原有失败页，由玩家选择重试/返回。
+        // 第6帧的交易等待仍保留原锁，不能用超时替代未知写结果。
+        if(frame==30) s.fade.gotoAndStop(37);
+    }
     public static function tick():Void {
         advanceBackgroundFrame();
         var s:Object = _session;
@@ -369,6 +391,7 @@ class org.flashNight.arki.ui.SceneTransitionService {
         }
         requestReveal();
         var now:Number = getTimer();
+        watchLoading(s,now);
         if (now < s.lastSend || now-s.lastSend >= 500) publish();
     }
     private static function send(payload:Object):Boolean {

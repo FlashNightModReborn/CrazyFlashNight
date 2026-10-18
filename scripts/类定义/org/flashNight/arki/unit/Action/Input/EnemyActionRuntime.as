@@ -38,7 +38,9 @@ class org.flashNight.arki.unit.Action.Input.EnemyActionRuntime {
 
     public static function installLee(unit:Object):Boolean {
         if (unit.__enemyActionRuntime.enabled === true) return true;
-        return install(unit, LeeActionProfile.create(unit.__enemyActionPlayer === true));
+        var installed:Boolean = install(unit, LeeActionProfile.create(unit.__enemyActionPlayer === true));
+        if (installed) org.flashNight.arki.skill.LeeSkillLoadout.bind(unit);
+        return installed;
     }
 
     public static function install(unit:Object, profile:Object):Boolean {
@@ -282,7 +284,7 @@ class org.flashNight.arki.unit.Action.Input.EnemyActionRuntime {
             keys.push(key);
             signature += ";" + key;
         }
-        signature += ";" + String(unit.宠物属性.冲腿龙息 === true);
+        signature += ";" + String(unit.宠物属性.冲腿龙息 === true) + ";" + runtime.profile.quickSlots.join("|");
         if (runtime.hud != null && runtime.hudSignature === signature) return runtime.hud;
         var slots:Array = [];
         for (i = 0; i < 12; i++) {

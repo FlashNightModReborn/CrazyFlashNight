@@ -82,6 +82,31 @@ namespace Launcher.Tests.Tasks
             => Assert.Equal(valid, BookshelfTask.IsPermanentSlot(slot));
 
         [Fact]
+        public void LeeUnknownWriteSurvivesReaderCloseAndRecoversWithoutReplaying()
+        {
+            var sent=new List<JObject>(); var posted=new List<JObject>(); var replies=new List<JObject>();
+            using var task=Create(sent,posted);
+            JObject Lee(string cmd,string call) { var p=Request(cmd,call,kind:"play",target:"lee-trial"); p["panel"]="intelligence"; return p; }
+            Action<string> sink=text=>replies.Add(Read(text));
+            task.HandleLeeWebRequest("commit",Lee("commit","lee.1"),sink);
+            task.HandleFlashResponse(new JObject { ["callId"]=sent[0]["callId"], ["success"]=true },null);
+            Assert.True(replies[0].Value<bool>("requiresReconcile"));
+            task.ClearPending();
+            task.HandleLeeWebRequest("commit",Lee("commit","lee.2"),sink);
+            Assert.Single(sent); Assert.True(replies[1].Value<bool>("requiresReconcile"));
+            task.HandleLeeWebRequest("query",Lee("query","lee.3"),sink);
+            Assert.Equal(2,sent.Count); Assert.Equal("bookshelfQuery",sent[1].Value<string>("action"));
+            Assert.Equal("play",sent[1].Value<string>("reconcileKind"));
+            task.HandleFlashResponse(Response(sent[1],"expired",kind:"play",target:"lee-trial"),null);
+            Assert.False(replies[2].Value<bool>("requiresReconcile")); Assert.Empty(posted);
+        }
+        [Fact]
+        public void LeeResultViewIsAnExactPresentationVariant()
+        {
+            Assert.Equal("lee-result", BookshelfTask.BuildOpenData("world_bookshelf", "{\"token\":\"bookshelf.test.1\",\"view\":\"lee-result\"}").Value<string>("view"));
+            Assert.Null(BookshelfTask.BuildOpenData("world_bookshelf", "{\"token\":\"bookshelf.test.1\",\"view\":\"foreign\"}"));
+        }
+        [Fact]
         public void OpenRequiresExactWorldSession()
         {
             Assert.NotNull(BookshelfTask.BuildOpenData("world_bookshelf", "{\"token\":\"bookshelf.test.1\"}"));

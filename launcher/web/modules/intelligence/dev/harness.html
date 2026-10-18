@@ -207,6 +207,9 @@ window.Icons = {
 };
 </script>
 <script src="../../intelligence-components.js"></script>
+<script src="../../panel-runtime.js"></script>
+<script src="../../bookshelf-runtime.js"></script>
+<script src="../../lee-story-entry.js"></script>
 <script src="../../intelligence-panel.js"></script>
 <script src="./qa-suite.js"></script>
 <script>
@@ -253,6 +256,13 @@ window.Icons = {
                 shell.style.transform = scale < 1 ? 'scale(' + scale + ')' : '';
             }
             viewportSelect.value = width + 'x' + height;
+        },
+        setLeeEntryFixture: function(level, value) {
+            if (level == null) { delete fixtures['黑龙令']; delete runtimeValues['黑龙令']; runtimeDecryptLevel=10; return; }
+            fixtures['黑龙令']={name:'黑龙令',displayName:'黑龙令',index:201,maxValue:4,skin:'edict',
+                pages:[{pageKey:'5',value:4,encryptLevel:5,text:'内库密押。',blocks:[{type:'paragraph',content:[{type:'text',text:'内库密押。'}]}]}],
+                encryptRules:{replace:{},cut:{}}};
+            runtimeValues['黑龙令']=value;runtimeDecryptLevel=level;
         },
         open: function(options) {
             options = options || {};

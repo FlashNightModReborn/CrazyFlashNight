@@ -26,6 +26,39 @@ namespace CF7Launcher.Tasks
         private readonly object _gate = new object();
         private readonly PanelPendingCallTracker<Request> _pending;
         private Action<string> _post;
+        // Only the exact intelligence endpoint may use this narrow play adapter.
+        // Freeze its response lease at dispatch; a later reader cannot receive old writes.
+        private readonly Dictionary<string, Action<string>> _leeReplies = new();
+        internal void HandleLeeWebRequest(string cmd, JObject parsed, Action<string> reply)
+        {
+            lock (_gate)
+            {
+                string call = Text(parsed?["callId"]);
+                if (call == null || !Id.IsMatch(call) || _pending.IsKnownWebCallId(call)) return;
+                _leeReplies[call] = reply;
+                if (!IsLeeEnvelope(parsed) || cmd != Text(parsed["cmd"]))
+                { RejectAndRemember(call, cmd, Text(parsed?["panelInstanceId"]), "invalid_payload"); return; }
+                var canonical = (JObject)parsed.DeepClone(); canonical["panel"] = "bookshelf";
+                HandleWebRequest(cmd, canonical);
+                if (!_pending.IsKnownWebCallId(call)) _leeReplies.Remove(call);
+            }
+        }
+        internal static bool IsLeeEnvelope(JObject p)
+        {
+            if (!Exact(p, "type", "panel", "domain", "cmd", "callId", "panelInstanceId", "payload")
+                || Text(p["type"]) != "panel" || Text(p["panel"]) != "intelligence" || Text(p["domain"]) != "bookshelf"
+                || Text(p["panelInstanceId"]) is not string instance || !Id.IsMatch(instance)
+                || Text(p["callId"]) is not string call || !Id.IsMatch(call)) return false;
+            string cmd = Text(p["cmd"]); var payload = p["payload"] as JObject;
+            string kind = Text(payload?["kind"]), target = Text(payload?["target"]);
+            return (cmd == "snapshot" || cmd == "query" || cmd == "commit")
+                && Exact(payload, cmd == "commit" ? new[] {"v", "token", "kind", "target"} : new[] {"v", "token"})
+                && payload["v"]?.Type == JTokenType.Integer && payload.Value<int>("v") == 1 && Token(payload["token"])
+                && (cmd != "commit"
+                    || (kind == "play" && target == "lee-trial")
+                    || (kind == "settle" && SaveSlotKey.IsValidExisting(target)
+                        && target.StartsWith("bookrun_", StringComparison.Ordinal)));
+        }
         private Action<Action> _invoke;
         private Action<string> _permanentSlotApplied;
         private Action<string, JObject> _returnPresentation;
@@ -91,15 +124,18 @@ namespace CF7Launcher.Tasks
             lock (_gate) return !_disposed && !_writePending && _unresolved == null && _pending.IsReady()
                 && _originalInstance == instance && _originalToken == token && instance != null && token != null;
         }
-        public void ClearPending() { lock (_gate) { RevokeOriginal(); _pending.Clear(); } }
-        public void Dispose() { lock (_gate) { _disposed = true; RevokeOriginal(); _pending.Dispose(); } }
+        public void ClearPending() { lock (_gate) { RevokeOriginal(); _pending.Clear(); _leeReplies.Clear(); } }
+        public void Dispose() { lock (_gate) { _disposed = true; RevokeOriginal(); _pending.Dispose(); _leeReplies.Clear(); } }
         internal static JObject BuildOpenData(string source, string extras)
         {
             if (source != "world_bookshelf") return null;
             JObject data;
             try { data = JObject.Parse(extras ?? ""); } catch (JsonException) { return null; }
-            if (!Exact(data, "token") || !Token(data["token"])) return null;
-            return new JObject { ["source"] = source, ["token"] = data["token"] };
+            bool lee = Exact(data, "token", "view") && Text(data["view"]) == "lee-result";
+            if ((!Exact(data, "token") && !lee) || !Token(data["token"])) return null;
+            var result = new JObject { ["source"] = source, ["token"] = data["token"] };
+            if (lee) result["view"] = "lee-result";
+            return result;
         }
         internal static bool IsPermanentSlot(string slot) => SaveSlotKey.IsValidExisting(slot)
             && !slot.StartsWith("bookrun_", StringComparison.OrdinalIgnoreCase);
@@ -357,8 +393,11 @@ namespace CF7Launcher.Tasks
             result["type"] = "panel_resp"; result["panel"] = result["domain"] = "bookshelf";
             result["callId"] = call; result["cmd"] = cmd; result["panelInstanceId"] = instance;
             result["requiresReconcile"] = _unresolved != null; result["recoveryToken"] = _unresolved;
+            Action<string> sink = _post;
+            if (_leeReplies.TryGetValue(call, out var leeSink))
+            { _leeReplies.Remove(call); result["panel"] = "intelligence"; sink = leeSink; }
             string text = result.ToString(Formatting.None);
-            Action send = () => { if (!_disposed) _post?.Invoke(text); };
+            Action send = () => { if (!_disposed) sink?.Invoke(text); };
             if (_invoke == null) send(); else _invoke(send);
         }
         private static string Text(JToken value) => value?.Type == JTokenType.String ? value.Value<string>() : null;

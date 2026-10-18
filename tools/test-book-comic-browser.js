@@ -103,9 +103,10 @@ async function checkEveryLine(page, pageId, viewport) {
     });
     const label = `${pageId} line ${index + 1} at ${viewport}`;
     assert.equal(current.text, lines[index].text, label + ' actual playback line');
-    assert.equal(current.hidden, false, label + ' visible');
+    assert.equal(current.hidden, lines[index].text === '', label + ' spoken or silent beat visibility');
     assert(current.scrollHeight <= current.height, label + ' vertical overflow');
     assert(current.scrollWidth <= current.width, label + ' horizontal overflow');
+    if (pageId.startsWith('lee-')) await page.screenshot({path:path.join(output, `${pageId}-beat-${index + 1}-${viewport}.png`)});
     if (index + 1 < lines.length) await page.locator('[data-comic=next]').click();
   }
   return lines.length;
@@ -121,13 +122,15 @@ async function checkLayout(page) {
     return {
       shell:bounds('.book-comic-shell'), art:bounds('canvas'),
       subtitle:bounds('.book-comic-subtitle'), footer:bounds('footer'),
+      subtitleHidden:select('.book-comic-subtitle').hidden,
       font:getComputedStyle(select('.book-comic-subtitle p')).fontSize,
       toolbarOverflow:select('footer').scrollWidth > select('footer').clientWidth
     };
   });
   assert.equal(metrics.font, '21px');
   assert(Math.abs(metrics.shell.w / metrics.shell.h - 1024 / 576) < .002);
-  assert(metrics.subtitle.y >= metrics.art.y + metrics.art.h - .1);
+  if (!metrics.subtitleHidden) assert(metrics.subtitle.y >= metrics.art.y + metrics.art.h - .1);
+  assert(metrics.footer.y >= metrics.art.y + metrics.art.h - .1);
   assert(metrics.footer.y >= metrics.subtitle.y + metrics.subtitle.h - .1);
   assert(!metrics.toolbarOverflow);
   assert(metrics.shell.x >= -.1 && metrics.shell.y >= -.1);
@@ -147,6 +150,8 @@ async function checkReadingScrollbars(page, pageId, viewport) {
     assert.equal(style.tabIndex, 0);
   }
   const transcript = page.locator('[data-comic=transcript]');
+  const transcriptScrollable = await transcript.evaluate(element => element.scrollHeight > element.clientHeight);
+  if (transcriptScrollable) {
   await transcript.hover();
   await page.mouse.wheel(0, 240);
   await page.waitForFunction(() => document.querySelector('[data-comic=transcript]').scrollTop > 0);
@@ -154,8 +159,9 @@ async function checkReadingScrollbars(page, pageId, viewport) {
   await page.keyboard.press('End');
   await page.waitForFunction(() => {
     const element = document.querySelector('[data-comic=transcript]');
-    return element.scrollTop > 240;
+    return element.scrollTop >= element.scrollHeight - element.clientHeight - 2;
   });
+  }
   const paper = page.locator('[data-comic=paper]');
   await paper.hover();
   await page.keyboard.down('Control');
@@ -275,8 +281,8 @@ async function main() {
       const viewport = `${width}x${height}`;
       await page.setViewportSize({width, height});
       await page.goto(`http://127.0.0.1:${server.address().port}/fixture`);
-      for (const pageId of ['prologue', 'boss']) {
-        if (pageId === 'boss') await page.evaluate(id => openComic(id), pageId);
+      for (const pageId of ['prologue', 'boss', 'lee-ambush', 'lee-breakout', 'lee-ending-normal', 'lee-ending-hidden']) {
+        if (pageId !== 'prologue') await page.evaluate(id => openComic(id), pageId);
         await pauseAfterPrepare(page);
         await checkLayout(page);
         checkedLines += await checkEveryLine(page, pageId, viewport);
@@ -287,7 +293,7 @@ async function main() {
     await checkBeatCamera(page, '1024x576');
     await checkReducedMotion(browser, '1024x576');
     assert.deepEqual(errors, []);
-    console.log(`PASS: ${checkedLines} real playback subtitle checks; both pages, 4 fixed-ratio viewports, CSS, themed scrollbars, wheel/keyboard scrolling, zoom, reading and keyboard; beat camera motion, panel transition frame, reduced-motion freeze. Screenshots: ${output}`);
+    console.log(`PASS: ${checkedLines} real playback subtitle checks; all 6 pages, 4 fixed-ratio viewports, CSS, themed scrollbars, wheel/keyboard scrolling, zoom, reading and keyboard; beat camera motion, panel transition frame, reduced-motion freeze. Screenshots: ${output}`);
   } finally {
     await browser.close();
     server.close();

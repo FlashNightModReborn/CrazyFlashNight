@@ -1,57 +1,42 @@
 {
-  "schema": "lee-assault-comic-art.v1",
+  "schema": "lee-assault-comic-art.v2",
   "generator": "tools/build-lee-assault-art.js",
-  "nativeVectors": true,
-  "sources": [
-    {
-      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_3_BG.swf",
-      "sha256": "059df1c13c45d941e83c9cecb698e4f479f111bd2d3c513514b85cf540838388"
-    },
-    {
-      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_2_BG.swf",
-      "sha256": "80efba5c45386c3371b92f9dc08552b079a20fc5b76ce7a1fb74d4b5e2c62fe3"
-    },
-    {
-      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_4_BG.swf",
-      "sha256": "01facfb4b76a9938258028f24bde92d34caaf3d5a736cfc01ff2b46d3fb01def"
-    },
-    {
-      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_5_BG.swf",
-      "sha256": "ea0aac10702c632e157f242fc876751313d560dda2fd4ce7e4fa3dbad33e96be"
-    },
-    {
-      "file": "flashswf/backgrounds/hthhltnb_5_BG.swf",
-      "sha256": "9e91de9d87d04baa0070a7f1bb056d7295115a8ab0cbd034bb0f09fd423d8d2e"
-    },
-    {
-      "file": "flashswf/arts/things4.swf",
-      "sha256": "49b73781cc8ec9aac0fa0d1bde904c3536c25d716e30509cc604baaede4ac5b6"
-    },
-    {
-      "file": "flashswf/arts/things5.swf",
-      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
-    }
-  ],
+  "nativeVectors": false,
+  "source": "data/books/lee-assault-art-source.json",
+  "sourceSha256": "ce5325e9cdb5b3bcc0b94909dbf93190cf9cf010590dc321e3ae36b9433aadb1",
+  "totalImageBytes": 11439934,
   "files": [
     {
-      "file": "ambush.svg",
-      "sha256": "5fee7d2303f49004e71d93e961d27ce394c83f66408bd6807c901527322e8a36",
-      "bytes": 1957885
+      "pageId": "lee-ambush",
+      "file": "lee-early-awakening-v1.png",
+      "bytes": 2844518,
+      "sha256": "46f901daddf5adc2a1aef41f2ddb523a3216f2a77aca5131fb5915d0d4a99b41",
+      "width": 1024,
+      "height": 1536
     },
     {
-      "file": "captured.svg",
-      "sha256": "89beed95429c1f6bdd9e9efad10d3671bce90e60b1940bea3b4025887e773ca1",
-      "bytes": 1172047
+      "pageId": "lee-breakout",
+      "file": "lee-late-awakening-v1.png",
+      "bytes": 3007606,
+      "sha256": "b2c9af43a65558fa9d52c1fdb3b7d5b682d9b2100423c54b05152a0e9723564d",
+      "width": 1024,
+      "height": 1536
     },
     {
-      "file": "breakout.svg",
-      "sha256": "4ea26b6fb63d5a6b5a3b0461ce6bdaa0519120fbb635c07ff1c02037b1664a05",
-      "bytes": 1354719
+      "pageId": "lee-ending-normal",
+      "file": "lee-historical-ending-v1.png",
+      "bytes": 2865009,
+      "sha256": "123c44c75c67226c0b7781c999930065c8d6865c500543d8fdfe9944df1c1ef9",
+      "width": 1024,
+      "height": 1536
     },
     {
-      "file": "victory.svg",
-      "sha256": "daec1c6548a1536af98ed97701d4b1b284f8047990cd092440233fc3192a2cb2",
-      "bytes": 1541464
+      "pageId": "lee-ending-hidden",
+      "file": "lee-hidden-victory-v1.png",
+      "bytes": 2722801,
+      "sha256": "413ca55fbc9fcea4fd781621427dd1372cb1eb6ac19ec8e4a0b0577721359ea8",
+      "width": 1024,
+      "height": 1536
     }
   ]
 }

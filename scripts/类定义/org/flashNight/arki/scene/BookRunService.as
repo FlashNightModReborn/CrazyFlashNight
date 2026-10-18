@@ -118,7 +118,7 @@ class org.flashNight.arki.scene.BookRunService {
         if (token == "") { startFailed(_startError); return; }
         if (_root.淡出动画.淡出跳转帧("wuxianguotu_1") !== true) {
             StageManager.getInstance().abortPreparedStage(token); StageRunSession.cancelStageStart(token);
-            startFailed("过场尚未就绪，请返回书架。");
+            startFailed(_root._saveExt.bookRun.bookId === "lee-trial" ? "过场尚未就绪，请返回原角色后重试。" : "过场尚未就绪，请返回书架。");
         }
         _startSlot = "";
     }
@@ -128,20 +128,20 @@ class org.flashNight.arki.scene.BookRunService {
     }
     private static function prepareStage(coveredEntry:Boolean):String {
         var run:Object = _root._saveExt.bookRun;
-        _startError = "书中关卡未能准备，请返回书架。";
+        var trial:Boolean = run.bookId === "lee-trial";
+        _startError = trial ? "挑战关卡未能准备，请返回原角色。" : "书中关卡未能准备，请返回书架。";
         if (run == null || run.outcome != "active") return "";
         var startMap:Number = 0;
         var planSeed:Number = run.seed;
         if (_debug != null) { planSeed = _debug.seed; run.planSeed = planSeed; startMap = _debug.startMap; run.debug = true; _debug = null; }
         // 原档的进入凭据中的 seed 保持不变；调试随机种子单独存放。
-        var trial:Boolean = run.bookId === "lee-trial";
         var stages:Array = trial ? org.flashNight.arki.scene.LeeTrialDefinition.stages() : BookRunRules.stages(planSeed, startMap);
         if (stages.length == 0) return "";
         _bossPlan = stages[stages.length - 1].BasicInformation.BookBoss;
         for (var i:Number = 0; i < stages.length; i++) {
             var env:Object = WeatherSystem.getInstance().getEnvConfig().getStageEnv(String(String(stages[i].BasicInformation.Background).split("/").pop()));
             // 环境名称解析与 StageManager 一致；运行前检查，避免默默生成原点商人。
-            if (env == null) { _startError = "书中地图环境未就绪，请返回书架。"; return ""; }
+            if (env == null) { _startError = trial ? "挑战地图环境未就绪，请返回原角色。" : "书中地图环境未就绪，请返回书架。"; return ""; }
             if (!trial) {
                 stages[i].Instances.Instance[0].x = Number(env.Xmin) + 180;
                 stages[i].Instances.Instance[0].y = Number(env.Ymin) + 75;
@@ -164,7 +164,7 @@ class org.flashNight.arki.scene.BookRunService {
         _root.限制系统.openEntries(["DisableCompanion"]);
         if (trial && !org.flashNight.arki.scene.LeeAssaultService.prepare(run)) {
             manager.abortPreparedStage(token); StageRunSession.cancelStageStart(token);
-            _startError = "本章复活币未能准备，请返回书架。"; return "";
+            _startError = "本章复活币未能准备，请返回原角色。"; return "";
         }
         run.startedAt = new Date().getTime();
         run.started = true;
@@ -172,7 +172,7 @@ class org.flashNight.arki.scene.BookRunService {
         if (!SaveManager.getInstance().flushBeforeTransition("bookshelf.switch")) {
             manager.abortPreparedStage(token); StageRunSession.cancelStageStart(token);
             run.started = false;
-            _startError = "书中角色尚未保存，请返回书架核对。"; return "";
+            _startError = trial ? "挑战角色尚未保存，请返回原角色核对。" : "书中角色尚未保存，请返回书架核对。"; return "";
         }
         return token;
     }
@@ -256,7 +256,8 @@ class org.flashNight.arki.scene.BookRunService {
         StageRunSession.completeReturnAttempt();
         if (!org.flashNight.arki.ui.BookshelfPanelService.openPanel()) {
             StageRunSession.failReturnAttempt("return_base_failed");
-            _root.发布消息("返回书架未能打开，请再次选择结束旅程。");
+            _root.发布消息(_root._saveExt.bookRun.bookId === "lee-trial"
+                ? "返回结算界面未能打开，请再次选择结束挑战。" : "返回书架未能打开，请再次选择结束旅程。");
         }
     }
     /** 只有当前槽位的书中关卡走房间；普通角色的医务室及任务返回规则保持原样。 */

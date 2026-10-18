@@ -4,47 +4,68 @@
     {
       "id": "lee-ambush",
       "title": "Lee · 攻入黑龙堂",
-      "note": "背后的马蹄",
-      "image": "assets/book-comic/lee/ambush.svg",
+      "note": "提前觉醒 · 截住偷袭",
+      "image": "assets/book-comic/lee/lee-early-awakening-v1.png",
       "continueLabel": "继续",
       "autoContinue": false,
       "panels": [
         {
-          "id": "p0",
-          "label": "背后的马蹄",
+          "id": "E1",
+          "label": "先闻马蹄",
           "rect": [
-            0,
-            0.0,
-            1,
-            0.25
+            0.007812,
+            0.003906,
+            0.984375,
+            0.186849
           ],
-          "duration": 3,
+          "duration": 2.8,
           "transition": {
-            "type": "cut",
-            "durationMs": 0
+            "type": "smooth",
+            "durationMs": 260
           },
           "lines": [
             {
               "speaker": "旁白",
-              "text": "总闸熄灭。Lee刚刚收住拳势，身后响起急促的马蹄。",
+              "text": "雷劲早已融进四肢，门后压抑的马蹄与鼻息一清二楚。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.14,
+                "anchor": [
+                  0.38,
+                  0.48
+                ],
+                "panTo": [
+                  0.54,
+                  0.46
+                ],
+                "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "躲在门后等我力竭？黑龙，你算错了。",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.18,
+                "anchor": [
+                  0.46,
+                  0.44
+                ],
+                "easing": "ease-out"
               }
             }
           ]
         },
         {
-          "id": "p1",
-          "label": "背后的马蹄",
+          "id": "E2",
+          "label": "错步避剑",
           "rect": [
-            0,
-            0.25,
-            1,
-            0.25
+            0.007812,
+            0.197917,
+            0.984375,
+            0.213542
           ],
-          "duration": 3,
+          "duration": 2.6,
           "transition": {
             "type": "cut",
             "durationMs": 0
@@ -52,63 +73,123 @@
           "lines": [
             {
               "speaker": "黑龙",
-              "text": "皮肉恢复得倒快。可惜，你已经没力气了。",
+              "text": "叛逃的克隆人，给我躺下！",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.16,
+                "anchor": [
+                  0.36,
+                  0.48
+                ],
+                "panTo": [
+                  0.64,
+                  0.5
+                ],
+                "shake": 0.12,
+                "easing": "ease-out"
+              }
+            },
+            {
+              "speaker": "旁白",
+              "text": "重剑擦肩劈空，Lee 顺势错步，瞬间切入马腹内侧。",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.18,
+                "anchor": [
+                  0.68,
+                  0.48
+                ],
+                "easing": "ease-out"
               }
             }
           ]
         },
         {
-          "id": "p2",
-          "label": "背后的马蹄",
+          "id": "E3",
+          "label": "飞身侧踹",
           "rect": [
-            0,
-            0.5,
-            1,
-            0.25
+            0.007812,
+            0.417969,
+            0.984375,
+            0.305339
           ],
-          "duration": 3,
+          "duration": 3.0,
           "transition": {
             "type": "cut",
             "durationMs": 0
           },
           "lines": [
             {
-              "speaker": "旁白",
-              "text": "全身铠甲隔绝电击。黑龙踏过烧毁的机关，从背后撞倒了Lee。",
+              "speaker": "Lee",
+              "text": "这一脚，连本带利还给你——下来！",
               "camera": {
-                "motion": "push",
-                "intensity": 0.25,
+                "motion": "shake",
+                "intensity": 0.28,
+                "anchor": [
+                  0.52,
+                  0.48
+                ],
+                "shake": 0.25
+              }
+            },
+            {
+              "speaker": "旁白",
+              "text": "一记侧踹正中胸甲，将黑龙从马背上硬生生震飞出去！",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.14,
+                "anchor": [
+                  0.46,
+                  0.48
+                ],
                 "easing": "smoothstep"
               }
             }
           ]
         },
         {
-          "id": "p3",
-          "label": "背后的马蹄",
+          "id": "E4",
+          "label": "内堂对峙",
           "rect": [
-            0,
-            0.75,
-            1,
-            0.25
+            0.007812,
+            0.730469,
+            0.984375,
+            0.265625
           ],
-          "duration": 3,
+          "duration": 3.2,
           "transition": {
-            "type": "cut",
-            "durationMs": 0
+            "type": "smooth",
+            "durationMs": 320
           },
           "lines": [
             {
-              "speaker": "旁白",
-              "text": "黑铁会将他拖进内堂，铁箍把双臂锁在墙上。",
+              "speaker": "黑龙",
+              "text": "好硬的腿功……内堂的人听令，随我一起碾碎他！",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.14,
+                "anchor": [
+                  0.66,
+                  0.48
+                ],
+                "panTo": [
+                  0.38,
+                  0.5
+                ],
+                "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "翻身回马倒是挺快。来吧，内堂见真章。",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.16,
+                "anchor": [
+                  0.32,
+                  0.5
+                ],
+                "easing": "ease-out"
               }
             }
           ]
@@ -118,73 +199,68 @@
     {
       "id": "lee-breakout",
       "title": "Lee · 攻入黑龙堂",
-      "note": "挣脱",
-      "image": "assets/book-comic/lee/breakout.svg",
+      "note": "第三图觉醒 · 挣脱束缚",
+      "image": "assets/book-comic/lee/lee-late-awakening-v1.png",
       "continueLabel": "继续",
       "autoContinue": false,
       "panels": [
         {
-          "id": "p0",
-          "label": "挣脱",
+          "id": "L1",
+          "label": "气血初定",
           "rect": [
-            0,
-            0.0,
-            1,
-            0.25
+            0.007812,
+            0.003906,
+            0.984375,
+            0.191406
           ],
-          "duration": 3,
+          "duration": 2.6,
           "transition": {
-            "type": "cut",
-            "durationMs": 0
+            "type": "smooth",
+            "durationMs": 240
           },
           "lines": [
             {
-              "speaker": "黑龙",
-              "text": "两队重锤亲卫，足够把你耗死在这里。",
+              "speaker": "Lee",
+              "text": "最后那几道雷总算把劲冲开了，只是呼吸还没缓过来……",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
+                "intensity": 0.15,
+                "anchor": [
+                  0.44,
+                  0.48
+                ],
                 "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "旁白",
+              "text": "新生的力道尚未收稳，门后的铁骑已趁隙冲至身后。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.12,
+                "anchor": [
+                  0.46,
+                  0.5
+                ],
+                "panTo": [
+                  0.64,
+                  0.48
+                ],
+                "easing": "ease-in"
               }
             }
           ]
         },
         {
-          "id": "p1",
-          "label": "挣脱",
+          "id": "L2",
+          "label": "乘隙冲撞",
           "rect": [
-            0,
-            0.25,
-            1,
-            0.25
+            0.007812,
+            0.201823,
+            0.984375,
+            0.208333
           ],
-          "duration": 3,
-          "transition": {
-            "type": "cut",
-            "durationMs": 0
-          },
-          "lines": [
-            {
-              "speaker": "LEE",
-              "text": "刚才那股劲……还在。",
-              "camera": {
-                "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
-              }
-            }
-          ]
-        },
-        {
-          "id": "p2",
-          "label": "挣脱",
-          "rect": [
-            0,
-            0.5,
-            1,
-            0.25
-          ],
-          "duration": 3,
+          "duration": 2.4,
           "transition": {
             "type": "cut",
             "durationMs": 0
@@ -192,37 +268,159 @@
           "lines": [
             {
               "speaker": "旁白",
-              "text": "Lee屏住呼吸，将透甲的震劲压入铁箍。墙面开裂，束缚崩断。",
+              "text": "转身慢了半拍，沉重的铁骑已迎面撞来！",
+              "camera": {
+                "motion": "shake",
+                "intensity": 0.25,
+                "anchor": [
+                  0.52,
+                  0.48
+                ],
+                "shake": 0.22
+              }
+            },
+            {
+              "speaker": "黑龙",
+              "text": "刚缓过气来？给我倒下！",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.18,
+                "anchor": [
+                  0.4,
+                  0.46
+                ],
+                "easing": "ease-out"
               }
             }
           ]
         },
         {
-          "id": "p3",
-          "label": "挣脱",
+          "id": "L3",
+          "label": "铁箍锁腕",
           "rect": [
-            0,
-            0.75,
-            1,
-            0.25
+            0.007812,
+            0.416667,
+            0.984375,
+            0.1875
           ],
-          "duration": 3,
+          "duration": 2.8,
           "transition": {
             "type": "cut",
             "durationMs": 0
           },
           "lines": [
             {
-              "speaker": "LEE",
-              "text": "账还没算完。",
+              "speaker": "旁白",
+              "text": "沉重的铁箍将双腕死死锁在内堂石壁上。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.14,
+                "anchor": [
+                  0.34,
+                  0.48
+                ],
+                "panTo": [
+                  0.62,
+                  0.5
+                ],
+                "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "黑龙",
+              "text": "没用的克隆人，锁在这里，等我兄长亲自发落！",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.14,
+                "anchor": [
+                  0.64,
+                  0.48
+                ],
+                "easing": "ease-out"
+              }
+            }
+          ]
+        },
+        {
+          "id": "L4",
+          "label": "屏息聚力",
+          "rect": [
+            0.007812,
+            0.611328,
+            0.984375,
+            0.123047
+          ],
+          "duration": 2.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 260
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "Lee 屏住呼吸，借着铁箍的压迫，将乱窜的电劲收进双拳。",
+              "camera": {
+                "motion": "hold",
+                "anchor": [
+                  0.48,
+                  0.48
+                ]
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "拿铁圈锁我？正好借它把最后一口气合上。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.18,
+                "anchor": [
+                  0.5,
+                  0.46
+                ],
+                "easing": "ease-in"
+              }
+            }
+          ]
+        },
+        {
+          "id": "L5",
+          "label": "崩链而出",
+          "rect": [
+            0.007812,
+            0.740885,
+            0.984375,
+            0.255208
+          ],
+          "duration": 3.2,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "双臂猛然发力下拽，石壁开裂，铁箍应声崩断！",
+              "camera": {
+                "motion": "shake",
+                "intensity": 0.3,
+                "anchor": [
+                  0.46,
+                  0.46
+                ],
+                "shake": 0.26
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "气顺了。黑龙，换我出拳了！",
+              "camera": {
+                "motion": "pull",
+                "intensity": 0.16,
+                "anchor": [
+                  0.5,
+                  0.48
+                ],
+                "easing": "ease-out"
               }
             }
           ]
@@ -232,21 +430,62 @@
     {
       "id": "lee-ending-normal",
       "title": "Lee · 攻入黑龙堂",
-      "note": "原有的轨迹",
-      "image": "assets/book-comic/lee/captured.svg",
-      "continueLabel": "继续",
+      "note": "未觉醒 · 史实结局",
+      "image": "assets/book-comic/lee/lee-historical-ending-v1.png",
+      "continueLabel": "结束本章",
       "autoContinue": false,
       "panels": [
         {
-          "id": "p0",
-          "label": "原有的轨迹",
+          "id": "N1",
+          "label": "体力透支",
           "rect": [
-            0,
-            0.0,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.003906,
+            0.984375,
+            0.202474
           ],
-          "duration": 3,
+          "duration": 2.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 240
+          },
+          "lines": [
+            {
+              "speaker": "旁白",
+              "text": "皮外伤虽已合拢，体内那道坎却始终没能冲开。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.14,
+                "anchor": [
+                  0.46,
+                  0.48
+                ],
+                "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "前头没把雷劲吃够……耗到现在，脚步终究沉了。",
+              "camera": {
+                "motion": "hold",
+                "anchor": [
+                  0.5,
+                  0.5
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "id": "N2",
+          "label": "背后铁蹄",
+          "rect": [
+            0.007812,
+            0.214193,
+            0.984375,
+            0.234375
+          ],
+          "duration": 2.4,
           "transition": {
             "type": "cut",
             "durationMs": 0
@@ -254,62 +493,117 @@
           "lines": [
             {
               "speaker": "旁白",
-              "text": "伤口逐渐合拢，耗尽的体力却没有随之回来。",
+              "text": "门后铁蹄骤响，黑龙策马从暗处悍然撞出！",
+              "camera": {
+                "motion": "shake",
+                "intensity": 0.25,
+                "anchor": [
+                  0.52,
+                  0.48
+                ],
+                "shake": 0.22
+              }
+            },
+            {
+              "speaker": "黑龙",
+              "text": "闹够了没有，给我躺下！",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.18,
+                "anchor": [
+                  0.42,
+                  0.46
+                ],
+                "easing": "ease-out"
               }
             }
           ]
         },
         {
-          "id": "p1",
-          "label": "原有的轨迹",
+          "id": "N3",
+          "label": "受制内堂",
           "rect": [
-            0,
-            0.3333333333333333,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.45638,
+            0.984375,
+            0.257812
           ],
-          "duration": 3,
+          "duration": 3.4,
           "transition": {
             "type": "cut",
             "durationMs": 0
           },
           "lines": [
             {
-              "speaker": "LEE",
-              "text": "就差……最后一步。",
+              "speaker": "黑龙",
+              "text": "没用的克隆人，凭你这副身子还挣不开内堂的铁箍。",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.12,
+                "anchor": [
+                  0.42,
+                  0.48
+                ],
+                "panTo": [
+                  0.58,
+                  0.5
+                ],
+                "easing": "smoothstep"
+              }
+            },
+            {
+              "speaker": "黑龙",
+              "text": "先锁在墙上，留口气让我兄长亲自处置！",
               "camera": {
                 "motion": "push",
-                "intensity": 0.25,
-                "easing": "smoothstep"
+                "intensity": 0.15,
+                "anchor": [
+                  0.54,
+                  0.48
+                ],
+                "easing": "ease-out"
               }
             }
           ]
         },
         {
-          "id": "p2",
-          "label": "原有的轨迹",
+          "id": "N4",
+          "label": "目光未冷",
           "rect": [
-            0,
-            0.6666666666666666,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.722005,
+            0.984375,
+            0.274089
           ],
-          "duration": 3,
+          "duration": 3.6,
           "transition": {
-            "type": "cut",
-            "durationMs": 0
+            "type": "smooth",
+            "durationMs": 320
           },
           "lines": [
+            {
+              "speaker": "Lee",
+              "text": "……要是打进门起就接满那些雷，今天躺下的就是你。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.14,
+                "anchor": [
+                  0.48,
+                  0.46
+                ],
+                "easing": "ease-in"
+              }
+            },
             {
               "speaker": "旁白",
-              "text": "Lee没能挣脱黑铁会的束缚。这段经历，仍沿着主线的轨迹继续。",
+              "text": "铁箍锁住了双手，却锁不住他的眼神。这段经历，仍沿着原有的轨迹继续。",
               "camera": {
-                "motion": "push",
-                "intensity": 0.25,
+                "motion": "pull",
+                "intensity": 0.12,
+                "anchor": [
+                  0.5,
+                  0.48
+                ],
                 "easing": "smoothstep"
               }
             }
@@ -321,71 +615,159 @@
       "id": "lee-ending-hidden",
       "title": "Lee · 攻入黑龙堂",
       "note": "隐藏结局 · 自己走出去",
-      "image": "assets/book-comic/lee/victory.svg",
+      "image": "assets/book-comic/lee/lee-hidden-victory-v1.png",
       "continueLabel": "结束本章",
       "autoContinue": false,
       "panels": [
         {
-          "id": "v0",
-          "label": "终战之后",
+          "id": "V1",
+          "label": "重剑落地",
           "rect": [
-            0,
-            0.0,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.003906,
+            0.984375,
+            0.185547
           ],
-          "duration": 5,
+          "duration": 2.4,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
           "lines": [
             {
               "speaker": "旁白",
-              "text": "重锤倒下，黑龙的铠甲砸在断电的内堂。再没有人挡住出口。",
+              "text": "断电的内堂一片死寂，沉重的长剑终于脱手砸在地上。",
               "camera": {
-                "motion": "pull",
-                "intensity": 0.2,
+                "motion": "pan",
+                "intensity": 0.14,
+                "anchor": [
+                  0.42,
+                  0.52
+                ],
+                "panTo": [
+                  0.58,
+                  0.54
+                ],
                 "easing": "smoothstep"
               }
             }
           ]
         },
         {
-          "id": "v1",
-          "label": "龙息",
+          "id": "V2",
+          "label": "对手跪地",
           "rect": [
-            0,
-            0.3333333333333333,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.196615,
+            0.984375,
+            0.255859
           ],
-          "duration": 5,
+          "duration": 3.0,
+          "transition": {
+            "type": "cut",
+            "durationMs": 0
+          },
           "lines": [
             {
-              "speaker": "LEE",
-              "text": "力气会回来。路，也该自己选。",
+              "speaker": "黑龙",
+              "text": "铁骑、重甲……居然全被这一双拳头打穿了……",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.15,
+                "anchor": [
+                  0.48,
+                  0.5
+                ],
+                "easing": "ease-out"
+              }
+            },
+            {
+              "speaker": "黑龙",
+              "text": "兄长看走眼了……你根本不是什么没用的克隆人……",
               "camera": {
                 "motion": "pull",
-                "intensity": 0.2,
+                "intensity": 0.12,
+                "anchor": [
+                  0.5,
+                  0.52
+                ],
                 "easing": "smoothstep"
               }
             }
           ]
         },
         {
-          "id": "v2",
-          "label": "另一条轨迹",
+          "id": "V3",
+          "label": "把名字留下",
           "rect": [
-            0,
-            0.6666666666666666,
-            1,
-            0.3333333333333333
+            0.007812,
+            0.459635,
+            0.984375,
+            0.177083
           ],
-          "duration": 5,
+          "duration": 3.0,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 260
+          },
+          "lines": [
+            {
+              "speaker": "Lee",
+              "text": "听清楚了，我不是谁的替身，也不是你们造出来的东西。",
+              "camera": {
+                "motion": "push",
+                "intensity": 0.16,
+                "anchor": [
+                  0.5,
+                  0.46
+                ],
+                "easing": "ease-out"
+              }
+            },
+            {
+              "speaker": "Lee",
+              "text": "我叫 Lee。记住了！",
+              "camera": {
+                "motion": "pan",
+                "intensity": 0.12,
+                "anchor": [
+                  0.46,
+                  0.46
+                ],
+                "panTo": [
+                  0.56,
+                  0.48
+                ],
+                "easing": "smoothstep"
+              }
+            }
+          ]
+        },
+        {
+          "id": "V4",
+          "label": "自己走出去",
+          "rect": [
+            0.007812,
+            0.643229,
+            0.984375,
+            0.352865
+          ],
+          "duration": 3.6,
+          "transition": {
+            "type": "smooth",
+            "durationMs": 360
+          },
           "lines": [
             {
               "speaker": "旁白",
-              "text": "这一次，Lee挣脱了本该困住他的结局，独自走出了黑龙堂。",
+              "text": "黑龙堂没能困住他。这一次，他靠自己的拳头走出了大门。",
               "camera": {
                 "motion": "pull",
-                "intensity": 0.2,
+                "intensity": 0.14,
+                "anchor": [
+                  0.5,
+                  0.48
+                ],
                 "easing": "smoothstep"
               }
             }

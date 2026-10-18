@@ -6,13 +6,13 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "黑龙，叫你的人让路。"
+        "text": "外头的铁门，比实验室的玻璃罐脆多了。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "黑铁会修墙架梁的本事，如今都用来困人了？"
+        "text": "拿人堆？人多管用的话，我早就躺下了。想拦我，一起上！"
       }
     ],
     "lee-clear-0": [
@@ -20,13 +20,13 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "人倒了，机关还在响……"
+        "text": "人全躺下了，门倒锁得挺快。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "屋顶在蓄电。伤还没好，要避开，还是再撑一轮？"
+        "text": "头顶有高压电……打不过就开机关？"
       }
     ],
     "lee-after-0": [
@@ -34,13 +34,27 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "伤口在合拢……筋骨却还发麻。"
+        "text": "嘶……够劲。被劈中几下，伤口反倒合上了，筋骨也松快不少。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "这一片的线路烧断了。黑铁会的机关，也有撑不住的时候。"
+        "text": "这电流能把身体里锁着的劲冲开。下回再劈，我接着。"
+      }
+    ],
+    "lee-after-0-dodged": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "地砖都劈裂了，躲开倒不难。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "不过我身体里那股劲一直憋着……要是硬接几道雷，会不会反而能把筋骨冲开？"
       }
     ],
     "lee-after-0-revived": [
@@ -48,13 +62,13 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "伤口能长好，散掉的那口劲却没那么快回来。"
+        "text": "啧，刚才倒了一次，气息乱了。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "机关烧断了。活着，就继续走。"
+        "text": "这股电劲吃不进去了。先不管它，打进去再说。"
       }
     ],
     "lee-entry-1": [
@@ -62,13 +76,27 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "外面断电了，里面还单独留着一路。"
+        "text": "地方窄了，前头拿快刀抢攻，后头还藏着使重锤的。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "机关分区供电……黑龙，你早就准备好了。"
+        "text": "兵器越重，破绽越大。正好拿你们热身！"
+      }
+    ],
+    "lee-entry-1-revived": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "前头刀手，后头重锤，摆得倒整齐。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "刚才摔了一跤，不代表你们能拦住我。来！"
       }
     ],
     "lee-clear-1": [
@@ -76,13 +104,55 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "拿这些人拖时间，就是为了这个？"
+        "text": "使锤的也倒了，又到了落雷的时候。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "上次那股震劲还留在筋骨里……也许能借它打通气路。"
+        "text": "刚才那股热劲还没散。来吧，把这一轮全接下！"
+      }
+    ],
+    "lee-clear-1-observe": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "人清干净了，头顶的电又来了。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "光躲没意思。这一轮我不闪了，试试这雷到底有多大劲！"
+      }
+    ],
+    "lee-clear-1-revived": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "又是这招。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "气息已经断过，别硬撑，看准空档过去。"
+      }
+    ],
+    "lee-awaken-early": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "哈——！全身的筋骨，彻底通了！"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "伤全好了，雷劲还在顺着拳脚走。黑龙，你的机关帮了我大忙！"
       }
     ],
     "lee-after-1": [
@@ -90,13 +160,27 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "伤能长好，这口气却还没走顺。"
+        "text": "伤合上了，出拳也比刚才快了一截。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "不是每次硬撑都有结果。先把呼吸稳下来。"
+        "text": "就差最后一口气……下一间屋子的雷，一道都别漏！"
+      }
+    ],
+    "lee-after-1-dodged": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "又全躲过去了。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "气是稳的，可身体里那道坎还是没冲开。前头只剩最后一间了。"
       }
     ],
     "lee-after-1-revived": [
@@ -104,13 +188,27 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "伤口能长好，散掉的那口劲却没那么快回来。"
+        "text": "皮肉伤好了，但那股劲还是聚不起来。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "机关烧断了。活着，就继续走。"
+        "text": "算了，凭这双拳头一样往前闯。"
+      }
+    ],
+    "lee-entry-2-awakened": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "前头拿杂鱼拖时间，后头摆着双锤把门？"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "来得正好，试试我现在的拳有多快！"
       }
     ],
     "lee-entry-2": [
@@ -118,13 +216,41 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "两个重锤。黑龙，你倒舍得下本。"
+        "text": "还在用人堆垫背，把使重锤的留在最后守门。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "精英护卫，不是堂主。用他们来磨我的力气？"
+        "text": "想拖慢我的步子？让开！"
+      }
+    ],
+    "lee-entry-2-revived": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "前头刀手，后头双锤，还没完没了。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "黑龙就在这道门后头吧？给我让路！"
+      }
+    ],
+    "lee-clear-2-awakened": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "守门的双锤也躺下了。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "身上的劲已经满了，这轮雷不必硬接。走！"
       }
     ],
     "lee-clear-2": [
@@ -132,13 +258,69 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "皮肉能恢复，力气没那么快。"
+        "text": "最后两个使锤的也倒了。这是进内堂前的最后一轮雷。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "总闸还没烧断。先撑过这最后一轮。"
+        "text": "能不能彻底冲开，就看这一遭了——来吧！"
+      }
+    ],
+    "lee-clear-2-observe": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "守门的都清了，只剩最后这一轮雷。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "前两间没去试，现在才接怕是晚了……先闯过去再说。"
+      }
+    ],
+    "lee-clear-2-revived": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "人清完了，又是头顶这玩意儿。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "撑过去，门后就是黑龙。"
+      }
+    ],
+    "lee-after-2-awakened": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "门后有战马的呼吸声，藏不住的。"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "黑龙，出来接招吧！"
+      }
+    ],
+    "lee-awaken-late": [
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "通了……赶在进门前，总算把这股劲冲开了！"
+      },
+      {
+        "name": "Lee",
+        "title": "",
+        "char": "Lee",
+        "text": "只是劲头刚起，气息还没收稳……门后有动静！"
       }
     ],
     "lee-after-2": [
@@ -146,83 +328,81 @@
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "机关停了……马蹄声？"
+        "text": "雷停了……到底还是差了一点，体内那道坎没冲开。"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "伤口合上了，力气却还没缓过来。"
+        "text": "前头躲多了，或是中途倒过一次，气就接不上……嗯？门后有马蹄声！"
       }
     ],
-    "lee-after-2-revived": [
+    "lee-entry-3-early": [
       {
-        "name": "Lee",
+        "name": "黑龙",
         "title": "",
-        "char": "Lee",
-        "text": "伤口能长好，散掉的那口劲却没那么快回来。"
+        "char": "黑龙",
+        "text": "好硬的腿劲！一个叛逃的克隆人，敢踹裂我的胸甲！"
+      },
+      {
+        "name": "黑龙",
+        "title": "",
+        "char": "黑龙",
+        "text": "内堂的人先上，给我耗死他！亲卫随我掠阵！"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "机关烧断了。活着，就继续走。"
+        "text": "骑着马还要手下垫背？叫他们一起上，省得我费事！"
       }
     ],
-    "lee-entry-3": [
+    "lee-entry-3-late": [
       {
-        "name": "Lee",
+        "name": "黑龙",
         "title": "",
-        "char": "Lee",
-        "text": "黑龙，这次你自己来。"
+        "char": "黑龙",
+        "text": "居然能崩断内堂的铁箍……外头的雷网，倒让你把筋骨练出来了！"
+      },
+      {
+        "name": "黑龙",
+        "title": "",
+        "char": "黑龙",
+        "text": "那又怎样！手下人先上，亲卫随我压后，待会儿照样锁回去交我兄长处决！"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "还有一队重锤亲卫……正好，气路已通，伤口也在自己愈合。"
+        "text": "那副铁箍正好帮我把气收稳了。来，看谁先趴下！"
       }
     ],
     "lee-clear-3": [
       {
-        "name": "Lee",
+        "name": "黑龙",
         "title": "",
-        "char": "Lee",
-        "text": "这回，没人替你挡了。"
+        "char": "黑龙",
+        "text": "怎么回事，我的胸口……连重甲都被他一拳震透了……"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "黑龙，你的机关和这些墙，都留不住我。"
+        "text": "电闸打断了，身上的伤也在慢慢收口。黑龙，你输了。"
       }
     ],
     "lee-after-3": [
       {
-        "name": "Lee",
+        "name": "黑龙",
         "title": "",
-        "char": "Lee",
-        "text": "伤会慢慢好。先喘口气。"
+        "char": "黑龙",
+        "text": "咳……我兄长看走眼了，你根本不是什么替身……"
       },
       {
         "name": "Lee",
         "title": "",
         "char": "Lee",
-        "text": "这一回，我自己走出去。"
-      }
-    ],
-    "lee-awaken": [
-      {
-        "name": "Lee",
-        "title": "",
-        "char": "Lee",
-        "text": "不是蛮力硬撑……让这股震劲走过去。"
-      },
-      {
-        "name": "Lee",
-        "title": "",
-        "char": "Lee",
-        "text": "拳脚的劲能透进去，身体也能借着来劲自行腾挪。重甲，也挡不住了。"
+        "text": "记住，我不属于黑铁会。我的命，只归我自己。"
       }
     ]
   }

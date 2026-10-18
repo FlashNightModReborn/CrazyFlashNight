@@ -195,15 +195,34 @@ class org.flashNight.arki.scene.BookComicServiceTest {
             "settlement samples the final active interval after pause release");
         clock._session = null;
     }
+    private static function testLeeCues():Void {
+        setup(); _root._saveExt.bookRun.bookId="lee-trial";
+        var sounds:Array=[];
+        _root.播放音效=function(name:String):Void { sounds.push(name); };
+        var p:Object=open("lee-breakout"); p.cueIndex=1;
+        BookComicService.handle("cue",p);
+        check(sounds.length==0,"cue before preparation is silent");
+        BookComicService.handle("prepared",p);
+        BookComicService.handle("cue",p); BookComicService.handle("cue",p);
+        check(sounds.length==1 && sounds[0]=="黑铁落剑.wav","actual beat plays once");
+        p.panelInstanceId="foreign";p.cueIndex=3;BookComicService.handle("cue",p);
+        check(sounds.length==1,"foreign panel cannot play sounds");
+        p.panelInstanceId="comic.fixture."+p.presentationId;BookComicService.handle("cue",p);
+        check(sounds.length==2 && sounds[1]=="霸体觉醒蓄力.wav","late awakening uses its own preparation cue");
+        p.cueIndex=2;BookComicService.handle("cue",p);
+        check(sounds.length==2,"late out of order beat is silent");
+        BookComicService.handle("finish",p);p.cueIndex=4;BookComicService.handle("cue",p);
+        check(sounds.length==2 && _root.__comicContinues==1,"skip or finish never replays queued cues");
+    }
     public static function runAllTests():Void {
         passed = 0; failed = 0;
         var keys:Array = ["gameworld","server","savePath","_saveExt","暂停","__comicContinues",
-            "__comicSends","__comicRequest","__comicAck"];
+            "__comicSends","__comicRequest","__comicAck","播放音效"];
         var saved:Object = {};
         for (var i:Number = 0; i < keys.length; i++) saved[keys[i]] = _root[keys[i]];
         _root.gameworld = undefined;
         BookComicService.install();
-        try { testLifecycle(); testClock(); testChapterWaitsForCurtain(); }
+        try { testLifecycle(); testClock(); testChapterWaitsForCurtain(); testLeeCues(); }
         finally {
             BookComicService.onTransportDisconnected();
             _root.gameworld.removeMovieClip();

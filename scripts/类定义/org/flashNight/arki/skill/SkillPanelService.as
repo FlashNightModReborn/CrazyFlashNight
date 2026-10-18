@@ -50,6 +50,8 @@ class org.flashNight.arki.skill.SkillPanelService {
     public static function execute(commandName:String, params:Object):Object {
         if (params == null || Number(params.v) != 1) return fail("invalid_payload");
         if (_busy && commandName != "snapshot" && commandName != "close") return fail("busy");
+        if (org.flashNight.arki.skill.LeeSkillLoadout.isLeeRun() && commandName != "close")
+            return org.flashNight.arki.skill.LeeSkillLoadout.execute(commandName, params);
         if (commandName == "snapshot") return executeSnapshot(params);
         if (commandName == "learnPreview") return executeLearnPreview(params);
         if (commandName == "learnCommit") return executeLearnCommit(params);
@@ -84,7 +86,7 @@ class org.flashNight.arki.skill.SkillPanelService {
         if (openRequestId != undefined && !safeOpenRequestId(openRequestId)) {
             return panelOpenFailure("invalid_payload");
         }
-        if (!SkillLoadoutService.isReady()) {
+        if (org.flashNight.arki.skill.LeeSkillLoadout.actor() == null && !SkillLoadoutService.isReady()) {
             var r:Object = SkillLoadoutService.root();
             if (r != null && typeof r.发布调试消息 == "function") r.发布调试消息("[SkillPanelService] service_not_ready");
             return {success:false, v:1, error:"service_not_ready", opened:false};

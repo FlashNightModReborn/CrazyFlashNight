@@ -10,10 +10,10 @@ using CF7Launcher.Guardian.WorldCompositor;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json.Linq;
 
-// 真实游戏只读面板的局部 composition 端点（游戏内容只读）。
+// 真实游戏阅读面板的局部 composition 端点；Lee 出发仅转交既有保存权威。
 // 复用 WorldCompositor.CompositionSceneHost 与
 // CoreWebView2CompositionController；不使用 WinForms WebView2、CDP 或私有反射。
-// 本类不是 C1 虚拟世界宿主，不持有游戏存档/业务通道。
+// 本类不是 C1 虚拟世界宿主，不持有存档或业务裁决。
 // help 之外的第二个消费者（intelligence）经 CompositionPanelProfile 参数化接入；
 // transition（过场+loot 结算）是同一类型的独立固定投影端点，有自己的面板边界。
 namespace CF7Launcher.Guardian
@@ -99,7 +99,7 @@ namespace CF7Launcher.Guardian
         private readonly System.Windows.Forms.Timer _closeTimer = new() { Interval = 25 };
 
         internal string PanelName => _profile.PanelName;
-        // DelegateCloseToAuthority 面板的非 close 入站消息（只读查询、panel-toast）。
+        // DelegateCloseToAuthority 面板的非 close 入站消息（查询、精确实例导航、panel-toast）。
         internal event Action<JObject>? InboundPanelMessage;
         internal event Action<JObject>? TransitionMessage;
         internal event Action? TransitionFailed;
@@ -485,11 +485,18 @@ namespace CF7Launcher.Guardian
                     RequestClose("page_close",message);
                 return;
             }
-            // 委托面板（intelligence）的其余入站消息：只读查询与 panel-toast，
+            // 委托面板（intelligence）的其余入站消息：查询、精确实例导航与 panel-toast，
             // 绑定当前面板名与活跃会话后交给 controller 配置的既有 Web 权威。
             if (_profile.DelegateCloseToAuthority && Active && _panelInstance.Length > 0) {
                 if (type == "panel" && message["panel"]?.Type==JTokenType.String && (string)message["panel"]==_profile.PanelName
-                    && message["cmd"]?.Type==JTokenType.String && IsIntelligenceQuery((string)message["cmd"]))
+                    && message["cmd"]?.Type==JTokenType.String
+                    && (message["domain"] == null && IsIntelligenceQuery((string)message["cmd"])
+                        || CF7Launcher.Tasks.BookshelfTask.IsLeeEnvelope(message)
+                            && (string)message["panelInstanceId"] == _panelInstance
+                        || message["domain"] == null && (string)message["cmd"]=="open_lee_story"
+                            && message["panelInstanceId"]?.Type==JTokenType.String
+                            && (string)message["panelInstanceId"]==_panelInstance
+                            && message["nativeCause"]==null && message["hostCloseReason"]==null))
                     InboundPanelMessage?.Invoke(message);
                 else if (type == "panel-toast" && message["html"]?.Type == JTokenType.String
                     && message.Value<string>("html").Length <= 4096)

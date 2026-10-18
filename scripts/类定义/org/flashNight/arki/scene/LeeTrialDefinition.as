@@ -80,15 +80,21 @@ class org.flashNight.arki.scene.LeeTrialDefinition {
         return true;
     }
     private static function validDialogues(beats:Object):Boolean {
-        var ids:Array = ["lee-entry-0","lee-clear-0","lee-after-0","lee-entry-1","lee-clear-1","lee-after-1",
-            "lee-entry-2","lee-clear-2","lee-after-2","lee-entry-3","lee-clear-3","lee-after-3",
-            "lee-after-0-revived","lee-after-1-revived","lee-after-2-revived","lee-awaken"];
+        var ids:Array = [
+            "lee-entry-0","lee-clear-0","lee-after-0","lee-after-0-dodged",
+            "lee-after-0-revived","lee-entry-1","lee-entry-1-revived","lee-clear-1",
+            "lee-clear-1-observe","lee-clear-1-revived","lee-awaken-early","lee-after-1",
+            "lee-after-1-dodged","lee-after-1-revived","lee-entry-2-awakened","lee-entry-2",
+            "lee-entry-2-revived","lee-clear-2-awakened","lee-clear-2","lee-clear-2-observe",
+            "lee-clear-2-revived","lee-after-2-awakened","lee-awaken-late","lee-after-2",
+            "lee-entry-3-early","lee-entry-3-late","lee-clear-3","lee-after-3"
+        ];
         for (var i:Number = 0; i < ids.length; i++) {
             var rows:Array = beats[ids[i]];
             if (!(rows instanceof Array) || rows.length == 0 || rows.length > 6) return false;
             for (var j:Number = 0; j < rows.length; j++) {
                 var row:Object = rows[j];
-                if (row.name !== "Lee" || row.char !== "Lee" || typeof row.text != "string"
+                if ((row.name !== "Lee" && row.name !== "黑龙") || row.char !== row.name || typeof row.text != "string"
                         || row.text.length == 0 || row.text.length > 500) return false;
             }
         }
