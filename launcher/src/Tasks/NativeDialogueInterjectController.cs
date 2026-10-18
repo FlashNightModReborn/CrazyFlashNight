@@ -11,25 +11,30 @@ using Newtonsoft.Json.Linq;
 
 namespace CF7Launcher.Tasks
 {
-    /// <summary>插话输入可用状态（《协议》3.3 的 P1 子集）。</summary>
+    /// <summary>插话输入可用状态（《协议》3.3）。</summary>
     internal enum DialogueInterjectInputState
     {
-        /// <summary>没有可输入的时点：$PC 播放中 / 无对话会话 / 本组未开始。</summary>
+        /// <summary>没有可输入的时点：$PC 播放中 / 无对话会话 / 本组未开始 / closing。</summary>
         Hidden = 0,
-        /// <summary>等待首句：输入显示但禁用（“……”）。</summary>
+        /// <summary>输入显示但禁用：等待首句“……”、拆分前置段“（暂时不适合插话）”。</summary>
         Locked = 1,
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
         Ready = 2
     }
 
     /// <summary>
-    /// 日常插话 Host 侧控制器（P1 / G1）：会话 id、请求组装、$PC 插入、首句排队、
-    /// 取消与失败回退、finalize。
+    /// 日常插话 Host 侧控制器（P2 / G2）：组类型门控、会话 id、请求组装、$PC 插入、
+    /// 首句排队、逐句接排、中途插入的参考续写、取消/失败回退、closing 收尾与 finalize。
+    ///
+    /// 播放语义（《协议》3.4 / §13.2）：
+    /// - 成功轮不接回原作剩余：$PC 与 AI 行都以 resumeOriginalIndex=null 插入，AI 播完即组末，
+    ///   点“下一条”走 advance_past_end（finalIndex 仍是 AS2 原始末行）。
+    /// - 失败轮才接回：零条 AI 行时在原当前点接回；已播部分 AI 行时接在那些行之后（_wireResume）。
     ///
     /// 边界：
-    /// - 只做 daily；task / plan / mute / closing 留给 P2/P4（事件照常解析，不丢弃）。
-    /// - 播放仍然走 <see cref="NativeDialogueBookSession"/>：AI 台词以 WireIndex=-1 的
-    ///   本地行插入播放序列，AS2 的 wire 行数与 finish 契约不受影响（G0-2）。
+    /// - stage 与 task_pre/task_post 一律不开放（P4 再开任务）；plan/mute 事件照常解析不动作。
+    /// - 播放仍走 <see cref="NativeDialogueBookSession"/>：AI 台词是 WireIndex=-1 的本地行，
+    ///   AS2 的 wire 行数与 finish 契约不受影响（G0-2）。
     /// - 所有方法只在 task 的采用队列（UI dispatch）上调用；SSE 回调也经 dispatch 回到队列。
     /// - 不碰 UI 控件：输入框的显示/禁用由 <see cref="InputStateChanged"/> 的订阅方决定。
     /// </summary>
@@ -40,6 +45,8 @@ namespace CF7Launcher.Tasks
         private const int LinePromptMax = 135;
         private const string PcName = "$PC";
         private const string DefaultEmotion = "普通";
+        private const string KindDaily = "daily";
+        private const string KindStage = "stage";
 
         private sealed class PlayedRow
         {
@@ -78,14 +85,16 @@ namespace CF7Launcher.Tasks
         private readonly List<PlayedRow> _played = new List<PlayedRow>();
         private readonly object _playedGate = new object();
         private int _nextSeq;
+        private bool _groupAllowsInterject;
+        private bool _closing;
 
         // ── 本轮 ──
         private string _turnId;
         private DialogueInterjectStream _stream;
         private readonly Queue<DialogueInterjectLine> _queued = new Queue<DialogueInterjectLine>();
+        private readonly Dictionary<NativeDialogueBookSession.Line, DialogueInterjectLine> _insertedLines =
+            new Dictionary<NativeDialogueBookSession.Line, DialogueInterjectLine>();
         private bool _playerLinePlaying;
-        /// <summary>本组是否允许插话：G1 只认 mode=ordinary（stage 是场景剧情，不在这里插）。</summary>
-        private bool _groupAllowsInterject;
         private bool _aiLineShown;
         private bool _turnActive;
         private int _turnTailIndex = -1;
@@ -96,6 +105,8 @@ namespace CF7Launcher.Tasks
         private bool _finalizePending;
         /// <summary>finalize 在途时又来一次收尾：这一轮结束后补发一次（transcript 只增不减）。</summary>
         private bool _finalizeAgain;
+        /// <summary>失败轮还欠一次"在已播 AI 行之后接回原作"（等 $PC 播完/首句上屏再补）。</summary>
+        private bool _resumeAfterFailure;
         /// <summary>后台执行器：生产 Task.Run；测试注入同步执行，避免竞态。</summary>
         internal Func<Func<Task>, Task> TaskRunner = f => Task.Run(f);
 
@@ -109,6 +120,9 @@ namespace CF7Launcher.Tasks
 
         /// <summary>诊断/测试观测：最近一次 finalize 回执原文。</summary>
         internal string LastFinalizeReply { get; private set; }
+
+        /// <summary>诊断/测试观测：最近一次请求的 reference_continuation 条数。</summary>
+        internal int LastReferenceCount { get; private set; }
 
         internal NativeDialogueInterjectController(
             NativeDialogueTask task,
@@ -135,6 +149,7 @@ namespace CF7Launcher.Tasks
         internal string CurrentTurnId { get { return _turnId; } }
         internal int PlayedCount { get { return _played.Count; } }
         internal NativeDialogueBookSession SessionForTest { get { return _session; } }
+        internal bool ClosingForTest { get { return _closing; } }
 
         /// <summary>挂接 task/widget 钩子；只允许一次。</summary>
         internal void Attach()
@@ -149,19 +164,23 @@ namespace CF7Launcher.Tasks
         private void OnSessionStarted(NativeDialogueBookSession session)
         {
             _session = session;
-            _groupAllowsInterject = string.Equals(session.Mode, "ordinary", StringComparison.Ordinal);
+            _closing = false;
+            _groupAllowsInterject = IsDailyGroup(session);
             _dialogueInstanceId = null;      // 首次插入才建（D-04 / 6.1）
             _npcName = null;
             lock (_playedGate) { _played.Clear(); _nextSeq = 0; }
             _queued.Clear();
+            _insertedLines.Clear();
             _aiLineShown = false;
             _turnActive = false;
             _turnTailIndex = -1;
             _pcRevision = -1;
+            _finalizePending = false;
+            _resumeAfterFailure = false;
             session.LinePresented = OnLinePresented;
-            SetInputState(_groupAllowsInterject
-                ? DialogueInterjectInputState.Ready
-                : DialogueInterjectInputState.Hidden);
+            session.Closing = OnSessionClosing;
+            // 组刚开始还没有任何台词上屏：不能是 Ready（等 Begin 呈现第一句再开）。
+            SetInputState(DialogueInterjectInputState.Hidden);
         }
 
         private void OnSessionEnded(NativeDialogueBookSession session)
@@ -169,12 +188,44 @@ namespace CF7Launcher.Tasks
             if (!ReferenceEquals(session, _session)) return;
             CancelTurn("session_end");
             session.LinePresented = null;
+            session.Closing = null;
             _session = null;
             _groupAllowsInterject = false;
+            _closing = false;
             _dialogueInstanceId = null;
             _npcName = null;
+            _queued.Clear();
+            _insertedLines.Clear();
             lock (_playedGate) { _played.Clear(); _nextSeq = 0; }
             SetInputState(DialogueInterjectInputState.Hidden);
+        }
+
+        /// <summary>
+        /// closing（advance_past_end / close）立即收尾：隐藏输入、真取消在途流、按已播 finalize。
+        /// 本组后续不再接受插话；已收到未插入的台词不再进本组。
+        /// </summary>
+        private void OnSessionClosing(string reason)
+        {
+            if (_session == null || _closing) return;
+            _closing = true;
+            StopStream();
+            _turnActive = false;
+            _finalizePending = false;
+            _resumeAfterFailure = false;
+            _queued.Clear();
+            _insertedLines.Clear();
+            _turnTailIndex = -1;
+            _playerLinePlaying = false;
+            SetInputState(DialogueInterjectInputState.Hidden);
+            // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
+            Finalize("closing:" + (reason ?? ""));
+        }
+
+        private static bool IsDailyGroup(NativeDialogueBookSession session)
+        {
+            if (session == null) return false;
+            if (!string.Equals(session.Mode, "ordinary", StringComparison.Ordinal)) return false;
+            return string.Equals(session.DialogueKind, KindDaily, StringComparison.Ordinal);
         }
 
         private void OnLinePresented(NativeDialogueBookSession.Line line)
@@ -199,6 +250,8 @@ namespace CF7Launcher.Tasks
                     Emotion = string.IsNullOrEmpty(line.Expression) ? DefaultEmotion : line.Expression
                 });
             }
+            // 已走到的行不再是“未播”，从参考续写候选里摘掉。
+            _insertedLines.Remove(line);
 
             if (isPc)
             {
@@ -206,15 +259,18 @@ namespace CF7Launcher.Tasks
                 SetInputState(DialogueInterjectInputState.Hidden);
                 return;
             }
+            if (!_groupAllowsInterject) return;
             if (isLocal)
             {
-                // 本地增强行 = 本轮 AI 台词：开始显示即可输入（D-10）
                 _aiLineShown = true;
-                if (_groupAllowsInterject) SetInputState(DialogueInterjectInputState.Ready);
+                // 拆分前置段：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
+                SetInputState(line.SplitIntermediate
+                    ? DialogueInterjectInputState.Locked
+                    : DialogueInterjectInputState.Ready);
                 return;
             }
-            // 原作台词：可输入（stage 场景剧情不开放插话）
-            if (_groupAllowsInterject) SetInputState(DialogueInterjectInputState.Ready);
+            // 原作台词：可输入（stage / 任务组已在 IsDailyGroup 拦掉）
+            SetInputState(DialogueInterjectInputState.Ready);
         }
 
         /// <summary>打字完成（widget 每帧一次）：$PC 播完 → 放出排队的首句或进入等待。</summary>
@@ -234,33 +290,42 @@ namespace CF7Launcher.Tasks
                     // 首句已上屏：其余已收台词按顺序接在它后面，玩家点“下一条”逐句看。
                     DrainQueueToTail();
                     FlushPendingFinalize();
+                    FlushResumeAfterFailure();
                     return;
                 }
             }
             SetInputState(DialogueInterjectInputState.Locked);
             FlushPendingFinalize();
+            FlushResumeAfterFailure();
         }
 
         // ════════════════ 玩家发送 ════════════════
 
         /// <summary>
-        /// 玩家发送一句：先补全当前句 → 播 $PC → 并发起请求。
-        /// 返回 false＝当前不允许插话（无会话/输入禁用/空串/超长）。
+        /// 玩家发送一句：先补全当前句 → 收集未播（参考续写）→ 真取消在途流 → 播新 $PC → 发请求。
+        /// 返回 false＝当前不允许插话（无会话 / closing / 空串 / 超长 / 非日常组）。
         /// </summary>
         internal bool Submit(string playerInput)
         {
-            if (_session == null || !_groupAllowsInterject) return false;
+            if (_session == null || !_groupAllowsInterject || _closing) return false;
+            if (_session.State != NativeDialogueBookSession.HostState.Active) return false;
             if (_inputState != DialogueInterjectInputState.Ready) return false;
             string text = (playerInput ?? "").Trim();
             if (text.Length == 0 || text.Length > MaxPlayerInput) return false;
             string npc = _npcName;
             if (string.IsNullOrEmpty(npc)) return false;
 
-            // 上一轮还在途（逐句插话）：取消在途流，已收未播丢弃（P2 再转参考续写）。
-            if (_turnActive) CancelTurn("superseded");
-
             // 协议 3.3：发送时若当前句仍在逐字显示，先补全当前句。
             _widget.CompleteCurrentLineTyping();
+
+            // 协议 4.6 / D-09：上一轮未播的新增/结束语转成本轮参考续写（含已插入未走到的行）。
+            List<DialogueInterjectLine> unplayed = CollectUnplayedTurnLines();
+
+            // 一轮在途时再次发送：真取消在途流（Dispose 流 + token），已收内容已在上面的 unplayed 里。
+            StopStream();
+            _turnActive = false;
+            _finalizePending = false;
+            _resumeAfterFailure = false;
 
             // played 只取本轮发送之前的已播历史（不含本轮 $PC）。
             List<PlayedRow> playedSnapshot;
@@ -269,27 +334,49 @@ namespace CF7Launcher.Tasks
             var remaining = BuildRemaining(wireResume);
             string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
             string turnId = _newId();
-            string requestJson = BuildRequest(text, npc, dialogueInstanceId, turnId, playedSnapshot, remaining);
+            string requestJson = BuildRequest(text, npc, dialogueInstanceId, turnId,
+                playedSnapshot, remaining, unplayed);
 
-            // 播 $PC：插在当前播放点之后并直接呈现（ReplaceFrom 的 present=true），接回当前 wire 的下一行。
+            // 播 $PC：成功轮不接回原作剩余（resume=null），原作只剩参考价值。
             int insertAt = _session.Index + 1;
-            if (!_session.ReplaceFrom(insertAt, new[] { BuildPcLine(text) }, wireResume))
+            if (!_session.ReplaceFrom(insertAt, new[] { BuildPcLine(text) }, null))
             {
                 LastFailure = "splice_failed";
                 return false;
             }
             _pcRevision = _session.Revision;
-            _turnTailIndex = insertAt + 1;    // $PC 之后、wire 尾之前：本轮 AI 行的插入点
+            _turnTailIndex = insertAt + 1;    // $PC 之后：本轮 AI 行的插入点
             _wireResume = wireResume;
             _turnId = turnId;
             _turnActive = true;
             _aiLineShown = false;
             _queued.Clear();
+            _insertedLines.Clear();
             LastFailure = null;
+            LastReferenceCount = unplayed.Count;
             SetInputState(DialogueInterjectInputState.Hidden);
 
             StartStream(requestJson);
             return true;
+        }
+
+        /// <summary>
+        /// 收集"本轮已收到但没播"的台词：排队中的 + 已插进播放序列但当前还没走到的。
+        /// 只用于本轮（新一轮开始时清空映射表）。
+        /// </summary>
+        private List<DialogueInterjectLine> CollectUnplayedTurnLines()
+        {
+            var unplayed = new List<DialogueInterjectLine>();
+            while (_queued.Count > 0) unplayed.Add(_queued.Dequeue());
+            if (_session == null) return unplayed;
+            for (int i = _session.Index + 1; i < _session.PlaybackCount; i++)
+            {
+                NativeDialogueBookSession.Line line = _session.GetPlaybackLine(i);
+                if (line == null) continue;
+                DialogueInterjectLine source;
+                if (_insertedLines.TryGetValue(line, out source)) unplayed.Add(source);
+            }
+            return unplayed;
         }
 
         private JArray BuildRemaining(int fromWire)
@@ -311,8 +398,28 @@ namespace CF7Launcher.Tasks
             return remaining;
         }
 
+        /// <summary>上一轮未播的 add/closing → reference_continuation（协议 5.1）。</summary>
+        private JArray BuildReference(List<DialogueInterjectLine> unplayed)
+        {
+            var reference = new JArray();
+            if (unplayed == null) return reference;
+            for (int i = 0; i < unplayed.Count; i++)
+            {
+                DialogueInterjectLine line = unplayed[i];
+                if (line == null || string.IsNullOrEmpty(line.Text)) continue;
+                reference.Add(new JObject
+                {
+                    ["kind"] = string.Equals(line.Kind, "closing", StringComparison.Ordinal) ? "closing" : "add",
+                    ["name"] = string.IsNullOrEmpty(line.Speaker) ? (_npcName ?? "") : line.Speaker,
+                    ["text"] = line.Text,
+                    ["emotion"] = string.IsNullOrEmpty(line.Emotion) ? DefaultEmotion : line.Emotion
+                });
+            }
+            return reference;
+        }
+
         private string BuildRequest(string playerInput, string npc, string dialogueInstanceId,
-            string turnId, List<PlayedRow> played, JArray remaining)
+            string turnId, List<PlayedRow> played, JArray remaining, List<DialogueInterjectLine> unplayed)
         {
             var playedArray = new JArray();
             foreach (PlayedRow row in played) playedArray.Add(row.ToJson());
@@ -331,7 +438,7 @@ namespace CF7Launcher.Tasks
                     ["group_id"] = _session.RequestId,
                     ["played"] = playedArray,
                     ["remaining"] = remaining,
-                    ["reference_continuation"] = new JArray()
+                    ["reference_continuation"] = BuildReference(unplayed)
                 },
                 ["task_context"] = JValue.CreateNull(),
                 ["limits"] = new JObject
@@ -416,8 +523,8 @@ namespace CF7Launcher.Tasks
             catch (InvalidOperationException) { }
         }
 
-        /// <summary>SSE 事件（已在 dispatch 队列上）：P1 只消费 line / done / error，
-        /// status/mute/plan 解析保留但不动作（P2/P4 填）。</summary>
+        /// <summary>SSE 事件（已在 dispatch 队列上）：P2 消费 line / done / error；
+        /// status/mute/plan 解析保留但不动作（P4 填）。</summary>
         private void OnEvent(DialogueInterjectEvent evt)
         {
             if (evt == null) return;
@@ -439,7 +546,7 @@ namespace CF7Launcher.Tasks
 
         private void AcceptLine(DialogueInterjectLine line)
         {
-            if (!_turnActive || line == null || string.IsNullOrEmpty(line.Text)) return;
+            if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
             if (_playerLinePlaying)
             {
                 _queued.Enqueue(line);      // $PC 播放期间到达：排队，播完再播
@@ -451,7 +558,7 @@ namespace CF7Launcher.Tasks
                 if (!PlayLine(line, true)) _queued.Enqueue(line);
                 return;
             }
-            // 非首句：插到本轮段末，等玩家点“下一条”自然走到（P2 再补逐句推进策略）
+            // 非首句：接在本轮段末；玩家点“下一条”逐句走到（包括结束语——它只是最后一条）。
             if (!PlayLine(line, false)) _queued.Enqueue(line);
         }
 
@@ -469,12 +576,14 @@ namespace CF7Launcher.Tasks
             }
         }
 
-        /// <summary>把一条 line 变成播放序列里的本地行。advance=true 时立刻显示（首句）。</summary>
+        /// <summary>
+        /// 把一条 line 变成播放序列里的本地行（resume=null：成功轮不接回原作剩余）。
+        /// advance=true 时立刻显示（首句）。
+        /// </summary>
         private bool PlayLine(DialogueInterjectLine line, bool advance)
         {
             if (_session == null || _turnTailIndex < 0) return false;
-            // 玩家已经越过本轮段（走到原文尾部）后到达的行不抢播：留在队列由 P2 处理。
-            if (_session.Index >= _turnTailIndex && !advance) return false;
+            if (!advance && _session.Index >= _turnTailIndex) return false;
             var local = new NativeDialogueBookSession.Line
             {
                 Name = string.IsNullOrEmpty(line.Speaker) ? (_npcName ?? "") : line.Speaker,
@@ -483,15 +592,19 @@ namespace CF7Launcher.Tasks
                 PortraitKey = "",
                 Expression = string.IsNullOrEmpty(line.Emotion) ? DefaultEmotion : line.Emotion,
                 ImageAction = "keep",
-                ImagePath = ""
+                ImagePath = "",
+                SplitIntermediate = line.IsSplitHead
             };
-            if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, _wireResume, advance)) return false;
+            if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, null, advance)) return false;
             _turnTailIndex++;
+            _insertedLines[local] = line;
             if (advance)
             {
                 _pcRevision = -1;           // 后续打字完成不再当 $PC
                 _aiLineShown = true;
-                SetInputState(DialogueInterjectInputState.Ready);
+                SetInputState(line.IsSplitHead
+                    ? DialogueInterjectInputState.Locked
+                    : DialogueInterjectInputState.Ready);
             }
             return true;
         }
@@ -528,8 +641,8 @@ namespace CF7Launcher.Tasks
         // ════════════════ 失败 / 取消 / 收尾 ════════════════
 
         /// <summary>
-        /// D-17 / F-11：失败不补写、不重试整段；**已经收到的台词照常播放**，
-        /// 没有 AI 行上屏时把播放序列还原到原对话当前点。
+        /// D-17 / F-11：失败不补写、不重试整段；已经收到的台词照常播放。
+        /// 零条 AI 行 → 在原生当前点接回；已播若干 AI 行 → 接在那些行之后（_wireResume）。
         /// </summary>
         private void FailTurn(string code)
         {
@@ -540,24 +653,29 @@ namespace CF7Launcher.Tasks
             if (_queued.Count == 0)
             {
                 _finalizePending = false;
-                RestoreOriginalTailIfNoAiLine();
+                _resumeAfterFailure = false;
+                RestoreOriginalTail();
                 SetInputState(DialogueInterjectInputState.Ready);
                 Finalize("turn_error");
                 return;
             }
 
-            // 已收到的行还有得播：按"失败但保留已收台词"处理，收尾推迟到首句上屏。
+            // 已收到的行还有得播：按"失败但保留已收台词"处理，收尾与接回都推迟到首句上屏。
             _finalizePending = true;
+            _resumeAfterFailure = true;
             if (_playerLinePlaying) return;      // $PC 播完再放（OnTypingFinished → PlayLine → Flush）
             DialogueInterjectLine next = _queued.Dequeue();
             if (PlayLine(next, true))
             {
+                DrainQueueToTail();
                 FlushPendingFinalize();
+                FlushResumeAfterFailure();
                 return;
             }
             _finalizePending = false;
+            _resumeAfterFailure = false;
             _queued.Clear();
-            RestoreOriginalTailIfNoAiLine();
+            RestoreOriginalTail();
             SetInputState(DialogueInterjectInputState.Ready);
             Finalize("turn_error");
         }
@@ -565,29 +683,56 @@ namespace CF7Launcher.Tasks
         /// <summary>关闭/组结束/新一轮覆盖：真取消在途流（Dispose 流 + token），未到行不播。</summary>
         internal void CancelTurn(string reason)
         {
-            DialogueInterjectStream stream = _stream;
-            _stream = null;
-            if (stream != null)
-            {
-                try { stream.Cancel(); } catch { }
-                try { stream.Dispose(); } catch { }
-            }
             bool wasActive = _turnActive || _finalizePending;
+            StopStream();
             _turnActive = false;
             _finalizePending = false;
+            _resumeAfterFailure = false;
             _queued.Clear();
-            RestoreOriginalTailIfNoAiLine();
-            if (_session != null) SetInputState(DialogueInterjectInputState.Ready);
+            RestoreOriginalTail();
+            if (_session != null && !_closing) SetInputState(DialogueInterjectInputState.Ready);
             if (wasActive) Finalize("turn_cancel:" + reason);
         }
 
-        /// <summary>本轮没有 AI 行上屏时，删除本轮本地行并接回原文（$PC 已播保留在历史里）。</summary>
-        private void RestoreOriginalTailIfNoAiLine()
+        /// <summary>真取消：Dispose 在途响应流再取消 token（只取消读取不算断流）。</summary>
+        private void StopStream()
         {
-            if (_session == null || _aiLineShown || _turnTailIndex < 0) return;
+            DialogueInterjectStream stream = _stream;
+            _stream = null;
+            if (stream == null) return;
+            try { stream.Cancel(); } catch { }
+            try { stream.Dispose(); } catch { }
+        }
+
+        /// <summary>本轮没有 AI 行上屏时，删除本轮本地行并接回原文（$PC 已播保留在历史里）。</summary>
+        private void RestoreOriginalTail()
+        {
+            if (_session == null || _aiLineShown || _closing) return;
+            if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             // 用当前已到达的原始行号 +1 接回：index 可能已经推进到原文里，不能用提交时的快照。
             _session.ReplaceFrom(_session.Index + 1, new NativeDialogueBookSession.Line[0],
                 _session.CurrentWireIndex + 1, present: false);
+            _turnTailIndex = -1;
+        }
+
+        /// <summary>失败轮欠的"接回原作"：等 $PC 播完/首句上屏后补一次。</summary>
+        private void FlushResumeAfterFailure()
+        {
+            if (!_resumeAfterFailure || _playerLinePlaying) return;
+            _resumeAfterFailure = false;
+            ResumeAfterPlayedTurnLines();
+        }
+
+        /// <summary>
+        /// 失败但已播过 AI 行：把原作剩余接在这些行之后（不换当前显示，玩家点“下一条”回到原文）。
+        /// </summary>
+        private void ResumeAfterPlayedTurnLines()
+        {
+            if (_session == null || !_aiLineShown || _closing) return;
+            if (_session.State != NativeDialogueBookSession.HostState.Active) return;
+            if (_turnTailIndex < 0) return;
+            _session.ReplaceFrom(_turnTailIndex, new NativeDialogueBookSession.Line[0],
+                _wireResume, present: false);
             _turnTailIndex = -1;
         }
 

@@ -368,8 +368,19 @@ namespace CF7Launcher.Tasks
             _current = null;
             _sceneImagePath = null;
             _sentRevision = 0;
+            // 可选组类型：缺省 daily；非法类型按 malformed 整包拒绝（协议 5.1 白名单）。
+            string dialogueKind = "daily";
+            if (p["dialogueKind"] != null)
+            {
+                string rawKind;
+                if (!Text(p, "dialogueKind", 16, out rawKind)) return RejectAck(p, "malformed");
+                if (rawKind != "daily" && rawKind != "task_pre"
+                    && rawKind != "task_post" && rawKind != "stage")
+                    return RejectAck(p, "malformed");
+                dialogueKind = rawKind;
+            }
             var session = new NativeDialogueBookSession(this, requestId, sceneId, mode,
-                advanceKey, lines, Interlocked.Read(ref _transportEpoch));
+                advanceKey, lines, Interlocked.Read(ref _transportEpoch), dialogueKind);
             session.RetryScheduler = BookRetryScheduler ?? ScheduleBookRetry;
             if (BookRetryClock != null) session.RetryClock = BookRetryClock;
             _bookSession = session;

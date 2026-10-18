@@ -11,10 +11,10 @@ _root.获得翻译 = function(key) { return key; };
 _root.translateStrings = function(strings) { return strings.join(""); };
 _root.全部翻译 = function(mc) {};
 
-_root.对话赋值到对话框 = function(内容数组){
+_root.对话赋值到对话框 = function(内容数组, dialogueKind){
 	// native_dialogue headless 接管：服务安装后由 NativeDialogueService 持有会话
 	var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
-	if (svc != undefined && svc.handleAssign(内容数组, false)) return;
+	if (svc != undefined && svc.handleAssign(内容数组, false, dialogueKind)) return;
 	var i = 0;
 	while (i < 内容数组.length){
 		_root.对话框界面.本轮对话内容.push(内容数组[i]);
@@ -25,9 +25,9 @@ _root.对话赋值到对话框 = function(内容数组){
 	_root.对话框界面.gotoAndStop("open");
 }
 
-_root.对话覆盖赋值到对话框 = function(内容数组){
+_root.对话覆盖赋值到对话框 = function(内容数组, dialogueKind){
 	var svc = _global.org.flashNight.arki.dialogue.NativeDialogueService;
-	if (svc != undefined && svc.handleAssign(内容数组, true)) return;
+	if (svc != undefined && svc.handleAssign(内容数组, true, dialogueKind)) return;
 	_root.对话框界面.本轮对话内容 = [];
 	var i = 0;
 	while (i < 内容数组.length){
@@ -78,16 +78,16 @@ _root.组装单次对话 = function(arr:Array){
 	return 输出对话;
 }
 
-_root.SetDialogue = function(arr, 是否覆盖已有对话){
+_root.SetDialogue = function(arr, 是否覆盖已有对话, dialogueKind){
 	if (arr.__proto__ == String.prototype){
-		SetDialogue(getTaskText(arr));
+		SetDialogue(getTaskText(arr), undefined, dialogueKind);
 		return;
 	}
 	var 输出对话 = _root.组装单次对话(arr);
 	if (是否覆盖已有对话 == true){
-		_root.对话覆盖赋值到对话框(输出对话);
+		_root.对话覆盖赋值到对话框(输出对话, dialogueKind);
 	}else{
-		_root.对话赋值到对话框(输出对话);
+		_root.对话赋值到对话框(输出对话, dialogueKind);
 	}
 }
 

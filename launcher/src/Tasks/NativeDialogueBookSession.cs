@@ -41,12 +41,18 @@ namespace CF7Launcher.Tasks
             internal JObject NormalizedAppearance;
             internal string AppearanceIdentity;
             internal string ImageAction, ImagePath;
+            /// <summary>插话侧标记：这条本地行是被 165 上限拆出来的非末段（输入暂锁，§3.3）。
+            /// 只影响 Host 输入状态，不参与 wire 校验。</summary>
+            internal bool SplitIntermediate;
         }
 
         private readonly NativeDialogueTask _task;
         internal readonly string RequestId;
         internal readonly string SceneId;
         internal readonly string Mode;
+        /// <summary>组类型：daily（缺省）/ task_pre / task_post / stage（协议 5.1 / §13.2）。
+        /// 只由 book 报文决定；append 不改变组类型。</summary>
+        internal readonly string DialogueKind;
         /// <summary>会话创建时的连接代；跨代后在途重试发射前复查不通过。</summary>
         internal readonly long TransportEpoch;
 
@@ -74,12 +80,14 @@ namespace CF7Launcher.Tasks
         internal Action<long, Action> RetryScheduler;
 
         internal NativeDialogueBookSession(NativeDialogueTask task, string requestId,
-            string sceneId, string mode, int advanceKey, Line[] lines, long transportEpoch)
+            string sceneId, string mode, int advanceKey, Line[] lines, long transportEpoch,
+            string dialogueKind = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             RequestId = requestId;
             SceneId = sceneId;
             Mode = mode;
+            DialogueKind = NormalizeDialogueKind(dialogueKind);
             _advanceKey = advanceKey;
             _lines = lines ?? throw new ArgumentNullException(nameof(lines));
             for (int i = 0; i < _lines.Length; i++)
@@ -263,6 +271,27 @@ namespace CF7Launcher.Tasks
         /// 在采用队列（UI dispatch）上同步触发，回调里禁止再触发换句。</summary>
         internal Action<Line> LinePresented;
 
+        /// <summary>进入 closing（advance_past_end / close）时回调一次，参数是 reason。
+        /// 插话侧据此立即取消在途流并 finalize（§13.2 决定 5）。</summary>
+        internal Action<string> Closing;
+
+        /// <summary>播放序列行读取（越界返回 null）：中途插入时收集"已插入未播"的本地行。</summary>
+        internal Line GetPlaybackLine(int playbackIndex)
+        {
+            if (playbackIndex < 0 || playbackIndex >= _lines.Length) return null;
+            return _lines[playbackIndex];
+        }
+
+        /// <summary>组类型归一：daily / task_pre / task_post / stage；未知值回落 daily。</summary>
+        internal static string NormalizeDialogueKind(string raw)
+        {
+            if (string.Equals(raw, "task_pre", StringComparison.Ordinal)
+                || string.Equals(raw, "task_post", StringComparison.Ordinal)
+                || string.Equals(raw, "stage", StringComparison.Ordinal))
+                return raw;
+            return "daily";
+        }
+
         /// <summary>原始行读取（越界返回 null）：请求 remaining / 失败回退定位用。</summary>
         internal Line GetWireRow(int wireIndex)
         {
@@ -287,6 +316,12 @@ namespace CF7Launcher.Tasks
         private void EnterClosing(string reason)
         {
             _state = HostState.Closing;
+            Action<string> closing = Closing;
+            if (closing != null)
+            {
+                try { closing(reason); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] Closing throw: " + ex.Message); }
+            }
             // AS2 校验口径（NativeDialogueService.handleV2Action）：
             //   advance_past_end 要求 finalIndex == AS2 rowCount-1（原始行数，非增强行数）；
             //   close 要求 finalIndex ∈ [0, rowCount-1]。

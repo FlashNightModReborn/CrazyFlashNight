@@ -210,7 +210,7 @@ _root.GetTask = function(id) {
     var taskData = TaskUtil.getTaskData(id);
     _root.AddTask(id);
     org.flashNight.arki.map.MapDomainBridge.invalidate();
-    _root.SetDialogue(TaskUtil.getTaskText(taskData.get_conversation));
+    _root.SetDialogue(TaskUtil.getTaskText(taskData.get_conversation), undefined, "task_pre");
     // 任务通知 → Launcher 刘海屏
     var taskTitle = TaskUtil.getTaskText(taskData.title);
     _root.server.sendSocketMessage("Utask|" + taskTitle);

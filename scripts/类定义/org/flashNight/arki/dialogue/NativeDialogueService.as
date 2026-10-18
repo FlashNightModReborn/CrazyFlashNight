@@ -191,6 +191,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             index: s.index, lineCount: s.lines.length, mode: s.mode,
             terminal: s.terminal,
             wire: s.wire, epoch: s.epoch, rowCount: s.rowCount,
+            dialogueKind: s.dialogueKind,
             bookSettled: s.bookSettled === true,
             setPending: s.setPending === true,
             pendingCount: pendingCount,
@@ -235,7 +236,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
      * @param overwrite true=覆盖（旧会话作废，不消费其 followingEvent）
      * @return 恒 true：服务一旦安装即接管，不走 legacy MovieClip 路径
      */
-    public static function handleAssign(rows:Array, overwrite:Boolean):Boolean {
+    public static function handleAssign(rows:Array, overwrite:Boolean,
+                                        dialogueKind:String):Boolean {
         install();
         tryAwaitingCommit();   // 入向活动顺带核验待提交义务（§4.6）
         if (rows == null) return true;
@@ -283,7 +285,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
                 return true;
             }
         }
-        beginSession(rows, "ordinary", null);
+        // dialogueKind 只作用于新组；append（上文非覆盖分支）不改组类型。
+        beginSession(rows, "ordinary", null, undefined, undefined, undefined, dialogueKind);
         return true;
     }
 
@@ -507,7 +510,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
 
     private static function beginSession(rows:Array, mode:String, followingEvent:Object,
                                          inheritedLease:String, frozenPortraits:Array,
-                                         snapshotOnly:Boolean):Void {
+                                         snapshotOnly:Boolean, dialogueKind:String):Void {
         _reqSeq++;
         var s:Object = {
             requestId: "nd:" + _reqSeq,
@@ -518,6 +521,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             portraits: frozenPortraits == undefined ? capturePortraits(rows) : frozenPortraits.concat(),
             index: 0,
             mode: mode,
+            // 组类型：daily（缺省）/ task_pre / task_post / stage；stage 恒为 stage。
+            dialogueKind: (mode == "stage") ? "stage" : normalizeDialogueKind(dialogueKind),
             leaseId: inheritedLease == undefined ? null : inheritedLease,
             followingEvent: followingEvent,
             terminal: false,
@@ -579,7 +584,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         s.leaseId = null; // cancel 不释放：避免移交期间出现未暂停的一帧
         cancelSession("snapshot_fallback");
         trace("[NativeDialogueService] snapshot fallback: " + reason);
-        beginSession(rows, s.mode, follow, leaseId, portraits, true);
+        beginSession(rows, s.mode, follow, leaseId, portraits, true, s.dialogueKind);
     }
 
     /**
@@ -854,6 +859,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             mode: s.mode, epoch: 1, startIndex: 0,
             lines: lines
         };
+        // 可选组类型：只有非 daily 才上线（老 Host 忽略未知字段；daily 保持报文逐字节不变）。
+        if (s.dialogueKind != "daily") payload.dialogueKind = s.dialogueKind;
         var keyCode:Number = org.flashNight.arki.key.KeyManager.getKeySetting("互动键");
         if (!isNaN(keyCode)) {
             payload.advanceKey = keyCode;
@@ -863,6 +870,12 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         if (!sendMutation(s, "book", payload, 1, undefined)) {
             replaceWithSnapshot(s, "book_transport_unavailable", 0);
         }
+    }
+
+    /** 组类型归一：daily（缺省）/ task_pre / task_post / stage；未知值一律回落 daily。 */
+    private static function normalizeDialogueKind(raw:String):String {
+        if (raw === "task_pre" || raw === "task_post" || raw === "stage") return raw;
+        return "daily";
     }
 
     /** 规范化行数 = 跳过 null 后的行数（finalIndex 校验基准）。 */
