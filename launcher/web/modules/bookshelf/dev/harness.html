@@ -20,5 +20,5 @@ window.Toast={add:function(){}};
 <script src="modules/asset-timeline.js"></script><script src="modules/icons.js"></script>
 <script src="modules/lazy-loader.js"></script><script src="modules/panels.js"></script><script src="modules/panel-scale.js"></script>
 <script src="modules/panels-lazy-registry.js"></script>
-<script>Panels.init();Panels.open('bookshelf',{panelInstanceId:'bookshelf.preview.1',token:'bookshelf.preview.1',source:'world_bookshelf'});</script>
+<script>Panels.init();Panels.open('bookshelf',{panelInstanceId:'bookshelf.preview.1',token:'bookshelf.preview.1',source:'world_bookshelf',view:['trial-return','lee-failure','lee-retreat'].includes(new URLSearchParams(location.search).get('scenario'))?'lee-result':undefined});</script>
 </body></html>

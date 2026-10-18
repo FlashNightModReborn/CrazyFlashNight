@@ -2998,24 +2998,27 @@
     },
     "LEE": {
       "key": "LEE",
-      "aliases": [],
+      "aliases": [
+        "Lee",
+        "lee"
+      ],
       "source": "dialogue-ui-sprite",
       "sourcePath": "flashswf/UI/对话框界面.swf",
       "defaultExpression": "普通",
       "expressions": {
         "普通": {
           "uri": "internal/p_42009b75438f/e_7cda072d452b.webp",
-          "width": 1703,
-          "height": 2000,
+          "width": 1254,
+          "height": 1254,
           "frame": 155,
-          "sha256": "25c3bb76b91bb45c9673b00299f79a81f42ba00fc67ffc4fd0264215f6ddacba",
-          "bytes": 59178,
+          "sha256": "0bd963401cbf14ec3c31b38247056aa565c4326e82d6a08fda60a726450c319e",
+          "bytes": 1501232,
           "format": "webp",
           "bounds": {
-            "x": 764,
-            "y": 520,
-            "width": 410,
-            "height": 440
+            "x": 0,
+            "y": 0,
+            "width": 1253,
+            "height": 1254
           },
           "rasterization": {
             "renderer": "ffdec-svg-cairosvg",
@@ -3576,6 +3579,7 @@
     "小f": "小F",
     "RESEARCHER": "researcher",
     "a兵团士兵": "A兵团士兵",
+    "Lee": "LEE",
     "lee": "LEE",
     "LOCHAN": "lochan",
     "prophet": "PROPHET",

@@ -25,6 +25,9 @@ class org.flashNight.arki.scene.BookComicService {
         _root.gameCommands["bookComicPrepared"] = function(p:Object):Void {
             org.flashNight.arki.scene.BookComicService.handle("prepared", p);
         };
+        _root.gameCommands["bookComicCue"] = function(p:Object):Void {
+            org.flashNight.arki.scene.BookComicService.handle("cue", p);
+        };
         _root.gameCommands["bookComicFinish"] = function(p:Object):Void {
             org.flashNight.arki.scene.BookComicService.handle("finish", p);
         };
@@ -85,7 +88,7 @@ class org.flashNight.arki.scene.BookComicService {
             && (s.panelInstanceId == "" || s.panelInstanceId === p.panelInstanceId);
     }
     public static function handle(operation:String, p:Object):Void {
-        if (!valid(p) || (operation != "prepared" && operation != "finish")) return;
+        if (!valid(p) || (operation != "prepared" && operation != "finish" && operation != "cue")) return;
         var s:Object = _records[p.presentationId];
         if (!matches(s, p)) { respond(p, operation, false, "expired", "stale_identity"); return; }
         if (s.phase == "finished" || s.phase == "expired") {
@@ -102,6 +105,19 @@ class org.flashNight.arki.scene.BookComicService {
             respond(p, operation, true, "presenting", "");
             return;
         }
+        if (operation == "cue") {
+            if (s.phase != "presenting" || typeof p.cueIndex != "number" || p.cueIndex < 0
+                    || p.cueIndex > 4 || Math.floor(p.cueIndex) != p.cueIndex) {
+                respond(p, operation, false, s.phase, "invalid_payload"); return;
+            }
+            // 每个实际演出段只播一次；迟到、倒序和跳过后的包不能补播。
+            if (s.lastCue == undefined || p.cueIndex > s.lastCue) {
+                s.lastCue = p.cueIndex;
+                var sound:String = cueSound(s.pageId,p.cueIndex);
+                if(sound!="") _root.播放音效(sound);
+            }
+            respond(p,operation,true,s.phase,""); return;
+        }
         var reason:String = p.reason;
         if (reason != "continue" && reason != "skip" && reason != "closed" && reason != "failed") {
             respond(p, operation, false, s.phase, "invalid_reason"); return;
@@ -111,6 +127,13 @@ class org.flashNight.arki.scene.BookComicService {
         var follow:Function = retire(s, reason == "failed" ? "expired" : "finished", true);
         respond(p, operation, true, s.phase, "");
         if (follow != null) follow();
+    }
+    public static function cueSound(page:String, index:Number):String {
+        if(page=="lee-ambush") return ["","黑铁落剑.wav","冲击波.wav",""][index] || "";
+        if(page=="lee-breakout") return ["","黑铁落剑.wav","","霸体觉醒蓄力.wav","冲击波.wav"][index] || "";
+        if(page=="lee-ending-normal") return ["","黑铁落剑.wav","电梯关门.wav",""][index] || "";
+        if(page=="lee-ending-hidden") return ["黑铁落剑.wav","冲击波.wav","",""][index] || "";
+        return "";
     }
     private static function respond(p:Object, operation:String, success:Boolean, phase:String, error:String):Void {
         var server:Object = _root.server;

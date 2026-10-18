@@ -178,7 +178,7 @@ namespace CF7Launcher.Guardian
             => SelectedCompositionSurface!=null ? SelectedCompositionSurface.Replay(rect, generation, reason)
                 : _web.ReplayCommittedPanelPresentation(rect, generation, reason);
 
-        // Composition panels expose no game task or save authority. The separate,
+        // Composition surfaces do not own game/save decisions; the exact Lee adapter uses BookshelfTask. The separate,
         // exact-instance tutorial preference command only changes a local launcher
         // preference; intelligence closes/queries stay with the existing Web authority.
         private bool RetireCompositionPanel()

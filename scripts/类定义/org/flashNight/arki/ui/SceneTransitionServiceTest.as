@@ -223,6 +223,7 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
             "unmanaged legacy cleanup can resume its original fade timeline");
         testCalibrationPresentation();
         testBackgroundPresentation();
+        testLoadingDeadline();
         HorizontalScroller.releaseScene(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity,
             HorizontalScroller.sceneScope(_root.gameworld,_root.gameworld.__stageReturnWorldIdentity));
         cameraHolder.removeMovieClip();
@@ -253,6 +254,24 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
         fade._currentframe=30;
         EventBus.getInstance().publish("SceneReady",_root.gameworld,"",_root.gameworld.__stageReturnWorldIdentity);
         return {fade:fade,target:target,load:backgroundLoads[backgroundLoads.length-1]};
+    }
+    private static function testLoadingDeadline():Void {
+        SceneTransitionService.clear();
+        var fade:Object=fixture(5);_root.淡出动画=fade;
+        SceneTransitionService.begin(fade);var cover:Object=sent[sent.length-1];
+        SceneTransitionService.presented({requestId:cover.requestId,revision:cover.revision,kind:"covered"});
+        fade._currentframe=6;SceneTransitionService.tick();
+        var api:Object=SceneTransitionService;api._session.waitAt=getTimer()-30001;
+        SceneTransitionService.tick();
+        check(fade._currentframe==6 && counters.retries==0,"cleanup and unknown writes are never bypassed by loading timeout");
+        fade._currentframe=30;SceneTransitionService.tick();
+        check(fade._currentframe==30,"new loading milestone gets a fresh deadline");
+        api._session.waitAt=getTimer()-30001;SceneTransitionService.tick();
+        check(fade._currentframe==37 && sent[sent.length-1].phase=="error" && counters.retries==0,
+            "missing SceneReady ends at the existing failure page without automatic replay");
+        var rev:Number=sent[sent.length-1].revision;SceneTransitionService.tick();
+        check(sent[sent.length-1].revision==rev,"stalled failure is reported once");
+        SceneTransitionService.clear();
     }
     private static function testBackgroundPresentation():Void {
         backgroundLoads=[];rejectBackground=false;

@@ -4,6 +4,22 @@ namespace CF7Launcher.Tests.Tasks {
   static JObject Data(string id="bookcomic:1")=>new JObject{["v"]=1,["presentationId"]=id,["slot"]="bookrun_test",["sceneId"]="scene:1",["pageId"]="prologue"};
   static JObject Web(string cmd,string call,JObject data,string instance="panel:1")=>new JObject{["panel"]="book-comic",["domain"]="book-comic",["cmd"]=cmd,["callId"]=call,["panelInstanceId"]=instance,["payload"]=data};
   static JObject Reply(JObject sent,string phase,string op){var r=(JObject)sent.DeepClone();r["operation"]=op;r["success"]=true;r["phase"]=phase;r["error"]="";return r;}
+  [Fact]public void LeeCueIsBoundAndCannotUndoPendingFinish(){
+   var sent=new List<JObject>();var closed=new List<string>();
+   using var t=new BookComicTask(()=>true,s=>{sent.Add(JObject.Parse(s.TrimEnd('\0')));return true;});
+   t.SetPostToWeb(s=>{},null,closed.Add);var d=Data();d["pageId"]="lee-breakout";t.Reserve(d);t.Bind("panel:1",d.ToString());
+   var cue=(JObject)d.DeepClone();cue["cueIndex"]=3;
+   t.HandleWebRequest("cue",Web("cue","foreign",cue,"foreign"));Assert.Empty(sent);
+   var bad=(JObject)cue.DeepClone();bad["cueIndex"]=JToken.Parse("9999999999999999999999999999999999");
+   t.HandleWebRequest("cue",Web("cue","bad",bad));Assert.Empty(sent);
+   t.HandleWebRequest("cue",Web("cue","cue1",cue));Assert.Single(sent);
+   Assert.Equal("bookComicCue",sent[0].Value<string>("action"));Assert.Equal(3,sent[0].Value<int>("cueIndex"));
+   t.HandleWebRequest("skip",Web("skip","finish1",d));Assert.Equal(2,sent.Count);
+   t.HandleFlashResponse(Reply(sent[0],"presenting","cue"),null);
+   t.HandleWebRequest("continue",Web("continue","finish2",d));Assert.Equal(2,sent.Count);
+   t.HandleFlashResponse(Reply(sent[1],"finished","finish"),null);Assert.Single(closed);
+   t.HandleWebRequest("cue",Web("cue","late",cue));Assert.Equal(2,sent.Count);
+  }
   [Fact]public void ExactPrepareFinishAndDuplicateAreBound(){var sent=new List<JObject>();var closed=new List<string>();using var t=new BookComicTask(()=>true,s=>{sent.Add(JObject.Parse(s.TrimEnd('\0')));return true;});t.SetPostToWeb(s=>{},null,closed.Add);var d=Data();Assert.True(t.Reserve(d));Assert.True(t.Bind("panel:1",d.ToString()));t.HandleWebRequest("prepared",Web("prepared","w1",d));Assert.Equal("bookComicPrepared",sent[0].Value<string>("action"));t.HandleFlashResponse(Reply(sent[0],"presenting","prepared"),null);t.HandleWebRequest("continue",Web("continue","w2",d));t.HandleWebRequest("continue",Web("continue","w2",d));Assert.Equal(2,sent.Count);t.HandleFlashResponse(Reply(sent[1],"finished","finish"),null);Assert.Single(closed);t.OnHostClosed("panel:1");Assert.Equal(2,sent.Count);Assert.False(t.Reserve(d));}
   [Fact]public void RealAs2TaskEnvelopeUnwrapsResponse(){var sent=new List<JObject>();var posts=new List<string>();using var t=new BookComicTask(()=>true,s=>{sent.Add(JObject.Parse(s.TrimEnd('\0')));return true;});t.SetPostToWeb(posts.Add,null,s=>{});var d=Data();t.Reserve(d);t.Bind("panel:1",d.ToString());t.HandleWebRequest("prepared",Web("prepared","w1",d));t.HandleFlashResponse(new JObject{["task"]="book_comic_response",["payload"]=Reply(sent[0],"presenting","prepared")},null);Assert.Single(posts);Assert.True(JObject.Parse(posts[0]).Value<bool>("success"));var expired=Reply(d,"expired","finish");expired["callId"]=0;expired["panelInstanceId"]="";t.HandleFlashResponse(new JObject{["task"]="book_comic_response",["payload"]=expired},null);Assert.False(t.CanOpen(d.ToString()));}
   [Fact]public void ExpiredBeforeOpenLeavesTombstone(){using var t=new BookComicTask(()=>true,s=>true);var d=Data();var r=Reply(d,"expired","finish");r["callId"]=0;r["panelInstanceId"]="";t.HandleFlashResponse(r,null);Assert.False(t.Reserve(d));}

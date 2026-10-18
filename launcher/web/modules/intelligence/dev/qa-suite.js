@@ -10,6 +10,43 @@ var IntelligenceHarnessQA = (function() {
 
     function runSuite(api, host, onlyCase) {
         var cases = [
+            ['lee-entry', 'hidden Lee entry follows decrypted final page', function() {
+                function open(level,value) { host.setLeeEntryFixture(level,value);host.open({itemName:'黑龙令',mode:'prod',source:'runtime',panelInstanceId:'intel.lee.fixture'});return waitReady(api); }
+                return open(4,4).then(function() {
+                    api.assert(!document.querySelector('.intel-story-entry'),'level four keeps entry hidden');return open(5,3);
+                }).then(function() {
+                    api.assert(!document.querySelector('.intel-story-entry'),'incomplete intelligence keeps entry hidden');return open(5,4);
+                }).then(function() {
+                    var entry=document.querySelector('.intel-story-entry');api.assert(!!entry,'full collection and maximum decrypt reveal entry');
+                    document.querySelector('.intel-toggle-btn:not(.intel-story-entry)').click();
+                    api.assert(!document.querySelector('.intel-story-entry'),'cipher view hides the action');
+                    document.querySelector('.intel-toggle-btn:not(.intel-story-entry)').click();entry=document.querySelector('.intel-story-entry');
+                    entry.click();var request=host.sentMessages.filter(function(m){return m.cmd==='open_lee_story';}).pop();
+                    api.assert(request && request.itemName==='黑龙令' && request.pageKey==='5' && request.panelInstanceId==='intel.lee.fixture','entry intent carries exact reader and page');
+                    api.assert(entry.disabled,'entry waits for real navigation');
+                    window.chrome.webview.__dispatch({type:'panel_resp',panel:'intelligence',cmd:'open_lee_story',callId:request.callId,success:false,error:'locked'});
+                    api.assert(!entry.disabled,'Flash rejection restores entry');
+                    var realSend=Bridge.send;
+                    Bridge.send=function(message) { return message.cmd==='open_lee_story' ? false : realSend(message); };
+                    try { entry.click(); api.assert(!entry.disabled,'transport failure restores entry immediately'); }
+                    finally { Bridge.send=realSend; }
+                    entry.click();
+                    var pending=host.sentMessages.filter(function(m){return m.cmd==='open_lee_story';}).pop();
+                    api.assert(entry.disabled,'preparation without a receipt waits for its read deadline');
+                    var count=host.sentMessages.filter(function(m){return m.cmd==='open_lee_story';}).length;
+                    return api.waitFor(function(){return !entry.disabled;},14000,'entry navigation deadline').then(function() {
+                        api.assertEqual(host.sentMessages.filter(function(m){return m.cmd==='open_lee_story';}).length,count,'deadline does not replay');
+                        entry.click();var old=host.sentMessages.filter(function(m){return m.cmd==='open_lee_story';}).pop();
+                        host.close();
+                        return open(5,4).then(function() {
+                            var current=document.querySelector('.intel-story-entry');
+                            window.chrome.webview.__dispatch({type:'panel_resp',panel:'intelligence',cmd:'open_lee_story',callId:old.callId,success:false,error:'locked'});
+                            api.assert(!current.disabled,'retired response does not lock the reopened reader');
+                            host.setLeeEntryFixture(null);return 'hidden entry, rejection, timeout and reopen ok';
+                        });
+                    });
+                });
+            }],
             ['open-close', 'open and close lifecycle', function() {
                 host.open({ itemName: '资料', value: 99, decryptLevel: 10 });
                 return waitReady(api).then(function() {

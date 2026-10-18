@@ -1,0 +1,113 @@
+{
+  "schema": "lee-assault-comic-source.v2",
+  "mode": "built-in image_gen",
+  "date": "2026-10-18",
+  "authority": "The imported PNG bytes are the editable raster source. Generation is non-deterministic; prompts document provenance, not a reproducible build.",
+  "referenceRoles": {
+    "native_ambush": "原游戏角色、服装、战马及场景",
+    "native_breakout": "原游戏束缚与人物外观",
+    "cf1_boss": "闪客快打1肉鸽漫画线稿和上色风格",
+    "early_generated_page": "后续页面人物与画风统一参考"
+  },
+  "prompts": [
+    {
+      "branch": "early",
+      "tool": "built-in image_gen",
+      "prompt": "Use case: illustration-story.\nAsset type: finished full-colour comic page, portrait 1024 x 1536, for an action game's cinematic viewer. Reinterpret the supplied native game artwork as a dramatic hand-drawn comic.\nInput image 1 is a strict CHARACTER AND ENVIRONMENT reference: shirtless Lee in yellow trousers with black side stripes, black wrist cuffs, yellow-black martial-arts shoes; huge Black Dragon in fully enclosed angular dark blue-black plate armour, pale blue armour bands, black cape, massive silver straight sword, riding a black armoured horse. Keep these identities and costume colours. Image 2 is ART STYLE reference only: confident black comic ink, handsome adult East Asian faces, clean cel shading with detailed atmospheric backgrounds, readable action. Do not import its school setting or any of its characters. Image 3 is another identity reference, not a required scene.\nPrimary request: draw the EARLY AWAKENING branch. Lee already mastered his new martial power in the preceding room. In the third room he hears a mounted ambush and intercepts it. His earned power is shown as awareness, efficient movement and a decisive kick, not as magic beams. He is never knocked unconscious, bound, or captured in this branch. Black Dragon is forced to dismount, still dangerous and unbeaten.\nComposition: exactly FOUR clean rectangular panels with strong black gutters, all full-width, top to bottom. Panel 1 about 20% of page: tight three-quarter close-up of sweaty, scratched Lee's face and turned shoulder; one eye sharply glances back, a restrained fierce half-smile; behind him distant plated horse hooves just entering a dark doorway. Panel 2 about 22%: wide side view establishing the black armoured horse and its giant rider charging through the ruined wooden martial hall; Lee pivots away from the sword's path with balanced planted foot, clear spatial relation and readable silhouettes. Panel 3 about 36%, the dominant action panel: dynamic low-angle explosive side kick, Lee's foot clearly strikes BLACK DRAGON'S CHEST PLATE and knocks the rider out of the saddle; horse is not attacked. Draw one Lee, two natural arms, two natural legs; grounded martial mechanics, forceful foreshortening, shattered wood dust and a small impact burst, blue armour bands still visible. Rider is thrown only one body-width, not flying into the sky. Panel 4 about 22%: lower, wide confrontation; Black Dragon lands on his boots and braces with his giant sword, Lee is upright in a compact fighting stance several paces away; horse recedes off to the side; inner hall beyond promises the actual boss battle.\nScene: battle-worn Chinese martial guild hall matching reference, wooden columns, green-grey floor mat/grid pattern, damaged lattice screens, swords on wall. Power has gone out; dim teal-grey ambient light, warm yellow trousers, restrained electric-blue highlights only on the armour; dust catches light. New camera angles and expressive anatomy rather than copying flat game sprites.\nText: absolutely NO text, lettering, speech balloons, captions, titles, logos, watermark, UI or panel numbers. Dialogue will be added by the game. No giant lightning aura, no dragon creature, no projectile energy, no new costumes, no shirt on Lee. Moderate scratches only, no gore. Maintain clear eyes and hands. The dramatic reading must be anticipation -> evasion -> counterattack -> confrontation."
+    },
+    {
+      "branch": "late",
+      "tool": "built-in image_gen",
+      "prompt": "Use case: illustration-story.\nAsset type: full-colour comic page, portrait 1024 x 1536, one sequential cinematic page for the LATE AWAKENING route in an action game.\nInput image 1 is the MASTER STYLE AND CHARACTER reference from the EARLY route. Match the SAME adult East Asian Lee (shirtless, lean strongly defined martial-artist anatomy, shaggy short black hair, yellow trousers with black outer stripes, black wrist cuffs, yellow-black shoes), the SAME huge angular dark blue-black fully armoured Black Dragon with pale blue armour bands and giant silver straight sword, and the SAME ruined dark wooden martial guild hall. It does NOT give this page's plot or poses. Input image 2 shows original game captivity/cuffs on a wall: preserve the costume identity, not the flat sprite poses. Image 3 shows the original armoured black horse.\nStory: Lee only just discovered his breakthrough at the end of room three. His wounds are closing but he is breathing hard and has not mastered the new body control. He is temporarily overwhelmed by a mounted ambush, remains conscious, is restrained on a wall, then regulates his breath and breaks free with concentrated physical force. It is his earned breakthrough that allows escape. No second lightning strike, no new awakening event in captivity, no magic beam or supernatural energy chain.\nComposition: exactly FIVE full-width rectangular panels with clean heavy black gutters, top to bottom. Panel 1, top 16%: extreme close view of Lee's trembling open hand then determined tired face in background, sweat and newly healed scratches, fingers begin closing; blurred armoured horse/rider approach behind him through doorway. Panel 2, next 20%: powerful diagonal mounted collision: he has just turned and raised a forearm defensively, Black Dragon's armoured shoulder/gauntlet knocks him sideways; clear silhouettes, no sword impalement, no gore. Panel 3, next 18%: medium view in inner hall, Lee conscious with both wrists visibly secured together high above his head in one heavy iron restraint anchored to plastered timber wall; feet still touch the floor, shoulders strained, no nudity beyond shirtless chest; imposing Black Dragon stands a few paces away with sword lowered. Show this as martial-story imprisonment, not fetish imagery. Panel 4, next 14%: close-up of Lee's face as his eyes sharpen, lips part in controlled exhale, both cuffed fists in the composition begin to clench; subtle hairline cracks around wall anchor, no lightning aura. Panel 5, bottom dominant 32%: forceful low-angle breakout: Lee pulls both fists sharply down and apart, the single wall restraint snaps with identifiable iron pieces still flying near wrists, dust and plaster crack outward from the wall anchor, his feet settle into a strong balanced stance. One character with anatomically correct two arms/two legs, visually convincing muscle tension, torn wrist restraint, a fierce newly confident expression. Black Dragon appears at edge recoiling half a step but not defeated.\nMedium/style: same refined hand-drawn action manhwa / anime comic finish as reference 1, controlled black inks, expressive adult face, cel shading, intricate wood rubble background, dramatic perspective, serious martial combat. Dim teal-grey power-outage atmosphere, yellow trousers as colour focus, restrained pale-blue armour accents.\nText: NO lettering, NO captions, NO balloons, NO title, NO logos, NO watermark, NO UI, NO panel numbers. All dialogue will be layered by game separately. Avoid automatic copying of the reference page's kick scene; this page culminates in BREAKING THE WALL RESTRAINT. Avoid shirts, orange trousers, gaudy energy effects or a giant dragon."
+    },
+    {
+      "branch": "normal",
+      "tool": "built-in image_gen",
+      "prompt": "Use case: illustration-story.\nAsset type: full-colour portrait 1024 x 1536 comic page, the HISTORICAL / UNAWAKENED ending of an action-game chapter.\nInput image 1 is the MASTER ART STYLE and character design. Keep the exact same shirtless adult East Asian martial artist Lee, shaggy short black hair, lean muscular build, yellow long trousers with black outer side stripes, black wrist cuffs, yellow-black martial arts shoes. Keep the same massive fully enclosed angular dark blue-black plate-armoured Black Dragon, pale blue bands on armour, black cape, huge silver straight sword, and black armoured horse. Input image 2 is original captivity reference. Input image 3 supplies horse and guild hall identity. Do not copy their panel arrangement.\nStory: Lee has fought through three rooms but has NOT awakened. He is exhausted, his skin injuries can heal but physical strength has not returned. Black Dragon's mounted ambush overpowers him. He is captured, conscious and furious, refusing to lower his gaze. The final frame connects to the established main story where somebody later arrives to rescue him, without showing a new rescuer or promising a breakthrough.\nComposition: exactly FOUR full-width rectangular panels separated by heavy black gutters. Top panel about 20%: close-up of Lee breathing heavily, clenched jaw, one hand pressed against a scratched rib, sweat, shoulders sagging from exertion; in depth behind him, looming dark doorway and armoured horse/rider approaching. Panel 2 about 28%: dynamic lateral mounted ambush, huge rider and armoured horse fill left background, Lee knocked to the side with his forearm up and feet losing balance, dust streaks, no blood spray and no gore. Panel 3 about 25%: inside the inner hall, medium close view of Lee bound by a heavy iron restraint holding both wrists together above his head against a cracked plaster/wood wall, feet touch floor, Lee glaring defiantly toward Black Dragon's helmeted profile in the near foreground. The restraint and wall anchor are INTACT. Keep it serious combat-story captivity, not sexualised. Bottom panel about 27%: quiet broad long shot, Lee small but still upright on the wall, fists closed but unable to break iron, Black Dragon turning toward a faint strip of light at the distant doorway, sword low and threatening. Empty space and diminishing dust create a sombre pause; no visible rescuer, no modern gunman added, no broken cuffs, no empowerment glow, no triumphant pose.\nAesthetic: match the reference early-route page's refined black ink and colour cel shading, dramatic but grounded anatomy, dim cold teal-grey wooden martial hall with green-grey gridded floor, damaged screens, swords on racks, disciplined yellow-black and blue-black palette. Preserve Lee's dignity and anger. This ending should feel like a complete costly historical outcome, not comic relief or a game-over punishment.\nText: absolutely NO text, NO captions, NO balloons, NO titles, NO logos, NO watermark, NO UI and NO panel numbers. Dialogue is separate. Only minor scratches, no gore. No shirt, no magical lightning, no dragon creature."
+    },
+    {
+      "branch": "victory",
+      "tool": "built-in image_gen",
+      "prompt": "Use case: illustration-story.\nAsset type: full-colour portrait 1024 x 1536 comic page, common HIDDEN VICTORY ending following the actual boss fight; four sequential panels.\nInput image 1 is the master character and art-style reference. Match exactly the same adult East Asian Lee, shirtless lean muscular martial artist, shaggy short black hair, yellow trousers with black outer stripes, black wrist cuffs, yellow-black martial-arts shoes. Match the same fully helmeted huge Black Dragon in angular dark blue-black armour with pale blue bands, black cape, enormous silver straight sword. Keep the same dark battle-worn Chinese martial guild hall. Input image 2 is additional original costume and setting reference. All shots are newly composed.\nStory: the battle has finished, Black Dragon is defeated but do not depict his death. Lee is bruised and tired, still alert; the earned victory is getting to walk out under his own power. No victory fireworks, no magical aura, no new rescuers or companions.\nComposition: exactly FOUR rectangular full-width panels, clean bold black gutters. Panel 1 about 18%: low close-up of the immense silver sword hitting the damaged green-grey floor at an angle, heavy gauntleted hand releasing it; dust, a restrained metal glint, cropped defeated armour at the edge. Panel 2 about 27%: medium-wide eye-level view of Black Dragon kneeling heavily with helmet bowed, sword on the floor clearly separate from him; Lee stands a few paces away watching, fists slowly loosening; rubble but no graphic corpses. Both silhouettes clear. Panel 3 about 22%: intimate three-quarter close-up of Lee's face and upper torso as he looks back once, breath steadying, sweat and small scratches, a stern quiet expression that asserts his name and dignity; no smile to camera, no text. Panel 4 bottom 33%: long back view of Lee walking alone through a broken wooden doorway toward muted natural light, yellow-black trousers and bare scarred back readable, empty passage ahead; defeated Black Dragon remains dim in the distant hall, no additional characters or horse. Leave generous space in the doorway and avoid placing critical facial detail at extreme edges.\nStyle: the same serious action manhwa / anime ink-and-cel-shading finish as reference, strong foreshortening where useful, textured ruined wooden beams, subtle atmospheric dust, cold desaturated interior with a small warmer patch at exit. Cinematic quiet after violence, controlled composition and bodily weight.\nText: NO lettering, NO title, NO speech bubbles, NO captions, NO logos, NO watermark, NO UI, NO panel numbers. All words are supplied separately by the cinematic player. No gigantic electric aura, no dragon, no superhero uniform, no gore, no shirt on Lee, no changed armour."
+    },
+    {
+      "branch": "early_continuity_correction",
+      "tool": "built-in image_gen",
+      "prompt": "Edit the supplied comic page with a surgical continuity fix. Preserve the same canvas size 1024x1536, FOUR full-width panels, exact black gutters, art style, characters, colours, lighting and ALL content in the top three panels. Modify ONLY the bottom fourth panel. This panel must bridge into a boss fight in which Black Dragon starts mounted. Show the giant fully helmeted blue-black armoured Black Dragon already back in the saddle of his same black armoured horse, recovering his seat and turning the mount toward the inner hall doorway on the right. His massive silver straight sword remains visible, his shoulders tense and angry: he is neither defeated nor running away. Place shirtless Lee in his yellow martial trousers at the left, advancing with a balanced fighting guard toward the mounted opponent across several paces. Show the horse clearly with correct anatomy, a single rider on its saddle, and a single Lee. Clear readable spatial staging; the bottom panel should feel like an ominous brief reset before a duel rather than another attack. Keep the horse's and Black Dragon's pale-blue plate bands and black cape consistent with upper panels. No extra foot soldier, no on-foot duplicate of Black Dragon. Do not change the kick in panel three: he was knocked off his horse, then swiftly regained the saddle in panel four. No words, text, numbers, bubbles, captions, logos or watermarks anywhere. Keep upper three panels unchanged."
+    },
+    {
+      "branch": "late_wrist_continuity_correction",
+      "tool": "built-in image_gen",
+      "prompt": "Surgical edit of Panel 1 (y=0..304) on lee-late-awakening-v1.png: keep shirtless Lee in bare muscular chest/shoulders examining his right hand, replacing the premature heavy riveted iron shackle on his right wrist with a simple flat black cloth wrist cuff before capture occurs in Panel 3."
+    },
+    {
+      "branch": "early_horse_anatomy_correction",
+      "tool": "built-in image_gen",
+      "prompt": "Surgical edit of Panel 4 (y=1118..1536) on lee-early-awakening-v1.png: preserve shirtless Lee on the left and mounted Black Dragon on the right, correcting the black armoured warhorse hind-leg anatomy so four distinct armoured legs are planted on the stone floor."
+    }
+  ],
+  "nativeReferenceDigests": [
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_3_BG.swf",
+      "sha256": "059df1c13c45d941e83c9cecb698e4f479f111bd2d3c513514b85cf540838388"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_2_BG.swf",
+      "sha256": "80efba5c45386c3371b92f9dc08552b079a20fc5b76ce7a1fb74d4b5e2c62fe3"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_4_BG.swf",
+      "sha256": "01facfb4b76a9938258028f24bde92d34caaf3d5a736cfc01ff2b46d3fb01def"
+    },
+    {
+      "file": "flashswf/backgrounds/black-dragon-original/hthhltnb_5_BG.swf",
+      "sha256": "ea0aac10702c632e157f242fc876751313d560dda2fd4ce7e4fa3dbad33e96be"
+    },
+    {
+      "file": "flashswf/backgrounds/hthhltnb_5_BG.swf",
+      "sha256": "9e91de9d87d04baa0070a7f1bb056d7295115a8ab0cbd034bb0f09fd423d8d2e"
+    },
+    {
+      "file": "flashswf/arts/things4.swf",
+      "sha256": "49b73781cc8ec9aac0fa0d1bde904c3536c25d716e30509cc604baaede4ac5b6"
+    },
+    {
+      "file": "flashswf/arts/things5.swf",
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    }
+  ],
+  "files": [
+    {
+      "pageId": "lee-ambush",
+      "file": "lee-early-awakening-v1.png",
+      "bytes": 2844518,
+      "sha256": "46f901daddf5adc2a1aef41f2ddb523a3216f2a77aca5131fb5915d0d4a99b41",
+      "width": 1024,
+      "height": 1536
+    },
+    {
+      "pageId": "lee-breakout",
+      "file": "lee-late-awakening-v1.png",
+      "bytes": 3007606,
+      "sha256": "b2c9af43a65558fa9d52c1fdb3b7d5b682d9b2100423c54b05152a0e9723564d",
+      "width": 1024,
+      "height": 1536
+    },
+    {
+      "pageId": "lee-ending-normal",
+      "file": "lee-historical-ending-v1.png",
+      "bytes": 2865009,
+      "sha256": "123c44c75c67226c0b7781c999930065c8d6865c500543d8fdfe9944df1c1ef9",
+      "width": 1024,
+      "height": 1536
+    },
+    {
+      "pageId": "lee-ending-hidden",
+      "file": "lee-hidden-victory-v1.png",
+      "bytes": 2722801,
+      "sha256": "413ca55fbc9fcea4fd781621427dd1372cb1eb6ac19ec8e4a0b0577721359ea8",
+      "width": 1024,
+      "height": 1536
+    }
+  ]
+}

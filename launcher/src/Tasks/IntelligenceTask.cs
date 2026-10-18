@@ -245,6 +245,13 @@ namespace CF7Launcher.Tasks
                     case "snapshot":
                         RespondSnapshot(webCallId, parsed);
                         break;
+                    case "open_lee_story":
+                        if (parsed.Value<string>("itemName") != "黑龙令" || parsed.Value<string>("pageKey") != "5")
+                        { RespondError(webCallId, cmd, "invalid_payload"); break; }
+                        RequestFlash(webCallId, cmd, "intelligenceLeeStory", new JObject {
+                            ["itemName"]="黑龙令", ["pageKey"]="5"
+                        });
+                        break;
                     case "state":
                         RequestFlash(webCallId, cmd, "intelligenceState", parsed);
                         break;

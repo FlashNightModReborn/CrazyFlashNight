@@ -398,7 +398,8 @@
 
     // ── intelligence ──
     Panels.registerLazy('intelligence',
-        ['modules/intelligence-components.js',
+        ['modules/panel-runtime.js', 'modules/bookshelf-runtime.js', 'modules/lee-story-entry.js',
+         'modules/intelligence-components.js',
          'modules/font-pack-banner.js',
          'modules/intelligence-panel.js'],
         noop);

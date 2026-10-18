@@ -75,12 +75,14 @@
         var instance = options.panelInstanceId, domain = options.domain || 'bookshelf';
         if (!['bookshelf','bookshelf-original'].includes(domain)) throw new Error('unsupported_domain');
         this.domain = domain;
+        var panel = options.panel || 'bookshelf';
+        if (panel !== 'bookshelf' && !(panel === 'intelligence' && domain === 'bookshelf')) throw new Error('unsupported_owner');
         this.mux = new PanelRuntime.PanelRequestMux({
             send:options.send, timeoutMs:options.timeoutMs || 18000, callPrefix:'bookshelf',
             router:options.router || PanelRuntime.sharedResponseRouter,
-            createMessage:function(c) { return {type:'panel', panel:'bookshelf', domain:domain, cmd:c.entry.cmd,
+            createMessage:function(c) { return {type:'panel', panel:panel, domain:domain, cmd:c.entry.cmd,
                 callId:c.entry.callId, panelInstanceId:instance, payload:c.payload}; },
-            validateResponse:function(d, e) { return d && d.type === 'panel_resp' && d.panel === 'bookshelf'
+            validateResponse:function(d, e) { return d && d.type === 'panel_resp' && d.panel === panel
                 && d.domain === domain && d.cmd === e.cmd && d.callId === e.callId && d.panelInstanceId === instance; },
             createSynthetic:function(c) { return {success:false, error:c.error, clientSynthetic:true,
                 requiresReconcile:c.entry.write && c.error === 'client_timeout'}; }

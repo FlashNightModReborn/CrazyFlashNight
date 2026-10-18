@@ -107,15 +107,18 @@ namespace CF7Launcher.Tasks {
             lock(gate){
                 var s=current;
                 var d=msg?["payload"] as JObject;
-                if(disposed||s==null||s.Retired||Text(msg?["panel"])!="book-comic"||Text(msg?["domain"])!="book-comic"||Text(msg?["panelInstanceId"])!=s.Instance||!Exact(d,"v","presentationId","slot","sceneId","pageId")||!Version(d["v"])||!Tuple(d,s.Data))return;
-                if(cmd!="prepared"&&cmd!="continue"&&cmd!="skip"&&cmd!="failed")return;
+                if(disposed||s==null||s.Retired||Text(msg?["panel"])!="book-comic"||Text(msg?["domain"])!="book-comic"||Text(msg?["panelInstanceId"])!=s.Instance||(cmd=="cue"?!Exact(d,"v","presentationId","slot","sceneId","pageId","cueIndex"):!Exact(d,"v","presentationId","slot","sceneId","pageId"))||!Version(d["v"])||!Tuple(d,s.Data))return;
+                if(cmd!="prepared"&&cmd!="continue"&&cmd!="skip"&&cmd!="failed"&&cmd!="cue")return;
+                if(cmd=="cue" && (!CallId(d["cueIndex"])
+                    || d.Value<int>("cueIndex")>4
+                    || !(Text(d["pageId"])??"").StartsWith("lee-",StringComparison.Ordinal)))return;
                 if(s.Finishing)return;
                 var call=Text(msg["callId"]);
                 if(!Safe(call)||string.IsNullOrEmpty(call)||pending.IsKnownWebCallId(call))return;
-                Send(s,cmd=="prepared"?"prepared":"finish",cmd,call);
+                Send(s,cmd=="prepared"?"prepared":cmd=="cue"?"cue":"finish",cmd,call,cmd=="cue"?d.Value<int>("cueIndex"):-1);
             }
         }
-        void Send(Session s,string operation,string reason,string webCall){
+        void Send(Session s,string operation,string reason,string webCall,int cueIndex=-1){
             int fid;
             var request=new Request{
                 Session=s,Operation=operation,Reason=reason
@@ -126,8 +129,9 @@ namespace CF7Launcher.Tasks {
             var m=(JObject)s.Data.DeepClone();
             m["panelInstanceId"]=s.Instance??"";
             if(operation=="finish")m["reason"]=reason;
+            if(operation=="cue")m["cueIndex"]=cueIndex;
             m["task"]="cmd";
-            m["action"]=operation=="prepared"?"bookComicPrepared":"bookComicFinish";
+            m["action"]=operation=="prepared"?"bookComicPrepared":operation=="cue"?"bookComicCue":"bookComicFinish";
             m["callId"]=fid;
             pending.Send(fid,m.ToString(Formatting.None)+"\0");
         }
@@ -159,11 +163,11 @@ namespace CF7Launcher.Tasks {
                 var s=c.Context.Session;
                 bool valid=Tuple(m,s.Data)&&Text(m["panelInstanceId"])==(s.Instance??"")&&Text(m["operation"])==c.Context.Operation&&m["success"]?.Type==JTokenType.Boolean&&m["phase"]?.Type==JTokenType.String&&m["error"]?.Type==JTokenType.String;
                 bool terminal=valid&&m.Value<bool>("success")&&(Text(m["phase"])=="finished"||Text(m["phase"])=="expired")&&c.Context.Operation=="finish";
-                bool prepared=valid&&m.Value<bool>("success")&&Text(m["phase"])=="presenting"&&c.Context.Operation=="prepared";
+                bool prepared=valid&&m.Value<bool>("success")&&Text(m["phase"])=="presenting"&&(c.Context.Operation=="prepared"||c.Context.Operation=="cue");
                 if(!s.Retired&&ReferenceEquals(current,s)){
                     if(terminal)Retire(s);
                     else{
-                        s.Finishing=false;
+                        if(c.Context.Operation!="cue")s.Finishing=false;
                         Post(new JObject{
                             ["type"]="panel_resp",["panel"]="book-comic",["domain"]="book-comic",["panelInstanceId"]=s.Instance,["presentationId"]=s.Data["presentationId"],["callId"]=c.WebCallId,["cmd"]=c.Context.Reason,["success"]=prepared,["error"]=prepared?"":valid?Text(m["error"]):"malformed_response"
                         }
@@ -198,7 +202,7 @@ namespace CF7Launcher.Tasks {
             lock(gate){
                 var s=c.Context.Session;
                 if(s.Retired||!ReferenceEquals(current,s)||r==PanelPendingCallEndReason.Cleared)return;
-                s.Finishing=false;
+                if(c.Context.Operation!="cue")s.Finishing=false;
                 Post(new JObject{
                     ["type"]="panel_resp",["panel"]="book-comic",["domain"]="book-comic",["panelInstanceId"]=s.Instance,["presentationId"]=s.Data["presentationId"],["callId"]=c.WebCallId,["cmd"]=c.Context.Reason,["success"]=false,["error"]=r==PanelPendingCallEndReason.Timeout?"timeout":"disconnected"
                 }

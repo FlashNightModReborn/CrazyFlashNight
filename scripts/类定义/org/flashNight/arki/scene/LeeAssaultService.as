@@ -74,7 +74,7 @@ class org.flashNight.arki.scene.LeeAssaultService {
         if (_watch == null || _watch._name == undefined)
             _watch = _root.createEmptyMovieClip("__leeAssault", _root.getNextHighestDepth());
         _watch.onEnterFrame = function():Void { org.flashNight.arki.scene.LeeAssaultService.tick(); };
-        presentPage(_room, "lee-entry-" + index, "battle");
+        presentPage(_room, entryPage(_room), "battle");
     }
     private static function current(room:Object):Boolean {
         return room != null && room === _room && room.run === _root._saveExt.bookRun
@@ -161,7 +161,7 @@ class org.flashNight.arki.scene.LeeAssaultService {
                 if (room.index == 3) {
                     drainPower(room, 1, room.config.warningFrames + room.config.gapFrames);
                     room.phase = "final_outage";
-                } else presentPage(room, "lee-clear-" + room.index, "warning");
+                } else presentPage(room, clearedPage(room), "warning");
             }
             return;
         }
@@ -178,6 +178,7 @@ class org.flashNight.arki.scene.LeeAssaultService {
                 showWarning(room);
             } else { room.wait = 30; room.phase = "tail"; }
         } else if (room.phase == "aim") {
+            updateWarning(room);
             if (--room.wait > 0) return;
             removeWarning(room);
             if (actor.hp > 0) fireLightning(room, actor);
@@ -191,6 +192,8 @@ class org.flashNight.arki.scene.LeeAssaultService {
             var awakened:Boolean = LeeAssaultRules.resolve(room.state, room.index, actor.hp > 0);
             if (awakened) applyAwakening(actor, room.state);
             setLighting(room, true);
+            if (room.state.awakened === true && room.state.awakeningRoom == room.index)
+                _root.播放音效("高压爆炸.wav");
             room.phase = "after_wait";
         } else if (room.phase == "after_wait") {
             // 死亡弹窗保持可用。雷停后复活依旧可以续关，但该次复活已记入觉醒条件。
@@ -201,12 +204,8 @@ class org.flashNight.arki.scene.LeeAssaultService {
             HealApplier.applyHpCapped(actor, amount, actor.hp满血值);
             if (actor.hp < actor.hp满血值) return;
             if (room.phase == "final_recover") presentPage(room, "lee-after-3", "victory_comic");
-            else if (room.index == 2) presentPage(room, "lee-ambush", "capture");
+            else if (room.index == 2) presentAfterThirdRoom(room);
             else openRoom(room, false);
-        } else if (room.phase == "capture") {
-            // 剧情倒下只存在于漫画。普通死亡/复活/扣币都不参与这次演出。
-            if (room.state.awakened) presentPage(room, "lee-breakout", "breakout");
-            else presentPage(room, "lee-ending-normal", "ending_normal");
         } else if (room.phase == "breakout") openRoom(room, true);
         else if (room.phase == "victory_comic") presentPage(room, "lee-ending-hidden", "ending_hidden");
         else if (room.phase == "ending_normal" || room.phase == "ending_hidden") {
@@ -216,9 +215,35 @@ class org.flashNight.arki.scene.LeeAssaultService {
             room.manager.finishStage();
         }
     }
+    private static function entryPage(room:Object):String {
+        if (room.index == 3) return room.state.awakeningRoom < 2 ? "lee-entry-3-early" : "lee-entry-3-late";
+        if (room.index == 2 && room.state.awakened) return "lee-entry-2-awakened";
+        return "lee-entry-" + room.index + (room.index > 0 && room.state.revives > 0 ? "-revived" : "");
+    }
+    private static function clearedPage(room:Object):String {
+        var id:String = "lee-clear-" + room.index;
+        if (room.index == 0 || room.index == 3) return id;
+        if (room.state.awakened) return id + "-awakened";
+        if (room.state.revives > 0) return id + "-revived";
+        return id + (room.state.hits > 0 ? "" : "-observe");
+    }
     private static function awakenedPage(room:Object):String {
-        if (room.state.awakeningRoom == room.index) return "lee-awaken";
-        return "lee-after-" + room.index + (room.state.revives > 0 ? "-revived" : "");
+        // 先消费已获得的能力；后续复活不能把人物退回未觉醒的口吻。
+        if (room.state.awakened) {
+            if (room.state.awakeningRoom == room.index)
+                return room.index == 1 ? "lee-awaken-early" : "lee-awaken-late";
+            return "lee-after-2-awakened";
+        }
+        var id:String = "lee-after-" + room.index;
+        if (room.index == 2) return id;
+        if (room.state.revives > 0) return id + "-revived";
+        return id + (room.state.hits > 0 ? "" : "-dodged");
+    }
+    private static function presentAfterThirdRoom(room:Object):Void {
+        // 只读取真实进阶记录。漫画受制不写死亡/复活，也不授予能力。
+        if (!room.state.awakened) presentPage(room, "lee-ending-normal", "ending_normal");
+        else if (room.state.awakeningRoom < 2) presentPage(room, "lee-ambush", "breakout");
+        else presentPage(room, "lee-breakout", "breakout");
     }
     private static function openRoom(room:Object, advance:Boolean):Void {
         if (!current(room)) return;
@@ -227,14 +252,27 @@ class org.flashNight.arki.scene.LeeAssaultService {
         if (advance) room.manager.nextStage();
     }
     private static function showWarning(room:Object):Void {
+        _root.播放音效("电流1.mp3");
         var mark:MovieClip = room.world.createEmptyMovieClip("__leeLightningMark", room.world.getNextHighestDepth());
         mark._x = room.aimX; mark._y = room.aimY;
-        mark.lineStyle(2, 0xFFCA66, 95);
-        mark.moveTo(-28, 0); mark.lineTo(28, 0); mark.moveTo(0, -13); mark.lineTo(0, 13);
-        mark.moveTo(-24, -9); mark.lineTo(24, -9); mark.lineTo(24, 9); mark.lineTo(-24, 9); mark.lineTo(-24, -9);
+        updateWarning(room);
+    }
+    private static function updateWarning(room:Object):Void {
+        var mark:MovieClip=room.world.__leeLightningMark;
+        if(mark==undefined) return;
+        var progress:Number=1-Math.max(0,room.wait)/room.config.warningFrames;
+        var radius:Number=40-14*progress;
+        mark.clear(); mark.lineStyle(2,progress>.7?0xFFF3D1:0xF5B84D,85);
+        for(var i:Number=0;i<=24;i++) {
+            var angle:Number=i*Math.PI/12, x:Number=Math.cos(angle)*radius, y:Number=Math.sin(angle)*radius*.36;
+            if(i==0) mark.moveTo(x,y); else mark.lineTo(x,y);
+        }
+        mark.lineStyle(1,0xFFF3D1,60+35*progress);
+        mark.moveTo(-12,0);mark.lineTo(12,0);mark.moveTo(0,-6);mark.lineTo(0,6);
     }
     private static function removeWarning(room:Object):Void { room.world.__leeLightningMark.removeMovieClip(); }
     private static function fireLightning(room:Object, actor:MovieClip):Void {
+        _root.播放音效("触电.wav");
         var emitter:MovieClip = room.world.__leeTrapEmitter;
         if (emitter == undefined) {
             emitter = room.world.createEmptyMovieClip("__leeTrapEmitter", room.world.getNextHighestDepth());

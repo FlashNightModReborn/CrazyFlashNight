@@ -3,6 +3,9 @@ org.flashNight.arki.unit.Action.Input.EnemyActionRuntimeTest.runAllTests();
 org.flashNight.arki.scene.ControlledEnemyLifecycleTest.runAllTests();
 org.flashNight.arki.scene.LeeTrialTelemetryTest.runAllTests();
 org.flashNight.arki.scene.LeeAssaultRulesTest.runAllTests();
+org.flashNight.arki.skill.LeeSkillLoadoutTest.runAllTests();
+org.flashNight.arki.scene.BookComicServiceTest.runAllTests();
+org.flashNight.arki.map.MapDomainBridgeTest.runAllTests();
 _root.__leeHandoffTestsComplete = function():Void {
     trace("FocusedTestRunId lee-trial Complete: __FOCUSED_RUN_ID__");
     delete _root.__leeHandoffTestsComplete;

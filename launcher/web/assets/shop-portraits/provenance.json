@@ -254,8 +254,8 @@
   },
   "dialogueManifest": {
     "path": "launcher/web/assets/dialogue-portraits/manifest.json",
-    "sha256": "29a67313f3110be5c1f9151a5f1724f89982421d927e02164591369b4e7d7d8d",
-    "bytes": 101764
+    "sha256": "e8d1493123bfc16f28ab2939eb8e479a9f0c938e508e230a6823066faa331f23",
+    "bytes": 101818
   },
   "sourcePartition": {
     "externalDialogue": 35,
@@ -1223,5 +1223,23 @@
         "sha256": "a874393fff7c81f38717eb5df9e03c0ac50d74fc311a428bd3e38ac4cf50d32f"
       }
     }
+  },
+  "dialogueMetadataRefresh": {
+    "mode": "unconsumed-dialogue-metadata-only",
+    "tool": {
+      "path": "tools/refresh-shop-portrait-sources.py",
+      "sha256": "b4c42bf43d7b393fd17a1ee80f33ab8c9b75f3e00840ca24bc61cdab75ca4d6d",
+      "bytes": 9959
+    },
+    "previousManifestSha256": "29a67313f3110be5c1f9151a5f1724f89982421d927e02164591369b4e7d7d8d",
+    "previousBakerSha256": "475c26177272db399e03dfe0819d5f26d772d7be7eca175b99540626d1e890e5",
+    "consumedModuleAstSha256": "b2337701bf19d608a93faa33f0435d4bb80ed209137018e29ea5f117170a148d",
+    "unchangedShopDialogueHelpers": [
+      "export_external_frames",
+      "export_swf_xml",
+      "frame_ranges_from_dialogue_portrait",
+      "timeline_labels_from_swf_xml"
+    ],
+    "unchangedShopEntries": 39
   }
 }
