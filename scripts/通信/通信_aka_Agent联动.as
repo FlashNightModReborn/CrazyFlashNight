@@ -3,9 +3,15 @@
 // 同一份 raw 还解析 dialogue_version（后端改写对话覆盖层后 bump）：变化时经
 // rag_dialogue_changed 通知 Host 失效覆盖层缓存，Host 回 gameCommand agentDialogueChanged
 // 让当前场景已绑定的 NPC 重绑对话。base XML / DataCache 永不清除。
+// 终端可用性由 Host 按 exe 存在判定并经 gameCommand ragTerminalAvailable 推送；
+// 本地 data/rag JSON 探测降为启动兜底（Host 信号到达后以 Host 为准）。
 
 _root.agent = {};
 _root.agent.npc_state_db_exists = false;
+// Host 已按 exe 存在性给出权威可用性；到达后本地 JSON 探测不得再覆盖。
+_root.agent.rag_availability_from_host = false;
+// 7 秒轮询只注册一次（JSON 兜底与 Host 信号都可能触发注册）。
+_root.agent.sync_poll_registered = false;
 _root.agent.last_task_publish_version = null;
 // 对话覆盖层版本基线：null＝本次槽位还没取过基线；槽位变化会重新置 null。
 _root.agent.last_dialogue_version = null;
@@ -81,6 +87,9 @@ _root.agent.检测npc状态库文件 = function():Void {
     };
     // 第一个回调：检测 npc_state_db.json 结果
     var onFirstCheck:Function = function(exists:Boolean):Void {
+        if (self.rag_availability_from_host == true) {
+            return;
+        }
         if (exists) {
             self.npc_state_db_exists = true;
             _root.agent.注册同步轮询();
@@ -91,6 +100,9 @@ _root.agent.检测npc状态库文件 = function():Void {
     };
     // 第二个回调：检测 sync_state.json 结果
     var onSecondCheck:Function = function(exists:Boolean):Void {
+        if (self.rag_availability_from_host == true) {
+            return;
+        }
         self.npc_state_db_exists = exists;
         _root.agent.注册同步轮询();
     };
@@ -804,9 +816,11 @@ _root.agent.槽位已切换 = function():Void {
 };
 
 _root.agent.注册同步轮询 = function():Void {
-    if(_root.agent.npc_state_db_exists){
-        _root.帧计时器.添加循环任务(_root.agent.轮询同步状态, 7000);
-    }
+    // 幂等：JSON 兜底与 Host 信号都可能触发注册，7 秒轮询只挂一次。
+    if (_root.agent.sync_poll_registered == true) return;
+    if (_root.agent.npc_state_db_exists != true) return;
+    _root.agent.sync_poll_registered = true;
+    _root.帧计时器.添加循环任务(_root.agent.轮询同步状态, 7000);
 };
 _root.agent.启动外部RAG工具 = function():Void {
     _root.最上层发布文字提示("正在启动通讯终端，请稍后……");
@@ -850,6 +864,20 @@ _root.gameCommands["ragChatUnavailable"] = function(params:Object):Void {
         message = "通讯终端暂不可用，请稍后重试。";
     }
     _root.最上层发布文字提示(message);
+};
+
+// Host→AS2：终端可用性（exe 存在与否）。只决定入口显隐，不代表 exe 已就绪；
+// 就绪仍由 Host 的 EnsureReady/health/bind 负责。旧 SWF 会忽略此命令，继续走 JSON 兜底。
+_root.gameCommands["ragTerminalAvailable"] = function(params:Object):Void {
+    var available:Boolean = (params != undefined && params.available == true);
+    _root.agent.rag_availability_from_host = true;
+    _root.agent.npc_state_db_exists = available;
+    if (available) {
+        _root.agent.注册同步轮询();
+    }
+    var exePath:String = (params == undefined || params.exePath == undefined)
+        ? "" : String(params.exePath);
+    trace("[Agent] ragTerminalAvailable=" + available + " exe=" + exePath);
 };
 
 // 平板 Web 面板的「终端通信」按钮经 Host tablet 域回环到本命令；

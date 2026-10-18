@@ -283,8 +283,9 @@ namespace CF7Launcher.RagTerminal
                     + response.Value<string>("status"));
         }
 
-        /// <summary>镜像 fscommand/launch_rag.bat：游戏安装根（projectRoot 的父目录）通配 exe。</summary>
-        private string ResolveExePath()
+        /// <summary>镜像 fscommand/launch_rag.bat：游戏安装根（projectRoot 的父目录）通配 exe。
+        /// 这是终端可用性判定的唯一来源：只做文件存在/选择，不启动 exe、不探活（可用性≠就绪）。</summary>
+        internal string ResolveExePath()
         {
             if (!string.IsNullOrEmpty(_exePathOverride))
             {

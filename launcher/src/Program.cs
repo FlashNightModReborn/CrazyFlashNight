@@ -1819,6 +1819,9 @@ class Program
             ragTerminalService = new CF7Launcher.RagTerminal.RagTerminalService(projectRoot, config.RagTerminalExePath);
             commandRouter.SetRagTerminalService(ragTerminalService);
             socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
+            // 可用性（exe 存在）在每次 AS2 连接就绪时重推一次；OnClientReady 重连即触发。
+            socketServer.OnClientReady += commandRouter.PushRagTerminalAvailability;
+            if (socketServer.IsClientReady) commandRouter.PushRagTerminalAvailability();
         }
 
         // === Native HUD + PanelHostController 完整装配（唯一路径）===

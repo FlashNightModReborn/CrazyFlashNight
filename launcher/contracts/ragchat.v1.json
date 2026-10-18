@@ -85,6 +85,14 @@
       "message"
     ]
   },
+  "terminalAvailability": {
+    "gameCommand": "ragTerminalAvailable",
+    "transport": "gameCommand (Host->AS2 cmd), sent on every OnClientReady; best-effort single shot, failures log-only",
+    "payload": "{available: boolean, exePath: string}",
+    "source": "RagTerminalService.ResolveExePath(): CF7_RAG_EXE env > ragTerminalExePath config > newest CFN-RAG-v*.exe in the install root by LastWriteTimeUtc; an explicitly configured/env path that does not exist returns unavailable without glob fallback",
+    "handler": "_root.gameCommands[\"ragTerminalAvailable\"] → _root.agent.npc_state_db_exists（入口显隐）",
+    "semantics": "availability only (exe exists); readiness still requires EnsureReady/health + bind. The data/rag JSON probe remains a boot fallback until the Host signal arrives; once received, the Host signal is authoritative"
+  },
   "response": null,
   "authority": {
     "chat": "cfn-rag-backend exclusive on http://127.0.0.1:7077, scoped by integration bind slot_key",

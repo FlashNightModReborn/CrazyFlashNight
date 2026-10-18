@@ -9762,6 +9762,88 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        [Fact]
+        public void RAGTERMINAL_AvailabilityPushDeliversAvailableWithExePath()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            LogManager.SetSink(_ => { });
+            try
+            {
+                string installRoot = Path.Combine(
+                    Path.GetTempPath(), "cfn-rag-router-" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(installRoot);
+                try
+                {
+                    string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                    Directory.CreateDirectory(projectRoot);
+                    string exePath = Path.Combine(installRoot, "CFN-RAG-v1.2.3.exe");
+                    File.WriteAllText(exePath, "");
+                    using var service = new RagTerminalService(
+                        projectRoot, null, HealthyRagHandler(""), path => { });
+                    r.SetRagTerminalService(service);
+                    string command = null;
+                    r.SetGameCommandSenderForTests(
+                        value => { command = value; return true; });
+
+                    r.PushRagTerminalAvailability();
+
+                    JObject payload = ParseWire(command);
+                    Assert.Equal("ragTerminalAvailable", payload.Value<string>("action"));
+                    Assert.True(payload.Value<bool>("available"));
+                    Assert.Equal(exePath, payload.Value<string>("exePath"));
+                }
+                finally
+                {
+                    Directory.Delete(installRoot, true);
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+        }
+
+        [Fact]
+        public void RAGTERMINAL_AvailabilityPushWithoutExeReportsUnavailable()
+        {
+            Capture c = new Capture();
+            LauncherCommandRouter r = MakeRouter(c);
+            LogManager.SetSink(_ => { });
+            try
+            {
+                string installRoot = Path.Combine(
+                    Path.GetTempPath(), "cfn-rag-router-" + Guid.NewGuid().ToString("N"));
+                Directory.CreateDirectory(installRoot);
+                try
+                {
+                    string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                    Directory.CreateDirectory(projectRoot);
+                    using var service = new RagTerminalService(
+                        projectRoot, null, HealthyRagHandler(""), path => { });
+                    r.SetRagTerminalService(service);
+                    string command = null;
+                    r.SetGameCommandSenderForTests(
+                        value => { command = value; return true; });
+
+                    r.PushRagTerminalAvailability();
+
+                    JObject payload = ParseWire(command);
+                    Assert.Equal("ragTerminalAvailable", payload.Value<string>("action"));
+                    Assert.False(payload.Value<bool>("available"));
+                    Assert.Equal("", payload.Value<string>("exePath"));
+                }
+                finally
+                {
+                    Directory.Delete(installRoot, true);
+                }
+            }
+            finally
+            {
+                LogManager.ResetSink();
+            }
+        }
+
         private static JObject ParseWire(string value) { return JObject.Parse(value.TrimEnd('\0')); }
     }
 }

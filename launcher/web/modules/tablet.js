@@ -41,7 +41,7 @@
   var infraLevels = {};           // name→level；{} = 未同步快照
   var infraSynced = false;        // 是否已收到 AS2 基建快照
   var infraAssets = null;         // AS2 权威物资快照 {money, materials{name→n}, skills{name→lv}}
-  var ragAvailable = false;       // AS2 快照的 npc_state_db_exists（原 XFL 终端通信显隐条件）
+  var ragAvailable = false;       // AS2 终端可用性（Host 按 exe 存在判定；本地 JSON 为启动兜底）
   var upgradeBusy = false;        // 升级命令在途（防重发）
   var selectedContact = -1, selectedInfra = -1, selectedMaterial = -1;
 
@@ -401,7 +401,7 @@
       overlay.appendChild(shopText);
     }
     // domain 'tablet' → AS2 openRagTerminal → agent.启动外部RAG工具
-    // 原 XFL 按 npc_state_db_exists 显隐：快照未给出可用信号时不渲染按钮
+    // 按终端可用性显隐：快照未给出可用信号时不渲染按钮
     if (cb.ragchat && ragAvailable) {
       overlay.appendChild(hotspot('contacts', cb.ragchat, '终端通信', function () {
         sfx('button_01.wav');

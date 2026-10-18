@@ -4963,6 +4963,21 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        /// <summary>终端可用性（exe 存在）向 AS2 的单次通知；只读判定，不启动/探活 exe。</summary>
+        internal void PushRagTerminalAvailability()
+        {
+            RagTerminal.RagTerminalService service = _ragTerminalService;
+            string exePath = service == null ? null : service.ResolveExePath();
+            bool available = !string.IsNullOrEmpty(exePath);
+            string extraFields = "\"available\":" + (available ? "true" : "false")
+                + ",\"exePath\":\"" + EscapeJsonString(exePath ?? "") + "\"";
+            bool delivered = TrySendGameCommand("ragTerminalAvailable", extraFields);
+            if (!delivered)
+            {
+                LogManager.Log("[Router] ragTerminalAvailable undelivered available=" + available);
+            }
+        }
+
         /// <summary>完成事件载荷白名单：savePath 必填非空字符串、taskId 必填正整数、
         /// npc 可选字符串（缺省空串——终端以任务记录里的 get_npc 为权威，本字段只作兜底）；
         /// 未知键整包拒收。委托 id 区间闸在 AS2 发送侧，Host 只做形状校验、不复制该常量。

@@ -825,6 +825,8 @@ class org.flashNight.neur.Server.ServerManager {
                 && action != "characterBuildSnapshot" && action != "webPanelUnpause"
                 && action != "bookComicPrepared" && action != "bookComicFinish"
                 && action != "ragChatUnavailable"
+                // 只读可用性通知，不参与奖励事务，奖励未决时也不能丢。
+                && action != "ragTerminalAvailable"
                 && action != "itemUseInboxSnapshot" && action != "itemUseCooldownSnapshot") {
             trace("[GameCmd] reward candidate pending: " + action);
             return;

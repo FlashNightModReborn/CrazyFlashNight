@@ -479,6 +479,85 @@ namespace CF7Launcher.Tests.RagTerminal
             Assert.Empty(started);
             Assert.Empty(handler.Requests);
         }
+
+        [Fact]
+        public void ResolveExePath_PrefersConfiguredOverride()
+        {
+            string installRoot = NewTempInstallRoot();
+            try
+            {
+                string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                Directory.CreateDirectory(projectRoot);
+                TouchExe(installRoot, "CFN-RAG-v1.0.0.exe", DateTime.UtcNow);
+                string configured = TouchExe(installRoot, "CFN-RAG-custom.exe", DateTime.UtcNow);
+                using var service = new RagTerminalService(projectRoot, configured, null, path => { });
+
+                Assert.Equal(configured, service.ResolveExePath());
+            }
+            finally
+            {
+                Directory.Delete(installRoot, true);
+            }
+        }
+
+        [Fact]
+        public void ResolveExePath_PicksNewestGlobMatch()
+        {
+            string installRoot = NewTempInstallRoot();
+            try
+            {
+                string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                Directory.CreateDirectory(projectRoot);
+                TouchExe(installRoot, "CFN-RAG-v3.0.0.exe", DateTime.UtcNow.AddHours(-2));
+                string newest = TouchExe(installRoot, "CFN-RAG-v4.0.0.exe", DateTime.UtcNow.AddHours(-1));
+                using var service = new RagTerminalService(projectRoot, null, null, path => { });
+
+                Assert.Equal(newest, service.ResolveExePath());
+            }
+            finally
+            {
+                Directory.Delete(installRoot, true);
+            }
+        }
+
+        [Fact]
+        public void ResolveExePath_NoMatch_ReturnsNull()
+        {
+            string installRoot = NewTempInstallRoot();
+            try
+            {
+                string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                Directory.CreateDirectory(projectRoot);
+                using var service = new RagTerminalService(projectRoot, null, null, path => { });
+
+                Assert.Null(service.ResolveExePath());
+            }
+            finally
+            {
+                Directory.Delete(installRoot, true);
+            }
+        }
+
+        [Fact]
+        public void ResolveExePath_ConfiguredMissing_ReturnsNull()
+        {
+            string installRoot = NewTempInstallRoot();
+            try
+            {
+                string projectRoot = Path.Combine(installRoot, "CrazyFlashNight");
+                Directory.CreateDirectory(projectRoot);
+                // 安装根里放着可通配命中的 exe：显式路径缺失时不允许回退通配。
+                TouchExe(installRoot, "CFN-RAG-v1.0.0.exe", DateTime.UtcNow);
+                string missing = Path.Combine(installRoot, "cfn-rag-missing-" + Guid.NewGuid().ToString("N") + ".exe");
+                using var service = new RagTerminalService(projectRoot, missing, null, path => { });
+
+                Assert.Null(service.ResolveExePath());
+            }
+            finally
+            {
+                Directory.Delete(installRoot, true);
+            }
+        }
     }
 
     /// <summary>共享 HTTP 桩：记录请求与 body，响应由 responder 决定；零真实网络。</summary>
