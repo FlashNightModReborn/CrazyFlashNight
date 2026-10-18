@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/hair/发型/发型-男式-黑中分头" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="发型-男式-黑中分头">
+      <layers>
+        <DOMLayer name="Layer 1" color="#A78A99" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/hair/发型/Symbol 793" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

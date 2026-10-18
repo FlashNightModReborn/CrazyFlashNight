@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Practice34/R8/抬炮15度总成25" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="抬炮15度总成">
+      <layers>
+        <DOMLayer name="炮塔总成（保持单一方向）" color="#74906A" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Practice34/R8/Turret/抬炮15度25" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-43.35" ty="-65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="完整车体总成（含轮系与全部固定表面）" color="#74906A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/犀牛R09/Chassis" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix tx="-43.35" ty="-65.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

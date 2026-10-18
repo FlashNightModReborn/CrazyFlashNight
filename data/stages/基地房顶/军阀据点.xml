@@ -117,6 +117,14 @@
                         <Level>26</Level>
                         <x>1093</x>
                         <y>635</y>
+                        <Parameters>
+                            <掉落物>
+                                <名字>军阀撤收命令</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种56</Type>
@@ -342,6 +350,14 @@
                         <Level>26</Level>
                         <x>754</x>
                         <y>630</y>
+                        <Parameters>
+                            <掉落物>
+                                <名字>军阀撤收命令</名字>
+                                <概率>100</概率>
+                                <最小数量>1</最小数量>
+                                <最大数量>1</最大数量>
+                            </掉落物>
+                        </Parameters>
                     </Enemy>
                     <Enemy>
                         <Type>兵种265</Type>
@@ -435,25 +451,25 @@
                 <Name>$PC</Name>
                 <Title>$PC_TITLE</Title>
                 <Char>$PC_CHAR#愤怒</Char>
-                <Text>将军，为你的所作所为付出代价吧！</Text>
+                <Text>找到你了！围攻我们基地、害死我们同伴的账，今天一起算！</Text>
             </Dialogue>
             <Dialogue id="1">
                 <Name>general</Name>
                 <Title>自由革命军司令</Title>
                 <Char>general</Char>
-                <Text>看来是我低估了你们的能力啊，A兵团！</Text>
+                <Text>哼，居然趁我部撤收抢修的时候直接摸进团部……看来是我低估了你们的技术和胆量，A兵团！</Text>
             </Dialogue>
             <Dialogue id="2">
-                <Name>$PC</Name>
-                <Title>$PC_TITLE</Title>
-                <Char>$PC_CHAR#愤怒</Char>
-                <Text>受死吧！</Text>
+                <Name>Andy Law</Name>
+                <Title>东区最强战士</Title>
+                <Char>Andy Law#挑战</Char>
+                <Text>少废话！没了外面的乌龟壳，看你拿什么挡老子的刀！</Text>
             </Dialogue>
             <Dialogue id="3">
                 <Name>general</Name>
                 <Title>自由革命军司令</Title>
                 <Char>general</Char>
-                <Text>想要杀我还没那么容易！</Text>
+                <Text>狂妄！警卫连，给我撕碎他们！</Text>
             </Dialogue>
         </Event>
         <Event>
@@ -507,7 +523,14 @@
                         <InstanceName>军阀据点-将军</InstanceName>
                         <x>1070</x>
                         <y>446</y>
-                    </Enemy>
+                    <Parameters>
+  <掉落物>
+    <名字>军阀撤收命令</名字>
+    <概率>100</概率>
+    <最小数量>1</最小数量>
+    <最大数量>1</最大数量>
+  </掉落物>
+</Parameters></Enemy>
                     <Enemy>
                         <Type>兵种55</Type>
                         <Interval>1000</Interval>

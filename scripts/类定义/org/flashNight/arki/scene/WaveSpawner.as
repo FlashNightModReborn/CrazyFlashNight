@@ -35,14 +35,14 @@ class org.flashNight.arki.scene.WaveSpawner {
     public var isActive:Boolean;
     public var isFinished:Boolean;
 
-    
+
     /**
      * 单例获取：返回全局唯一实例
      */
     public static function getInstance():WaveSpawner {
         return instance || (instance = new WaveSpawner());
     }
-    
+
     // ————————————————————————
     // 构造函数（私有）
     // ————————————————————————
@@ -50,36 +50,21 @@ class org.flashNight.arki.scene.WaveSpawner {
         linearEngine = LinearCongruentialEngine.getInstance();
     }
 
-    
-    public function init(_stageInfo:StageInfo):Void{
+
+    /** Bind spawn coordinates/depth before Start events; do not start waves here. */
+    public function prepareScene(_stageInfo:StageInfo):Void {
         sceneManager = SceneManager.instance;
         stageManager = StageManager.instance;
-        waveSpawnWheel = WaveSpawnWheel.instance;
-        waveSpawnWheel.init();
-
         gameworld = sceneManager.gameworld;
-
         spawnPoints = stageManager.spawnPoints;
-        
         stageInfo = _stageInfo;
-        waveInfo = stageInfo.waveInfo;
-
-        totalWave = waveInfo.length;
-        currentWave = 0;
-        countDownTime = 0;
-        waveTime = 0;
-        
-        isActive = true;
-        isFinished = false;
-        tickCount = 0;
-
         // 确定左右刷怪线
         var environment = stageManager.environment;
         if (environment.左侧出生线) {
             var left = environment.左侧出生线;
             this.getLeft = function() {
                 return {
-                    x: linearEngine.randomIntegerStrict(left.x0, left.x1), 
+                    x: linearEngine.randomIntegerStrict(left.x0, left.x1),
                     y: linearEngine.randomIntegerStrict(left.y0, left.y1)
                 };
             };
@@ -90,13 +75,30 @@ class org.flashNight.arki.scene.WaveSpawner {
             var right = environment.右侧出生线;
             this.getRight = function() {
                 return {
-                    x: linearEngine.randomIntegerStrict(right.x0, right.x1), 
+                    x: linearEngine.randomIntegerStrict(right.x0, right.x1),
                     y: linearEngine.randomIntegerStrict(right.y0, right.y1)
                 };
             };
         } else {
             this.getRight = this.defaultGetRight;
         }
+
+    }
+
+    public function init(_stageInfo:StageInfo):Void{
+        prepareScene(_stageInfo);
+        waveSpawnWheel = WaveSpawnWheel.instance;
+        waveSpawnWheel.init();
+        waveInfo = stageInfo.waveInfo;
+
+        totalWave = waveInfo.length;
+        currentWave = 0;
+        countDownTime = 0;
+        waveTime = 0;
+
+        isActive = true;
+        isFinished = false;
+        tickCount = 0;
 
         // 订阅frameUpdate事件，以控制刷怪和计时
         // gameworld.dispatcher.subscribeGlobal("frameUpdate", this.tick, this);
@@ -164,7 +166,7 @@ class org.flashNight.arki.scene.WaveSpawner {
         // 重新获取随机数引擎（它是无状态的）
         linearEngine = LinearCongruentialEngine.getInstance();
     }
-    
+
 
     public function startWave():Void{
         tickCount = 0;

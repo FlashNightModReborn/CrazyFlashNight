@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/G02/Parts/DoorLower" itemID="101db20a-53c385f9">
+  <timeline>
+    <DOMTimeline name="DoorLower">
+      <layers>
+        <DOMLayer name="RetainedRearGuide" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#67655D"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.7">
+                        <fill>
+                          <SolidColor color="#282925"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!10537 4088|10697 4088!10697 4088|10677 4248!10677 4248|10577 4288!10577 4288|10537 4088"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.7">
+                        <fill>
+                          <SolidColor color="#B5B2A7"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!10577 4128|10637 4128!10637 4128|10637 4228"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="HangingPanel" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Doors/DerailedPanel" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.273148792129965" b="-0.058059568079465" c="0.058059568079465" d="0.273148792129965" tx="437.55" ty="231.2"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -7354,5 +7354,53 @@
       "secondary2": null,
       "melee": null
     }
+  },
+  {
+    "id": 470,
+    "spritename": "主角-男",
+    "level": 20,
+    "name": "同伴A",
+    "is_hostile": false,
+    "height": 170,
+    "data": {
+      "primary": "G36",
+      "secondary": "M1911",
+      "secondary2": "m9",
+      "melee": "匕首",
+      "grenade": null,
+      "face": "女变装-基本脸型",
+      "hairstyle": "发型-女式-银色清爽直发",
+      "head": "战术猪鼻式防毒面具",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团制式战术手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "女"
+    }
+  },
+  {
+    "id": 471,
+    "spritename": "主角-男",
+    "level": 20,
+    "name": "同伴B",
+    "is_hostile": false,
+    "height": 180,
+    "data": {
+      "primary": "AK74",
+      "secondary": "Mossberg500",
+      "secondary2": "Mossberg500",
+      "melee": "战术狗腿刀",
+      "grenade": null,
+      "face": "男变装-基本脸型",
+      "hairstyle": "发型-男式-黑蓬头",
+      "head": "红外夜视仪",
+      "body": "A兵团制式战术背心",
+      "leg": "A兵团制式战术裤",
+      "hand": "A兵团制式战术手套",
+      "foot": "A兵团制式战术皮鞋",
+      "neck": "战斗专家军牌",
+      "gender": "男"
+    }
   }
 ]

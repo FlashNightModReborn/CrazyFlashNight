@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/poses/retreat-near-access" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="retreat-near-access">
+      <layers>
+        <DOMLayer name="settled-contact-wound">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/wounds/retreat-near-access" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.21237183" b="0.81646729" c="-0.81646729" d="-0.21237183" tx="-66.25" ty="196.55"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="native-death-pose">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-00" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.02630615" b="0.83247375" c="-0.83247375" d="0.02630615" tx="15.6" ty="251.95"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-01" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.15632629" b="0.81671143" c="-0.81671143" d="-0.15632629" tx="-62.65" ty="254.9"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-02" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.83222961" b="-0.02728271" c="0.02728271" d="-0.83222961" tx="-134.8" ty="239.25"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-03" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.29714966" b="0.78741455" c="-0.78741455" d="0.29714966" tx="-101.0" ty="218.6"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-04" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.21237183" b="0.81646729" c="-0.81646729" d="-0.21237183" tx="-66.25" ty="196.55"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/heads/retreat-near-access" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.2076416" b="0.93197632" c="-0.93197632" d="0.2076416" tx="59.75" ty="233.3"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-06" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.26132202" b="0.8087616" c="-0.8087616" d="0.26132202" tx="-106.85" ty="203.5"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-07" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.21403503" b="0.82409668" c="-0.82409668" d="0.21403503" tx="-279.75" ty="218.95"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-08" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.18075562" b="0.83024597" c="-0.83024597" d="-0.18075562" tx="-186.55" ty="250.3"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-09" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.41220093" b="0.73680115" c="-0.73680115" d="0.41220093" tx="-130.1" ty="193.15"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-07" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.14672852" b="0.83537292" c="-0.83537292" d="0.14672852" tx="-328.4" ty="236.85"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-08" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.02183533" b="0.84791565" c="-0.84791565" d="-0.02183533" tx="-232.45" ty="245.8"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-00" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.30145264" b="0.77661133" c="-0.77661133" d="0.30145264" tx="21.25" ty="178.8"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-10" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.51298523" b="0.65380859" c="-0.65380859" d="0.51298523" tx="-64.1" ty="215.5"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/part-11" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="-0.62521362" b="0.55104065" c="-0.55104065" d="-0.62521362" tx="-120.4" ty="259.35"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,106 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" width="1635" height="570">
+  <folders>
+    <DOMFolderItem name="Hind"/>
+    <DOMFolderItem name="Hind/G02"/>
+    <DOMFolderItem name="Hind/G02/Assembly"/>
+    <DOMFolderItem name="Hind/G02/Body"/>
+    <DOMFolderItem name="Hind/G02/Body/art"/>
+    <DOMFolderItem name="Hind/G02/Doors"/>
+    <DOMFolderItem name="Hind/G02/Parts"/>
+    <DOMFolderItem name="Hind/G02/Parts/art"/>
+    <DOMFolderItem name="Hind/G02/Surface"/>
+    <DOMFolderItem name="Hind/G02/Surface/Art"/>
+    <DOMFolderItem name="Hind/Identity"/>
+    <DOMFolderItem name="Hind/Parts"/>
+    <DOMFolderItem name="Hind/Rotors"/>
+    <DOMFolderItem name="Hind/Rotors/src"/>
+    <DOMFolderItem name="Hind/Source"/>
+    <DOMFolderItem name="RoofCrashR4"/>
+  </folders>
+  <symbols>
+    <Include href="Hind/G02/Assembly/Warlord_Static.xml"/>
+    <Include href="Hind/Rotors/MainStatic.xml"/>
+    <Include href="Hind/Source/MainRotorOriginal.xml"/>
+    <Include href="Hind/G02/Parts/DoorLower.xml"/>
+    <Include href="Hind/G02/Doors/DerailedPanel.xml"/>
+    <Include href="Hind/G02/Surface/Art/SkinFragmentScars.xml"/>
+    <Include href="Hind/G02/Surface/Art/SkinBlastSoot.xml"/>
+    <Include href="Hind/Source/DoorPanel.xml"/>
+    <Include href="Hind/Identity/FactionSlot.xml"/>
+    <Include href="Hind/Identity/AOriginal.xml"/>
+    <Include href="Hind/Identity/WarlordOriginal.xml"/>
+    <Include href="Hind/Parts/TailDetail.xml"/>
+    <Include href="Hind/Source/TailTip.xml"/>
+    <Include href="Hind/Rotors/TailStatic.xml"/>
+    <Include href="Hind/Rotors/src/TailAssembly.xml"/>
+    <Include href="Hind/Source/TailBlade.xml"/>
+    <Include href="Hind/Parts/WeaponWing.xml"/>
+    <Include href="Hind/Source/WeaponWing.xml"/>
+    <Include href="Hind/Parts/Missiles.xml"/>
+    <Include href="Hind/Source/Missile.xml"/>
+    <Include href="Hind/Parts/RocketPods.xml"/>
+    <Include href="Hind/Source/RocketPod.xml"/>
+    <Include href="Hind/Parts/DoorUpper.xml"/>
+    <Include href="Hind/Parts/CabinFittings.xml"/>
+    <Include href="Hind/Source/Seat.xml"/>
+    <Include href="Hind/Parts/DetailLines.xml"/>
+    <Include href="Hind/Source/AntennaLines.xml"/>
+    <Include href="Hind/G02/Parts/NoseGun.xml"/>
+    <Include href="Hind/G02/Parts/art/NoseGun.xml"/>
+    <Include href="Hind/G02/Body/TailRegion.xml"/>
+    <Include href="Hind/G02/Surface/HullWear.xml"/>
+    <Include href="Hind/G02/Surface/SkinFragmentScars.xml"/>
+    <Include href="Hind/G02/Surface/SkinNoseAbrasion.xml"/>
+    <Include href="Hind/G02/Surface/Art/SkinNoseAbrasion.xml"/>
+    <Include href="Hind/G02/Surface/SkinBellyAbrasion.xml"/>
+    <Include href="Hind/G02/Surface/Art/SkinBellyAbrasion.xml"/>
+    <Include href="Hind/G02/Surface/SkinFairingCrease.xml"/>
+    <Include href="Hind/G02/Surface/SkinBlastSoot.xml"/>
+    <Include href="Hind/G02/Body/art/TailRegion.xml"/>
+    <Include href="Hind/G02/Body/BellyRegion.xml"/>
+    <Include href="Hind/G02/Body/art/BellyRegion.xml"/>
+    <Include href="Hind/G02/Body/CabinRegion.xml"/>
+    <Include href="Hind/G02/Body/art/CabinRegion.xml"/>
+    <Include href="Hind/G02/Body/UpperMiddleRegion.xml"/>
+    <Include href="Hind/G02/Body/art/UpperMiddleRegion.xml"/>
+    <Include href="Hind/G02/Body/FrontRegion.xml"/>
+    <Include href="Hind/G02/Body/art/FrontRegion.xml"/>
+    <Include href="Hind/G02/Parts/GearNear.xml"/>
+    <Include href="Hind/Source/MainWheel.xml"/>
+    <Include href="Hind/G02/Parts/GearNose.xml"/>
+    <Include href="Hind/Source/NoseWheel.xml"/>
+    <Include href="Hind/G02/Parts/EmptyCabinBackdrop.xml"/>
+    <Include href="Hind/G02/Parts/CanopyInnerShell.xml"/>
+    <Include href="Hind/G02/Parts/art/CanopyInnerShell.xml"/>
+    <Include href="Hind/G02/Parts/GearFar.xml"/>
+    <Include href="RoofCrashR4/crash-contact-front.xml"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="base_siege_hind">
+      <layers>
+        <DOMLayer name="states">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script>this.__siegeReady = true; stop();</script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Assembly/Warlord_Static" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="166.666666667" ty="-389.333333333"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="RoofCrashR4/crash-contact-front" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.3333333333333333" b="0" c="0" d="1.3333333333333333" tx="-233.33333333333334" ty="-365.3333333333333"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

@@ -1,0 +1,213 @@
+{
+  "revision": "R8",
+  "defenders": {
+    "upper-gunner": {
+      "hair": "黑中分头",
+      "poseFrame0": 60,
+      "nativeAction": "血腥死 / sprite/Symbol 825",
+      "bounds": [
+        -76.89527408659025,
+        -42.18720042958084,
+        80.40364678499998,
+        1.4509974335628895e-06
+      ],
+      "headCentre": [
+        55.34877014011909,
+        -23.867790863623505
+      ],
+      "poolCentre": [
+        44.403646750190966,
+        -10.867790863623505
+      ]
+    },
+    "lower-gunner": {
+      "hair": "黑朋克头",
+      "poseFrame0": 174,
+      "nativeAction": "血腥死 / sprite/Symbol 825",
+      "bounds": [
+        -87.36425387901289,
+        -45.695161891448116,
+        87.36425387038773,
+        1.5147625140460308e-06
+      ],
+      "headCentre": [
+        45.82136766406659,
+        -21.868852887381323
+      ],
+      "poolCentre": [
+        34.970616782411355,
+        -8.868852887381323
+      ]
+    },
+    "retreat-near-room": {
+      "hair": "精武短发",
+      "poseFrame0": 290,
+      "nativeAction": "血腥死 / sprite/Symbol 825",
+      "bounds": [
+        -73.13660330446955,
+        -48.31029658186913,
+        86.93220555399999,
+        1.6755220013237038e-06
+      ],
+      "headCentre": [
+        59.34614090782442,
+        -22.83875077359711
+      ],
+      "poolCentre": [
+        48.432205201029674,
+        -9.83875077359711
+      ]
+    },
+    "retreat-near-access": {
+      "hair": "黑马尾头",
+      "poseFrame0": 414,
+      "nativeAction": "血腥死 / sprite/Symbol 825",
+      "bounds": [
+        -72.79517724361374,
+        -45.18508476576456,
+        73.6211480775,
+        1.150115006
+      ],
+      "headCentre": [
+        54.31596109281976,
+        -20.349885242807154
+      ],
+      "poolCentre": [
+        44.121148146354244,
+        -7.349885242807154
+      ]
+    }
+  },
+  "reservedTigrHair": [
+    "mercenary-short-dark-crop",
+    "发型-男式-平头"
+  ],
+  "sourceHashes": {
+    "deathRig": "3f6e20ce892ad2a0eac6ffd2d51e2ee0a431bc2e5f5a66ffbd56d50b853f1cbb",
+    "equipmentSkin": "c517ff7579c6fba7ddfcd60a1c0cc6d64baabedfe3077b06a63ff536b79062b0"
+  },
+  "unchangedTigrBodies": {
+    "17": "df8426d20c7de0f1477cb5e7110b961b3ecfafe4f852d251bdee873e700f7cfb",
+    "18": "0561977e097ae04eba80451706d6629368b90cf8be6fb374311cf018df810a00"
+  },
+  "views": {
+    "roof": {
+      "defenders": [
+        {
+          "id": "upper-gunner",
+          "position": [
+            1473,
+            275
+          ],
+          "scale": 0.86,
+          "rotation": -5,
+          "mirror": false
+        },
+        {
+          "id": "lower-gunner",
+          "position": [
+            1508,
+            349
+          ],
+          "scale": 0.84,
+          "rotation": 6,
+          "mirror": false
+        },
+        {
+          "id": "retreat-near-room",
+          "position": [
+            1090,
+            440
+          ],
+          "scale": 0.9,
+          "rotation": -8,
+          "mirror": true
+        },
+        {
+          "id": "retreat-near-access",
+          "position": [
+            714,
+            491
+          ],
+          "scale": 0.9,
+          "rotation": 4,
+          "mirror": true
+        }
+      ],
+      "guns": [
+        {
+          "condition": "upper",
+          "origin": [
+            1571.9,
+            241.55
+          ],
+          "additionalRotation": 0
+        },
+        {
+          "condition": "lower",
+          "origin": [
+            1526,
+            378
+          ],
+          "additionalRotation": 12
+        }
+      ],
+      "fallenTripod": [
+        1597.8091623280395,
+        365.30249379332065,
+        140
+      ]
+    },
+    "gate": {
+      "defenders": [
+        {
+          "id": "upper-gunner",
+          "position": [
+            20,
+            146
+          ],
+          "scale": 0.76,
+          "rotation": -10,
+          "mirror": false
+        },
+        {
+          "id": "lower-gunner",
+          "position": [
+            0,
+            214
+          ],
+          "scale": 0.73,
+          "rotation": -6,
+          "mirror": false
+        }
+      ],
+      "guns": [
+        {
+          "condition": "upper",
+          "origin": [
+            110,
+            149.9
+          ],
+          "additionalRotation": 0
+        },
+        {
+          "condition": "lower",
+          "origin": [
+            -2,
+            313
+          ],
+          "additionalRotation": -16
+        }
+      ],
+      "fallenTripod": [
+        55.44260875149743,
+        268.07640798602466,
+        145
+      ]
+    }
+  },
+  "weaponStory": {
+    "upper": "receiver struck; complete gun stays seated on its original tripod",
+    "lower": "whole gun and tripod knocked down onto the inside of the parapet"
+  }
+}

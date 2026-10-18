@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/defenders/retreat-near-access" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="retreat-near-access">
+      <layers>
+        <DOMLayer name="body">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/poses/retreat-near-access" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.27708435" b="0.0" c="0.0" d="0.27690125" tx="31.7038164" ty="-82.75482986"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="native-contact-blood">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/blood/native-87" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.11006585" b="0.0" c="0.0" d="0.73593074" tx="14.62114815" ty="-44.4039978"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/heads/retreat-near-access" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="retreat-near-access">
+      <layers>
+        <DOMLayer name="mask">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/mask" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="native-hair">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/hair/发型/发型-男式-黑马尾头" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="9.65" ty="-24.25"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="face">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/body-parts/face" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

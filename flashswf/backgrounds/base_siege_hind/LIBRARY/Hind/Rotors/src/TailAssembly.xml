@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/Rotors/src/TailAssembly" itemID="0236a984-3db2b2c5" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="TailAssembly">
+      <layers>
+        <DOMLayer name="blades" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/TailBlade" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="1016.55" ty="106.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Hind/Source/TailBlade" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.137481689453125" b="0.247406005859375" c="-0.247406005859375" d="-0.137481689453125" tx="1016.85" ty="111.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Hind/Source/TailBlade" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.145294189453125" b="-0.242752075195313" c="0.242767333984375" d="-0.145294189453125" tx="1012" ty="110.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

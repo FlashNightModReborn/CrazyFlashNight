@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/tripod-grounded" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="tripod-grounded">
+      <layers>
+        <DOMLayer name="native-tripod">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R8/tripod-native" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.2419219" b="-0.63069222" c="0.97029573" d="0.15724923" tx="242.62998284" ty="-526.14023506"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

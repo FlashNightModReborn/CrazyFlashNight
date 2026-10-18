@@ -1,0 +1,57 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" width="1635" height="570">
+  <folders>
+    <DOMFolderItem name="RoofCrashR4"/>
+  </folders>
+  <symbols>
+    <Include href="RoofCrashR4/equipment-overload.xml"/>
+    <Include href="RoofCrashR4/equipment-offline.xml"/>
+    <Include href="RoofCrashR4/equipment-repaired.xml"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="base_siege_equipment">
+      <layers>
+        <DOMLayer name="states">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.__siegeReady = true; stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="RoofCrashR4/equipment-overload" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="-410"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.__siegeReady = true; stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="RoofCrashR4/equipment-offline" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="-410"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.__siegeReady = true; stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="RoofCrashR4/equipment-repaired" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1" b="0" c="0" d="1" tx="0" ty="-410"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R7/rocket-front" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="rocket-front">
+      <layers>
+        <DOMLayer name="charred-fracture">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="2" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#303732" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!1640 140|1700 180|1640 240|1680 300|1620 360|1660 400" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.65" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#7d8279" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!1640 140|1700 180|1640 240|1680 300|1620 360|1660 400" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="cut-outline" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#ffffff" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1640 -40|3460 -40|3460 580|1640 580|1640 -40" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="native-drawing" parentLayerIndex="1" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Symbol 27" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

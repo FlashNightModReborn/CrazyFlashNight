@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/wounds/retreat-near-room" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="retreat-near-room">
+      <layers>
+        <DOMLayer name="editable-vector">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="23.1628" ty="-99.17602598"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-200 -100|-60 -160|20 -100|140 -140|120 -40|240 20|80 60|60 240|-40 140|-140 160|-100 60|-240 20|-200 -100" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="23.1628" ty="-99.17602598"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#250e10" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="0.9" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#17191a" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-60 -40|40 -60|80 20|0 80|-80 40|-60 -40" fillStyle1="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="23.1628" ty="-99.17602598"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#660000" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-80 140[-120 340 -60 560|0 680|40 600|0 420|40 280|0 120|-80 140" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

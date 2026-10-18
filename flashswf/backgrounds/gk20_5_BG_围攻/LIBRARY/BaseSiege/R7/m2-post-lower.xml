@@ -1,0 +1,88 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R7/m2-post-lower" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="m2-post-lower">
+      <layers>
+        <DOMLayer name="barrel-fracture">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#61685f" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#272c28" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!3300 -1020|3460 -980|3360 -900|3440 -820|3280 -780|3300 -1020" fillStyle1="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#a4aaa0" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!3300 -980|3380 -920|3320 -860" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="sagged-barrel">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R7/m2-barrel" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="0.83867057" b="0.54463904" c="-0.54463904" d="0.83867057" tx="1.87382284" ty="-100.45375017"/>
+                  </matrix>
+                  <color>
+                    <Color redMultiplier="0.81" greenMultiplier="0.81" blueMultiplier="0.81"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="receiver">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/R7/m2-receiver" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <color>
+                    <Color redMultiplier="0.86" greenMultiplier="0.86" blueMultiplier="0.86"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/Parts/RocketPods" itemID="e6fd7881-45c9cf2d">
+  <timeline>
+    <DOMTimeline name="RocketPods">
+      <layers>
+        <DOMLayer name="Source_19" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/RocketPod" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="550.75" ty="258.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Source_18" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/RocketPod" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="542.8" ty="238.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

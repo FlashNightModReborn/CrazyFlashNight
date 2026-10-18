@@ -1,0 +1,69 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R7/gate-stains" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="gate-stains">
+      <layers>
+        <DOMLayer name="editable-vector">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#4c302c" alpha="0.72"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1340 2340[1400 2263 1470 2295[1630 2250 1720 2346|1650 2385|1530 2391|1486 2372|1376 2378|1340 2340" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#51342e" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1748 2385|1746 2389|1740 2393|1731 2396|1720 2397|1709 2396|1700 2393|1694 2389|1692 2385|1694 2380|1700 2376|1709 2374|1720 2373|1731 2374|1740 2376|1746 2380|1748 2385" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#4c302c" alpha="0.72"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!80 4760[140 4683 210 4715[370 4670 460 4766|390 4805|270 4811|226 4792|116 4798|80 4760" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#51342e" alpha="0.6"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!488 4805|486 4809|480 4813|471 4816|460 4817|449 4816|440 4813|434 4809|432 4805|434 4800|440 4796|449 4794|460 4793|471 4794|480 4796|486 4800|488 4805" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

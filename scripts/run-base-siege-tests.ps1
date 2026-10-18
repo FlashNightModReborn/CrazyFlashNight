@@ -1,0 +1,6 @@
+﻿[CmdletBinding()]
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=240)
+$ErrorActionPreference='Stop'
+$runnerPath=Join-Path $PSScriptRoot 'test-runners\run-focused-testloader.ps1'
+& $runnerPath -DomainId 'base-siege' -TemplateRelativePath 'scripts/test-runners/base-siege/TestLoader.as.template' -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/BaseSiegeFlowTest.as','scripts/类定义/org/flashNight/arki/scene/BaseSiegeTest.as') -AdditionalAsRelativePaths @('scripts/类定义/org/flashNight/arki/scene/BaseSiegeSceneTest.as') -CompileTargetRelativePath 'scripts/BaseSiegeNativeHost/BaseSiegeNativeHost.xfl' -CompileSwfRelativePath 'scripts/BaseSiegeNativeHost.swf' -SuiteFqns @('org.flashNight.arki.scene.BaseSiegeFlowTest','org.flashNight.arki.scene.BaseSiegeTest') -ExpectedTracePatterns @('(?m)^BaseSiegeSceneTest Tests Passed: 28\r?$','(?m)^BaseSiegeSceneTest Tests Failed: 0\r?$','(?m)^BaseSiegeFlowTest Tests Passed: 46\r?$','(?m)^BaseSiegeFlowTest Tests Failed: 0\r?$','(?m)^BaseSiegeTest Tests Passed: 54\r?$','(?m)^BaseSiegeTest Tests Failed: 0\r?$','(?m)^BaseSiegeTest Assets Loaded: 9/9\r?$') -SuccessSummary '128 assertions; R5 coil transition, reverse route, live defense target, original base combat; 9 published SWFs' -TimeoutSeconds $TimeoutSeconds -AsyncBehaviorTimeoutSeconds 60
+if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}

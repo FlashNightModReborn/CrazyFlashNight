@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/Identity/FactionSlot" itemID="eef9ec5a-5a906ba0" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="FactionSlot">
+      <layers>
+        <DOMLayer name="Faction" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" name="A" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Identity/AOriginal" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="2.2672119140625" d="2.2672119140625" tx="331.7" ty="273.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" name="Warlord" labelType="name" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Identity/WarlordOriginal" symbolType="graphic" loop="single frame">
+                  <matrix>
+                    <Matrix a="0.89050139275766" d="0.89050139275766" tx="315.8" ty="257.55"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

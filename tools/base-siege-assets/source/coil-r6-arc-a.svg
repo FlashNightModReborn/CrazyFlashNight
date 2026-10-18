@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 84 Q111 106 172 84" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.09839999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M50 84 Q111 106 172 84" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4592" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M33 151 Q111 173 189 151" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.09839999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M33 151 Q111 173 189 151" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4592" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 227 Q111 249 205 227" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.09839999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 227 Q111 249 205 227" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4592" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M29 443 L18 480" fill="none" stroke="#42B2CD" stroke-width="3" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 443 L207 480" fill="none" stroke="#42B2CD" stroke-width="3" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <radialGradient id="corona" gradientUnits="userSpaceOnUse" cx="111" cy="-18" r="60">
+      <stop offset="0" stop-color="#80DFF4" stop-opacity="0.0"/>
+      <stop offset=".68" stop-color="#80DFF4" stop-opacity="0.0"/>
+      <stop offset=".85" stop-color="#80DFF4" stop-opacity="0.1066"/>
+      <stop offset="1" stop-color="#80DFF4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="111" cy="-18" r="60" fill="url(#corona)"/>
+  <path d="M167 28 L178 41 L166 47 L181 63 L171 70 L171 84" fill="none" stroke="#227EC1" stroke-width="10" stroke-opacity="0.09" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M167 28 L178 41 L166 47 L181 63 L171 70 L171 84" fill="none" stroke="#4BC6F0" stroke-width="3.6" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M167 28 L178 41 L166 47 L181 63 L171 70 L171 84" fill="none" stroke="#D4F5FF" stroke-width="1.35" stroke-opacity="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M171 84 L181 102 L172 110 L190 127 L183 138 L189 151" fill="none" stroke="#227EC1" stroke-width="10" stroke-opacity="0.09" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M171 84 L181 102 L172 110 L190 127 L183 138 L189 151" fill="none" stroke="#4BC6F0" stroke-width="3.6" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M171 84 L181 102 L172 110 L190 127 L183 138 L189 151" fill="none" stroke="#D4F5FF" stroke-width="1.35" stroke-opacity="0.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M181 63 L190 70 L171 84" fill="none" stroke="#71CDEB" stroke-width="1.0" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

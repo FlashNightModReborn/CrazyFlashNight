@@ -285,8 +285,12 @@ function validateBlock(block, loc, errors) {
   if (Array.isArray(block.fragments)) block.fragments.forEach((child, index) => validateBlock(child, `${loc}.fragments[${index}]`, errors));
   if (Array.isArray(block.entries)) {
     block.entries.forEach((entry, index) => {
-      if (entry && Array.isArray(entry.content)) validateInlineArray(entry.content, `${loc}.entries[${index}].content`, errors);
-      if (entry && Array.isArray(entry.blocks)) entry.blocks.forEach((child, childIndex) => validateBlock(child, `${loc}.entries[${index}].blocks[${childIndex}]`, errors));
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) {
+        errors.push(`${loc}.entries[${index}]: entry must be an object`);
+        return;
+      }
+      if (Array.isArray(entry.content)) validateInlineArray(entry.content, `${loc}.entries[${index}].content`, errors);
+      if (Array.isArray(entry.blocks)) entry.blocks.forEach((child, childIndex) => validateBlock(child, `${loc}.entries[${index}].blocks[${childIndex}]`, errors));
     });
   }
   if (Array.isArray(block.rows)) {

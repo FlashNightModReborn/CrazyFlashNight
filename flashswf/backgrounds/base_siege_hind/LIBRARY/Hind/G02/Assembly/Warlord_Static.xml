@@ -1,0 +1,295 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/G02/Assembly/Warlord_Static" itemID="6bd28e64-12c40b27">
+  <timeline>
+    <DOMTimeline name="Warlord_Static">
+      <layers>
+        <DOMLayer name="MainRotor" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Rotors/MainStatic" name="mainRotor_mc">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DoorLower" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/DoorLower" name="DoorLower_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Faction" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Identity/FactionSlot" symbolType="graphic" firstFrame="1" loop="single frame">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailDetail" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/TailDetail" name="TailDetail_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailRotor" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Rotors/TailStatic" name="tailRotor_mc">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="WeaponWing" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/WeaponWing" name="WeaponWing_part">
+                  <matrix>
+                    <Matrix a="0.996194698091746" b="0.0871557427476582" c="-0.0871557427476582" d="0.996194698091746" tx="21.05" ty="-30.65"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Missiles" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/Missiles" name="Missiles_part">
+                  <matrix>
+                    <Matrix a="0.996194698091746" b="0.0871557427476582" c="-0.0871557427476582" d="0.996194698091746" tx="21.05" ty="-30.65"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="RocketPods" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/RocketPods" name="RocketPods_part">
+                  <matrix>
+                    <Matrix a="0.996194698091746" b="0.0871557427476582" c="-0.0871557427476582" d="0.996194698091746" tx="21.05" ty="-30.65"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DoorUpper" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/DoorUpper" name="DoorUpper_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CabinFittings" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/CabinFittings" name="CabinFittings_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="DetailLines" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Parts/DetailLines" name="DetailLines_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NoseGun" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/NoseGun" name="NoseGun_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="TailRegion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Body/TailRegion" name="TailRegion_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="BellyRegion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Body/BellyRegion" name="BellyRegion_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CabinRegion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Body/CabinRegion" name="CabinRegion_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="UpperMiddleRegion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Body/UpperMiddleRegion" name="UpperMiddleRegion_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="FrontRegion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Body/FrontRegion" name="FrontRegion_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NearMainGear" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/GearNear" name="NearMainGear_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="NoseGear" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/GearNose" name="NoseGear_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="EmptyCabinBackdrop" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/EmptyCabinBackdrop" name="EmptyCabinBackdrop_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="CanopyInnerShell" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/CanopyInnerShell" name="CanopyInnerShell_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="FarMainGear" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/GearFar" name="FarMainGear_part">
+                  <matrix>
+                    <Matrix ty="18"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

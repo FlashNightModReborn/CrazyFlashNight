@@ -1,0 +1,133 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/fixed-coil/clip009" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="clip009">
+      <layers>
+        <DOMLayer name="mask" layerType="mask" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#FFFFFF" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!0 2100|4600 2100|4600 9520|0 9520|0 2100" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="art" parentLayerIndex="0" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="57.35" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="extend" interpolationMethod="rgb">
+                        <matrix>
+                          <Matrix a="0.070755" b="0.0" c="0.0" d="0.070755" tx="77.7" ty="63.95"/>
+                        </matrix>
+                        <GradientEntry color="#CCCCCC" ratio="0" alpha="1.0"/>
+                        <GradientEntry color="#B2B2B2" ratio="0.36078431372549" alpha="1.0"/>
+                        <GradientEntry color="#666666" ratio="0.96078431372549" alpha="1.0"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!822 2051[518 1987 303 1772[0 1469 0 1039[0 609 303 304[608 0 1038 0[1050 0 1062 0[1477 9 1772 304[2077 609 2077 1039[2077 1469 1772 1772[1566 1978 1302 2046[1187 2074 1062 2077[1050 2077 1038 2077[925 2072 822 2051" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="57.35" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="extend" interpolationMethod="rgb">
+                        <matrix>
+                          <Matrix a="0.00634766" b="0.0" c="0.0" d="1.0" tx="52.1" ty="-338.85"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0.290196078431373" alpha="1.0"/>
+                        <GradientEntry color="#CCCCCC" ratio="0.772549019607843" alpha="1.0"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1302 2046|1302 8626|1302 8710[1082 8810 822 8710|822 8627|822 2051[925 2072 1038 2077[1050 2077 1062 2077[1187 2074 1302 2046" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="57.35" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="extend" interpolationMethod="rgb">
+                        <matrix>
+                          <Matrix a="0.02484131" b="0.0" c="0.0" d="0.00723267" tx="52.9" ty="434.95"/>
+                        </matrix>
+                        <GradientEntry color="#7F7F7F" ratio="0.549019607843137" alpha="1.0"/>
+                        <GradientEntry color="#595959" ratio="1" alpha="1.0"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1302 8626[1325 8630 1347 8636[1464 8668 1464 8713|1464 8714[1463 8758 1347 8789[1230 8821 1064 8821[898 8821 781 8789[775 8788 770 8786[665 8756 664 8714[664 8705 667 8699[682 8665 770 8639[775 8638 781 8636[801 8631 822 8627|822 8710[1082 8810 1302 8710|1302 8626" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="57.35" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="extend" interpolationMethod="rgb">
+                        <matrix>
+                          <Matrix a="0.01123047" b="0.0" c="0.0" d="1.0" tx="66.5" ty="-298.85"/>
+                        </matrix>
+                        <GradientEntry color="#999999" ratio="0" alpha="1.0"/>
+                        <GradientEntry color="#CCCCCC" ratio="0.00392156862745098" alpha="1.0"/>
+                        <GradientEntry color="#666666" ratio="1" alpha="1.0"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!1464 8714|1464 9243[1464 9245 1464 9248[1457 9289 1347 9318[1230 9350 1064 9350[898 9350 781 9318[775 9317 770 9315[665 9285 664 9243|664 8714[665 8756 770 8786[775 8788 781 8789[898 8821 1064 8821[1230 8821 1347 8789[1463 8758 1464 8714" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="57.35" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="2" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#000000" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!822 2051[518 1987 303 1772[0 1469 0 1039[0 609 303 304[608 0 1038 0[1050 0 1062 0[1477 9 1772 304[2077 609 2077 1039[2077 1469 1772 1772[1566 1978 1302 2046|1302 8626[1325 8630 1347 8636[1464 8668 1464 8713|1464 8714|1464 9243[1464 9245 1464 9248[1457 9289 1347 9318[1230 9350 1064 9350[898 9350 781 9318[775 9317 770 9315[665 9285 664 9243|664 8714[664 8705 667 8699[682 8665 770 8639[775 8638 781 8636[801 8631 822 8627|822 2051!1302 2046[1187 2074 1062 2077[1050 2077 1038 2077[925 2072 822 2051" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

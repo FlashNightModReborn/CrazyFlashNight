@@ -1,0 +1,126 @@
+{
+  "revision": "r6",
+  "editableSource": "Native XFL bodies; source/coil-r6-*.svg and roof-r6-destruction.svg for new detail",
+  "coilFrames": 36,
+  "coilExposures": [
+    [
+      0,
+      8,
+      "idle"
+    ],
+    [
+      8,
+      4,
+      "charge"
+    ],
+    [
+      12,
+      3,
+      "crest"
+    ],
+    [
+      15,
+      1,
+      "arc-a"
+    ],
+    [
+      16,
+      1,
+      "charge"
+    ],
+    [
+      17,
+      2,
+      "arc-b"
+    ],
+    [
+      19,
+      3,
+      "decay"
+    ],
+    [
+      22,
+      6,
+      "idle"
+    ],
+    [
+      28,
+      1,
+      "arc-c"
+    ],
+    [
+      29,
+      7,
+      "idle"
+    ]
+  ],
+  "removedIntactRoofProps": [
+    {
+      "layer": "Layer 14",
+      "symbol": "Symbol 37"
+    },
+    {
+      "layer": "Layer 17",
+      "symbol": "Symbol 37"
+    },
+    {
+      "layer": "Layer 45",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 46",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 47",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 48",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 49",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 50",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 51",
+      "symbol": "Symbol 27"
+    },
+    {
+      "layer": "Layer 52",
+      "symbol": "Symbol 27"
+    }
+  ],
+  "roofCasualties": [
+    {
+      "symbol": "part17",
+      "matrix": [
+        0.88,
+        0,
+        0,
+        0.88,
+        279,
+        4
+      ]
+    },
+    {
+      "symbol": "part18",
+      "matrix": [
+        0.88,
+        0,
+        0,
+        0.88,
+        163,
+        -101
+      ]
+    }
+  ],
+  "collisionChange": false,
+  "standbyMechanicalFrames": 73,
+  "poweredMechanicalFrames": 49
+}

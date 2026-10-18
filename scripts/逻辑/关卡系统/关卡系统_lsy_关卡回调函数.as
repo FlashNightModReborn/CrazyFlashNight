@@ -431,3 +431,11 @@ _root.测试角斗场爬升 = function(){
 }
 
 
+
+// 主线34：场景身份隔离的中继与屋顶恢复流程。
+_root.关卡回调函数.BaseSiegeBegin = function(kind:String):Void {
+    org.flashNight.arki.scene.BaseSiegeController.start(kind);
+};
+_root.关卡回调函数.BaseSiegeSignal = function(name:String):Void {
+    org.flashNight.arki.scene.BaseSiegeController.signal(name);
+};

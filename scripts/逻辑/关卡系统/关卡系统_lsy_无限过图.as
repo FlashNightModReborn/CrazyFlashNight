@@ -194,21 +194,11 @@ _root.调试_完成当前波次 = function() {
 
 //调试功能：直接完成当前地图
 _root.调试_完成当前地图 = function() {
-	// _root.发布消息("调试：直接完成当前地图");
-	var stageManager = StageManager.instance;
-	if(!stageManager || !stageManager.isActive) {
-		return false;
-	}
-	
-	//将刷怪器的波次设置为最后一波并完成
-	var spawner = WaveSpawner.instance;
-	// _root.发布消息("调试：完成刷怪器 " + (spawner ? spawner._name : "无"));
-	if(spawner && spawner.isActive) {
-		spawner.currentWave = spawner.waveInfoList.length - 1;
-		spawner.isFinished = true;
-	}
-	
-	//直接清除当前地图
-	stageManager.clearStage();
-	return true;
+    var stageManager = StageManager.instance;
+    if (!stageManager || !stageManager.isActive) return false;
+    if (stageManager.isFailed) {
+        _root.最上层发布文字提示("本次行动已失败，请返回原处后重新进入，再测试后续地图。");
+        return false;
+    }
+    return stageManager.debugClearStage();
 };

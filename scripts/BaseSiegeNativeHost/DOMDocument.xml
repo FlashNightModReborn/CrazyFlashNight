@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481">
+  <symbols>
+    <Include href="Import0.xml" loadImmediate="false"/>
+    <Include href="Import1.xml" loadImmediate="false"/>
+    <Include href="Import2.xml" loadImmediate="false"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="场景 1">
+      <layers>
+        <DOMLayer name="native imports">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+#include "../TestLoader.as"]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Import0" name="__siegeNoahSource">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import1" name="__siegeGuardSource">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import2" name="__siegeNativeWorld">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Import0">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import1">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="Import2">
+                  <matrix>
+                    <Matrix tx="-2000" ty="-2000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

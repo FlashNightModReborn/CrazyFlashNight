@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" width="150" height="150">
+  <folders>
+    <DOMFolderItem name="BaseSiege"/>
+    <DOMFolderItem name="BaseSiege/relay"/>
+  </folders>
+  <symbols>
+    <Include href="BaseSiege/relay/root.xml"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="base_siege_relay">
+      <layers>
+        <DOMLayer name="states">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.__siegeReady = true; stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="BaseSiege/relay/root" symbolType="graphic" loop="single frame" firstFrame="0">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

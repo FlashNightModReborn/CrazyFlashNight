@@ -1,0 +1,6 @@
+﻿import org.flashNight.arki.scene.*;
+#include "../逻辑/关卡系统/关卡系统_lsy_无限过图.as"
+trace("FocusedTestRunId base-siege Start: __FOCUSED_RUN_ID__");
+_root.__baseSiegeFocusedRunId="__FOCUSED_RUN_ID__";
+org.flashNight.arki.scene.BaseSiegeFlowTest.runAllTests();
+org.flashNight.arki.scene.BaseSiegeTest.runAllTests();

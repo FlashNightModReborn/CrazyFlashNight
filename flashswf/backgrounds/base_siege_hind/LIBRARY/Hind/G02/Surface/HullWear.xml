@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/G02/Surface/HullWear" itemID="4f236100-454287d3" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="HullWear">
+      <layers>
+        <DOMLayer name="SkinFragmentScars" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Surface/SkinFragmentScars" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinNoseAbrasion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Surface/SkinNoseAbrasion" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinBellyAbrasion" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Surface/SkinBellyAbrasion" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinFairingCrease" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Surface/SkinFairingCrease" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="SkinBlastSoot" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Surface/SkinBlastSoot" symbolType="graphic" loop="single frame"/>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

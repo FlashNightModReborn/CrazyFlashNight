@@ -1,0 +1,251 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/G02/Parts/GearNose" itemID="ba460a8e-11c6b298">
+  <timeline>
+    <DOMTimeline name="GearNose">
+      <layers>
+        <DOMLayer name="WheelNear" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/NoseWheel" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="336.45" ty="330.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Strut" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6708 6453|6758 6451"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6717 6623|6714 6619!6714 6619|6708 6453"/>
+                    <Edge strokeStyle="1" edges="!6708 6453|6707 6446"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!6758 6640|6749 6674"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6749 6674|6717 6623"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!6789 6623|6789 6616"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6758 6451|6789 6450!6789 6450|6789 6616"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!6758 6451|6758 6640!6789 6616|6758 6640"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6789 6616|6880 6690!6880 6690|6767 6774!6767 6774|6749 6674"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!6498 6468|6597 6456"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6597 6456[6575 6450 6585 6421!6498 6468|6534 6499!6534 6499|6618 6458!6618 6458|6597 6456"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6585 6421|6462 6435"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6462 6435|6498 6468"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!6577 6591|6783 6777"/>
+                    <Edge strokeStyle="1" edges="!6783 6777|6785 6779"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!6783 6777|6790 6728!6790 6728|6609 6567"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="1" edges="!6577 6591[6590 6551 6609 6567"/>
+                    <Edge fillStyle0="1" strokeStyle="1" edges="!6609 6567|6622 6422!6622 6422|6587 6426!6587 6426|6577 6591"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!5968.5 6501|5967 6501!5967 6501[#174D.EF #1964.F9 5965 6501!5965 6501|5955 6500.5!5955 6500.5|5924 6499"/>
+                    <Edge strokeStyle="1" edges="!6246 6473|6252 6460"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6199 6495[#1842.15 #194D.E7 6256 6424!6256 6424|6246 6473!6246 6473|6245 6475"/>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6245 6475[6322 6497 6283 6494"/>
+                    <Edge fillStyle0="1" fillStyle1="1" strokeStyle="2" edges="!6197 6503|6196 6503"/>
+                    <Edge fillStyle1="1" strokeStyle="2" edges="!6283 6494[#1863.55 #195E.4C 6199 6495!6196 6503[#1832.43 #1966.75 6199 6495!5968.5 6501[#17BD.E9 #1967.D2 6196 6503!6199 6495[#17D0.52 #1960.C3 5968.5 6501"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#444444"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                    <StrokeStyle index="2">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6354 6319|6787 6470!6787 6470[6718 6513 6687 6450!6687 6450|6236 6326"/>
+                    <Edge fillStyle0="1" strokeStyle="2" edges="!6354 6319|6236 6326"/>
+                    <Edge strokeStyle="2" edges="!6236 6326|6229 6326"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#585858"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6099 6474|6219 6374!6219 6374|6359 6454!6359 6454|6299 6574!6299 6574|6099 6474"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#3C3C3C"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6299 6574|6359 6454!6359 6454|6439 6554!6439 6554|6299 6574"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#262626"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="0.8">
+                        <fill>
+                          <SolidColor/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!6263 6514|6250 6545!6250 6545|6219 6558!6219 6558|6188 6545!6188 6545|6175 6514!6175 6514|6188 6483!6188 6483|6219 6470!6219 6470|6250 6483!6250 6483|6263 6514"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="WheelFar" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/NoseWheel" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.258255004882813" d="0.258255004882813" tx="326.45" ty="325.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

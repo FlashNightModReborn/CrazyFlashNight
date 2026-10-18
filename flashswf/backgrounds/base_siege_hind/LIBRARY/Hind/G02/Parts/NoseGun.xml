@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/G02/Parts/NoseGun" itemID="79ebc72f-7d960555">
+  <timeline>
+    <DOMTimeline name="NoseGun">
+      <layers>
+        <DOMLayer name="Source_09" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/G02/Parts/art/NoseGun" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.283401489257812" d="0.283401489257812" tx="141" ty="315.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

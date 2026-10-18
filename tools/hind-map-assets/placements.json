@@ -3,11 +3,20 @@
   "scaleBasis": {
     "characterPxPerMeter": 82.9673,
     "sourceAssembly": "Hind/G03R1/Assembly/A_Static",
-    "sourceBoundsAuthorUnits": { "x": [113.5, 1085.5], "y": [99.5, 454.0] },
+    "sourceBoundsAuthorUnits": {
+      "x": [
+        113.5,
+        1085.5
+      ],
+      "y": [
+        99.5,
+        454.0
+      ]
+    },
     "sourceBoundsNote": "G03R1 舞台导出图 alpha 包围盒换算（3200×1440 @2x，舞台 1600×720，hind_mc 位于 240,180）",
-    "proposedUniformScale": 0.75,
-    "derivation": "972×0.75=729px 显示散布；前机体约占 65% ≈ 475px ≈ 5.7m 等效（人物根空间 82.9673px/m）；严格真实尺度需 1.18–1.33 倍压垮构图，字面 45% 同平面则坠毁机比坦克小，均弃用；可接受区间 0.65–0.85，CS6 预览微调",
-    "groundRule": "行走区 y≥274（stage_environment.xml），残骸接地线压在 y≈258，位于行走区上缘之后；机头朝左指向玩家入场 (77,389)"
+    "proposedUniformScale": 1.0,
+    "derivation": "与屋顶同源雌鹿总成统一使用100%缩放；由旧75%放大4/3，残骸散布972px。围绕舱门附近世界X1380及接地世界Y503.1调整，保持主角在残骸旁。",
+    "groundRule": "逆向进入练习场图4，主角出生(1450,550)；保留原接地线世界Y503.1及舱门附近锚点，行走边界和敌人配置不变。"
   },
   "placements": [
     {
@@ -15,15 +24,15 @@
       "xfl": "flashswf/backgrounds/gk1_4_BG_坠毁",
       "containerXml": "DOMDocument.xml",
       "layersPath": "./x:timelines/x:DOMTimeline/x:layers",
-      "insertBeforeLayer": "Layer 6",
+      "insertBeforeLayer": "Layer 2",
       "vehicles": [
         {
           "pose": "坠毁",
-          "x": 44.9,
-          "y": -82.5,
-          "scale": 0.75,
+          "x": -87.566666667,
+          "y": -196.0,
+          "scale": 1.0,
           "rotationDegrees": 0,
-          "note": "matrix: tx=130-0.75×113.5, ty=258-0.75×454；残骸左缘(机头)落 x=130，接地线 y=258，右缘(断尾)至 x≈859"
+          "note": "旧矩阵0.75+(44.9,-82.5)，围绕世界(1380,503.1)放大4/3；新矩阵1+(-87.566666667,-196)，保持舱门附近锚点与接地线。"
         }
       ]
     }

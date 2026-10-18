@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/Parts/Missiles" itemID="37e3bafc-8df8dff2">
+  <timeline>
+    <DOMTimeline name="Missiles">
+      <layers>
+        <DOMLayer name="Source_23" color="#6A9B9A" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/Missile" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829803466796875" d="0.829803466796875" tx="703" ty="276.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Source_22" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/Missile" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829803466796875" d="0.829803466796875" tx="709.25" ty="282.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Source_21" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/Missile" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829803466796875" d="0.829803466796875" tx="704.7" ty="290.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Source_20" color="#6A9B9A">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Source/Missile" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.829803466796875" d="0.829803466796875" tx="713.2" ty="294.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

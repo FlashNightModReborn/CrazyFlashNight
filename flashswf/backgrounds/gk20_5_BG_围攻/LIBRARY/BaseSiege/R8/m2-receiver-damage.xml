@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="BaseSiege/R8/m2-receiver-damage" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="m2-receiver-damage">
+      <layers>
+        <DOMLayer name="editable-vector">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#101213" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.4" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#454a49" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!720 -680|880 -820|1080 -760|1180 -560|1040 -400|780 -480|820 -580|720 -680" fillStyle1="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.5" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#888c87" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!780 -480|960 -420|1080 -500" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="78.0" ty="-29.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#16191a" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.1" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#0b0d0e" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-120 -20|-60 -100|40 -80|100 0|0 80|-100 60|-120 -20" fillStyle1="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="78.0" ty="-29.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.2" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#80847f" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-100 20|-40 80|40 60" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="112.0" ty="7.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#16191a" alpha="1.0"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.1" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#0b0d0e" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-120 -20|-60 -100|40 -80|100 0|0 80|-100 60|-120 -20" fillStyle1="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="112.0" ty="7.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.2" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#80847f" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-100 20|-40 80|40 60" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient spreadMethod="extend" interpolationMethod="rgb">
+                        <matrix>
+                          <Matrix a="0.05859375" b="0.0" c="0.0" d="0.02197266" tx="92.0" ty="-26.0"/>
+                        </matrix>
+                        <GradientEntry color="#202322" ratio="0" alpha="0.323"/>
+                        <GradientEntry color="#202322" ratio="0.28" alpha="0.24700000000000003"/>
+                        <GradientEntry color="#202322" ratio="0.64" alpha="0.095"/>
+                        <GradientEntry color="#202322" ratio="1" alpha="0.0"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!2800 -520|2799 -505|2797 -490|2793 -476|2787 -462|2780 -447|2772 -433|2762 -420|2751 -406|2738 -393|2725 -380|2709 -367|2693 -355|2675 -342|2656 -330|2636 -319|2615 -307|2592 -296|2569 -286|2544 -275|2519 -265|2492 -256|2465 -247|2436 -238|2407 -229|2377 -221|2346 -214|2314 -207|2281 -200|2248 -194|2214 -188|2179 -183|2143 -178|2107 -174|2071 -170|2033 -167|1996 -165|1957 -163|1919 -161|1880 -160|1840 -160|1800 -160|1761 -161|1723 -163|1684 -165|1647 -167|1609 -170|1573 -174|1537 -178|1501 -183|1466 -188|1432 -194|1399 -200|1366 -207|1334 -214|1303 -221|1273 -229|1244 -238|1215 -247|1188 -256|1161 -265|1136 -275|1111 -286|1088 -296|1065 -307|1044 -319|1024 -330|1005 -342|987 -355|971 -367|955 -380|942 -393|929 -406|918 -420|908 -433|900 -447|893 -462|887 -476|883 -490|881 -505|880 -520|881 -535|883 -550|887 -564|893 -578|900 -593|908 -607|918 -620|929 -634|942 -647|955 -660|971 -673|987 -685|1005 -698|1024 -710|1044 -721|1065 -733|1088 -744|1111 -754|1136 -765|1161 -775|1188 -784|1215 -793|1244 -802|1273 -811|1303 -819|1334 -826|1366 -833|1399 -840|1432 -846|1466 -852|1501 -857|1537 -862|1573 -866|1609 -870|1647 -873|1684 -875|1723 -877|1761 -879|1800 -880|1840 -880|1880 -880|1919 -879|1957 -877|1996 -875|2033 -873|2071 -870|2107 -866|2143 -862|2179 -857|2214 -852|2248 -846|2281 -840|2314 -833|2346 -826|2377 -819|2407 -811|2436 -802|2465 -793|2492 -784|2519 -775|2544 -765|2569 -754|2592 -744|2615 -733|2636 -721|2656 -710|2675 -698|2693 -685|2709 -673|2725 -660|2738 -647|2751 -634|2762 -620|2772 -607|2780 -593|2787 -578|2793 -564|2797 -550|2799 -535|2800 -520" fillStyle1="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isFloating="true">
+                  <matrix>
+                    <Matrix a="1.0" b="0.0" c="0.0" d="1.0" tx="0.0" ty="0.0"/>
+                  </matrix>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1.3" caps="round" joints="round" scaleMode="normal">
+                        <fill>
+                          <SolidColor color="#777c77" alpha="1.0"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!2140 -180|2320 -240|2460 -200|2540 -240" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

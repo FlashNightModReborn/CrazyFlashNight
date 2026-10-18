@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Hind/Rotors/TailStatic" itemID="5e2fe8bf-3093a24d">
+  <timeline>
+    <DOMTimeline name="TailStatic">
+      <layers>
+        <DOMLayer name="rotor" color="#4F4FFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" name="start" labelType="name" keyMode="8704">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Hind/Rotors/src/TailAssembly" symbolType="graphic" loop="loop">
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

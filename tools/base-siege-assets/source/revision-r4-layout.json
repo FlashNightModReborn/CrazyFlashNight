@@ -1,0 +1,78 @@
+{
+  "revision": "R4",
+  "fixedCoil": "body baked at scene start; identical foreground body preserves Y occlusion; standby/powered indication only",
+  "vehicleScale": 0.45,
+  "reference": "defense highland 0.45 same-plane scale",
+  "rhinoVehicles": 2,
+  "tigrVehicles": 2,
+  "dismountSpawns": {
+    "rhino": [
+      [
+        1485,
+        355
+      ],
+      [
+        1530,
+        380
+      ]
+    ],
+    "tigr": [
+      [
+        690,
+        355
+      ],
+      [
+        1515,
+        355
+      ]
+    ]
+  },
+  "tigrExit": [
+    765,
+    610,
+    820,
+    640
+  ],
+  "sandbagCollisionInnerEdges": [
+    760,
+    825
+  ],
+  "gateRemovedLayers": [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64
+  ],
+  "roofHullOldReferenceWidth": 916.58,
+  "roofHullNewWidth": 915.1600891113266,
+  "roofScale": 1,
+  "unchangedBaseCombat": true
+}

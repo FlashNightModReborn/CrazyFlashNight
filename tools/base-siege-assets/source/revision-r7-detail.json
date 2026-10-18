@@ -1,0 +1,128 @@
+{
+  "revision": "R7",
+  "assets": {
+    "gk20_5_BG_围攻": {
+      "defenders": [
+        {
+          "id": "upper-gunner",
+          "pose": "A",
+          "centre": [
+            1472,
+            262
+          ],
+          "scale": 0.84,
+          "rotation": -5,
+          "mirror": false
+        },
+        {
+          "id": "lower-gunner",
+          "pose": "B",
+          "centre": [
+            1532,
+            341
+          ],
+          "scale": 0.86,
+          "rotation": 7,
+          "mirror": true
+        },
+        {
+          "id": "retreat-near-room",
+          "pose": "B",
+          "centre": [
+            1094,
+            418
+          ],
+          "scale": 0.88,
+          "rotation": -9,
+          "mirror": false
+        },
+        {
+          "id": "retreat-near-access",
+          "pose": "A",
+          "centre": [
+            714,
+            470
+          ],
+          "scale": 0.88,
+          "rotation": -7,
+          "mirror": true
+        }
+      ],
+      "M2": [
+        {
+          "variant": "m2-post-upper",
+          "origin": [
+            1571.9,
+            247.5
+          ],
+          "additionalRotation": 3
+        },
+        {
+          "variant": "m2-post-lower",
+          "origin": [
+            1607.9,
+            315.5
+          ],
+          "additionalRotation": 12
+        }
+      ],
+      "symbols": 12,
+      "sourceSvgs": [
+        "r7-roof-surface.svg",
+        "r7-roof-cover.svg",
+        "r7-roof-stains.svg"
+      ]
+    },
+    "gk20_1_BG_围攻": {
+      "defenders": [
+        {
+          "id": "upper-gunner",
+          "pose": "A",
+          "centre": [
+            32,
+            112
+          ],
+          "scale": 0.76,
+          "rotation": -12,
+          "mirror": false
+        },
+        {
+          "id": "lower-gunner",
+          "pose": "B",
+          "centre": [
+            58,
+            222
+          ],
+          "scale": 0.7,
+          "rotation": -7,
+          "mirror": false
+        }
+      ],
+      "M2": [
+        {
+          "variant": "m2-post-upper",
+          "origin": [
+            110,
+            155.9
+          ],
+          "additionalRotation": 3
+        },
+        {
+          "variant": "m2-post-lower",
+          "origin": [
+            19,
+            235.85
+          ],
+          "additionalRotation": 12
+        }
+      ],
+      "symbols": 10,
+      "sourceSvgs": [
+        "r7-gate-surface.svg",
+        "r7-gate-cover.svg",
+        "r7-gate-stains.svg"
+      ]
+    }
+  },
+  "story": "Two M2 positions suppressed from the air; gunners die beside cover, two assistants are caught withdrawing toward the roof access. The ammunition detonation is local to the original stores."
+}

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg">
+  <path d="M50 84 Q111 106 172 84" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.08639999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M50 84 Q111 106 172 84" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4032" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M33 151 Q111 173 189 151" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.08639999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M33 151 Q111 173 189 151" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4032" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 227 Q111 249 205 227" fill="none" stroke="#1683AA" stroke-width="7" stroke-opacity="0.08639999999999999" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M17 227 Q111 249 205 227" fill="none" stroke="#62CDE6" stroke-width="2.2" stroke-opacity="0.4032" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M29 443 L18 480" fill="none" stroke="#42B2CD" stroke-width="3" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M194 443 L207 480" fill="none" stroke="#42B2CD" stroke-width="3" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round"/>
+  <defs>
+    <radialGradient id="corona" gradientUnits="userSpaceOnUse" cx="111" cy="-18" r="60">
+      <stop offset="0" stop-color="#80DFF4" stop-opacity="0.0"/>
+      <stop offset=".68" stop-color="#80DFF4" stop-opacity="0.0"/>
+      <stop offset=".85" stop-color="#80DFF4" stop-opacity="0.0936"/>
+      <stop offset="1" stop-color="#80DFF4" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <circle cx="111" cy="-18" r="60" fill="url(#corona)"/>
+</svg>

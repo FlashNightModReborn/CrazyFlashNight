@@ -4,7 +4,7 @@
   "note": "竞技场元战队目录。teams[]=逐组真实组合(provenance/真实小队); rosters{}=按势力聚合的兵种池(按等级带采样K体用); mercenaries[]=混编人形侧优先池(来自 data/merc/mercenaries.json，排除 hidden)。请勿手改——改采集规则后重跑。",
   "stageFilesScanned": 216,
   "stagesWithTeams": 198,
-  "teamCount": 2094,
+  "teamCount": 2100,
   "mercenaryCount": 199,
   "factionBreakdown": {
     "日本军": 126,
@@ -20,7 +20,7 @@
     "斯巴达": 4,
     "忍者": 41,
     "雪山": 6,
-    "军阀势力": 57,
+    "军阀势力": 63,
     "摇滚公园": 14,
     "狂野玫瑰": 45,
     "堕落城": 37,
@@ -7056,7 +7056,7 @@
       "unitCount": 9
     },
     "军阀势力": {
-      "teamCount": 57,
+      "teamCount": 63,
       "units": [
         {
           "type": "兵种56",
@@ -7065,7 +7065,7 @@
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 40,
-          "weight": 129
+          "weight": 151
         },
         {
           "type": "兵种57",
@@ -7074,7 +7074,7 @@
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 40,
-          "weight": 94
+          "weight": 103
         },
         {
           "type": "兵种54",
@@ -7083,7 +7083,7 @@
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 40,
-          "weight": 76
+          "weight": 80
         },
         {
           "type": "兵种55",
@@ -7092,16 +7092,28 @@
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 50,
-          "weight": 45
+          "weight": 43
         },
         {
           "type": "兵种13",
           "name": "野狗",
           "spritename": "敌人-僵尸1-狗",
           "isHostile": true,
-          "minLevel": 20,
+          "minLevel": 17,
           "maxLevel": 22,
-          "weight": 29
+          "weight": 31
+        },
+        {
+          "type": "兵种56",
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 26,
+          "weight": 29,
+          "Parameters": {
+            "threatThreshold": 15
+          }
         },
         {
           "type": "兵种265",
@@ -7152,13 +7164,25 @@
           }
         },
         {
-          "type": "兵种56",
-          "name": "突击兵",
-          "spritename": "敌人-军阀突击兵",
+          "type": "兵种57",
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
           "isHostile": true,
-          "minLevel": 24,
+          "minLevel": 17,
           "maxLevel": 26,
-          "weight": 13,
+          "weight": 10,
+          "Parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种54",
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 26,
+          "weight": 9,
           "Parameters": {
             "threatThreshold": 15
           }
@@ -7171,18 +7195,6 @@
           "minLevel": 60,
           "maxLevel": 60,
           "weight": 8
-        },
-        {
-          "type": "兵种54",
-          "name": "狙击兵",
-          "spritename": "敌人-军阀狙击兵",
-          "isHostile": true,
-          "minLevel": 24,
-          "maxLevel": 26,
-          "weight": 7,
-          "Parameters": {
-            "threatThreshold": 15
-          }
         },
         {
           "type": "兵种222",
@@ -7242,15 +7254,20 @@
           "weight": 4
         },
         {
-          "type": "兵种57",
-          "name": "弹药兵",
-          "spritename": "敌人-军阀弹药兵",
+          "type": "兵种55",
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
           "isHostile": true,
-          "minLevel": 26,
+          "minLevel": 17,
           "maxLevel": 26,
           "weight": 3,
           "Parameters": {
-            "threatThreshold": 15
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
           }
         },
         {
@@ -7272,6 +7289,30 @@
           "weight": 2,
           "Parameters": {
             "称号": "坛主"
+          }
+        },
+        {
+          "type": "兵种55",
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 2,
+          "Parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种13",
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 2,
+          "Parameters": {
+            "threatThreshold": 15
           }
         },
         {
@@ -7349,7 +7390,199 @@
           "isHostile": true,
           "minLevel": 28,
           "maxLevel": 28,
-          "weight": 1
+          "weight": 1,
+          "Parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种55",
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 1,
+          "Parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀装甲分队识别卡",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        },
+        {
+          "type": "兵种55",
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 1,
+          "Parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀线圈操作须知",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        },
+        {
+          "type": "兵种54",
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 1,
+          "Parameters": {
+            "threatThreshold": 15,
+            "掉落物": [
+              {
+                "名字": "防沙皮革",
+                "最大逆向等级": 2,
+                "概率": 3
+              },
+              {
+                "名字": "防沙皮革",
+                "最小逆向等级": 3,
+                "概率": 6
+              },
+              {
+                "名字": "复合式军用塑料",
+                "最大数量": 1,
+                "最大逆向等级": 2,
+                "最小数量": 1,
+                "概率": 3
+              },
+              {
+                "名字": "复合式军用塑料",
+                "最大数量": 1,
+                "最小数量": 1,
+                "最小逆向等级": 3,
+                "概率": 6
+              },
+              {
+                "名字": "军阀阵地异常通报",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        },
+        {
+          "type": "兵种55",
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 1,
+          "Parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀机降队通讯抄录",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        },
+        {
+          "type": "兵种54",
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "isHostile": true,
+          "minLevel": 17,
+          "maxLevel": 17,
+          "weight": 1,
+          "Parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
         },
         {
           "type": "兵种94",
@@ -7476,7 +7709,7 @@
           "weight": 1
         }
       ],
-      "unitCount": 38
+      "unitCount": 46
     },
     "摇滚公园": {
       "teamCount": 14,
@@ -57971,7 +58204,15 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
         },
         {
           "type": "兵种56",
@@ -58135,7 +58376,15 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
         },
         {
           "type": "兵种265",
@@ -58229,7 +58478,15 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
         },
         {
           "type": "兵种55",
@@ -58555,6 +58812,496 @@
       "factionConfidence": "rule",
       "members": [
         {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种13",
+          "id": 13,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        }
+      ],
+      "unitCount": 6,
+      "distinctTypes": 2,
+      "avgLevel": 17,
+      "levelMin": 17,
+      "levelMax": 17,
+      "powerRating": 102
+    },
+    {
+      "id": "基地房顶/基地.xml#0.1",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "0.1",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 8,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种57",
+          "id": 57,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "level": 17,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种55",
+          "id": 55,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种470",
+          "id": 470,
+          "name": "同伴A",
+          "spritename": "主角-男",
+          "level": 20,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "gender": "女",
+          "humanoid": true,
+          "parameters": {
+            "publishStageEvent": true,
+            "方向": "右"
+          }
+        },
+        {
+          "type": "兵种471",
+          "id": 471,
+          "name": "同伴B",
+          "spritename": "主角-男",
+          "level": 20,
+          "count": 1,
+          "random": false,
+          "isHostile": false,
+          "gender": "男",
+          "humanoid": true,
+          "parameters": {
+            "publishStageEvent": true,
+            "方向": "右"
+          }
+        }
+      ],
+      "unitCount": 18,
+      "distinctTypes": 6,
+      "avgLevel": 17.3,
+      "levelMin": 17,
+      "levelMax": 20,
+      "powerRating": 312
+    },
+    {
+      "id": "基地房顶/基地.xml#1.0",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "1.0",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 6,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种57",
+          "id": 57,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "level": 17,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种55",
+          "id": 55,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "level": 17,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀装甲分队识别卡",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        }
+      ],
+      "unitCount": 12,
+      "distinctTypes": 4,
+      "avgLevel": 17,
+      "levelMin": 17,
+      "levelMax": 17,
+      "powerRating": 204
+    },
+    {
+      "id": "基地房顶/基地.xml#1.1",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "1.1",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 10,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种57",
+          "id": 57,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "level": 17,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种55",
+          "id": 55,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        }
+      ],
+      "unitCount": 18,
+      "distinctTypes": 4,
+      "avgLevel": 17,
+      "levelMin": 17,
+      "levelMax": 17,
+      "powerRating": 306
+    },
+    {
+      "id": "基地房顶/基地.xml#2.0",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "2.0",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 4,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种57",
+          "id": 57,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种55",
+          "id": 55,
+          "name": "重装兵",
+          "spritename": "敌人-军阀重装兵",
+          "level": 17,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀线圈操作须知",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        }
+      ],
+      "unitCount": 8,
+      "distinctTypes": 4,
+      "avgLevel": 17,
+      "levelMin": 17,
+      "levelMax": 17,
+      "powerRating": 136
+    },
+    {
+      "id": "基地房顶/基地.xml#2.1",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "2.1",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
+          "type": "兵种56",
+          "id": 56,
+          "name": "突击兵",
+          "spritename": "敌人-军阀突击兵",
+          "level": 17,
+          "count": 6,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种57",
+          "id": 57,
+          "name": "弹药兵",
+          "spritename": "敌人-军阀弹药兵",
+          "level": 17,
+          "count": 3,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15,
+            "掉落物": [
+              {
+                "名字": "防沙皮革",
+                "最大逆向等级": 2,
+                "概率": 3
+              },
+              {
+                "名字": "防沙皮革",
+                "最小逆向等级": 3,
+                "概率": 6
+              },
+              {
+                "名字": "复合式军用塑料",
+                "最大数量": 1,
+                "最大逆向等级": 2,
+                "最小数量": 1,
+                "概率": 3
+              },
+              {
+                "名字": "复合式军用塑料",
+                "最大数量": 1,
+                "最小数量": 1,
+                "最小逆向等级": 3,
+                "概率": 6
+              },
+              {
+                "名字": "军阀阵地异常通报",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
+        },
+        {
+          "type": "兵种13",
+          "id": 13,
+          "name": "野狗",
+          "spritename": "敌人-僵尸1-狗",
+          "level": 17,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "threatThreshold": 15
+          }
+        }
+      ],
+      "unitCount": 12,
+      "distinctTypes": 4,
+      "avgLevel": 17,
+      "levelMin": 17,
+      "levelMax": 17,
+      "powerRating": 204
+    },
+    {
+      "id": "基地房顶/基地.xml#3.0",
+      "sourceStage": "基地房顶/基地.xml",
+      "sourceName": "基地",
+      "group": "3.0",
+      "faction": "军阀势力",
+      "factionConfidence": "rule",
+      "members": [
+        {
           "type": "兵种57",
           "id": 57,
           "name": "弹药兵",
@@ -58607,10 +59354,10 @@
       "powerRating": 68
     },
     {
-      "id": "基地房顶/基地.xml#1.0",
+      "id": "基地房顶/基地.xml#4.0",
       "sourceStage": "基地房顶/基地.xml",
       "sourceName": "基地",
-      "group": "1.0",
+      "group": "4.0",
       "faction": "军阀势力",
       "factionConfidence": "rule",
       "members": [
@@ -58656,10 +59403,10 @@
       "powerRating": 357
     },
     {
-      "id": "基地房顶/基地.xml#2.0",
+      "id": "基地房顶/基地.xml#5.0",
       "sourceStage": "基地房顶/基地.xml",
       "sourceName": "基地",
-      "group": "2.0",
+      "group": "5.0",
       "faction": "军阀势力",
       "factionConfidence": "rule",
       "members": [
@@ -58705,10 +59452,10 @@
       "powerRating": 527
     },
     {
-      "id": "基地房顶/基地.xml#3.0",
+      "id": "基地房顶/基地.xml#6.0",
       "sourceStage": "基地房顶/基地.xml",
       "sourceName": "基地",
-      "group": "3.0",
+      "group": "6.0",
       "faction": "军阀势力",
       "factionConfidence": "rule",
       "members": [
@@ -58721,7 +59468,15 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
         },
         {
           "type": "兵种57",
@@ -58754,10 +59509,10 @@
       "powerRating": 527
     },
     {
-      "id": "基地房顶/基地.xml#4.0",
+      "id": "基地房顶/基地.xml#7.0",
       "sourceStage": "基地房顶/基地.xml",
       "sourceName": "基地",
-      "group": "4.0",
+      "group": "7.0",
       "faction": "军阀势力",
       "factionConfidence": "rule",
       "members": [
@@ -58781,7 +59536,39 @@
           "count": 1,
           "random": false,
           "isHostile": true,
-          "humanoid": false
+          "humanoid": false,
+          "parameters": {
+            "掉落物": [
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 1,
+                "概率": 1
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 4,
+                "最小逆向等级": 2,
+                "概率": 2
+              },
+              {
+                "名字": "加长弹匣",
+                "最大逆向等级": 8,
+                "最小逆向等级": 5,
+                "概率": 3
+              },
+              {
+                "名字": "加长弹匣",
+                "最小逆向等级": 9,
+                "概率": 5
+              },
+              {
+                "名字": "军阀机降队通讯抄录",
+                "最大数量": 1,
+                "最小数量": 1,
+                "概率": 100
+              }
+            ]
+          }
         },
         {
           "type": "兵种54",
@@ -58789,7 +59576,26 @@
           "name": "狙击兵",
           "spritename": "敌人-军阀狙击兵",
           "level": 17,
-          "count": 3,
+          "count": 1,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false,
+          "parameters": {
+            "掉落物": {
+              "名字": "军阀撤收命令",
+              "最大数量": 1,
+              "最小数量": 1,
+              "概率": 100
+            }
+          }
+        },
+        {
+          "type": "兵种54",
+          "id": 54,
+          "name": "狙击兵",
+          "spritename": "敌人-军阀狙击兵",
+          "level": 17,
+          "count": 2,
           "random": false,
           "isHostile": true,
           "humanoid": false
@@ -58807,7 +59613,7 @@
         }
       ],
       "unitCount": 7,
-      "distinctTypes": 4,
+      "distinctTypes": 5,
       "avgLevel": 17,
       "levelMin": 17,
       "levelMax": 17,

@@ -527,6 +527,10 @@ class org.flashNight.arki.scene.StageManager {
             gameworld.dispatcher.subscribeOnce("NextStage", this.nextStage, this);
         }
 
+        // Start 事件可立即刷出友军；上图 close() 已清空刷怪器的场景引用。
+        // 先绑定本图坐标与深度，波次仍在 Start 之后才启动。
+        if (!isWarlordAction) spawner.prepareScene(currentStageInfo);
+
         // 发布开始事件
         gameworld.dispatcher.publish("Start");
 
@@ -977,9 +981,23 @@ class org.flashNight.arki.scene.StageManager {
         }
     }
 
+    /** Explicit modifier operation; normal combat clear still enforces objectives. */
+    public function debugClearStage():Boolean {
+        if (!isActive || isFinished || isFailed || stageMode == "warlord") return false;
+        org.flashNight.arki.scene.BaseSiegeController.prepareDebugClear(this, gameworld);
+        if (spawner != null && spawner.isActive) {
+            spawner.currentWave = Math.max(0, spawner.totalWave - 1);
+            spawner.isFinished = true;
+            spawner.isActive = false;
+        }
+        clearStage();
+        return isCleared === true;
+    }
+
     public function clearStage():Void{
         if(!isActive || isFinished || isFailed) return;
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
+        if (org.flashNight.arki.scene.BaseSiegeController.interceptClear(this, gameworld)) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord clearStage rejected; typed result required");
             return;
