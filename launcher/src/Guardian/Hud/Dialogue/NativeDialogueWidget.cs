@@ -87,6 +87,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         // 打字
         private int _visibleChars;
         private long _typingWallStartMs, _typingWallElapsedMs, _typingTickElapsedMs;
+        /// <summary>本帧是否已发过 TypingFinished（每帧一次，ShowFrame 复位）。</summary>
+        private bool _typingNotified;
+        /// <summary>锁内记录、锁外触发：本帧打字完成的通知载荷。</summary>
+        private NativeDialogueFrame _typingDoneFrame;
         internal Func<long> TypingClock = () => Environment.TickCount64;
         private int _charMs = DEFAULT_CHAR_MS;
         private NativeDialogueTextLayout.Plan _plan;
@@ -283,16 +287,21 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _manualFirstLine = -1;
                 _typingWallStartMs = TypingClock();
                 _typingWallElapsedMs = _typingTickElapsedMs = 0;
+                _typingNotified = false;
+                _typingDoneFrame = null;
                 _plan = null;
                 _planKey = null;
                 DisarmGestureLocked();
                 _closeHover = false;
                 _dragHover = false;
+                AdoptTypingBaselineLocked();
                 boundsChanged = BoundsChanged(before, SnapshotBoundsLocked());
             }
             if (boundsChanged) FireBounds();
             FireRepaint();
             UpdateAnim();
+            FireLinePresented(frame);
+            FireTypingFinishedPending();
             return true;
         }
 
@@ -411,6 +420,53 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             }
             FireInput(f, "close");
             return true;
+        }
+
+        /// <summary>
+        /// 插话发送前补全当前句（协议 3.3：发送时若当前句仍在逐字显示，先补全当前句）。
+        /// 与 TryAdvance 的区别：不打字时不推进、不发 advance。返回 false＝当前无会话。
+        /// </summary>
+        internal bool CompleteCurrentLineTyping()
+        {
+            NativeDialogueFrame f;
+            lock (_gate)
+            {
+                f = _frame;
+                if (f == null || _suppressed || _disposed) return false;
+            }
+            CompleteTyping();
+            return true;
+        }
+
+        /// <summary>插话输入浮窗定位锚：面板外接框 + 当前版面缩放。无会话/无版面时 false。</summary>
+        internal bool TryGetInterjectInputAnchor(out Rectangle panel, out float scale)
+        {
+            lock (_gate)
+            {
+                panel = Rectangle.Empty;
+                scale = 0f;
+                if (_frame == null || _suppressed || _disposed) return false;
+                Layout layout = ComputeLayoutLocked();
+                if (layout.Panel.Width <= 0 || layout.Panel.Height <= 0 || layout.Scale <= 0f)
+                    return false;
+                panel = layout.Panel;
+                scale = layout.Scale;
+                return true;
+            }
+        }
+
+        /// <summary>正文框的屏幕矩形（诊断/定位参考）；无会话/无版面时 false。</summary>
+        internal bool TryGetBodyScreenRect(out Rectangle rect)
+        {
+            lock (_gate)
+            {
+                rect = Rectangle.Empty;
+                if (_frame == null || _suppressed || _disposed) return false;
+                Layout layout = ComputeLayoutLocked();
+                if (layout.Text.Width <= 0 || layout.Text.Height <= 0) return false;
+                rect = layout.Text;
+                return true;
+            }
         }
 
         public bool OnMouseWheel(Point screenPt, int wheelDelta)
@@ -550,6 +606,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         public event EventHandler BoundsOrVisibilityChanged;
         public event EventHandler RepaintRequested;
         public event EventHandler AnimationStateChanged;
+
+        /// <summary>
+        /// 一句「开始显示」（帧被采用、打字起点归零）。插话逐句可输入（协议 D-10）只依赖
+        /// 这个时点，不等逐字播完。回调在 UI 线程、锁外触发；参数是帧快照。
+        /// </summary>
+        public Action<NativeDialogueFrame> LinePresented;
+
+        /// <summary>
+        /// 一句「打字完成」（逐字显示走完，或被 TryAdvance/CompleteTyping 补全）。
+        /// 每个帧只发一次；返回 null 帧的 Reset/隐藏不发。
+        /// </summary>
+        public Action<NativeDialogueFrame> TypingFinished;
 
         public bool Visible
         {
@@ -743,9 +811,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 EnsurePlanLocked();
                 _typingTickElapsedMs += deltaMs;
                 repaint = CatchUpTypingLocked();
+                CheckTypingCompletedLocked();
                 animChanged = UpdateAnimLocked();
             }
             if (repaint) FireRepaint();
+            FireTypingFinishedPending();
             if (animChanged) FireAnimChanged();
         }
 
@@ -762,6 +832,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 EnsurePlanLocked();
                 // WM_TIMER 在繁忙消息队列中优先级低；正常绘制也按真实经过时间补算。
                 CatchUpTypingLocked();
+                CheckTypingCompletedLocked();
                 animChanged = UpdateAnimLocked();
 
                 GraphicsState state = g.Save();
@@ -780,6 +851,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 }
                 finally { g.Restore(state); }
             }
+            FireTypingFinishedPending();
             if (animChanged) FireAnimChanged();
         }
 
@@ -1240,10 +1312,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_frame == null) return;
                 EnsurePlanLocked();
                 int total = _plan != null ? _plan.TotalGlyphs : 0;
-                if (_visibleChars >= total) return;
+                if (_visibleChars >= total) { CheckTypingCompletedLocked(); return; }
                 _visibleChars = total;
+                CheckTypingCompletedLocked();
             }
             FireRepaint();
+            FireTypingFinishedPending();
             UpdateAnim();
         }
 
@@ -1547,6 +1621,50 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             EventHandler h = BoundsOrVisibilityChanged;
             if (h != null) { try { h(this, EventArgs.Empty); } catch { } }
+        }
+
+        /// <summary>锁外：一句开始显示（插话逐句可输入的唯一时点）。</summary>
+        private void FireLinePresented(NativeDialogueFrame frame)
+        {
+            Action<NativeDialogueFrame> h = LinePresented;
+            if (h == null || frame == null) return;
+            try { h(frame.Snapshot()); }
+            catch (Exception ex) { LogManager.Log("[NativeDialogue] LinePresented throw: " + ex.Message); }
+        }
+
+        /// <summary>锁外：把锁内记下的"打字完成"通知发出去（每帧一次）。</summary>
+        private void FireTypingFinishedPending()
+        {
+            NativeDialogueFrame frame;
+            lock (_gate)
+            {
+                frame = _typingDoneFrame;
+                _typingDoneFrame = null;
+            }
+            if (frame == null) return;
+            Action<NativeDialogueFrame> h = TypingFinished;
+            if (h == null) return;
+            try { h(frame.Snapshot()); }
+            catch (Exception ex) { LogManager.Log("[NativeDialogue] TypingFinished throw: " + ex.Message); }
+        }
+
+        /// <summary>锁内：当前帧是否已经打完（含零字帧），是则登记一次待发通知。</summary>
+        private void CheckTypingCompletedLocked()
+        {
+            if (_typingNotified || _frame == null) return;
+            EnsurePlanLocked();
+            int total = _plan != null ? _plan.TotalGlyphs : 0;
+            if (_visibleChars < total) return;
+            _typingNotified = true;
+            _typingDoneFrame = _frame;
+        }
+
+        /// <summary>锁内：采用新帧时先判"零打字"帧（空正文），避免永远等不到 Tick。</summary>
+        private void AdoptTypingBaselineLocked()
+        {
+            _typingNotified = false;
+            _typingDoneFrame = null;
+            CheckTypingCompletedLocked();
         }
 
         private void FireRepaint()

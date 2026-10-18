@@ -159,12 +159,13 @@ namespace CF7Launcher.RagTerminal
         }
     }
 
-    /// <summary>SSE 传输层：只负责"拿到一个响应流"。生产实现是 loopback HTTP POST。</summary>
+    /// <summary>SSE 传输层：只负责"拿到一个响应流"和 finalize 回执。生产实现是 loopback HTTP。</summary>
     internal interface IDialogueInterjectTransport
     {
         /// <summary>POST 请求体并返回 SSE 响应流（调用方负责 Dispose）。取消必须中止在途请求。</summary>
-        Stream Open(string requestJson, CancellationToken cancellationToken);
         Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken);
+        /// <summary>POST finalize（已播对账，幂等）；返回后端回执 JSON。</summary>
+        Task<JObject> PostFinalizeAsync(string requestJson, CancellationToken cancellationToken);
     }
 
     /// <summary>
@@ -197,10 +198,8 @@ namespace CF7Launcher.RagTerminal
 
         internal string Url { get { return _url; } }
 
-        public Stream Open(string requestJson, CancellationToken cancellationToken)
-        {
-            return OpenAsync(requestJson, cancellationToken).GetAwaiter().GetResult();
-        }
+        /// <summary>finalize 端点 = 插话端点 + /finalize（协议 5.1）。</summary>
+        internal string FinalizeUrl { get { return _url + "/finalize"; } }
 
         public async Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken)
         {
@@ -219,6 +218,23 @@ namespace CF7Launcher.RagTerminal
                 throw new HttpRequestException("dialogue-interject http " + status);
             }
             return await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        }
+
+        public async Task<JObject> PostFinalizeAsync(string requestJson, CancellationToken cancellationToken)
+        {
+            using (var request = new HttpRequestMessage(HttpMethod.Post, FinalizeUrl))
+            {
+                request.Content = new StringContent(requestJson ?? "{}", Encoding.UTF8, "application/json");
+                using (HttpResponseMessage response = await _http.SendAsync(request,
+                    HttpCompletionOption.ResponseContentRead, cancellationToken).ConfigureAwait(false))
+                {
+                    string body = await response.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                        throw new HttpRequestException("dialogue-interject finalize http "
+                            + (int)response.StatusCode);
+                    return string.IsNullOrEmpty(body) ? new JObject() : JObject.Parse(body);
+                }
+            }
         }
 
         public void Dispose()

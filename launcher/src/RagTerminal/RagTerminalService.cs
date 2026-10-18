@@ -55,6 +55,16 @@ namespace CF7Launcher.RagTerminal
             };
         }
 
+        /// <summary>
+        /// 插话流传输（协议 5.1）：复用本服务的 HttpClient（Timeout=Infinite，SSE 长连接必需）
+        /// 与回环 origin；不新建连接池、不换端口。
+        /// </summary>
+        internal IDialogueInterjectTransport CreateInterjectTransport()
+        {
+            return new HttpDialogueInterjectTransport(_http, LoopbackOrigin,
+                HttpDialogueInterjectTransport.DefaultPath, ownsHttp: false);
+        }
+
         internal static bool IsValidSlotKey(string value)
         {
             return !string.IsNullOrEmpty(value) && SlotKeyPattern.IsMatch(value);

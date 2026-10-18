@@ -32,6 +32,33 @@ namespace CF7Launcher.Guardian
             get { return _sharedPresentation == null && (base.CanShowOverlayNow || IsOwnerSessionForeground()); }
         }
 
+        /// <summary>
+        /// 插话输入浮窗前台探测：仅 dialogueInterjectEnabled 打开后由宿主注册
+        /// （返回 true 当且仅当那个输入窗是本进程当前的系统前台）。默认 null＝不生效。
+        /// </summary>
+        internal Func<bool> InterjectInputForegroundProbe;
+
+        /// <summary>
+        /// 输入浮窗顶替前台时跳过 owner 失活的隐藏（P0.5）：对话面板必须留在屏幕上，
+        /// 玩家才能在打字时看见自己插话的上下文。判据只认注册的输入窗，别的窗口
+        /// 成为前台时 IsInterjectInputForeground 返回 false → 走原有隐藏逻辑。
+        /// </summary>
+        protected override bool ShouldKeepPresentedOnOwnerDeactivate
+        {
+            get { return IsInterjectInputForeground(); }
+        }
+
+        /// <summary>读取注册探针；未注册/异常一律按"不是输入窗前台"处理（fail-closed 到原行为）。</summary>
+        internal bool IsInterjectInputForeground()
+        {
+            try
+            {
+                Func<bool> probe = InterjectInputForegroundProbe;
+                return probe != null && probe();
+            }
+            catch { return false; }
+        }
+
         protected virtual bool IsOwnerSessionForeground()
         {
             try

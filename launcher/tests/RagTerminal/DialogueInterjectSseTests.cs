@@ -32,11 +32,6 @@ namespace CF7Launcher.Tests.RagTerminal
 
             internal MemorySseTransport(string payload) { _payload = payload; }
 
-            public Stream Open(string requestJson, CancellationToken cancellationToken)
-            {
-                return OpenAsync(requestJson, cancellationToken).GetAwaiter().GetResult();
-            }
-
             public Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken)
             {
                 OpenCount++;
@@ -44,6 +39,12 @@ namespace CF7Launcher.Tests.RagTerminal
                 var stream = new TrackedStream(bytes);
                 stream.OnDispose = delegate { Disposed = true; };
                 return Task.FromResult<Stream>(stream);
+            }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostFinalizeAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
             }
         }
 
@@ -311,15 +312,16 @@ namespace CF7Launcher.Tests.RagTerminal
             private readonly BlockingStream _stream = new BlockingStream(
                 "event: line\ndata: {\"kind\":\"add\",\"text\":\"第一句\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":0}\n\n");
 
-            public Stream Open(string requestJson, CancellationToken cancellationToken)
-            {
-                return OpenAsync(requestJson, cancellationToken).GetAwaiter().GetResult();
-            }
-
             public Task<Stream> OpenAsync(string requestJson, CancellationToken cancellationToken)
             {
                 _stream.OnDisposeHook = delegate { Disposed = true; };
                 return Task.FromResult<Stream>(_stream);
+            }
+
+            public Task<Newtonsoft.Json.Linq.JObject> PostFinalizeAsync(
+                string requestJson, CancellationToken cancellationToken)
+            {
+                return Task.FromResult(new Newtonsoft.Json.Linq.JObject { ["ok"] = true });
             }
         }
 

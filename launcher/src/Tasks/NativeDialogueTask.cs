@@ -289,6 +289,12 @@ namespace CF7Launcher.Tasks
             var session = _bookSession;
             if (session == null) return;
             _bookSession = null;
+            var ended = BookSessionEnded;
+            if (ended != null)
+            {
+                try { ended(session); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] BookSessionEnded throw: " + ex.Message); }
+            }
             session.Terminate();
         }
 
@@ -367,6 +373,12 @@ namespace CF7Launcher.Tasks
             session.RetryScheduler = BookRetryScheduler ?? ScheduleBookRetry;
             if (BookRetryClock != null) session.RetryClock = BookRetryClock;
             _bookSession = session;
+            var started = BookSessionStarted;
+            if (started != null)
+            {
+                try { started(session); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] BookSessionStarted throw: " + ex.Message); }
+            }
             session.Begin(startIndex);
             return AcceptAck(p, 1, kind == "source" ? (int?)lines.Length : null);
         }
@@ -716,6 +728,13 @@ namespace CF7Launcher.Tasks
 
         /// <summary>测试观测：当前 book 会话（无会话为 null）。</summary>
         internal NativeDialogueBookSession BookSessionForTest { get { return _bookSession; } }
+
+        /// <summary>新的 book 会话已建立（Begin 之前触发）：插话控制器在这里挂行观察者，
+        /// 保证第一句也能进已播历史。</summary>
+        internal Action<NativeDialogueBookSession> BookSessionStarted;
+        /// <summary>会话被顶掉/隐藏/断线（Terminate 之前触发）：插话控制器据此取消在途流、
+        /// finalize 并复位本组 id。</summary>
+        internal Action<NativeDialogueBookSession> BookSessionEnded;
 
         /// <summary>插话输入焦点门读取（异常按未聚焦处理，绝不因输入层故障卡死推进）。</summary>
         private bool InterjectInputActive

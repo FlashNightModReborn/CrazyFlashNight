@@ -125,6 +125,23 @@ namespace CF7Launcher.Guardian
         protected virtual bool CanShowOverlayNow { get { return _ownerVisible; } }
 
         /// <summary>
+        /// owner 失活时是否跳过"隐藏"三件事（_ownerVisible=false / HideOverlay /
+        /// OnOwnerBecameHidden）。默认 false＝既有行为。
+        ///
+        /// 只给"本会话自己的输入浮窗顶替了 owner 前台"这一种情形用：对话插话输入框
+        /// 是独立顶层窗（要拿 IME），激活它必然让 GuardianForm 失活；若照常隐藏，
+        /// 玩家一打字对话面板就没了。判定必须严格——只有白名单窗口是前台才返回 true，
+        /// 其他任何窗口（切到别的程序）仍按原逻辑隐藏。
+        /// </summary>
+        protected virtual bool ShouldKeepPresentedOnOwnerDeactivate { get { return false; } }
+
+        /// <summary>测试观测：owner 可见性（失活是否被跳过）。</summary>
+        internal bool OwnerVisibleForTest { get { return _ownerVisible; } }
+
+        /// <summary>测试观测：_shown 标记（HideOverlay 不改它）。</summary>
+        internal bool ShownForTest { get { return _shown; } }
+
+        /// <summary>
         /// Installs a structured commit observer. Passing null restores the unobserved fast path.
         /// </summary>
         internal void SetCommitObserver(ILayeredWindowCommitObserver observer)
@@ -247,7 +264,22 @@ namespace CF7Launcher.Guardian
 
         private void OnOwnerDeactivated()
         {
+            HandleOwnerDeactivated();
+        }
+
+        /// <summary>
+        /// owner 失活的唯一处理入口（Activated/Deactivated 回调与测试共用）：
+        /// 白名单输入窗顶替前台时只记诊断，不改 _ownerVisible、不隐藏、不触发
+        /// OnOwnerBecameHidden —— 否则打字期间对话面板会被整块隐藏/压隐。
+        /// </summary>
+        internal void HandleOwnerDeactivated()
+        {
             if (this.IsDisposed || this.Disposing) return;
+            if (ShouldKeepPresentedOnOwnerDeactivate)
+            {
+                TraceFocusLifecycle("owner_deactivate_kept");
+                return;
+            }
             bool visibilityChanged = _ownerVisible;
             _ownerVisible = false;
             if (visibilityChanged)

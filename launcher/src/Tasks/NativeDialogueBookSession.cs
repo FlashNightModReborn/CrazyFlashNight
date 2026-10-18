@@ -98,6 +98,8 @@ namespace CF7Launcher.Tasks
         /// <summary>本地播放序列长度（AS2 原始行 + 本地增强行）。</summary>
         internal int PlaybackCount { get { return _lines.Length; } }
         internal int Index { get { return _index; } }
+        /// <summary>本地单调修订号（每次 Present ++）；宿主用它把打字完成对回具体某一句。</summary>
+        internal int Revision { get { return _revision; } }
         /// <summary>close 用的原始行号：当前播放点已到达的最大 wire 行号，钳在原始范围内。</summary>
         internal int CurrentWireIndex
         {
@@ -139,9 +141,11 @@ namespace CF7Launcher.Tasks
         /// - resumeOriginalIndex = 增强行播完后接回的原始行号（0..WireRowCount）；
         ///   null = 不接回原文，增强序列播完即组末。
         /// 不改变 AppliedEpoch：本地增强不是 AS2 代际，append 的 baseEpoch 仍按 wire 代际。
+        /// present=false 只改播放序列、不换当前显示（把后续台词插到队尾时用）。
         /// 返回 false = 状态/下标非法，播放序列保持不变。
         /// </summary>
-        internal bool ReplaceFrom(int startIndex, Line[] replacement, int? resumeOriginalIndex)
+        internal bool ReplaceFrom(int startIndex, Line[] replacement, int? resumeOriginalIndex,
+            bool present = true)
         {
             if (_state != HostState.Active) return false;
             if (startIndex < 0 || startIndex > _lines.Length) return false;
@@ -162,6 +166,13 @@ namespace CF7Launcher.Tasks
             if (merged.Count < 1) return false;
 
             _lines = merged.ToArray();
+            if (!present)
+            {
+                _index = Math.Min(_index, _lines.Length - 1);
+                _retryToken++;
+                _frozenWire = null;
+                return true;
+            }
             _index = Math.Min(startIndex, _lines.Length - 1);
             _retryToken++;                  // 播放序列变了：在途重试回调失效
             _frozenWire = null;
@@ -240,7 +251,23 @@ namespace CF7Launcher.Tasks
                 ImagePath = line.ImagePath
             };
             _task.PresentBookFrame(this, frame, line.Appearance);
+            if (LinePresented != null)
+            {
+                try { LinePresented(line); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] LinePresented throw: " + ex.Message); }
+            }
             PrefetchAt(_index + 1);
+        }
+
+        /// <summary>本组每呈现一行（含本地增强行）回调一次；插话侧据此记已播历史。
+        /// 在采用队列（UI dispatch）上同步触发，回调里禁止再触发换句。</summary>
+        internal Action<Line> LinePresented;
+
+        /// <summary>原始行读取（越界返回 null）：请求 remaining / 失败回退定位用。</summary>
+        internal Line GetWireRow(int wireIndex)
+        {
+            if (wireIndex < 0 || wireIndex >= _wireRows.Count) return null;
+            return _wireRows[wireIndex];
         }
 
         private void PrefetchAt(int index)

@@ -2876,6 +2876,41 @@ class Program
         socketServer.OnClientReadyForGeneration += nativeDialogueTask.PushCapsForGeneration;
         form.SetDialogueKeyboardSurface(nativeDialogueTask.CaptureKeyboardAction);
 
+        // === AI 对话内嵌插话（config dialogueInterjectEnabled，默认 false）===
+        // 关闭时：不建输入浮窗、不挂会话钩子、不动热键与推进语义；终端与现有对话零变化。
+        CF7Launcher.Tasks.NativeDialogueInterjectController dialogueInterject = null;
+        CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder dialogueInterjectInput = null;
+        if (config.DialogueInterjectEnabled && ragTerminalService != null)
+        {
+            var interjectOverlay = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputOverlay();
+            interjectOverlay.AttachOwner(form);
+            dialogueInterjectInput = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder(
+                form, dialogueWidget, interjectOverlay);
+            interjectOverlay.InputFocusChanged += focused => form.SetTextInputActive(focused);
+            dialogueInterject = new CF7Launcher.Tasks.NativeDialogueInterjectController(
+                nativeDialogueTask, dialogueWidget,
+                action =>
+                {
+                    if (form.IsDisposed) throw new ObjectDisposedException("GuardianForm");
+                    if (form.InvokeRequired) form.BeginInvoke(action); else action();
+                },
+                async () => (await ragTerminalService.EnsureReadyAsync().ConfigureAwait(false)).Success,
+                () => ragTerminalService.CreateInterjectTransport());
+            var interjectController = dialogueInterject;
+            interjectOverlay.SendRequested += text => interjectController.Submit(text);
+            dialogueInterject.InputStateChanged += state => dialogueInterjectInput.Apply(state);
+            dialogueInterject.Attach();
+            if (nativeHud != null)
+                nativeHud.InterjectInputForegroundProbe =
+                    () => interjectOverlay.Visible && interjectOverlay.IsForegroundWindow();
+            form.FormClosed += delegate
+            {
+                dialogueInterject.Dispose();
+                dialogueInterjectInput.Dispose();
+                interjectOverlay.Dispose();
+            };
+        }
+
         using (PerfTrace.Scope("task.registry_register_all"))
         {
             TaskRegistry.RegisterAll(router, gomokuTask, toastTask, frameTask, stageOutcomeTask, warlordStageTask, warlordBattleTask, dataQueryTask, audioTask, dollBakeTask, shopTask, inventoryTask, lootTask, lootFeedTask, lootPanelCoordinator, npcShopTask, craftingTask, materialShopAccessTask, hairdresserTask, plasticSurgeryTask, garagePurchaseTask, subwaySelectTask, eggStageSelectTask, sleepTask, bookshelfTask, gymTrainingTask, settingsTask, equipmentTuningTask, characterBuildTask, itemUseTask, skillTask, mapTask, stageSelectTask, arenaTask, arenaCalibrationTask, agentControlTask, petTask, mercTask, taskTask, intelligenceTask, blackMarketTask, archiveTask, benchTask, fontPackTask, webOverlay, commandRouter, mapDomainTask, nativeInteractionTask, nativeDialogueTask, worldLightingTask, lutLabTask, nativeGuidanceTask, sceneTransition.Task, bookComicTask, tabletTask, meridiansTask);

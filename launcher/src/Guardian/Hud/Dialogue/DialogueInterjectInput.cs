@@ -133,6 +133,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         [DllImport("imm32.dll", CharSet = CharSet.Unicode)]
         private static extern int ImmGetCompositionStringW(IntPtr hImc, int dwIndex, byte[] lpBuf, int dwBufLen);
 
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
         private const int GCS_COMPSTR = 0x0008;
 
         private readonly DialogueInterjectInputModel _model = new DialogueInterjectInputModel();
@@ -143,6 +146,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Color _fore = Color.FromArgb(236, 230, 214);
         private Color _hint = Color.FromArgb(150, 144, 130);
         private string _placeholder = "说点什么…";
+        private bool _textInputActive;
 
         /// <summary>玩家发送：参数为已裁剪到 150 字的文本（调用方负责再去空白）。</summary>
         public event Action<string> SendRequested;
@@ -187,6 +191,52 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             LayoutCounter();
 
             Enter += delegate { _textBox.Focus(); };
+        }
+
+        /// <summary>
+        /// 挂 Owner（必填 GuardianForm）：owned 顶层窗保证 z-order 跟着游戏窗口走，
+        /// 又不会被 owner 的失活隐藏（本次配套的 P0.5 白名单在 NativeHudOverlay 侧）。
+        /// </summary>
+        public void AttachOwner(Form owner)
+        {
+            if (owner == null) return;
+            Owner = owner;
+        }
+
+        /// <summary>本窗是否为本进程当前的系统前台（供 NativeHudOverlay 的白名单探针）。
+        /// 输入焦点在 TextBox 子控件上时前景窗仍是本 Form，故只比 Form 句柄。</summary>
+        public bool IsForegroundWindow()
+        {
+            IntPtr handle = Handle;   // 强制创建
+            return handle != IntPtr.Zero && GetForegroundWindow() == handle;
+        }
+
+        /// <summary>
+        /// 收起输入浮窗：把焦点还给 owner，并显式清一次文字输入态
+        /// （焦点事件可能因为窗口已隐藏而丢失，不能只依赖 LostFocus）。
+        /// </summary>
+        public void DismissToOwner()
+        {
+            ClearInput();
+            SetFocused(false);
+            Hide();
+            Form owner = Owner;
+            if (owner != null && !owner.IsDisposed)
+            {
+                try
+                {
+                    if (owner.WindowState == FormWindowState.Minimized)
+                        owner.WindowState = FormWindowState.Normal;
+                    owner.Activate();
+                }
+                catch { }
+            }
+        }
+
+        /// <summary>本窗当前是否处于"文字输入态"（宿主据此同步 KeyboardHook）。</summary>
+        public bool IsTextInputActive()
+        {
+            return _textInputActive;
         }
 
         /// <summary>输入可用性（播放状态机给出）；禁用时灰显且 Enter 不发。</summary>
@@ -259,10 +309,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             return _model.IsComposing;
         }
 
-        private void SetFocused(bool focused)
+        /// <summary>焦点态切换（GotFocus/LostFocus 与宿主显式收起共用）。</summary>
+        internal void SetFocused(bool focused)
         {
             if (_model.Focused == focused) return;
             _model.Focused = focused;
+            _textInputActive = focused;
             Action<bool> handler = InputFocusChanged;
             if (handler != null)
             {
@@ -351,6 +403,19 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     FontStyle.Italic, GraphicsUnit.Pixel))
                     e.Graphics.DrawString(_placeholder, font, brush, 10f, 7f);
             }
+        }
+
+        /// <summary>Show() 不抢前台：输入框出现不该把焦点从游戏里抠走，点击后才激活。</summary>
+        protected override bool ShowWithoutActivation
+        {
+            get { return true; }
+        }
+
+        protected override void OnVisibleChanged(EventArgs e)
+        {
+            base.OnVisibleChanged(e);
+            // 被直接 Hide（不经 DismissToOwner）时也要退出文字输入态，否则热键会一直放行。
+            if (!Visible) SetFocused(false);
         }
 
         protected override void OnResize(EventArgs e)

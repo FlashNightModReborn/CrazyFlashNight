@@ -150,7 +150,9 @@ namespace CF7Launcher.Tests.Tasks
             var finish = Assert.Single(h.Sent);
             JObject command = JObject.Parse(finish.TrimEnd('\0'));
             Assert.Equal("close", command.Value<string>("reason"));
-            Assert.Equal(2, command.Value<int>("finalIndex"));
+            // 《协议》§12.2（5b6dc7b8e0 冻结）：close 的 finalIndex＝当前已到达的最大原始行号。
+            // 这里刚呈现第 0 行就关闭，所以是 0（不再用"行数-1"）。
+            Assert.Equal(0, command.Value<int>("finalIndex"));
         }
 
         [Fact]
