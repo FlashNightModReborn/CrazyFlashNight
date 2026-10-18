@@ -25,7 +25,8 @@
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("技能中","凶斩中");
 轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
-大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;]]></script>
+大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
+冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -188,7 +189,7 @@ function 消弹()
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

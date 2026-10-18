@@ -26,7 +26,8 @@
           <frames>
             <DOMFrame index="0" duration="6" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateSmallState("兵器一段中");
+                <script><![CDATA[冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
+_parent.UpdateSmallState("兵器一段中");
 
 function 兵器攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度)
 {
@@ -553,7 +554,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("迅捷2连招");
 }]]></script>
@@ -577,7 +578,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("迅捷3连招");
 }]]></script>
@@ -601,7 +602,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("迅捷4连招");
 }]]></script>
@@ -625,7 +626,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("迅捷5连招");
 }]]></script>
@@ -649,7 +650,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

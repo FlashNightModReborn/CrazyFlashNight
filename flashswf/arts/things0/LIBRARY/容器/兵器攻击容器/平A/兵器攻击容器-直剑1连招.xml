@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1792044274" lastUniqueIdentifier="14">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招" itemID="696a8b8f-00001638" linkageExportForAS="true" linkageIdentifier="兵器攻击容器-直剑1连招" lastModified="1792287974" lastUniqueIdentifier="14">
   <timeline>
-    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="76">
+    <DOMTimeline name="兵器攻击容器-直剑1连招" currentFrame="157">
       <layers>
         <DOMLayer name="左手-2" color="#4FFF4F" locked="true" autoNamed="false">
           <frames>
@@ -22,16 +22,16 @@
             <DOMFrame index="71" duration="14" name="进阶直剑1连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="85" duration="15" name="进阶直剑2连招" labelType="name" keyMode="9728">
+            <DOMFrame index="85" duration="16" name="进阶直剑2连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="100" duration="19" name="进阶直剑3连招" labelType="name" keyMode="9728">
+            <DOMFrame index="101" duration="20" name="进阶直剑3连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="119" duration="21" name="进阶直剑4连招" labelType="name" keyMode="9728">
+            <DOMFrame index="121" duration="22" name="进阶直剑4连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="140" duration="16" name="进阶直剑5连招" labelType="name" keyMode="9728">
+            <DOMFrame index="143" duration="17" name="进阶直剑5连招" labelType="name" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -247,6 +247,7 @@ function 刀口触发特效(状态名)
 }
 轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
 大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
+冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
 剑气释放搓招窗口 = _root.技能函数.剑气释放搓招窗口;
 飞沙走石搓招窗口 = _root.技能函数.飞沙走石搓招窗口;
 贯穿突刺搓招窗口 = _root.技能函数.贯穿突刺搓招窗口;
@@ -452,46 +453,46 @@ if (_parent.被动技能.刀剑攻击 && _parent.被动技能.刀剑攻击.启�
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="89" duration="10" keyMode="9728">
+            <DOMFrame index="89" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[刀口触发特效("兵器二段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="99" keyMode="9728">
+            <DOMFrame index="100" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="100" duration="2" keyMode="9728">
+            <DOMFrame index="101" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器三段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="102" duration="16" keyMode="9728">
+            <DOMFrame index="103" duration="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[刀口触发特效("兵器三段中");
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="118" keyMode="9728">
+            <DOMFrame index="120" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="119" duration="5" keyMode="9728">
+            <DOMFrame index="121" duration="5" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器四段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="124" duration="15" keyMode="9728">
+            <DOMFrame index="126" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 刀口触发特效("兵器四段中");
@@ -499,30 +500,30 @@ if (_parent.被动技能.刀剑攻击 && _parent.被动技能.刀剑攻击.启�
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="139" keyMode="9728">
+            <DOMFrame index="142" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.兵器攻击路由.动画完毕(this, _parent);
 ]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="140" keyMode="9728">
+            <DOMFrame index="143" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateSmallState("兵器五段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="141" duration="2" keyMode="9728">
+            <DOMFrame index="144" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="143" duration="12" keyMode="9728">
+            <DOMFrame index="146" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[
 刀口触发特效("兵器五段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="155" keyMode="9728">
+            <DOMFrame index="159" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_parent.UpdateBigSmallState("普攻结束","兵器五段结束");
 _root.兵器攻击路由.动画完毕(this, _parent);
@@ -696,7 +697,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="93" duration="12" keyMode="9728">
+            <DOMFrame index="93" duration="13" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -706,7 +707,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" duration="2" keyMode="9728">
+            <DOMFrame index="106" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -716,7 +717,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="107" duration="2" keyMode="9728">
+            <DOMFrame index="108" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -726,7 +727,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="109" duration="2" keyMode="9728">
+            <DOMFrame index="110" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -736,17 +737,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="111" duration="10" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
-进阶刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="121" duration="2" keyMode="9728">
+            <DOMFrame index="112" duration="11" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -758,6 +749,16 @@ Z轴攻击范围 = 30;
             </DOMFrame>
             <DOMFrame index="123" duration="2" keyMode="9728">
               <Actionscript>
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
+Z轴攻击范围 = 30;
+击倒率 = 10;
+水平击退速度 = 10;
+进阶刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="125" duration="2" keyMode="9728">
+              <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power * 1.2;
 Z轴攻击范围 = 30;
 击倒率 = 10;
@@ -767,23 +768,12 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="125" duration="2" keyMode="9728">
+            <DOMFrame index="127" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 4 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
 击倒率 = 10;
 水平击退速度 = 8;
-垂直击退速度 = 3;
-进阶刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
-              </Actionscript>
-              <elements/>
-            </DOMFrame>
-            <DOMFrame index="127" duration="2" keyMode="9728">
-              <Actionscript>
-                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
-Z轴攻击范围 = 30;
-击倒率 = 10;
-水平击退速度 = 10;
 垂直击退速度 = 3;
 进阶刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
               </Actionscript>
@@ -811,7 +801,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="133" duration="14" keyMode="9728">
+            <DOMFrame index="133" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
 Z轴攻击范围 = 30;
@@ -822,7 +812,18 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="147" duration="2" keyMode="9728">
+            <DOMFrame index="135" duration="15" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[子弹威力 = _parent.空手攻击力 / 3 + _parent.刀属性.power;
+Z轴攻击范围 = 30;
+击倒率 = 10;
+水平击退速度 = 10;
+垂直击退速度 = 3;
+进阶刀剑攻击(子弹威力, Z轴攻击范围, 击倒率, 水平击退速度, 垂直击退速度);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="150" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -832,7 +833,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="149" duration="2" keyMode="9728">
+            <DOMFrame index="152" duration="2" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -842,7 +843,7 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="151" duration="5" keyMode="9728">
+            <DOMFrame index="154" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[子弹威力 = _parent.空手攻击力 / 5 + _parent.刀属性.power * 1.5;
 Z轴攻击范围 = 30;
@@ -868,7 +869,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="85" keyMode="9728">
+            <DOMFrame index="71" duration="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器使用标签" name="兵器使用标签" centerPoint3DX="-104.7" centerPoint3DY="279.25">
                   <matrix>
@@ -896,7 +897,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" duration="85" keyMode="9728">
+            <DOMFrame index="71" duration="89" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="属性标签标志元件/兵器攻击标志" name="兵器攻击标签" centerPoint3DX="-104.7" centerPoint3DY="306.25">
                   <matrix>
@@ -1110,10 +1111,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" duration="5" keyMode="9728">
+            <DOMFrame index="95" duration="6" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="100" duration="5" keyMode="9728">
+            <DOMFrame index="101" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -1131,10 +1132,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="105" keyMode="9728">
+            <DOMFrame index="106" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="106" duration="4" keyMode="9728">
+            <DOMFrame index="107" duration="4" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -1152,10 +1153,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="110" duration="9" keyMode="9728">
+            <DOMFrame index="111" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="119" duration="3" keyMode="9728">
+            <DOMFrame index="121" duration="3" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -1173,10 +1174,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" keyMode="9728">
+            <DOMFrame index="124" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="123" duration="2" keyMode="9728">
+            <DOMFrame index="125" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -1194,13 +1195,13 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="125" duration="10" keyMode="9728">
+            <DOMFrame index="127" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="135" duration="10" keyMode="9728">
+            <DOMFrame index="137" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="145" duration="5" keyMode="9728">
+            <DOMFrame index="148" duration="5" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-8.95" centerPoint3DY="308.55">
                   <matrix>
@@ -1218,7 +1219,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="150" duration="6" keyMode="9728">
+            <DOMFrame index="153" duration="7" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1241,7 +1242,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("直剑2连招");
 }]]></script>
@@ -1265,7 +1266,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("直剑3连招");
 }]]></script>
@@ -1289,7 +1290,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("直剑4连招");
 }]]></script>
@@ -1313,7 +1314,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("直剑5连招");
 }]]></script>
@@ -1337,7 +1338,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -1360,7 +1361,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶直剑2连招");
 }]]></script>
@@ -1371,7 +1372,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="85" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" duration="5" keyMode="9728">
+            <DOMFrame index="95" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -1384,7 +1385,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶直剑3连招");
 }]]></script>
@@ -1392,10 +1393,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="100" duration="14" keyMode="9728">
+            <DOMFrame index="101" duration="14" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="114" duration="5" keyMode="9728">
+            <DOMFrame index="115" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -1408,7 +1409,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶直剑4连招");
 }]]></script>
@@ -1416,10 +1417,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="119" duration="16" keyMode="9728">
+            <DOMFrame index="121" duration="16" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="135" duration="5" keyMode="9728">
+            <DOMFrame index="137" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 6" centerPoint3DX="-122.8" centerPoint3DY="-294.55">
                   <matrix>
@@ -1432,7 +1433,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶直剑5连招");
 }]]></script>
@@ -1440,10 +1441,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="140" duration="11" keyMode="9728">
+            <DOMFrame index="143" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="151" duration="5" keyMode="9728">
+            <DOMFrame index="154" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="怪物通用模板/新近战子弹定位元件/近战子弹定位用 副本" centerPoint3DX="212.8" centerPoint3DY="369.75">
                   <matrix>
@@ -1456,7 +1457,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -1470,7 +1471,7 @@ Z轴攻击范围 = 30;
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" duration="85" keyMode="9728">
+            <DOMFrame index="71" duration="89" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -1614,10 +1615,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="94" duration="12" keyMode="9728">
+            <DOMFrame index="94" duration="13" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="106" duration="2" keyMode="9728">
+            <DOMFrame index="107" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="794.25" centerPoint3DY="266.45">
                   <matrix>
@@ -1681,10 +1682,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="108" duration="2" keyMode="9728">
+            <DOMFrame index="109" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="110" duration="2" keyMode="9728">
+            <DOMFrame index="111" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="787.9" centerPoint3DY="291.35">
                   <matrix>
@@ -1748,10 +1749,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="112" duration="11" keyMode="9728">
+            <DOMFrame index="113" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="123" duration="2" keyMode="9728">
+            <DOMFrame index="125" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="704.25" centerPoint3DY="294.5">
                   <matrix>
@@ -1815,10 +1816,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="125" keyMode="9728">
+            <DOMFrame index="127" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="126" duration="2" keyMode="9728">
+            <DOMFrame index="128" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="774.2" centerPoint3DY="283.5">
                   <matrix>
@@ -1882,10 +1883,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="128" duration="4" keyMode="9728">
+            <DOMFrame index="130" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="132" duration="2" keyMode="9728">
+            <DOMFrame index="134" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="696.25" centerPoint3DY="302.5">
                   <matrix>
@@ -1949,10 +1950,10 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="134" duration="14" keyMode="9728">
+            <DOMFrame index="136" duration="15" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="148" duration="2" keyMode="9728">
+            <DOMFrame index="151" duration="2" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="sprite/近战子弹 副本" centerPoint3DX="778.25" centerPoint3DY="279.6">
                   <matrix>
@@ -2016,13 +2017,13 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="150" keyMode="9728">
+            <DOMFrame index="153" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="151" duration="2" keyMode="9728">
+            <DOMFrame index="154" duration="2" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="153" duration="3" keyMode="9728">
+            <DOMFrame index="156" duration="4" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2071,43 +2072,43 @@ Z轴攻击范围 = 30;
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="90" duration="15" keyMode="9728">
+            <DOMFrame index="90" duration="16" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器2段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" duration="4" keyMode="9728">
+            <DOMFrame index="106" duration="4" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器3段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="109" duration="13" keyMode="9728">
+            <DOMFrame index="110" duration="14" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器3段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="122" duration="3" keyMode="9728">
+            <DOMFrame index="124" duration="3" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器4段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="125" duration="6" keyMode="9728">
+            <DOMFrame index="127" duration="6" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器4段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="131" duration="16" keyMode="9728">
+            <DOMFrame index="133" duration="17" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器4段攻击.wav");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="147" duration="9" keyMode="9728">
+            <DOMFrame index="150" duration="10" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[_root.播放音效("兵器5段攻击.wav");]]></script>
               </Actionscript>
@@ -2120,10 +2121,10 @@ Z轴攻击范围 = 30;
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" duration="59" keyMode="9728">
+            <DOMFrame index="71" duration="61" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="130" keyMode="9728">
+            <DOMFrame index="132" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2144,7 +2145,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="131" keyMode="9728">
+            <DOMFrame index="133" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2166,7 +2167,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="132" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="134" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFCC.26, #FFFFE9.7B" startPointB="-57.6875, #FFFFD9.23" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2215,7 +2216,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" keyMode="9728">
+            <DOMFrame index="137" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2231,13 +2232,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!18218 -2689[23076 945 22271 3334!22271 3334[21470 5722 15473 5465!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823
- 5690 -9074!5690 -9074[13362 -6322 18218 -2689"/>
+!15473 5465[9482 5208 1810 2458!1810 2458[-5859 -291 -10716 -3928!-10716 -3928[-15573 -7561 -14768 -9949!-14768 -9949[-13966 -12336 -7973 -12082!-7973 -12082[-1978 -11823 5690 -9074!5690 -9074[13362 -6322 18218 -2689!18218 -2689[23076
+ 945 22271 3334!22271 3334[21470 5722 15473 5465"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="136" duration="20" keyMode="9728">
+            <DOMFrame index="138" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -2247,10 +2248,10 @@ Z轴攻击范围 = 30;
             <DOMFrame index="0" duration="71" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" duration="38" keyMode="9728">
+            <DOMFrame index="71" duration="39" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="109" keyMode="9728">
+            <DOMFrame index="110" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2272,7 +2273,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="110" tweenType="shape" keyMode="17922">
+            <DOMFrame index="111" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFD8.AB, #8.53" startPointB="-41.390625, #8.8C" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2309,7 +2310,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" tweenType="shape" keyMode="17922">
+            <DOMFrame index="112" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-41.390625, #8.8C" startPointB="-43.453125, #8.C4" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2340,13 +2341,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-647 -3951[5561 -4615 11421 -3757!11421 -3757[17284 -2896 19369 -1019!19369 -1019[21451 863 18537 2658!18537 2658[15624 4457 9416 5122!9416 5122[3210 5785 -2653 4927!-2653 4927[-8513 4067 -10596 2188!-10596 2188[-12683 311 -9768 -1490
-!-9768 -1490[-6855 -3287 -647 -3951"/>
+!18537 2658[15624 4457 9416 5122!9416 5122[3210 5785 -2653 4927!-2653 4927[-8513 4067 -10596 2188!-10596 2188[-12683 311 -9768 -1490!-9768 -1490[-6855 -3287 -647 -3951!-647 -3951[5561 -4615 11421 -3757!11421 -3757[17284 -2896 19369 -1019
+!19369 -1019[21451 863 18537 2658"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="112" tweenType="shape" keyMode="17922">
+            <DOMFrame index="113" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-43.453125, #8.C4" startPointB="#FFFFD2.7D, #8.FD" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2377,13 +2378,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-824 -4111[5602 -4798 11669 -3910!11669 -3910[17738 -3019 19897 -1076!19897 -1076[22052 873 19035 2731!19035 2731[16020 4593 9593 5282!9593 5282[3169 5968 -2901 5080!-2901 5080[-8967 4190 -11124 2244!-11124 2244[-13284 301 -10267 -1563
-!-10267 -1563[-7251 -3423 -824 -4111"/>
+!19035 2731[16020 4593 9593 5282!9593 5282[3169 5968 -2901 5080!-2901 5080[-8967 4190 -11124 2244!-11124 2244[-13284 301 -10267 -1563!-10267 -1563[-7251 -3423 -824 -4111!-824 -4111[5602 -4798 11669 -3910!11669 -3910[17738 -3019 19897
+ -1076!19897 -1076[22052 873 19035 2731"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="113" tweenType="shape" keyMode="17922">
+            <DOMFrame index="114" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFD2.7D, #8.FD" startPointB="#FFFFD0.6D, #9.35" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2414,13 +2415,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1001 -4270[5644 -4981 11917 -4062!11917 -4062[18193 -3141 20425 -1132!20425 -1132[22654 883 19534 2805!19534 2805[16416 4730 9771 5442!9771 5442[3128 6152 -3148 5233!-3148 5233[-9421 4313 -11651 2301!-11651 2301[-13885 292 -10765 -1636
-!-10765 -1636[-7646 -3559 -1001 -4270"/>
+!19534 2805[16416 4730 9771 5442!9771 5442[3128 6152 -3148 5233!-3148 5233[-9421 4313 -11651 2301!-11651 2301[-13885 292 -10765 -1636!-10765 -1636[-7646 -3559 -1001 -4270!-1001 -4270[5644 -4981 11917 -4062!11917 -4062[18193 -3141 20425
+ -1132!20425 -1132[22654 883 19534 2805"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="114" keyMode="9728">
+            <DOMFrame index="115" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2442,10 +2443,10 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="115" duration="10" keyMode="9728">
+            <DOMFrame index="116" duration="11" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="125" keyMode="9728">
+            <DOMFrame index="127" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2467,7 +2468,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" duration="9" tweenType="shape" keyMode="17922">
+            <DOMFrame index="128" duration="9" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFD8.AB, #8.53" startPointB="#FFFFD0.6D, #3.AE" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -2504,7 +2505,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" keyMode="9728">
+            <DOMFrame index="137" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -2526,7 +2527,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="136" duration="20" keyMode="9728">
+            <DOMFrame index="138" duration="22" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -3370,7 +3371,7 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!2809 -9194|7977 4601!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194"/>
+!7977 4601|-3802 7673!-3802 7673[-6066 4886 -6066 1160!-6066 1160[-6066 -3174 -3002 -6239!-3002 -6239[-515 -8726 2809 -9194!2809 -9194|7977 4601"/>
                     <Edge cubics="!2809 -9194(;2809,-9194 7977,4601 7977,4601q2809 -9194 7977 4601);"/>
                     <Edge cubics="!-6066 1160(;-6066,-1729 -5045,-4196 -3002,-6239q-6066 1160Q-6066 -3174q-3002 -6239);"/>
                     <Edge cubics="!-3802 7673(;-5311,5815 -6066,3644 -6066,1160q-3802 7673Q-6066 4886q-6066 1160);"/>
@@ -3673,8 +3674,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051!6511 -6051[11562 -4181 14315 -1410!14315 -1410[17066 1360 15904 3410!15904 3410[14746 5460 10351
- 5587!10351 5587[5957 5716 904 3847"/>
+!15904 3410[14746 5460 10351 5587!10351 5587[5957 5716 904 3847!904 3847[-4146 1978 -6900 -793!-6900 -793[-9652 -3563 -8490 -5613!-8490 -5613[-7330 -7663 -2936 -7791!-2936 -7791[1458 -7919 6511 -6051!6511 -6051[11562 -4181 14315 -1410
+!14315 -1410[17066 1360 15904 3410"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -3695,8 +3696,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!17611 4918[15686 6425 10505 5830!10505 5830[5326 5235 -71 2886!-71 2886[-5464 537 -7918 -2191!-7918 -2191[-10371 -4917 -8442 -6424!-8442 -6424[-6514 -7932 -1334 -7337!-1334 -7337[3846 -6741 9243 -4393!9243 -4393[14636 -2043 17091 684
-!17091 684[19542 3410 17611 4918"/>
+!-8442 -6424[-6514 -7932 -1334 -7337!-1334 -7337[3846 -6741 9243 -4393!9243 -4393[14636 -2043 17091 684!17091 684[19542 3410 17611 4918!17611 4918[15686 6425 10505 5830!10505 5830[5326 5235 -71 2886!-71 2886[-5464 537 -7918 -2191!-7918
+ -2191[-10371 -4917 -8442 -6424"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -3779,8 +3780,8 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!14608 6556S2[12384 8695 7194 7850!7194 7850[2005 7007 -3108 3674!-3108 3674[-8219 342 -10262 -3528!-10262 -3528[-12308 -7396 -10084 -9535!-10084 -9535[-7857 -11673 -2668 -10831!-2668 -10831[2522 -9985 7632 -6653!7632 -6653[12747 -3320
- 14790 548!14790 548[16833 4417 14608 6556"/>
+!-2668 -10831S2[2522 -9985 7632 -6653!7632 -6653[12747 -3320 14790 548!14790 548[16833 4417 14608 6556!14608 6556[12384 8695 7194 7850!7194 7850[2005 7007 -3108 3674!-3108 3674[-8219 342 -10262 -3528!-10262 -3528[-12308 -7396 -10084 -9535
+!-10084 -9535[-7857 -11673 -2668 -10831"/>
                   </edges>
                 </DOMShape>
               </elements>
@@ -3801,16 +3802,16 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!15889 7390[13435 9751 7706 8818!7706 8818[1979 7888 -3664 4209!-3664 4209[-9306 531 -11561 -3740!-11561 -3740[-13819 -8009 -11364 -10370!-11364 -10370[-8906 -12730 -3179 -11801!-3179 -11801[2550 -10867 8190 -7189!8190 -7189[13835 -3510
- 16090 759!16090 759[18345 5029 15889 7390"/>
+!-3179 -11801[2550 -10867 8190 -7189!8190 -7189[13835 -3510 16090 759!16090 759[18345 5029 15889 7390!15889 7390[13435 9751 7706 8818!7706 8818[1979 7888 -3664 4209!-3664 4209[-9306 531 -11561 -3740!-11561 -3740[-13819 -8009 -11364 -10370
+!-11364 -10370[-8906 -12730 -3179 -11801"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="96" duration="9" keyMode="9728">
+            <DOMFrame index="96" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" keyMode="9728">
+            <DOMFrame index="106" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -3832,7 +3833,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="106" keyMode="9728">
+            <DOMFrame index="107" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -3848,13 +3849,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1691 -4780S2[2348 -5769 7103 -5228!7103 -5228[11860 -4686 14552 -2929!14552 -2929[17241 -1173 16287 770!16287 770[15335 2714 11297 3703!11297 3703[7257 4693 2501 4151!2501 4151[-2256 3610 -4945 1852!-4945 1852[-7637 97 -6684 -1849!-6684
- -1849[-5730 -3790 -1691 -4780"/>
+!16287 770S2[15335 2714 11297 3703!11297 3703[7257 4693 2501 4151!2501 4151[-2256 3610 -4945 1852!-4945 1852[-7637 97 -6684 -1849!-6684 -1849[-5730 -3790 -1691 -4780!-1691 -4780[2348 -5769 7103 -5228!7103 -5228[11860 -4686 14552 -2929
+!14552 -2929[17241 -1173 16287 770"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="107" tweenType="shape" keyMode="17922">
+            <DOMFrame index="108" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-26.109375, #FFFFF8.C7" startPointB="#FFFFE2.7A, #FFFFF8.63" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -3885,13 +3886,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-1691 -4780[2348 -5769 7103 -5228!7103 -5228[11860 -4686 14552 -2929!14552 -2929[17241 -1173 16287 770!16287 770[15335 2714 11297 3703!11297 3703[7257 4693 2501 4151!2501 4151[-2256 3610 -4945 1852!-4945 1852[-7637 97 -6684 -1849!-6684
- -1849[-5730 -3790 -1691 -4780"/>
+!16287 770[15335 2714 11297 3703!11297 3703[7257 4693 2501 4151!2501 4151[-2256 3610 -4945 1852!-4945 1852[-7637 97 -6684 -1849!-6684 -1849[-5730 -3790 -1691 -4780!-1691 -4780[2348 -5769 7103 -5228!7103 -5228[11860 -4686 14552 -2929!14552
+ -2929[17241 -1173 16287 770"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="108" tweenType="shape" keyMode="17922">
+            <DOMFrame index="109" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#FFFFE2.7A, #FFFFF8.63" startPointB="-32.9375, #FFFFF7.FF" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -3922,13 +3923,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2185 -5103[2161 -6168 7278 -5585!7278 -5585[12398 -5002 15294 -3111!15294 -3111[18188 -1222 17162 869!17162 869[16137 2961 11792 4026!11792 4026[7444 5091 2326 4508!2326 4508[-2793 3925 -5687 2034!-5687 2034[-8584 145 -7558 -1949!-7558
- -1949[-6532 -4038 -2185 -5103"/>
+!17162 869[16137 2961 11792 4026!11792 4026[7444 5091 2326 4508!2326 4508[-2793 3925 -5687 2034!-5687 2034[-8584 145 -7558 -1949!-7558 -1949[-6532 -4038 -2185 -5103!-2185 -5103[2161 -6168 7278 -5585!7278 -5585[12398 -5002 15294 -3111
+!15294 -3111[18188 -1222 17162 869"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" duration="3" tweenType="shape" keyMode="17922">
+            <DOMFrame index="110" duration="3" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-32.9375, #FFFFF7.FF" startPointB="#FFFFDB.A6, #FFFFF7.9B" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -3959,13 +3960,13 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-2679 -5426[1975 -6566 7454 -5942!7454 -5942[12936 -5318 16037 -3293!16037 -3293[19135 -1270 18037 969!18037 969[16939 3209 12287 4349!12287 4349[7631 5489 2151 4865!2151 4865[-3330 4241 -6428 2216!-6428 2216[-9530 193 -8432 -2049!-8432
- -2049[-7333 -4286 -2679 -5426"/>
+!18037 969[16939 3209 12287 4349!12287 4349[7631 5489 2151 4865!2151 4865[-3330 4241 -6428 2216!-6428 2216[-9530 193 -8432 -2049!-8432 -2049[-7333 -4286 -2679 -5426!-2679 -5426[1975 -6566 7454 -5942!7454 -5942[12936 -5318 16037 -3293
+!16037 -3293[19135 -1270 18037 969"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="112" keyMode="9728">
+            <DOMFrame index="113" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -3981,16 +3982,16 @@ Z轴攻击范围 = 30;
                   </fills>
                   <edges>
                     <Edge fillStyle1="1" edges="
-!-3173 -5750[1788 -6965 7629 -6300!7629 -6300[13473 -5634 16779 -3476!16779 -3476[20082 -1319 18911 1068!18911 1068[17741 3456 12781 4671!12781 4671[7818 5887 1976 5221!1976 5221[-3867 4556 -7170 2397!-7170 2397[-10477 241 -9306 -2149
-!-9306 -2149[-8135 -4534 -3173 -5750"/>
+!18911 1068[17741 3456 12781 4671!12781 4671[7818 5887 1976 5221!1976 5221[-3867 4556 -7170 2397!-7170 2397[-10477 241 -9306 -2149!-9306 -2149[-8135 -4534 -3173 -5750!-3173 -5750[1788 -6965 7629 -6300!7629 -6300[13473 -5634 16779 -3476
+!16779 -3476[20082 -1319 18911 1068"/>
                   </edges>
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="113" duration="9" keyMode="9728">
+            <DOMFrame index="114" duration="10" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="122" keyMode="9728">
+            <DOMFrame index="124" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -4012,7 +4013,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="123" duration="12" tweenType="shape" keyMode="17922">
+            <DOMFrame index="125" duration="12" tweenType="shape" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="-25.234375, #A.46" startPointB="#FFFFEE.77, #B.86" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -4049,7 +4050,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" keyMode="9728">
+            <DOMFrame index="137" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -4071,10 +4072,10 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="136" duration="11" keyMode="9728">
+            <DOMFrame index="138" duration="12" keyMode="9728">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="147" keyMode="9728">
+            <DOMFrame index="150" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -4096,7 +4097,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="148" duration="2" tweenType="shape" hasCustomEase="true" keyMode="17922">
+            <DOMFrame index="151" duration="2" tweenType="shape" hasCustomEase="true" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#8.81, #C.7B" startPointB="#17.66, #E.B9" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -4127,7 +4128,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="150" tweenType="shape" hasCustomEase="true" keyMode="17922">
+            <DOMFrame index="153" tweenType="shape" hasCustomEase="true" keyMode="17922">
               <MorphShape>
                 <morphSegments>
                   <MorphSegment startPointA="#17.66, #E.B9" startPointB="#19.B4, #E.8D" strokeIndex1="0" strokeIndex2="0" fillIndex1="0" fillIndex2="1">
@@ -4158,7 +4159,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="151" keyMode="9728">
+            <DOMFrame index="154" keyMode="9728">
               <elements>
                 <DOMShape>
                   <fills>
@@ -4179,7 +4180,7 @@ Z轴攻击范围 = 30;
                 </DOMShape>
               </elements>
             </DOMFrame>
-            <DOMFrame index="152" duration="4" keyMode="9728">
+            <DOMFrame index="155" duration="5" keyMode="9728">
               <elements/>
             </DOMFrame>
           </frames>
@@ -6888,7 +6889,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="-0.506072998046875" b="1.7047119140625" c="0.690902709960938" d="-0.62127685546875" tx="-46.3" ty="93.8"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.9" y="112.75"/>
+                    <Point x="2.9" y="112.8"/>
                   </transformationPoint>
                   <filters>
                     <BlurFilter blurX="0" blurY="0"/>
@@ -17009,7 +17010,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" duration="5" keyMode="9728">
+            <DOMFrame index="95" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="80.15" centerPoint3DY="-83.4">
                   <matrix>
@@ -17219,7 +17220,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="100" keyMode="9728">
+            <DOMFrame index="101" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="50" centerPoint3DY="-99.4">
                   <matrix>
@@ -17429,7 +17430,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="101" keyMode="9728">
+            <DOMFrame index="102" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-5.25" centerPoint3DY="-113.25">
                   <matrix>
@@ -17639,7 +17640,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="102" keyMode="9728">
+            <DOMFrame index="103" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-54.65" centerPoint3DY="-115.2">
                   <matrix>
@@ -17849,7 +17850,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="103" keyMode="9728">
+            <DOMFrame index="104" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-94.4" centerPoint3DY="-108.4">
                   <matrix>
@@ -18059,7 +18060,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728">
+            <DOMFrame index="105" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-122.05" centerPoint3DY="-98.15">
                   <matrix>
@@ -18269,7 +18270,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="105" keyMode="9728">
+            <DOMFrame index="106" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-86" centerPoint3DY="-118.3">
                   <matrix>
@@ -18479,7 +18480,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="106" keyMode="9728">
+            <DOMFrame index="107" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="43.65" centerPoint3DY="-144.7">
                   <matrix>
@@ -18689,7 +18690,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="107" keyMode="9728">
+            <DOMFrame index="108" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="116.05" centerPoint3DY="-43.1">
                   <matrix>
@@ -18899,7 +18900,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="108" keyMode="9728">
+            <DOMFrame index="109" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="150.5" centerPoint3DY="-70.6">
                   <matrix>
@@ -19109,7 +19110,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="109" keyMode="9728">
+            <DOMFrame index="110" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="169.75" centerPoint3DY="-66.2">
                   <matrix>
@@ -19319,7 +19320,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="110" keyMode="9728">
+            <DOMFrame index="111" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="313.2" centerPoint3DY="-16.3">
                   <matrix>
@@ -19529,7 +19530,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="111" keyMode="9728">
+            <DOMFrame index="112" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="100.05" centerPoint3DY="-91.9">
                   <matrix>
@@ -19739,7 +19740,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="112" keyMode="9728">
+            <DOMFrame index="113" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="32.15" centerPoint3DY="-82.55">
                   <matrix>
@@ -19933,7 +19934,7 @@ Z轴攻击范围 = 30;
                     <Matrix a="1.468994140625" b="0.41778564453125" c="0.396041870117188" d="0.538909912109375" tx="7.3" ty="46.45"/>
                   </matrix>
                   <transformationPoint>
-                    <Point x="2.75" y="110.65"/>
+                    <Point x="2.75" y="110.7"/>
                   </transformationPoint>
                 </DOMSymbolInstance>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/左手" centerPoint3DX="57.9" centerPoint3DY="54.55">
@@ -19949,7 +19950,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="113" keyMode="9728">
+            <DOMFrame index="114" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-30.05" centerPoint3DY="-66.4">
                   <matrix>
@@ -20159,7 +20160,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="114" duration="5" keyMode="9728">
+            <DOMFrame index="115" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-86.1" centerPoint3DY="-45.9">
                   <matrix>
@@ -20369,7 +20370,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="119" keyMode="9728">
+            <DOMFrame index="121" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-101.8" centerPoint3DY="-64.65">
                   <matrix>
@@ -20579,7 +20580,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728">
+            <DOMFrame index="122" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-142.25" centerPoint3DY="-71.5">
                   <matrix>
@@ -20789,7 +20790,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="121" keyMode="9728">
+            <DOMFrame index="123" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-176.1" centerPoint3DY="-78.85">
                   <matrix>
@@ -20999,7 +21000,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="122" keyMode="9728">
+            <DOMFrame index="124" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-155.15" centerPoint3DY="-87.75">
                   <matrix>
@@ -21209,7 +21210,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="123" keyMode="9728">
+            <DOMFrame index="125" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="74" centerPoint3DY="-124.9">
                   <matrix>
@@ -21419,7 +21420,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="124" keyMode="9728">
+            <DOMFrame index="126" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="118.7" centerPoint3DY="-12.45">
                   <matrix>
@@ -21629,7 +21630,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="125" keyMode="9728">
+            <DOMFrame index="127" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="169.9" centerPoint3DY="-66.05">
                   <matrix>
@@ -21839,7 +21840,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="126" keyMode="9728">
+            <DOMFrame index="128" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="313.2" centerPoint3DY="-16.3">
                   <matrix>
@@ -22049,7 +22050,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="127" keyMode="9728">
+            <DOMFrame index="129" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="100.05" centerPoint3DY="-91.9">
                   <matrix>
@@ -22259,7 +22260,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="128" keyMode="9728">
+            <DOMFrame index="130" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="0.2" centerPoint3DY="-75.1">
                   <matrix>
@@ -22469,7 +22470,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="129" keyMode="9728">
+            <DOMFrame index="131" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-86.1" centerPoint3DY="-45.9">
                   <matrix>
@@ -22679,7 +22680,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="130" keyMode="9728">
+            <DOMFrame index="132" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-108.05" centerPoint3DY="-121.2">
                   <matrix>
@@ -22889,7 +22890,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="131" keyMode="9728">
+            <DOMFrame index="133" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-60.75" centerPoint3DY="-126.35">
                   <matrix>
@@ -23099,7 +23100,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="132" keyMode="9728">
+            <DOMFrame index="134" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="89.25" centerPoint3DY="-106.35">
                   <matrix>
@@ -23309,7 +23310,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="133" keyMode="9728">
+            <DOMFrame index="135" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="95.35" centerPoint3DY="-100.7">
                   <matrix>
@@ -23519,7 +23520,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="134" keyMode="9728">
+            <DOMFrame index="136" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="101.45" centerPoint3DY="-95.05">
                   <matrix>
@@ -23729,7 +23730,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="135" duration="5" keyMode="9728">
+            <DOMFrame index="137" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="107.55" centerPoint3DY="-89.4">
                   <matrix>
@@ -23939,7 +23940,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="140" keyMode="9728">
+            <DOMFrame index="143" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="107.55" centerPoint3DY="-89.4">
                   <matrix>
@@ -24149,7 +24150,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="141" keyMode="9728">
+            <DOMFrame index="144" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="55.45" centerPoint3DY="-110.25">
                   <matrix>
@@ -24359,7 +24360,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="142" keyMode="9728">
+            <DOMFrame index="145" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-70.75" centerPoint3DY="-149.5">
                   <matrix>
@@ -24569,7 +24570,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="143" keyMode="9728">
+            <DOMFrame index="146" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/上臂" centerPoint3DX="-118.9" centerPoint3DY="-160.4">
                   <matrix>
@@ -24779,7 +24780,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="144" keyMode="9728">
+            <DOMFrame index="147" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="76.25" centerPoint3DY="-108.1">
                   <matrix>
@@ -24989,7 +24990,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="145" keyMode="9728">
+            <DOMFrame index="148" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="11.85" centerPoint3DY="-103.85">
                   <matrix>
@@ -25199,7 +25200,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="146" keyMode="9728">
+            <DOMFrame index="149" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="-49.3" centerPoint3DY="-92.35">
                   <matrix>
@@ -25409,7 +25410,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="147" keyMode="9728">
+            <DOMFrame index="150" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="16.1" centerPoint3DY="-103.55">
                   <matrix>
@@ -25619,7 +25620,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="148" keyMode="9728">
+            <DOMFrame index="151" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="476.05" centerPoint3DY="120.4">
                   <matrix>
@@ -25829,7 +25830,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="149" keyMode="9728">
+            <DOMFrame index="152" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="483.2" centerPoint3DY="128.95">
                   <matrix>
@@ -26039,7 +26040,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="150" keyMode="9728">
+            <DOMFrame index="153" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="490.4" centerPoint3DY="137.15">
                   <matrix>
@@ -26249,7 +26250,7 @@ Z轴攻击范围 = 30;
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="151" duration="5" keyMode="9728">
+            <DOMFrame index="154" duration="6" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/刀" name="刀" centerPoint3DX="497.3" centerPoint3DY="145.15">
                   <matrix>
@@ -26463,7 +26464,7 @@ Z轴攻击范围 = 30;
         </DOMLayer>
         <DOMLayer name="阴影" color="#4FFFFF" locked="true" autoNamed="false">
           <frames>
-            <DOMFrame index="0" duration="156" keyMode="9728">
+            <DOMFrame index="0" duration="160" keyMode="9728">
               <elements>
                 <DOMSymbolInstance libraryItemName="主角肢体素材/Symbol 3" centerPoint3DX="71.45" centerPoint3DY="319.7">
                   <matrix>

@@ -174,6 +174,7 @@ function 刀口触发特效(状态名)
 }
 轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
 大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
+冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
 剑气释放搓招窗口 = _root.技能函数.剑气释放搓招窗口;
 飞沙走石搓招窗口 = _root.技能函数.飞沙走石搓招窗口;
 贯穿突刺搓招窗口 = _root.技能函数.贯穿突刺搓招窗口;
@@ -580,7 +581,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("2连招");
 }]]></script>
@@ -604,7 +605,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("3连招");
 }]]></script>
@@ -628,7 +629,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("4连招");
 }]]></script>
@@ -652,7 +653,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("5连招");
 }]]></script>
@@ -676,7 +677,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.轻型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

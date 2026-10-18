@@ -612,6 +612,7 @@
               <Actionscript>
                 <script><![CDATA[轻型武器攻击搓招 = _root.技能函数.轻型武器攻击搓招;
 大型武器攻击搓招 = _root.技能函数.大型武器攻击搓招;
+冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
 __ti61BloodTailReleased = false;
 __ti61BloodRuntime = _parent.__titaniumType61;
 if (!__ti61BloodRuntime || !__ti61BloodRuntime.bindBloodPactAnimation(this)) 无敌标签 = false;]]></script>

@@ -44,7 +44,8 @@
             </DOMFrame>
             <DOMFrame index="1" duration="8" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateSmallState("兵器一段中");
+                <script><![CDATA[冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
+_parent.UpdateSmallState("兵器一段中");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -1230,7 +1231,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		//_parent.轻型武器攻击搓招();
+		//_parent.冷兵器攻击搓招();
 		if (!_parent._parent.飞行浮空 && _parent._parent.动作B)
 		{
 			_parent._parent.状态改变("兵器跳");
@@ -1254,7 +1255,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("重斩2连招");
 }]]></script>
@@ -1278,7 +1279,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("重斩3连招");
 }]]></script>
@@ -1302,7 +1303,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("重斩4连招");
 }]]></script>
@@ -1326,7 +1327,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("重斩5连招");
 }]]></script>
@@ -1350,7 +1351,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -1373,7 +1374,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶重斩2连招");
 }]]></script>
@@ -1397,7 +1398,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶重斩3连招");
 }]]></script>
@@ -1421,7 +1422,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶重斩4连招");
 }]]></script>
@@ -1445,7 +1446,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶重斩5连招");
 }]]></script>
@@ -1469,7 +1470,7 @@ onClipEvent (enterFrame) {
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

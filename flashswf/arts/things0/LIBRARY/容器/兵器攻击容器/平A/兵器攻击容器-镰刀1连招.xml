@@ -26,7 +26,8 @@
           <frames>
             <DOMFrame index="0" duration="5" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateSmallState("兵器一段前");
+                <script><![CDATA[冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
+_parent.UpdateSmallState("兵器一段前");
 ]]></script>
               </Actionscript>
               <elements/>
@@ -547,7 +548,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("镰刀2连招");
 }]]></script>
@@ -571,7 +572,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("镰刀3连招");
 }]]></script>
@@ -595,7 +596,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("镰刀4连招");
 }]]></script>
@@ -619,7 +620,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("镰刀5连招");
 }]]></script>
@@ -643,7 +644,7 @@ Z轴攻击范围 = 30;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

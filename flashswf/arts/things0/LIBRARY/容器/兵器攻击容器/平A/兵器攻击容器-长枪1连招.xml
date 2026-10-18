@@ -41,7 +41,8 @@
           <frames>
             <DOMFrame index="0" duration="14" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.UpdateSmallState("兵器一段中");]]></script>
+                <script><![CDATA[冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
+_parent.UpdateSmallState("兵器一段中");]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -1230,7 +1231,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("长枪2连招");
 }]]></script>
@@ -1254,7 +1255,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("长枪3连招");
 }]]></script>
@@ -1281,7 +1282,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("长枪4连招");
 }]]></script>
@@ -1305,7 +1306,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("长枪5连招");
 }]]></script>
@@ -1332,7 +1333,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
@@ -1355,7 +1356,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶长枪2连招");
 }]]></script>
@@ -1379,7 +1380,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶长枪3连招");
 }]]></script>
@@ -1403,7 +1404,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶长枪4连招");
 }]]></script>
@@ -1427,7 +1428,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 	_parent.变招判定("进阶长枪5连招");
 }]]></script>
@@ -1451,7 +1452,7 @@ Z轴攻击范围 = 50;
                     <script><![CDATA[onClipEvent (enterFrame) {
 	if (_parent._parent._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>

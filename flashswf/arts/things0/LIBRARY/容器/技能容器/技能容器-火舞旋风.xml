@@ -19,7 +19,8 @@
             </DOMFrame>
             <DOMFrame index="1" duration="15" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(_parent.技能浮空 == true)
+                <script><![CDATA[冷兵器攻击搓招 = _root.技能函数.冷兵器攻击搓招;
+if(_parent.技能浮空 == true)
 {
    gotoAndPlay("火舞旋风跳前摇");
 }
@@ -74,7 +75,7 @@ _root.技能路由.动画完毕(this,_parent);]]></script>
 	var 自机 = _parent._parent;
 	if (自机._name == _root.控制目标)
 	{
-		_parent.大型武器攻击搓招();
+		_parent.冷兵器攻击搓招();
 	}
 }]]></script>
                   </Actionscript>
