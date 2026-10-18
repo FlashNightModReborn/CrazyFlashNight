@@ -24,6 +24,12 @@
 - 请求 `played` 只含本轮玩家发送之前已播出的行；本轮 `$PC` 由 `player_input` 表示，由 finalize 按实际播放写入，不得在 `played` 与 `player_input` 中重复。
 - session 只记录真正播放过的行；拆分产生的多段按播放顺序各记一条 assistant，不合并。
 - `finalize.transcript` 是该 session 截至当时的全部已播行（含历轮），行结构与请求 `played` 相同；未出现在其中的未播内容不落库。
+- Host 对 mutation 的 ack 若带 `rowCount`，只能是 wire 行数；本地增强行数不得回传。
+- `close` 的 `finalIndex` 取当前播放点已到达的最大原始行号（增强行不推进），钳在 `[0, wireRowCount-1]`。
+- `finalize` 成功响应固定为 `{ok:true,dialogue_instance_id,session_id,appended,total}`；未知 session 且 transcript 为空时 `ok:false`、`session_id:""`。
+- `error.valid_lines` 按模型输出行计、拆分前（add/closing/任务 line），`mute` 不计。
+- `reference_continuation` 的 edit/remove index 越界（不在当前 1..N）＝非法请求，后端 422。
+- 真取消＝Host 关闭 SSE 连接，不存在独立 cancel 端点；后端断开即取消 LLM/工具，Host 随后 finalize。
 - fixture 中固定假 UUID 仅用于断言；真实 Host 使用自己的 UUID。
 
 固定样例身份：
@@ -574,13 +580,14 @@ data: {"code":"stream_failed","message":"…","valid_lines":1}
 - Host 已播 `$PC` 与 `add0`；`add1`/`closing` 未播，流未结束。
 - Host 关闭对话 UI：真取消在途请求，发 finalize，transcript 含原作已播、两轮 `$PC`、`add0`。
 - 期望：`add1`/`closing` 不落库；session 无孤儿；输入 UI 复位；再次打开同组是新 session（新 `dialogue_instance_id`）。
+- finalize 回执：`{ok:true,dialogue_instance_id,session_id,appended,total}`；重复调用 `appended=0`、`total` 不变。
 
 **场景 B：任务播放中提前关闭**
 
-- Host 用 `close` 结束；`finalIndex` 取原始范围内当前值。
+- Host 用 `close` 结束；`finalIndex` 取当前播放点已到达的最大原始行号（增强行不推进），钳在 `[0, wireRowCount-1]`。
 - 期望：任务前 `AddTask` 已先于对话、任务后奖励已先于 finish_conversation，提前关闭不破坏任务状态。
 - 不得用 `advance_past_end` 冒充提前关闭；组末才用原始最后一行 `finalIndex`。
-- finalize 仍按实际已播 transcript 对账；未播改写/新增不落库。
+- finalize 仍按实际已播 transcript 对账；未播改写/新增不落库；响应形状同场景 A。
 
 ---
 
