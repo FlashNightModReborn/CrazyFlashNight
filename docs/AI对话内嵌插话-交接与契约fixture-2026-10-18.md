@@ -1,7 +1,7 @@
 # AI 对话内嵌插话 · 交接与契约 fixture
 
 **文档角色**：游戏侧与后端侧共用的冻结样例与期望结果表。协议真源＝《AI对话内嵌插话-需求与协议-2026-10-18.md》（下称《协议》）；本文只把协议落成可执行的请求、SSE、JSONL 与期望行为，不另立语义。
-**冻结基线**：游戏仓 `5b6dc7b8e0`（协议/计划/fixture P0 回写），后端仓 `8143b1d`（实施指引 P0 回写），2026-10-18；初始文档提交为 `83d55803ca` / `4f2248a`。
+**冻结基线**：游戏仓 `b3705d36fe`（P1 源码），后端仓 `9ccaac9`（B1 源码），2026-10-18；P0 文档基线为 `5b6dc7b8e0` / `8143b1d`，初始文档提交为 `83d55803ca` / `4f2248a`。
 **使用方式**：
 - 后端窗口：用假 LLM 按 §2 的 JSONL 原文回放，断言 §3 的 SSE 顺序与形状，再断言 §4 的 plan/session。
 - 游戏窗口：把 §3 的 SSE 序列注入 Host SSE 客户端，断言 §4 的播放序列、输入可用状态、finish/finalize。
@@ -31,6 +31,11 @@
 - `reference_continuation` 的 edit/remove index 越界（不在当前 1..N）＝非法请求，后端 422。
 - 真取消＝Host 关闭 SSE 连接，不存在独立 cancel 端点；后端断开即取消 LLM/工具，Host 随后 finalize。
 - fixture 中固定假 UUID 仅用于断言；真实 Host 使用自己的 UUID。
+- `dialogue.group_id` 是 Host 侧不透明标识：当前实现填 Native book 会话的 `requestId`（形如 `nd:N`）；同一组 append 不变，新 book 即新组。后端不据此定位 session。本文旧样例里的 `daily_andy_01` 等只作可读标签。
+- `emotion` 可选；Host 取原作立绘表情，缺省 `普通`；后端缺失按 `普通`。它只是语气提示，不参与输入校验。
+- 组类型由 Native book 可选 `dialogueKind` 决定，缺省 `daily`；任务前/后由 AS2 入口标记，`stage` 不插话。
+- Host 可在每轮结束发 best-effort finalize，并在关闭/组末发最终 finalize；transcript 每次都是全量前缀，按 seq 幂等。关闭/组末那次为权威收尾。
+- 进入 closing（`advance_past_end`/`close`）即隐藏输入、真取消在途流并按已播 finalize；已收到未插入的台词不再进本组。
 
 固定样例身份：
 
@@ -128,6 +133,7 @@ data: {"dialogue_instance_id":"11111111-1111-4111-8111-111111111111","session_id
 - `seq0` 一开始显示即可输入；`seq1`、`seq2` 同理，不等逐字播完。
 - 玩家不插话时按 0→1→2 播放；播到 `closing` 开始显示即可输入。
 - 点击结束语后的“下一条”关闭本组；继续输入则 `closing` 算已播并开新一轮。
+- 成功轮不接回原作剩余 `remaining`（“有事说事。”“没事就别挡道。”不播）；`advance_past_end` 仍按原文最后一行编号发 finish。
 - 关闭时 finalize 的 transcript 见 §4.4。
 
 **期望后端**
@@ -585,6 +591,7 @@ data: {"code":"stream_failed","message":"…","valid_lines":1}
 **场景 B：任务播放中提前关闭**
 
 - Host 用 `close` 结束；`finalIndex` 取当前播放点已到达的最大原始行号（增强行不推进），钳在 `[0, wireRowCount-1]`。
+- Host 一进入 closing（含组末 `advance_past_end`）就取消在途插话并 finalize，不等待后续 hide；已收到未插入的台词不再进本组。
 - 期望：任务前 `AddTask` 已先于对话、任务后奖励已先于 finish_conversation，提前关闭不破坏任务状态。
 - 不得用 `advance_past_end` 冒充提前关闭；组末才用原始最后一行 `finalIndex`。
 - finalize 仍按实际已播 transcript 对账；未播改写/新增不落库；响应形状同场景 A。
@@ -635,7 +642,9 @@ data: {"code":"stream_failed","message":"…","valid_lines":1}
 | 当前 NPC 原作/改写/AI | assistant |
 | 未播 add/closing/edit/remove | 不写 |
 | 取消/关闭 | finalize 以已播 transcript 幂等收尾 |
+| 每轮结束 | 允许 best-effort finalize；transcript 为前缀，后端按 seq 幂等追加 |
 | 重复 finalize | 幂等，不重复追加 |
+| 进入 closing | 立即取消在途流并 finalize；closing 中不再接受插话 |
 | 新组重播（日常） | 新 `dialogue_instance_id`＝新 session |
 
 ### 4.4 finalize 样例（F-01 关闭时）
