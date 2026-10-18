@@ -9540,18 +9540,20 @@
     <type>防具</type>
     <use>头部装备</use>
     <setId>xf3_spec</setId>
-    <price>54000</price>
+    <price>166400</price>
     <description>闪客快打4。
     &lt;font color="#66cc66"&gt;【夜视】&lt;/font&gt;装备后可在亮度较低时开启夜视功能辅助作战，有低级别的夜视效果，开启亮度等级为0~4。</description>
     <helmet>true</helmet>
     <data>
       <level>25</level>
-      <weight>4</weight>
+      <weight>3</weight>
       <dressup>男变装-3XF特勤头盔</dressup>
-      <hp>45</hp>
-      <mp>15</mp>
-      <damage>35</damage>
-      <defence>90</defence>
+      <hp>50</hp>
+      <mp>28</mp>
+      <damage>60</damage>
+      <gunpower>30</gunpower>
+      <knifepower>30</knifepower>
+      <defence>180</defence>
       <magicdefence>
         <毒>30</毒>
       </magicdefence>
@@ -9585,20 +9587,22 @@
     <type>防具</type>
     <use>上装装备</use>
     <setId>xf3_spec</setId>
-    <price>54000</price>
+    <price>166400</price>
     <description>闪客快打4。</description>
     <data>
       <level>25</level>
       <weight>5</weight>
       <dressup>变装-3XF特勤</dressup>
-      <hp>35</hp>
-      <mp>15</mp>
-      <damage>35</damage>
-      <defence>100</defence>
+      <hp>80</hp>
+      <mp>43</mp>
+      <damage>40</damage>
+      <gunpower>25</gunpower>
+      <knifepower>25</knifepower>
+      <defence>210</defence>
       <magicdefence>
+        <基础>15</基础>
         <毒>10</毒>
-        <电>10</电>
-        <冷>10</冷>
+        <冷>5</冷>
       </magicdefence>
     </data>
   </item>
@@ -9609,16 +9613,18 @@
     <type>防具</type>
     <use>下装装备</use>
     <setId>xf3_spec</setId>
-    <price>54000</price>
+    <price>166400</price>
     <description>闪客快打4。</description>
     <data>
       <level>25</level>
       <weight>4</weight>
       <dressup>变装-3XF特勤</dressup>
-      <hp>45</hp>
-      <mp>15</mp>
-      <damage>35</damage>
-      <defence>90</defence>
+      <hp>53</hp>
+      <mp>30</mp>
+      <damage>60</damage>
+      <gunpower>35</gunpower>
+      <knifepower>15</knifepower>
+      <defence>200</defence>
       <magicdefence>
         <毒>15</毒>
         <热>15</热>
@@ -9632,16 +9638,18 @@
     <type>防具</type>
     <use>手部装备</use>
     <setId>xf3_spec</setId>
-    <price>54000</price>
+    <price>166400</price>
     <description>闪客快打4。</description>
     <data>
       <level>25</level>
-      <weight>2</weight>
+      <weight>1</weight>
       <dressup>男变装-3XF特勤</dressup>
-      <hp>40</hp>
-      <mp>15</mp>
-      <damage>35</damage>
-      <defence>80</defence>
+      <hp>50</hp>
+      <mp>30</mp>
+      <damage>75</damage>
+      <gunpower>15</gunpower>
+      <knifepower>35</knifepower>
+      <defence>150</defence>
       <magicdefence>
         <毒>10</毒>
         <冷>10</冷>
@@ -9656,18 +9664,20 @@
     <type>防具</type>
     <use>脚部装备</use>
     <setId>xf3_spec</setId>
-    <price>54000</price>
+    <price>166400</price>
     <description>闪客快打4。</description>
     <data>
       <level>25</level>
-      <weight>2</weight>
+      <weight>3</weight>
       <dressup>男变装-3XF特勤脚</dressup>
-      <hp>45</hp>
-      <mp>15</mp>
-      <damage>35</damage>
-      <defence>85</defence>
+      <hp>75</hp>
+      <mp>25</mp>
+      <damage>50</damage>
+      <gunpower>25</gunpower>
+      <knifepower>25</knifepower>
+      <defence>200</defence>
       <magicdefence>
-        <毒>20</毒>
+        <毒>15</毒>
         <冷>5</冷>
         <热>5</热>
       </magicdefence>
