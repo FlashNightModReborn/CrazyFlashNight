@@ -1,0 +1,44 @@
+{
+  "workers": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "gitTopLevel": "C:/Users/fs/.codex/worktrees/headbot-combat/CrazyFlashNight",
+      "gitHead": "0392d8144c20d62261b01df54e6787b845f75e73",
+      "candidateRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1",
+      "priorBindingChecks": 17,
+      "mismatches": [
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "expectedR16": "b752f6df6634642c17f2af69a0104e67f9597c1e148a230cca8648d310dcd4a8",
+          "actual": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "expectedR16": "b58428b4b4126c7d8bca81b2a3fd3092a111b47957192ce1bf45e1e57a76dfde",
+          "actual": "daed03fba6d3d59c566bba36a12858a0a4886f5e950b7c8a5237720049dbb68d"
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "gitTopLevel": "C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight",
+      "gitHead": "0392d8144c20d62261b01df54e6787b845f75e73",
+      "candidateRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1",
+      "priorBindingChecks": 17,
+      "mismatches": [
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "expectedR16": "b752f6df6634642c17f2af69a0104e67f9597c1e148a230cca8648d310dcd4a8",
+          "actual": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "expectedR16": "b58428b4b4126c7d8bca81b2a3fd3092a111b47957192ce1bf45e1e57a76dfde",
+          "actual": "daed03fba6d3d59c566bba36a12858a0a4886f5e950b7c8a5237720049dbb68d"
+        }
+      ]
+    }
+  ],
+  "seed": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+  "seedSha256": "b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5"
+}

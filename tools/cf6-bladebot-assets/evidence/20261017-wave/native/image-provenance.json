@@ -1,0 +1,67 @@
+{
+  "scope": "Ten final selected native Flash captures, reviewed individually; fixed scales retained.",
+  "images": [
+    {
+      "name": "stand",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "fc1ba016cef534a70068d657f9a28d48d13af47e4ef2e1ce6f5ebd05c5937265",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "death-start",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "cfaa08dc404325f432207e34f50b0d5e55a18270b6243b332f584b9c2a862fdb",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "cleave-impact",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "28a221a1b7ad4d9fac7161707fc8c9bfd601cc510513d326fa61a84d0b2f2ba4",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "sweep-front",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "ce0fade140c9f1152d8c6211effe2fa242efc8c100ac5a55474dfe4e55861171",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "sweep-back",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "970761e67b70bb92291e7d4cb02b7b77fe3f06c54108daef232c38038874b69d",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "death-fragments",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "aaf5fcd84c89ab827d99a307ef76d720d36e4c1aa82b258d8972f99bee625038",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "death-late",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "7fcea5d28ea7a1987adca4e416435967d561fe686ebcb60cfccbd19425b70d51",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "airborne-shadow",
+      "sourceTrace": "raw/blade-capture-r1-trace.txt",
+      "sha256": "f3b50976629ea8c43c13b1694673a41e7128990be4bb3d907d7ab02013ca825c",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "beam-right",
+      "sourceTrace": "raw/blade-beam-capture-r3-trace.txt",
+      "sha256": "972969d3b9db1d0d27f43662f4d2c01bcd4e6011dda976c6e079ce3584cc3143",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "name": "beam-left",
+      "sourceTrace": "raw/blade-beam-capture-r3-trace.txt",
+      "sha256": "1d9e0f0ca9eedf7edf913fb4d9eccbdd6df2e42ec88d582e184891c23f387e2d",
+      "sourceSwfSha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    }
+  ],
+  "intermediateImages": "raw/: initial beam framing clipped rear legs; second framing included fixture text; all retained.",
+  "humanAcceptance": false
+}

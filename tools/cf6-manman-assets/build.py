@@ -32,6 +32,7 @@ def module(name, path):
     return result
 
 
+audio = module('cf6_audio_native',ROOT/'tools/cf6-audio/build.py')
 native = module('manman_native', ROOT / 'tools/cf6-zombie-assets/build.py')
 vector = module('manman_vector', ROOT / 'tools/gamma-echo-assets/build.py')
 native.OWNER = OWNER
@@ -339,11 +340,13 @@ def import_assets(force=False):
     native.guard_overwrite_allowed(force)
     generated, root_name, donor = build_symbols()
     native.guard_overwrite_allowed(force)
+    audio_receipt=audio.apply(generated,OWNER,native.make_sparse_layer)
     outputs = write_workspace(generated, root_name)
     manifest = {'schema': native.MANIFEST_SCHEMA, 'owner': OWNER.relative_to(ROOT).as_posix(),
         'approvedInput': ARCHIVE.relative_to(ROOT).as_posix(), 'nativeSymbolCount': len(outputs), 'buildInputs': build_inputs(),
         'donor': {'path': DONOR.relative_to(ROOT).as_posix(), 'sha256': sha(DONOR), 'members': donor},
         'outputs': outputs, 'projectFiles': [{'path': p, 'sha256': sha(OWNER / p), 'bytes': (OWNER / p).stat().st_size} for p in native.PROJECT_FILES]}
+    manifest['audio']=audio_receipt
     (HERE / 'native-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8', newline='\n')
     mount_shared_library()
     print(json.dumps({'symbols': len(outputs), 'linkage': LINKAGE}, ensure_ascii=False))
@@ -352,6 +355,7 @@ def import_assets(force=False):
 def check():
     verify_input()
     manifest = json.loads((HERE / 'native-manifest.json').read_text(encoding='utf-8'))
+    audio.check(manifest,OWNER)
     errors = native.workspace_identity_failures(manifest)
     if manifest.get('buildInputs') != build_inputs():
         errors.append('Generator/AI inputs changed; guarded regeneration is required')

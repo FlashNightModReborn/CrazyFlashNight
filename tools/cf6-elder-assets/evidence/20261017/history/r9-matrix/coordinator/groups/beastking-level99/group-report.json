@@ -1,0 +1,55 @@
+{
+  "groupId": "beastking-level99",
+  "mode": "parallel",
+  "outcomes": [
+    {
+      "jobId": "beastking-level99-w1",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-31e29ad74888447f9ee90b8f13bd0f32\\assignment-31e29ad74888447f9ee90b8f13bd0f32\\attempt-31e29ad74888447f9ee90b8f13bd0f32\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "completed",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:fd7fca035f809cf1c1b782552f4eddba1948cd8cd4910ec8768f089ba6317b11",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    },
+    {
+      "jobId": "beastking-level99-w2",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-540f6b94ed78454f9d8639c0b8fb4dcf\\assignment-540f6b94ed78454f9d8639c0b8fb4dcf\\attempt-540f6b94ed78454f9d8639c0b8fb4dcf\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "completed",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:0271701cd1977dfa4bec4228e4e83166dba7a95b77be1512f82d04eaded86ee5",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    }
+  ],
+  "seedSources": [
+    {
+      "workerId": "elder-w1",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    },
+    {
+      "workerId": "elder-w2",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "seedSourcesUnchanged": true,
+  "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r9-matrix-20261017\\groups\\beastking-level99\\save-protection.json",
+  "globalSaveUnchanged": true,
+  "stopBeforeNextGroup": false,
+  "startedAt": "2026-10-16T19:04:10.808Z",
+  "completedAt": "2026-10-16T19:11:03.514Z",
+  "wallDurationMs": 412706
+}

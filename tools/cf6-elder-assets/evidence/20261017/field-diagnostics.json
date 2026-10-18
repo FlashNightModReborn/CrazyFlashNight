@@ -1,0 +1,1014 @@
+{
+  "scope": "Exact Worker, run time interval and parent-instance name; contact counters are issued contacts, not damage or actual hits",
+  "rows": [
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w1",
+      "runId": "level30-blue-r001",
+      "parentName": "斗兽标定_blue_level30_blue_r001_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:12:00.258943+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:11:59.211 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0 form=human level=30 clock=68 starts=1 contacts=2 beam=0/0 kicks=0/0 slam=0/0 burst=1/2 stab=0/0 x=303 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=39741 targetX=1556 targetZ=430&frame=523",
+          "lineSha256": "3097838e0fc5eb4b7313fdfb6298c68aba5448b349a53c427bfe57a96c87cfe6"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:02.504180+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:02.329 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r001_0 child=斗兽标定_blue_level30_blue_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=615",
+          "lineSha256": "2f4fd75edb75f5eb36076e71e652edbfa3165961539e3c8168965de73499d137"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:18.684965+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:18.385 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0__elderbot form=robot level=30 clock=468 starts=4 contacts=4 beam=4/4 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=745 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=24969 targetX=1551.5 targetZ=430&frame=1084",
+          "lineSha256": "11cdb28cb412f1f3264622ee2b76ad73202f8ae2d42f12889baaafec749e4210"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w1",
+      "runId": "level30-blue-r002",
+      "parentName": "斗兽标定_blue_level30_blue_r002_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:12:25.423745+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:24.347 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r002_0 form=human level=30 clock=67 starts=1 contacts=2 beam=0/0 kicks=0/0 slam=0/0 burst=1/2 stab=0/0 x=303 z=430 target=斗兽标定_red_level30_blue_r002_0 targetHp=39956 targetX=1556 targetZ=430&frame=1263",
+          "lineSha256": "3e23501956568ec0027561cd59f38d0a5a033e1041809aa184dc72ca29edf3f2"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:27.663417+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:27.418 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r002_0 child=斗兽标定_blue_level30_blue_r002_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=1355",
+          "lineSha256": "4d596e8e908c0a6cfbbe38a3ce7a6b8c49e29aa2ba6fcfc4462d01af7322244a"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:48.118080+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:47.947 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r002_0__elderbot form=robot level=30 clock=615 starts=7 contacts=7 beam=6/6 kicks=0/0 slam=1/1 burst=0/0 stab=0/0 x=1562 z=430 target=斗兽标定_red_level30_blue_r002_0 targetHp=17572 targetX=1435.95 targetZ=430&frame=1971",
+          "lineSha256": "a7503b87d0d5b86924fd91b1a7c337f59b791ca87a87204afb098a4d47a8d332"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w1",
+      "runId": "level30-blue-r003",
+      "parentName": "斗兽标定_blue_level30_blue_r003_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:12:54.916904+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:53.918 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r003_0 form=human level=30 clock=67 starts=1 contacts=2 beam=0/0 kicks=0/0 slam=0/0 burst=1/2 stab=0/0 x=303 z=430 target=斗兽标定_red_level30_blue_r003_0 targetHp=39727 targetX=1556 targetZ=430&frame=2150",
+          "lineSha256": "cd84fab5b191e3630cf6e331f785459d24bec82b584eea0d6a1fd4d0582798a3"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:57.199102+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:56.980 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r003_0 child=斗兽标定_blue_level30_blue_r003_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=2242",
+          "lineSha256": "834a0c34cfce9b97c54afbb552bda4710f77126c20ea281015388eae78e8ffc4"
+        },
+        {
+          "observedAt": "2026-10-16T22:13:20.829174+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:13:20.481 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r003_0__elderbot form=robot level=30 clock=704 starts=8 contacts=8 beam=8/8 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=359.5 z=430 target=斗兽标定_red_level30_blue_r003_0 targetHp=22216 targetX=865.9 targetZ=430&frame=2947",
+          "lineSha256": "164878b3e3255d4cf1e47cf45641b2ebdf1e8a88228b733f31ce0b72ddf73af5"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w2",
+      "runId": "level30-red-r001",
+      "parentName": "斗兽标定_red_level30_red_r001_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:12:03.746495+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:03.527 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0 form=human level=30 clock=397 starts=3 contacts=4 beam=0/0 kicks=0/0 slam=0/0 burst=2/3 stab=1/1 x=736.2 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=39248 targetX=247.2 targetZ=430&frame=792",
+          "lineSha256": "a2a7058603bf90c9b16d4db5fd741472c565462477c97724987f7ce2e251eb8a"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:07.070340+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:06.589 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r001_0 child=斗兽标定_red_level30_red_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=884",
+          "lineSha256": "bcc160b433c96a6a244810d72f024512aa0ba53fd9b54b2d06359e61a656a549"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:26.581732+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:26.079 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0__elderbot form=robot level=30 clock=571 starts=6 contacts=6 beam=5/5 kicks=0/0 slam=1/1 burst=0/0 stab=0/0 x=1323.7 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=21288 targetX=285.15 targetZ=430&frame=1456",
+          "lineSha256": "baecc1b99e9bba0020c59b5f1b5c602871bc44907f4efd0beaf96f63aaa1c6e8"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w2",
+      "runId": "level30-red-r002",
+      "parentName": "斗兽标定_red_level30_red_r002_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:12:35.646607+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:34.792 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r002_0 form=human level=30 clock=149 starts=3 contacts=10 beam=0/0 kicks=0/0 slam=0/0 burst=3/10 stab=0/0 x=1044 z=430 target=斗兽标定_blue_level30_red_r002_0 targetHp=38078 targetX=1526.55 targetZ=430&frame=1717",
+          "lineSha256": "57de3d79330bfc0fd2ab1bbee732f82ceefe58b34a62a3aee8bf588b118a9c32"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:37.891428+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:37.858 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r002_0 child=斗兽标定_red_level30_red_r002_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=1809",
+          "lineSha256": "681b285801b77cb2136ef336fa53690704032f83afc4ece072aa2041f05d2ca5"
+        },
+        {
+          "observedAt": "2026-10-16T22:12:56.130315+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:12:55.261 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r002_0__elderbot form=robot level=30 clock=508 starts=5 contacts=5 beam=5/5 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=248.35 z=429 target=斗兽标定_blue_level30_red_r002_0 targetHp=19708 targetX=252.5 targetZ=430&frame=2318",
+          "lineSha256": "dd8c38690151be26ee45749bbb96fc48303afa01fa597effc12d9aa7013bbbd8"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l30-w2",
+      "runId": "level30-red-r003",
+      "parentName": "斗兽标定_red_level30_red_r003_0",
+      "level": 30,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:13:18.639132+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:13:17.590 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r003_0 form=human level=30 clock=559 starts=3 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=3/8 stab=0/0 x=456 z=430 target=斗兽标定_blue_level30_red_r003_0 targetHp=38427 targetX=994.35 targetZ=430&frame=2989",
+          "lineSha256": "e7b7f49b207be5052ea255313154883c2f28d138b90e8e7a4d2de6b84bc5b46c"
+        },
+        {
+          "observedAt": "2026-10-16T22:13:20.882399+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:13:20.650 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r003_0 child=斗兽标定_red_level30_red_r003_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=3081",
+          "lineSha256": "ba33196e408a4f68c1e169daf35db9916ccbd899834bba5a21fa7505be73b98a"
+        },
+        {
+          "observedAt": "2026-10-16T22:13:34.374860+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:13:33.493 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r003_0__elderbot form=robot level=30 clock=378 starts=3 contacts=3 beam=3/3 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=1014.5 z=430 target=斗兽标定_blue_level30_red_r003_0 targetHp=27990 targetX=490.7 targetZ=430&frame=3460",
+          "lineSha256": "51058ff946d1e029288043188da8f134e0d0018e18e1a54f8774062a6811e7ce"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w1",
+      "runId": "level60-blue-r001",
+      "parentName": "斗兽标定_blue_level60_blue_r001_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:15:09.558706+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:08.957 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0 form=human level=60 clock=204 starts=2 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=2/8 stab=0/0 x=987.5 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=47982 targetX=963.9 targetZ=430&frame=592",
+          "lineSha256": "f1fdf991ca884da7ff21d3e1dd71ccc40de7a2f90a640e223378706d2ab2b0f9"
+        },
+        {
+          "observedAt": "2026-10-16T22:15:13.009154+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:12.029 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r001_0 child=斗兽标定_blue_level60_blue_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=684",
+          "lineSha256": "5ae600a851ae0ae6f027fcb87e10513b7652cdb10672b8ca9fed59f92f337cc1"
+        },
+        {
+          "observedAt": "2026-10-16T22:15:33.214995+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:32.426 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0__elderbot form=robot level=60 clock=585 starts=7 contacts=6 beam=5/5 kicks=0/0 slam=2/1 burst=0/0 stab=0/0 x=1197.25 z=419.919999999999 target=斗兽标定_red_level60_blue_r001_0 targetHp=27457 targetX=639.15 targetZ=419.919999999999&frame=1270",
+          "lineSha256": "f628b94dc23edec678976abced052aa6875d2d8f8643925a7c13f13799420bd5"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w1",
+      "runId": "level60-blue-r002",
+      "parentName": "斗兽标定_blue_level60_blue_r002_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:15:51.369734+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:51.358 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r002_0 form=human level=60 clock=456 starts=3 contacts=5 beam=0/0 kicks=0/0 slam=0/0 burst=2/4 stab=1/1 x=669.85 z=430 target=斗兽标定_red_level60_blue_r002_0 targetHp=48896 targetX=1545.85 targetZ=430&frame=1838",
+          "lineSha256": "55d9172a7e3f5c2e052fb5e0bdeeeb260721a490bbfc3a7885f6dbbdfa25c65e"
+        },
+        {
+          "observedAt": "2026-10-16T22:15:54.755433+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:54.425 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r002_0 child=斗兽标定_blue_level60_blue_r002_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=1930",
+          "lineSha256": "2ba3792820206eb74311c51a904816b2fd1a847818dbe117df998caa029c2183"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:09.371625+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:08.358 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r002_0__elderbot form=robot level=60 clock=417 starts=6 contacts=6 beam=6/6 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=794.85 z=430 target=斗兽标定_red_level60_blue_r002_0 targetHp=17728 targetX=1083 targetZ=430&frame=2348",
+          "lineSha256": "e9704341ca442c4d266760fa69b1ca76c1a6b3cccc6e8914551c358cea6e5010"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w1",
+      "runId": "level60-blue-r003",
+      "parentName": "斗兽标定_blue_level60_blue_r003_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:16:21.850785+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:21.006 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r003_0 form=human level=60 clock=267 starts=4 contacts=14 beam=0/0 kicks=0/0 slam=0/0 burst=4/14 stab=0/0 x=923.5 z=430 target=斗兽标定_red_level60_blue_r003_0 targetHp=46294 targetX=644.1 targetZ=430&frame=2727",
+          "lineSha256": "9783b726d64375162282f35ed67fdef118ae85ff5808318e1bc177e0658f96ef"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:24.143334+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:24.062 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r003_0 child=斗兽标定_blue_level60_blue_r003_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=2819",
+          "lineSha256": "0f5cbee21f8eedfdf02a0b10c91e585965c30ee9655c177fae6a54d63b079871"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:34.529882+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:34.429 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r003_0__elderbot form=robot level=60 clock=294 starts=3 contacts=3 beam=3/3 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=1025 z=430 target=斗兽标定_red_level60_blue_r003_0 targetHp=35283 targetX=501.6 targetZ=430&frame=3114",
+          "lineSha256": "6d802a86cad07c14a8c86e1d694b6ef7aa8423b264bcff400bd26ad615e175d4"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w2",
+      "runId": "level60-red-r001",
+      "parentName": "斗兽标定_red_level60_red_r001_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:15:20.042875+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:19.639 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0 form=human level=60 clock=280 starts=6 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=3/7 stab=3/1 x=1169.2 z=429 target=斗兽标定_blue_level60_red_r001_0 targetHp=48331 targetX=1065.05 targetZ=430&frame=747",
+          "lineSha256": "7c5a35351615bde046cc7070c1f7951dd954f49c348968c1467d5f2509272001"
+        },
+        {
+          "observedAt": "2026-10-16T22:15:23.593247+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:22.722 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r001_0 child=斗兽标定_red_level60_red_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=839",
+          "lineSha256": "b8f0360936081c46d263865edf3766368ccffa583bce8b17c2c82ce69a6936c4"
+        },
+        {
+          "observedAt": "2026-10-16T22:15:50.306516+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:50.085 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0__elderbot form=robot level=60 clock=780 starts=8 contacts=10 beam=3/3 kicks=2/4 slam=3/3 burst=0/0 stab=0/0 x=1561.2 z=476.930509764139 target=斗兽标定_blue_level60_red_r001_0 targetHp=27925 targetX=1558.25 targetZ=477.930509764139&frame=1620",
+          "lineSha256": "63df53816ea0b6b1a90ac6942d606da8db2c8e5d125e99a1b3ab38e921aefcf8"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w2",
+      "runId": "level60-red-r002",
+      "parentName": "斗兽标定_red_level60_red_r002_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:16:00.454581+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:15:59.790 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r002_0 form=human level=60 clock=179 starts=2 contacts=1 beam=0/0 kicks=0/0 slam=0/0 burst=2/1 stab=0/0 x=1548 z=429 target=斗兽标定_blue_level60_red_r002_0 targetHp=50058 targetX=1544.8 targetZ=430&frame=1911",
+          "lineSha256": "17ed26ad820cc0532b9941b9735d4ae48f47c69f7cbd2e6662e934bf595c831a"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:03.807961+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:02.855 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r002_0 child=斗兽标定_red_level60_red_r002_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=2003",
+          "lineSha256": "67942e3c5f09e20fdf77c5f68bd7ed63748436de640da49e5256514bfef7f366"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:23.047150+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:22.508 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r002_0__elderbot form=robot level=60 clock=588 starts=6 contacts=6 beam=6/6 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=1102.45 z=419.000404362922 target=斗兽标定_blue_level60_red_r002_0 targetHp=22904 targetX=1532.45 targetZ=419.000404362922&frame=2592",
+          "lineSha256": "1f4dfbe6929545e0a2409e23c7de73aeca5a497837c9cc599c97aaeb4635ddad"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l60-w2",
+      "runId": "level60-red-r003",
+      "parentName": "斗兽标定_red_level60_red_r003_0",
+      "level": 60,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:16:28.894698+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:28.541 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r003_0 form=human level=60 clock=64 starts=1 contacts=1 beam=0/0 kicks=0/0 slam=0/0 burst=1/1 stab=0/0 x=1044.5 z=430 target=斗兽标定_blue_level60_red_r003_0 targetHp=50050 targetX=570 targetZ=430&frame=2768",
+          "lineSha256": "e2e2b34ff3510c64f5d0aa23f0be99c069b419873811db4b8a092358d636113a"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:32.312753+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:31.530 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r003_0 child=斗兽标定_red_level60_red_r003_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=2860",
+          "lineSha256": "e34fa4c7014c9d8d416507271ce3a1b9afa0053a60e4d2e8fda58c722fbb2ba7"
+        },
+        {
+          "observedAt": "2026-10-16T22:16:43.572249+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:16:43.049 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r003_0__elderbot form=robot level=60 clock=345 starts=4 contacts=4 beam=4/4 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=1451.5 z=430 target=斗兽标定_blue_level60_red_r003_0 targetHp=44991 targetX=246.45 targetZ=430&frame=3206",
+          "lineSha256": "7d3c93047910106acedb4521af1052e10cf76ca5014d3c2d13ebf29d0414910e"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w1",
+      "runId": "level99-blue-r001",
+      "parentName": "斗兽标定_blue_level99_blue_r001_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:18:20.599653+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:19.838 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0 form=human level=99 clock=153 starts=2 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=2/8 stab=0/0 x=1052.3 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=61153 targetX=269.1 targetZ=430&frame=420",
+          "lineSha256": "da4e41badf8eac23aedccd2a5932ebafd48fca32795fd31dd12695dd806a18d3"
+        },
+        {
+          "observedAt": "2026-10-16T22:18:24.283816+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:23.356 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r001_0 child=斗兽标定_blue_level99_blue_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=512",
+          "lineSha256": "c72a64a085fd0cf75ee440a1e57b10875e2e3ea4abf81342d1f5d809432bf765"
+        },
+        {
+          "observedAt": "2026-10-16T22:18:38.649416+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:37.526 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0__elderbot form=robot level=99 clock=382 starts=4 contacts=4 beam=4/4 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=616.2 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=32765 targetX=1501.4 targetZ=430&frame=895",
+          "lineSha256": "1af6ca58f7e29f3935d098aad1d86bc2266810435e9aad05aac835d419865c3b"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w1",
+      "runId": "level99-blue-r002",
+      "parentName": "斗兽标定_blue_level99_blue_r002_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:18:54.112699+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:53.930 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r002_0 form=human level=99 clock=371 starts=4 contacts=12 beam=0/0 kicks=0/0 slam=0/0 burst=3/12 stab=1/0 x=238.3 z=429 target=斗兽标定_red_level99_blue_r002_0 targetHp=59387 targetX=251.15 targetZ=430&frame=1378",
+          "lineSha256": "7b825788dfbc4430add74a4a809e35274b666364e38d8751ec7e783e09589f2a"
+        },
+        {
+          "observedAt": "2026-10-16T22:18:57.837135+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:57.225 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r002_0 child=斗兽标定_blue_level99_blue_r002_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=1470",
+          "lineSha256": "218eda99d155356665f5b615dbade085d0e68848a4621e85ebfd31ffa965a30d"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:25.236137+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:24.356 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r002_0__elderbot form=robot level=99 clock=813 starts=8 contacts=8 beam=6/6 kicks=0/0 slam=2/2 burst=0/0 stab=0/0 x=1343.5 z=422.5 target=斗兽标定_red_level99_blue_r002_0 targetHp=22877 targetX=404.45 targetZ=422.5&frame=2284",
+          "lineSha256": "fea083e2317af44c4d9827c1f82f8c66a42b6551ee9353bf3978701caf8ddbb1"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w1",
+      "runId": "level99-blue-r003",
+      "parentName": "斗兽标定_blue_level99_blue_r003_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:19:38.927974+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:38.282 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r003_0 form=human level=99 clock=306 starts=7 contacts=15 beam=0/0 kicks=0/0 slam=0/0 burst=7/15 stab=0/0 x=927.8 z=430 target=斗兽标定_red_level99_blue_r003_0 targetHp=58402 targetX=381.95 targetZ=430&frame=2702",
+          "lineSha256": "f64a17fe4664975b620299672bcc2bfe27662887c056723d29d1a480995873ff"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:42.355051+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:41.354 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r003_0 child=斗兽标定_blue_level99_blue_r003_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=2794",
+          "lineSha256": "f32c2c74b678675d6864e71bcfeac3e61e576145c784bbbdfc6d01b654f18cce"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:56.066778+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:55.516 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r003_0__elderbot form=robot level=99 clock=424 starts=4 contacts=4 beam=4/4 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=968 z=430 target=斗兽标定_red_level99_blue_r003_0 targetHp=29838 targetX=535.1 targetZ=430&frame=3219",
+          "lineSha256": "e014ff2d6d1341b3d4be45d748cb4dc78a7a42476ba0beadae6f6da16e1c2161"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w2",
+      "runId": "level99-red-r001",
+      "parentName": "斗兽标定_red_level99_red_r001_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:18:26.754493+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:25.633 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0 form=human level=99 clock=63 starts=1 contacts=2 beam=0/0 kicks=0/0 slam=0/0 burst=1/2 stab=0/0 x=1375.8 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=62837 targetX=242.4 targetZ=430&frame=386",
+          "lineSha256": "9839786e3240a9dfe69037c958a6b8ecb900a4dfaadc1e14e5e675cb0383d635"
+        },
+        {
+          "observedAt": "2026-10-16T22:18:29.050769+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:28.681 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r001_0 child=斗兽标定_red_level99_red_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=478",
+          "lineSha256": "624874767c6291b58e59811d68c528495bb954e8979ab8b1705dd51965d53534"
+        },
+        {
+          "observedAt": "2026-10-16T22:18:51.750486+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:18:50.691 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0__elderbot form=robot level=99 clock=624 starts=6 contacts=5 beam=6/5 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=880.15 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=27026 targetX=277.2 targetZ=430&frame=1103",
+          "lineSha256": "b05dee64ef2f02c4d61467ac201761d5397a7d42ae4e3dbcf40ccc142d0b3488"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w2",
+      "runId": "level99-red-r002",
+      "parentName": "斗兽标定_red_level99_red_r002_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:19:02.422946+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:02.263 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r002_0 form=human level=99 clock=226 starts=3 contacts=9 beam=0/0 kicks=0/0 slam=0/0 burst=2/8 stab=1/1 x=1544.95 z=429 target=斗兽标定_blue_level99_red_r002_0 targetHp=60239 targetX=1440.8 targetZ=430&frame=1441",
+          "lineSha256": "4e68aa1b1372de97829e7fd59d64de1728264067662b2d072057be17a48bb739"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:05.823526+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:05.322 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r002_0 child=斗兽标定_red_level99_red_r002_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=1533",
+          "lineSha256": "9ba526f645ca6d0cae0413c3665865a01402c6fc28c9b6b1b812b3f52107fe1b"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:23.012874+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:22.281 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r002_0__elderbot form=robot level=99 clock=508 starts=4 contacts=4 beam=3/3 kicks=0/0 slam=1/1 burst=0/0 stab=0/0 x=1180.75 z=427.5 target=斗兽标定_blue_level99_red_r002_0 targetHp=52136 targetX=829.7 targetZ=427.5&frame=2042",
+          "lineSha256": "0a7ff9cd92e1f3e65084d4e9d9d978fce89758c41322c24f38f70491fb8ac78f"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-exusiai-l99-w2",
+      "runId": "level99-red-r003",
+      "parentName": "斗兽标定_red_level99_red_r003_0",
+      "level": 99,
+      "rivalUnitId": 361,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:19:35.543595+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:34.409 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r003_0 form=human level=99 clock=252 starts=2 contacts=7 beam=0/0 kicks=0/0 slam=0/0 burst=2/7 stab=0/0 x=1235.85 z=430 target=斗兽标定_blue_level99_red_r003_0 targetHp=60960 targetX=261.5 targetZ=430&frame=2406",
+          "lineSha256": "b624e4262620c93aa5e7f09e70a330405766ad730b2d115dd7847bf8fcb50c4c"
+        },
+        {
+          "observedAt": "2026-10-16T22:19:37.840844+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:19:37.482 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r003_0 child=斗兽标定_red_level99_red_r003_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=2498",
+          "lineSha256": "f6cb94ce406519e327a5bc296011a35cfff95ac85b365fa4b95b4a206eaf3461"
+        },
+        {
+          "observedAt": "2026-10-16T22:20:03.069153+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:20:02.052 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r003_0__elderbot form=robot level=99 clock=736 starts=9 contacts=9 beam=8/8 kicks=0/0 slam=1/1 burst=0/0 stab=0/0 x=1134.05 z=430 target=斗兽标定_blue_level99_red_r003_0 targetHp=2615 targetX=1528.75 targetZ=430&frame=3235",
+          "lineSha256": "eb88cd7c95b809dbf21ea7eac30eaa9a8e7da7b68047ef2c0bba2cdfb10fd6ba"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w1",
+      "runId": "level30-blue-r001",
+      "parentName": "斗兽标定_blue_level30_blue_r001_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:22:07.266204+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:22:06.384 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0 form=human level=30 clock=386 starts=8 contacts=3 beam=0/0 kicks=0/0 slam=0/0 burst=1/0 stab=7/3 x=794 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=56896 targetX=954 targetZ=430&frame=840",
+          "lineSha256": "96b8f9c69bfc87d951778a146b067aff6110a6a330d987de4e72873c1e98cda4"
+        },
+        {
+          "observedAt": "2026-10-16T22:22:09.685713+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:22:09.378 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r001_0 child=斗兽标定_blue_level30_blue_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=932",
+          "lineSha256": "73568ab791c85017498280d2170e510a8d1e0aed7f440ee298f38ef1dd3c307b"
+        },
+        {
+          "observedAt": "2026-10-16T22:23:34.963769+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:23:34.354 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0__elderbot form=robot level=30 clock=2548 starts=34 contacts=48 beam=0/0 kicks=15/30 slam=19/18 burst=0/0 stab=0/0 x=1472 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=15112 targetX=1540.5 targetZ=430&frame=3481",
+          "lineSha256": "88b1bf9272777a70b36f1249df38453a0d38f12bce5b7d250689e76b494d4ea1"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w1",
+      "runId": "level30-blue-r002",
+      "parentName": "斗兽标定_blue_level30_blue_r002_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:23:55.544239+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:23:55.173 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r002_0 form=human level=30 clock=513 starts=11 contacts=3 beam=0/0 kicks=0/0 slam=0/0 burst=1/0 stab=10/3 x=836 z=430 target=斗兽标定_red_level30_blue_r002_0 targetHp=57375 targetX=996 targetZ=430&frame=4106",
+          "lineSha256": "8b38088dcd0734ba0608ce31dc04308653c65f4dec951be64da0781a8ec306db"
+        },
+        {
+          "observedAt": "2026-10-16T22:23:59.258204+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:23:58.278 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r002_0 child=斗兽标定_blue_level30_blue_r002_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=4198",
+          "lineSha256": "ac052f64df7386634db28bd397a9ce39d7d39bcc6e131903bf08fe676f5549a6"
+        },
+        {
+          "observedAt": "2026-10-16T22:25:02.567551+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:25:01.542 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r002_0__elderbot form=robot level=30 clock=1898 starts=22 contacts=30 beam=1/1 kicks=9/18 slam=12/11 burst=0/0 stab=0/0 x=795 z=430 target=斗兽标定_red_level30_blue_r002_0 targetHp=32656 targetX=635 targetZ=430&frame=6097",
+          "lineSha256": "a1ecfb5ad736b407e7f4e4efd6a9617a3772d9da2399bd4d60b55c70ac88216b"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w1",
+      "runId": "level30-blue-r003",
+      "parentName": "斗兽标定_blue_level30_blue_r003_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:25:18.537134+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:25:17.550 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r003_0 form=human level=30 clock=368 starts=10 contacts=2 beam=0/0 kicks=0/0 slam=0/0 burst=1/0 stab=9/2 x=845 z=430 target=斗兽标定_red_level30_blue_r003_0 targetHp=57384 targetX=1005 targetZ=430&frame=6577",
+          "lineSha256": "7efef3d207cae54828590e2156e2d2dc5599960eb13302d0f558ce76ce518266"
+        },
+        {
+          "observedAt": "2026-10-16T22:25:20.827382+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:25:20.616 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r003_0 child=斗兽标定_blue_level30_blue_r003_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=false&frame=6669",
+          "lineSha256": "d2748f7ee2d6338632f2d5b99d93c1cf4606ada21ff7202067751ca87ec58503"
+        },
+        {
+          "observedAt": "2026-10-16T22:26:35.307749+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:26:35.115 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r003_0__elderbot form=robot level=30 clock=2234 starts=32 contacts=47 beam=0/0 kicks=16/32 slam=16/15 burst=0/0 stab=0/0 x=1472 z=430 target=斗兽标定_red_level30_blue_r003_0 targetHp=12432 targetX=1539 targetZ=430&frame=8904",
+          "lineSha256": "c3201a41346642b85b9bbfbda668286e5794d3743e5c46dde07ad67f316f7bb6"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w2",
+      "runId": "level30-red-r001",
+      "parentName": "斗兽标定_red_level30_red_r001_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:22:07.400220+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:22:07.317 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0 form=human level=30 clock=622 starts=11 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=2/5 stab=9/3 x=949 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=56483 targetX=789 targetZ=430&frame=932",
+          "lineSha256": "d475de872357fdd76241e0ae5e800c01956969f79b8ece7f6f714b113e7f7abd"
+        },
+        {
+          "observedAt": "2026-10-16T22:22:10.996784+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:22:10.375 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r001_0 child=斗兽标定_red_level30_red_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=1024",
+          "lineSha256": "534584e76bb7768c6965142da0eb3634cba0b63e839a1dea916c7e48c6ff11fd"
+        },
+        {
+          "observedAt": "2026-10-16T22:22:58.132985+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:22:57.384 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0__elderbot form=robot level=30 clock=1407 starts=17 contacts=23 beam=2/2 kicks=6/12 slam=9/9 burst=0/0 stab=0/0 x=618 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=42006 targetX=459 targetZ=430&frame=2432",
+          "lineSha256": "ec261d70ffd71813e781c4cad51a998357bb662cfc625b79c104c1d424a5929c"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w2",
+      "runId": "level30-red-r002",
+      "parentName": "斗兽标定_red_level30_red_r002_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:23:16.617890+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:23:15.712 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r002_0 form=human level=30 clock=431 starts=10 contacts=3 beam=0/0 kicks=0/0 slam=0/0 burst=1/0 stab=9/3 x=914 z=430 target=斗兽标定_blue_level30_red_r002_0 targetHp=56830 targetX=754 targetZ=430&frame=2975",
+          "lineSha256": "0f03ff22f1042ac2831f6ee038434999f93645832f69f3a0d45aaaff0da3e9f4"
+        },
+        {
+          "observedAt": "2026-10-16T22:23:18.898879+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:23:18.784 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r002_0 child=斗兽标定_red_level30_red_r002_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=3067",
+          "lineSha256": "98eb525e7adcf067dfb62b2ed96ddcaa9f352ab3ee173c587b11d56e4259978c"
+        },
+        {
+          "observedAt": "2026-10-16T22:24:35.247068+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:24:35.085 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r002_0__elderbot form=robot level=30 clock=2279 starts=28 contacts=38 beam=3/3 kicks=11/22 slam=14/13 burst=0/0 stab=0/0 x=796 z=430 target=斗兽标定_blue_level30_red_r002_0 targetHp=22994 targetX=636 targetZ=430&frame=5347",
+          "lineSha256": "8142c5aaa61d716affd3288b5c640edc20d8192da42dda09ee97d324511d89ca"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l30-w2",
+      "runId": "level30-red-r003",
+      "parentName": "斗兽标定_red_level30_red_r003_0",
+      "level": 30,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:24:52.267085+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:24:51.822 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r003_0 form=human level=30 clock=390 starts=11 contacts=4 beam=0/0 kicks=0/0 slam=0/0 burst=1/0 stab=10/4 x=963 z=430 target=斗兽标定_blue_level30_red_r003_0 targetHp=56406 targetX=933 targetZ=430&frame=5849",
+          "lineSha256": "9757af5cc7d49fe48e2e903402cd7bc4883d32a4b0063a9634b01dba381f160d"
+        },
+        {
+          "observedAt": "2026-10-16T22:24:55.679575+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:24:54.885 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r003_0 child=斗兽标定_red_level30_red_r003_0__elderbot level=30 maxHp=15318 hp=15318 attack=3556 defense=5388 enemy=true&frame=5941",
+          "lineSha256": "f717421948655f9c8538009e14ba8d5419c80508f50f8889f1019da32c0c328f"
+        },
+        {
+          "observedAt": "2026-10-16T22:25:57.573190+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:25:56.913 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r003_0__elderbot form=robot level=30 clock=1860 starts=24 contacts=33 beam=2/2 kicks=10/20 slam=12/11 burst=0/0 stab=0/0 x=1237 z=430 target=斗兽标定_blue_level30_red_r003_0 targetHp=39285 targetX=1450 targetZ=430&frame=7802",
+          "lineSha256": "baecde84fde0a4af539149c987cf1dc9d897831ae54149b5efa7d8455044f356"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w1",
+      "runId": "level60-blue-r001",
+      "parentName": "斗兽标定_blue_level60_blue_r001_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:28:33.381694+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:28:33.134 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0 form=human level=60 clock=520 starts=11 contacts=10 beam=0/0 kicks=0/0 slam=0/0 burst=2/8 stab=9/2 x=729.5 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=79727 targetX=569.5 targetZ=430&frame=1006",
+          "lineSha256": "46102e2a2555ded5760c643063fafab927c8e82bb9d534e75efb05522456637a"
+        },
+        {
+          "observedAt": "2026-10-16T22:28:36.866674+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:28:36.203 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r001_0 child=斗兽标定_blue_level60_blue_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=1098",
+          "lineSha256": "7bcf52bfa12079fe388cfd165780cb494447139097d06c9ee9e8cfc49746745a"
+        },
+        {
+          "observedAt": "2026-10-16T22:29:41.314201+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:29:40.672 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0__elderbot form=robot level=60 clock=1924 starts=26 contacts=39 beam=0/0 kicks=14/27 slam=12/12 burst=0/0 stab=0/0 x=354.5 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=47866 targetX=323.5 targetZ=430&frame=3023",
+          "lineSha256": "0e54f9aed2d974f87a09c808e1373b3728112e8936d3f895f8f42756281ac09f"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w1",
+      "runId": "level60-blue-r002",
+      "parentName": "斗兽标定_blue_level60_blue_r002_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:29:59.865366+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:29:58.868 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r002_0 form=human level=60 clock=433 starts=8 contacts=7 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=7/3 x=773.5 z=430 target=斗兽标定_red_level60_blue_r002_0 targetHp=81352 targetX=933.5 targetZ=430&frame=3568",
+          "lineSha256": "2e31bb7b7b547f8d5ca038db10afd2bf69c1be72394a37918b52247030f2d72d"
+        },
+        {
+          "observedAt": "2026-10-16T22:30:02.190446+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:30:01.899 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r002_0 child=斗兽标定_blue_level60_blue_r002_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=3660",
+          "lineSha256": "6845dfe2538074b28e049a1b43776fd10bac60b1ac0ef3a6b65d58f1ab2ed1d9"
+        },
+        {
+          "observedAt": "2026-10-16T22:31:02.419241+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:31:01.893 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r002_0__elderbot form=robot level=60 clock=1799 starts=24 contacts=32 beam=4/4 kicks=9/18 slam=11/10 burst=0/0 stab=0/0 x=836.5 z=430 target=斗兽标定_red_level60_blue_r002_0 targetHp=51786 targetX=675.5 targetZ=430&frame=5460",
+          "lineSha256": "cb60b4b30e9864c8553f1ccd669dcac9905bab02e6e11a54e2e79a1fec9d21e8"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w1",
+      "runId": "level60-blue-r003",
+      "parentName": "斗兽标定_blue_level60_blue_r003_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:31:22.260712+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:31:22.084 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r003_0 form=human level=60 clock=493 starts=8 contacts=5 beam=0/0 kicks=0/0 slam=0/0 burst=1/3 stab=7/2 x=784.5 z=430 target=斗兽标定_red_level60_blue_r003_0 targetHp=80743 targetX=944.5 targetZ=430&frame=6065",
+          "lineSha256": "53c1b0fccfe7076c63859751162709fac6d681e8283fdb6305c23fca1e0967ef"
+        },
+        {
+          "observedAt": "2026-10-16T22:31:25.913035+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:31:25.135 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r003_0 child=斗兽标定_blue_level60_blue_r003_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=false&frame=6157",
+          "lineSha256": "b70ab658e5075826fc367cac77cac43bdd4651af9d8e3a5ee2dcd6177a1339e6"
+        },
+        {
+          "observedAt": "2026-10-16T22:32:28.856572+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:32:28.813 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r003_0__elderbot form=robot level=60 clock=1909 starts=25 contacts=33 beam=4/4 kicks=9/18 slam=12/11 burst=0/0 stab=0/0 x=868.5 z=430 target=斗兽标定_red_level60_blue_r003_0 targetHp=46361 targetX=1028.5 targetZ=430&frame=8067",
+          "lineSha256": "e42d2f3870e664564f8d34e3610857c41185c0735ffee764981579572545bd3b"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w2",
+      "runId": "level60-red-r001",
+      "parentName": "斗兽标定_red_level60_red_r001_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:28:27.407772+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:28:27.210 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0 form=human level=60 clock=521 starts=11 contacts=7 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=10/3 x=949 z=430 target=斗兽标定_blue_level60_red_r001_0 targetHp=79717 targetX=789 targetZ=430&frame=909",
+          "lineSha256": "f171bcc9ce616881aebdf4cd8e772e93c78ab20460c4563a47f3dc80d2bea395"
+        },
+        {
+          "observedAt": "2026-10-16T22:28:31.096456+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:28:30.261 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r001_0 child=斗兽标定_red_level60_red_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=1001",
+          "lineSha256": "eda5f1454e3834f6fe85c1cdbe67888dbd8f42226f6c562b305781e45b04aebd"
+        },
+        {
+          "observedAt": "2026-10-16T22:29:26.537898+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:29:25.535 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0__elderbot form=robot level=60 clock=1645 starts=18 contacts=21 beam=4/4 kicks=4/8 slam=10/9 burst=0/0 stab=0/0 x=1012 z=430 target=斗兽标定_blue_level60_red_r001_0 targetHp=65101 targetX=1172 targetZ=430&frame=2647",
+          "lineSha256": "b0b215fab4f2d3cc5d832653f932b2078bf90799fee8354f7a47ef07bfdd1bd4"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w2",
+      "runId": "level60-red-r002",
+      "parentName": "斗兽标定_red_level60_red_r002_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:29:49.373417+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:29:49.178 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r002_0 form=human level=60 clock=597 starts=12 contacts=6 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=11/2 x=1066 z=430 target=斗兽标定_blue_level60_red_r002_0 targetHp=80140 targetX=906 targetZ=430&frame=3356",
+          "lineSha256": "0549dcc0b91d1344b994e0eff5d9be05b1eef3c86643cfd73be403eb9d573870"
+        },
+        {
+          "observedAt": "2026-10-16T22:29:52.795214+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:29:52.235 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r002_0 child=斗兽标定_red_level60_red_r002_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=3448",
+          "lineSha256": "0c1b7978c1681fbdee87fdc7dbb26fb8f34f4333f6cdc996c4cafa6ee3136647"
+        },
+        {
+          "observedAt": "2026-10-16T22:30:59.042593+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:30:58.270 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r002_0__elderbot form=robot level=60 clock=1980 starts=25 contacts=37 beam=0/0 kicks=12/24 slam=13/13 burst=0/0 stab=0/0 x=394 z=430 target=斗兽标定_blue_level60_red_r002_0 targetHp=45837 targetX=364 targetZ=430&frame=5429",
+          "lineSha256": "e6564839a6be502044dc4d6dcae43ed61a400cc9df77777dda0fea93c8f38f33"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l60-w2",
+      "runId": "level60-red-r003",
+      "parentName": "斗兽标定_red_level60_red_r003_0",
+      "level": 60,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:31:16.463591+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:31:16.071 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r003_0 form=human level=60 clock=419 starts=9 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=8/4 x=933 z=430 target=斗兽标定_blue_level60_red_r003_0 targetHp=79552 targetX=903 targetZ=430&frame=5960",
+          "lineSha256": "dda0bd724a1be1927be9ab0c1ea8bfd2d24cdfa9305bf1a42a2eb030dc0724c2"
+        },
+        {
+          "observedAt": "2026-10-16T22:31:20.002809+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:31:19.139 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r003_0 child=斗兽标定_red_level60_red_r003_0__elderbot level=60 maxHp=20636 hp=20636 attack=5154 defense=6186 enemy=true&frame=6052",
+          "lineSha256": "45cd94b74cdab0658d4d2d1a8727363785d7de665d5d1dee6a8174cf9fa0e2c6"
+        },
+        {
+          "observedAt": "2026-10-16T22:32:30.049564+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:32:29.736 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r003_0__elderbot form=robot level=60 clock=2102 starts=28 contacts=39 beam=1/1 kicks=12/24 slam=15/14 burst=0/0 stab=0/0 x=1464 z=430 target=斗兽标定_blue_level60_red_r003_0 targetHp=49566 targetX=1554 targetZ=430&frame=8155",
+          "lineSha256": "f458799564f1391c3d89c84fb1d111d6b3b32a80b5ef30d2a36ff400e6d55f12"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w1",
+      "runId": "level99-blue-r001",
+      "parentName": "斗兽标定_blue_level99_blue_r001_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:34:36.764941+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:34:35.874 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0 form=human level=99 clock=622 starts=12 contacts=7 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=11/3 x=838.2 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=112126 targetX=998.2 targetZ=430&frame=1046",
+          "lineSha256": "ce2d215727b085d73217db1e81a7c1b35543948a99d60a159bdae4ab466c3eb4"
+        },
+        {
+          "observedAt": "2026-10-16T22:34:39.154005+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:34:38.934 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r001_0 child=斗兽标定_blue_level99_blue_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=1138",
+          "lineSha256": "60ad6f64018a16f343b3a3faee563df9362f5d94e950c8ce568a19a70772912e"
+        },
+        {
+          "observedAt": "2026-10-16T22:35:50.962523+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:35:50.642 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0__elderbot form=robot level=99 clock=2150 starts=29 contacts=38 beam=6/5 kicks=10/20 slam=13/13 burst=0/0 stab=0/0 x=884.2 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=73201 targetX=944.1 targetZ=430&frame=3289",
+          "lineSha256": "91373d07cddce9e3a9001f4592366b09504d64acea34fcff13c22d3f2bd7c166"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w1",
+      "runId": "level99-blue-r002",
+      "parentName": "斗兽标定_blue_level99_blue_r002_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:36:14.977555+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:36:13.958 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r002_0 form=human level=99 clock=588 starts=13 contacts=10 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=12/6 x=904.9 z=430 target=斗兽标定_red_level99_blue_r002_0 targetHp=109960 targetX=1064.9 targetZ=430&frame=3989",
+          "lineSha256": "1cd246aff96c0d5d90543e4b2eb902bbc5ba83c0b0b0cf95b25ef6933041c947"
+        },
+        {
+          "observedAt": "2026-10-16T22:36:17.224967+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:36:17.034 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r002_0 child=斗兽标定_blue_level99_blue_r002_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=4081",
+          "lineSha256": "73d3db5c0b23ec8381f0b3ba903d4c1f000516ebe61699efdaf2eade095be8c7"
+        },
+        {
+          "observedAt": "2026-10-16T22:37:20.936489+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:37:20.899 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r002_0__elderbot form=robot level=99 clock=1911 starts=24 contacts=32 beam=4/4 kicks=8/16 slam=12/12 burst=0/0 stab=0/0 x=957.9 z=430 target=斗兽标定_red_level99_blue_r002_0 targetHp=76892 targetX=927.9 targetZ=430&frame=5993",
+          "lineSha256": "62a5b45e49139bce14f2a3c537a3c00475706eaa307cb964198627b37de70122"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w1",
+      "runId": "level99-blue-r003",
+      "parentName": "斗兽标定_blue_level99_blue_r003_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:37:43.498460+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:37:42.323 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r003_0 form=human level=99 clock=529 starts=10 contacts=9 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=9/5 x=792 z=430 target=斗兽标定_red_level99_blue_r003_0 targetHp=111321 targetX=952 targetZ=430&frame=6634",
+          "lineSha256": "b8ac3c861ae187096cdee4c2693d56f5ecdbc25e54a152fc5f76123e64e0a4de"
+        },
+        {
+          "observedAt": "2026-10-16T22:37:45.894499+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:37:45.355 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r003_0 child=斗兽标定_blue_level99_blue_r003_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=false&frame=6726",
+          "lineSha256": "54b7b8ea9087c232f5c08c564c7f7a3c18bfb1874b6bb5494323ab5f8b48f284"
+        },
+        {
+          "observedAt": "2026-10-16T22:39:21.466565+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:39:21.093 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r003_0__elderbot form=robot level=99 clock=2873 starts=39 contacts=59 beam=0/0 kicks=20/40 slam=19/19 burst=0/0 stab=0/0 x=1403 z=430 target=斗兽标定_red_level99_blue_r003_0 targetHp=56712 targetX=1441 targetZ=430&frame=9600",
+          "lineSha256": "9f48b44f4512ec994f3bba3a08229e5b2a58698863d1a59f063a54876acf73a0"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w2",
+      "runId": "level99-red-r001",
+      "parentName": "斗兽标定_red_level99_red_r001_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:34:32.197891+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:34:31.088 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0 form=human level=99 clock=711 starts=14 contacts=11 beam=0/0 kicks=0/0 slam=0/0 burst=4/8 stab=10/3 x=1084.8 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=109973 targetX=1244.8 targetZ=430&frame=996",
+          "lineSha256": "88fea67ef3180c36df55e50c6ff1ee59fae8b0464d67c530d0a6f8046f4ba13f"
+        },
+        {
+          "observedAt": "2026-10-16T22:34:34.536143+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:34:34.101 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r001_0 child=斗兽标定_red_level99_red_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=1088",
+          "lineSha256": "f1f8c7fda20fbe4f3e39f94c08867d8f64ad4abef66bca084bb62306dd5d739c"
+        },
+        {
+          "observedAt": "2026-10-16T22:35:58.978498+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:35:58.050 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0__elderbot form=robot level=99 clock=2514 starts=35 contacts=51 beam=0/0 kicks=17/34 slam=18/17 burst=0/0 stab=0/0 x=1448.5 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=68126 targetX=1486.5 targetZ=430&frame=3603",
+          "lineSha256": "29552a7ac29566481eb71b74d80baa4875a725a1334182ff1958618f7425aecf"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w2",
+      "runId": "level99-red-r002",
+      "parentName": "斗兽标定_red_level99_red_r002_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:36:25.205532+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:36:24.943 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r002_0 form=human level=99 clock=695 starts=17 contacts=8 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=16/4 x=1014.5 z=430 target=斗兽标定_blue_level99_red_r002_0 targetHp=111453 targetX=854.5 targetZ=430&frame=4410",
+          "lineSha256": "ba0ed39a092f75268c29c93ee7175a97f0df9ed2fd3d1c6682de748fea26b9dc"
+        },
+        {
+          "observedAt": "2026-10-16T22:36:28.591383+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:36:28.020 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r002_0 child=斗兽标定_red_level99_red_r002_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=4502",
+          "lineSha256": "2a3c8ed38ace71ac4c5de93b6546dd4e3fbb5ddcccb214e25b7b42e7a5dad770"
+        },
+        {
+          "observedAt": "2026-10-16T22:37:47.130126+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:37:46.103 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r002_0__elderbot form=robot level=99 clock=2322 starts=27 contacts=36 beam=4/4 kicks=9/18 slam=14/14 burst=0/0 stab=0/0 x=1245.3 z=430 target=斗兽标定_blue_level99_red_r002_0 targetHp=73359 targetX=1275.3 targetZ=430&frame=6825",
+          "lineSha256": "f1bd95be3faffbbfcc233916f7c7b9a14ce981e16d66cda36b4cd2ad89cd4c1b"
+        }
+      ]
+    },
+    {
+      "batchId": "elder-r15-matrix-20261017-beastking-l99-w2",
+      "runId": "level99-red-r003",
+      "parentName": "斗兽标定_red_level99_red_r003_0",
+      "level": 99,
+      "rivalUnitId": 78,
+      "phaseEventsObserved": 1,
+      "events": [
+        {
+          "observedAt": "2026-10-16T22:38:11.323375+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:38:10.673 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r003_0 form=human level=99 clock=614 starts=10 contacts=7 beam=0/0 kicks=0/0 slam=0/0 burst=1/4 stab=9/3 x=958.5 z=430 target=斗兽标定_blue_level99_red_r003_0 targetHp=112015 targetX=798.5 targetZ=430&frame=7551",
+          "lineSha256": "b06b6e9aea2b705c693122260f9ca14201d55ee1d1d96e9fdea7fb2f080de936"
+        },
+        {
+          "observedAt": "2026-10-16T22:38:13.770433+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:38:13.740 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r003_0 child=斗兽标定_red_level99_red_r003_0__elderbot level=99 maxHp=27549 hp=27549 attack=7231 defense=7224 enemy=true&frame=7643",
+          "lineSha256": "974d9c924470d80735923fc41abe4eb421808c8afa0b157fb0b8c19f9a81315e"
+        },
+        {
+          "observedAt": "2026-10-16T22:39:36.593679+00:00",
+          "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\logs\\launcher.log",
+          "line": "06:39:36.476 [LogBatch] onLoad=[type Function]&messages=[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r003_0__elderbot form=robot level=99 clock=2463 starts=31 contacts=40 beam=8/7 kicks=10/20 slam=13/13 burst=0/0 stab=0/0 x=556.8 z=430 target=斗兽标定_blue_level99_red_r003_0 targetHp=71836 targetX=308.8 targetZ=430&frame=10107",
+          "lineSha256": "bc980e37be435aa8cdfe2754908b8418a44434f97a0d9c9767ea551a7764f53b"
+        }
+      ]
+    }
+  ],
+  "allPhaseDiagnosticsObserved": true
+}

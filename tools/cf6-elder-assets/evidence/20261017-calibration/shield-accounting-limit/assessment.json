@@ -1,0 +1,21 @@
+{
+  "affectedRounds": [
+    "R15",
+    "R16"
+  ],
+  "affectedFields": [
+    "beamShieldSpent",
+    "beamShieldUnused"
+  ],
+  "qualifiedForTuning": false,
+  "finding": "The probe cached a layer object at creation and read it later. AdaptiveShield single-flattened mode keeps current values in the container and only synchronizes the identity handle when getShieldById is called. A long-lived layer reference may therefore report stale capacity.",
+  "nativeCoverageGap": "The earlier accounting assertions used a foreign layer, exercising stacked shields; they did not establish single-flattened behavior.",
+  "unaffected": [
+    "Raw arena HP and outcome rows",
+    "Runtime/resource/save/cleanup qualifications",
+    "R16 reactive absorbed-damage callback counter",
+    "R16 reactive refresh reads through getShieldById"
+  ],
+  "plannedRepair": "Measure beam absorption from the production per-layer onHit callback and retire the sample once; add isolated single-shield container absorption and expiry checks.",
+  "boundary": "Original logs are preserved. Zero recorded consumption is not evidence of zero actual absorption, a damage bypass, or a timing-window cause."
+}

@@ -1,0 +1,1397 @@
+{
+  "schema": "cf6.audio-audit.v1",
+  "originalSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "baselineZipSha256": "845aec5bedc43a64721a7375b4e739dad9ebd202c6165bd26353d54a70f7171b",
+  "newLibraryCount": 8,
+  "newUnitOrFormCount": 12,
+  "legacyAndDerivedUnits": [
+    {
+      "linkage": "敌人-诺亚克隆兽",
+      "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "swfSha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d",
+      "declaredInSpriteClosure": [
+        {
+          "spriteId": 364,
+          "sfxStrings": [
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 381,
+          "sfxStrings": [
+            "克隆怪嘶吼1.wav",
+            "克隆怪嘶吼2.wav",
+            "克隆怪嘶吼3.wav",
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav",
+            "克隆怪着陆.wav",
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav",
+            "克隆怪跳跃.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 385,
+          "sfxStrings": [
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 415,
+          "sfxStrings": [
+            "soundheadexplode.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        }
+      ],
+      "missingFiles": [],
+      "swfUnchangedByThisTask": true,
+      "scope": "exact null-delimited SFX literals in current SWF closure, not a new runtime listening test; CF7 adaptations retained"
+    },
+    {
+      "linkage": "敌人-闪6特工",
+      "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "swfSha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d",
+      "declaredInSpriteClosure": [
+        {
+          "spriteId": 295,
+          "sfxStrings": [
+            "soundfootstep_female.wav",
+            "soundfootstep_female1.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 332,
+          "sfxStrings": [
+            "shoot.wav",
+            "闪6女特工劈砍.wav",
+            "闪6女特工后空翻.wav",
+            "闪6女特工突刺.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 343,
+          "sfxStrings": [
+            "闪6女特工突刺.wav",
+            "闪6女特工突刺2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 348,
+          "sfxStrings": [
+            "01_kin_a_1-22.wav",
+            "02_kin_a_2-22.wav",
+            "03_kin_a_3-22.wav",
+            "05_kin_d_1-22.wav",
+            "06_kin_d_2-22.wav",
+            "07_kin_d_3-22.wav",
+            "08_kin_d_4-22.wav",
+            "09_kin_d_f-22.wav",
+            "19_kin_nage-22.wav",
+            "女02.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": false
+        }
+      ],
+      "missingFiles": [],
+      "swfUnchangedByThisTask": true,
+      "scope": "exact null-delimited SFX literals in current SWF closure, not a new runtime listening test; CF7 adaptations retained"
+    },
+    {
+      "linkage": "敌人-延寿克隆兽",
+      "swf": "flashswf/arts/new/Codex专用素材.swf",
+      "swfSha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b",
+      "declaredInSpriteClosure": [
+        {
+          "spriteId": 94,
+          "sfxStrings": [
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 113,
+          "sfxStrings": [
+            "克隆怪嘶吼1.wav",
+            "克隆怪嘶吼2.wav",
+            "克隆怪嘶吼3.wav",
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav",
+            "克隆怪着陆.wav",
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav",
+            "克隆怪跳跃.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 117,
+          "sfxStrings": [
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 156,
+          "sfxStrings": [
+            "soundheadexplode.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        }
+      ],
+      "missingFiles": [],
+      "swfUnchangedByThisTask": true,
+      "scope": "exact null-delimited SFX literals in current SWF closure, not a new runtime listening test; CF7 adaptations retained"
+    },
+    {
+      "linkage": "敌人-完全体克隆兽",
+      "swf": "flashswf/arts/new/Codex专用素材.swf",
+      "swfSha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b",
+      "declaredInSpriteClosure": [
+        {
+          "spriteId": 209,
+          "sfxStrings": [
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 215,
+          "sfxStrings": [
+            "克隆怪嘶吼1.wav",
+            "克隆怪嘶吼2.wav",
+            "克隆怪嘶吼3.wav",
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav",
+            "克隆怪着陆.wav",
+            "克隆怪脚步1.wav",
+            "克隆怪脚步2.wav",
+            "克隆怪跳跃.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 217,
+          "sfxStrings": [
+            "克隆怪爪击1.wav",
+            "克隆怪爪击2.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        },
+        {
+          "spriteId": 232,
+          "sfxStrings": [
+            "soundheadexplode.wav"
+          ],
+          "missingFiles": [],
+          "containsRootPlaySoundName": true
+        }
+      ],
+      "missingFiles": [],
+      "swfUnchangedByThisTask": true,
+      "scope": "exact null-delimited SFX literals in current SWF closure, not a new runtime listening test; CF7 adaptations retained"
+    }
+  ],
+  "originalTimelineSitesInNewLibraries": 50,
+  "originalTimelineSitesMissingBefore": 45,
+  "originalTimelineSitesMissingAfter": 0,
+  "afterCoverageKind": "generated call mapping plus current SWF no-embedded-audio scan; actual frame invocation has separate native suite receipts",
+  "timelineSiteCountingBoundary": "StartSound sites in eleven original roots; shared actor variants counted once; script voices, weapon configuration and extended transformation are separate",
+  "nativeTimelineCalls": 67,
+  "voiceRouteReplacements": 2,
+  "newSfxFiles": 44,
+  "newSfxBytes": 1401498,
+  "embeddedAudioInNewSwfs": 0,
+  "groups": [
+    {
+      "owner": "Antigravity专用素材",
+      "originalRoots": [
+        477,
+        1694
+      ],
+      "sites": [
+        {
+          "originalRoot": 477,
+          "spriteId": 405,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 477,
+          "spriteId": 407,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 477,
+          "spriteId": 408,
+          "frame": 12,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1694,
+          "spriteId": 1631,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1694,
+          "spriteId": 1633,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1694,
+          "spriteId": 1634,
+          "frame": 12,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 6,
+      "missingOriginalTimelineSites": 6,
+      "currentTimelineCallSites": 8,
+      "beforeSwfSha256": "2ab9c86284e8bf2d8cee6e5262ce5153aea0efe2c5df543bd0b33afd9398c74a",
+      "afterSwfSha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex蛮蛮素材",
+      "originalRoots": [
+        692
+      ],
+      "sites": [
+        {
+          "originalRoot": 692,
+          "spriteId": 653,
+          "frame": 2,
+          "soundId": 649,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 692,
+          "spriteId": 653,
+          "frame": 16,
+          "soundId": 652,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 692,
+          "spriteId": 656,
+          "frame": 2,
+          "soundId": 654,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 692,
+          "spriteId": 656,
+          "frame": 13,
+          "soundId": 655,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 692,
+          "spriteId": 659,
+          "frame": 2,
+          "soundId": 658,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 692,
+          "spriteId": 691,
+          "frame": 21,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 6,
+      "missingOriginalTimelineSites": 6,
+      "currentTimelineCallSites": 7,
+      "beforeSwfSha256": "74616617a2655c31b17652f334e8bca681b42e2941c19b094a356ff43124109f",
+      "afterSwfSha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "CodexWings素材",
+      "originalRoots": [
+        873
+      ],
+      "sites": [
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 7,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 20,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "CF7 slash sound retained",
+          "after": "existing native SFX adaptation"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 23,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "CF7 slash sound retained",
+          "after": "existing native SFX adaptation"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 26,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "CF7 slash sound retained",
+          "after": "existing native SFX adaptation"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 29,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "CF7 slash sound retained",
+          "after": "existing native SFX adaptation"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 868,
+          "frame": 38,
+          "soundId": 866,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "CF7 slash sound retained",
+          "after": "existing native SFX adaptation"
+        },
+        {
+          "originalRoot": 873,
+          "spriteId": 871,
+          "frame": 15,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 7,
+      "missingOriginalTimelineSites": 2,
+      "currentTimelineCallSites": 6,
+      "beforeSwfSha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107",
+      "afterSwfSha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex特种兵素材",
+      "originalRoots": [
+        559,
+        580
+      ],
+      "sites": [
+        {
+          "originalRoot": 559,
+          "spriteId": 517,
+          "frame": 14,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 559,
+          "spriteId": 520,
+          "frame": 19,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 580,
+          "spriteId": 573,
+          "frame": 12,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 580,
+          "spriteId": 579,
+          "frame": 2,
+          "soundId": 576,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 4,
+      "missingOriginalTimelineSites": 4,
+      "currentTimelineCallSites": 9,
+      "beforeSwfSha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb",
+      "afterSwfSha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex光头保安素材",
+      "originalRoots": [
+        888
+      ],
+      "sites": [
+        {
+          "originalRoot": 888,
+          "spriteId": 875,
+          "frame": 20,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 888,
+          "spriteId": 887,
+          "frame": 2,
+          "soundId": 879,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 888,
+          "spriteId": 887,
+          "frame": 44,
+          "soundId": 881,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 3,
+      "missingOriginalTimelineSites": 3,
+      "currentTimelineCallSites": 8,
+      "beforeSwfSha256": "58de7ecac69f667f960d9a5b85766d12b12689bdbe363e759155511098c2a2d1",
+      "afterSwfSha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex大刀机器人素材",
+      "originalRoots": [
+        925
+      ],
+      "sites": [
+        {
+          "originalRoot": 925,
+          "spriteId": 906,
+          "frame": 10,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 910,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 910,
+          "frame": 17,
+          "soundId": 908,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 910,
+          "frame": 20,
+          "soundId": 652,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 912,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 912,
+          "frame": 9,
+          "soundId": 911,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 925,
+          "spriteId": 924,
+          "frame": 2,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 7,
+      "missingOriginalTimelineSites": 7,
+      "currentTimelineCallSites": 7,
+      "beforeSwfSha256": "963cd8383edff068891c1d766b6880d02999beb4bd114a12e49b9ff2fb4765a2",
+      "afterSwfSha256": "f6cc21bd9e111bf332e65ed022c320832ad56d616310e9445a75ea35593142bd",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex大头机器人素材",
+      "originalRoots": [
+        952
+      ],
+      "sites": [
+        {
+          "originalRoot": 952,
+          "spriteId": 936,
+          "frame": 2,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 952,
+          "spriteId": 936,
+          "frame": 10,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 952,
+          "spriteId": 937,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 1006,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 952,
+          "spriteId": 951,
+          "frame": 2,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 4,
+      "missingOriginalTimelineSites": 4,
+      "currentTimelineCallSites": 4,
+      "beforeSwfSha256": "a087e4b44fde4e4fb7c5434a2ac1855f93ac075b2b2af6e68b762f8b00924eb9",
+      "afterSwfSha256": "d36c25e751a536a85dea0e2a9111276180493c016c986a3e9cb096e504187108",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    },
+    {
+      "owner": "Codex老头素材",
+      "originalRoots": [
+        975,
+        1011
+      ],
+      "sites": [
+        {
+          "originalRoot": 975,
+          "spriteId": 970,
+          "frame": 2,
+          "soundId": 969,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 975,
+          "spriteId": 972,
+          "frame": 3,
+          "soundId": 971,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 975,
+          "spriteId": 972,
+          "frame": 10,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 994,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 994,
+          "frame": 28,
+          "soundId": 992,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 997,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 997,
+          "frame": 8,
+          "soundId": 995,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 997,
+          "frame": 25,
+          "soundId": 995,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 1007,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ],
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 1007,
+          "frame": 36,
+          "soundId": 998,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 1010,
+          "frame": 2,
+          "soundId": 1009,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 1010,
+          "frame": 14,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        },
+        {
+          "originalRoot": 1011,
+          "spriteId": 1010,
+          "frame": 30,
+          "soundId": 1009,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "before": "original action cue absent",
+          "after": "root native SFX call restored"
+        }
+      ],
+      "originalTimelineSites": 13,
+      "missingOriginalTimelineSites": 13,
+      "currentTimelineCallSites": 18,
+      "beforeSwfSha256": "0feee79a4ca52dd846d7512f97303de26d64fe252b430d6fcf741876196fdf42",
+      "afterSwfSha256": "adfd0e7a1187b49f8e6f8647e2e1204b52c771ad3fea319b96cc62543e8a61f8",
+      "beforeEmbeddedDefinitions": 0,
+      "beforeEmbeddedStarts": 0,
+      "afterEmbeddedDefinitions": 0,
+      "afterEmbeddedStarts": 0
+    }
+  ],
+  "runtimeCues": [
+    {
+      "owner": "Codex老头素材",
+      "source": [
+        1010,
+        30
+      ],
+      "soundId": 1009,
+      "at": "robot death frame 32",
+      "adaptation": "与碎裂和一次性亡语同步，顺延两帧。"
+    },
+    {
+      "owner": "Codex大头机器人素材",
+      "soundId": 1009,
+      "at": "death frame 19",
+      "adaptation": "新增机械爆裂"
+    },
+    {
+      "owner": "Codex大刀机器人素材",
+      "soundId": 1009,
+      "at": "death frame 5",
+      "adaptation": "新增机械爆裂"
+    },
+    {
+      "owner": "Codex老头素材",
+      "sound": "shoot.wav",
+      "at": "human burst actual emission",
+      "adaptation": "原作此场枪声音为无；当前穿刺枪新增既有CF7射击声。"
+    }
+  ],
+  "additionalPhaseTimelineCues": [
+    {
+      "spriteId": 2008,
+      "frame": 2,
+      "soundId": 1993,
+      "syncStop": false,
+      "syncNoMultiple": false
+    },
+    {
+      "spriteId": 2008,
+      "frame": 81,
+      "soundId": 2004,
+      "syncStop": false,
+      "syncNoMultiple": false
+    },
+    {
+      "spriteId": 2008,
+      "frame": 255,
+      "soundId": 2007,
+      "syncStop": false,
+      "syncNoMultiple": false
+    }
+  ],
+  "decodedAssets": [
+    {
+      "name": "CF6_0288.mp3",
+      "sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b",
+      "decodedFrames": 52992,
+      "durationSeconds": 1.2016326530612245,
+      "peak": 0.6153513193130493,
+      "rms": 0.03770889667955464,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0296.mp3",
+      "sha256": "46a45bcf50194df834b6be99d121ab6ffcbffed4e5d3edce05b6c0c948971f7f",
+      "decodedFrames": 32256,
+      "durationSeconds": 0.7314285714285714,
+      "peak": 0.7164196372032166,
+      "rms": 0.0753623503453238,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0303.mp3",
+      "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601",
+      "decodedFrames": 43776,
+      "durationSeconds": 0.9926530612244898,
+      "peak": 0.7963247299194336,
+      "rms": 0.10068088826764028,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0513.mp3",
+      "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d",
+      "decodedFrames": 36864,
+      "durationSeconds": 0.8359183673469388,
+      "peak": 0.5481394529342651,
+      "rms": 0.07379470220928823,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0576.mp3",
+      "sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405",
+      "decodedFrames": 48384,
+      "durationSeconds": 1.0971428571428572,
+      "peak": 0.5712946057319641,
+      "rms": 0.07981157936867757,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0649.mp3",
+      "sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef",
+      "decodedFrames": 39168,
+      "durationSeconds": 0.8881632653061224,
+      "peak": 1.1425750255584717,
+      "rms": 0.23814765784186231,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0652.mp3",
+      "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f",
+      "decodedFrames": 41472,
+      "durationSeconds": 0.9404081632653061,
+      "peak": 0.6311606168746948,
+      "rms": 0.05242585131598665,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0654.mp3",
+      "sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95",
+      "decodedFrames": 39168,
+      "durationSeconds": 0.8881632653061224,
+      "peak": 0.42945244908332825,
+      "rms": 0.06668780075009627,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0655.mp3",
+      "sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad",
+      "decodedFrames": 32256,
+      "durationSeconds": 0.7314285714285714,
+      "peak": 1.040061354637146,
+      "rms": 0.2116945244212121,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0658.mp3",
+      "sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511",
+      "decodedFrames": 64512,
+      "durationSeconds": 1.4628571428571429,
+      "peak": 0.8367711305618286,
+      "rms": 0.11334947852268895,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0879.mp3",
+      "sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897",
+      "decodedFrames": 101376,
+      "durationSeconds": 2.2987755102040817,
+      "peak": 0.697472095489502,
+      "rms": 0.12796640039729532,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0881.mp3",
+      "sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90",
+      "decodedFrames": 87552,
+      "durationSeconds": 1.9853061224489796,
+      "peak": 1.2085626125335693,
+      "rms": 0.31103519580790945,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0904.mp3",
+      "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5",
+      "decodedFrames": 46080,
+      "durationSeconds": 1.0448979591836736,
+      "peak": 0.5558325052261353,
+      "rms": 0.10639776649812961,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0907.mp3",
+      "sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9",
+      "decodedFrames": 105984,
+      "durationSeconds": 2.403265306122449,
+      "peak": 0.5102264881134033,
+      "rms": 0.12484603630176903,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0907_224cc88267.wav",
+      "sha256": "af371cf9608f42d7c24aafbb5b500f313ce62b9b45ededdedab16b0f2eaf1dcd",
+      "decodedFrames": 105984,
+      "durationSeconds": 2.403265306122449,
+      "peak": 0.510223388671875,
+      "rms": 0.0899281779007683,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0907_c56b689a20.wav",
+      "sha256": "1f2dd5e941606c234478c96380196e99ac71eb80494336acea50f3cae544b613",
+      "decodedFrames": 105984,
+      "durationSeconds": 2.403265306122449,
+      "peak": 0.1561279296875,
+      "rms": 0.0167105415787186,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0907_ea2159328f.wav",
+      "sha256": "3b617c5c2a07411cc6ba4c0ad98c5f7af47d519ecbeb8a2a36931f33ba2e2bee",
+      "decodedFrames": 105984,
+      "durationSeconds": 2.403265306122449,
+      "peak": 0.281951904296875,
+      "rms": 0.028407404216214755,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0908.mp3",
+      "sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf",
+      "decodedFrames": 35712,
+      "durationSeconds": 0.809795918367347,
+      "peak": 0.7615498304367065,
+      "rms": 0.10679347786336942,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0911.mp3",
+      "sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6",
+      "decodedFrames": 99072,
+      "durationSeconds": 2.246530612244898,
+      "peak": 0.7965943217277527,
+      "rms": 0.13455784082733951,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0915.mp3",
+      "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db",
+      "decodedFrames": 112896,
+      "durationSeconds": 2.56,
+      "peak": 1.31940495967865,
+      "rms": 0.2371649051651159,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0969.mp3",
+      "sha256": "29a8c37a8830edc7e3938363fa25cdcf78bdb581d197237a2737c396524e5ae9",
+      "decodedFrames": 103680,
+      "durationSeconds": 2.3510204081632655,
+      "peak": 0.4363558292388916,
+      "rms": 0.07933085717428567,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0971.mp3",
+      "sha256": "539e07d489dbd1e4b41f0cf19b6b58ab6aafdfd8d5f3010cb236b6eb814eb312",
+      "decodedFrames": 23040,
+      "durationSeconds": 0.5224489795918368,
+      "peak": 0.7493255138397217,
+      "rms": 0.10637785404345172,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0992.mp3",
+      "sha256": "1b7c3d48d8c3e34db8d6a4f01b27aa7d5a51b674c3030c71875cab31d4f7217f",
+      "decodedFrames": 76032,
+      "durationSeconds": 1.7240816326530612,
+      "peak": 1.0480719804763794,
+      "rms": 0.16263030929117317,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0995.mp3",
+      "sha256": "bc133bae4c87fedd26d10d7cacd0082d41de5da488b825ffbfb8eb1077db7804",
+      "decodedFrames": 59904,
+      "durationSeconds": 1.3583673469387756,
+      "peak": 0.5070841312408447,
+      "rms": 0.10490617585622405,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_0998.mp3",
+      "sha256": "c15c98f7c48569c0ad84c51148391d9bd55b0e85ca0b5003f9358fc92edf2202",
+      "decodedFrames": 64512,
+      "durationSeconds": 1.4628571428571429,
+      "peak": 0.5263110399246216,
+      "rms": 0.1202556779272709,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1009.mp3",
+      "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436",
+      "decodedFrames": 76032,
+      "durationSeconds": 1.7240816326530612,
+      "peak": 0.650825560092926,
+      "rms": 0.14711936143675602,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1117.mp3",
+      "sha256": "88b4949ed0ad9db81682e6066e6f38fa297891c021b66caab7ebab988ebc1b82",
+      "decodedFrames": 25344,
+      "durationSeconds": 0.5746938775510204,
+      "peak": 0.6732264161109924,
+      "rms": 0.12284517317693741,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1120.mp3",
+      "sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d",
+      "decodedFrames": 87552,
+      "durationSeconds": 1.9853061224489796,
+      "peak": 0.6583730578422546,
+      "rms": 0.14479217734844155,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1121.mp3",
+      "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b",
+      "decodedFrames": 23040,
+      "durationSeconds": 0.5224489795918368,
+      "peak": 0.40125522017478943,
+      "rms": 0.07584329086862902,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1123.mp3",
+      "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea",
+      "decodedFrames": 41472,
+      "durationSeconds": 0.9404081632653061,
+      "peak": 0.776212751865387,
+      "rms": 0.10842904493166017,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1131.mp3",
+      "sha256": "68dda6627fc47b7957c01d43acbe4ef4a04c2275ce4dde2ca78b14b30ada4bea",
+      "decodedFrames": 39168,
+      "durationSeconds": 0.8881632653061224,
+      "peak": 0.7521904110908508,
+      "rms": 0.11816627266591515,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1134.mp3",
+      "sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755",
+      "decodedFrames": 85248,
+      "durationSeconds": 1.933061224489796,
+      "peak": 0.6142064929008484,
+      "rms": 0.14271382876290284,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1135.mp3",
+      "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c",
+      "decodedFrames": 32256,
+      "durationSeconds": 0.7314285714285714,
+      "peak": 0.5384249091148376,
+      "rms": 0.08956993077824975,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1137.mp3",
+      "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a",
+      "decodedFrames": 55296,
+      "durationSeconds": 1.253877551020408,
+      "peak": 0.9197301864624023,
+      "rms": 0.1523006874678378,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1143.mp3",
+      "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7",
+      "decodedFrames": 55296,
+      "durationSeconds": 1.253877551020408,
+      "peak": 0.2629362642765045,
+      "rms": 0.04187903154127568,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1144.mp3",
+      "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b",
+      "decodedFrames": 43776,
+      "durationSeconds": 0.9926530612244898,
+      "peak": 0.4903792440891266,
+      "rms": 0.0903249901572113,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1146.mp3",
+      "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f",
+      "decodedFrames": 29952,
+      "durationSeconds": 0.6791836734693878,
+      "peak": 0.6628279089927673,
+      "rms": 0.1014813500800236,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1150.mp3",
+      "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e",
+      "decodedFrames": 23040,
+      "durationSeconds": 0.5224489795918368,
+      "peak": 0.6739699840545654,
+      "rms": 0.10107149795797593,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1151.mp3",
+      "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445",
+      "decodedFrames": 76032,
+      "durationSeconds": 1.7240816326530612,
+      "peak": 0.6449124217033386,
+      "rms": 0.11261553482926775,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1154.mp3",
+      "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535",
+      "decodedFrames": 71424,
+      "durationSeconds": 1.619591836734694,
+      "peak": 0.6746060252189636,
+      "rms": 0.16211671782778844,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1157.mp3",
+      "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c",
+      "decodedFrames": 48384,
+      "durationSeconds": 1.0971428571428572,
+      "peak": 0.7531336545944214,
+      "rms": 0.1341108338963137,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_1993.mp3",
+      "sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e",
+      "decodedFrames": 207360,
+      "durationSeconds": 4.702040816326531,
+      "peak": 0.9903352856636047,
+      "rms": 0.1790656204658267,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_2004.mp3",
+      "sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de",
+      "decodedFrames": 262656,
+      "durationSeconds": 5.955918367346939,
+      "peak": 0.6459829807281494,
+      "rms": 0.07497294823097862,
+      "decodeToEnd": true
+    },
+    {
+      "name": "CF6_2007.mp3",
+      "sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc",
+      "decodedFrames": 76032,
+      "durationSeconds": 1.7240816326530612,
+      "peak": 0.6253842711448669,
+      "rms": 0.08441571135131468,
+      "decodeToEnd": true
+    }
+  ],
+  "decodedWith": "ffmpeg offline; not native endpoint or human listening acceptance",
+  "newNativeEndpointListeningVerified": false
+}

@@ -1,0 +1,25 @@
+{
+  "checks": [
+    {
+      "case": "valid historical full matrix retains its failing strength result",
+      "passed": true
+    },
+    {
+      "case": "real wrong-side Beast successor",
+      "passed": true,
+      "rejection": "('Invalid own successor identity or side', 'level60-blue-r002', [{'side': 'blue', 'unit': '敌人-CF6老头机器人', 'from': '兵种471', 'name': '斗兽标定_blue_level60_blue_r002_0__elderbot', 'frame': 576}, {'side': 'blue', 'unit': '敌人-方舟兽王虎', 'from': '敌人-CF6老头机器人', 'name': '斗兽标定_red_level60_blue_r002_0敌人-方舟兽王虎35', 'frame': 2325}])"
+    },
+    {
+      "case": "unknown successor side",
+      "passed": true,
+      "rejection": "('Unknown successor side', 'level30-blue-r001')"
+    },
+    {
+      "case": "phase count drift",
+      "passed": true,
+      "rejection": "('Successor count differs', 'level30-blue-r001')"
+    }
+  ],
+  "sourceSha256": "92200090e69c2a822e596f237cf868a54a6f65a8c4dd201b4bb195a0d226bddf",
+  "historicalRawUnchanged": true
+}

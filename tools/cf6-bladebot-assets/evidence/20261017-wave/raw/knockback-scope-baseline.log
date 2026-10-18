@@ -1,0 +1,37 @@
+{"source": "scripts/\u903b\u8f91/\u5355\u4f4d\u51fd\u6570/\u5355\u4f4d\u51fd\u6570_lsy_\u654c\u4eba\u6a21\u677f\u8fc1\u79fb.as", "functionSha256": "c0f251220865ddd69d655e6b9484c086b8be1e0bf19345025cd309ba11839f7b", "templateSha256": "54e3bce6513bedd0aa6c28761e948e43facf48e781277b74a7653fbe9d43f7ec"}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 1003792 bytes, 2026/10/17 0:45:55)
+[INFO] 触发编译... (超时 180s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (8s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-knockback-scope Start: f80a7d983d45405a8db77a39af9ef915
+[KNOCKBACK_SCOPE] rootFriction=undefined ownFriction=3 speed=NaN x=0
+[TEST_FAIL] Cf6KnockbackScopeTest: rightward decay uses this target friction
+[KNOCKBACK_SCOPE] rootFriction=99 ownFriction=2 speed=-75 x=0
+[TEST_FAIL] Cf6KnockbackScopeTest: unrelated root property cannot change leftward decay
+[TEST_FAIL] Cf6KnockbackScopeTest: hitstop freezes velocity and position
+[TEST_FAIL] Cf6KnockbackScopeTest: friction reaches exact finite stop without reversal
+[TEST_FAIL] Cf6KnockbackScopeTest: two targets keep independent friction histories
+Cf6KnockbackScopeTest: 2 passed, 5 failed
+FocusedTestRunId cf6-knockback-scope Complete: f80a7d983d45405a8db77a39af9ef915
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/17 0:51:30
+[ERROR] Flash trace reported test failure ([TEST_FAIL] / [FAIL] / Tests Failed > 0)
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (5179 bytes, 2026/10/17 0:51:29)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 9   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    1877 B  DefineFunction2  (anon)
+     330 B  DefineFunction2  (anon)
+     213 B  DefineFunction2  (anon)
+     185 B  DefineFunction2  (anon)
+     105 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。

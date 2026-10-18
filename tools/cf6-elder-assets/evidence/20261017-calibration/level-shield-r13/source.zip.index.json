@@ -1,0 +1,54 @@
+{
+  "files": [
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 17972,
+      "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+    },
+    {
+      "path": "scripts/run-cf6-elder-asset-tests.ps1",
+      "bytes": 1022,
+      "sha256": "73a74e080785bf190315191d669ab31e87d7e2520c8fb5d2c47840bf7f17ea23"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "bytes": 36292,
+      "sha256": "0af050da9db9fe01dcfa3d3e564a0e83b79f3b5246d545edebf61dad333853f5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "bytes": 25883,
+      "sha256": "4d3ce35e57ebb2f2f3129165d1f1a5e04022ae0eac9721a9f8243f2057afd62f"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as",
+      "bytes": 16131,
+      "sha256": "2d05ec32017e4d59475dca6ed47e118f8ecd8a28c830a2395e436404b77612c2"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "bytes": 29503,
+      "sha256": "ba2b2460d4bef3107928af960b24cb6b11b6ee76fe675e9cc5c384eee8759aea"
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "bytes": 26791,
+      "sha256": "c95da6a3b835a46ab49969f858b717a3c1f063ea19db0bc83dd73931e00ad6e5"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "bytes": 7150,
+      "sha256": "7a2a7c3bd7dd2d9ae376585b0199fd1002a17b5b4f27b631b8b5d4b48e55c21c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "bytes": 24157,
+      "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "bytes": 43366,
+      "sha256": "d68b479ab33f74a472bd494fe195e52c237d1f1b74670202d103e327854dee40"
+    }
+  ]
+}

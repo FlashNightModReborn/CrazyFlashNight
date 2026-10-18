@@ -1,0 +1,426 @@
+{
+  "schema": "cf6-elder.arena-analysis.v1",
+  "method": "Fixed full-opponent-chain HP, including the full reserve of an unspawned beast form. HP comes from hash-matched enemy XML and the shipped level interpolation; every initial form is checked against its observed initial snapshot. Legacy phase HP can be sampled after Crumble reduces maximum HP and is kept separately. Healing remains part of the final HP. This is net HP loss, not cumulative damage.",
+  "sourceBindings": [
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "data/enemy_properties/天网.xml",
+      "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+    },
+    {
+      "path": "scripts/引擎/引擎_lsy_等级与经验值.as",
+      "sha256": "cce139bd5214e4cf948ff27d857b6aa16aa290704c1fbb84f07fef85d4017e8f"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "sha256": "71240e9a13cba00e85f0314e2c45c9a70d31954d6128183a0fd5375794972fc4"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaCalibrationService.as",
+      "sha256": "22a8d6aff5adbe463ca3d318ec47f0c99d0bd145d6be9c490176f90ef9787979"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/CrumbleDamageHandle.as",
+      "sha256": "731ba9cf7a31ca8c66ec611317ef2f96f1de9b6339417dd907950e9fcff2ffbe"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/敌人-方舟兽王.xml",
+      "sha256": "e5faffe047fd4c3988f25f9fd4c0253863dad44d6ee391b6532c6af5b6e83d7a"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/Symbol 2151.xml",
+      "sha256": "0b3fbb67bdbc2771f1efbb4a8e726b6cda3c4751a679dd93874940f6c83d93ee"
+    }
+  ],
+  "executedAsLoaderSha256": [
+    "c3efc175d6129707ef586cc0dbb68adfbdeac740426bedb63778a39ba330527c"
+  ],
+  "fullMatrix": false,
+  "strengthPassed": false,
+  "boundary": "Analysis does not certify execution, runtime identity, save protection, or cleanup. Those require the original coordinator and Worker receipts. Group averages and medians do not assert that every individual result is within 50-80 percent.",
+  "groups": [
+    {
+      "rival": 78,
+      "level": 30,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.5014021572950189,
+        "median": 0.5014021572950189,
+        "min": 0.47958847528064263,
+        "max": 0.5232158393093953
+      },
+      "opponentTransformed": 2,
+      "in50to80": 1,
+      "meetsGroupTarget": true
+    },
+    {
+      "rival": 78,
+      "level": 60,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.4663926696084481,
+        "median": 0.4663926696084481,
+        "min": 0.3981941808613443,
+        "max": 0.5345911583555519
+      },
+      "opponentTransformed": 2,
+      "in50to80": 1,
+      "meetsGroupTarget": false
+    },
+    {
+      "rival": 78,
+      "level": 99,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.6257312851130874,
+        "median": 0.6257312851130874,
+        "min": 0.4276965814623629,
+        "max": 0.823765988763812
+      },
+      "opponentTransformed": 1,
+      "in50to80": 0,
+      "meetsGroupTarget": true
+    },
+    {
+      "rival": 361,
+      "level": 30,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.4049391321665961,
+        "median": 0.4049391321665961,
+        "min": 0.3592571385894595,
+        "max": 0.4506211257437327
+      },
+      "opponentTransformed": 0,
+      "in50to80": 0,
+      "meetsGroupTarget": false
+    },
+    {
+      "rival": 361,
+      "level": 60,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.6181214986689976,
+        "median": 0.6181214986689976,
+        "min": 0.563312010806945,
+        "max": 0.6729309865310501
+      },
+      "opponentTransformed": 0,
+      "in50to80": 2,
+      "meetsGroupTarget": true
+    },
+    {
+      "rival": 361,
+      "level": 99,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 1,
+      "losses": 1,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.8350194307651159,
+        "median": 0.8350194307651159,
+        "min": 0.6700388615302317,
+        "max": 1.0
+      },
+      "opponentTransformed": 0,
+      "in50to80": 1,
+      "meetsGroupTarget": false
+    }
+  ],
+  "rows": [
+    {
+      "runId": "level30-blue-r001",
+      "rival": 78,
+      "level": 30,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2845.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 1,
+      "errors": [],
+      "initialFormMaxHp": 52881,
+      "successorFormMaxHp": 65508,
+      "fullChainMaxHp": 118389,
+      "fullChainRemainingHp": 61611.0,
+      "fullChainNetLoss": 0.47958847528064263,
+      "reportedSideMaxHp": 118389.0,
+      "reportedSideNetLoss": 0.47958847528064263
+    },
+    {
+      "runId": "level30-red-r001",
+      "rival": 78,
+      "level": 30,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2917.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 1,
+      "errors": [],
+      "initialFormMaxHp": 52881,
+      "successorFormMaxHp": 65508,
+      "fullChainMaxHp": 118389,
+      "fullChainRemainingHp": 56446.0,
+      "fullChainNetLoss": 0.5232158393093953,
+      "reportedSideMaxHp": 117737.0,
+      "reportedSideNetLoss": 0.5205755200149486
+    },
+    {
+      "runId": "level60-blue-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 3341.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 1,
+      "errors": [],
+      "initialFormMaxHp": 75762,
+      "successorFormMaxHp": 96016,
+      "fullChainMaxHp": 171778,
+      "fullChainRemainingHp": 79947.0,
+      "fullChainNetLoss": 0.5345911583555519,
+      "reportedSideMaxHp": 168008.0,
+      "reportedSideNetLoss": 0.5241476596352554
+    },
+    {
+      "runId": "level60-red-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2717.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 1,
+      "errors": [],
+      "initialFormMaxHp": 75762,
+      "successorFormMaxHp": 96016,
+      "fullChainMaxHp": 171778,
+      "fullChainRemainingHp": 103377.0,
+      "fullChainNetLoss": 0.3981941808613443,
+      "reportedSideMaxHp": 171778.0,
+      "reportedSideNetLoss": 0.3981941808613443
+    },
+    {
+      "runId": "level99-blue-r001",
+      "rival": 78,
+      "level": 99,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 4160.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 1,
+      "errors": [],
+      "initialFormMaxHp": 105508,
+      "successorFormMaxHp": 135677,
+      "fullChainMaxHp": 241185,
+      "fullChainRemainingHp": 42505.0,
+      "fullChainNetLoss": 0.823765988763812,
+      "reportedSideMaxHp": 239574.0,
+      "reportedSideNetLoss": 0.8225809144564936
+    },
+    {
+      "runId": "level99-red-r001",
+      "rival": 78,
+      "level": 99,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 3264.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 105508,
+      "successorFormMaxHp": 135677,
+      "fullChainMaxHp": 241185,
+      "fullChainRemainingHp": 138031.0,
+      "fullChainNetLoss": 0.4276965814623629,
+      "reportedSideMaxHp": 105508.0,
+      "reportedSideNetLoss": 0.9776888956287675
+    },
+    {
+      "runId": "level30-blue-r001",
+      "rival": 361,
+      "level": 30,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 783.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 40169,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 40169,
+      "fullChainRemainingHp": 25738.0,
+      "fullChainNetLoss": 0.3592571385894595,
+      "reportedSideMaxHp": 40169.0,
+      "reportedSideNetLoss": 0.3592571385894595
+    },
+    {
+      "runId": "level30-red-r001",
+      "rival": 361,
+      "level": 30,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 1013.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 40169,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 40169,
+      "fullChainRemainingHp": 22068.0,
+      "fullChainNetLoss": 0.4506211257437327,
+      "reportedSideMaxHp": 40169.0,
+      "reportedSideNetLoss": 0.4506211257437327
+    },
+    {
+      "runId": "level60-blue-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 854.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 50338,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 50338,
+      "fullChainRemainingHp": 21982.0,
+      "fullChainNetLoss": 0.563312010806945,
+      "reportedSideMaxHp": 50338.0,
+      "reportedSideNetLoss": 0.563312010806945
+    },
+    {
+      "runId": "level60-red-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 820.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 50338,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 50338,
+      "fullChainRemainingHp": 16464.0,
+      "fullChainNetLoss": 0.6729309865310501,
+      "reportedSideMaxHp": 50338.0,
+      "reportedSideNetLoss": 0.6729309865310501
+    },
+    {
+      "runId": "level99-blue-r001",
+      "rival": 361,
+      "level": 99,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 891.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 63559,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 63559,
+      "fullChainRemainingHp": 0.0,
+      "fullChainNetLoss": 1.0,
+      "reportedSideMaxHp": 63559.0,
+      "reportedSideNetLoss": 1.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "rival": 361,
+      "level": 99,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 1211.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 63559,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 63559,
+      "fullChainRemainingHp": 20972.0,
+      "fullChainNetLoss": 0.6700388615302317,
+      "reportedSideMaxHp": 63559.0,
+      "reportedSideNetLoss": 0.6700388615302317
+    }
+  ]
+}

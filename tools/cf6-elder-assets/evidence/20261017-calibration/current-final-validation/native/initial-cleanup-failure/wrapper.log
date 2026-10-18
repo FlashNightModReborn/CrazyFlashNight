@@ -1,0 +1,214 @@
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+{"source": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as", "functionSha256": "41ec5a010fa561be4fbc16d91c4f8173cb427bb2261ec89daf29817ac659beb2", "templateSha256": "a1fe26b66e6d4cfa4dafcbe7a54edee189ad880ebf284b066100b1af4a3f73cb"}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 924376 bytes, 2026/10/18 16:51:32)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (86s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder Start: e8c54d11de7749078ff409e60b0ef65c
+[CF6_ELDER_COMBAT_END] unit=phaseCase0 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase1 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase2 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase3 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase4 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase5 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase6 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase7 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase8 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase9 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase10 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase11 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase12 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase5 form=human level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase14 form=human level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase23 form=robot level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=750 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase37 form=robot level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=750 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase39 form=robot level=40 clock=4 starts=1 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=1/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=750 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase25 form=robot level=40 clock=4 starts=1 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=1/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=750 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase16 form=human level=40 clock=4 starts=1 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase7 form=human level=40 clock=4 starts=1 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 decisions=0/0 startRange=500 shieldScale=0.5 beamScale=0.2 reactiveScale=0.75 pulseMissingRatio=0.00015625 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 18:03:33
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (924380 bytes, 2026/10/18 18:03:28)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7254   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   24580 B  DefineFunction2  (anon)
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   12409 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-elder: 老头双形态原生攻击、死亡与连续阶段交接通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+{"ok": true, "cases": 81, "libraries": 8}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 924380 bytes, 2026/10/18 18:03:28)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (7s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-audio Start: 1ff0faf91bd8447289c128011c03b59d
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=14 calls=CF6_0904.mp3
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=22 calls=CF6_0904.mp3
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=38 bodyFrame=2 calls=CF6_0907_ea2159328f.wav
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 18:03:54
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (8262 bytes, 2026/10/18 18:03:54)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 29   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    4027 B  DefineFunction2  (anon)
+    1761 B  DefineFunction2  (anon)
+    1535 B  DefineFunction2  (anon)
+    1491 B  DefineFunction2  (anon)
+    1396 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-audio: 八个实际SWF的原生音效调用和新增触发暂停边界通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 8262 bytes, 2026/10/18 18:03:54)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (55s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-player-aim Start: 95cfc64ac2a94df68fac450d45205b13
+[CF6_PLAYER_HIT] stage=0 actor=aimActor30 scale=-102 muzzleY=65 targetTop=-106.5 targetBottom=30.55 angle=166 hit=false dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor29 scale=-102 muzzleY=65 targetTop=118.5 targetBottom=255.55 angle=166 hit=false dz=-45
+[CF6_PLAYER_HIT] stage=0 actor=aimActor28 scale=-102 muzzleY=65 targetTop=63.4 targetBottom=211.45 angle=170 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor27 scale=-102 muzzleY=65 targetTop=63.4 targetBottom=211.45 angle=160 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor26 scale=-102 muzzleY=65 targetTop=73.5 targetBottom=210.55 angle=169 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor25 scale=-102 muzzleY=65 targetTop=73.5 targetBottom=210.55 angle=158 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor24 scale=-102 muzzleY=65 targetTop=84.9 targetBottom=209.6 angle=169 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor23 scale=-102 muzzleY=65 targetTop=84.9 targetBottom=209.6 angle=157 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor7 scale=102 muzzleY=65 targetTop=-106.5 targetBottom=30.55 angle=14 hit=false dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor6 scale=102 muzzleY=65 targetTop=118.5 targetBottom=255.55 angle=14 hit=false dz=-45
+[CF6_PLAYER_HIT] stage=0 actor=aimActor5 scale=102 muzzleY=65 targetTop=63.4 targetBottom=211.45 angle=10 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor4 scale=102 muzzleY=65 targetTop=63.4 targetBottom=211.45 angle=20 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor3 scale=102 muzzleY=65 targetTop=73.5 targetBottom=210.55 angle=11 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor2 scale=102 muzzleY=65 targetTop=73.5 targetBottom=210.55 angle=22 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor1 scale=102 muzzleY=65 targetTop=84.9 targetBottom=209.6 angle=11 hit=true dz=0
+[CF6_PLAYER_HIT] stage=0 actor=aimActor0 scale=102 muzzleY=65 targetTop=84.9 targetBottom=209.6 angle=23 hit=true dz=0
+[CF6_CROSS_LANE_HIT] actor=aimActor45 originZ=1000 targetZ=1180 vx=-30 vy=26.5819184693614 vz=18.6158752046884 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor44 originZ=-200 targetZ=-20 vx=-30 vy=26.5819184693614 vz=18.6158752046884 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor43 originZ=200 targetZ=410 vx=-30 vy=17.2739808670171 vz=9.30793760234422 hit=false cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor42 originZ=200 targetZ=-40 vx=-30 vy=-12.5341280522976 vz=-18.4579888482984 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor41 originZ=200 targetZ=-40 vx=-30 vy=-25.7227410232803 vz=-37.8797842956727 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor40 originZ=200 targetZ=440 vx=-30 vy=24.3818496442992 vz=18.4579888482984 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor39 originZ=200 targetZ=440 vx=-17.9867518334516 vy=30 vz=22.7111426543648 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor38 originZ=200 targetZ=20 vx=-30 vy=-7.91963084022303 vz=-13.8434916362238 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor37 originZ=200 targetZ=20 vx=-30 vy=-16.2527949493621 vz=-28.4098382217546 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor36 originZ=200 targetZ=380 vx=-30 vy=19.7673524322246 vz=13.8434916362238 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor35 originZ=200 targetZ=380 vx=-22.1855850598191 vy=30 vz=21.0096294134812 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor34 originZ=200 targetZ=110 vx=-30 vy=-0.997885022111132 vz=-6.9217458181119 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor33 originZ=200 targetZ=110 vx=-30 vy=-2.04787583848481 vz=-14.2049191108773 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor32 originZ=200 targetZ=290 vx=-30 vy=12.8456066141127 vz=6.9217458181119 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor31 originZ=200 targetZ=290 vx=-30 vy=26.3619623832698 vz=14.2049191108773 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor22 originZ=1000 targetZ=1180 vx=30 vy=26.5773373545886 vz=18.6126669538992 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor21 originZ=-200 targetZ=-20 vx=30 vy=26.5773373545885 vz=18.6126669538992 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor20 originZ=200 targetZ=410 vx=30 vy=17.271003877639 vz=9.30633347694959 hit=false cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor19 originZ=200 targetZ=-40 vx=30 vy=-12.5325216276834 vz=-18.455623197693 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor18 originZ=200 targetZ=-40 vx=30 vy=-25.7159763313609 vz=-37.8698224852071 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor17 originZ=200 targetZ=440 vx=30 vy=24.3787247677027 vz=18.455623197693 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor16 originZ=200 targetZ=440 vx=17.9914833215046 vy=30 vz=22.7111426543648 hit=true cycle=374
+[CF6_CROSS_LANE_HIT] actor=aimActor15 originZ=200 targetZ=20 vx=30 vy=-7.91861582826017 vz=-13.8417173982698 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor14 originZ=200 targetZ=20 vx=30 vy=-16.2485207100592 vz=-28.4023668639053 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor13 originZ=200 targetZ=380 vx=30 vy=19.7648189682794 vz=13.8417173982698 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor12 originZ=200 targetZ=380 vx=22.1914210679895 vy=30 vz=21.0096294134812 hit=true cycle=284
+[CF6_CROSS_LANE_HIT] actor=aimActor11 originZ=200 targetZ=110 vx=30 vy=-0.99775712912528 vz=-6.92085869913489 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor10 originZ=200 targetZ=110 vx=30 vy=-2.04733727810651 vz=-14.2011834319527 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor9 originZ=200 targetZ=290 vx=30 vy=12.8439602691445 vz=6.92085869913489 hit=true cycle=149
+[CF6_CROSS_LANE_HIT] actor=aimActor8 originZ=200 targetZ=290 vx=30 vy=26.3550295857988 vz=14.2011834319527 hit=true cycle=149
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 18:05:20
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (903922 bytes, 2026/10/18 18:05:16)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7205   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-player-aim: 玩家来源受击框与实际资源弹道验证完成; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 903922 bytes, 2026/10/18 18:05:16)
+[INFO] 触发编译... (超时 900s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (53s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder-render Start: 8af4ecba17b4415d8993cde128cfb07d
+[ELDER_NATIVE_BOUNDS] form=0 x=-60.7,60.65 y=-173.4,12.15
+[ELDER_NATIVE_BOUNDS] form=1 x=-60.7,72.15 y=-166.9,12.15
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 18:06:32
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (901340 bytes, 2026/10/18 18:06:28)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7188   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-elder-render: 老头双形态声明的原生帧集合绘制完成; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+powershell.exe : Test player control has no fresh idle acknowledgement; recovery stays blocked.
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\cf6-combat-calibrat
+ion-20261017\finish-native-cleanup-after-r22-final.ps1:8 char:1
++ & powershell -NoProfile -ExecutionPolicy Bypass -File scripts/compile ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Test player con... stays blocked.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

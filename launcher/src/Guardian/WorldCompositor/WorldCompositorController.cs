@@ -76,12 +76,36 @@ namespace CF7Launcher.Guardian.WorldCompositor
         private WorldLightingFrame _frame;
         private WorldLightingTransition _lighting = new WorldLightingTransition();
         private long _reportedPendingScene;
-        private long _transitionGradeScene, _transitionPresentedScene;
+        private long _transitionGradeScene, _transitionPresentedScene, _transitionRequestedScene;
         private double _transitionGradeSubmittedAt;
+        private sealed class TransitionPaintRequest {
+            internal readonly long Scene;
+            internal readonly double After;
+            internal TransitionPaintRequest(long scene,double after) { Scene=scene; After=after; }
+        }
+        private TransitionPaintRequest _transitionPaintRequest;
+        private void QueueTransitionPaint(long scene,double after) {
+            _transitionPaintRequest=new TransitionPaintRequest(scene,after);
+        }
+        private void RecordTransitionGrade(long scene,double now) {
+            _transitionGradeScene=scene; _transitionGradeSubmittedAt=now; _transitionPresentedScene=0;
+            if(_transitionRequestedScene==scene)QueueTransitionPaint(scene,now);
+        }
+        private bool RecordTransitionPaint(TransitionPaintRequest request,double painted) {
+            if(!ReferenceEquals(request,_transitionPaintRequest) || _frame?.Ready!=true || _frame.Scene!=request.Scene)
+                return false;
+            if(!double.IsFinite(painted) || painted<request.After)
+                throw new InvalidOperationException("Transition repaint did not satisfy its current frame fence");
+            _transitionPaintRequest=null;
+            _requiredFrameMs=Math.Max(_requiredFrameMs,painted);
+            return true;
+        }
         internal void RequireFreshTransitionFrame(long scene) {
             if(_disposed || scene<=0) return;
             _requiredFrameMs=Math.Max(_requiredFrameMs,NowMs());
+            _transitionRequestedScene=scene;
             _transitionGradeScene=0; _transitionPresentedScene=0;
+            QueueTransitionPaint(scene,_requiredFrameMs);
             LogManager.Log("event=world_transition_frame_required scene="+scene+" frameFenceMs="
                 +_requiredFrameMs.ToString("F1",CultureInfo.InvariantCulture));
         }
@@ -594,6 +618,22 @@ namespace CF7Launcher.Guardian.WorldCompositor
                         +" handoffMs="+(NowMs()-resizeStarted).ToString("F1",CultureInfo.InvariantCulture));
                     if (!CanShow()) { _native.Active(false); _active=false; _surface.Hide(); RefreshHudPresentations(); return; }
                 }
+                // A covered empty scene can be completely static. Request one real Flash
+                // paint for each freshness fence instead of waiting for unrelated animation.
+                var transitionPaint=_transitionPaintRequest;
+                if(transitionPaint!=null && _frame?.Ready==true && _frame.Scene==transitionPaint.Scene
+                    && !_inputClosed && !_surface.InputRenewing) {
+                    _starting=true;
+                    var paintingNative=_native; var paintingSource=_flash; var paintingBridge=_pointerBridge;
+                    double painted=await paintingBridge.RepaintAsync(transitionPaint.After);
+                    if(_disposed || _native!=paintingNative || _getFlash()!=paintingSource || _pointerBridge!=paintingBridge) return;
+                    if(RecordTransitionPaint(transitionPaint,painted))
+                        LogManager.Log("event=world_transition_repaint scene="+transitionPaint.Scene+" paintFenceMs="
+                            +painted.ToString("F1",CultureInfo.InvariantCulture));
+                    // The repaint acknowledgment is not a WGC capture receipt. Read a later
+                    // frame before granting scene presentation or changing the curtain.
+                    return;
+                }
                 NativeCompositorSession.Stats stats;
                 using (CF7Launcher.Diagnostic.InputLatencyProbe.Measure("world_read")) stats=_native.Read();
                 if (stats.State==2 || stats.State==3) throw new InvalidOperationException(stats.Message+" HRESULT=0x"+stats.Error.ToString("X8"));
@@ -692,9 +732,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
                 // capture before granting U12 reveal; this is still not a physical pixel receipt.
                 if (ready && !_lighting.Pending && !_lighting.WaitingForCapture) {
                     if (_transitionGradeScene != _lighting.ReadyScene) {
-                        _transitionGradeScene = _lighting.ReadyScene;
-                        _transitionGradeSubmittedAt = NowMs();
-                        _transitionPresentedScene = 0;
+                        RecordTransitionGrade(_lighting.ReadyScene,NowMs());
                     } else if (stats.LastFrameQpcMs >= _transitionGradeSubmittedAt)
                         _transitionPresentedScene = _transitionGradeScene;
                 } else _transitionPresentedScene = 0;
@@ -1113,6 +1151,7 @@ namespace CF7Launcher.Guardian.WorldCompositor
             _viewportHeld=false; _paintFenceMs=0;
             _everReady=false; _frameAdvancing=false; _progressKnown=false;
             _transitionGradeScene=0; _transitionPresentedScene=0; _transitionGradeSubmittedAt=0;
+            _transitionPaintRequest=null; _transitionRequestedScene=0;
             _surface?.Hide();
             try { lock (_weatherCameraLock) { _native?.Dispose(); _native=null; } }
             finally {

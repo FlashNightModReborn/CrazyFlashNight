@@ -1,0 +1,218 @@
+{
+  "cases": 8,
+  "batches": [
+    {
+      "owner": "敌人-诺亚克隆兽",
+      "swf": "../flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "cases": [
+        {
+          "linkage": "敌人-诺亚克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 4,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-诺亚克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 51,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "owner": "敌人-延寿克隆兽",
+      "swf": "../flashswf/arts/new/Codex专用素材.swf",
+      "cases": [
+        {
+          "linkage": "敌人-延寿克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 4,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-延寿克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 51,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "owner": "敌人-完全体克隆兽",
+      "swf": "../flashswf/arts/new/Codex专用素材.swf",
+      "cases": [
+        {
+          "linkage": "敌人-完全体克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 4,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-完全体克隆兽",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 51,
+          "sounds": [
+            "soundheadexplode.wav"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "owner": "敌人-闪6特工",
+      "swf": "../flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "cases": [
+        {
+          "linkage": "敌人-闪6特工",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 7,
+          "sounds": [
+            "CF6_0513.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": [],
+          "bodyMarker": "cf6LegacyAudioBody"
+        },
+        {
+          "linkage": "敌人-闪6特工",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": [],
+          "bodyMarker": "cf6LegacyAudioBody"
+        }
+      ]
+    }
+  ],
+  "fixtureSha256": "5009a906b5fb69ec2ab36311dc4032de040e27c5282c4f27dfa120640d531df0",
+  "inputs": [
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡.xml",
+      "sha256": "25f0284af1402bb0dad6a086a2d4baf1a06c32ebb582aaeb5f7a3423a79cea8e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽.xml",
+      "sha256": "c6844a5e56a588be0cafac0cd7f878ae40f915b5f9db7df32b664e8ad5d51c5a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡.xml",
+      "sha256": "28c2159e0b1fe00c42789d28e8ebba20b36442aefe92af6eac1dfdcf8ca0a928"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽.xml",
+      "sha256": "a1589d2fd05d8713fa2b88c475f5711bcb3fe4e6513f77ca31c0fb47a17a2cf1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "e2ed408d7263ee7a611fc5480a15cc3c5bb31283535e55f1654094766555321b"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/动画合集/死亡.xml",
+      "sha256": "f68b7e5d277be78747b25debf807f5c986e6c25d7ab2ebb7b1c5e16997c4e319"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/敌人-诺亚克隆兽.xml",
+      "sha256": "c63d009cf2a61520d6ecf3810be08e4f6f58bf432c89042f8711f2bf87a73a4e"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+      "sha256": "756bd498aad04d443b51df937e5cc9799e6faf829a3a5b44734b5ee94da42c92"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+      "sha256": "3bb6bf640f5183a6a459f633b2eba7c32bc50a69891b5e54a2dcb126173a41e3"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/Symbol 776.xml",
+      "sha256": "e579fcd9eb7fc0642a287be1291c2cb3bf38f3f734a7fab37a2c2a32407621f4"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/soundheadexplode.wav",
+      "sha256": "3d851fadb61ce34a20431cb00c2d444389dbe24634e697a4619eee0d1b69fdc5"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0303.mp3",
+      "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0513.mp3",
+      "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+    },
+    {
+      "path": "sounds/export/人物/soundheadexplode.wav",
+      "sha256": "3d851fadb61ce34a20431cb00c2d444389dbe24634e697a4619eee0d1b69fdc5"
+    },
+    {
+      "path": "tools/cf6-audio/legacy-assets.json",
+      "sha256": "e88c5c4b5fa48bc2df16f1c32af3162eb32415c932ea925cfdcdb392ed35ef2e"
+    },
+    {
+      "path": "tools/cf6-audio/legacy-cues.json",
+      "sha256": "7e30633d7b1d680454c5e0e47390f18ca54f3e8f36ec1d6149bc4f116b51e297"
+    },
+    {
+      "path": "tools/cf6-audio/restore-legacy-cues.py",
+      "sha256": "22a183c04635b7d00cacf68acc407e69e4bf501cd92ad6c065fc261b94d378ca"
+    }
+  ]
+}

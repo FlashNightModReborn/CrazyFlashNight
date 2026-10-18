@@ -1,0 +1,115 @@
+{
+  "time": "2026-10-17T21:21:16.5230349+08:00",
+  "logicalProcessors": 12,
+  "cpuPercent": 30,
+  "availableMemoryMiB": 17442,
+  "committedPercent": 57,
+  "pagesInputPerSec": 174,
+  "processes": [
+    {
+      "Name": "node#13",
+      "IDProcess": 24792,
+      "PercentProcessorTime": 195,
+      "WorkingSetPrivate": 129626112,
+      "IODataBytesPersec": 59227885
+    },
+    {
+      "Name": "ChatGPT",
+      "IDProcess": 18612,
+      "PercentProcessorTime": 89,
+      "WorkingSetPrivate": 248434688,
+      "IODataBytesPersec": 1053434
+    },
+    {
+      "Name": "pwsh#1",
+      "IDProcess": 16688,
+      "PercentProcessorTime": 52,
+      "WorkingSetPrivate": 29687808,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "codex-computer-use",
+      "IDProcess": 30596,
+      "PercentProcessorTime": 26,
+      "WorkingSetPrivate": 30179328,
+      "IODataBytesPersec": 1063656
+    },
+    {
+      "Name": "MsMpEng",
+      "IDProcess": 4940,
+      "PercentProcessorTime": 15,
+      "WorkingSetPrivate": 336171008,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "ChatGPT#2",
+      "IDProcess": 19556,
+      "PercentProcessorTime": 15,
+      "WorkingSetPrivate": 141582336,
+      "IODataBytesPersec": 5190906
+    },
+    {
+      "Name": "WmiPrvSE",
+      "IDProcess": 9276,
+      "PercentProcessorTime": 15,
+      "WorkingSetPrivate": 9961472,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "System",
+      "IDProcess": 4,
+      "PercentProcessorTime": 10,
+      "WorkingSetPrivate": 12288,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "Flash",
+      "IDProcess": 11904,
+      "PercentProcessorTime": 10,
+      "WorkingSetPrivate": 768180224,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "dwm",
+      "IDProcess": 1800,
+      "PercentProcessorTime": 10,
+      "WorkingSetPrivate": 58658816,
+      "IODataBytesPersec": 0
+    },
+    {
+      "Name": "ChatGPT#5",
+      "IDProcess": 17136,
+      "PercentProcessorTime": 10,
+      "WorkingSetPrivate": 1131380736,
+      "IODataBytesPersec": 5172572
+    },
+    {
+      "Name": "WeChatAppEx#1",
+      "IDProcess": 33048,
+      "PercentProcessorTime": 5,
+      "WorkingSetPrivate": 3170304,
+      "IODataBytesPersec": 0
+    }
+  ],
+  "disks": {
+    "Name": "0 C:",
+    "PercentDiskTime": 2,
+    "CurrentDiskQueueLength": 0,
+    "DiskBytesPersec": 4620153
+  },
+  "gpuEngines": [
+    {
+      "Name": "pid_19556_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+      "UtilizationPercentage": 6
+    },
+    {
+      "Name": "pid_1800_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+      "UtilizationPercentage": 4
+    },
+    {
+      "Name": "pid_14172_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+      "UtilizationPercentage": 1
+    }
+  ],
+  "ownedGameProcesses": []
+}

@@ -1,0 +1,11 @@
+[INFO] 编译目标: publish -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader\asLoader.xfl (模式: publish)
+[INFO] publish 目标 -> 自动启用 -VerifySwf scripts/asLoader.swf
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader.swf (基线 5998712 bytes, 2026/10/16 17:52:14)
+[INFO] 触发编译... (超时 600s)
+[OK] 编译完成 (196s)
+[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志
+[INFO] compile_output.txt 已刷新: 2026/10/17 1:03:12
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader.swf (5998714 bytes, 2026/10/17 1:03:06)
+AS2 class ownership: {"errors":[],"files":2,"parsed":1,"cacheHits":1,"loaderClasses":716,"closureChecked":false,"policy":"production","milliseconds":227.2507}

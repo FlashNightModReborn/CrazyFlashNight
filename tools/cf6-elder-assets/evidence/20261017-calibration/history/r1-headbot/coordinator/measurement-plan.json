@@ -1,0 +1,26 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-088d0a056e3b4c0e9145e05ecf66fd7c\\assignment-088d0a056e3b4c0e9145e05ecf66fd7c\\attempt-088d0a056e3b4c0e9145e05ecf66fd7c\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c62b007e1fb547f4a3fdd80fedc17558\\assignment-c62b007e1fb547f4a3fdd80fedc17558\\attempt-c62b007e1fb547f4a3fdd80fedc17558\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r1-headbot-20261017\\groups\\level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r1-headbot-20261017\\groups\\level30\\group-report.json"
+    },
+    {
+      "groupId": "level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-acd96750a8ad40318566e878d1c9d667\\assignment-acd96750a8ad40318566e878d1c9d667\\attempt-acd96750a8ad40318566e878d1c9d667\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-94ce29ca15eb498ba42dfaa4c56e3e40\\assignment-94ce29ca15eb498ba42dfaa4c56e3e40\\attempt-94ce29ca15eb498ba42dfaa4c56e3e40\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r1-headbot-20261017\\groups\\level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r1-headbot-20261017\\groups\\level99\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

@@ -3,11 +3,96 @@
   <timeline>
     <DOMTimeline name="机械碎裂">
       <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0915.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="56">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="一次性亡语判定" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/CF7/Symbol 195" name="cf6DeathPoint">
+                  <matrix>
+                    <Matrix a="8.8" d="6.4" tx="-7" ty="35.032516"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){cf6RobotDeathIdentity=_parent.cf6RobotDeathIdentity;}]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728" duration="26">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="无音轨机械爆裂" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="13">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/机械爆裂/演出" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="1.7" d="1.7" tx="-7" ty="35.032516"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="16">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="死亡内部时钟" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="58">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/行为驱动" name="bladebotBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent._parent.bladebotBodyTick(_parent);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="CF7控制" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" name="a0" labelType="name">
               <Actionscript>
-                <script><![CDATA[_parent.bladebotCancelAttack();]]></script>
+                <script><![CDATA[bladebotMode="death";_parent.bladebotCancelAttack();_parent.cf6ArmRobotDeath(this,32);stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>

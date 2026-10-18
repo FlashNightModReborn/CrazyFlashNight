@@ -1,0 +1,71 @@
+{
+  "output": "audio-legacy-final",
+  "bindings": [
+    "flashswf/arts/new/Antigravity专用素材.swf",
+    "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/敌人-CF6女僵尸.xml",
+    "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸.xml",
+    "flashswf/arts/new/CodexWings素材.swf",
+    "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/敌人-CF6Wings.xml",
+    "flashswf/arts/new/Codex专用素材.swf",
+    "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡.xml",
+    "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽.xml",
+    "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡.xml",
+    "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽.xml",
+    "flashswf/arts/new/Codex光头保安素材.swf",
+    "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml",
+    "flashswf/arts/new/Codex大刀机器人素材.swf",
+    "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+    "flashswf/arts/new/Codex大头机器人素材.swf",
+    "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/敌人-CF6大头机器人.xml",
+    "flashswf/arts/new/Codex特种兵素材.swf",
+    "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
+    "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
+    "flashswf/arts/new/Codex老头素材.swf",
+    "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+    "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+    "flashswf/arts/new/Codex蛮蛮素材.swf",
+    "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
+    "flashswf/arts/new/素材库-诺亚新敌人.swf",
+    "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/动画合集/死亡.xml",
+    "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/敌人-诺亚克隆兽.xml",
+    "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+    "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+    "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/Symbol 776.xml",
+    "flashswf/arts/things1/LIBRARY/soundheadexplode.wav",
+    "scripts/TestLoader.as",
+    "scripts/run-cf6-audio-tests.ps1",
+    "scripts/run-cf6-legacy-audio-tests.ps1",
+    "scripts/test-runners/cf6-audio/AudioFixture.as",
+    "scripts/test-runners/cf6-audio/LegacyAudioFixture.as",
+    "scripts/test-runners/cf6-audio/TestLoader-legacy.as.template",
+    "scripts/test-runners/cf6-audio/TestLoader.as.template",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+    "sounds/export/人物/CF6_0303.mp3",
+    "sounds/export/人物/CF6_0513.mp3",
+    "sounds/export/人物/soundheadexplode.wav",
+    "tools/cf6-audio/build-legacy-test-fixture.py",
+    "tools/cf6-audio/build-test-fixture.py",
+    "tools/cf6-audio/cues.json",
+    "tools/cf6-audio/legacy-assets.json",
+    "tools/cf6-audio/legacy-cues.json",
+    "tools/cf6-audio/restore-legacy-cues.py"
+  ],
+  "runs": [
+    {
+      "name": "audio",
+      "runner": "scripts/run-cf6-audio-tests.ps1",
+      "args": [
+        "-TimeoutSeconds",
+        "180"
+      ]
+    },
+    {
+      "name": "legacy",
+      "runner": "scripts/run-cf6-legacy-audio-tests.ps1",
+      "args": [
+        "-TimeoutSeconds",
+        "180"
+      ]
+    }
+  ]
+}

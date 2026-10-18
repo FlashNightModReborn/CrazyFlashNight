@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-headbot-assets\build.py", line 279, in <module>
+    if args.import_approved: import_assets()
+                             ^^^^^^^^^^^^^^^
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-headbot-assets\build.py", line 238, in import_assets
+    symbols, root_name, stats = build_symbols()
+                                ^^^^^^^^^^^^^^^
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-headbot-assets\build.py", line 186, in build_symbols
+    death.add(native,result,PREFIX,names[951],(1,0,0,1,7,-60.15+GROUND_SHIFT),19,58,H['Symbol 195'])
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-headbot-assets\robot_death.py", line 43, in add
+    trees = source_trees()
+            ^^^^^^^^^^^^^^
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-headbot-assets\robot_death.py", line 31, in source_trees
+    raise ValueError('The explosion must remain native vector art')
+ValueError: The explosion must remain native vector art

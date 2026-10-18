@@ -1,0 +1,123 @@
+[
+  {
+    "name": "headbot",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-headbot-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "elder",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-elder-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "bladebot",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-bladebot-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "zombie",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-zombie-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "manman",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-manman-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "wings",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-wings-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "soldier",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-soldier-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "guard",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-guard-assets/verify.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "audio-exact",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-audio/extract.py",
+      "--source-swf",
+      "tmp/cf6-headbot-20261016/original-source.swf"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "legacy-exact",
+    "command": [
+      "python",
+      "-X",
+      "utf8",
+      "-B",
+      "tools/cf6-audio/restore-legacy.py"
+    ],
+    "exitCode": 0
+  },
+  {
+    "name": "arena-derived",
+    "command": [
+      "node",
+      "tools/derive-arena-unit-catalog.js",
+      "--check"
+    ],
+    "exitCode": 0
+  }
+]

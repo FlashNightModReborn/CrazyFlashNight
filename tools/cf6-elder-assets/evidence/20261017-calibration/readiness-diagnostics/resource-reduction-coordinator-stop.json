@@ -1,0 +1,22 @@
+{
+  "time": "2026-10-17T21:22:31.2582388+08:00",
+  "reason": "Stop owned parallel arena coordinator after user reported host lag; preserve incomplete results",
+  "stopped": [
+    {
+      "Name": "python.exe",
+      "ProcessId": 24076,
+      "ParentProcessId": 25632,
+      "CreationDate": "2026-10-17T20:55:37.39028+08:00",
+      "ExecutablePath": "C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+      "CommandLine": "\"C:\\Users\\fs\\AppData\\Local\\Programs\\Python\\Python312\\python.exe\" -X utf8 -B tmp/cf6-combat-calibration-20261017/run-r8-full-after-native-gates.py"
+    },
+    {
+      "Name": "node.exe",
+      "ProcessId": 24792,
+      "ParentProcessId": 24076,
+      "CreationDate": "2026-10-17T20:57:11.836835+08:00",
+      "ExecutablePath": "C:\\Program Files\\nodejs\\node.exe",
+      "CommandLine": "node tools/arena-calibration/run-worker-experiment.js --plan \"C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r8-elder\\experiment-plan.json\""
+    }
+  ]
+}

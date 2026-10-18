@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/大刀机器人/分件/905" itemID="6aa00000-ca018908" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="905">
+      <layers>
+        <DOMLayer name="R3原生矢量" color="#9A5E59">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="pad">
+                        <matrix>
+                          <Matrix a="0" b="0.0100708" c="-0.3713226" d="0" tx="298.3" ty="-16.4"/>
+                        </matrix>
+                        <GradientEntry color="#FF0066" ratio="0" alpha="0"/>
+                        <GradientEntry color="#FF0066" ratio="0.57254902"/>
+                        <GradientEntry color="#FF0066" ratio="1" alpha="0"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!12049 -162|12049 -492|-118 -492[-545 -327 -118 -162|12049 -162" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

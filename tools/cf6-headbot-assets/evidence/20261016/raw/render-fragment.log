@@ -1,0 +1,9 @@
+Template must call exactly once: org.flashNight.arki.unit.Action.Melee.Cf6HeadbotRenderTest.runAllTests();
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\test-runners\ru
+n-focused-testloader.ps1:128 char:9
++         throw "Template must call exactly once: $fqn.runAllTests();"
++         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Template must c....runAllTests();:String) [], RuntimeException
+    + FullyQualifiedErrorId : Template must call exactly once: org.flashNight.arki.unit.Action.Melee.Cf6HeadbotRenderT 
+   est.runAllTests();
+ 

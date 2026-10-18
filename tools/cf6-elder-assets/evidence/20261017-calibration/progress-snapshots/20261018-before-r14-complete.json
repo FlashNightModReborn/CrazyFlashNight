@@ -1,0 +1,459 @@
+{
+  "schema": "cf6-combat-calibration.progress.v1",
+  "status": "in_progress",
+  "updatedAtUtc": "2026-10-18T00:55:18.733183+00:00",
+  "sealed": false,
+  "allGoalsMet": false,
+  "committed": false,
+  "pushed": false,
+  "formalRuntimePromoted": false,
+  "headbot": {
+    "selectedExperiment": "cf6-cal-final-headbot-20261017",
+    "selectedRows": 18,
+    "selectedWins": 18,
+    "selectedTimeouts": 0,
+    "groups": [
+      {
+        "rival": 286,
+        "level": 30,
+        "n": 6,
+        "wins": 6,
+        "losses": 0,
+        "timeouts": 0,
+        "netLoss": {
+          "min": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "remainingMin": 0.024262318061818097,
+        "frames": [
+          1996.0,
+          3181.0
+        ],
+        "in50to80": 0
+      },
+      {
+        "rival": 286,
+        "level": 60,
+        "n": 6,
+        "wins": 6,
+        "losses": 0,
+        "timeouts": 0,
+        "netLoss": {
+          "min": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "remainingMin": 0.37361570150843504,
+        "frames": [
+          1912.0,
+          2412.0
+        ],
+        "in50to80": 0
+      },
+      {
+        "rival": 286,
+        "level": 99,
+        "n": 6,
+        "wins": 6,
+        "losses": 0,
+        "timeouts": 0,
+        "netLoss": {
+          "min": 1.0,
+          "mean": 1.0,
+          "median": 1.0,
+          "max": 1.0
+        },
+        "remainingMin": 0.2733947066854552,
+        "frames": [
+          1992.0,
+          2592.0
+        ],
+        "in50to80": 0
+      }
+    ],
+    "boundary": "The selected 18 wins remain bound to their recorded assets and runtime. A current integrated follow-up matrix is pending; historical qualification is not relabeled."
+  },
+  "elder": {
+    "target": "36 rows: two phases, levels 30/60/99, two rivals, both factions and three repeats. Every six-row group mean and median net HP loss 50%-80%, zero wins and zero timeouts.",
+    "goalMet": false,
+    "currentRound": "R14",
+    "latestCompletedBatch": "history/r13-full-awake/phase-aware-summary.json",
+    "latestCompletedBatchExecutionQualified": true,
+    "latestCompletedBatchStrengthPassed": false,
+    "latestGroups": [
+      {
+        "rival": 78,
+        "level": 30,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 0,
+        "losses": 6,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.4743092685975893,
+          "median": 0.42172414666903174,
+          "min": 0.37835440792641206,
+          "max": 0.7404319658076342
+        },
+        "opponentTransformed": 3,
+        "in50to80": 2,
+        "meetsGroupTarget": false
+      },
+      {
+        "rival": 78,
+        "level": 60,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 0,
+        "losses": 6,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.5093560681034047,
+          "median": 0.4823784186566382,
+          "min": 0.3860971719312135,
+          "max": 0.6522488327958178
+        },
+        "opponentTransformed": 4,
+        "in50to80": 3,
+        "meetsGroupTarget": false
+      },
+      {
+        "rival": 78,
+        "level": 99,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 0,
+        "losses": 6,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.6047204428136078,
+          "median": 0.566388871613077,
+          "min": 0.5028546551402451,
+          "max": 0.7800153409208699
+        },
+        "opponentTransformed": 6,
+        "in50to80": 6,
+        "meetsGroupTarget": true
+      },
+      {
+        "rival": 361,
+        "level": 30,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 1,
+        "losses": 5,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.5907872571717826,
+          "median": 0.5460554158679579,
+          "min": 0.11434190544947598,
+          "max": 1.0
+        },
+        "opponentTransformed": 0,
+        "in50to80": 2,
+        "meetsGroupTarget": false
+      },
+      {
+        "rival": 361,
+        "level": 60,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 2,
+        "losses": 4,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.6942435800654244,
+          "median": 0.6726429337677302,
+          "min": 0.28237117088481867,
+          "max": 1.0
+        },
+        "opponentTransformed": 0,
+        "in50to80": 3,
+        "meetsGroupTarget": false
+      },
+      {
+        "rival": 361,
+        "level": 99,
+        "n": 6,
+        "sides": {
+          "blue": 3,
+          "red": 3
+        },
+        "wins": 1,
+        "losses": 5,
+        "timeouts": 0,
+        "netLoss": {
+          "mean": 0.5861876366840258,
+          "median": 0.5253307950093614,
+          "min": 0.41157035195644986,
+          "max": 1.0
+        },
+        "opponentTransformed": 0,
+        "in50to80": 3,
+        "meetsGroupTarget": false
+      }
+    ],
+    "currentExperiment": "cf6-cal-r14-full-20261018",
+    "currentExperimentState": "running",
+    "nativeChecksPassed": 2401,
+    "r12Mechanism": "slam-followup-r12/summary.json",
+    "r13Mechanism": "level-shield-r13/summary.json",
+    "r14Mechanism": "shield-window-r14/summary.json"
+  },
+  "host": {
+    "candidate": "cf6-transition-paint-r4",
+    "state": "candidate_executed",
+    "focusedTestsPassed": 480,
+    "executed": true,
+    "fullSuitePassed": false,
+    "fullSuiteCounts": {
+      "total": 7517,
+      "passed": 7367,
+      "failed": 120,
+      "skipped": 30
+    },
+    "fullSuiteBoundary": "All 120 failures retain the same pre-existing resource-window prerequisites. No human resource-window consent was invented and no guard was disabled.",
+    "reconstruction": "native-candidates/r4/reconstruction.json"
+  },
+  "nextStep": {
+    "fullElderMatrixRows": 36,
+    "serialShards": 12,
+    "maximumConcurrentGames": 1,
+    "temporaryDisplayWakeAuthorized": true,
+    "displayObservationActive": true,
+    "scope": "Same explicitly authorized test round; release when tests finish.",
+    "headCurrentMatrixPending": true
+  },
+  "currentBindings": [
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6087657,
+      "sha256": "c3efc175d6129707ef586cc0dbb68adfbdeac740426bedb63778a39ba330527c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "bytes": 402052,
+      "sha256": "5216f91cd863fad8a7451b5c7f7f6130ef9e5e1db25b1fdeeb3aba807520ac5f"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 79553,
+      "sha256": "57a97cbfff020bedf61086880d34cbbad1931954779ce64de09d454056c464ce"
+    }
+  ],
+  "history": [
+    {
+      "label": "r1-headbot",
+      "experiment": "cf6-cal-r1-headbot-20261017",
+      "rows": 4,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r1-elder",
+      "experiment": "cf6-cal-r1-elder-20261017",
+      "rows": 8,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r2-headbot",
+      "experiment": "cf6-cal-r2-headbot-20261017",
+      "rows": 4,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r2-elder",
+      "experiment": "cf6-cal-r2-elder-20261017",
+      "rows": 8,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r3-headbot",
+      "experiment": "cf6-cal-r3-headbot-20261017",
+      "rows": 4,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r3-elder",
+      "experiment": "cf6-cal-r3-elder-20261017",
+      "rows": 8,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "final-headbot",
+      "experiment": "cf6-cal-final-headbot-20261017",
+      "rows": 18,
+      "selectedForHeadbot": true,
+      "strengthAccepted": true,
+      "qualified": true
+    },
+    {
+      "label": "r4-elder",
+      "experiment": "cf6-cal-r4-elder-20261017",
+      "rows": 8,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r5-elder",
+      "experiment": "cf6-cal-r5-elder-20261017",
+      "rows": 8,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "r6-elder",
+      "experiment": "cf6-cal-r6-elder-20261017",
+      "rows": 36,
+      "selectedForHeadbot": false,
+      "strengthAccepted": false,
+      "qualified": true
+    },
+    {
+      "label": "bladebot-first-shutdown-unknown",
+      "experiment": "cf6-cal-final-bladebot-20261017",
+      "rows": 12,
+      "qualified": false,
+      "strengthAccepted": false
+    },
+    {
+      "label": "blade60-retry",
+      "experiment": "cf6-cal-blade60-retry-20261017",
+      "rows": 2,
+      "qualified": true,
+      "strengthAccepted": false
+    },
+    {
+      "label": "r7-elder",
+      "experiment": "cf6-cal-r7-elder-20261017",
+      "rows": 8,
+      "qualified": true,
+      "strengthAccepted": false
+    },
+    {
+      "label": "integrated-head-readiness",
+      "experiment": "cf6-cal-integrated-head-20261017",
+      "rows": 3,
+      "qualified": false,
+      "strengthAccepted": false,
+      "boundary": "Scene readiness failed or the reproducibly stalled diagnostic was explicitly aborted; these attempts are excluded from combat-strength acceptance."
+    },
+    {
+      "label": "current-runtime-readiness",
+      "experiment": "cf6-cal-current-runtime-probe-20261017",
+      "rows": 1,
+      "qualified": false,
+      "strengthAccepted": false,
+      "boundary": "Scene readiness failed or the reproducibly stalled diagnostic was explicitly aborted; these attempts are excluded from combat-strength acceptance."
+    },
+    {
+      "label": "reboot-readiness",
+      "experiment": "cf6-cal-reboot-probe-20261017",
+      "rows": 1,
+      "qualified": false,
+      "strengthAccepted": false,
+      "boundary": "Scene readiness failed or the reproducibly stalled diagnostic was explicitly aborted; these attempts are excluded from combat-strength acceptance."
+    },
+    {
+      "label": "r8-elder-interrupted",
+      "experiment": "cf6-cal-r8-elder-20261017",
+      "rows": 10,
+      "qualified": false,
+      "strengthAccepted": false
+    },
+    {
+      "label": "repaint-entry-probe",
+      "experiment": "cf6-cal-repaint-probe-20261017",
+      "rows": 2,
+      "qualified": true,
+      "strengthAccepted": false,
+      "boundary": "Two level-30 Headbot fights verify the repaired empty-scene entry; this is not a complete balance matrix."
+    },
+    {
+      "label": "r9-startup-blocked",
+      "experiment": "cf6-cal-r9-elder-20261017",
+      "rows": 0,
+      "qualified": false,
+      "strengthAccepted": false
+    },
+    {
+      "label": "r9-elder-pilot",
+      "experiment": "cf6-cal-r9-retry-20261017",
+      "rows": 12,
+      "qualified": true,
+      "strengthAccepted": false
+    },
+    {
+      "label": "r10-display-ineligible",
+      "experiment": "cf6-cal-r10-elder-20261017",
+      "rows": 7,
+      "qualified": false,
+      "strengthAccepted": false
+    },
+    {
+      "label": "r3-display-qualified-cold-entry",
+      "experiment": "cf6-cold-r3-20261017",
+      "rows": 6,
+      "qualified": true,
+      "strengthAccepted": false,
+      "displayQualified": true
+    },
+    {
+      "label": "r10-integrated-awake",
+      "experiment": "cf6-cal-r10-integrated-20261018",
+      "rows": 12,
+      "qualified": true,
+      "strengthAccepted": false,
+      "displayQualified": true
+    },
+    {
+      "label": "r11-slam-awake",
+      "experiment": "cf6-cal-r11-slam-20261018",
+      "rows": 12,
+      "qualified": true,
+      "strengthAccepted": false,
+      "displayQualified": true
+    },
+    {
+      "label": "r13-full-awake",
+      "experiment": "cf6-cal-r13-full-20261018",
+      "rows": 36,
+      "qualified": true,
+      "strengthAccepted": false,
+      "displayQualified": true
+    }
+  ],
+  "historyRows": 230,
+  "evidenceBoundary": "This is an unsealed progress snapshot. Original trial rows, failures, interrupted attempts and their runtime identities are retained in history. No automated result signs off player feel, audio, standard-entry experience or formal runtime deployment."
+}

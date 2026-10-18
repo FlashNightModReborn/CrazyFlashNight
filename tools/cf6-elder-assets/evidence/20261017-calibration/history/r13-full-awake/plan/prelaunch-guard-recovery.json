@@ -1,0 +1,11 @@
+{
+  "firstLaunchStatus": "blocked_before_coordinator_start",
+  "cause": "PowerShell converted ISO UTC text to DateTime; reparsing its localized string subtracted UTC+8 again",
+  "actualTimestampType": "System.DateTime",
+  "validatedAgeSeconds": 3.886839,
+  "maximumAgeSeconds": 30,
+  "guardThresholdUnchanged": true,
+  "executionStartedBeforeRetry": false,
+  "samePreparedManifest": true,
+  "recordedAt": "2026-10-18T07:52:58.8706320+08:00"
+}

@@ -1,0 +1,23 @@
+FocusedTestRunId cf6-bladebot Start: bb86344a593e47108c9c4d2bbb2828d1
+[BLADEBOT_DEATH_SCALE] standing=241.45 death=241.45 groundDelta=0
+[BLADEBOT_BEAM_GEOMETRY] unit=bladebotCase25 angle=0 length=619.049835205078 thickness=31.9999694824219 bounds=-423.7,46.05,195.35,78.05
+[BLADEBOT_BEAM_GEOMETRY] unit=bladebotProbe21 angle=0 length=619.049835205078 thickness=31.9999694824219 bounds=-423.7,46.05,195.35,78.05
+[BLADEBOT_BEAM_GEOMETRY] unit=bladebotProbe6 angle=0 length=619.049835205078 thickness=31.9999694824219 bounds=204.65,46.05,823.7,78.05
+[BLADEBOT_BEAM_GEOMETRY] unit=bladebotCase11 angle=0 length=619.049835205078 thickness=31.9999694824219 bounds=204.65,46.05,823.7,78.05
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=cleave dx=185 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=cleave dx=185 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=cleave dx=224 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=cleave dx=224 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_BEAM_GEOMETRY] unit=comboActor0 angle=9.1970149901157 length=619.049846026011 thickness=31.9999687564989 bounds=202.15,45.1,818.35,175.65
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=beam dx=308 speed=2 decel=3 callback=function immune=false
+[BLADEBOT_BEAM_GEOMETRY] unit=comboActor1 angle=9.1970149901157 length=619.049846026011 thickness=31.9999687564989 bounds=-418.35,45.1,197.85,175.65
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=beam dx=308 speed=2 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_RESULT] case=0 x=200 targetX=508 dx=308 impacts=2 beams=1 beamHits=1 combo=1
+[BLADEBOT_COMBO_RESULT] case=1 x=200 targetX=-108 dx=308 impacts=2 beams=1 beamHits=1 combo=1
+[BLADEBOT_COMBO_RESULT] case=2 x=200 targetX=385 dx=185 impacts=4 beams=0 beamHits=0 combo=0
+Cf6BladebotAssetTest: 409 passed, 0 failed; 28 actual timeline cases
+FocusedTestRunId cf6-bladebot Complete: bb86344a593e47108c9c4d2bbb2828d1

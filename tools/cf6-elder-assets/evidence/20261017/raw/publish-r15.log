@@ -1,0 +1,10 @@
+[INFO] 编译目标: flashswf/arts/new/Codex老头素材/Codex老头素材.xfl -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材\Codex老头素材.xfl (模式: publish)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材.swf (基线 356928 bytes, 2026/10/17 4:18:27)
+[INFO] 触发编译... (超时 300s)
+[OK] 编译完成 (9s)
+[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志
+[INFO] compile_output.txt 已刷新: 2026/10/17 5:55:26
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材.swf (356937 bytes, 2026/10/17 5:55:25)
+AS2 class ownership: {"errors":[],"files":3,"parsed":1,"cacheHits":2,"loaderClasses":716,"closureChecked":false,"policy":"production","milliseconds":142.3394}

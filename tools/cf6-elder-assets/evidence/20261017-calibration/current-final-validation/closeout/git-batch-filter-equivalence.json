@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "files": [
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "originalHeaderBytes": 78364,
+      "filteredBytes": 79553,
+      "sha256": "57a97cbfff020bedf61086880d34cbbad1931954779ce64de09d454056c464ce",
+      "matchesIndividualFilters": true
+    },
+    {
+      "path": "launcher/contracts/ragchat.v1.json",
+      "originalHeaderBytes": 6829,
+      "filteredBytes": 6930,
+      "sha256": "1d5cddbd5b3797102f1db8dd0e9e5a8bd82d99760fd7d147aa09a88fd30c7027",
+      "matchesIndividualFilters": true
+    },
+    {
+      "path": "scripts/通信/通信_aka_Agent联动.as",
+      "originalHeaderBytes": 41200,
+      "filteredBytes": 42103,
+      "sha256": "092396aa0a577a2632c91cbe3e4a71784dba934e2bdf998fd8bc12f1ab9dbb88",
+      "matchesIndividualFilters": true
+    }
+  ],
+  "boundary": "The installed Git filtered batch interface is compared byte-for-byte with individual git cat-file --filters calls, including Unicode paths. Both invoke real Git checkout filters; no manual line-ending conversion is substituted."
+}

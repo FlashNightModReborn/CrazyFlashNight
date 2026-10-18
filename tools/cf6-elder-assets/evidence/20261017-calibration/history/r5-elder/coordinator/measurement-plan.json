@@ -1,0 +1,46 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "beastking-level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-94a6c08f2a8440dea59d7d15af909405\\assignment-94a6c08f2a8440dea59d7d15af909405\\attempt-94a6c08f2a8440dea59d7d15af909405\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-275017eb356742d18f8263113b86a08d\\assignment-275017eb356742d18f8263113b86a08d\\attempt-275017eb356742d18f8263113b86a08d\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\beastking-level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\beastking-level30\\group-report.json"
+    },
+    {
+      "groupId": "beastking-level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-52887343da81455bba85daf8d1a38ac2\\assignment-52887343da81455bba85daf8d1a38ac2\\attempt-52887343da81455bba85daf8d1a38ac2\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-70857b513c174063ba9b9483f6102178\\assignment-70857b513c174063ba9b9483f6102178\\attempt-70857b513c174063ba9b9483f6102178\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\beastking-level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\beastking-level99\\group-report.json"
+    },
+    {
+      "groupId": "exusiai-level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-e8d9f4b022f6444e8fe35daab9e0b09a\\assignment-e8d9f4b022f6444e8fe35daab9e0b09a\\attempt-e8d9f4b022f6444e8fe35daab9e0b09a\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-44f808dc1e5e4c8490680f464e8b7910\\assignment-44f808dc1e5e4c8490680f464e8b7910\\attempt-44f808dc1e5e4c8490680f464e8b7910\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\exusiai-level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\exusiai-level30\\group-report.json"
+    },
+    {
+      "groupId": "exusiai-level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-68f29e150a2c4fbea9816e08cf2e4668\\assignment-68f29e150a2c4fbea9816e08cf2e4668\\attempt-68f29e150a2c4fbea9816e08cf2e4668\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aa54a83c134b4b36aae74d19a553e241\\assignment-aa54a83c134b4b36aae74d19a553e241\\attempt-aa54a83c134b4b36aae74d19a553e241\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\exusiai-level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r5-elder-20261017\\groups\\exusiai-level99\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

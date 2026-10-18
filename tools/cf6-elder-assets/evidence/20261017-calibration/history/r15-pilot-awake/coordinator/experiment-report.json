@@ -1,0 +1,234 @@
+{
+  "schema": "arena-worker.experiment-report.v1",
+  "experimentId": "cf6-cal-r15-pilot-20261018",
+  "frozenPlanHash": "sha256:a829fe6be7716b4244334c5dbdb3ac53930a1af1372fd68111928f0fa58bc9ba",
+  "completedAt": "2026-10-18T02:42:28.766Z",
+  "stopped": false,
+  "expectedGroups": 6,
+  "completedGroups": 6,
+  "groups": [
+    {
+      "groupId": "beastking-level30",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "beastking-level30-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-836b838db504490dacc43f5273cf0948\\assignment-836b838db504490dacc43f5273cf0948\\attempt-836b838db504490dacc43f5273cf0948\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:d6db22455c8fe6def5db2b05918a13aa020b3dc69ceee80c143dedafbabd5de0",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\beastking-level30\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:21:53.275Z",
+      "completedAt": "2026-10-18T02:26:26.325Z",
+      "wallDurationMs": 273050
+    },
+    {
+      "groupId": "beastking-level60",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "beastking-level60-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-9a4e58d467404d66bce3ad32dd9636a6\\assignment-9a4e58d467404d66bce3ad32dd9636a6\\attempt-9a4e58d467404d66bce3ad32dd9636a6\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:ad8eb65a38409bcd407386ba69e6f9a55b221183a3b6c61f36fbb9481ea91297",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\beastking-level60\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:26:26.327Z",
+      "completedAt": "2026-10-18T02:30:41.788Z",
+      "wallDurationMs": 255461
+    },
+    {
+      "groupId": "beastking-level99",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "beastking-level99-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ab3d1bb808fc4234b257e8df4206959e\\assignment-ab3d1bb808fc4234b257e8df4206959e\\attempt-ab3d1bb808fc4234b257e8df4206959e\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:1e0a2da6dfd535f0dd38696e1a6d9e59b07294b54eaf61835e8b91885e02be98",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\beastking-level99\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:30:41.790Z",
+      "completedAt": "2026-10-18T02:36:18.598Z",
+      "wallDurationMs": 336808
+    },
+    {
+      "groupId": "exusiai-level30",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "exusiai-level30-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ea80942e7f4947099ff7eb942d0725be\\assignment-ea80942e7f4947099ff7eb942d0725be\\attempt-ea80942e7f4947099ff7eb942d0725be\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:2886d33506e6e9c81c6723a0ba2cd66049af0f43a408c3890bc4c2a66118adf9",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\exusiai-level30\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:36:18.599Z",
+      "completedAt": "2026-10-18T02:38:11.442Z",
+      "wallDurationMs": 112843
+    },
+    {
+      "groupId": "exusiai-level60",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "exusiai-level60-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-e95e1807aef3428f8b5e717d67ad844f\\assignment-e95e1807aef3428f8b5e717d67ad844f\\attempt-e95e1807aef3428f8b5e717d67ad844f\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:7f00969cf3a852f0811ea4b8ac0c108d6f9eeaa51240981b2de9adb5d3267756",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\exusiai-level60\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:38:11.443Z",
+      "completedAt": "2026-10-18T02:40:18.343Z",
+      "wallDurationMs": 126900
+    },
+    {
+      "groupId": "exusiai-level99",
+      "mode": "serial",
+      "outcomes": [
+        {
+          "jobId": "exusiai-level99-w1",
+          "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-86600c32bd3643d7956f04299426970c\\assignment-86600c32bd3643d7956f04299426970c\\attempt-86600c32bd3643d7956f04299426970c\\shard-receipt.json",
+          "promiseStatus": "fulfilled",
+          "error": null,
+          "receiptPresent": true,
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "receiptSha256": "sha256:0942fe58d1fb6a72925bedc935fef64f5bed1ecccea32514f3a290230494cd57",
+          "runtimeResourcesVerified": true,
+          "forcedRecycling": false
+        }
+      ],
+      "seedSources": [
+        {
+          "workerId": "elder-w1",
+          "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+          "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+          "unchanged": true
+        }
+      ],
+      "seedSourcesUnchanged": true,
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\groups\\exusiai-level99\\save-protection.json",
+      "globalSaveUnchanged": true,
+      "stopBeforeNextGroup": false,
+      "startedAt": "2026-10-18T02:40:18.344Z",
+      "completedAt": "2026-10-18T02:42:28.637Z",
+      "wallDurationMs": 130293
+    }
+  ],
+  "errors": [],
+  "seedSources": [
+    {
+      "workerId": "elder-w1",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "measurementPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r15-pilot-20261018\\measurement.json",
+  "qualified": true,
+  "status": "completed"
+}

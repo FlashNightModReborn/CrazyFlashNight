@@ -1,0 +1,837 @@
+{
+  "schema": "arena-worker.p0-measurement.v1",
+  "measuredAt": "2026-10-16T17:29:55.846Z",
+  "planHash": "sha256:4db900ad503515b83d3dc88d2714f805b51ec04a42632e469c154bdfcf6656f3",
+  "evidenceLevel": "candidate_measurement",
+  "qualified": true,
+  "groups": [
+    {
+      "groupId": "beastking-level60",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 2,
+      "observedReceipts": 2,
+      "expectedConcurrency": 2,
+      "observedConcurrency": 2,
+      "expectedRuns": 2,
+      "counts": {
+        "observed": 2,
+        "finished": 2,
+        "strengthSamples": 2,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 222337,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 221632,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r6-pilot-20261017\\groups\\beastking-level60\\group-report.json",
+        "reportSha256": "sha256:9965637fd7611b287d1e5232d7c3af58245ccb1a994428d1db6e3de72000ac61",
+        "startedAt": "2026-10-16T17:23:52.349Z",
+        "completedAt": "2026-10-16T17:27:34.686Z",
+        "wallDurationMs": 222337
+      },
+      "workloadHash": "sha256:ddd4b3700210371a5631afefe19b943599e0fcb44bd7dc390f4dbe9ef2502ddf",
+      "runtimeKey": "sha256:a00876b6dd8eeee2a5e83d17e70b75db1207742c2c5b00f8068a57b3ce459ca6",
+      "observedStrengthSamplesPerHour": 32.38327403895888,
+      "qualifiedStrengthSamplesPerHour": 32.38327403895888,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f2097c5aed904ca9b5bb3a0cbc773119\\assignment-f2097c5aed904ca9b5bb3a0cbc773119\\attempt-f2097c5aed904ca9b5bb3a0cbc773119\\shard-receipt.json",
+          "receiptSha256": "sha256:31a1fb14cf6ed82c46eb00e50eca85a8a371f14beedbe3aee84fb0690afbb931",
+          "identity": {
+            "workerId": "elder-w1",
+            "sessionEpoch": "session-f2097c5aed904ca9b5bb3a0cbc773119",
+            "assignmentId": "assignment-f2097c5aed904ca9b5bb3a0cbc773119",
+            "attemptId": "attempt-f2097c5aed904ca9b5bb3a0cbc773119",
+            "batchId": "elder-r6-pilot-20261017-beastking-l60-w1",
+            "manifestHash": "sha256:13e2c74ecdee5d746244a9773d20fc30a37248a983418fb3c6d76e07bc844d61"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 1,
+            "strengthSamples": 1,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "beastking-level60",
+            "condition": "two-phase",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 221436,
+          "cadence": [
+            {
+              "runId": "level60-blue-r001",
+              "frames": 3250,
+              "durationMs": 110488,
+              "framesPerSecond": 29.414959090579973,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "level60-blue-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种471",
+                    "sourceId": "elder-60",
+                    "name": "斗兽标定_blue_level60_blue_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-CF6老头机器人",
+                    "sourceId": "",
+                    "name": "斗兽标定_blue_level60_blue_r001_0__elderbot",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种78",
+                    "sourceId": "beastking-60",
+                    "name": "斗兽标定_red_level60_blue_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 29,
+              "counts": {
+                "backgroundVisible": 24,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 4,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 29,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 23
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 29,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 11576,
+                      "processStartUtcTicks": "639277682495748328",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 29,
+                    "cpuSamples": 29,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:24:35.2794660Z",
+                      "endedAt": "2026-10-16T17:27:13.4019888Z",
+                      "elapsedMs": 158122,
+                      "cpuTimeMs": 23906.25,
+                      "averageLogicalCores": 0.15118863915204717
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 640589824,
+                    "sampledPeakPrivateMemoryBytes": 509865984
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 29,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 31688,
+                      "processStartUtcTicks": "639277682753320879",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 28,
+                    "cpuSamples": 28,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:24:37.5488772Z",
+                      "endedAt": "2026-10-16T17:27:13.3941274Z",
+                      "elapsedMs": 155846,
+                      "cpuTimeMs": 104140.625,
+                      "averageLogicalCores": 0.6682277697213916
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 512450560,
+                    "sampledPeakPrivateMemoryBytes": 489324544
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-d46a0b0af98448e1885b9eac3cb5b3d2\\assignment-d46a0b0af98448e1885b9eac3cb5b3d2\\attempt-d46a0b0af98448e1885b9eac3cb5b3d2\\shard-receipt.json",
+          "receiptSha256": "sha256:873dec3cc2b0cbf1aa50f1f494aeb182ed98e0608196cf4a18eec86866434b12",
+          "identity": {
+            "workerId": "elder-w2",
+            "sessionEpoch": "session-d46a0b0af98448e1885b9eac3cb5b3d2",
+            "assignmentId": "assignment-d46a0b0af98448e1885b9eac3cb5b3d2",
+            "attemptId": "attempt-d46a0b0af98448e1885b9eac3cb5b3d2",
+            "batchId": "elder-r6-pilot-20261017-beastking-l60-w2",
+            "manifestHash": "sha256:d0e9009c2251de9a510d216033d9f89a30be1712b819aa6a0053b2c9d4ebf88c"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 1,
+            "strengthSamples": 1,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "beastking-level60",
+            "condition": "two-phase",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 217391,
+          "cadence": [
+            {
+              "runId": "level60-red-r001",
+              "frames": 3435,
+              "durationMs": 117524,
+              "framesPerSecond": 29.22807256390184,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "level60-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种78",
+                    "sourceId": "beastking-60",
+                    "name": "斗兽标定_blue_level60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种471",
+                    "sourceId": "elder-60",
+                    "name": "斗兽标定_red_level60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-CF6老头机器人",
+                    "sourceId": "",
+                    "name": "斗兽标定_red_level60_red_r001_0__elderbot",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 29,
+              "counts": {
+                "backgroundVisible": 24,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 4,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 29,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 24
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 29,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 26732,
+                      "processStartUtcTicks": "639277682488296841",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 29,
+                    "cpuSamples": 29,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:24:29.6622436Z",
+                      "endedAt": "2026-10-16T17:27:06.9123051Z",
+                      "elapsedMs": 157250,
+                      "cpuTimeMs": 23093.75,
+                      "averageLogicalCores": 0.14686009538950714
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 629248000,
+                    "sampledPeakPrivateMemoryBytes": 498913280
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 29,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 25820,
+                      "processStartUtcTicks": "639277682697382836",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 28,
+                    "cpuSamples": 28,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:24:35.2600885Z",
+                      "endedAt": "2026-10-16T17:27:06.9068991Z",
+                      "elapsedMs": 151646,
+                      "cpuTimeMs": 105718.75,
+                      "averageLogicalCores": 0.6971416984292365
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 498343936,
+                    "sampledPeakPrivateMemoryBytes": 475123712
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "exusiai-level60",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 2,
+      "observedReceipts": 2,
+      "expectedConcurrency": 2,
+      "observedConcurrency": 2,
+      "expectedRuns": 2,
+      "counts": {
+        "observed": 2,
+        "finished": 2,
+        "strengthSamples": 2,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 141053,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 140359,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r6-pilot-20261017\\groups\\exusiai-level60\\group-report.json",
+        "reportSha256": "sha256:a0a3da429aef6c25ce7547ed5b641c20d2fad309827e63a2dd0146e01e4f070a",
+        "startedAt": "2026-10-16T17:27:34.688Z",
+        "completedAt": "2026-10-16T17:29:55.741Z",
+        "wallDurationMs": 141053
+      },
+      "workloadHash": "sha256:dc35cde9ba925e8440a8aa42da64d18c2dacdac31f24c606da700f21cff2d99d",
+      "runtimeKey": "sha256:a00876b6dd8eeee2a5e83d17e70b75db1207742c2c5b00f8068a57b3ce459ca6",
+      "observedStrengthSamplesPerHour": 51.04464279384345,
+      "qualifiedStrengthSamplesPerHour": 51.04464279384345,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-52ce0516dc8b43cc91bf9143ad124846\\assignment-52ce0516dc8b43cc91bf9143ad124846\\attempt-52ce0516dc8b43cc91bf9143ad124846\\shard-receipt.json",
+          "receiptSha256": "sha256:28b7cc72b7711ecf7a874e0b53016c296aa956087b3ac0ede79e6df58bfc0316",
+          "identity": {
+            "workerId": "elder-w1",
+            "sessionEpoch": "session-52ce0516dc8b43cc91bf9143ad124846",
+            "assignmentId": "assignment-52ce0516dc8b43cc91bf9143ad124846",
+            "attemptId": "attempt-52ce0516dc8b43cc91bf9143ad124846",
+            "batchId": "elder-r6-pilot-20261017-exusiai-l60-w1",
+            "manifestHash": "sha256:4abb62216e53f6666f846f4ab92e344df89cf9cb9fc49932b6c0e1eb88f1e02b"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 1,
+            "strengthSamples": 1,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "exusiai-level60",
+            "condition": "two-phase",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 140142,
+          "cadence": [
+            {
+              "runId": "level60-blue-r001",
+              "frames": 753,
+              "durationMs": 26475,
+              "framesPerSecond": 28.441926345609065,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "level60-blue-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种471",
+                    "sourceId": "elder-60",
+                    "name": "斗兽标定_blue_level60_blue_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-CF6老头机器人",
+                    "sourceId": "",
+                    "name": "斗兽标定_blue_level60_blue_r001_0__elderbot",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种361",
+                    "sourceId": "exusiai-60",
+                    "name": "斗兽标定_red_level60_blue_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 9,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 3,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 8
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 22496,
+                      "processStartUtcTicks": "639277684744583478",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:28:24.3923164Z",
+                      "endedAt": "2026-10-16T17:29:35.4209223Z",
+                      "elapsedMs": 71028,
+                      "cpuTimeMs": 13046.875,
+                      "averageLogicalCores": 0.18368636312440165
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 644898816,
+                    "sampledPeakPrivateMemoryBytes": 514699264
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 23324,
+                      "processStartUtcTicks": "639277685044605120",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:28:27.1455313Z",
+                      "endedAt": "2026-10-16T17:29:35.4161710Z",
+                      "elapsedMs": 68271,
+                      "cpuTimeMs": 52812.5,
+                      "averageLogicalCores": 0.7735715018089672
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 511684608,
+                    "sampledPeakPrivateMemoryBytes": 488452096
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-6ef9c9548d3e4ec1bff8f04a4c614b6c\\assignment-6ef9c9548d3e4ec1bff8f04a4c614b6c\\attempt-6ef9c9548d3e4ec1bff8f04a4c614b6c\\shard-receipt.json",
+          "receiptSha256": "sha256:4a648f102c3e0c45f0a236207427d071e7363004f8a4e3d6b3a9e043057fa6de",
+          "identity": {
+            "workerId": "elder-w2",
+            "sessionEpoch": "session-6ef9c9548d3e4ec1bff8f04a4c614b6c",
+            "assignmentId": "assignment-6ef9c9548d3e4ec1bff8f04a4c614b6c",
+            "attemptId": "attempt-6ef9c9548d3e4ec1bff8f04a4c614b6c",
+            "batchId": "elder-r6-pilot-20261017-exusiai-l60-w2",
+            "manifestHash": "sha256:731a26aaeac8cb92a4a0a0ddc044580c1040826ae2cf3d3fedf627ab0249225f"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 1,
+            "strengthSamples": 1,
+            "combatTimeouts": 0,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "exusiai-level60",
+            "condition": "two-phase",
+            "concurrency": 2,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 136315,
+          "cadence": [
+            {
+              "runId": "level60-red-r001",
+              "frames": 766,
+              "durationMs": 26757,
+              "framesPerSecond": 28.62802257353216,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "level60-red-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种361",
+                    "sourceId": "exusiai-60",
+                    "name": "斗兽标定_blue_level60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种471",
+                    "sourceId": "elder-60",
+                    "name": "斗兽标定_red_level60_red_r001_0",
+                    "observed": false,
+                    "state": null
+                  },
+                  {
+                    "unit": "敌人-CF6老头机器人",
+                    "sourceId": "",
+                    "name": "斗兽标定_red_level60_red_r001_0__elderbot",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 9,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 3,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 5,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 8
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 24896,
+                      "processStartUtcTicks": "639277684734722878",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:28:17.9917907Z",
+                      "endedAt": "2026-10-16T17:29:28.1670735Z",
+                      "elapsedMs": 70176,
+                      "cpuTimeMs": 13203.125,
+                      "averageLogicalCores": 0.18814302610579114
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 628748288,
+                    "sampledPeakPrivateMemoryBytes": 498622464
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 27556,
+                      "processStartUtcTicks": "639277684980859254",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-16T17:28:24.3720109Z",
+                      "endedAt": "2026-10-16T17:29:28.1612412Z",
+                      "elapsedMs": 63789,
+                      "cpuTimeMs": 44515.625,
+                      "averageLogicalCores": 0.6978573892050354
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 495022080,
+                    "sampledPeakPrivateMemoryBytes": 471810048
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": []
+}

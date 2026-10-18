@@ -1,0 +1,1717 @@
+{
+  "schema": "cf6-guard.native-import.v1",
+  "owner": "flashswf/arts/new/Codex光头保安素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6光头保安-R2",
+  "nativeSymbolCount": 185,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-guard-assets/build.py",
+      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-guard-assets/transform.py",
+      "sha256": "b12e1ccb4639537858883b64179c7d48bba15d89ae51545e2db374596a74127f"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardAI.as",
+      "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardTransform.as",
+      "sha256": "8719ac286ff66efa3511ef9dda22866d859e535fa95692c0d5fde38d2f7ec7c2"
+    },
+    {
+      "path": "flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml",
+      "sha256": "7bb2a3ad2c5757466520efe62424e431a84ccaf5d8b7c2579f9d943ad814214a"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/gamma-echo-assets/native-manifest.json",
+      "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/archive-origin.json",
+      "sha256": "6e444cd41dc2b47bbc6fcb6d45a8d7055635fbc6f7c55cc308a03f1b4e6d1ab6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂.xml",
+      "sha256": "a5d89565e276b6af18dd29a3b7660c45b2ea39ba17a5c417052436f5909f2804"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩0.xml",
+      "sha256": "0ac4ba0fcdd3b7474d8bfc69fdb27d45b8328f7d434f0905096c443620dbbe66"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩1.xml",
+      "sha256": "da624b1c9b07e3123fd6bf76d022455b576aa16598992b4a44d85845954a57c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌.xml",
+      "sha256": "89d34b977ecdd8ee6e280171e8ca42277000903072e2e19962486bfca5994a28"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩0.xml",
+      "sha256": "46cbf7f50f2c7f4af6429cbf4a7fc1577d6164486d125ec4019bf7d99f8fbd46"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩1.xml",
+      "sha256": "e467418c8d65b69ddd2400f03d5cdb647067417b8bed6ded31b7ea1a25bdd248"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手.xml",
+      "sha256": "7aebaa8ed75496b5e4beb0f4ba1834443e0cc707000a6940503ff331d371fc07"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩0.xml",
+      "sha256": "05ecdfc83c1d8d49d1c52d73aef18cf10d3b50169dc47b8772bd2ddbd4066943"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩1.xml",
+      "sha256": "9e077d6cdf1a342d7790555adaff14ee06f03ea7298c90712ba339a5b7874882"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一.xml",
+      "sha256": "b90d4702aca63db7d808e09eca5d9b99223b0a2e919c49574c790aa929cea5e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩0.xml",
+      "sha256": "c6a94fde0a60a46703abd5680da5fc1ab598c9117a6abe1b7a2cd2e07328620b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩1.xml",
+      "sha256": "5e1c4baa849d3a96c3a6239328bebb7115b76b5466a1d56565ca140c655cf574"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二.xml",
+      "sha256": "53e6a3d93db286f1bc1efb0e4cfba850ea85f6d15669395b3683bef4e5b033d1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩0.xml",
+      "sha256": "38fd9f6321223747f39883f61bb7c29d7c0df211f467a181045609feca0b1f9f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩1.xml",
+      "sha256": "121574b031e86b48d4fc842bf24bb37a9bd724c7d78477b94c5d2455a87f913f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿.xml",
+      "sha256": "6ab97c313258037a10dcd32b0b849ad0451493d522c1b08e622c5565074c22da"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩0.xml",
+      "sha256": "1d716903e6718ac02fc85de3f5ca05a20ec996075050849c65e823288d64df7c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩1.xml",
+      "sha256": "6fad64c037cbf0d25e19a079216f218bb5197ac8de3aa34005c27ac2a17edb97"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部.xml",
+      "sha256": "e7298608d823357aaaade3cd36ddb9f6640d0d503acc78390bc2b0eff2cf70f9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩0.xml",
+      "sha256": "4e427006517578926d22ec0522c989b1abd0280ce44fd527d9e62041fff3e086"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩1.xml",
+      "sha256": "0703ef8752d3c817a411773b5160f90643f0f03372e4b4ce39e84d71c1213d81"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿.xml",
+      "sha256": "10a51741a1a8654227a41ff72e3e4ef0650d06aaeeaad713cbbc3f8b6a5401b5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩0.xml",
+      "sha256": "1fbc59de763779a9b9e7b489201adda148a2caa4916b9b86e302e0702a8160ee"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩1.xml",
+      "sha256": "e6239d6c1ac6bf10cf712f51f3d112cab328a9521ca5f8c8ea1a736e1a532eb1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手.xml",
+      "sha256": "9edf982f3d60ce5032ccfdeb8f7cca6965e6064e48dc6c4d1d95bef05ce74c7a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩0.xml",
+      "sha256": "3737f16bd3ea27bfe8fef900f9ab7fdbd9d32f449577773ef11d41615359c849"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩1.xml",
+      "sha256": "687695f0d6bb76507c2459d35f76b7fdaadf1af8aa8a9632df846abbcb8e3353"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌.xml",
+      "sha256": "ec9a5d13820fda174afadbee813b03fc4f28f77383c4bc8ef0e26daf0cda4255"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩0.xml",
+      "sha256": "58f84d7c4af3907aa6d7feca85bf78b475f55700233178d3c3a7f85c3c3fc10c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩1.xml",
+      "sha256": "0436943439f06e4cc839d39903ede9ac38fbeecf4548da02ae36a114abbf72ef"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片.xml",
+      "sha256": "3c0f879d8bb70b21f1d77b4e7fefd7c449b438487a6ede028c714f0ab5b62fa9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩0.xml",
+      "sha256": "2c187428479422ad8d40b48b398b72b906d176f4d855062a746b7c581d5c8aa6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩1.xml",
+      "sha256": "4ef34823c4b123cfc90be675a9872e7fb2c856c72fdcb6bfd67c0ad447950970"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干.xml",
+      "sha256": "203751266a3072aa33e98c63e84f469ce05cf9ace3e62ffcb8a33557967d97cc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩0.xml",
+      "sha256": "f02214f2c26195e17bb4efe95f05dbf59b8964e1661cd8ad6d4ed5be86a3f9c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩1.xml",
+      "sha256": "582ba79fe267ac975fddffe12440b8dbb954674c61bc043c450e085767e9bbc4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩.xml",
+      "sha256": "06cd43a8f0ca44390adb4b21c0bbcce0d57fdb17d8e9f6bfe7093aa3b36beef8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩0.xml",
+      "sha256": "893f42c16e4d209e53554c3974b8b640b33f9fda9318013ab7997e84c3885b63"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩1.xml",
+      "sha256": "cfce7e74c9f565df46c177b7e4ec4354ad5e49f019eabd81116191701c106b76"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/877.svg",
+      "sha256": "1fc22b83f948403a9a9f4b7a7710766d7721301253171e62cdb1b435beb9e7a3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/880.svg",
+      "sha256": "3ef4f078b41189e4de5917b4377a3fee9050ad9ea5941fbdfebfe17ffa3a9da4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/882.svg",
+      "sha256": "51bf9d4e06a0dc699fd0d3b554c791b99470f1f710baaa992d069cc504dcbaa3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/883.svg",
+      "sha256": "4355dccee263878514f4fb62e7e782258292dab880602548c587a1714a305861"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/884.svg",
+      "sha256": "5f19f3697ab7e7a0b8f9656c0c4b39574f4e1bf6886b56eebf0b724275260e77"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/885.svg",
+      "sha256": "90f8ac83c1d68f62ec3c83c7caf0b40b8e73eb579041dd0163fe5fae3b879d61"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/886.svg",
+      "sha256": "af681e9a7d8d98e8ef5a626ce47c60e92eae4d79615f25e5baf552135f05f827"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "lineEndingNormalization": "lf",
+      "sha256": "50b37d568839381e31ed66bd83d8f2b6d06acdb8a2ea642e787997b16037b67a"
+    },
+    {
+      "path": "scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as",
+      "lineEndingNormalization": "lf",
+      "sha256": "715724e9e66efb3a6ce059ac2f875cb419047d7dedfe61c7e1885c7aa05a54f2"
+    }
+  ],
+  "parts": [
+    {
+      "id": 582,
+      "shapes": 17,
+      "segments": 415,
+      "masks": 3
+    },
+    {
+      "id": 583,
+      "shapes": 15,
+      "segments": 478,
+      "masks": 3
+    },
+    {
+      "id": 584,
+      "shapes": 12,
+      "segments": 301,
+      "masks": 3
+    },
+    {
+      "id": 585,
+      "shapes": 11,
+      "segments": 302,
+      "masks": 3
+    },
+    {
+      "id": 586,
+      "shapes": 11,
+      "segments": 402,
+      "masks": 3
+    },
+    {
+      "id": 587,
+      "shapes": 26,
+      "segments": 494,
+      "masks": 3
+    },
+    {
+      "id": 588,
+      "shapes": 12,
+      "segments": 300,
+      "masks": 3
+    },
+    {
+      "id": 589,
+      "shapes": 39,
+      "segments": 537,
+      "masks": 2
+    },
+    {
+      "id": 590,
+      "shapes": 26,
+      "segments": 257,
+      "masks": 2
+    },
+    {
+      "id": 594,
+      "shapes": 18,
+      "segments": 351,
+      "masks": 3
+    },
+    {
+      "id": 600,
+      "shapes": 1,
+      "segments": 93,
+      "masks": 0
+    },
+    {
+      "id": 601,
+      "shapes": 178,
+      "segments": 3758,
+      "masks": 1
+    },
+    {
+      "id": 602,
+      "shapes": 178,
+      "segments": 3762,
+      "masks": 1
+    },
+    {
+      "id": 603,
+      "shapes": 178,
+      "segments": 3759,
+      "masks": 1
+    },
+    {
+      "id": 604,
+      "shapes": 1,
+      "segments": 205,
+      "masks": 0
+    },
+    {
+      "id": 605,
+      "shapes": 1,
+      "segments": 229,
+      "masks": 0
+    },
+    {
+      "id": 606,
+      "shapes": 1,
+      "segments": 176,
+      "masks": 0
+    },
+    {
+      "id": 607,
+      "shapes": 1,
+      "segments": 167,
+      "masks": 0
+    },
+    {
+      "id": 608,
+      "shapes": 1,
+      "segments": 143,
+      "masks": 0
+    },
+    {
+      "id": 609,
+      "shapes": 1,
+      "segments": 178,
+      "masks": 0
+    },
+    {
+      "id": 610,
+      "shapes": 1,
+      "segments": 150,
+      "masks": 0
+    },
+    {
+      "id": 880,
+      "shapes": 39,
+      "segments": 1528,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 1114,
+        "clipScopes": 77,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    },
+    {
+      "id": 882,
+      "shapes": 243,
+      "segments": 14317,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 3975,
+        "clipScopes": 275,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    },
+    {
+      "id": 883,
+      "shapes": 293,
+      "segments": 12400,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 8427,
+        "clipScopes": 583,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    },
+    {
+      "id": 884,
+      "shapes": 100,
+      "segments": 2988,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 3816,
+        "clipScopes": 264,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    },
+    {
+      "id": 885,
+      "shapes": 117,
+      "segments": 4551,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 4452,
+        "clipScopes": 308,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    },
+    {
+      "id": 886,
+      "shapes": 218,
+      "segments": 9739,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 6519,
+        "clipScopes": 451,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      }
+    }
+  ],
+  "groundShift": -11.777058410644528,
+  "sourceOffsets": {
+    "595": [
+      1.15,
+      -51.4
+    ],
+    "596": [
+      19.85,
+      -60.85
+    ],
+    "597": [
+      8.95,
+      -59.95
+    ],
+    "598": [
+      16.15,
+      -61
+    ],
+    "875": [
+      5.5,
+      -59
+    ],
+    "611": [
+      5,
+      -61.95
+    ],
+    "874": [
+      4.75,
+      -62.05
+    ]
+  },
+  "sourceRoot": 888,
+  "transformationIncluded": true,
+  "transformation": {
+    "timeline": 887,
+    "authoredFrames": 75,
+    "spawnFrame": 70,
+    "retireAfterReady": true,
+    "currentTyrantParts": [
+      {
+        "id": 262,
+        "source": "Codex/γECHO克隆兽/完全体/分件/上臂",
+        "private": "Codex/光头保安/变身/现役暴君/分件/上臂"
+      },
+      {
+        "id": 263,
+        "source": "Codex/γECHO克隆兽/完全体/分件/小腿",
+        "private": "Codex/光头保安/变身/现役暴君/分件/小腿"
+      },
+      {
+        "id": 264,
+        "source": "Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片",
+        "private": "Codex/光头保安/变身/现役暴君/分件/膝部尖刺护片"
+      },
+      {
+        "id": 265,
+        "source": "Codex/γECHO克隆兽/完全体/分件/大腿",
+        "private": "Codex/光头保安/变身/现役暴君/分件/大腿"
+      },
+      {
+        "id": 266,
+        "source": "Codex/γECHO克隆兽/完全体/分件/躯干",
+        "private": "Codex/光头保安/变身/现役暴君/分件/躯干"
+      },
+      {
+        "id": 267,
+        "source": "Codex/γECHO克隆兽/完全体/分件/颈肩",
+        "private": "Codex/光头保安/变身/现役暴君/分件/颈肩"
+      },
+      {
+        "id": 268,
+        "source": "Codex/γECHO克隆兽/完全体/分件/下颌",
+        "private": "Codex/光头保安/变身/现役暴君/分件/下颌"
+      },
+      {
+        "id": 269,
+        "source": "Codex/γECHO克隆兽/完全体/分件/头部",
+        "private": "Codex/光头保安/变身/现役暴君/分件/头部"
+      },
+      {
+        "id": 270,
+        "source": "Codex/γECHO克隆兽/完全体/分件/前臂一",
+        "private": "Codex/光头保安/变身/现役暴君/分件/前臂一"
+      },
+      {
+        "id": 271,
+        "source": "Codex/γECHO克隆兽/完全体/分件/前臂二",
+        "private": "Codex/光头保安/变身/现役暴君/分件/前臂二"
+      },
+      {
+        "id": 272,
+        "source": "Codex/γECHO克隆兽/完全体/分件/正向爪手",
+        "private": "Codex/光头保安/变身/现役暴君/分件/正向爪手"
+      },
+      {
+        "id": 273,
+        "source": "Codex/γECHO克隆兽/完全体/分件/侧向爪手",
+        "private": "Codex/光头保安/变身/现役暴君/分件/侧向爪手"
+      },
+      {
+        "id": 274,
+        "source": "Codex/γECHO克隆兽/完全体/分件/脚掌",
+        "private": "Codex/光头保安/变身/现役暴君/分件/脚掌"
+      }
+    ],
+    "sourceArchive": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2",
+    "successor": {
+      "unitId": 460,
+      "linkage": "敌人-完全体克隆兽",
+      "height": 230,
+      "inheritedCombatFields": [
+        "等级"
+      ],
+      "inheritedDisplayFields": [],
+      "displayName": "暴君克隆兽",
+      "displayNameAuthority": "existing successor unit 460",
+      "freshCombatState": true
+    },
+    "deathOptions": {
+      "noCount": true,
+      "noCorpse": true
+    }
+  },
+  "variants": [
+    {
+      "linkage": "敌人-CF6光头保安",
+      "unitId": 468,
+      "defaultTransform": false
+    },
+    {
+      "linkage": "敌人-CF6变身光头保安",
+      "unitId": 469,
+      "defaultTransform": true
+    }
+  ],
+  "sourceBodyFrames": 525,
+  "attackFrames": {
+    "fire": 41,
+    "finish": 74,
+    "authored": 87
+  },
+  "pellets": 3,
+  "deathBranches": [
+    [
+      1,
+      31
+    ],
+    [
+      32,
+      77
+    ],
+    [
+      78,
+      112
+    ]
+  ],
+  "airborneSourceFrames": [
+    1,
+    40
+  ],
+  "landedSourceFrames": [
+    41,
+    116
+  ],
+  "gun": {
+    "source": "flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml",
+    "scale": 0.6,
+    "muzzle": [
+      302.8,
+      -34.05
+    ],
+    "archivedBitmapReplaced": 592,
+    "equipmentConfigurable": false
+  },
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 113.xml",
+      "sha256": "85e4be654552412717b2c02690fba8c66df60cfec7d91676580b6b262900902c",
+      "bytes": 877
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 15.xml",
+      "sha256": "cb641ebea5107ef48cc0276f93a84ed3b27774d7381f1068286fc15cb0032c77",
+      "bytes": 1054
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 16.xml",
+      "sha256": "de0f2b2310cbd3028b4ec66780bd8ced311b4e658df0d80ceeb8ccb745276bca",
+      "bytes": 1108
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 18.xml",
+      "sha256": "20ed0f0a5772141f12960145db39a218e7f22ebec7ce33b38f503b28dc5007a2",
+      "bytes": 1090
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 19.xml",
+      "sha256": "d9056c71c8e6e1aab472e70e2a760a83c9365a68008090da5c10116b0dd8585e",
+      "bytes": 980
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 195.xml",
+      "sha256": "40d2f83689afd57d400c78e0209b9eb6d85a2db45754066ee72961b4155da814",
+      "bytes": 1565
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 2.xml",
+      "sha256": "5021112d5a37c046a108eb502dbf38a5461221852ece3e96b8c727f236fdc96f",
+      "bytes": 2469
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 21.xml",
+      "sha256": "9e060dd4d4bd6fc0ae53593b5465c7f0413f23aef26265a3d4b2a4a06eb5145a",
+      "bytes": 1060
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 23.xml",
+      "sha256": "c97d7577d5a1ff446ba3d07f87a3c21459dcff33a4620ea85c3d6984253795a5",
+      "bytes": 1014
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 24.xml",
+      "sha256": "d80ecf30464bd2db85692dc0ee3020b49a8be38fbde4cd24cdd031b3f6c9bc12",
+      "bytes": 875
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 26.xml",
+      "sha256": "4c08dd0490dc74af438f3c48a45b48e640286d569b2261811bdea0f775e726b2",
+      "bytes": 4933
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 32.xml",
+      "sha256": "8f11b7575c742e709c6142e5945c1cae12b207e1c8093799de4f773ef1c6b975",
+      "bytes": 6416
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/Symbol 99.xml",
+      "sha256": "4e7a2ec31da53457d161f48f9dc6ef7cae4120e62de0a461fa974077c9b519f7",
+      "bytes": 1759
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/CF7/思考标签.xml",
+      "sha256": "0d211ee51ec6a623b1dbc2e8f675b684bbaf211259b76deea7331064bd73341f",
+      "bytes": 1232
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d.xml",
+      "sha256": "f1be4b7d5685d136747677cd0cb2600bd52c9b3d75d755e6372be50f3d814c4d",
+      "bytes": 5029
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩0.xml",
+      "sha256": "613f29fef816520bb78eeac4b5c6b1b9810c975677e4e473ea140880871583cf",
+      "bytes": 16077
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩1.xml",
+      "sha256": "5b462da96078d787827b031575017a7152a8077958cf2fc991747afcccbb07f7",
+      "bytes": 26825
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩10.xml",
+      "sha256": "651ed6b4af54a3aaea81b137915ed34092cd6614dd1bb0572af1af5b9b327bc7",
+      "bytes": 2629
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩11.xml",
+      "sha256": "95f4edc60ac36415b55a0298a13093e7f988fa97273e41dbca0759eac97922a8",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩12.xml",
+      "sha256": "0cc23b0ff51b66f6794dbdfa69524a5c32f42dea2ba8ff50f19658102c94b695",
+      "bytes": 2699
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩13.xml",
+      "sha256": "2402d0e51707a599be2c275449382cc387572367f702dbcf35f7c97419014b83",
+      "bytes": 11671
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩14.xml",
+      "sha256": "9a4ca26a0fdbcb0127aa16d9853a90ff08e337ac08e01bd4f5d2da50e1b84ef8",
+      "bytes": 2799
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩15.xml",
+      "sha256": "6655ab9d3634951703d5a24971f770159039baf61d58da08d076da94b270b83d",
+      "bytes": 16183
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩16.xml",
+      "sha256": "a20f853a1ed9bcd7bdb1ce77beaee987f09916599f7bf63647e31b52fc12550d",
+      "bytes": 2599
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩17.xml",
+      "sha256": "929f1ebf951b997e66068576d12fd8489015a685b49e1668aaed1d972d9eefb9",
+      "bytes": 11111
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩2.xml",
+      "sha256": "2c821c416e51406337172daf73c7a6b74513d0bb82e9de77fcf28a352ba3dc47",
+      "bytes": 2549
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩3.xml",
+      "sha256": "08a6def56109e30533e2677b5cb856d72cc213c449f31c3f2de02f31990ebf81",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩4.xml",
+      "sha256": "3ce56eeb403fd9628e0b6b6d54ad17e218c029e0f528b3007afb8befa78a40ff",
+      "bytes": 2986
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩5.xml",
+      "sha256": "e365420367e9b0158c3b2ba62b72a36dcfaf51e86386decc2ddbc89eebf60d88",
+      "bytes": 10589
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩6.xml",
+      "sha256": "a36be7bd25a022861f4b2b85fe099e7ce4a846c82dc944e45090a00837e5b517",
+      "bytes": 2772
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩7.xml",
+      "sha256": "d562d5de449d2a1f7e7a115e25487551de6bcf4d7eb9078f4be5989497d60517",
+      "bytes": 6953
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩8.xml",
+      "sha256": "35ff4d2c793c56683470bf52187d70faa02bfe8edbb12c4365db44a9833dc795",
+      "bytes": 2976
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/125a1f529bcab90d-遮罩9.xml",
+      "sha256": "46d504eeabe57b98cd7438949a0852e2269fbc4841fe5f722a44de3bea4709a4",
+      "bytes": 7875
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09.xml",
+      "sha256": "40e80236fa1ba8f48a14efe04831fb4a5d9a186977fc54ecd4c887882d29124c",
+      "bytes": 5029
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩0.xml",
+      "sha256": "4811b1cbb92d27b5742807d8ad36247a26ab817c910ced432f932cd6cfdccb43",
+      "bytes": 16077
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩1.xml",
+      "sha256": "ed7d4aeec2fe335e966400e6beec26d8c01987c8b8e99ef26f540ae0148f0062",
+      "bytes": 26825
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩10.xml",
+      "sha256": "5b68ec906aab7ec9d87d67ebab102081b2ff7c4e348e37b5f755e53b358f076c",
+      "bytes": 2629
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩11.xml",
+      "sha256": "b290863b6357a0efc7db8cd93f892be600fc3f7169c3a6642cf1c7bf9b027347",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩12.xml",
+      "sha256": "5ffef6386c340be0a11e376337793df65f37dc38b740bb60a6a0cf496c7fa17c",
+      "bytes": 2699
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩13.xml",
+      "sha256": "52d6f2499682f82b39ded6ee0966b5964930e5af55a75ba85096cc5b933afc36",
+      "bytes": 11671
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩14.xml",
+      "sha256": "0f4d1e39f356b7270639bbf2731a6d76a6419c9c2ffea070b60016a6ea6282ae",
+      "bytes": 2799
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩15.xml",
+      "sha256": "7dcce7e44b24668b5439de848b7aecea01bebd8086a8fd47b903e46f248ed1c2",
+      "bytes": 16183
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩16.xml",
+      "sha256": "71e422be452232a200fc710214aee9288f251df92e96548568275d2622ae63c7",
+      "bytes": 2599
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩17.xml",
+      "sha256": "15b9f92b22e5aa6065889e5f031dfecb0157176140709046a912a593d87351b3",
+      "bytes": 11111
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩2.xml",
+      "sha256": "e8995dedf129a11151b3084b7c35d79daa5f383a5b8c1010097c0a1a694f9738",
+      "bytes": 2549
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩3.xml",
+      "sha256": "aaaf6afdc08c1ed89d6c3f0a346fcbc58d9f0d9836fc994a703d0808e58f3a86",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩4.xml",
+      "sha256": "03d5e1aee919852d64281fa4b6e67a4db5c9cca60d6ee07e4d515eebdc35b0e3",
+      "bytes": 2986
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩5.xml",
+      "sha256": "114d3dcff1557c64e18ed6229263510d9a5193a463197d5fe77f150fe3eced4b",
+      "bytes": 10589
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩6.xml",
+      "sha256": "cfd4f8e426f0050c3db46271bf4709c11a3b47115dfb17e3a87e61e430d27f99",
+      "bytes": 2772
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩7.xml",
+      "sha256": "1f3840a67f109ab9f47ca6283590fb01f0210773251c011a69fce18dae893a57",
+      "bytes": 6953
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩8.xml",
+      "sha256": "9e127c56ccf6be536bff9c218cc144231ab94f967b76c9275e31f9fc97401a4d",
+      "bytes": 2976
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/d48e8ce542122a09-遮罩9.xml",
+      "sha256": "ce8ef00ff63a1e17601a44833d2afb337d9ac30584cf1b41d32d330598c45240",
+      "bytes": 7875
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df.xml",
+      "sha256": "97f2617c41e6a718c148b581e4f385f93ea0e33e18633a007f497daea460228b",
+      "bytes": 5029
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩0.xml",
+      "sha256": "18e610e34a3622e8c22a98289258ccb4a830f107f5a0e0b7552a748bc087e9bf",
+      "bytes": 16077
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩1.xml",
+      "sha256": "1f453be3e1aa0acc18cffb4b37a905246b047cbc6cc3624a7d646256a71be33f",
+      "bytes": 26825
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩10.xml",
+      "sha256": "28bfbc65607a7d90081bddb04cef6c4edb38ba7231e7db38eba9a89356618705",
+      "bytes": 2629
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩11.xml",
+      "sha256": "67fd5872615a6a3837a9b0a6341e0322d7083b85b47ec3bc74221295053fa38b",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩12.xml",
+      "sha256": "be43d202abbeb5d2bb46df72e0548f8582c881f56ad6fac0ea2a8b77daaa4e2c",
+      "bytes": 2699
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩13.xml",
+      "sha256": "cbdb4138649b04e42b14d6714f7b9228b11b43436b35b99b1d42f055e06db8ba",
+      "bytes": 11671
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩14.xml",
+      "sha256": "8050bb819d9f1c0f17b3e19c5afdb268210d0b2167d4a981f347ded023b92da1",
+      "bytes": 2799
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩15.xml",
+      "sha256": "f949ea87e724b53a7e2ecf9530faddee1d982f3fa38b12add128bc5735674097",
+      "bytes": 16183
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩16.xml",
+      "sha256": "abe99fc2d5a360c700499c9f77705c37a4656e41dfa62c499c49e110f29c7f82",
+      "bytes": 2599
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩17.xml",
+      "sha256": "76dc6b95a9fc2ebad98f3a7c6a597ba12f2510be9860989b190ddbf4d5ec2bdf",
+      "bytes": 11111
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩2.xml",
+      "sha256": "6e9138563c6bdfeb0de641882818077fa5a269314859bc30f9eea2fae585d561",
+      "bytes": 2549
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩3.xml",
+      "sha256": "b95f7fbe8781c8ccf3c3557f8a95e90992938f38a4d017104544f2d904906003",
+      "bytes": 7764
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩4.xml",
+      "sha256": "994dadc58726d70e335138d351b7b5f08f9743eacdc6dbb9af402218e0662b77",
+      "bytes": 2986
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩5.xml",
+      "sha256": "56ae25b7f923038ad7652913098087649f70aec9829b82a51a93d5a84fcb5ea7",
+      "bytes": 10589
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩6.xml",
+      "sha256": "c240c7ec1dff9585b56609207297e277f65edfb41a70ad3a47e6b95fbb0e7ba5",
+      "bytes": 2772
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩7.xml",
+      "sha256": "2750a04cef00763bad9ec88bca8c0410ba3c7ee7b508d0fc6cc8e4ae916a6435",
+      "bytes": 6953
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩8.xml",
+      "sha256": "c18253d29a7926e34c3fc0dd1a3675c82809d3d36821bccd071f18dfb12972df",
+      "bytes": 2976
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/共用矢量图集/fa6667a9ef0692df-遮罩9.xml",
+      "sha256": "b50cf880f43c8424519b181e096de5d2dbb9c74708257751bd2063ec233c24fd",
+      "bytes": 7875
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/582.xml",
+      "sha256": "4ab49111207943b7413a35a179854ada971d4bada1ca8b6381411e9d09960009",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/582-遮罩0.xml",
+      "sha256": "69324e2a088869e9cc15fce1a1e0f36bab6cff2c0dcdd8b7f36e223019f5c575",
+      "bytes": 1789
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/582-遮罩1.xml",
+      "sha256": "cdc9478cd300c8c6deebb3ad2b067ffea41d7efe3f54a2e229a74779ee4bd263",
+      "bytes": 2493
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/582-遮罩2.xml",
+      "sha256": "4d3ebf527c7f9fb818be4feca4005ec16db82eaf5c4b0b2913a0f6a66ede7e1a",
+      "bytes": 10911
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/583.xml",
+      "sha256": "165d84a8346944f7e33ee8da0f008ac480c323682da00bc5ba32bc4d574ba114",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/583-遮罩0.xml",
+      "sha256": "3c84545e55cff279f7ebe68a5fab78b48cc0f9176a047894ed93480d8cb6e4fe",
+      "bytes": 1753
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/583-遮罩1.xml",
+      "sha256": "0ce60abc40eb78d6ac3f27c45a0992047be9637a74db06712dbf2c98bebcabe6",
+      "bytes": 2828
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/583-遮罩2.xml",
+      "sha256": "0c28071637ce80944b2b59f8751ce78396b1cef1dc0a20c4f0b04f96cece7f44",
+      "bytes": 10203
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/584.xml",
+      "sha256": "aa6544d899e2983ae52681e493a5d7bbd1d8684654a5f86aa15c7d6a5de7d02d",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/584-遮罩0.xml",
+      "sha256": "983f607048451a9f6829b9038760fd9ba8479195728b1f6316378815b2b503af",
+      "bytes": 1721
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/584-遮罩1.xml",
+      "sha256": "2940d3abd3c1557a55aba92904aa41646f52148c91993aa70cdd1129c5cd595e",
+      "bytes": 2440
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/584-遮罩2.xml",
+      "sha256": "eed3add32e731614266337703ec783ebd00451bee27e9c2f961d065611d33719",
+      "bytes": 7510
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/585.xml",
+      "sha256": "8c3851cd35743f1b0dddd42f429f7e6ccfe7fbc3f1ec4fa52a12d82f7ef518be",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/585-遮罩0.xml",
+      "sha256": "01822b848de82660e849ca6e8107fd21b85a7687a933f0ab8a6313b0298d5501",
+      "bytes": 1774
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/585-遮罩1.xml",
+      "sha256": "33ae2e3ec76f6341a8dc39bf19ad5a49401a6153b331b28bbc1e11b99d59593d",
+      "bytes": 2623
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/585-遮罩2.xml",
+      "sha256": "c4f67bb75933004c0b34c44e5b54fd47f1de95bb8ac1d02042fa71786fac96c9",
+      "bytes": 6700
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/586.xml",
+      "sha256": "10f9be6eb8b8fbd75165a3e59040885e1da22b9e3b19673c2a1e86fa5d496855",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/586-遮罩0.xml",
+      "sha256": "1390b0ae58f74acc8998ff9f41738977bcad3da38a8da82bf08b525bfc735e05",
+      "bytes": 1785
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/586-遮罩1.xml",
+      "sha256": "bed43f05992acf8a32fbc002f927ecfecb973a392c543ddf6b5f5e140d6dd459",
+      "bytes": 2821
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/586-遮罩2.xml",
+      "sha256": "5237c3eba255d286ba2ab3e134b2968333220aac316e4e3f5d3e779b4366fd46",
+      "bytes": 7554
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/587.xml",
+      "sha256": "6b57aebd0b0018e9130311462e540ac61504f4016c82af2187e230370c4b216c",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/587-遮罩0.xml",
+      "sha256": "02510ef09811dda17f949c9a2d75db32e7e4dce0056f8e119abd2018548c47b1",
+      "bytes": 1742
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/587-遮罩1.xml",
+      "sha256": "74f32269642dba7f8db252367afe454c30acdb9f20f6df08b599b099c12b64da",
+      "bytes": 2584
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/587-遮罩2.xml",
+      "sha256": "a2a7895977a899cfa5ce2b8f5d5a9fb3d2bc2643b923f7389bfb6574b7d69531",
+      "bytes": 15122
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/588.xml",
+      "sha256": "2b0b4c8f7627ce795eb47410b2a27a84973ddf61f8df8d5587ccd43250be9f77",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/588-遮罩0.xml",
+      "sha256": "38ba62a4a949f0b372f06d7d832bc59bb681b5016cf6e4b4480db93d1f4fda15",
+      "bytes": 1746
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/588-遮罩1.xml",
+      "sha256": "6e25c49b91c7c060fe445b582b049480562df7539916cdf10f441b2a609f0ebb",
+      "bytes": 2480
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/588-遮罩2.xml",
+      "sha256": "34052274cc0147327b89646a3e17ab1ec31aa4f413b4a0d571cfb0327d1e13a2",
+      "bytes": 7436
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/589.xml",
+      "sha256": "d89c96e67ee2b84e70e63290282f7712c37f54c8308239d6de4d25a81f826349",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/589-遮罩0.xml",
+      "sha256": "88349980c5f3dd28e90b37bcce013054d6945e2d69dbabbf204847abea1ca2e0",
+      "bytes": 1899
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/589-遮罩1.xml",
+      "sha256": "a75a1da761d08f6f117f90236c6ace09a498e8fe670e2aa5a3c77090c79506a4",
+      "bytes": 27212
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/590.xml",
+      "sha256": "28e6f71b6e16e254f7dda499fa6f9329f5473855d30ac60e3a951f6a21b5adb1",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/590-遮罩0.xml",
+      "sha256": "05cfc3d2173e2ef8f3294b2d61ea9d20f2c9fb03f25771e8a3a5ced14b0381c9",
+      "bytes": 1760
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/590-遮罩1.xml",
+      "sha256": "1d1e6c9dc8e5936b965b34479bebfbcca243676d09929f3d63eaeda556ea7e31",
+      "bytes": 15811
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/594.xml",
+      "sha256": "94c73f319e02f426ce4c3fbcfa394ced25d355a263af0e9b8eb7985d4b34ade4",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/594-遮罩0.xml",
+      "sha256": "e67bf95a2eff6e4abf68c10017f543af638563621d3f994805d50560fa0da3c1",
+      "bytes": 1759
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/594-遮罩1.xml",
+      "sha256": "c72ab0dc4c5f4eee60d09a09ebe8408e99a58b9c2b3e7c42c179d3679222cecf",
+      "bytes": 2393
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/594-遮罩2.xml",
+      "sha256": "3707cc9db1294e87e4e5eaa77383fa8da7ae16d6080f08ca0e2fdf2536b6d589",
+      "bytes": 10406
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/600.xml",
+      "sha256": "415fdb587c554e66dab7eab261c481f51d4973d8e69c3d92f49511eeb7422f8a",
+      "bytes": 2539
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/601.xml",
+      "sha256": "476f634773f78f21fcc48033dfb666c447b2a462c25010bd7a1535d4ae1e18d3",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/601-遮罩0.xml",
+      "sha256": "882ff7d7854080d8c1ec26a7da2d9b1f5e34ce13141a5090d6e86b5380e740c0",
+      "bytes": 1771
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/602.xml",
+      "sha256": "3cadcd29dcb94c00f5740fbc46ca9cb1e8747dac291b1b61fb8621a3d5998442",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/602-遮罩0.xml",
+      "sha256": "b750f4ecfe0298f753ee9c1b4170ca75544954f04ae21410c0248ea12b7f397c",
+      "bytes": 1810
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/603.xml",
+      "sha256": "f577540b5b98bf9f0cfa465c12505af5c798bf800b4ae513f1d6cf21f71361e3",
+      "bytes": 971
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/603-遮罩0.xml",
+      "sha256": "c1e63871db32064f567a86a4a451bf8c399ad4c961a59b07ec77536e296a6a38",
+      "bytes": 1789
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/604.xml",
+      "sha256": "b6a2a0480e98144eb91dc22804409ece86e13cc8b9e977cafa363937f4996cfa",
+      "bytes": 5064
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/605.xml",
+      "sha256": "6dadb89254d028629da666ae32b7df5501f0d42435079e024e5b9a96a8c92735",
+      "bytes": 6097
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/606.xml",
+      "sha256": "da7b6cb00444964a56de413b348fb8d105d7bf876c3625940c6bbd6621b560ea",
+      "bytes": 4901
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/607.xml",
+      "sha256": "f29865484e090019f1148ea661cb6284d48fc48e9f76aa13e3f0049eb1ec2c38",
+      "bytes": 4524
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/608.xml",
+      "sha256": "cdd3b3fa6cb39704f23451fcc5d6b7726989460fb19765c18b54de3e63002e19",
+      "bytes": 4207
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/609.xml",
+      "sha256": "1b50436662b8f4fa7dfc96c745b0b44fef8551d81eb99737b70f264a3ed25298",
+      "bytes": 4574
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/分件/610.xml",
+      "sha256": "c1e764c4b3f09cdcf46350e9675caa5fbd91a4a09127dbb69b4df02a4bc6b56b",
+      "bytes": 3864
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/倒地恢复.xml",
+      "sha256": "0c1de2ea4a3b59702a0b1b5aafec5b1d9379301bb9435a16a92f454c680e06dc",
+      "bytes": 50632
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/击飞.xml",
+      "sha256": "8e083f23a60cfcaaf98ae4a1a477415020d939e4f218b111fb3f50d82e897016",
+      "bytes": 209859
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/变身.xml",
+      "sha256": "f1623f2a1aadb261b5fdf40a4484bf1a7f5d9f74b73f23e8312d6a76b3ba9e83",
+      "bytes": 189142
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/散弹射击.xml",
+      "sha256": "32775f6fc647f8405cac0e0077c237a9368fd79405aad474041e28073b50f5f6",
+      "bytes": 67738
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/死亡.xml",
+      "sha256": "0d0ec1e61c77f04898ff065d1b59f34e198362d1f46ae2ea18b6fd776bd0fd7a",
+      "bytes": 363182
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/站立.xml",
+      "sha256": "6f0308c156fd7b86e5b44007bfc4112feca507cbd38799c21a974b6f8bb12134",
+      "bytes": 35182
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/行走.xml",
+      "sha256": "11cac6e97aa667941b4c255d3b734a1994061c7e1843e75e029b4dee2b72fe43",
+      "bytes": 69268
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/被击.xml",
+      "sha256": "24bf5827e99b39339128ffa8d2f7e1f6e433958e403263c2a0f9698b7afb1fca",
+      "bytes": 54636
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/动作/被投.xml",
+      "sha256": "4bb82536dd85f38ccf9cc4d48cb0c2a3d88da86bb977efe15a89f3e26e984811",
+      "bytes": 38270
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/接地阴影.xml",
+      "sha256": "b6227352b000d06df9823d6a11bb79ee1bb627e6591f27f79c1c2eb0e91dd342",
+      "bytes": 2492
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/880.xml",
+      "sha256": "5f1d09fa6da15ba39990aace70e300aed8002e3367403c3001554a2be06520a6",
+      "bytes": 36281
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/882.xml",
+      "sha256": "b2ffa039e7aaf406a8d89980a0ba6f35513ff57aa8a0279c8846c4ca74e35250",
+      "bytes": 234659
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/883.xml",
+      "sha256": "f1820576b1512eff2697cb412063283b4496996dda7f01a6aaf90f259910c847",
+      "bytes": 232159
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/884.xml",
+      "sha256": "62383d1e26c9281a1b3cef4b3e3ddef12f4c61a5154487b458090aa1de5ca6bf",
+      "bytes": 69009
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/885.xml",
+      "sha256": "389a37eafe4a4712909da974c81e93e923056273aba8278d651af9f6a1f409e1",
+      "bytes": 85061
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/撕裂衣服/886.xml",
+      "sha256": "8f0096f7b3502cd814050cf18e93ce036331135b751ad6069644a0a38f95d892",
+      "bytes": 174386
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/上臂.xml",
+      "sha256": "a611d4aee5872d8ca940ed91d3e5e77607b845c24345b642130fb7bc72d8cebe",
+      "bytes": 4325
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/上臂-遮罩0.xml",
+      "sha256": "25a17478ed85033ff13c6a072027e373f7f5206413dfdd791d892a513dc7c3d0",
+      "bytes": 10479
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/上臂-遮罩1.xml",
+      "sha256": "5170a6295ffe32626035f166a94c8236de4b4bf0bc699db95d846e705aaa73ee",
+      "bytes": 5801
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/下颌.xml",
+      "sha256": "e20e9921dec84c695bb8529a6ffce1ff3486a52290ffd077b89f50c1d5481729",
+      "bytes": 10580
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/下颌-遮罩0.xml",
+      "sha256": "43e8e84c0deee979f50376780869f1e7a9c01c70e6690799b6463d3dd70e650e",
+      "bytes": 13944
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/下颌-遮罩1.xml",
+      "sha256": "4c85ff835e04b86e58cdd6e3da13150e981b504498d6a06c1b584f5e9c3ac5f0",
+      "bytes": 3775
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/侧向爪手.xml",
+      "sha256": "9ec22bed89fb013926b603f840ae19dc675e9b3ca1d5078b51235f1cdab618e6",
+      "bytes": 10937
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/侧向爪手-遮罩0.xml",
+      "sha256": "3523250619af0391e234272c612b64c3703597c6c11741b7c713cd194dc3dffe",
+      "bytes": 7942
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/侧向爪手-遮罩1.xml",
+      "sha256": "8956901316c3ee4eee623ed7185bdb68753630f4452fe1b266886656f514f8bd",
+      "bytes": 5531
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂一.xml",
+      "sha256": "f6f4220c0281cf5310768c472b63f3b936d7c60bcd1d33cfbdc1628076781f7b",
+      "bytes": 6420
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂一-遮罩0.xml",
+      "sha256": "9d41a2ccb8393c8807144aac3235d4758bc93213983251775c88d132d62f161b",
+      "bytes": 9361
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂一-遮罩1.xml",
+      "sha256": "a05002879df035ad5e85e550f4d7625f38ab8dcab8e634dae156d885c47b5536",
+      "bytes": 6694
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂二.xml",
+      "sha256": "2a0a48999c240905be35f3986be73efb2fc2ab1527913e8d870920d4a1613bfd",
+      "bytes": 5810
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂二-遮罩0.xml",
+      "sha256": "2886790d1cb5c9d61ed3fc26925bcc93b498f2beb824ceab41d26be121bfebb8",
+      "bytes": 9982
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/前臂二-遮罩1.xml",
+      "sha256": "b7ccabbfa89b78399b70ed4ac0359c5a14f582e24f6a1da11c0537517ad25882",
+      "bytes": 5689
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/大腿.xml",
+      "sha256": "e999a3cad18f7a5d7a79f69aa21441a828a9b00a68279b394bb5496504a054b2",
+      "bytes": 4621
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/大腿-遮罩0.xml",
+      "sha256": "0ee9e4df78fdce3ce5cb03afc7ef5a901840db782ccb09363a36e7182c3eb25e",
+      "bytes": 10688
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/大腿-遮罩1.xml",
+      "sha256": "6f896d78e58a61ecc5393553d3e857fc1ad3fdf2c890a06938cb7469ad0c6765",
+      "bytes": 6499
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/头部.xml",
+      "sha256": "92a9d86ea2aa44db213a838c36067148c999cd84df152f55f5dea3531be5871b",
+      "bytes": 18693
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/头部-遮罩0.xml",
+      "sha256": "444dc7decf3e0fd5dd831041f4a66b205ca7617c44898940adf41204b3533403",
+      "bytes": 16914
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/头部-遮罩1.xml",
+      "sha256": "ed808d88fa0f6c6f92724be6b1357417094680143ba0b5cc89628dcd4da97faa",
+      "bytes": 14740
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/小腿.xml",
+      "sha256": "255f24eb1df82a7cae537336fbfe9b8e486fd257c63078aea27d09a58fd2d08a",
+      "bytes": 4249
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/小腿-遮罩0.xml",
+      "sha256": "43b911f0e3969e85153a485fa6d000413596b0dbce29d85e73830cee9eeef547",
+      "bytes": 10686
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/小腿-遮罩1.xml",
+      "sha256": "91d8e91c41aada8ca3077e9bc2e825a76bd33757ccf0e47dcdfc7b67e7eb033d",
+      "bytes": 5632
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/正向爪手.xml",
+      "sha256": "f683cd8f65bb4416163e64b0d26c420815283c3fe5a2e93683289210bf800819",
+      "bytes": 11298
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/正向爪手-遮罩0.xml",
+      "sha256": "f83596df51482b2b6c58ad064144ae3f8621a3ff28ba405990ce0cc7b2009652",
+      "bytes": 7918
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/正向爪手-遮罩1.xml",
+      "sha256": "5375c9408169744ee2eaf740123377d9ffbc0ef3070cc9be78bb94b89883f637",
+      "bytes": 5534
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/脚掌.xml",
+      "sha256": "3f5c338d6177899f7729bc95ba01641f232ccbbd8d6c35612847633ba5e45de0",
+      "bytes": 11054
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/脚掌-遮罩0.xml",
+      "sha256": "28a0fbecd06d5b45ca99f352bd9932de2835208f8894a6b0590a828e2b2866fe",
+      "bytes": 9726
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/脚掌-遮罩1.xml",
+      "sha256": "72f2ea7c000006251f2d56b5fc3bfe9322d7de45870961772caf4f2c068de39c",
+      "bytes": 7047
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/膝部尖刺护片.xml",
+      "sha256": "293d64c7fcb6eef2e9e9d1cfd6f570db816aeb656034968747403ad1c7191c80",
+      "bytes": 6618
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/膝部尖刺护片-遮罩0.xml",
+      "sha256": "95cc739ee0e90d91252bb6a05ae31097b736f700dab2eaad46b56f0365276763",
+      "bytes": 8329
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/膝部尖刺护片-遮罩1.xml",
+      "sha256": "4f35caf3b3d0af0f8716f1de6693563dc63920c1a8887ea6eb24a8f6c99e0ec6",
+      "bytes": 4215
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/躯干.xml",
+      "sha256": "4ebb126e0b7b95843c66f702ce41feb3cb60919f02746d45fca4295d988a1187",
+      "bytes": 7707
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/躯干-遮罩0.xml",
+      "sha256": "011b00d00da863acfb03b2252495c204f3c9828efec1537beb88069dde7025c7",
+      "bytes": 30745
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/躯干-遮罩1.xml",
+      "sha256": "29cbdd9ccbcbe2b82cb24ce13abf1b8d712c741e2d210a1724f8c17088d13309",
+      "bytes": 16051
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/颈肩.xml",
+      "sha256": "74ab814ac94b9d2064efd98611d7e56754697c69a3f92fe6385439e51f3837d5",
+      "bytes": 11787
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/颈肩-遮罩0.xml",
+      "sha256": "e1781e77828662049b284be450749bde5a3fbff904330f5b77341ee2478049a2",
+      "bytes": 12841
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/变身/现役暴君/分件/颈肩-遮罩1.xml",
+      "sha256": "1bcf3f424800d22b3456232cf5c0152707c2404ebfd98051af24208cafcf20d5",
+      "bytes": 5451
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml",
+      "sha256": "c00ef9508b7be28816a01449437aafae2138009fbda598dba37bc2fbc7ad24af",
+      "bytes": 32629
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/敌人-CF6变身光头保安.xml",
+      "sha256": "bd32db76cc1499708b9d16776e28dd40a79777f0ff4703d5843e578f0e3dc2df",
+      "bytes": 32646
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/武器/SPAS12原生画稿.xml",
+      "sha256": "0d9342dae0367ba68bb09461b2a5f610d41f67272837cbe868975254beab41eb",
+      "bytes": 122702
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/武器/固定散弹枪.xml",
+      "sha256": "fde6f8db1444fc4457c7d75916f32149b052aa1f0c5156ba9138c45d2f985626",
+      "bytes": 1068
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/武器/枪口.xml",
+      "sha256": "c311afdd2adab502501ae4171efb68f399d24c92f308cf9ff61d765e21affad4",
+      "bytes": 661
+    },
+    {
+      "path": "LIBRARY/Codex/光头保安/行为驱动.xml",
+      "sha256": "dcde848baec5d2545cd9a875491ad9f5cf6bea03e323ab35481a7e9e654d4e82",
+      "bytes": 663
+    },
+    {
+      "path": "LIBRARY/Codex光头保安素材.xml",
+      "sha256": "96e8dad817e2395dd7815cbb5fc65fbcc58cdc9cb4216617a57a0a4f0be2b228",
+      "bytes": 1631
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "4dc63812b83131fd23a18177bb0caefebbf9086e2d926248187a5e43349a0a10",
+      "bytes": 25074
+    },
+    {
+      "path": "Codex光头保安素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "c96a1339d43331fe5b79910e606a6599937ff902f4f6052876d4473e0b1fcd7a",
+      "bytes": 7983
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 8,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0879.mp3",
+        "sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0881.mp3",
+        "sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1121.mp3",
+        "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1123.mp3",
+        "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1135.mp3",
+        "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1137.mp3",
+        "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1144.mp3",
+        "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1146.mp3",
+        "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1151.mp3",
+        "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1154.mp3",
+        "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1157.mp3",
+        "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "6b04db8d5f704103b7ffe8d3b53599eb56c57f05dcc58d7b9af23400f75eb6fd"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "8ab42a6514a5fe2124b4bfc27046259e3a3ccdabf9d8d1fdd452e830c93e5208"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "61339258fc570f8b807e6d43cd21d8e0ccbaba8fe4a5414edd7a7bc4c6fc20e0"
+      }
+    ]
+  }
+}

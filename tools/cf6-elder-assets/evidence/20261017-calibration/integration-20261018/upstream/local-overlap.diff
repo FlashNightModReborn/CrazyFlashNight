@@ -1,0 +1,18 @@
+diff --git a/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as b/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
+index 5a45e903ae..cd9e152d3d 100644
+--- a/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
++++ b/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
+@@ -463,3 +463,13 @@ _root.初始化NPC = function(目标) {
+ 
+     目标.NPC初始化完毕 = true;
+ }
++
++// 独立资源的尸体离场时注销其自有碎片实例，避免跨关卡保留回调。
++_root.地图元件.停止地图元件破碎动画 = function(animationId:Number):Boolean {
++    return FragmentAnimator.stopAnimation(animationId);
++};
++
++// 用引擎真实实例状态确认结束；资源不从 MovieClip 回调属性是否可删除反推状态。
++_root.地图元件.地图元件破碎动画运行中 = function(animationId:Number):Boolean {
++    return FragmentAnimator.isAnimationRunning(animationId) === true;
++};

@@ -1,0 +1,68 @@
+{
+  "games": 12,
+  "wins": 0,
+  "groups": [
+    {
+      "rival": 78,
+      "level": 30,
+      "netLoss": [
+        45.39815812862843,
+        39.354399500765865
+      ],
+      "mean": 42.376278814697145,
+      "median": 42.376278814697145
+    },
+    {
+      "rival": 78,
+      "level": 60,
+      "netLoss": [
+        52.94738787254825,
+        25.951004461339455
+      ],
+      "mean": 39.44919616694385,
+      "median": 39.44919616694385
+    },
+    {
+      "rival": 78,
+      "level": 99,
+      "netLoss": [
+        29.853660385942295,
+        15.936232323615274
+      ],
+      "mean": 22.894946354778785,
+      "median": 22.894946354778785
+    },
+    {
+      "rival": 361,
+      "level": 30,
+      "netLoss": [
+        33.45614777564789,
+        34.39966143045632
+      ],
+      "mean": 33.927904603052106,
+      "median": 33.927904603052106
+    },
+    {
+      "rival": 361,
+      "level": 60,
+      "netLoss": [
+        28.290754499582814,
+        45.742778815209185
+      ],
+      "mean": 37.016766657396,
+      "median": 37.016766657396
+    },
+    {
+      "rival": 361,
+      "level": 99,
+      "netLoss": [
+        47.538507528438146,
+        37.52733680517315
+      ],
+      "mean": 42.53292216680565,
+      "median": 42.53292216680565
+    }
+  ],
+  "targetMet": false,
+  "scope": "Two samples per same-level group; R8 misses the preselected 25-percent group mean and median criterion at Beast King 99. All attempts retained."
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "level30",
+      "expectedConcurrency": 1,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\cf6-head-final\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c0354dab37d4cd49941987ea7743979\\assignment-3c0354dab37d4cd49941987ea7743979\\attempt-3c0354dab37d4cd49941987ea7743979\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-reboot-probe-20261017\\groups\\level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-reboot-probe-20261017\\groups\\level30\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

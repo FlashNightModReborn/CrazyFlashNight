@@ -1,0 +1,32 @@
+{
+  "schema": "cf6.playtest-feedback.closeout.v1",
+  "primaryEvidence": "../20261017-playtest",
+  "primaryIntegritySha256": "cbac42918629b2b077a5b9cf4a8dedfbb33c582d10cf5b0bcd4489c613de9dbd",
+  "docGovernance": {
+    "exitCode": 0,
+    "existingNonBlockingWarnings": true
+  },
+  "diffCheckExitCode": 0,
+  "packageVerification": {
+    "passed": true,
+    "filesIncludingIntegrity": 492,
+    "bytesIncludingIntegrity": 101337385,
+    "maximumFileBytes": 6001972,
+    "losslessMappingsVerified": 488,
+    "currentSourceFilesVerified": 378,
+    "acceptedNativeRuns": 7,
+    "boundBuilds": 4,
+    "nativeImages": 47,
+    "pendingCompileMarkers": false
+  },
+  "flashCleanup": {
+    "originalRunnerSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+    "pendingMarkersAbsent": true,
+    "controlReceipts": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\flash-testplayer-control\\f0af00d5a3b3487d9d5acbb0f88f486d",
+    "editorPreserved": true,
+    "time": "2026-10-17T10:30:52.2340271+08:00"
+  },
+  "humanAcceptanceState": "pending",
+  "formalRuntimePromoted": false,
+  "commitOrPushPerformed": false
+}

@@ -1,0 +1,7 @@
+﻿_root.bladeBeamCapture=true;
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.cf6BladebotBeamRenderComplete = function():Void {
+    trace("FocusedTestRunId cf6-bladebot-beam-render Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-bladebot-beam-render Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6BladebotBeamRenderTest.runAllTests();

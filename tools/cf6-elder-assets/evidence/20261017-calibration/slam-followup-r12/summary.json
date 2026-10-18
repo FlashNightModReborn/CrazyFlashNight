@@ -1,0 +1,22 @@
+{
+  "status": "native_mechanism_verified; not_arena_executed",
+  "windowEffectiveFrames": 180,
+  "sameTargetAndIdentity": true,
+  "noExtraVulnerability": true,
+  "startMinimumRemainingFrames": 72,
+  "heavyCooldownUnchanged": 600,
+  "native": {
+    "assetPassed": 904,
+    "effectsPassed": 84,
+    "robotPassed": 45,
+    "totalPassed": 1033,
+    "timelineCases": 46,
+    "phaseCases": 13,
+    "audioPassed": 340,
+    "audioRoutes": 81
+  },
+  "firstFailedAttemptRetained": true,
+  "failureDiagnosis": "The added full-timeline real settlement consumed the shared first-emitted slam sample before later fixture replays. A pre-settlement field snapshot isolates the samples. The same production SWF then passed all effect, timeline and phase checks.",
+  "productionSwfSha256": "fe3b1fabe47755bb2e658a5b488ba8fffb926a21246efdfeae89356c82fead22",
+  "boundary": "No R12 arena experiment was executed. Native trajectories and collision fixtures do not certify player experience or balance."
+}

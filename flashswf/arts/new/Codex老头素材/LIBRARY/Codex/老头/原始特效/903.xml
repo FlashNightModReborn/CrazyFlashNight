@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/老头/原始特效/903" itemID="6aa00000-f262c071" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="903">
+      <layers>
+        <DOMLayer name="R3原生矢量" color="#9A5E59">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient focalPointRatio="0">
+                        <matrix>
+                          <Matrix a="0.0285797" b="0" c="0" d="0.0285797" tx="0" ty="0"/>
+                        </matrix>
+                        <GradientEntry color="#FF0066" ratio="0"/>
+                        <GradientEntry color="#FF0066" ratio="1" alpha="0"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!465 0[465 -193 328 -330[192 -465 0 -465[-193 -465 -330 -330[-465 -193 -465 0[-465 192 -330 328[-193 465 0 465[192 465 328 328[465 192 465 0" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -68,6 +68,8 @@ Codex 的装备装配以 `flashswf/arts/new/Codex专用素材/Codex专用素材.
 
 离线生成器同时收集各 `data_*` 覆盖后的完整外观及复合刀部件，登记为物品的 `appearanceVariants` 并补齐 skin 资源；它只负责资源闭包，不替 AS2 选择实例进阶。候选试穿替换当前槽的完整投影，退回基础款时不能残留上件的外观；共享人物取景仍由身体控制，不因长武器挤小人物。新增检查为 `node tools/test-character-build-appearance.js`，真实像素见 `node tools/run-character-build-dressup-harness.js` 的男女 M7 基础/重锤切换；资源闭包继续由 `tools/test-dressup-manifest-integrity.py` 检查。
 
+角色动作迁移须同时核对原作音效：删除内嵌音轨时，按原动作位置建立 `_root.播放音效` 调用与实际声音文件的映射，不把“声音文件存在”当作“动作已经播放”。原作时间轴声、脚本叫声、装备枪声和 CF7 改编分别记录；缺失统计只使用能对应的分母。可复用的来源核查、原生调用与听感证据边界见 [CF6 音效装配](../tools/cf6-audio/README.md)。
+
 ### 单一编辑源：FLA 转 XFL 后收尾
 
 FLA 与完整 XFL 是同一工程的两种保存形式；小型 `.xfl` 文件只是打开入口，必须连同 DOMDocument、LIBRARY、bin 等目录内容保留。确认工程转向 XFL 后移除旧 FLA，避免搜索、误打开、误编译和双份编辑漂移。SWF 是运行时产物，仍须保留；尚未转成 XFL 的库继续以 FLA 为源。

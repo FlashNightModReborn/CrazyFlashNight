@@ -1,0 +1,47 @@
+{
+  "qualified": true,
+  "originalArchive": "before-r21-shield-allocation.zip",
+  "path": "data/enemy_properties/CF6重制敌人.xml",
+  "beforeSha256": "96b8a04607639d9d53edd61af6487923edd825efd5df45b0eed494a9a12280d0",
+  "afterSha256": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380",
+  "onlyChangedEnemyNodes": [
+    "敌人-CF6老头机器人"
+  ],
+  "onlyChangedRobotFields": [
+    "空手攻击力_min",
+    "空手攻击力_max",
+    "标识"
+  ],
+  "onlyChangedFlags": [
+    "攻击倍率"
+  ],
+  "levels": [
+    {
+      "level": 30,
+      "oldAttack": 1265,
+      "newAttack": 813,
+      "waveRawRatio": 0.6426877470355731,
+      "slamRawRatio": 1.4460474308300395,
+      "shieldHardnessRatio": 1.0099378881987577
+    },
+    {
+      "level": 60,
+      "oldAttack": 1839,
+      "newAttack": 1184,
+      "waveRawRatio": 0.6438281674823274,
+      "slamRawRatio": 1.4486133768352365,
+      "shieldHardnessRatio": 1.0117299774722286
+    },
+    {
+      "level": 99,
+      "oldAttack": 2584,
+      "newAttack": 1666,
+      "waveRawRatio": 0.6447368421052632,
+      "slamRawRatio": 1.450657894736842,
+      "shieldHardnessRatio": 1.0131578947368418
+    }
+  ],
+  "humanHeadAndAllOtherEnemyNodesUnchanged": true,
+  "registrationsAndLedgerByteUnchanged": true,
+  "boundary": "Exact source impact and canonical formula outputs; no arena outcome or current Head execution is claimed."
+}

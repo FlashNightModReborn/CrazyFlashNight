@@ -1,0 +1,17 @@
+{
+  "schema": "arena-worker.launch.v1",
+  "workerId": "elder-w1",
+  "sessionEpoch": "session-ba481da2105b48babc131e27830b7d7c",
+  "projectRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+  "stateRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-worker\\session-ba481da2105b48babc131e27830b7d7c",
+  "saveRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\saves",
+  "outputRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration",
+  "swfOrigin": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\CRAZYFLASHER7MercenaryEmpire.swf",
+  "slot": "cf7_agent_aw_ba481da2105b48babc131e27830b7d7c",
+  "performance": {
+    "preset": "performance",
+    "mode": "fixed",
+    "maxRenderHeight": 180
+  },
+  "allowFaultInjection": false
+}

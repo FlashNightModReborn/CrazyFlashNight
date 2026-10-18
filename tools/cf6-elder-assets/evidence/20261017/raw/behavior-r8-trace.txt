@@ -1,0 +1,16 @@
+FocusedTestRunId cf6-elder Start: b7d1bc774fe642f392cf1b3a6ceaf5d0
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase9 successor-name-conflict
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase6 spawn-returned-empty
+[CF6_ELDER_PHASE_READY] parent=phaseCase12 child=phaseCase12__elderbot level=30 maxHp=9999 hp=0 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase11 successor-context-mismatch
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase10 successor-identity-lost
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase8 successor-identity-lost
+[CF6_ELDER_PHASE_READY] parent=phaseCase5 child=phaseCase5__elderbot level=99 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase4 child=phaseCase4__elderbot level=60 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_PHASE_READY] parent=phaseCase3 child=phaseCase3__elderbot level=30 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase2 child=phaseCase2__elderbot level=99 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_PHASE_READY] parent=phaseCase1 child=phaseCase1__elderbot level=60 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase0 child=phaseCase0__elderbot level=30 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase7 successor-initialization-timeout
+Cf6ElderAssetTest: 650 passed, 0 failed; 34 actual timeline cases; 13 phase cases
+FocusedTestRunId cf6-elder Complete: b7d1bc774fe642f392cf1b3a6ceaf5d0

@@ -1,0 +1,113 @@
+{
+  "schema": "cf6-combat-calibration.final-closure.v1",
+  "sealedAtUtc": "2026-10-18T10:52:52.955754+00:00",
+  "gitBaseAtSeal": "3dd6ca8a1afef1f2479beb7a5b94c08c9a1289c7",
+  "frozenSourceArchive": "current-final-source.zip",
+  "frozenSourceFiles": 2565,
+  "sourceCheckoutPolicy": {
+    "strictCheckoutFiles": 1578,
+    "additionalFrozenHostSourceFiles": 987,
+    "explicitExistingHostLineEndingConversions": 127,
+    "report": "current-final-validation/closeout/staged-current-input-verification-final-v2.json",
+    "boundary": "The source archive preserves every actual source byte. Additional Host evidence may retain explicitly recorded existing Git line-ending differences, with all raw hashes and a canonical LF comparison. Exact Host-source replay uses the archive; an ordinary checkout is not claimed to reproduce its execution bytes. Gameplay/AS2 and original bound inputs have no such exception."
+  },
+  "restorationOnlyBindings": [
+    {
+      "path": "scripts/TestLoader.as",
+      "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b",
+      "gitIgnored": true,
+      "purpose": "Private pre-existing scratch original: compared before and after to prove restoration, excluded from the committed-source archive. Actual suite templates and executed test SWFs are preserved in the package."
+    }
+  ],
+  "currentSwfs": [
+    {
+      "source": "flashswf/arts/new/Antigravity专用素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Antigravity专用素材.swf",
+      "bytes": 113124,
+      "sha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da"
+    },
+    {
+      "source": "flashswf/arts/new/CodexWings素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/CodexWings素材.swf",
+      "bytes": 97610,
+      "sha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34"
+    },
+    {
+      "source": "flashswf/arts/new/Codex光头保安素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex光头保安素材.swf",
+      "bytes": 189659,
+      "sha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621"
+    },
+    {
+      "source": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex大刀机器人素材.swf",
+      "bytes": 86270,
+      "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+    },
+    {
+      "source": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex大头机器人素材.swf",
+      "bytes": 235870,
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "source": "flashswf/arts/new/Codex特种兵素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 100202,
+      "sha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088"
+    },
+    {
+      "source": "flashswf/arts/new/Codex老头素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex老头素材.swf",
+      "bytes": 406329,
+      "sha256": "06c53247479dcf0abb424fdfbdf98f7a1ce2ca42b333b0b54fdbd8a0ad36a9d5"
+    },
+    {
+      "source": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/Codex蛮蛮素材.swf",
+      "bytes": 86613,
+      "sha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3"
+    },
+    {
+      "source": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "copy": "current-runtime-resources/flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "bytes": 1659399,
+      "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+    },
+    {
+      "source": "flashswf/arts/things-new.swf",
+      "copy": "current-runtime-resources/flashswf/arts/things-new.swf",
+      "bytes": 113918,
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "source": "scripts/asLoader.swf",
+      "copy": "current-runtime-resources/scripts/asLoader.swf",
+      "bytes": 6104332,
+      "sha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401"
+    }
+  ],
+  "selectedArena": [
+    {
+      "unit": "elder",
+      "path": "history/r22-full-awake",
+      "expectedRows": 36
+    },
+    {
+      "unit": "headbot",
+      "path": "history/head-c5-full-awake",
+      "expectedRows": 18
+    }
+  ],
+  "mergedLoaderClassScopePath": "upstream-base-siege-integration/base-siege-loader-class-scope.json",
+  "nativeReport": "current-final-validation/native/r22-final-native-assessment.json",
+  "hostReport": "current-final-validation/host/assessment.json",
+  "displayClosure": "display-scopes/final-completed/closure.json",
+  "priorIntegrityReport": "current-final-validation/closeout/prior-sealed-evidence-final.json",
+  "scope": "Current Headbot 472 and Elder 473 -> 474 acceptance under the explicitly requested criteria. Bladebot 465 retains its unchanged-resource historical evidence; no new C5 Bladebot arena execution is claimed.",
+  "statusAtSeal": "validated_ready_for_commit",
+  "gitDeliveryTrackedOutsideSeal": true,
+  "formalRuntimePromoted": false,
+  "standardEntryVerified": false,
+  "humanPlayerAcceptance": false
+}

@@ -1,0 +1,130 @@
+[INFO] 编译目标: publish -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader\asLoader.xfl (模式: publish)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader.swf (基线 6101116 bytes, 2026/10/18 12:52:35)
+[INFO] 触发编译... (超时 600s)
+[OK] 编译完成 (212s)
+[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志
+[INFO] compile_output.txt 已刷新: 2026/10/18 12:59:43
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader.swf (6104332 bytes, 2026/10/18 12:59:37)
+AS2 class ownership: {"errors":[],"files":2,"parsed":1,"cacheHits":1,"loaderClasses":728,"closureChecked":false,"policy":"production","milliseconds":134.5911}
+Merged base-siege loader published; no TestLoader behavior suite started.
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+{"source": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as", "functionSha256": "41ec5a010fa561be4fbc16d91c4f8173cb427bb2261ec89daf29817ac659beb2", "templateSha256": "a1fe26b66e6d4cfa4dafcbe7a54edee189ad880ebf284b066100b1af4a3f73cb"}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 899043 bytes, 2026/10/18 12:44:22)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (63s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder Start: a6213828de4645919ffebeeed87f5f35
+[CF6_ELDER_COMBAT_END] unit=phaseCase0 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase1 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase2 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase3 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase4 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase5 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase6 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase7 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase8 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase9 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase10 form=human level=60 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase11 form=human level=99 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=phaseCase12 form=human level=30 clock=2 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase5 form=human level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase14 form=human level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase23 form=robot level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[CF6_ELDER_COMBAT_END] unit=elderCase37 form=robot level=40 clock=3 starts=0 contacts=0 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=200 z=200 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 13:00:53
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (923843 bytes, 2026/10/18 13:00:48)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7254   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   23777 B  DefineFunction2  (anon)
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   12409 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-elder: 老头双形态原生攻击、死亡与连续阶段交接通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+{"ok": true, "cases": 81, "libraries": 8}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 923843 bytes, 2026/10/18 13:00:48)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (6s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-audio Start: e41aec07251a4d92ba04854685ef2d8d
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=14 calls=CF6_0904.mp3
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=22 calls=CF6_0904.mp3
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 13:01:27
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (8265 bytes, 2026/10/18 13:01:27)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 29   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    4027 B  DefineFunction2  (anon)
+    1761 B  DefineFunction2  (anon)
+    1535 B  DefineFunction2  (anon)
+    1491 B  DefineFunction2  (anon)
+    1396 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-audio: 八个实际SWF的原生音效调用和新增触发暂停边界通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 8265 bytes, 2026/10/18 13:01:27)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (56s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-player-aim Start: 16edd0e1289942d6acca32c410559af7
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 13:02:52
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (903532 bytes, 2026/10/18 13:02:48)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7205   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-player-aim: 玩家来源受击框与实际资源弹道验证完成; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.

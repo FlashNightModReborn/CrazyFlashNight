@@ -1,0 +1,3 @@
+onClipEvent(load){
+   gotoAndPlay("b" + random(3));
+}

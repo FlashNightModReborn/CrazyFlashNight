@@ -1,0 +1,201 @@
+{
+  "ok": true,
+  "test": "test-custom-match-code.js"
+}
+{
+  "ok": true,
+  "compiledSchemas": 47,
+  "closedActions": 13,
+  "proposalInvalidContinues": true,
+  "trustedL0InvalidFailedClosed": true,
+  "parametersHashClosed": true,
+  "contaminationSchemaValid": true,
+  "finalCandidateGateEnforced": true,
+  "lowTimeoutGateEnforced": true
+}
+{
+  "ok": true,
+  "gate": "B",
+  "producerRegistryFailClosed": true,
+  "writerContentionRejected": true,
+  "crashPoints": [
+    "beforeFirstFlush",
+    "afterFirstFlush",
+    "beforeSecondFlush",
+    "ackLost"
+  ],
+  "ackLossExactlyOnce": true,
+  "pauseResumeTraced": true,
+  "truncatedTailExcluded": true,
+  "closedSegmentTamperRejected": true
+}
+{
+  "ok": true,
+  "gates": [
+    "C_machine_contract",
+    "D_machine_contract",
+    "E_packet_contract"
+  ],
+  "shadowProfiles": 3,
+  "blindPacketGenerated": true,
+  "hardGateFailureBlocksBlindPacket": true,
+  "pairedNodes": 5,
+  "disconnectedComponents": 3,
+  "bridgeSuggestions": 2,
+  "pveEncounters": 2,
+  "humanEvidenceFabricated": false
+}
+{
+  "ok": true,
+  "gate": "F0",
+  "frozenPlanHashBound": true,
+  "manifestTamperRejected": true,
+  "decisionEvidenceTamperRejected": true,
+  "diskAndProducerGatesFailClosed": true,
+  "infrastructureSoakTimeoutStillBlocks": true,
+  "candidateTimeoutDeferredWithoutInfrastructureFailure": true,
+  "expiredExecutionGrantStillCommitsFacts": true,
+  "prematureCompleteRejected": true,
+  "partialRowsDurablyCommitted": 10,
+  "duplicateRowsExcluded": 5,
+  "attentionDefaultsRemoved": true,
+  "eligibleEpochMinimum": 20,
+  "exceptionInboxDeduped": true,
+  "gateFReceiptEventSchemaValidated": true
+}
+{"ok":true,"check":"gate-f-candidate-quarantine-and-async-review","deterministicDefault":"quarantine_candidate","campaignAction":"defer_and_continue","modelAutoAcceptAuthority":false}
+{"ok":true,"check":"arena-summon-lineage-source","trackedSpawnerBindings":18,"hostileLiteralDerivedSpawners":1,"derivedFactionBindingLayers":3,"as2Utf8Bom":true,"normalGameplayFallbackPreserved":true}
+{"ok":true,"exactSolOrigin":true,"ambiguityRejected":true,"solOnlyAndCustomSavesProtected":true,"immutableEvidence":true,"exactRunningBatch":true}
+[PASS] lifecycle denominator includes serial startup and final shutdown
+[PASS] missing receipt cannot disappear from the speedup denominator
+[PASS] hash mismatch preserves invalid evidence instead of counting a rewritten result
+[PASS] partial raw set is observed but cannot qualify throughput
+[PASS] natural combat timeout remains a fact and is excluded from strength samples
+[PASS] successful status with error payload does not become an accepted sample
+[PASS] another worker epoch cannot be relabeled by a matching raw file digest
+[PASS] same physical attempt copied to another pathname is counted only as invalid
+[PASS] two sequential workers do not count as actual two-worker concurrency
+[PASS] different frozen roster invalidates the cross-group ratio
+[PASS] different candidate runtime invalidates the cross-group ratio
+[PASS] global protected save mutation blocks a successful pair
+[PASS] claimed unchanged snapshot must itself hash to its stored bytes
+[PASS] unknown shutdown and changed resources both deny qualification
+[PASS] a receipt cannot be reused in multiple comparison positions
+[PASS] wall duration cannot silently omit teardown
+[PASS] half-open intervals do not invent concurrency at a handover
+[PASS] isolated fixtures cannot be promoted to live evidence by the measurement CLI
+[PASS] completed batch cannot hide a runner failure
+[PASS] synthetic timeout without a Flash clock is an infrastructure failure
+[PASS] overlapping jobs cannot claim independence while sharing process or save roots
+[PASS] resource closure claim is recomputed from the recorded file set
+[PASS] an unobserved Flash or changed candidate denies lifecycle qualification
+[PASS] process CPU uses the sampled same-process interval and leaves child processes outside scope
+[PASS] missing or null process counters are unknown rather than zero CPU or RAM
+[PASS] PID reuse cannot bridge CPU samples across a new process identity
+[PASS] regressing counters do not produce invented negative or partial CPU estimates
+[PASS] window point samples distinguish background, foreground, hidden and minimized states
+[PASS] requested performance remains distinct from observed inactive or stale display state
+[PASS] coordinator denominator includes group preparation and global protection after all recycling
+[PASS] coordinator timing cannot omit a known startup or shutdown interval
+[PASS] coordinator timing must bind the same receipt bytes used by the measurement
+[PASS] coordinator timing cannot silently drop a failed planned attempt
+Worker P0 metrics: 33/33 passed
+{"ok":true,"evidenceKind":"isolated_fixture","ownerAndPidFence":true,"exactEchoRequired":true,"globalSaveAllowlistExact":true,"rawTupleMismatchRetainedAndRejected":true,"sequentialShardAndRecycling":true,"resourceHashRootIndependent":true}
+Worker projection contracts: 48 checks passed
+{"ok":true,"evidenceKind":"isolated_fixture","canonicalHelperReused":true,"childEnvironmentOnly":true,"actualProcessQueries":0,"actualHostStarts":0}
+{"ok":true,"workerEvidence":"isolated_fixture","fullSnapshotAlgorithmPreserved":true,"httpResponseDuringOtherShardResourceRead":true,"genuineTimeoutAndResetRemainFailures":true,"noRetry":true,"incompleteOrChangedEvidenceRejected":true}
+{"ok":true,"evidenceKind":"isolated_fixture","frozenReceiptSet":true,"exactFreshSlots":true,"parallelAllSettled":true,"missingReceiptStopsLaterGroups":true,"seedSourceMutationPreserved":true,"experimentReplayRejected":true}
+{"ok":true,"evidenceKind":"isolated_fixture","windowsHttpSysRequestQueueOwner":true,"kernelPidAloneNotTrusted":true,"directChildRecycled":true,"productionCredentialsUsed":false}
+{"ok":true,"evidenceKind":"isolated_fixture","rejectionChecks":69,"exactAtomicFaultReceipt":true,"unknownDeliveryNeverResubmitted":true,"staleTupleNeverRebound":true,"neighborSelectedRunAfterKillRequired":true,"actualProcessQueries":0,"actualTerminations":0,"liveIsolationVerified":false}
+{"ok":true,"check":"shadow-model-output-contract","profiles":3,"modelInvocations":4}
+{"ok":true,"check":"blind-model-review-contract","modelInvocations":1}
+{"ok":true,"check":"exception-review-output-contract","modelInvocations":1,"autoAcceptAuthority":false}
+{"ok":true,"check":"pve-readiness-contract","encounterCodes":2,"calibrationObjective":"monster_group_to_humanoid_mercenary_equivalence"}
+{"ok":true,"check":"human-pve-session-contract","controlTransport":"owned-file-signal","commands":["next","finish","abort"]}
+{"ok":true,"check":"finalize-human-pve-contract","calibrationObjective":"monster_group_to_humanoid_mercenary_equivalence"}
+{"ok":true,"check":"active-shard-contract","cases":4,"freshRuns":10}
+{"ok":true,"check":"confirmatory-shard-contract","freshRuns":21,"targetSamples":30}
+{"ok":true,"check":"gate-f-week-plan-contract","standardCandidateRuns":55,"longTimeoutCandidateRuns":60,"firstSoakShards":3,"sideSwapAlwaysPlanned":true,"evidenceBoundTimeoutPromotion":true,"invalidTimeoutOverridesRejected":true,"infrastructureSoakRequiresHashBoundStableAdmission":true,"newWeekPlanRequiresDerivedFactionAdmissionV2":true,"wrongSideOrUnobservedDerivedSpawnsRejected":true,"everyInfrastructureSoakReplaysDerivedFactionCases":true,"allSoaksCoverOrdinaryPayloadFormationLongTimeoutAndHighLevel":true,"stochasticC9RetainedInStandardPhases":true}
+{
+  "ok": true,
+  "check": "arena-production-recommendation-contract",
+  "formalWrite": false,
+  "productionProfile": {
+    "spawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54
+  },
+  "workbookBandExample": {
+    "source": "20-25级",
+    "tierId": "arena-5"
+  },
+  "humanOverrideExample": {
+    "equivalentHumanoidLevel": 10,
+    "tierId": "arena-2"
+  },
+  "crossTierContinuousFit": false
+}
+{
+  "ok": true,
+  "check": "arena-production-apply-contract",
+  "exactHumanBundleHashRequired": true,
+  "forceMode": false,
+  "rollbackOnVerificationFailure": true,
+  "formalWrite": false
+}
+{
+  "ok": true,
+  "timeoutPolicies": {
+    "smoke": {
+      "frames": 3600,
+      "id": "smoke_3600"
+    },
+    "exploration": {
+      "frames": 1800,
+      "id": "exploration_1800"
+    },
+    "confirmatory": {
+      "frames": 1800,
+      "id": "confirmatory_1800"
+    }
+  },
+  "workbookWrite": false
+}
+{
+  "ok": true,
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "pilot-2026-10-18-a",
+  "manifestHash": "sha256:f2786da3d4c86736f6a990afec6cfc5036584958e333b2c9c46ab1cf59af9543",
+  "cases": 1,
+  "output": null
+}
+{
+  "ok": true,
+  "schema": "arena-calibration.summary.v1",
+  "batchId": "pilot-fixture",
+  "cases": 1,
+  "rows": 5,
+  "errors": 0
+}
+{
+  "ok": true,
+  "schema": "arena-calibration.next-batch.v1",
+  "sourceBatchId": "pilot-fixture",
+  "decisions": 1,
+  "planner": "rule"
+}
+{
+  "ok": true,
+  "batchId": "unattended-check",
+  "agentEntryContract": "s:1|ga:<attemptId>",
+  "rawResultSchemaValidated": true,
+  "manifestCaseBindingsValidated": true,
+  "authorityRerunPreserved": true
+}
+{"ok":true,"check":"gate-fctl-contract","commands":["freeze","arm","run","status","revoke"],"stdinMode":"disabled","defaultMaxShards":"all_remaining"}
+{
+  "ok": true,
+  "checked": 85,
+  "schemaInstancesValidated": true
+}

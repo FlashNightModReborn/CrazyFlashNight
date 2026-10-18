@@ -1,0 +1,12 @@
+[INFO] 编译目标: publish -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader\asLoader.xfl (模式: publish)
+[INFO] publish 目标 -> 自动启用 -VerifySwf scripts/asLoader.swf
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 294 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\asLoader.swf (基线 6067062 bytes, 2026/10/17 16:42:12)
+[INFO] 触发编译... (超时 240s)
+[TIMEOUT] 240 秒未完成，可能原因：
+  - Flash CS6 未运行
+  - TestLoader 未在 Flash 中打开
+  - CompileTriggerTask 计划任务未创建
+  - 仍在弹 UAC 或旧任务卡住
+  - 慢 CPU / 低压平板编译未结束 → 用 -TimeoutSeconds 调大重试

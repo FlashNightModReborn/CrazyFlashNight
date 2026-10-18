@@ -44,52 +44,58 @@
             <DOMFrame index="42" keyMode="9728" duration="9">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="51" keyMode="9728" name="拾取" labelType="name">
+            <DOMFrame index="51" keyMode="9728" name="激光束" labelType="name">
               <elements/>
             </DOMFrame>
             <DOMFrame index="52" keyMode="9728" duration="9">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="61" keyMode="9728" name="躲闪" labelType="name">
+            <DOMFrame index="61" keyMode="9728" name="拾取" labelType="name">
               <elements/>
             </DOMFrame>
             <DOMFrame index="62" keyMode="9728" duration="9">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728" name="被击" labelType="name">
+            <DOMFrame index="71" keyMode="9728" name="躲闪" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="72" keyMode="9728" duration="7">
+            <DOMFrame index="72" keyMode="9728" duration="9">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="79" keyMode="9728" name="击倒" labelType="name">
+            <DOMFrame index="81" keyMode="9728" name="被击" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="80" keyMode="9728" duration="8">
+            <DOMFrame index="82" keyMode="9728" duration="7">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728" name="倒地" labelType="name">
+            <DOMFrame index="89" keyMode="9728" name="击倒" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="89" keyMode="9728" duration="6">
+            <DOMFrame index="90" keyMode="9728" duration="8">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" name="被投" labelType="name">
+            <DOMFrame index="98" keyMode="9728" name="倒地" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="96" keyMode="9728" duration="8">
+            <DOMFrame index="99" keyMode="9728" duration="6">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" name="血腥死" labelType="name">
+            <DOMFrame index="105" keyMode="9728" name="被投" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="105" keyMode="9728" duration="15">
+            <DOMFrame index="106" keyMode="9728" duration="8">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" name="消失" labelType="name">
+            <DOMFrame index="114" keyMode="9728" name="血腥死" labelType="name">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="121" keyMode="9728" duration="4">
+            <DOMFrame index="115" keyMode="9728" duration="15">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="130" keyMode="9728" name="消失" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="131" keyMode="9728" duration="4">
               <elements/>
             </DOMFrame>
           </frames>
@@ -102,17 +108,25 @@
 女_攻击呐喊_库=[]; 女_中招呐喊_库=[]; 女_击倒呐喊_库=[];
 初始化敌人模板=_root.初始化敌人模板; 初始化敌人模板();
 // 起手到发力段同时持有刚体与抗位移；收招恢复原状态，不减免伤害。
-// 大刀机器人私有近战：CF6 重劈和横扫，CF7 仇恨、移动、碰撞与死亡权威。
+// CF6 重劈和横扫把敌人推入波属性光束射程；伤害与位移使用 CF7 权威。
 bladebotClock=0;
 bladebotReadyAt=6;
 bladebotNextSweep=0;
+bladebotNextBeam=0;
+bladebotCombo=null;
+bladebotComboCount=0;
 bladebotTargetName="";
 bladebotAttackOwner=null;
 bladebotAttackCount=0;
 bladebotHitCount=0;
 bladebotDeathFxPlayed=false;
 bladebotTuning={cleaveRange:245,sweepRange:145,laneRange:30,keepDistance:185,
-    reactionFrames:6,recoveryFrames:0,sweepCooldown:75,maximumTargetHeight:150,airSweepRange:190,cleaveTargetHeight:80};
+    reactionFrames:6,recoveryFrames:0,sweepCooldown:75,maximumTargetHeight:150,airSweepRange:190,cleaveTargetHeight:80,
+    beamMinRange:250,beamRange:600,beamCooldown:90,comboWindow:45};
+
+bladebotState=function(action:String):String {
+    return action=="beam"?"激光束":action=="sweep"?"近战":"空手攻击";
+};
 
 bladebotCancelAttack=function():Void {
     var owner:Object=this.bladebotAttackOwner;
@@ -124,25 +138,60 @@ bladebotCancelAttack=function():Void {
 
 bladebotBeginAttack=function(body:MovieClip,action:String):Void {
     this.bladebotCancelAttack();
-    if(!(this.hp>0)) {body.stop();return;}
+    this.bladebotCombo=null;
+    if(!(this.hp>0) || this.状态!=this.bladebotState(action)) {body.stop();return;}
     var token:Object={}; body.bladebotToken=token;
     this.bladebotAttackOwner={token:token,action:action,active:true,
         previousRigid:this.刚体===true,previousImmune:this.免疫击退===true,ownsRigid:true,lastHitFrame:0,target:this.攻击目标};
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(target.hp>0){
+        if(target.__bladebotComboIdentity==undefined)target.__bladebotComboIdentity={};
+        this.bladebotAttackOwner.targetIdentity=target.__bladebotComboIdentity;
+    }
+    if(action=="beam")this.bladebotLockBeamAim(body,target);
     this.刚体=true;this.免疫击退=true;
     this.bladebotAttackCount++;
     if(action=="sweep") this.bladebotNextSweep=this.bladebotClock+this.bladebotTuning.sweepCooldown;
+    if(action=="beam") {this.bladebotNextBeam=this.bladebotClock+this.bladebotTuning.beamCooldown;this.bladebotCombo=null;}
+};
+
+// 起手锁定实际受击框中心；光束图形与接触框共用同一眼部支点和旋转。
+bladebotLockBeamAim=function(body:MovieClip,target:MovieClip):Void {
+    var owner:Object=this.bladebotAttackOwner;owner.beamAngle=0;
+    if(!(target.hp>0) || target.area==null)return;
+    var bounds:Object=target.area.getBounds(_root.gameworld);
+    if(!(bounds.xMax>bounds.xMin) || !(bounds.yMax>bounds.yMin))return;
+    var aim:Object={x:(bounds.xMin+bounds.xMax)/2,
+        y:(bounds.yMin+bounds.yMax)/2+this.Z轴坐标-target.Z轴坐标};
+    _root.gameworld.localToGlobal(aim);body.globalToLocal(aim);
+    if(!(aim.x>7.1) || isNaN(aim.y))return;
+    owner.beamAngle=Math.max(-25,Math.min(25,Math.atan2(aim.y+31.9,aim.x-7.1)*180/Math.PI));
+};
+bladebotAimPart=function(part:MovieClip):Void {
+    var owner:Object=this.bladebotAttackOwner;
+    if(owner==null || owner.action!="beam" || part._parent!==this.man || part.bladebotAimToken===owner.token)return;
+    part.bladebotAimToken=owner.token;
+    var angle:Number=owner.beamAngle*Math.PI/180,c:Number=Math.cos(angle),s:Number=Math.sin(angle);
+    var m:flash.geom.Matrix=part.transform.matrix,a:Number=m.a,b:Number=m.b,cc:Number=m.c,d:Number=m.d;
+    var x:Number=m.tx-7.1,y:Number=m.ty+31.9;
+    m.a=c*a-s*b;m.b=s*a+c*b;m.c=c*cc-s*d;m.d=s*cc+c*d;
+    m.tx=7.1+c*x-s*y;m.ty=-31.9+s*x+c*y;part.transform.matrix=m;
 };
 
 bladebotCanAct=function(body:MovieClip):Boolean {
     var owner:Object=this.bladebotAttackOwner;
     return !_root.暂停 && this.hp>0 && !this.硬直中 && owner!=null && owner.active
         && body===this.man && body.bladebotToken===owner.token
-        && this.状态==(owner.action=="sweep"?"近战":"空手攻击");
+        && this.状态==this.bladebotState(owner.action);
 };
 
 bladebotFinishAttack=function(body:MovieClip):Void {
     var owner:Object=this.bladebotAttackOwner;
     if(owner==null || body!==this.man || owner.token!==body.bladebotToken) return;
+    if(owner.action=="cleave" && owner.lastHitFrame>0 && owner.targetIdentity!=undefined){
+        this.bladebotCombo={target:owner.target,identity:owner.targetIdentity,
+            expires:this.bladebotClock+this.bladebotTuning.comboWindow};
+    }
     this.bladebotCancelAttack();
     this.bladebotReadyAt=this.bladebotClock+this.bladebotTuning.recoveryFrames;
     this.动画完毕();
@@ -161,19 +210,52 @@ bladebotAdvance=function(body:MovieClip,amount:Number):Void {
 };
 
 bladebotStrike=function(body:MovieClip,point:MovieClip,multiplier:Number):Void {
-    if(!this.bladebotCanAct(body) || point.area==null) return;
+    this.bladebotAimPart(point);
+    if(!this.bladebotCanAct(body) || point.area==null || point._parent!==body
+        || point.bladebotToken!==body.bladebotToken || point.bladebotHitFrame!=body._currentframe) return;
     var owner:Object=this.bladebotAttackOwner;
-    if(owner.lastHitFrame==body._currentframe) return;
+    var frame:Number=body._currentframe;
+    if(owner.action=="beam"?frame!=11:owner.action=="cleave"?(frame!=20 && frame!=22):
+        (frame!=19 && frame!=22 && frame!=25 && frame!=28 && frame!=31 && frame!=34))return;
+    if(owner.lastHitFrame>=frame) return;
     owner.lastHitFrame=body._currentframe;
     var p:Object={x:point._x,y:point._y};
     body.localToGlobal(p); _root.gameworld.globalToLocal(p);
     var heavy:Boolean=owner.action=="cleave";
+    var beam:Boolean=owner.action=="beam";
     this.bladebotHitCount++;
     _root.子弹区域shoot传递({声音:"",霰弹值:1,子弹散射度:0,发射效果:"",
         子弹种类:"近战子弹",子弹威力:this.空手攻击力*multiplier,子弹速度:0,
         Z轴攻击范围:30,击中地图效果:"",发射者:this._name,shootX:p.x,shootY:p.y,
         shootZ:this.Z轴坐标,击倒率:heavy?3:10,击中后子弹的效果:"空手攻击火花",
-        水平击退速度:heavy?8:3,垂直击退速度:heavy?5:2,区域定位area:point.area});
+        水平击退速度:heavy?24:beam?2:3,垂直击退速度:heavy || beam?0:2,区域定位area:point.area,
+        伤害类型:beam?"魔法":"物理",魔法伤害属性:beam?"波":undefined});
+};
+
+// 暂停期间 onLoad 到达时保留本帧，恢复后只补一次实际接触。
+bladebotBodyTick=function(body:MovieClip):Void {
+    if(body===this.man && body.bladebotMode=="death"){
+        if(this.cf6RobotDeathTick(body) && body._currentframe<body._totalframes)body.nextFrame();
+        return;
+    }
+    if(!this.bladebotCanAct(body))return;
+    var owner:Object=this.bladebotAttackOwner,frame:Number=body._currentframe;
+    var due:Boolean=owner.action=="beam"?frame==11:owner.action=="cleave"?(frame==20 || frame==22):
+        (frame==19 || frame==22 || frame==25 || frame==28 || frame==31 || frame==34);
+    if(due && owner.lastHitFrame<frame){
+        this.bladebotStrike(body,body.攻击点,owner.action=="cleave"?2.4:1);
+        if(owner.lastHitFrame<frame)return;
+    }
+    if(frame<body._totalframes)body.nextFrame();
+};
+
+bladebotComboReady=function(target:MovieClip,dx:Number,dz:Number,height:Number):Boolean {
+    var combo:Object=this.bladebotCombo,tune:Object=this.bladebotTuning;
+    if(combo==null || isNaN(dx) || isNaN(dz) || isNaN(height))return false;
+    if(this.bladebotClock>combo.expires || !(target.hp>0) || target._parent!==this._parent
+        || target._name!=combo.target || target.__bladebotComboIdentity!==combo.identity){this.bladebotCombo=null;return false;}
+    return dx>=tune.beamMinRange && dx<=tune.beamRange && dz<=tune.laneRange && height<=tune.cleaveTargetHeight
+        && this.bladebotClock>=this.bladebotNextBeam && this.bladebotClock>=this.bladebotReadyAt;
 };
 
 bladebotChooseAttack=function(dx:Number,dz:Number,height:Number):String {
@@ -185,13 +267,15 @@ bladebotChooseAttack=function(dx:Number,dz:Number,height:Number):String {
     }
     if(dx<=tune.sweepRange && this.bladebotClock>=this.bladebotNextSweep) return "sweep";
     if(dx<=tune.cleaveRange) return "cleave";
+    if(dx>=tune.beamMinRange && dx<=tune.beamRange && height<=tune.cleaveTargetHeight
+        && this.bladebotClock>=this.bladebotNextBeam)return "beam";
     return "none";
 };
 
 bladebotDeathFx=function():Void {
     if(this.bladebotDeathFxPlayed) return;
     this.bladebotDeathFxPlayed=true;
-    // 使用已装载 CF7 表现；不复制旧 CF6 混淆脚本，也不产生死亡伤害。
+    // 小火花先行，私有矢量爆裂和一次性亡语另由死亡时钟管理。
     _root.效果("火花",this._x,this._y-65,this._xscale*1.4);
     _root.效果("小烟雾",this._x,this._y-65,this._xscale*1.4);
 };
@@ -206,11 +290,11 @@ bladebotTick=function():Void {
     }
     var owner:Object=this.bladebotAttackOwner;
     if(owner!=null) {
-        var state:String=owner.action=="sweep"?"近战":"空手攻击";
+        var state:String=this.bladebotState(owner.action);
         if(this.状态!=state || this.man.bladebotToken!==owner.token) this.bladebotCancelAttack();
         else {
             var frame:Number=this.man._currentframe;
-            var active:Boolean=owner.action=="sweep"?(frame>=1 && frame<=40):(frame>=1 && frame<=30);
+            var active:Boolean=owner.action=="sweep"?(frame>=1 && frame<=40):owner.action=="beam"?(frame>=1 && frame<=11):(frame>=1 && frame<=30);
             if(active && !owner.ownsRigid) {
                 owner.previousRigid=this.刚体===true;owner.previousImmune=this.免疫击退===true;
                 owner.ownsRigid=true;this.刚体=true;this.免疫击退=true;
@@ -240,7 +324,9 @@ bladebotTick=function():Void {
         this.bladebotTargetName=target._name;
         this.bladebotReadyAt=this.bladebotClock+this.bladebotTuning.reactionFrames;
     }
-    var action:String=this.bladebotChooseAttack(Math.abs(dx),Math.abs(dz),height);
+    var action:String;
+    if(this.bladebotComboReady(target,Math.abs(dx),Math.abs(dz),height)) {action="beam";this.bladebotComboCount++;}
+    else action=this.bladebotChooseAttack(Math.abs(dx),Math.abs(dz),height);
     if(action=="none") {
         this.上行=dz< -6;this.下行=dz>6;
         this.左行=dx< -this.bladebotTuning.keepDistance;this.右行=dx>this.bladebotTuning.keepDistance;
@@ -249,7 +335,36 @@ bladebotTick=function():Void {
     }
     this.左行=this.右行=this.上行=this.下行=false;
     if(dx<0) this.方向改变("左"); else if(dx>0) this.方向改变("右");
-    this.状态改变(action=="sweep"?"近战":"空手攻击");
+    this.状态改变(this.bladebotState(action));
+};
+
+// 三种 CF6 机器人共用一次性亡语；视觉是私有矢量，声音走原生 SFX，伤害走正常子弹管线。
+cf6RobotDeathIdentity={};cf6RobotDeathSpent=false;
+cf6ArmRobotDeath=function(body:MovieClip,burstFrame:Number):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world.__cf6RobotDeathWorldIdentity==undefined)world.__cf6RobotDeathWorldIdentity={};
+    body.cf6RobotDeathIdentity=this.cf6RobotDeathIdentity;
+    body.cf6RobotDeathWorldIdentity=world.__cf6RobotDeathWorldIdentity;
+    body.cf6RobotDeathBurstFrame=burstFrame;
+};
+cf6RobotDeathTick=function(body:MovieClip):Boolean {
+    if(_root.暂停 || body!==this.man || this._parent!==_root.gameworld
+        || body.cf6RobotDeathIdentity!==this.cf6RobotDeathIdentity
+        || body.cf6RobotDeathWorldIdentity!==_root.gameworld.__cf6RobotDeathWorldIdentity)return false;
+    if(body._currentframe!=body.cf6RobotDeathBurstFrame || this.cf6RobotDeathSpent===true)return true;
+    // 只画死亡姿态的预览不获得伤害授权。
+    if(isNaN(this.hp) || this.hp>0)return true;
+    var point:MovieClip=body.cf6DeathPoint;
+    if(point.area==null || point._parent!==body || point.cf6RobotDeathIdentity!==this.cf6RobotDeathIdentity)return false;
+    this.cf6RobotDeathSpent=true;
+    var p:Object={x:point._x,y:point._y};body.localToGlobal(p);_root.gameworld.globalToLocal(p);
+    _root.播放音效("CF6_1009.mp3");
+    _root.子弹区域shoot传递({声音:"",霰弹值:1,子弹散射度:0,发射效果:"",子弹种类:"近战子弹",
+        子弹威力:this.空手攻击力*2,子弹速度:0,Z轴攻击范围:80,击中地图效果:"",
+        发射者:this._name,shootX:p.x,shootY:p.y,shootZ:this.Z轴坐标,击倒率:3,
+        击中后子弹的效果:"火花",水平击退速度:8,垂直击退速度:0,
+        区域定位area:point.area,伤害类型:"物理",cf6DeathBurst:true});
+    return true;
 };
 ]]></script>
               </Actionscript>
@@ -261,23 +376,23 @@ bladebotTick=function():Void {
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="2" keyMode="9728" duration="118">
+            <DOMFrame index="2" keyMode="9728" duration="128">
               <elements/>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728">
+            <DOMFrame index="130" keyMode="9728">
               <Actionscript>
                 <script><![CDATA[hp=0; bladebotCancelAttack();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
-            <DOMFrame index="121" keyMode="9728" duration="4">
+            <DOMFrame index="131" keyMode="9728" duration="4">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="私有行为" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="120">
+            <DOMFrame index="0" keyMode="9728" duration="130">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/行为驱动" name="bladebotDriver">
                   <matrix>
@@ -292,14 +407,14 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="5">
+            <DOMFrame index="130" keyMode="9728" duration="5">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="文字信息" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="120">
+            <DOMFrame index="0" keyMode="9728" duration="130">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/CF7/Symbol 32" name="人物文字信息">
                   <matrix>
@@ -311,14 +426,14 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="5">
+            <DOMFrame index="130" keyMode="9728" duration="5">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="受击包围盒" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="104">
+            <DOMFrame index="0" keyMode="9728" duration="114">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/CF7/Symbol 19" name="area">
                   <matrix>
@@ -330,7 +445,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" duration="21">
+            <DOMFrame index="114" keyMode="9728" duration="21">
               <elements/>
             </DOMFrame>
           </frames>
@@ -349,7 +464,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" duration="96">
+            <DOMFrame index="29" keyMode="9728" duration="106">
               <elements/>
             </DOMFrame>
           </frames>
@@ -371,7 +486,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="29" keyMode="9728" duration="96">
+            <DOMFrame index="29" keyMode="9728" duration="106">
               <elements/>
             </DOMFrame>
           </frames>
@@ -452,9 +567,9 @@ bladebotTick=function():Void {
             </DOMFrame>
             <DOMFrame index="51" keyMode="9728" duration="10">
               <elements>
-                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/站立" name="man">
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/波属性光束" name="man">
                   <matrix>
-                    <Matrix tx="22.5" ty="-120.582516"/>
+                    <Matrix tx="4.75" ty="-106.082516"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>
@@ -474,7 +589,19 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="71" keyMode="9728" duration="8">
+            <DOMFrame index="71" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/站立" name="man">
+                  <matrix>
+                    <Matrix tx="22.5" ty="-120.582516"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="81" keyMode="9728" duration="8">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/被击" name="man">
                   <matrix>
@@ -489,7 +616,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="79" keyMode="9728" duration="9">
+            <DOMFrame index="89" keyMode="9728" duration="9">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/击飞姿势" name="man">
                   <matrix>
@@ -504,7 +631,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="88" keyMode="9728" duration="7">
+            <DOMFrame index="98" keyMode="9728" duration="7">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/倒地恢复" name="man">
                   <matrix>
@@ -519,7 +646,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="95" keyMode="9728" duration="9">
+            <DOMFrame index="105" keyMode="9728" duration="9">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/击飞姿势" name="man">
                   <matrix>
@@ -534,7 +661,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="104" keyMode="9728" duration="16">
+            <DOMFrame index="114" keyMode="9728" duration="16">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/动作/机械碎裂" name="man">
                   <matrix>
@@ -546,14 +673,14 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="5">
+            <DOMFrame index="130" keyMode="9728" duration="5">
               <elements/>
             </DOMFrame>
           </frames>
         </DOMLayer>
         <DOMLayer name="全状态接地阴影" color="#4FFF4F">
           <frames>
-            <DOMFrame index="0" keyMode="9728" duration="120">
+            <DOMFrame index="0" keyMode="9728" duration="130">
               <elements>
                 <DOMSymbolInstance libraryItemName="Codex/大刀机器人/CF7/Symbol 2" name="bladebotShadow">
                   <matrix>
@@ -565,7 +692,7 @@ bladebotTick=function():Void {
                 </DOMSymbolInstance>
               </elements>
             </DOMFrame>
-            <DOMFrame index="120" keyMode="9728" duration="5">
+            <DOMFrame index="130" keyMode="9728" duration="5">
               <elements/>
             </DOMFrame>
           </frames>

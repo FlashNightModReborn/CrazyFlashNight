@@ -1,0 +1,28 @@
+{
+  "source": "scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as",
+  "sha256": "419b1924fbdb99e793d853d1309b094ec16ec1712d69f659013994417ee16a71",
+  "functions": [
+    "地图元件破碎动画",
+    "停止地图元件破碎动画",
+    "地图元件破碎动画运行中"
+  ],
+  "planSha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b",
+  "outputs": [
+    {
+      "path": "scripts/test-runners/cf6-robot-death-render/DeathFixture.as",
+      "sha256": "283687613f8406a81dd873f04f64f8fbb114227a06f83e123584e946bba6feba"
+    },
+    {
+      "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-headbot.as.template",
+      "sha256": "5fd80d6f8c29f35f8a9e39afdce90109d1a43ff8d35c505a9b67b372c1e97519"
+    },
+    {
+      "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-elder.as.template",
+      "sha256": "e569c8b977a9df1ff144c4243fcf13ccda833c47b761083ae5119b15376f77c5"
+    },
+    {
+      "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-bladebot.as.template",
+      "sha256": "3c43702de55969e3d9386a603310a2f401d36f957016b5d5ade96dbbe0319553"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+python.exe : Traceback (most recent call last):
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\cf6-combat-calibrat
+ion-20261017\build-and-test-r19.ps1:8 char:1
++ & python -X utf8 -B tools/cf6-elder-assets/balance.py --write *> "$ta ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Traceback (most recent call last)::String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 

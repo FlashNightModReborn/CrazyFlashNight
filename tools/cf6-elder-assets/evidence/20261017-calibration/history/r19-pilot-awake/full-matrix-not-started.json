@@ -1,0 +1,12 @@
+{
+  "recordedAtUtc": "2026-10-18T05:33:36.898626+00:00",
+  "plannedRows": 36,
+  "started": false,
+  "planGenerated": false,
+  "reason": "The complete exploratory R19 pilot contains two EXUSIAI wins and the Beast level-99 mean/median is above 80 percent. The guarded full-matrix preparer was not executed.",
+  "preparationOnly": [
+    "support/prepare-r19-full.py",
+    "support/run-r19-full.ps1",
+    "support/split-full-repeat-plan.js"
+  ]
+}

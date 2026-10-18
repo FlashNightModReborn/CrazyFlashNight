@@ -1,0 +1,84 @@
+{
+  "files": [
+    {
+      "path": "coordinator/execution-started.json",
+      "sha256": "88a1bdb10284a9ced4dd41837ab54cf9d00234207d4e484b03be23fb408f3fa2",
+      "bytes": 149
+    },
+    {
+      "path": "coordinator/expected-receipts.json",
+      "sha256": "598d84d9324b82370969c360e461c88ce2863ba07bcadc0c7627e1f6bd1a919b",
+      "bytes": 693
+    },
+    {
+      "path": "coordinator/experiment-report.json",
+      "sha256": "533fee0eba70dedd4377535d0fdb7ad87391a3b15b2adb3a6ed9b51b70a52016",
+      "bytes": 2835
+    },
+    {
+      "path": "coordinator/frozen-plan.json",
+      "sha256": "a776fad85aedb606335797891a9c6add308cf0bf4c7fb38beb7075a14cce51a3",
+      "bytes": 158282
+    },
+    {
+      "path": "coordinator/measurement-plan.json",
+      "sha256": "a1c11540fe24ae86771133a7c24b4e84e6ff98af58bfdb3aa078bd22b4baf557",
+      "bytes": 904
+    },
+    {
+      "path": "coordinator/measurement.json",
+      "sha256": "cda6db3d54fdf4608b136675c909b858f7749f9fb000e3a41bd6121bfe922dd3",
+      "bytes": 10257
+    },
+    {
+      "path": "level60-w1/manifest.json",
+      "sha256": "d8069212d22d7efb50082cf4518ab0492798c4bc237f82f8bf41b079272433d0",
+      "bytes": 7314
+    },
+    {
+      "path": "level60-w1/results.jsonl",
+      "sha256": "8f26130a8c1da77fd834a793bcd493f750ebaec8ec7405c7197822306909404a",
+      "bytes": 9262
+    },
+    {
+      "path": "level60-w1/shard-receipt.json",
+      "sha256": "34f0afd6814fde6453d68fb14e433295e9d00841ebb218f29c0c24f204f26c1b",
+      "bytes": 852213
+    },
+    {
+      "path": "plan/experiment-plan.json",
+      "sha256": "3b1ed47df954965c5e01d2702c00ead3d42fc26e1ebdc2e46c9604d00610cbfc",
+      "bytes": 152782
+    },
+    {
+      "path": "plan/input-identity.json",
+      "sha256": "210626c8de8dd37004a55c13f1bd405258269a2bb7b4db4cb02c464e46512a75",
+      "bytes": 2792
+    },
+    {
+      "path": "plan/level60-w1-manifest.json",
+      "sha256": "d8069212d22d7efb50082cf4518ab0492798c4bc237f82f8bf41b079272433d0",
+      "bytes": 7314
+    },
+    {
+      "path": "coordinator/inputs/level60-w1-manifest.json",
+      "sha256": "d8069212d22d7efb50082cf4518ab0492798c4bc237f82f8bf41b079272433d0",
+      "bytes": 7314
+    },
+    {
+      "path": "coordinator/groups/level60/group-report.json",
+      "sha256": "7e6f2c5cb2f80f85eb53469a677d915fb1ec2a14e85ce739ae22658a2fa51a7d",
+      "bytes": 1643
+    },
+    {
+      "path": "coordinator/groups/level60/save-before.json",
+      "sha256": "52fc57dbff0ca6d63e5376697360e50ec69e7b9eef03c545ba1e4f34af777030",
+      "bytes": 43595
+    },
+    {
+      "path": "coordinator/groups/level60/save-protection.json",
+      "sha256": "11f37356864ce1c67ce89238fead5666bfcf6f122d53e8e0ebf7de821bae6873",
+      "bytes": 91381
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "firstAttempt": "r19-build-native-wrapper.log",
+  "firstAttemptSucceeded": false,
+  "underlyingPythonTraceAvailable": false,
+  "observedFailure": "PowerShell converted the initial Python stderr Traceback line to NativeCommandError and ended the wrapper; the complete original exception was not recovered.",
+  "beforeCapturedRetry": {
+    "enemyXmlUnchanged": true,
+    "balanceInputsUnchanged": true
+  },
+  "readOnlyFormulaDiagnostic": "r19-balance-failure-diagnostic.log",
+  "capturedRegeneration": "balance-r19-elder-write-captured.log",
+  "capturedRegenerationExitCode": 0,
+  "requiredFormulaAndCatalogAndDataScopeGatesRetained": true,
+  "scope": "No Flash build or arena run had begun at the first interruption."
+}

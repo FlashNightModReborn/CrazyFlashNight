@@ -1,0 +1,19 @@
+{
+  "recordedAtUtc": "2026-10-18T07:27:27.038248+00:00",
+  "authorization": "User accepted trial 750 robot start range and reduced shield sustain after visible/collision extension was explained.",
+  "changed": [
+    "tools/cf6-elder-assets/build.py",
+    "tools/cf6-elder-assets/ElderAI.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as",
+    "scripts/run-cf6-player-aim-tests.ps1",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderRenderTest.as",
+    "tools/cf6-elder-assets/README.md"
+  ],
+  "robotStartRange": 750,
+  "humanStartRange": 500,
+  "localBeamLength": 600,
+  "shieldCapacityScale": 0.5,
+  "compiled": false
+}

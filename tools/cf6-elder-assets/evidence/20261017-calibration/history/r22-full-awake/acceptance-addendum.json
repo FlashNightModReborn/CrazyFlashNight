@@ -1,0 +1,33 @@
+{
+  "profile": "high-level-beast-near-death-exusiai-net-hp-minority-wins-v2",
+  "recordedAtUtc": "2026-10-18T09:55:02.610482+00:00",
+  "userInstructionAtUtc": "2026-10-18T09:52:24.866223Z",
+  "userInstruction": "整体达标即可，允许少量胜局",
+  "previousUserLevelScope": "目前瓶颈如何，如果实在困难就重点保60-100这个范围，低等级不考虑",
+  "levels": [
+    60,
+    80,
+    100
+  ],
+  "experiment": "cf6-cal-r22-full-20261018",
+  "alreadyStartedAtUtc": "2026-10-18T08:58:30.374Z",
+  "frozenPlanHash": "sha256:8600cc9f445982a3f1f6752377f8e0dca4109d42c296d2a0b00f6d2d0416d614",
+  "originalFrozenPlanUnchanged": true,
+  "battleConditionsUnchanged": true,
+  "beastCriterion": "Every row must establish observed initial-form rage or an actual successor spawn beyond that threshold, then naturally lose without completing both forms. A successor spawn is reported as first-form defeat, not as observed rage if the rage callback is absent.",
+  "exusiaiCriterion": "Each six-row group mean and median full-chain net HP loss is 50-80 percent. A small number of naturally finished wins is allowed; losses must remain a strict majority in each group. No draws, timeouts, missing phase handoffs or execution errors.",
+  "winsAllowed": {
+    "beast": 0,
+    "exusiai": "strict minority per six-row group"
+  },
+  "drawsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "supersedesOnly": "EXUSIAI zero-win requirement in the previous acceptance addendum. The Beast criterion and 60/80/100 level scope remain unchanged; the original frozen plan and both prior criteria are retained.",
+  "boundary": "Human-requested acceptance clarification after some results were observed. This is recorded explicitly and does not claim that the original zero-win criterion was met. No battle condition, source, resource, result or runtime identity was changed.",
+  "questionAnswered": "EXUSIAI 的 50%–80% 交换目标，是要求每场都落败，还是按整体表现判断、允许少量胜局？当前 60 级六场平均净削血 57.65%、中位 53.19%，其中五负一胜；我会继续完成其余等级并保留全部结果。",
+  "previousScopeFile": "r22-beast-acceptance-addendum.json",
+  "previousScopeSha256": "d5a80a8df8528f2c4dd533d0a173b1c836fb969bd497d2c977f6c5d986f2edb9",
+  "smallNumberInterpretation": "Strict minority of wins in each six-row group: at most two wins and at least four losses. This conservative operational interpretation was stated in the response as each group remaining predominantly losses; the user did not prescribe a numeric cap.",
+  "frozenPlanFileSha256": "9aae271c5b99421587e0550e371588530bc2891dd15a1d86129042e87c1462a5",
+  "productionSourceBindingsUnchanged": true
+}

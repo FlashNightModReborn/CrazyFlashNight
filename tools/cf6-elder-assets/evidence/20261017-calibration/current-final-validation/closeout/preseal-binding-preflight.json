@@ -1,0 +1,54 @@
+{
+  "ok": true,
+  "recordedAtUtc": "2026-10-18T10:26:53.928590+00:00",
+  "firstAttempt": {
+    "reached": "index-membership guard",
+    "rejectedPath": "scripts/TestLoader.as",
+    "sourceIndexSha256": "8dc71edcb3eeb58307ff8d2d8756acb004d3dcb56f1b1379176197e9e7bf9834",
+    "reason": "A restoration-only ignored scratch original was incorrectly included in the planned committed-source set."
+  },
+  "secondAttempt": {
+    "report": "preliminary-staged-current-input-verification-r2.json",
+    "reportSha256": "eb4e5a62b2cbf5fd8bbe6300e4ac395df480c20bd6c9d4684c84ef9ea5f00cd8",
+    "mismatchPaths": [
+      "agentsDoc/game-design.md",
+      "tools/cf6-zombie-assets/README.md",
+      "tools/cf7-balance-tool/data/monster-flag-ledger.json"
+    ]
+  },
+  "resolvedAttempt": {
+    "report": "preliminary-staged-current-input-verification-r3.json",
+    "reportSha256": "6da37915dfb6af86099265372eeca3800d36f623fecf832bf618c40f09de7b68",
+    "verifiedFiles": 1578
+  },
+  "ignoredScratchRule": ".gitignore:95:scripts/TestLoader.as\tscripts/TestLoader.as",
+  "scratchBoundary": "The private original remains ignored and untouched. Its before/after hash and fresh cleanup receipts prove restoration. Public runner templates and actual test SWFs provide the reproducible test inputs.",
+  "explicitLfAttributes": [
+    {
+      "path": "agentsDoc/testing-details.md",
+      "sha256": "0a75f28be3730fe829a30bc2059bce3e3d80b63941c3dd112ebcad021bd64a6b",
+      "lineEnding": "LF",
+      "contentChangedByThisRepair": false
+    },
+    {
+      "path": "agentsDoc/game-design.md",
+      "sha256": "b07bbe4263e074ad61478b1d0b23692326d7d304550a900881c91cc060957bf6",
+      "lineEnding": "LF",
+      "contentChangedByThisRepair": false
+    },
+    {
+      "path": "tools/cf6-zombie-assets/README.md",
+      "sha256": "2d40fb10ecd9c7d1266d17ed608ffcdfd1d891c0f6238248d395e82a6ae0221f",
+      "lineEnding": "LF",
+      "contentChangedByThisRepair": false
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "sha256": "bad4cbfac7c8e87ec24d8f5ca9dff678a3cf623ed2029fb4befb7fb7cb00081d",
+      "lineEnding": "LF",
+      "contentChangedByThisRepair": false
+    }
+  ],
+  "battleInputFilesChangedByRepair": 0,
+  "boundary": "This is a preflight before the final documentation edit and seal. The final committed-source set must be verified again after those authorized document changes."
+}

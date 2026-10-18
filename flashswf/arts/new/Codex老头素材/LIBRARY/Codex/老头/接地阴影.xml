@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/接地阴影" itemID="6af00000-27146316">
+  <timeline>
+    <DOMTimeline name="接地阴影">
+      <layers>
+        <DOMLayer name="接地更新" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[elderGround={x:0,y:0};
+updateElderShadow=function():Void {
+    var body:MovieClip=this._parent,unit:MovieClip=body._parent;
+    var visible:Boolean=_root.是否阴影==true;
+    if(this._visible!=visible)this._visible=visible;
+    if(isNaN(unit.Z轴坐标))return;
+    var p:Object=this.elderGround;p.x=unit._x;p.y=unit.Z轴坐标;
+    unit._parent.localToGlobal(p);body.globalToLocal(p);
+    this._x=p.x;this._y=p.y;
+    this._xscale=7000/body._xscale;this._yscale=1400/body._yscale;
+    this._rotation=-body._rotation+(unit._xscale<0?unit._rotation:-unit._rotation);
+};
+onEnterFrame=updateElderShadow;updateElderShadow();stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/CF7/Symbol 2" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

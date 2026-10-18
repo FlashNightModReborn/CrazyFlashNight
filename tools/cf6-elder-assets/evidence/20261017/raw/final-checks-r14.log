@@ -1,0 +1,8 @@
+{"ok": true, "forms": {"human": {"flags": {"阶段": 8.0, "档次系数": 9.0, "成长系数": 1.0, "攻速系数": 4.0, "攻击倍率": 1.0, "段数系数": 1.7, "速度系数": 2.0, "高攻低血防系数": 2.0, "霸体系数": 1.0, "高防低血系数": 4.0}, "panel": {"最小经验值": 1832, "最大经验值": 10193, "hp_min": 6674, "hp_max": 17460, "空手攻击力_min": 833, "空手攻击力_max": 2221, "基本防御力_min": 364, "基本防御力_max": 734}}, "robot": {"flags": {"阶段": 8.0, "档次系数": 20.0, "成长系数": 1.0, "攻速系数": 3.0, "攻击倍率": 1.3333333, "段数系数": 1.2222222, "速度系数": 2.0, "高攻低血防系数": 2.0, "霸体系数": 3.2, "高防低血系数": 34.0}, "panel": {"最小经验值": 11882, "最大经验值": 31703, "hp_min": 10001, "hp_max": 20459, "空手攻击力_min": 1959, "空手攻击力_max": 5101, "基本防御力_min": 4590, "基本防御力_max": 6160}}}}
+AS2 class ownership: {"errors":[],"files":3,"parsed":0,"cacheHits":3,"loaderClasses":716,"closureChecked":false,"policy":"production","milliseconds":48.2498}
+{"ok": true, "symbols": 82, "projectFiles": 4}
+{"ok": true, "sourceSwf": "flashswf/arts/new/Codex老头素材.swf", "sha256": "7d50931a3f7b91366dcdd4e494f44ed6dfdcf1d6cc2a795a66483a07dd1c2942", "bytes": 356928, "shapes": 53, "sprites": 28, "bitmaps": 0, "exports": ["敌人-CF6老头机器人", "敌人-CF6老头人形", "Codex老头素材"], "sharedImport": "flashswf/arts/new/Codex老头素材.swf", "runtimeOwnershipRoot": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight"}
+[OK] check-bom: 198 个 .as 全部带 UTF-8 BOM
+{"generatedAt":"2026-10-16T21:40:14.730Z","checkedFiles":1,"passed":1,"failed":0,"failures":[]}
+[derive-arena-unit-catalog] up-to-date
+{"units": [{"unit": "headbot", "identicalBoundInputs": 12, "semanticExceptions": 1}, {"unit": "bladebot", "identicalBoundInputs": 13, "semanticExceptions": 1}]}

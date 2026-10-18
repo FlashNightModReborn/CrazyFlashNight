@@ -1,0 +1,396 @@
+{
+  "originalPlanSha256": "1c514f8a8dd15d1481708acb9d1935a4c2f748491ad7cf3c5f4f190720fd949d",
+  "finalPlanSha256": "d97d4baf2bd550c4f26708b14f896a4d92ef5d1d9650936b88437a799563aa1f",
+  "expectedRows": 36,
+  "levels": [
+    60,
+    80,
+    100
+  ],
+  "groups": 18,
+  "rowsPerGroup": 2,
+  "perFightTimeoutFrames": 5400,
+  "perShardWallLimitMs": 900000,
+  "conditionsUnchanged": true,
+  "schedule": "Interleave one blue/red pair per fresh shard. Canonical generator may contain one joint job or two jobs split by side; original plans are retained.",
+  "mapping": [
+    {
+      "originalGroup": "beastking-level60",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-blue-manifest.json",
+          "sha256": "061d6ada3d108d30db1d1f39250929e64fdfd850c0781df3d6fd36b35df4d4e7"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-red-manifest.json",
+          "sha256": "eb3fa87bf1f66d89465f15d9f74e25164fd220465a61e1e079c5ae3495ebfeb6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level60-s1-manifest.json",
+      "shardSha256": "2415d462569e1060026dab886630839f177db2b09389d0c3385ce4d0c2537ae9",
+      "caseIds": [
+        "level60-blue-s1",
+        "level60-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level60",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-blue-manifest.json",
+          "sha256": "061d6ada3d108d30db1d1f39250929e64fdfd850c0781df3d6fd36b35df4d4e7"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-red-manifest.json",
+          "sha256": "eb3fa87bf1f66d89465f15d9f74e25164fd220465a61e1e079c5ae3495ebfeb6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level60-s2-manifest.json",
+      "shardSha256": "1f08fd7efa69386977dd763f480686fec408e0a87187ecc138354cb1baaf36ae",
+      "caseIds": [
+        "level60-blue-s2",
+        "level60-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level60",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-blue-manifest.json",
+          "sha256": "061d6ada3d108d30db1d1f39250929e64fdfd850c0781df3d6fd36b35df4d4e7"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level60-w1-red-manifest.json",
+          "sha256": "eb3fa87bf1f66d89465f15d9f74e25164fd220465a61e1e079c5ae3495ebfeb6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level60-s3-manifest.json",
+      "shardSha256": "bd1480a54545ba1f5e9a6c9b03b5e8818aba8120dc91d39c025b15b72892c7a0",
+      "caseIds": [
+        "level60-blue-s3",
+        "level60-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level80",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-blue-manifest.json",
+          "sha256": "d49d6951583f72b8a9678a9cbfd3899dad24b3872dd3048618f9e67574689620"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-red-manifest.json",
+          "sha256": "d4dd1f6af66cdd4fd4e6a51553b4f1bab2e818d1175702831c6544073340cbaa"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level80-s1-manifest.json",
+      "shardSha256": "f918f956c500eb9a91bb40f4966959c75c8cd795307104db68e04eaff8b0c948",
+      "caseIds": [
+        "level80-blue-s1",
+        "level80-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level80",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-blue-manifest.json",
+          "sha256": "d49d6951583f72b8a9678a9cbfd3899dad24b3872dd3048618f9e67574689620"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-red-manifest.json",
+          "sha256": "d4dd1f6af66cdd4fd4e6a51553b4f1bab2e818d1175702831c6544073340cbaa"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level80-s2-manifest.json",
+      "shardSha256": "09352bce210695c5703de2e056a755ca128aff410763f03c92d82d16664e8647",
+      "caseIds": [
+        "level80-blue-s2",
+        "level80-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level80",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-blue-manifest.json",
+          "sha256": "d49d6951583f72b8a9678a9cbfd3899dad24b3872dd3048618f9e67574689620"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level80-w1-red-manifest.json",
+          "sha256": "d4dd1f6af66cdd4fd4e6a51553b4f1bab2e818d1175702831c6544073340cbaa"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level80-s3-manifest.json",
+      "shardSha256": "ea0e275009feccce68e1d88279240520d223602fb7d37cfe88a4cf72c297de9c",
+      "caseIds": [
+        "level80-blue-s3",
+        "level80-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level100",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-blue-manifest.json",
+          "sha256": "4a01c9e56a5548b9360064b351d3a63f4bbf941a5864738fb6780a81f73d0d5a"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-red-manifest.json",
+          "sha256": "c4468c5242e31d8d84adaef2a4091658c27d818f7966477e8c305c351a7b1d96"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level100-s1-manifest.json",
+      "shardSha256": "b1e4cb68d747fcc8dcef57c9658c0d17e1e38471d5ebaf48d48dc84abda1893f",
+      "caseIds": [
+        "level100-blue-s1",
+        "level100-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level100",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-blue-manifest.json",
+          "sha256": "4a01c9e56a5548b9360064b351d3a63f4bbf941a5864738fb6780a81f73d0d5a"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-red-manifest.json",
+          "sha256": "c4468c5242e31d8d84adaef2a4091658c27d818f7966477e8c305c351a7b1d96"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level100-s2-manifest.json",
+      "shardSha256": "7a3e6ce9df9a268ca0ca51165e504a4a9ff98892d148c2ed3d730a7976fc7a28",
+      "caseIds": [
+        "level100-blue-s2",
+        "level100-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "beastking-level100",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-blue-manifest.json",
+          "sha256": "4a01c9e56a5548b9360064b351d3a63f4bbf941a5864738fb6780a81f73d0d5a"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\beastking-level100-w1-red-manifest.json",
+          "sha256": "c4468c5242e31d8d84adaef2a4091658c27d818f7966477e8c305c351a7b1d96"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\beastking-level100-s3-manifest.json",
+      "shardSha256": "2e20bc5760cd7d160490722e0b8dce6973957311772e212e0d9fd65134c87642",
+      "caseIds": [
+        "level100-blue-s3",
+        "level100-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level60",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-blue-manifest.json",
+          "sha256": "c2464491fc3af2354989d63e2d6cce19b638d67b1b50279907e090662c335ebb"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-red-manifest.json",
+          "sha256": "a0a1c307399fb69ac6e09fa58a4245f1b13e5f8c6232a1f185aab51a4bb281d6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level60-s1-manifest.json",
+      "shardSha256": "2ebd78ead0c97c672c63ee0d2ad14a869b6c72bfa3e924c779f6df049f55edbe",
+      "caseIds": [
+        "level60-blue-s1",
+        "level60-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level60",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-blue-manifest.json",
+          "sha256": "c2464491fc3af2354989d63e2d6cce19b638d67b1b50279907e090662c335ebb"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-red-manifest.json",
+          "sha256": "a0a1c307399fb69ac6e09fa58a4245f1b13e5f8c6232a1f185aab51a4bb281d6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level60-s2-manifest.json",
+      "shardSha256": "90495317a0b18d7a483a163a16b8e74516eac6752481c6a3407a15f2ee37cde6",
+      "caseIds": [
+        "level60-blue-s2",
+        "level60-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level60",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-blue-manifest.json",
+          "sha256": "c2464491fc3af2354989d63e2d6cce19b638d67b1b50279907e090662c335ebb"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level60-w1-red-manifest.json",
+          "sha256": "a0a1c307399fb69ac6e09fa58a4245f1b13e5f8c6232a1f185aab51a4bb281d6"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level60-s3-manifest.json",
+      "shardSha256": "b1eb99a61c45e9b998506bda25c0e12c4e26f800f074fe095e86aa11ff923e48",
+      "caseIds": [
+        "level60-blue-s3",
+        "level60-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level80",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-blue-manifest.json",
+          "sha256": "e982b0d24b47288004f8f24e0352991463c502ce1d8a79e8fdbf907282528ae9"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-red-manifest.json",
+          "sha256": "ba79597e4cd75ed480abceef9c69699119eb51300b84e11491a793792d180ac0"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level80-s1-manifest.json",
+      "shardSha256": "212836bc12a384d7b221f65bf8a304e9366ce8fcb3f107c5647b527ae2658a8e",
+      "caseIds": [
+        "level80-blue-s1",
+        "level80-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level80",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-blue-manifest.json",
+          "sha256": "e982b0d24b47288004f8f24e0352991463c502ce1d8a79e8fdbf907282528ae9"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-red-manifest.json",
+          "sha256": "ba79597e4cd75ed480abceef9c69699119eb51300b84e11491a793792d180ac0"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level80-s2-manifest.json",
+      "shardSha256": "3a5de7f339830584822de5e5d67510875ae8b01d7e9cc83013ade0d1adffa2d1",
+      "caseIds": [
+        "level80-blue-s2",
+        "level80-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level80",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-blue-manifest.json",
+          "sha256": "e982b0d24b47288004f8f24e0352991463c502ce1d8a79e8fdbf907282528ae9"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level80-w1-red-manifest.json",
+          "sha256": "ba79597e4cd75ed480abceef9c69699119eb51300b84e11491a793792d180ac0"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level80-s3-manifest.json",
+      "shardSha256": "b72772bf5944b44bd1f1fb48143e74521b558095e8716b8c41f9f07c1ae81284",
+      "caseIds": [
+        "level80-blue-s3",
+        "level80-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level100",
+      "repetition": 1,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-blue-manifest.json",
+          "sha256": "1c0fc2ea8ce791283cf949d260e6f20bb468f76374b6da04b3a9c4a54cc12023"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-red-manifest.json",
+          "sha256": "adc6f374bd61f54e8d34d635cc6e0c1839d01e05b075c7f75e52f6083b6a1831"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level100-s1-manifest.json",
+      "shardSha256": "092e75535fc3a492a19d9036ec1c30b80cb7bb95215e47511794f8c08dfedf91",
+      "caseIds": [
+        "level100-blue-s1",
+        "level100-red-s1"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level100",
+      "repetition": 2,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-blue-manifest.json",
+          "sha256": "1c0fc2ea8ce791283cf949d260e6f20bb468f76374b6da04b3a9c4a54cc12023"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-red-manifest.json",
+          "sha256": "adc6f374bd61f54e8d34d635cc6e0c1839d01e05b075c7f75e52f6083b6a1831"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level100-s2-manifest.json",
+      "shardSha256": "c9ab3d657af4669add52ea99854def74abc4409b887b1651cd5239f56ebaf46b",
+      "caseIds": [
+        "level100-blue-s2",
+        "level100-red-s2"
+      ],
+      "unchangedCombatConditions": true
+    },
+    {
+      "originalGroup": "exusiai-level100",
+      "repetition": 3,
+      "originalManifests": [
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-blue-manifest.json",
+          "sha256": "1c0fc2ea8ce791283cf949d260e6f20bb468f76374b6da04b3a9c4a54cc12023"
+        },
+        {
+          "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full-base\\exusiai-level100-w1-red-manifest.json",
+          "sha256": "adc6f374bd61f54e8d34d635cc6e0c1839d01e05b075c7f75e52f6083b6a1831"
+        }
+      ],
+      "shardManifest": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\arena-r22-full\\exusiai-level100-s3-manifest.json",
+      "shardSha256": "de446c8f0ed89eb2ac34af62c63569e3bd492b899247c4a08e31adee8eef1a26",
+      "caseIds": [
+        "level100-blue-s3",
+        "level100-red-s3"
+      ],
+      "unchangedCombatConditions": true
+    }
+  ]
+}

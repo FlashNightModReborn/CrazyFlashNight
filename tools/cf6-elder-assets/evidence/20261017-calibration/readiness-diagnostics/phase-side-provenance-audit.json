@@ -1,0 +1,25 @@
+{
+  "checkedFinishedElderRows": 80,
+  "invalidRows": [
+    {
+      "source": "tmp\\cf6-combat-calibration-20261017\\r8-interrupted-completed-shard-rows.json",
+      "runId": "level60-blue-r002",
+      "batchId": "cf6-cal-r8-elder-20261017-beastking-l60-w1",
+      "candidateSide": "blue",
+      "rival": 78,
+      "level": 60,
+      "winner": "blue",
+      "unexpectedSpawns": [
+        {
+          "side": "blue",
+          "unit": "敌人-方舟兽王虎",
+          "from": "敌人-CF6老头机器人",
+          "name": "斗兽标定_red_level60_blue_r002_0敌人-方舟兽王虎35",
+          "frame": 2325
+        }
+      ]
+    }
+  ],
+  "invalidCount": 1,
+  "boundary": "Original results and analyses are retained; rows with incorrect phase parent or side must not establish combat strength."
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "cf6.legacy-native-cues.v1",
+  "layer": "CF6旧特工原生SFX调用",
+  "linkage": "敌人-闪6特工",
+  "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+  "cues": [
+    {
+      "source": [868, 7, 513],
+      "symbol": "闪6特工/MovieClip/sprite 861",
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+      "beforeSha256": "3dbda7aa4ccf1f36dd0b9295739d97066d907e062679abfd7a0493b35a498282",
+      "frame": 7,
+      "rootFrame": 42,
+      "totalFrames": 49,
+      "sound": "CF6_0513.mp3",
+      "before": "First attack had a CF7 vocal call but no original weapon effect."
+    },
+    {
+      "source": [871, 15, 303],
+      "symbol": "闪6特工/MovieClip/起身",
+      "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+      "beforeSha256": "bbf0b8f12e9c36ec2ad4d666c52aa47d2c6a45151121db6befd4b3c54a528ec1",
+      "frame": 1,
+      "rootFrame": 89,
+      "totalFrames": 42,
+      "sound": "CF6_0303.mp3",
+      "before": "Original landing sound absent from the adapted physics landing body."
+    }
+  ]
+}

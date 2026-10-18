@@ -1,0 +1,15 @@
+{
+  "schema": "cf6.legacy-sfx-repair.v1",
+  "files": [
+    {
+      "source": "flashswf/arts/things1/LIBRARY/soundheadexplode.wav",
+      "target": "sounds/export/人物/soundheadexplode.wav",
+      "sha256": "3d851fadb61ce34a20431cb00c2d444389dbe24634e697a4619eee0d1b69fdc5",
+      "bytes": 136492,
+      "sourceCrc32": 2037197935,
+      "sourceMetadata": "flashswf/arts/things1/DOMDocument.xml",
+      "affectedLinkages": ["敌人-诺亚克隆兽", "敌人-延寿克隆兽", "敌人-完全体克隆兽"],
+      "reason": "Existing _root.播放音效 calls referenced a missing native-preload file; restore the exact original WAV without editing callers."
+    }
+  ]
+}

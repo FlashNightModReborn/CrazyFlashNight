@@ -1,0 +1,243 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "cf6-cal-r17-pilot-20261018-exusiai-l30-w1",
+  "createdAt": "2026-10-18T03:25:40.640Z",
+  "buildCommit": "0392d8144c20d62261b01df54e6787b845f75e73",
+  "planner": {
+    "name": "cf6-elder-exusiai",
+    "version": 3
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "level30-blue",
+      "blueRoster": [
+        {
+          "type": "兵种471",
+          "level": 30,
+          "sourceId": "elder-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种361",
+          "level": 30,
+          "sourceId": "exusiai-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-elder",
+        "exusiai",
+        "two-phase",
+        "blue"
+      ],
+      "plannerReason": "同等级、交换阵营验证人形后接机器人，保留全部重复、胜负、阶段生成和超时。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "blue",
+        "candidateUnitId": 471,
+        "level": 30,
+        "rivalUnitId": 361,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex老头素材.swf",
+            "sha256": "ce30fa634395d2c07312e24baf4102898e2666cb58b1805d56d7a8a7c798663f"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/things5.swf",
+            "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+          },
+          {
+            "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+            "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+          },
+          {
+            "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+            "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+          },
+          {
+            "path": "data/enemy_properties/天网.xml",
+            "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+          },
+          {
+            "path": "tools/cf6-elder-assets/ElderAI.as",
+            "sha256": "db1ad237e31554b6f8e9729f5e3555e8fa96b1ae3c113d9fbe57746b52121635"
+          },
+          {
+            "path": "tools/cf6-elder-assets/ElderTransform.as",
+            "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+          },
+          {
+            "path": "tools/cf6-elder-assets/build.py",
+            "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+          },
+          {
+            "path": "tools/cf6-elder-assets/native-manifest.json",
+            "sha256": "043f419011ddc7a5cc079731b6c2300f9d5d8739fa3953ef895985551cb0c16c"
+          },
+          {
+            "path": "tools/cf6-elder-assets/balance-inputs.json",
+            "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+          }
+        ],
+        "stage": 8,
+        "successorTier": 20,
+        "successorUnitId": 472,
+        "targetPosition": "significant_threat_without_victory",
+        "tier": 9,
+        "variant": "two-phase"
+      },
+      "caseHash": "sha256:74aceddb88fd406facee48106f53c3cb999fdb0fbbd36f54c7eabe16dff11128"
+    },
+    {
+      "caseId": "level30-red",
+      "blueRoster": [
+        {
+          "type": "兵种361",
+          "level": 30,
+          "sourceId": "exusiai-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种471",
+          "level": 30,
+          "sourceId": "elder-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-elder",
+        "exusiai",
+        "two-phase",
+        "red"
+      ],
+      "plannerReason": "同等级、交换阵营验证人形后接机器人，保留全部重复、胜负、阶段生成和超时。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "candidateUnitId": 471,
+        "level": 30,
+        "rivalUnitId": 361,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex老头素材.swf",
+            "sha256": "ce30fa634395d2c07312e24baf4102898e2666cb58b1805d56d7a8a7c798663f"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/things5.swf",
+            "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+          },
+          {
+            "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+            "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+          },
+          {
+            "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+            "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+          },
+          {
+            "path": "data/enemy_properties/天网.xml",
+            "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+          },
+          {
+            "path": "tools/cf6-elder-assets/ElderAI.as",
+            "sha256": "db1ad237e31554b6f8e9729f5e3555e8fa96b1ae3c113d9fbe57746b52121635"
+          },
+          {
+            "path": "tools/cf6-elder-assets/ElderTransform.as",
+            "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+          },
+          {
+            "path": "tools/cf6-elder-assets/build.py",
+            "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+          },
+          {
+            "path": "tools/cf6-elder-assets/native-manifest.json",
+            "sha256": "043f419011ddc7a5cc079731b6c2300f9d5d8739fa3953ef895985551cb0c16c"
+          },
+          {
+            "path": "tools/cf6-elder-assets/balance-inputs.json",
+            "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+          }
+        ],
+        "stage": 8,
+        "successorTier": 20,
+        "successorUnitId": 472,
+        "targetPosition": "significant_threat_without_victory",
+        "tier": 9,
+        "variant": "two-phase"
+      },
+      "caseHash": "sha256:7e95de9c82888cfaaf56daea1665d72a58b2130f8efe69cee33eb9ea1cb0f4d1"
+    }
+  ],
+  "manifestHash": "sha256:f73f4c12b80febb2bf5fc550df8632abdf8afa8f58821c49f4de4febdcbb318e"
+}

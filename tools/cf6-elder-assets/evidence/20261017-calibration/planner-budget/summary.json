@@ -1,0 +1,12 @@
+{
+  "status": "planner_verified_not_executed",
+  "cause": "Six 5400-frame fights can require 18 minutes, exceeding the unchanged 15-minute P0/P1 shard limit.",
+  "change": "One Worker uses two serial side-specific shards when the worst-case fight budget plus per-fight allowance exceeds 900 seconds.",
+  "maxConcurrentGames": 1,
+  "coordinatorWallLimitMs": 900000,
+  "perFightTimeoutFrames": 5400,
+  "totalRows": 36,
+  "allCaseContentsEqualToR13Plan": true,
+  "existingR13RunPlanChanged": false,
+  "releasePolicyChanged": false
+}

@@ -1,0 +1,17 @@
+FocusedTestRunId cf6-bladebot Start: aed8ab7d292e43d580bfe82e5b45133b
+[BLADEBOT_DEATH_SCALE] standing=241.45 death=241.45 groundDelta=0
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=cleave dx=185 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=cleave dx=185 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=cleave dx=224 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=cleave dx=224 speed=24 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor0 action=beam dx=308 speed=2 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor1 action=beam dx=308 speed=2 decel=3 callback=function immune=false
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_CONTACT] actor=comboActor2 action=cleave dx=185 speed=undefined decel=undefined callback=undefined immune=true
+[BLADEBOT_COMBO_RESULT] case=0 x=200 targetX=508 dx=308 impacts=2 beams=1 beamHits=1 combo=1
+[BLADEBOT_COMBO_RESULT] case=1 x=200 targetX=-108 dx=308 impacts=2 beams=1 beamHits=1 combo=1
+[BLADEBOT_COMBO_RESULT] case=2 x=200 targetX=385 dx=185 impacts=4 beams=0 beamHits=0 combo=0
+Cf6BladebotAssetTest: 409 passed, 0 failed; 28 actual timeline cases
+FocusedTestRunId cf6-bladebot Complete: aed8ab7d292e43d580bfe82e5b45133b

@@ -1,0 +1,35 @@
+{
+  "files": [
+    {
+      "file": "working.patch",
+      "bytes": 1369198,
+      "sha256": "b9b3e4965273ce657e5f8fe4655c36f9c33713ef922a9c452b8ebbdd6710273f"
+    },
+    {
+      "file": "index.patch",
+      "bytes": 1097012373,
+      "sha256": "4e9ee3b59f2057487660e51cf92bc34d7c73150d4524583c9b312e276503c319"
+    },
+    {
+      "file": "status-before.txt",
+      "bytes": 947775,
+      "sha256": "f111e84d6d09592435a11ad0f65d09cf1694ce9ec1e21aba4eaf4b193897f457"
+    },
+    {
+      "file": "index-before.bin",
+      "bytes": 9448266,
+      "sha256": "600851a28ef332bd4db90d327143f8ef34f83ef02ec38a8ac28e34e9823d02cb"
+    },
+    {
+      "file": "lock-recovery/index-before.bin",
+      "bytes": 9448266,
+      "sha256": "600851a28ef332bd4db90d327143f8ef34f83ef02ec38a8ac28e34e9823d02cb"
+    },
+    {
+      "file": "lock-recovery/original-index.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "boundary": "Full Git index and broad staged/working patches remain private local recovery material; scoped original files and relevant source history are preserved separately in this package."
+}

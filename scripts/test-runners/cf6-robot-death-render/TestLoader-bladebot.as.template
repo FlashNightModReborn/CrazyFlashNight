@@ -1,0 +1,7 @@
+﻿#include "test-runners/cf6-robot-death-render/DeathFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.robotRenderConfig={swf:"../flashswf/arts/new/Codex大刀机器人素材.swf",linkage:"敌人-CF6大刀机器人",total:58,fragmentStart:0,mirrorFrame:36,frames:["death-1", "death-14", "death-30", "death-32", "death-36", "death-44", "death-58", "death-left-36"]};
+_root.robotRenderCapture=true;
+_root.cf6RobotDeathRenderComplete=function():Void {trace("FocusedTestRunId cf6-robot-death-bladebot Complete: __FOCUSED_RUN_ID__");};
+trace("FocusedTestRunId cf6-robot-death-bladebot Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6RobotDeathRenderTest.runAllTests();

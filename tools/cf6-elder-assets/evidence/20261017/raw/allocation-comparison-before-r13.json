@@ -1,0 +1,109 @@
+{
+  "scope": "Unadopted formula estimates only. Physical effective HP ignores magic, healing, hit geometry and action interruptions; it is not a field result.",
+  "rows": [
+    {
+      "highDefFactor": 28,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 16423,
+          "attack": 3556,
+          "defense": 4456,
+          "physicalEffectiveHp": 260359
+        },
+        {
+          "level": 60,
+          "hp": 22307,
+          "attack": 5154,
+          "defense": 5132,
+          "physicalEffectiveHp": 403905
+        },
+        {
+          "level": 99,
+          "hp": 29956,
+          "attack": 7231,
+          "defense": 6011,
+          "physicalEffectiveHp": 630174
+        }
+      ]
+    },
+    {
+      "highDefFactor": 30,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 16018,
+          "attack": 3556,
+          "defense": 4766,
+          "physicalEffectiveHp": 270491
+        },
+        {
+          "level": 60,
+          "hp": 21695,
+          "attack": 5154,
+          "defense": 5483,
+          "physicalEffectiveHp": 418207
+        },
+        {
+          "level": 99,
+          "hp": 29074,
+          "attack": 7231,
+          "defense": 6415,
+          "physicalEffectiveHp": 650773
+        }
+      ]
+    },
+    {
+      "highDefFactor": 32,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 15652,
+          "attack": 3556,
+          "defense": 5077,
+          "physicalEffectiveHp": 280536
+        },
+        {
+          "level": 60,
+          "hp": 21140,
+          "attack": 5154,
+          "defense": 5835,
+          "physicalEffectiveHp": 432313
+        },
+        {
+          "level": 99,
+          "hp": 28275,
+          "attack": 7231,
+          "defense": 6820,
+          "physicalEffectiveHp": 671060
+        }
+      ]
+    },
+    {
+      "highDefFactor": 40,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14472,
+          "attack": 3556,
+          "defense": 6320,
+          "physicalEffectiveHp": 319349
+        },
+        {
+          "level": 60,
+          "hp": 19356,
+          "attack": 5154,
+          "defense": 7240,
+          "physicalEffectiveHp": 486481
+        },
+        {
+          "level": 99,
+          "hp": 25705,
+          "attack": 7231,
+          "defense": 8437,
+          "physicalEffectiveHp": 748615
+        }
+      ]
+    }
+  ]
+}

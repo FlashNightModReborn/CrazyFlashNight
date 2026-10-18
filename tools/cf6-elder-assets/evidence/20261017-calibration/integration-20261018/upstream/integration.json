@@ -1,0 +1,14 @@
+{
+  "before": "26b69b72282cac806937a0aed619a785871f380c",
+  "upstream": "68473abd27f1d20b13c04f655770745fb42633ba",
+  "overlap": [
+    "scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as"
+  ],
+  "preservedOnlyLocalAddition": true,
+  "originalWorkingSha256": "419b1924fbdb99e793d853d1309b094ec16ec1712d69f659013994417ee16a71",
+  "integratedWorkingSha256": "0a2deffd0a29a0a38b46d2268c9aa64835e22c0459be3e75602d820999f21191",
+  "unexpectedIndexChanges": [],
+  "nativeSourceRebuildRequired": true,
+  "asLoaderRepublishRequired": true,
+  "boundary": "Current isolated Worker keeps its previously frozen resources; this integration changes only the main source checkout."
+}

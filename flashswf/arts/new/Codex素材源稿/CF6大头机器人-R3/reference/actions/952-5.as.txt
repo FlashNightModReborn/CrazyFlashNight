@@ -1,0 +1,33 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 35;
+   var §\x0f§ = 1;
+   if(this.hitTest(_root.gameworld.man1.抓人探测块))
+   {
+      _parent.gotoAndStop("攻2");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.中击))
+   {
+      _parent.hp -= _root.近战中击威力;
+      _root.金钱 += _root.近战中击威力;
+      _parent.gotoAndStop("倒");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.轻击))
+   {
+      _parent.hp -= _root.近战轻击威力;
+      _root.金钱 += _root.近战轻击威力;
+      _parent.gotoAndStop("被击中");
+   }
+   else if(this.hitTest(_root.gameworld.man1.man.绝招探测))
+   {
+      _root.gameworld.man1.man.gotoAndPlay("绝招攻击");
+   }
+   else if(this.hitTest(_root.gameworld.man1.连击探测块) and Key.isDown(_root.A键))
+   {
+      _root.gameworld.man1.gotoAndStop("连击");
+   }
+   if(_parent.hp <= 0)
+   {
+      _parent.hp = 0;
+      _parent.gotoAndStop("死");
+   }
+}

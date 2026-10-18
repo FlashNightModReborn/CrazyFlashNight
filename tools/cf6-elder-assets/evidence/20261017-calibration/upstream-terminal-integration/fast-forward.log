@@ -1,0 +1,18 @@
+Updating 937e181546..3dd6ca8a1a
+Fast-forward
+ .../AI对话内嵌插话-交接与契约fixture-2026-10-18.md | 680 +++++++++++++++++++++
+ docs/AI对话内嵌插话-开发计划-2026-10-18.md         | 327 ++++++++++
+ docs/AI对话内嵌插话-需求与协议-2026-10-18.md       | 639 +++++++++++++++++++
+ launcher/contracts/ragchat.v1.json                 |   8 +
+ launcher/src/Guardian/LauncherCommandRouter.cs     |  15 +
+ launcher/src/Program.cs                            |   3 +
+ launcher/src/RagTerminal/RagTerminalService.cs     |   5 +-
+ .../tests/Guardian/LauncherCommandRouterTests.cs   |  82 +++
+ .../tests/RagTerminal/RagTerminalServiceTests.cs   |  79 +++
+ launcher/web/modules/tablet.js                     |   4 +-
+ .../org/flashNight/neur/Server/ServerManager.as    |   2 +
+ scripts/通信/通信_aka_Agent联动.as                 |  34 +-
+ 12 files changed, 1871 insertions(+), 7 deletions(-)
+ create mode 100644 docs/AI对话内嵌插话-交接与契约fixture-2026-10-18.md
+ create mode 100644 docs/AI对话内嵌插话-开发计划-2026-10-18.md
+ create mode 100644 docs/AI对话内嵌插话-需求与协议-2026-10-18.md

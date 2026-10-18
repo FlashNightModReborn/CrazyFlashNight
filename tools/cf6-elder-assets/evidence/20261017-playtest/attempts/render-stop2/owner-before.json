@@ -1,0 +1,6 @@
+{
+  "ProcessId": 28380,
+  "ParentProcessId": 33496,
+  "Name": "powershell.exe",
+  "CommandLine": "\"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\" -NoProfile -ExecutionPolicy Bypass -File scripts/run-cf6-headbot-render-tests.ps1 -Capture -TimeoutSeconds 1800"
+}

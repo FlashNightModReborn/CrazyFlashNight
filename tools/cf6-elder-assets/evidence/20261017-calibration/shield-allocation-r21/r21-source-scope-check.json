@@ -1,0 +1,76 @@
+{
+  "ok": true,
+  "beforeFiles": 1491,
+  "unchangedFiles": 1479,
+  "changed": [
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "beforeSha256": "96b8a04607639d9d53edd61af6487923edd825efd5df45b0eed494a9a12280d0",
+      "afterSha256": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "beforeSha256": "cf0e735226737e39ba9a5692b15fafef90dfc37abf713528496a9e191e41fe36",
+      "afterSha256": "781c950e721c386f6bdbd8aa6bec93d72cc4bbcd34d6886fb53b2bca22ee894d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "beforeSha256": "2add148f9c82d86d1123ddd57d4c8106df59f0cec2d996cde2e0e7063f55b4ec",
+      "afterSha256": "5bca42e3a7fc3de8fd214887fa92fafc242657db30a7f135d9a02243df3dcfb5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "beforeSha256": "491ecb27400aca726ad0a4341ea8f5980a7cea7a3da95a6bed0df16eed4b6db2",
+      "afterSha256": "1ab2fbd446c9765030e68701228c6f867b84b3bd1101fc1ef0dc6e5f263d3f9a"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "14f35435f7cff9cea7ed5372106bbe79297221099947c535d7cf991dc3153c73",
+      "afterSha256": "d6b71f7783d63c975bfb8eb9fd8d9c3646261bcd28a63179fdfb6f802b6baabf"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "beforeSha256": "8ca45683df896d692eb4cf68a20496691bf911639a04caeb936c7a6126e23be9",
+      "afterSha256": "078d16c187febf1d0810bd557db7cab9be5eb806aa84ccabff74d6c43d46eabe"
+    },
+    {
+      "path": "tools/cf6-audio/test-fixture-manifest.json",
+      "beforeSha256": "3ac44ec841899ae7b3fcc83d35e4265eb3bcd116da0b53c92d6e4ffd2fa5c580",
+      "afterSha256": "eb19616aa1d96538630ada0e2d3241cf1a09f53ea0fc505ed482242b336f57b4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "beforeSha256": "17ee505fa7b2de8307346e8a2e6bfb83b12433efb8d009a6bfaddee893511b83",
+      "afterSha256": "282e872e1e1bd5d3a54827c0d7f645eabccc5a69f2080ea34863c8d8da007e50"
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "beforeSha256": "9c8e6734db5c4493a547c4d2bc14794d86ca86db818953a25e831128788cab00",
+      "afterSha256": "9f9121455e6af11a8964a4daf68f9dfa523fcd6467d5f34ea43d42623b72ef70"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "beforeSha256": "a9460f34e4398a363f11f618dde9fdb51e413686702c17991a8841018bd3b16c",
+      "afterSha256": "3973088f7c198a0fb188ee32868903e58d3f467047ee0ec100b585e433c0949b"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "beforeSha256": "4fb35dfbf51341e92d0631687897178100622c07cd25fe22630f42be59265c7c",
+      "afterSha256": "bf828bd7e853af311ec2647776182ccc81db336e560d726bac448f4eb18986e6"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "beforeSha256": "fdf69f8b4f7677bb13e1345a3bbdcd5f77b47e6b8c79c67d0377472763ef0177",
+      "afterSha256": "c959a0d2b4550bff2130004092e286e1e9b41cd99321eb4521710d85d44512d1"
+    }
+  ],
+  "graphicalFilesChecked": 105,
+  "changedGraphics": 0,
+  "scriptOnlyGeneratedXml": [
+    "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+    "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml"
+  ],
+  "sharedLoaderRegistrationsCatalogLedgerByteUnchanged": true,
+  "scopedDataImpact": "r21-scoped-data-impact.json",
+  "boundary": "Byte identity for unchanged source and exact generated graphical XML after removing only Actionscript; no human visual acceptance or arena outcome is claimed."
+}

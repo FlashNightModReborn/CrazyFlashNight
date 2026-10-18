@@ -1,0 +1,36 @@
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 855915 bytes, 2026/10/17 0:13:07)
+[INFO] 触发编译... (超时 600s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (7s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-elder-render Start: d2770f1c6e82499fbfbd69102f7067b5
+[ELDER_NATIVE_BOUNDS] form=0 x=-46.4,60.45 y=-173.4,0
+[ELDER_NATIVE_BOUNDS] form=1 x=-55.15,72.15 y=-166.9,0
+[ELDER_RENDER_SAMPLE] key=human-stand-1 firstMs=9 repeatMs=8,8,7 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-2 firstMs=7 repeatMs=7,6,7 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-3 firstMs=6 repeatMs=6,7,7 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-4 firstMs=7 repeatMs=8,9,9 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-5 firstMs=9 repeatMs=13,11,11 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-6 firstMs=11 repeatMs=10,11,8 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-7 firstMs=9 repeatMs=9,12,13 boundsArea=24336
+[ELDER_RENDER_SAMPLE] key=human-stand-8 firstMs=9 repeatMs=7,7,7 boundsArea=24336
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/17 0:13:25
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (7480 bytes, 2026/10/17 0:13:24)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 21   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    3892 B  DefineFunction2  (anon)
+    3835 B  DefineFunction2  (anon)
+     978 B  DefineFunction2  (anon)
+     650 B  DefineFunction2  (anon)
+     293 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。

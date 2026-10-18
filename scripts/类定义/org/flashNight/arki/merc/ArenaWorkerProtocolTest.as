@@ -136,6 +136,30 @@ class org.flashNight.arki.merc.ArenaWorkerProtocolTest {
         ArenaCalibrationService.handleSpawnedUnit("ProtocolUnit", "unknown", {}, unknown, undefined);
         check(unknown._arenaCalibrationUnknown === true && owner.errors.length == 1,
             "an unregistered pre-marked actor is still contamination");
+        // Real retained death actors reproduce the cross-side fallback that once
+        // assigned the Beast King's red successor to the nearby dead blue robot.
+        parent._x=100; parent._y=100; parent.hp=0; parentRecord.deathObserved=true;
+        var redParent:MovieClip=phaseWorld.createEmptyMovieClip("redPhaseParent",phaseWorld.getNextHighestDepth());
+        redParent._x=1100;redParent._y=100;redParent.hp=0;redParent.hp满血值=100;
+        var redRecord:Object={mc:redParent,unitType:"RedProtocolParent",level:1,
+            side:"red",isEnemy:true,spawnName:"redPhaseParent",deathObserved:true};
+        owner.redUnits.push(redRecord);
+        var named:MovieClip=_root.加载游戏世界人物("ProtocolUnit","redPhaseParent_beast",
+            phaseWorld.getNextHighestDepth(),{_x:100,_y:100,等级:1});
+        check(loaderSawFaction===true && named._arenaCalibrationSide=="red"
+            && owner.blueUnits.length==2 && owner.redUnits[1].parentUnitType=="RedProtocolParent",
+            "red successor name outranks a nearer blue death fallback before original loader initialization");
+        var explicitChild:MovieClip=_root.加载游戏世界人物("ProtocolUnit","explicitSuccessor",
+            phaseWorld.getNextHighestDepth(),{_x:100,_y:100,产生源:"redPhaseParent",等级:1});
+        check(loaderSawFaction===true && explicitChild._arenaCalibrationSide=="red"
+            && owner.redUnits[2].parentUnitType=="RedProtocolParent",
+            "explicit red source outranks a nearer blue death fallback");
+        redParent._x=110;
+        var nearest:MovieClip=_root.加载游戏世界人物("ProtocolUnit","legacySuccessor",
+            phaseWorld.getNextHighestDepth(),{_x:109,_y:100,等级:1});
+        check(loaderSawFaction===true && nearest._arenaCalibrationSide=="red"
+            && owner.redUnits[3].parentUnitType=="RedProtocolParent",
+            "identity-free legacy fallback compares distances across both rosters");
         ArenaCalibrationService.testOnlySetPhaseOwner(undefined);
         check(typeof _root.加载游戏世界人物 == "function",
             "phase fixture restores the original loader after the owned hook");

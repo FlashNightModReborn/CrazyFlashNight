@@ -1,0 +1,5 @@
+﻿#include "test-runners/cf6-audio/LegacyAudioFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.cf6AudioComplete=function():Void {trace("FocusedTestRunId cf6-audio-legacy Complete: __FOCUSED_RUN_ID__");};
+trace("FocusedTestRunId cf6-audio-legacy Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6AudioTest.runAllTests();

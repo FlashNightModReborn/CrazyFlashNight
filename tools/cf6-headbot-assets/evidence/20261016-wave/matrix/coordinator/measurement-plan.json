@@ -1,0 +1,36 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c03f3d9ffccd4efdbede56fa29d18416\\assignment-c03f3d9ffccd4efdbede56fa29d18416\\attempt-c03f3d9ffccd4efdbede56fa29d18416\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8f8a247662ff4a43af2564f0b551bf6d\\assignment-8f8a247662ff4a43af2564f0b551bf6d\\attempt-8f8a247662ff4a43af2564f0b551bf6d\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level30\\group-report.json"
+    },
+    {
+      "groupId": "level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8e79b01ebc5d4f4f9a10896e4809eeea\\assignment-8e79b01ebc5d4f4f9a10896e4809eeea\\attempt-8e79b01ebc5d4f4f9a10896e4809eeea\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-333c5d2e394340d3aa4a1858a2f11453\\assignment-333c5d2e394340d3aa4a1858a2f11453\\attempt-333c5d2e394340d3aa4a1858a2f11453\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level60\\group-report.json"
+    },
+    {
+      "groupId": "level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-2cc2a3070f914682bf8e680c2793b931\\assignment-2cc2a3070f914682bf8e680c2793b931\\attempt-2cc2a3070f914682bf8e680c2793b931\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-0dcf1a39218f459794464308dabba0fe\\assignment-0dcf1a39218f459794464308dabba0fe\\attempt-0dcf1a39218f459794464308dabba0fe\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\headbot-ark-wave-matrix-20261016\\groups\\level99\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

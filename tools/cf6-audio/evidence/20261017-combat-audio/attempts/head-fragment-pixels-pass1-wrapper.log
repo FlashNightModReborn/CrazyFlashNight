@@ -1,0 +1,37 @@
+{"ok": true, "exactSourceFunctions": 3, "families": 3, "selectedImages": 24}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 7013 bytes, 2026/10/17 12:47:22)
+[INFO] 触发编译... (超时 600s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (7s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-robot-death-headbot Start: faea76e1d397418797e8a8dcf3740359
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/17 12:50:09
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (15153 bytes, 2026/10/17 12:50:09)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 83   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    5081 B  DefineFunction2  (anon)
+    3647 B  DefineFunction2  (anon)
+    1432 B  DefineFunction2  (anon)
+    1215 B  DefineFunction2  (anon)
+    1193 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+Focused trace pattern must occur exactly once (found 0): Cf6RobotDeathRenderTest: \d+ passed, 0 failed; 8 draw points
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\test-runners\ru
+n-focused-testloader.ps1:365 char:21
++ ...             throw "Focused trace pattern must occur exactly once (fou ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Focused trace p...; 8 draw points:String) [], RuntimeException
+    + FullyQualifiedErrorId : Focused trace pattern must occur exactly once (found 0): Cf6RobotDeathRenderTest: \d+ pa 
+   ssed, 0 failed; 8 draw points
+ 

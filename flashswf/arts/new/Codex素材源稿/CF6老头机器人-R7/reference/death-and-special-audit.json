@@ -1,0 +1,190 @@
+{
+  "root": 1011,
+  "stand": 990,
+  "death": 1010,
+  "deathFrames": 111,
+  "deathLabels": [],
+  "newShapesVsOtherActions": [
+    {
+      "id": 364,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        363
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 366,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        365
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 368,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        367
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 370,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        369
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 372,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        371
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 374,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        373
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 376,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        375
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 378,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        377
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 380,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        379
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 382,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        381
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 384,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        383
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 386,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        385
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 388,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        387
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    },
+    {
+      "id": 390,
+      "role": "shared-explosion-or-smoke",
+      "actualBitmapIds": [
+        389
+      ],
+      "fillTypes": [
+        "bitmap"
+      ]
+    }
+  ],
+  "note": "13身体件977–989（含机械臂987/988），主体图集976；1010死亡111帧无新增身体碎片，原本体姿势抖动并叠共用爆炸，静态帧未见独立拆件。994/997/1007为三攻击分支，纯矢量攻击特效另列。",
+  "bodyBitmapIds": [
+    976
+  ],
+  "branches": [
+    {
+      "label": "unlabeled",
+      "startFrame": 1,
+      "endFrame": 111,
+      "directInstances": [
+        364,
+        366,
+        368,
+        370,
+        372,
+        374,
+        376,
+        378,
+        380,
+        382,
+        384,
+        386,
+        388,
+        390,
+        977,
+        978,
+        979,
+        980,
+        981,
+        982,
+        983,
+        984,
+        985,
+        986,
+        987,
+        988,
+        989
+      ],
+      "continuity": "label interval only; AS stop/goto not executed"
+    }
+  ]
+}

@@ -500,3 +500,13 @@ _root.初始化NPC = function(目标) {
 
     目标.NPC初始化完毕 = true;
 }
+
+// 独立资源的尸体离场时注销其自有碎片实例，避免跨关卡保留回调。
+_root.地图元件.停止地图元件破碎动画 = function(animationId:Number):Boolean {
+    return FragmentAnimator.stopAnimation(animationId);
+};
+
+// 用引擎真实实例状态确认结束；资源不从 MovieClip 回调属性是否可删除反推状态。
+_root.地图元件.地图元件破碎动画运行中 = function(animationId:Number):Boolean {
+    return FragmentAnimator.isAnimationRunning(animationId) === true;
+};

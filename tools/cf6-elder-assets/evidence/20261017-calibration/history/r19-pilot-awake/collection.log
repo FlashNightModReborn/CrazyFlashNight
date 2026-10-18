@@ -1,0 +1,135 @@
+{
+  "experiment": "cf6-cal-r19-pilot-20261018",
+  "rows": 12,
+  "displayQualified": true,
+  "strengthPassed": false,
+  "groups": [
+    {
+      "rival": 78,
+      "level": 30,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.6635329295796062,
+        "median": 0.6635329295796062,
+        "min": 0.4248452136600529,
+        "max": 0.9022206454991596
+      },
+      "opponentTransformed": 1,
+      "in50to80": 0,
+      "meetsGroupTarget": true
+    },
+    {
+      "rival": 78,
+      "level": 60,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.6228184051508342,
+        "median": 0.6228184051508342,
+        "min": 0.44825879914773714,
+        "max": 0.7973780111539313
+      },
+      "opponentTransformed": 2,
+      "in50to80": 1,
+      "meetsGroupTarget": true
+    },
+    {
+      "rival": 78,
+      "level": 99,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.8747165039285196,
+        "median": 0.8747165039285196,
+        "min": 0.7918361423803304,
+        "max": 0.9575968654767087
+      },
+      "opponentTransformed": 2,
+      "in50to80": 1,
+      "meetsGroupTarget": false
+    },
+    {
+      "rival": 361,
+      "level": 30,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 1,
+      "losses": 1,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.7936343946824665,
+        "median": 0.7936343946824665,
+        "min": 0.5872687893649331,
+        "max": 1.0
+      },
+      "opponentTransformed": 0,
+      "in50to80": 1,
+      "meetsGroupTarget": false
+    },
+    {
+      "rival": 361,
+      "level": 60,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 1,
+      "losses": 1,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.7694087965354206,
+        "median": 0.7694087965354206,
+        "min": 0.5388175930708411,
+        "max": 1.0
+      },
+      "opponentTransformed": 0,
+      "in50to80": 1,
+      "meetsGroupTarget": false
+    },
+    {
+      "rival": 361,
+      "level": 99,
+      "n": 2,
+      "sides": {
+        "blue": 1,
+        "red": 1
+      },
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "mean": 0.543738888277034,
+        "median": 0.543738888277034,
+        "min": 0.21354961531805094,
+        "max": 0.8739281612360169
+      },
+      "opponentTransformed": 0,
+      "in50to80": 0,
+      "meetsGroupTarget": true
+    }
+  ],
+  "historyRows": 350
+}

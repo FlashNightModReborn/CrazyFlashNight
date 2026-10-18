@@ -1,0 +1,12 @@
+FocusedTestRunId cf6-headbot Start: f169fbc0ad8f468eac95619102bf4199
+[CF6_CORPSE_DIAGNOSTIC] tick=34 bodyFrame=27 id=2 settled=false step=function handler=function x=15.45 y=54.7 ground=60.45 running=true vx=-3.83854144299403,-2.7763840071857,0,-1.65334521367797,-5.27643861062825,-0.339233209676815 vy=4.79144362406394,3.84402959106054,0,0,6.83722565095773,0 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[CF6_CORPSE_DIAGNOSTIC] tick=60 bodyFrame=48 id=2 settled=true step=undefined handler=undefined x=8.1 y=60.45 ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+[CF6_CORPSE_STAMP] unit=headbotCase19 stamps=1 settled=true grounded=true pieces=6 bounds=-181.3,-135.55,72.05,62.95
+[CF6_CORPSE_STAMP] unit=headbotCase7 stamps=1 settled=true grounded=true pieces=6 bounds=-166,-66.05,77.15,120.85
+[CF6_CORPSE_STAMP] unit=headbotCase10 stamps=1 settled=true grounded=true pieces=6 bounds=-155.9,-72,50.05,60.35
+[CF6_CORPSE_STAMP] unit=headbotCase11 stamps=1 settled=true grounded=true pieces=6 bounds=-235.6,-92.75,80.65,62.7
+[CF6_CORPSE_STAMP] unit=headbotCase22 stamps=1 settled=true grounded=true pieces=6 bounds=-191.75,-48.15,73.3,134.55
+[CF6_CORPSE_STAMP] unit=headbotCase23 stamps=1 settled=true grounded=true pieces=6 bounds=-203.15,-108.85,92.25,67.3
+[CF6_CORPSE_DIAGNOSTIC] tick=119 bodyFrame=undefined id=undefined settled=undefined step=undefined handler=undefined x=undefined y=undefined ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+Cf6HeadbotAssetTest: 388 passed, 0 failed; 24 actual timeline cases
+FocusedTestRunId cf6-headbot Complete: f169fbc0ad8f468eac95619102bf4199

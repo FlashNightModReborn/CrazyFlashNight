@@ -1,0 +1,1421 @@
+{
+  "schema": "cf6.audio-test-fixture.v1",
+  "cases": 81,
+  "batches": [
+    {
+      "swf": "../flashswf/arts/new/Codex大头机器人素材.swf",
+      "owner": "Codex大头机器人素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6大头机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 14,
+          "sounds": [
+            "CF6_0904.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大头机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 22,
+          "sounds": [
+            "CF6_0904.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大头机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_ea2159328f.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 4,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大头机器人",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 2,
+          "sounds": [
+            "CF6_0915.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Codex大刀机器人素材.swf",
+      "owner": "Codex大刀机器人素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 52,
+          "state": "激光束",
+          "frame": 10,
+          "sounds": [
+            "CF6_0904.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_c56b689a20.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 17,
+          "sounds": [
+            "CF6_0908.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 20,
+          "sounds": [
+            "CF6_0652.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_c56b689a20.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 9,
+          "sounds": [
+            "CF6_0911.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6大刀机器人",
+          "rootFrame": 115,
+          "state": "血腥死",
+          "frame": 2,
+          "sounds": [
+            "CF6_0915.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Codex老头素材.swf",
+      "owner": "Codex老头素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0969.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 3,
+          "sounds": [
+            "CF6_0971.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 10,
+          "sounds": [
+            "CF6_0296.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 30,
+          "state": "空手跳",
+          "frame": 1,
+          "sounds": [
+            "CF6_1117.mp3",
+            "CF6_1131.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_224cc88267.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 28,
+          "sounds": [
+            "CF6_0992.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_c56b689a20.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 8,
+          "sounds": [
+            "CF6_0995.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 25,
+          "sounds": [
+            "CF6_0995.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 52,
+          "state": "重击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_224cc88267.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 52,
+          "state": "重击",
+          "frame": 36,
+          "sounds": [
+            "CF6_0998.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 122,
+          "state": "血腥死",
+          "frame": 2,
+          "sounds": [
+            "CF6_1009.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 122,
+          "state": "血腥死",
+          "frame": 14,
+          "sounds": [
+            "CF6_0915.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 57,
+          "state": "蓄能重束",
+          "frame": 2,
+          "sounds": [
+            "CF6_0907_224cc88267.wav"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 57,
+          "state": "蓄能重束",
+          "frame": 34,
+          "sounds": [
+            "CF6_0992.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 142,
+          "state": "变身",
+          "frame": 2,
+          "sounds": [
+            "CF6_1993.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 142,
+          "state": "变身",
+          "frame": 81,
+          "sounds": [
+            "CF6_2004.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头人形",
+          "rootFrame": 142,
+          "state": "变身",
+          "frame": 92,
+          "sounds": [
+            "CF6_2007.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 57,
+          "state": "蓄能重束",
+          "frame": 46,
+          "sounds": [
+            "CF6_0992.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 57,
+          "state": "蓄能重束",
+          "frame": 58,
+          "sounds": [
+            "CF6_0992.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6老头机器人",
+          "rootFrame": 57,
+          "state": "蓄能重束",
+          "frame": 70,
+          "sounds": [
+            "CF6_0992.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Codex蛮蛮素材.swf",
+      "owner": "Codex蛮蛮素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 2,
+          "sounds": [
+            "CF6_0649.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 13,
+          "sounds": [
+            "CF6_0652.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0654.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 13,
+          "sounds": [
+            "CF6_0655.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 72,
+          "state": "被击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0658.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 72,
+          "state": "被击",
+          "frame": 24,
+          "sounds": [
+            "CF6_0658.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6蛮蛮",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 21,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Codex特种兵素材.swf",
+      "owner": "Codex特种兵素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 38,
+          "state": "近战",
+          "frame": 14,
+          "sounds": [
+            "CF6_0513.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6持盾特种兵",
+          "rootFrame": 191,
+          "state": "持盾近战",
+          "frame": 14,
+          "sounds": [
+            "CF6_0513.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6持盾特种兵",
+          "rootFrame": 203,
+          "state": "破盾",
+          "frame": 2,
+          "sounds": [
+            "CF6_0576.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 30,
+          "state": "长枪跳",
+          "frame": 2,
+          "sounds": [
+            "CF6_1121.mp3",
+            "CF6_1135.mp3",
+            "CF6_1144.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 80,
+          "state": "击倒",
+          "frame": 1,
+          "sounds": [
+            "CF6_1121.mp3",
+            "CF6_1135.mp3",
+            "CF6_1144.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 59,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 105,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        },
+        {
+          "linkage": "敌人-CF6特种兵",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            105
+          ]
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Codex光头保安素材.swf",
+      "owner": "Codex光头保安素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 131,
+          "state": "变身",
+          "frame": 2,
+          "sounds": [
+            "CF6_0879.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 131,
+          "state": "变身",
+          "frame": 44,
+          "sounds": [
+            "CF6_0881.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 30,
+          "state": "空手跳",
+          "frame": 2,
+          "sounds": [
+            "CF6_1121.mp3",
+            "CF6_1135.mp3",
+            "CF6_1144.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 80,
+          "state": "击倒",
+          "frame": 1,
+          "sounds": [
+            "CF6_1121.mp3",
+            "CF6_1135.mp3",
+            "CF6_1144.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 32,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 78,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        },
+        {
+          "linkage": "敌人-CF6光头保安",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1123.mp3",
+            "CF6_1137.mp3",
+            "CF6_1146.mp3",
+            "CF6_1151.mp3",
+            "CF6_1154.mp3",
+            "CF6_1157.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            32,
+            78
+          ]
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/CodexWings素材.swf",
+      "owner": "CodexWings素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 7,
+          "sounds": [
+            "CF6_0513.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 80,
+          "state": "击倒",
+          "frame": 1,
+          "sounds": [
+            "CF6_1143.mp3",
+            "CF6_1150.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 59,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 96,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        },
+        {
+          "linkage": "敌人-CF6Wings",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1120.mp3",
+            "CF6_1134.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 2,
+          "once": true,
+          "branches": [
+            1,
+            59,
+            96
+          ]
+        }
+      ]
+    },
+    {
+      "swf": "../flashswf/arts/new/Antigravity专用素材.swf",
+      "owner": "Antigravity专用素材",
+      "cases": [
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "rootFrame": 96,
+          "state": "被投",
+          "frame": 2,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "rootFrame": 96,
+          "state": "被投",
+          "frame": 24,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6普通男僵尸",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 42,
+          "state": "空手攻击",
+          "frame": 2,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 96,
+          "state": "被投",
+          "frame": 2,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 96,
+          "state": "被投",
+          "frame": 24,
+          "sounds": [
+            "CF6_0288.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 89,
+          "state": "倒地",
+          "frame": 1,
+          "sounds": [
+            "CF6_0303.mp3"
+          ],
+          "onLoad": false,
+          "pause": true,
+          "quiet": 2,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 80,
+          "state": "击倒",
+          "frame": 6,
+          "sounds": [
+            "CF6_1143.mp3",
+            "CF6_1150.mp3"
+          ],
+          "onLoad": false,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        },
+        {
+          "linkage": "敌人-CF6女僵尸",
+          "rootFrame": 105,
+          "state": "血腥死",
+          "frame": 1,
+          "sounds": [
+            "CF6_1143.mp3",
+            "CF6_1150.mp3"
+          ],
+          "onLoad": true,
+          "pause": false,
+          "quiet": 3,
+          "once": false,
+          "branches": []
+        }
+      ]
+    }
+  ],
+  "fixtureSha256": "de4733d0f52048d176643aa6509faa4b2f288a0e6348ab7d6220fa63a2d0b7bd",
+  "inputs": [
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/敌人-CF6女僵尸.xml",
+      "sha256": "f55b98648db7207fa3d5cd568f943fc71d08e891f507a5da3adc036145ab27e7"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸.xml",
+      "sha256": "1c5d3c6e2a340cd2ebe6428aeb688887d99850ab4ce1f7bb28991c33d8b02e1d"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材.swf",
+      "sha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/敌人-CF6Wings.xml",
+      "sha256": "6136b25f0af3ad018e9ab14dfa785065732ba5e689b65edbc5c9d5deae0b164b"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/敌人-CF6光头保安.xml",
+      "sha256": "c00ef9508b7be28816a01449437aafae2138009fbda598dba37bc2fbc7ad24af"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "sha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+      "sha256": "c8ff185b3fe67a01ca028ae7b74690e67e0509e8cfbd34b03ffd65f33c49e25d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/敌人-CF6大头机器人.xml",
+      "sha256": "defe582d9e30a725a290c5fa8eba6cede10f42ebfc96686677aa75758297b4bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6持盾特种兵.xml",
+      "sha256": "6071b673ad8bc73dff4c0955a570cfcef9efc2f843f37be04db4da71624ac81d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/敌人-CF6特种兵.xml",
+      "sha256": "41d9f56956c3fcf19a2c9a5c0d4c951dfb13fba1227977047804ce276a710480"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "sha256": "d22aa8fe6639f8ee7cb4fa1470f2e77966005fd1968cefcd1eaba820d2917a27"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "sha256": "7294cc098bbb9dad59cc27f0cb9b249b416170e1d6f315dc4d2aa95e5a211714"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "06c53247479dcf0abb424fdfbdf98f7a1ce2ca42b333b0b54fdbd8a0ad36a9d5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
+      "sha256": "fa3a5ba4b3b7b7a424383d7d95068fe28e9a129dc84ee9ec8623eca2740512c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3"
+    },
+    {
+      "path": "tools/cf6-audio/cues.json",
+      "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+    }
+  ]
+}

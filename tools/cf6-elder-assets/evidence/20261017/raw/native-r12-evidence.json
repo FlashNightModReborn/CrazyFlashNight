@@ -1,0 +1,46 @@
+{
+  "revision": "r12",
+  "proof": {
+    "behavior": {
+      "runId": "33469fc3ee314c2787b5aa1880cc3a68",
+      "passed": 680,
+      "failed": 0,
+      "traceSha256": "ca0e6bb278f0214e346c417a1f86b1ae683ba551c9e7a6b6950204bca193389c"
+    },
+    "render-probe": {
+      "runId": "26b9ff57c0424c428788c5acc473b2d2",
+      "passed": 16,
+      "failed": 0,
+      "traceSha256": "5a9277dc781b670f1fad7425e497d676724a04543cbc53f639a1582d7810be69"
+    }
+  },
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "7d50931a3f7b91366dcdd4e494f44ed6dfdcf1d6cc2a795a66483a07dd1c2942"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "55c4fb1b5971be1b03914ed17e0d6112041a85f45c7b78e07ef16b4b861cc4fc"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "47fface528e1f38eecccf70111cb9c467aa0f7de9661aa7acf17cd1061eac74b"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "sha256": "22beac16792f8b9528c2174aba54574f062c1244b9f76e3b2235d88d24909b73"
+    }
+  ],
+  "swfBytes": 356928,
+  "timelineCases": 34,
+  "phaseCases": 13,
+  "drawPoints": 6,
+  "equivalentGraphicsXmlFiles": 85,
+  "graphicsProof": "r12-art-equivalence.json",
+  "imagesRemainR6": true
+}

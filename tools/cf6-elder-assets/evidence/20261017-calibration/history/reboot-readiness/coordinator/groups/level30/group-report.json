@@ -1,0 +1,35 @@
+{
+  "groupId": "level30",
+  "mode": "serial",
+  "outcomes": [
+    {
+      "jobId": "level30-w1",
+      "expectedReceiptPath": "C:\\Users\\fs\\.codex\\worktrees\\cf6-head-final\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3c0354dab37d4cd49941987ea7743979\\assignment-3c0354dab37d4cd49941987ea7743979\\attempt-3c0354dab37d4cd49941987ea7743979\\shard-receipt.json",
+      "promiseStatus": "fulfilled",
+      "error": null,
+      "receiptPresent": true,
+      "status": "aborted",
+      "cleanupVerified": true,
+      "protectedSavesVerified": true,
+      "receiptSha256": "sha256:95faad1b1bc511df35975aa54a21cb677fada2242fe3a89915b58287a7e73175",
+      "runtimeResourcesVerified": true,
+      "forcedRecycling": false
+    }
+  ],
+  "seedSources": [
+    {
+      "workerId": "headbot-w1",
+      "seedPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+      "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+      "unchanged": true
+    }
+  ],
+  "seedSourcesUnchanged": true,
+  "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-reboot-probe-20261017\\groups\\level30\\save-protection.json",
+  "globalSaveUnchanged": true,
+  "stopBeforeNextGroup": false,
+  "startedAt": "2026-10-17T13:40:59.613Z",
+  "completedAt": "2026-10-17T13:46:37.272Z",
+  "wallDurationMs": 337659
+}

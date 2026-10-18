@@ -1,0 +1,8 @@
+FocusedTestRunId cf6-headbot Start: a58859b1118444acbe2e8e25beba8589
+[CF6_CORPSE_DIAGNOSTIC] tick=34 bodyFrame=27 id=2 settled=false step=function handler=function x=19.85 y=60.45 ground=60.45 running=true vx=-1.65628675483516,-5.84369689505547,0,-3.81914054788649,-3.06634048512205,-1.68536350267788 vy=0,4.05808760841872,0,4.03457619650953,5.85061623114993,0 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[CF6_CORPSE_DIAGNOSTIC] tick=60 bodyFrame=48 id=2 settled=true step=undefined handler=undefined x=16.85 y=60.45 ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+[CF6_CORPSE_DIAGNOSTIC] tick=119 bodyFrame=undefined id=undefined settled=undefined step=undefined handler=undefined x=undefined y=undefined ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 22
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 23
+Cf6HeadbotAssetTest: 386 passed, 2 failed; 24 actual timeline cases
+FocusedTestRunId cf6-headbot Complete: a58859b1118444acbe2e8e25beba8589

@@ -6,7 +6,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-wings-assets/build.py",
-      "sha256": "518f047556cfa6e13f470b99d0183355156e79b5945216e3a9f69f0799cd762a"
+      "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -18,11 +18,11 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
-      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
     },
     {
       "path": "tools/gamma-echo-assets/build.py",
@@ -30,7 +30,7 @@
     },
     {
       "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
-      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
@@ -86,7 +86,7 @@
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
-        "sha256": "3dbda7aa4ccf1f36dd0b9295739d97066d907e062679abfd7a0493b35a498282"
+        "sha256": "756bd498aad04d443b51df937e5cc9799e6faf829a3a5b44734b5ee94da42c92"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 862.xml",
@@ -98,7 +98,7 @@
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
-        "sha256": "bbf0b8f12e9c36ec2ad4d666c52aa47d2c6a45151121db6befd4b3c54a528ec1"
+        "sha256": "3bb6bf640f5183a6a459f633b2eba7c32bc50a69891b5e54a2dcb126173a41e3"
       },
       {
         "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/跑步.xml",
@@ -171,8 +171,8 @@
     },
     {
       "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 861.xml",
-      "sha256": "decc898338bd47f66e30e3e44428478c83248233c1338f618fcf09dfb3525229",
-      "bytes": 258772
+      "sha256": "3f7affe4057d68d1ef27467d3d8f27b59e5b8ce3254a3c37b8f6801015dd2b0c",
+      "bytes": 259391
     },
     {
       "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 862.xml",
@@ -181,13 +181,13 @@
     },
     {
       "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 863.xml",
-      "sha256": "27d886c7221aa1aac3387a4e3ee1c78517e039c44917de4c478fa17f161b687a",
-      "bytes": 13063
+      "sha256": "313642a7fa48142d583484f98f86507f4cb58e520318057df8ae62eba09dc20f",
+      "bytes": 13600
     },
     {
       "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/起身.xml",
-      "sha256": "df0e30c6bf9ec9f11d42a1f4a0edb9039273101ffef9bb5eb4dd8a9edb8f7689",
-      "bytes": 132564
+      "sha256": "c8236babc469f6a65f8495ce70314bc6ba2bb1a9c472e27bb694ba6207d10df9",
+      "bytes": 133072
     },
     {
       "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/跑步.xml",
@@ -386,8 +386,8 @@
     },
     {
       "path": "LIBRARY/Codex/Wings/动作/死亡.xml",
-      "sha256": "6a272c81af763089571eee20cf6d329f838d0115b408db8b2be0b84e47dcd646",
-      "bytes": 183165
+      "sha256": "8618eaf3e049fab73896435e8ce7e91812b84910274fe35662529066614ec109",
+      "bytes": 184747
     },
     {
       "path": "LIBRARY/Codex/Wings/动作/站立.xml",
@@ -441,5 +441,49 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 6,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0513.mp3",
+        "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1120.mp3",
+        "sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1134.mp3",
+        "sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1143.mp3",
+        "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1150.mp3",
+        "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

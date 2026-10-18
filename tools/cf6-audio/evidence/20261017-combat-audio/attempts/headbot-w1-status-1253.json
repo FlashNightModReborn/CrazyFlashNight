@@ -1,0 +1,621 @@
+{
+  "success": true,
+  "ok": true,
+  "executionMode": "arena_worker",
+  "workerId": "headbot-w1",
+  "sessionEpoch": "session-c635e33ac5054c1aa5e36400c6916645",
+  "assignmentId": "assignment-c635e33ac5054c1aa5e36400c6916645",
+  "attemptId": "attempt-c635e33ac5054c1aa5e36400c6916645",
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156"
+  },
+  "performance": {
+    "preset": "performance",
+    "mode": "fixed",
+    "maxRenderHeight": 180
+  },
+  "agentStatus": {
+    "success": true,
+    "ok": true,
+    "task": "agent_control",
+    "note": null,
+    "launchState": "Ready",
+    "revealPerformed": true,
+    "socketConnected": true,
+    "gameEnteredObserved": true,
+    "gameEnteredAttemptId": "0373c0c1dc754c39b6bd2042a56c0360",
+    "readyForRuntimeAutomation": true,
+    "runtimeReadyBlockedBy": [],
+    "readyForArenaCalibration": true,
+    "readyBlockedBy": [],
+    "save": {
+      "attemptId": "0373c0c1dc754c39b6bd2042a56c0360",
+      "slot": "cf7_agent_aw_c635e33ac5054c1aa5e36400c6916645",
+      "decision": "snapshot",
+      "kind": "Snapshot",
+      "source": "json_shadow",
+      "corruptDetail": null
+    },
+    "saveRuntime": {
+      "loaded": true,
+      "savePath": "cf7_agent_aw_c635e33ac5054c1aa5e36400c6916645",
+      "attemptId": "0373c0c1dc754c39b6bd2042a56c0360",
+      "source": "launcher_snapshot:json_shadow",
+      "role": "fs",
+      "level": 99
+    },
+    "arenaCalibration": {
+      "success": true,
+      "ok": true,
+      "task": "arena_calibration",
+      "workerId": "headbot-w1",
+      "sessionEpoch": "session-c635e33ac5054c1aa5e36400c6916645",
+      "assignmentId": "assignment-c635e33ac5054c1aa5e36400c6916645",
+      "attemptId": "attempt-c635e33ac5054c1aa5e36400c6916645",
+      "transportPoisoned": false,
+      "state": "completed",
+      "note": null,
+      "batchId": "cf6-headbot-combat-audio-20261017-l30-w1",
+      "manifestHash": "sha256:43670389f2bd08ddd75d86d9b64b79be8bd2a78ae92d055d0a0d7c9438ee8deb",
+      "manifestPath": "tmp/arena-calibration/worker-runs/session-c635e33ac5054c1aa5e36400c6916645/assignment-c635e33ac5054c1aa5e36400c6916645/attempt-c635e33ac5054c1aa5e36400c6916645/manifest.json",
+      "frozenManifestPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/case_manifest.json",
+      "resultPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/results.jsonl",
+      "totalRuns": 3,
+      "completedRuns": 3,
+      "currentCaseId": null,
+      "currentRunId": null,
+      "lastError": null,
+      "lastResult": {
+        "schema": "arena-calibration.result.v1",
+        "workerId": "headbot-w1",
+        "sessionEpoch": "session-c635e33ac5054c1aa5e36400c6916645",
+        "assignmentId": "assignment-c635e33ac5054c1aa5e36400c6916645",
+        "attemptId": "attempt-c635e33ac5054c1aa5e36400c6916645",
+        "batchId": "cf6-headbot-combat-audio-20261017-l30-w1",
+        "manifestHash": "sha256:43670389f2bd08ddd75d86d9b64b79be8bd2a78ae92d055d0a0d7c9438ee8deb",
+        "caseId": "level30-blue",
+        "caseHash": "sha256:d7c9b760681b61b99199a9c19d547f33ca6533fe7b527a0265f022fadaac76bf",
+        "runId": "level30-blue-r003",
+        "repeatIndex": 3,
+        "status": "finished",
+        "winner": "blue",
+        "startedAt": "2026-10-17T04:49:55.3180412Z",
+        "completedAt": "2026-10-17T04:51:41.4194989Z",
+        "requestedSpawnDistance": 650,
+        "blueFormation": "line",
+        "redFormation": "line",
+        "formationSpacing": 54,
+        "phaseSpawnCount": 0,
+        "spawnedUnits": [],
+        "blueSpawnPositions": [
+          {
+            "side": "blue",
+            "index": 0,
+            "unit": "兵种470",
+            "level": 30,
+            "name": "斗兽标定_blue_level30_blue_r003_0",
+            "x": 570,
+            "y": 430
+          }
+        ],
+        "redSpawnPositions": [
+          {
+            "side": "red",
+            "index": 0,
+            "unit": "兵种286",
+            "level": 30,
+            "name": "斗兽标定_red_level30_blue_r003_0",
+            "x": 1220,
+            "y": 430
+          }
+        ],
+        "formationAudit": {
+          "blue": {
+            "count": 1,
+            "minX": 570,
+            "maxX": 570,
+            "minY": 430,
+            "maxY": 430,
+            "xRange": 0,
+            "yRange": 0,
+            "distinctX": 1,
+            "distinctY": 1
+          },
+          "red": {
+            "count": 1,
+            "minX": 1220,
+            "maxX": 1220,
+            "minY": 430,
+            "maxY": 430,
+            "xRange": 0,
+            "yRange": 0,
+            "distinctX": 1,
+            "distinctY": 1
+          }
+        },
+        "authorityContext": {
+          "candidateSide": "blue",
+          "candidateUnitId": 470,
+          "level": 30,
+          "rivalUnitId": 286,
+          "sourceBindings": [
+            {
+              "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+              "sha256": "d36c25e751a536a85dea0e2a9111276180493c016c986a3e9cb096e504187108"
+            },
+            {
+              "path": "flashswf/arts/things-new.swf",
+              "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+            },
+            {
+              "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+              "sha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d"
+            },
+            {
+              "path": "scripts/asLoader.swf",
+              "sha256": "7f0ff06c53d46cf7786ca766ad9eba1cf5a0da21bc6ec1fa1b149739b4b09850"
+            },
+            {
+              "path": "data/enemy_properties/CF6重制敌人.xml",
+              "sha256": "be52b01b30a54d966691004ae50800c4aff906bc9207d893215c88d97aa1871c"
+            },
+            {
+              "path": "data/enemy_properties/诺亚新敌人.xml",
+              "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+            },
+            {
+              "path": "data/units/units.json",
+              "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+            },
+            {
+              "path": "data/items/asset_source_map.xml",
+              "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+            },
+            {
+              "path": "launcher/web/modules/arena-unit-catalog.js",
+              "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+            },
+            {
+              "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+              "sha256": "80b622fb1899d34c93ad4000f867d2f2dd9c4a6c31976226d347e2c2f37f758a"
+            },
+            {
+              "path": "tools/cf6-headbot-assets/build.py",
+              "sha256": "4138bf497080fcf9385d4863d058784b1c02314e28f16e5a3a93c86dde0c579d"
+            },
+            {
+              "path": "tools/cf6-headbot-assets/native-manifest.json",
+              "sha256": "2d44a524ed52510b2ffa36314aff1f2dd6f3d0f8d518e7747da58765a3e0618f"
+            },
+            {
+              "path": "tools/cf6-headbot-assets/balance-inputs.json",
+              "sha256": "f5fa41ca9ea4438583395cdb10540d6d78b0d9ed6ca8a1a09af43b2e72ccf23e"
+            }
+          ],
+          "stage": 7,
+          "targetPosition": "stable_wins_over_arkclaw",
+          "tier": 16,
+          "variant": "wave"
+        },
+        "blueUnitResults": [
+          {
+            "sourceId": "headbot-30",
+            "petId": -1,
+            "identifier": "敌人-CF6大头机器人",
+            "resolvedType": "敌人-CF6大头机器人",
+            "level": 30,
+            "strategicPromotions": [],
+            "strategicPromotionsValid": true,
+            "startMaxHp": 85606,
+            "remainHp": 7884,
+            "hpPermille": 92,
+            "alive": true
+          }
+        ],
+        "redUnitResults": [
+          {
+            "sourceId": "arkclaw-30",
+            "petId": -1,
+            "identifier": "敌人-方舟爪豪",
+            "resolvedType": "敌人-方舟爪豪",
+            "level": 30,
+            "strategicPromotions": [],
+            "strategicPromotionsValid": true,
+            "startMaxHp": 37711,
+            "remainHp": 0,
+            "hpPermille": 0,
+            "alive": false
+          }
+        ],
+        "frames": 3082,
+        "durationMs": 106013,
+        "spawnDistance": 650,
+        "blueX": 570,
+        "redX": 1220,
+        "skillStateAudit": {
+          "blue": [
+            {
+              "unit": "兵种470",
+              "sourceId": "headbot-30",
+              "name": "斗兽标定_blue_level30_blue_r003_0",
+              "observed": false,
+              "state": null
+            }
+          ],
+          "red": [
+            {
+              "unit": "兵种286",
+              "sourceId": "arkclaw-30",
+              "name": "斗兽标定_red_level30_blue_r003_0",
+              "observed": false,
+              "state": null
+            }
+          ]
+        },
+        "presentationAudit": {
+          "qualityAtStart": "LOW",
+          "qualityApplied": "LOW",
+          "atStart": {
+            "observed": true,
+            "qualityApplied": "LOW",
+            "performanceLevel": 1,
+            "lastAppliedSoftU": 1,
+            "appliedCommand": 3,
+            "sceneEpoch": 3,
+            "paused": false,
+            "frameRate": 30
+          },
+          "atEnd": {
+            "observed": true,
+            "qualityApplied": "LOW",
+            "performanceLevel": 1,
+            "lastAppliedSoftU": 1,
+            "appliedCommand": 3,
+            "sceneEpoch": 3,
+            "paused": false,
+            "frameRate": 30
+          }
+        },
+        "blue": {
+          "maxHp": 85606,
+          "remainHp": 7884,
+          "aliveCount": 1,
+          "startMaxHp": 85606,
+          "startCount": 1
+        },
+        "red": {
+          "maxHp": 37711,
+          "remainHp": 0,
+          "aliveCount": 0,
+          "startMaxHp": 37711,
+          "startCount": 1
+        },
+        "errors": []
+      }
+    },
+    "activePanel": {
+      "name": null,
+      "instanceId": null
+    }
+  },
+  "arenaStatus": {
+    "success": true,
+    "ok": true,
+    "task": "arena_calibration",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-c635e33ac5054c1aa5e36400c6916645",
+    "assignmentId": "assignment-c635e33ac5054c1aa5e36400c6916645",
+    "attemptId": "attempt-c635e33ac5054c1aa5e36400c6916645",
+    "transportPoisoned": false,
+    "state": "completed",
+    "note": null,
+    "batchId": "cf6-headbot-combat-audio-20261017-l30-w1",
+    "manifestHash": "sha256:43670389f2bd08ddd75d86d9b64b79be8bd2a78ae92d055d0a0d7c9438ee8deb",
+    "manifestPath": "tmp/arena-calibration/worker-runs/session-c635e33ac5054c1aa5e36400c6916645/assignment-c635e33ac5054c1aa5e36400c6916645/attempt-c635e33ac5054c1aa5e36400c6916645/manifest.json",
+    "frozenManifestPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/case_manifest.json",
+    "resultPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/results.jsonl",
+    "totalRuns": 3,
+    "completedRuns": 3,
+    "currentCaseId": null,
+    "currentRunId": null,
+    "lastError": null,
+    "lastResult": {
+      "schema": "arena-calibration.result.v1",
+      "workerId": "headbot-w1",
+      "sessionEpoch": "session-c635e33ac5054c1aa5e36400c6916645",
+      "assignmentId": "assignment-c635e33ac5054c1aa5e36400c6916645",
+      "attemptId": "attempt-c635e33ac5054c1aa5e36400c6916645",
+      "batchId": "cf6-headbot-combat-audio-20261017-l30-w1",
+      "manifestHash": "sha256:43670389f2bd08ddd75d86d9b64b79be8bd2a78ae92d055d0a0d7c9438ee8deb",
+      "caseId": "level30-blue",
+      "caseHash": "sha256:d7c9b760681b61b99199a9c19d547f33ca6533fe7b527a0265f022fadaac76bf",
+      "runId": "level30-blue-r003",
+      "repeatIndex": 3,
+      "status": "finished",
+      "winner": "blue",
+      "startedAt": "2026-10-17T04:49:55.3180412Z",
+      "completedAt": "2026-10-17T04:51:41.4194989Z",
+      "requestedSpawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "phaseSpawnCount": 0,
+      "spawnedUnits": [],
+      "blueSpawnPositions": [
+        {
+          "side": "blue",
+          "index": 0,
+          "unit": "兵种470",
+          "level": 30,
+          "name": "斗兽标定_blue_level30_blue_r003_0",
+          "x": 570,
+          "y": 430
+        }
+      ],
+      "redSpawnPositions": [
+        {
+          "side": "red",
+          "index": 0,
+          "unit": "兵种286",
+          "level": 30,
+          "name": "斗兽标定_red_level30_blue_r003_0",
+          "x": 1220,
+          "y": 430
+        }
+      ],
+      "formationAudit": {
+        "blue": {
+          "count": 1,
+          "minX": 570,
+          "maxX": 570,
+          "minY": 430,
+          "maxY": 430,
+          "xRange": 0,
+          "yRange": 0,
+          "distinctX": 1,
+          "distinctY": 1
+        },
+        "red": {
+          "count": 1,
+          "minX": 1220,
+          "maxX": 1220,
+          "minY": 430,
+          "maxY": 430,
+          "xRange": 0,
+          "yRange": 0,
+          "distinctX": 1,
+          "distinctY": 1
+        }
+      },
+      "authorityContext": {
+        "candidateSide": "blue",
+        "candidateUnitId": 470,
+        "level": 30,
+        "rivalUnitId": 286,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+            "sha256": "d36c25e751a536a85dea0e2a9111276180493c016c986a3e9cb096e504187108"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+            "sha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "7f0ff06c53d46cf7786ca766ad9eba1cf5a0da21bc6ec1fa1b149739b4b09850"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "be52b01b30a54d966691004ae50800c4aff906bc9207d893215c88d97aa1871c"
+          },
+          {
+            "path": "data/enemy_properties/诺亚新敌人.xml",
+            "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+            "sha256": "80b622fb1899d34c93ad4000f867d2f2dd9c4a6c31976226d347e2c2f37f758a"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/build.py",
+            "sha256": "4138bf497080fcf9385d4863d058784b1c02314e28f16e5a3a93c86dde0c579d"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/native-manifest.json",
+            "sha256": "2d44a524ed52510b2ffa36314aff1f2dd6f3d0f8d518e7747da58765a3e0618f"
+          },
+          {
+            "path": "tools/cf6-headbot-assets/balance-inputs.json",
+            "sha256": "f5fa41ca9ea4438583395cdb10540d6d78b0d9ed6ca8a1a09af43b2e72ccf23e"
+          }
+        ],
+        "stage": 7,
+        "targetPosition": "stable_wins_over_arkclaw",
+        "tier": 16,
+        "variant": "wave"
+      },
+      "blueUnitResults": [
+        {
+          "sourceId": "headbot-30",
+          "petId": -1,
+          "identifier": "敌人-CF6大头机器人",
+          "resolvedType": "敌人-CF6大头机器人",
+          "level": 30,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 85606,
+          "remainHp": 7884,
+          "hpPermille": 92,
+          "alive": true
+        }
+      ],
+      "redUnitResults": [
+        {
+          "sourceId": "arkclaw-30",
+          "petId": -1,
+          "identifier": "敌人-方舟爪豪",
+          "resolvedType": "敌人-方舟爪豪",
+          "level": 30,
+          "strategicPromotions": [],
+          "strategicPromotionsValid": true,
+          "startMaxHp": 37711,
+          "remainHp": 0,
+          "hpPermille": 0,
+          "alive": false
+        }
+      ],
+      "frames": 3082,
+      "durationMs": 106013,
+      "spawnDistance": 650,
+      "blueX": 570,
+      "redX": 1220,
+      "skillStateAudit": {
+        "blue": [
+          {
+            "unit": "兵种470",
+            "sourceId": "headbot-30",
+            "name": "斗兽标定_blue_level30_blue_r003_0",
+            "observed": false,
+            "state": null
+          }
+        ],
+        "red": [
+          {
+            "unit": "兵种286",
+            "sourceId": "arkclaw-30",
+            "name": "斗兽标定_red_level30_blue_r003_0",
+            "observed": false,
+            "state": null
+          }
+        ]
+      },
+      "presentationAudit": {
+        "qualityAtStart": "LOW",
+        "qualityApplied": "LOW",
+        "atStart": {
+          "observed": true,
+          "qualityApplied": "LOW",
+          "performanceLevel": 1,
+          "lastAppliedSoftU": 1,
+          "appliedCommand": 3,
+          "sceneEpoch": 3,
+          "paused": false,
+          "frameRate": 30
+        },
+        "atEnd": {
+          "observed": true,
+          "qualityApplied": "LOW",
+          "performanceLevel": 1,
+          "lastAppliedSoftU": 1,
+          "appliedCommand": 3,
+          "sceneEpoch": 3,
+          "paused": false,
+          "frameRate": 30
+        }
+      },
+      "blue": {
+        "maxHp": 85606,
+        "remainHp": 7884,
+        "aliveCount": 1,
+        "startMaxHp": 85606,
+        "startCount": 1
+      },
+      "red": {
+        "maxHp": 37711,
+        "remainHp": 0,
+        "aliveCount": 0,
+        "startMaxHp": 37711,
+        "startCount": 1
+      },
+      "errors": []
+    }
+  },
+  "resultPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/results.jsonl",
+  "frozenManifestPath": "tmp/arena-calibration/batches/cf6-headbot-combat-audio-20261017-l30-w1/attempts/attempt-c635e33ac5054c1aa5e36400c6916645/case_manifest.json",
+  "flashProcess": {
+    "observed": true,
+    "sampledAtUtc": "2026-10-17T04:51:45.0782185Z",
+    "pid": 33020,
+    "processStartUtcTicks": "639278091230473532",
+    "startTimeUtc": "2026-10-17T04:45:23.0473532Z",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe",
+    "totalProcessorTimeMs": 260406.25,
+    "workingSetBytes": 483942400,
+    "privateMemoryBytes": 460800000
+  },
+  "flashProcessObservation": {
+    "observed": true,
+    "sampledAtUtc": "2026-10-17T04:51:45.0782185Z",
+    "pid": 33020,
+    "processStartUtcTicks": "639278091230473532",
+    "startTimeUtc": "2026-10-17T04:45:23.0473532Z",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe",
+    "totalProcessorTimeMs": 260406.25,
+    "workingSetBytes": 483942400,
+    "privateMemoryBytes": 460800000
+  },
+  "hostProcessObservation": {
+    "observed": true,
+    "sampledAtUtc": "2026-10-17T04:51:45.0889650Z",
+    "pid": 9332,
+    "processStartUtcTicks": "639278090860030486",
+    "startTimeUtc": "2026-10-17T04:44:46.0030486Z",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "totalProcessorTimeMs": 55718.75,
+    "workingSetBytes": 633602048,
+    "privateMemoryBytes": 502034432
+  },
+  "shutdownRequested": false,
+  "projectionStatus": {
+    "state": "legacy_full",
+    "committed": false
+  },
+  "faultReceipt": null,
+  "windowObservation": {
+    "observed": true,
+    "sampledAtUtc": "2026-10-17T04:51:45.0944297Z",
+    "guardianHwnd": "0x1808D6",
+    "flashHwnd": "0x1560DE8",
+    "foregroundHwnd": "0x20672",
+    "foregroundProcessId": 18612,
+    "guardianVisible": true,
+    "guardianMinimized": false,
+    "flashVisible": true,
+    "flashMinimized": false,
+    "hostForeground": false,
+    "flashForeground": false
+  },
+  "performanceObservation": {
+    "observed": true,
+    "sampledAtUtc": "2026-10-17T04:51:45.0944494Z",
+    "preset": "performance",
+    "mode": "fixed",
+    "status": "ready",
+    "width": 256,
+    "height": 144,
+    "quality": "LOW",
+    "effectLevel": 2,
+    "reason": "viewport_changed"
+  }
+}

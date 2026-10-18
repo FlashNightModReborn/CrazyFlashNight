@@ -15,7 +15,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-soldier-assets/build.py",
-      "sha256": "75d0c0d588037a0e40d28a626b8b03a73a4700a8a322d1b45ca7cf1d5096e8d7"
+      "sha256": "b49aa11ded92adf8e49e027d7bcbc2bf5293e14e8f7b5a84b5ba0f14d451cc10"
     },
     {
       "path": "tools/cf6-soldier-assets/vector.py",
@@ -31,11 +31,11 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
-      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
     },
     {
       "path": "tools/gamma-echo-assets/build.py",
@@ -43,7 +43,7 @@
     },
     {
       "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
-      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
@@ -127,7 +127,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "e09aa81d46e86bbc6c1dc7962502de2fbe5046f81e262f25737f3825ca7b78ed"
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
     },
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
@@ -1747,23 +1747,23 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
-      "sha256": "94e281b4fe2fcdf245ce0cd34c8c875527bbf7193cf785cd43e8ae55db2d9de3",
-      "bytes": 54574
+      "sha256": "c0bf305ccec556e3c61769766f51ba5c006b8d60e555a49b35e90ce8f698d393",
+      "bytes": 55082
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/击飞.xml",
-      "sha256": "5edeca3758c5e861ebf3323bdf2ca4c544c4ad4446a1e802f0cc74b99f0cde53",
-      "bytes": 68907
+      "sha256": "a0603757cb32751d4a6614c82b434ed2c52c83222a35e1f7e754fdfacd61e597",
+      "bytes": 69460
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
-      "sha256": "2513931663eadc1a555eb9027293a761656f31ce2a241a62a9b876ecf5dd87f1",
-      "bytes": 78145
+      "sha256": "2bc2ae7aeadfa00a7129e4e5cb073d1e34d8d42b3d1a1946855d2e077e1e2fd6",
+      "bytes": 78767
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾匕首刺击.xml",
-      "sha256": "059b0551c59a3e26d4dc4d2abe79424cad8094f96f7201b6a664d121d0fe9422",
-      "bytes": 82318
+      "sha256": "ecfa70d7fde3873165702f03d1c655ad505fd21f418a919c80ab99f3cd6fcd36",
+      "bytes": 82940
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/持盾点射与装填.xml",
@@ -1787,13 +1787,13 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/死亡.xml",
-      "sha256": "aeca7d8b94be40c7036d61fd5cecc5119017d21946656d3e9e68116ccc5bc94d",
-      "bytes": 278793
+      "sha256": "d5787f31c800827356b2439447f34fb6b13e57ed7f57aeb4d827a0a5234247a8",
+      "bytes": 280569
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/破盾.xml",
-      "sha256": "17d1f2609a55ce7ce58764d627d8b46d335d1ad6e42aceecf5088bddfd0819f8",
-      "bytes": 34772
+      "sha256": "0c7319af1a2682444b7434e164dad071638652aaa9c2461acddf5e805a4f3550",
+      "bytes": 35377
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/站立.xml",
@@ -1812,8 +1812,8 @@
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/被投.xml",
-      "sha256": "acdadd01fa245574828d71cee305f6918850c8e44722700b2b2948d57eeea003",
-      "bytes": 45894
+      "sha256": "1e467a761ae3c10b70ded249269a2df275c9c0591964c54d734638017a88b183",
+      "bytes": 46545
     },
     {
       "path": "LIBRARY/Codex/特种兵/动作/长枪点射与装填.xml",
@@ -1872,5 +1872,73 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 9,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0513.mp3",
+        "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0576.mp3",
+        "sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1121.mp3",
+        "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1123.mp3",
+        "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1135.mp3",
+        "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1137.mp3",
+        "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1144.mp3",
+        "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1146.mp3",
+        "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1151.mp3",
+        "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1154.mp3",
+        "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1157.mp3",
+        "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

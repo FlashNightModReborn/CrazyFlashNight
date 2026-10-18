@@ -3,6 +3,22 @@
   <timeline>
     <DOMTimeline name="sprite 861" currentFrame="10">
       <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="6">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0513.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="42">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Event Sound Layer" color="#FFFF00" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" motionTweenScale="false" keyMode="8192">

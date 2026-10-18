@@ -1,0 +1,1165 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/robot/动作/1008" itemID="6af00000-c2491c30">
+  <timeline>
+    <DOMTimeline name="1008">
+      <layers>
+        <DOMLayer name="CF7控制" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" name="a0" labelType="name">
+              <Actionscript>
+                <script><![CDATA[elderMode="hit";stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" name="a1" labelType="name">
+              <Actionscript>
+                <script><![CDATA[elderMode="hit";stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728" duration="11">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体内部时钟" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/行为驱动" name="elderBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent._parent.elderBodyTick(_parent);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="真实攻击区域" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="0.116364" c="-0.116333" d="0.220428" tx="-8.85" ty="-66.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.220444" b="0.116364" c="-0.116333" d="0.220428" tx="-1.6" ty="-66.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246078" b="0.041199" c="-0.041183" d="0.246063" tx="6.4" ty="-64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.180359" b="0.171799" c="-0.171783" d="0.180344" tx="4.55" ty="-59.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.192612" b="0.157837" c="-0.157822" d="0.192596" tx="6.55" ty="-64.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/989" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246078" b="0.041199" c="-0.041183" d="0.246063" tx="6.4" ty="-64"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.236618" b="-0.073898" c="0.073898" d="0.236618" tx="-37.25" ty="-57.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.236618" b="-0.073898" c="0.073898" d="0.236618" tx="-32.25" ty="-57.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246765" b="0.026855" c="-0.026855" d="0.246765" tx="-19.25" ty="-59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233093" b="0.084763" c="-0.084763" d="0.233093" tx="-26.75" ty="-59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.233093" b="0.084763" c="-0.084763" d="0.233093" tx="-22.25" ty="-58.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/988" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246765" b="0.026855" c="-0.026855" d="0.246765" tx="-19.25" ty="-59.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.025787" b="-0.247498" c="0.247513" d="0.025757" tx="-30.6" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.025787" b="-0.247498" c="0.247513" d="0.025757" tx="-25.6" ty="-14.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.025787" b="-0.247498" c="0.247513" d="0.025757" tx="-25.6" ty="-13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085907" b="-0.233337" c="0.233353" d="0.085876" tx="-42.35" ty="-19.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.085907" b="-0.233337" c="0.233353" d="0.085876" tx="-37.85" ty="-18.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/987" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.025787" b="-0.247498" c="0.247513" d="0.025757" tx="-25.6" ty="-13.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248734" b="0.014877" c="-0.014877" d="0.248734" tx="21.55" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248734" b="0.014877" c="-0.014877" d="0.248734" tx="26.55" ty="-16.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248734" b="0.014877" c="-0.014877" d="0.248734" tx="26.55" ty="-15.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.237213" b="0.075638" c="-0.075638" d="0.237213" tx="8.6" ty="-8.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.237213" b="0.075638" c="-0.075638" d="0.237213" tx="13.1" ty="-7.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/986" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248734" b="0.014877" c="-0.014877" d="0.248734" tx="26.55" ty="-15.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.078079" b="-0.234879" c="0.234894" d="-0.078064" tx="15.1" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.078079" b="-0.234879" c="0.234894" d="-0.078064" tx="20.1" ty="-32.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.121796" b="-0.215668" c="0.215683" d="-0.12178" tx="25.35" ty="-26.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.121796" b="-0.215668" c="0.215683" d="-0.12178" tx="19.35" ty="-22"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.121796" b="-0.215668" c="0.215683" d="-0.12178" tx="25.6" ty="-25.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/985" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.121796" b="-0.215668" c="0.215683" d="-0.12178" tx="25.35" ty="-26.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.226791" b="-0.100494" c="0.100494" d="0.226791" tx="39.2" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.226791" b="-0.100494" c="0.100494" d="0.226791" tx="44.2" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189713" b="-0.160156" c="0.160156" d="0.189713" tx="46.7" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189713" b="-0.160156" c="0.160156" d="0.189713" tx="40.7" ty="-34.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189713" b="-0.160156" c="0.160156" d="0.189713" tx="46.95" ty="-37.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/984" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.189713" b="-0.160156" c="0.160156" d="0.189713" tx="46.7" ty="-39.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246933" b="-0.038254" c="0.038254" d="0.246933" tx="10.15" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248657" b="-0.02417" c="0.02417" d="0.248657" tx="15.15" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="17.65" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.246597" b="-0.040329" c="0.040344" d="0.246597" tx="10.15" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.249176" b="-0.017548" c="0.017563" d="0.249176" tx="15.15" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="17.65" ty="14.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-30.55" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-25.55" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-23.05" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-30.55" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-25.55" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/983" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.186646" b="0.16571" c="-0.16571" d="0.186646" tx="-23.05" ty="24.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-58.55" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-53.55" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-51.05" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-58.55" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-53.55" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="-51.05" ty="55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/982" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.25" d="0.25" tx="16.25" ty="52.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-27" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-22" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-19.5" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-27" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-22" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/981" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.248505" b="0.018555" c="-0.018555" d="0.248505" tx="-19.5" ty="-8.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-19.2" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-14.2" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-11.7" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-19.2" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-14.2" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224" tx="-11.7" ty="-12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-14.75" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-9.75" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-7.25" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-14.75" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-9.75" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/979" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.184677" b="-0.168015" c="0.16803" d="0.184677" tx="-7.25" ty="-10.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245316" b="0.045502" c="-0.045486" d="0.245316" tx="-21.05" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.242798" b="0.057297" c="-0.057281" d="0.242798" tx="-16.05" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228043" b="0.101715" c="-0.1017" d="0.228043" tx="-13.55" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.213211" b="0.129761" c="-0.129745" d="0.213211" tx="-21.05" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.22081" b="0.116241" c="-0.116226" d="0.22081" tx="-16.05" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/978" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.228043" b="0.101715" c="-0.1017" d="0.228043" tx="-13.55" ty="-23.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200363" b="-0.146347" c="0.146347" d="0.200363" tx="-0.7" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.200363" b="-0.146347" c="0.146347" d="0.200363" tx="4.3" ty="-54.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223373" b="-0.108353" c="0.108353" d="0.223373" tx="13.05" ty="-49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223373" b="-0.108353" c="0.108353" d="0.223373" tx="7.05" ty="-44.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728" duration="3">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223373" b="-0.108353" c="0.108353" d="0.223373" tx="13.3" ty="-48"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728" duration="7">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/977" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.223373" b="-0.108353" c="0.108353" d="0.223373" tx="13.05" ty="-49.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体内接地阴影" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="25">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/接地阴影" name="elderShadow">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

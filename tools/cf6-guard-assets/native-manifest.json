@@ -6,7 +6,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-guard-assets/build.py",
-      "sha256": "5fe4874a96e5c522faf040e101742cd52b96d87194ab0cc6db6eea511b77faa7"
+      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
     },
     {
       "path": "tools/cf6-guard-assets/vector.py",
@@ -42,11 +42,11 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
-      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
     },
     {
       "path": "tools/gamma-echo-assets/build.py",
@@ -54,7 +54,7 @@
     },
     {
       "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
-      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
@@ -315,7 +315,7 @@
     {
       "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
       "lineEndingNormalization": "lf",
-      "sha256": "e09aa81d46e86bbc6c1dc7962502de2fbe5046f81e262f25737f3825ca7b78ed"
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
     },
     {
       "path": "scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as",
@@ -1315,18 +1315,18 @@
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/倒地恢复.xml",
-      "sha256": "2f6c9bca0d1812ab69aaa784b5f17d0dc0cb740ceade7a3033eb6a758635067c",
-      "bytes": 50124
+      "sha256": "0c1de2ea4a3b59702a0b1b5aafec5b1d9379301bb9435a16a92f454c680e06dc",
+      "bytes": 50632
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/击飞.xml",
-      "sha256": "01a9df47e3668ce92407aa016108bebe1b210745ff357ff51bd6e8a12b831330",
-      "bytes": 209306
+      "sha256": "8e083f23a60cfcaaf98ae4a1a477415020d939e4f218b111fb3f50d82e897016",
+      "bytes": 209859
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/变身.xml",
-      "sha256": "47f6053e1a2711a607517c914233fc5ddfcc297384a20d17275ca8ce94ce213d",
-      "bytes": 188143
+      "sha256": "f1623f2a1aadb261b5fdf40a4484bf1a7f5d9f74b73f23e8312d6a76b3ba9e83",
+      "bytes": 189142
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/散弹射击.xml",
@@ -1335,8 +1335,8 @@
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/死亡.xml",
-      "sha256": "1d5173802ba8f4b89f579cf2b8f83cc3732b685fb9fe07349c268dc41f29f2a8",
-      "bytes": 361609
+      "sha256": "a6673847f4c846c68303c7ddce8e3a8c1dcaaa1b7cd514f94c556de21370102c",
+      "bytes": 363383
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/站立.xml",
@@ -1355,8 +1355,8 @@
     },
     {
       "path": "LIBRARY/Codex/光头保安/动作/被投.xml",
-      "sha256": "f1c9139bf144ebaecf9922034d469f4ff190724803f2cfa4829e39386e91768c",
-      "bytes": 37619
+      "sha256": "4bb82536dd85f38ccf9cc4d48cb0c2a3d88da86bb977efe15a89f3e26e984811",
+      "bytes": 38270
     },
     {
       "path": "LIBRARY/Codex/光头保安/变身/接地阴影.xml",
@@ -1645,5 +1645,73 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 8,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0879.mp3",
+        "sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0881.mp3",
+        "sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1121.mp3",
+        "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1123.mp3",
+        "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1135.mp3",
+        "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1137.mp3",
+        "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1144.mp3",
+        "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1146.mp3",
+        "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1151.mp3",
+        "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1154.mp3",
+        "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1157.mp3",
+        "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

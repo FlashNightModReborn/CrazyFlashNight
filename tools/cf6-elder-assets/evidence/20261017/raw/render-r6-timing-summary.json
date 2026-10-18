@@ -1,0 +1,81 @@
+{
+  "scope": "Native BitmapData.draw isolated fixture, fixed sample scale; not a gameplay/performance qualification",
+  "drawPoints": 718,
+  "repeatMedianMs": 14.0,
+  "repeatP95Ms": 20,
+  "repeatMaxMs": 25,
+  "slowest": [
+    {
+      "key": "beam-40",
+      "firstMs": 22,
+      "repeatMs": [
+        22,
+        25,
+        23
+      ]
+    },
+    {
+      "key": "slam-61",
+      "firstMs": 23,
+      "repeatMs": [
+        20,
+        21,
+        25
+      ]
+    },
+    {
+      "key": "slam-60",
+      "firstMs": 22,
+      "repeatMs": [
+        24,
+        20,
+        22
+      ]
+    },
+    {
+      "key": "robot-walk-20",
+      "firstMs": 21,
+      "repeatMs": [
+        23,
+        22,
+        20
+      ]
+    },
+    {
+      "key": "robot-walk-23",
+      "firstMs": 21,
+      "repeatMs": [
+        23,
+        21,
+        20
+      ]
+    },
+    {
+      "key": "robot-death-73",
+      "firstMs": 17,
+      "repeatMs": [
+        18,
+        23,
+        17
+      ]
+    },
+    {
+      "key": "robot-death-105",
+      "firstMs": 21,
+      "repeatMs": [
+        20,
+        20,
+        23
+      ]
+    },
+    {
+      "key": "robot-death-109",
+      "firstMs": 21,
+      "repeatMs": [
+        21,
+        20,
+        23
+      ]
+    }
+  ]
+}

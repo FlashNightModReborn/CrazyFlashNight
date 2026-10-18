@@ -1,0 +1,24 @@
+{
+  "profile": "high-level-beast-near-death-exusiai-net-hp-v1",
+  "recordedAtUtc": "2026-10-18T09:04:51.283722+00:00",
+  "userInstructionAtUtc": "2026-10-18T08:59:56.063766Z",
+  "userInstruction": "兽王这边需求可以简化成，至少把兽王的濒死状态逼出来，而不至于完整击败2形态即可，来简化调参难度。兽王的濒死形态出现后自身也会高速掉血，没有敌人供他吸血后就会自行死亡",
+  "previousUserLevelScope": "目前瓶颈如何，如果实在困难就重点保60-100这个范围，低等级不考虑",
+  "levels": [
+    60,
+    80,
+    100
+  ],
+  "experiment": "cf6-cal-r22-full-20261018",
+  "alreadyStartedAtUtc": "2026-10-18T08:58:30.374Z",
+  "frozenPlanHash": "sha256:8600cc9f445982a3f1f6752377f8e0dca4109d42c296d2a0b00f6d2d0416d614",
+  "originalFrozenPlanUnchanged": true,
+  "battleConditionsUnchanged": true,
+  "beastCriterion": "Every row must establish observed initial-form rage or an actual successor spawn beyond that threshold, then naturally lose without completing both forms. A successor spawn is reported as first-form defeat, not as observed rage if the rage callback is absent.",
+  "exusiaiCriterion": "Each six-row group mean and median net HP loss is 50-80 percent; every row naturally loses.",
+  "winsAllowed": 0,
+  "drawsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "supersedesOnly": "Beast final-net-HP acceptance interval in the original preregistered purpose; historical metrics and original purpose remain intact.",
+  "boundary": "This records a human-requested criterion change after execution started. It is not an assertion that the original criteria were met."
+}

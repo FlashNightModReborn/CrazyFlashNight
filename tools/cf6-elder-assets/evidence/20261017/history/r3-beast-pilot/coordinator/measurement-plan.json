@@ -1,0 +1,16 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "beastking-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-6ddd957a5f4844fd81a2476a31175d4d\\assignment-6ddd957a5f4844fd81a2476a31175d4d\\attempt-6ddd957a5f4844fd81a2476a31175d4d\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-bcaf0a657fd14357b13974f9ea8fe532\\assignment-bcaf0a657fd14357b13974f9ea8fe532\\attempt-bcaf0a657fd14357b13974f9ea8fe532\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r3-beast-pilot-20261017\\groups\\beastking-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r3-beast-pilot-20261017\\groups\\beastking-level60\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

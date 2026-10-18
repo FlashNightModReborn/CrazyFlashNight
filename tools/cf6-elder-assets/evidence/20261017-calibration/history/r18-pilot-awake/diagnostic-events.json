@@ -1,0 +1,432 @@
+{
+  "experiment": "cf6-cal-r18-pilot-20261018",
+  "wholeExperimentFinal": true,
+  "privateArchives": [
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "archive": "diagnostic-cf7_agent_aw_8261e349fefd48e286d972ad61177164-20261018-121500.zip",
+      "archiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "entrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "hostStartedAt": "2026-10-18T04:11:45.7905942Z",
+      "lifecycleCompletedAt": "2026-10-18T04:15:16.894Z",
+      "eventCount": 6
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "archive": "diagnostic-cf7_agent_aw_e87c27139bac406c9ae0ebe7704d6a54-20261018-121949.zip",
+      "archiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "entrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "hostStartedAt": "2026-10-18T04:15:37.4584123Z",
+      "lifecycleCompletedAt": "2026-10-18T04:20:02.397Z",
+      "eventCount": 6
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "archive": "diagnostic-cf7_agent_aw_631fbf21a7624b909427430ac0795160-20261018-122541.zip",
+      "archiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "entrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "hostStartedAt": "2026-10-18T04:20:14.4770870Z",
+      "lifecycleCompletedAt": "2026-10-18T04:25:54.448Z",
+      "eventCount": 6
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "archive": "diagnostic-cf7_agent_aw_57242059c05b4d558952ec64932a2298-20261018-122810.zip",
+      "archiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "entrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "hostStartedAt": "2026-10-18T04:26:07.2927070Z",
+      "lifecycleCompletedAt": "2026-10-18T04:28:26.443Z",
+      "eventCount": 6
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "archive": "diagnostic-cf7_agent_aw_78f8deaf2f1a4b00b7f2ab533f53bc6b-20261018-123036.zip",
+      "archiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "entrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "hostStartedAt": "2026-10-18T04:28:38.8247420Z",
+      "lifecycleCompletedAt": "2026-10-18T04:30:48.756Z",
+      "eventCount": 6
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "archive": "diagnostic-cf7_agent_aw_9609d33beb1d47acb6b0b719e7934924-20261018-123244.zip",
+      "archiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "entrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "hostStartedAt": "2026-10-18T04:31:00.6020902Z",
+      "lifecycleCompletedAt": "2026-10-18T04:32:57.312Z",
+      "eventCount": 6
+    }
+  ],
+  "events": [
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 646,
+      "localTime": "2026-10-18T12:12:33+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0 form=human level=30 clock=347 starts=8 contacts=2 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/0 stab=7/2 x=796 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=57381 targetX=956 targetZ=430"
+    },
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 666,
+      "localTime": "2026-10-18T12:12:36.083000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r001_0 child=斗兽标定_blue_level30_blue_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=1033 defense=5388 enemy=false"
+    },
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 1058,
+      "localTime": "2026-10-18T12:13:36.922000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0__elderbot form=robot level=30 clock=1824 starts=23 contacts=36 heavyBeam=3/12 heavyActual=10/12.5 slamHeavyStarts=2 beam=5/5 beamActual=5/15 beamShield=5250.9011218466/32454.9450319996 shieldSamples=8 reactive=19/600 reactiveHp=14773/9072.56374999997/6443.42457207251 incomingLeech=27 rageLeech=3 rageSources=斗兽标定_red_level30_blue_r001_0@3@8925@1520-1619 incomingCrumble=3 kicks=4/8 slam=11/11 kicksShield=8 slamShield=8 meleeShieldAbsorbed=3182.6435025665/1786.77387620305 burst=0/0 stab=0/0 x=567 z=357.5 target=斗兽标定_red_level30_blue_r001_0敌人-方舟兽王虎92 targetHp=60040 targetX=799 targetZ=357.5"
+    },
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 1190,
+      "localTime": "2026-10-18T12:13:57.270000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0 form=human level=30 clock=499 starts=14 contacts=4 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/0 stab=13/4 x=1018 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=56310 targetX=858 targetZ=430"
+    },
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 1211,
+      "localTime": "2026-10-18T12:14:00.333000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r001_0 child=斗兽标定_red_level30_red_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=1033 defense=5388 enemy=true"
+    },
+    {
+      "group": "beastking-level30",
+      "session": "8261e349fefd48e286d972ad61177164",
+      "sourceArchiveSha256": "cd554234e4964395759a206bcd95475c0d10080d4faed26bce8249b408c9a878",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "04d14160c799752a2d1f8eb36eea4e8d074094bca258ea3dfb489bb221e66b62",
+      "lineNumber": 1542,
+      "localTime": "2026-10-18T12:14:51.581000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0__elderbot form=robot level=30 clock=1536 starts=20 contacts=27 heavyBeam=2/8 heavyActual=5/5.5 slamHeavyStarts=2 beam=7/7 beamActual=7/21 beamShield=2466.49984636231/39952.5770767146 shieldSamples=9 reactive=19/507 reactiveHp=14749/10343.1212499999/6989.85822249387 incomingLeech=5 rageLeech=3 rageSources=斗兽标定_blue_level30_red_r001_0@3@5950@1447-1467 incomingCrumble=3 kicks=1/2 slam=10/10 kicksShield=2 slamShield=8 meleeShieldAbsorbed=2560.81294299055/1544.62342785941 burst=0/0 stab=0/0 x=826 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=0 targetX=666 targetZ=430"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 2310,
+      "localTime": "2026-10-18T12:16:26.930000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0 form=human level=60 clock=440 starts=10 contacts=8 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=2/6 stab=8/2 x=757.5 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=70254 targetX=917.5 targetZ=430"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 2331,
+      "localTime": "2026-10-18T12:16:30.004000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r001_0 child=斗兽标定_blue_level60_blue_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=1503 defense=6186 enemy=false"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 2883,
+      "localTime": "2026-10-18T12:17:55.936000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0__elderbot form=robot level=60 clock=2577 starts=33 contacts=46 heavyBeam=4/12 heavyActual=5/5.5 slamHeavyStarts=4 beam=7/7 beamActual=6/18 beamShield=6143.15884760056/16494.8411523994 shieldSamples=11 reactive=19/852 reactiveHp=20035/14967.4162499999/10730.938140088 incomingLeech=32 rageLeech=2 rageSources=斗兽标定_red_level60_blue_r001_0@2@5950@2092-2203 incomingCrumble=2 kicks=5/10 slam=17/17 kicksShield=8 slamShield=10 meleeShieldAbsorbed=2492.71100967075/2917.63799784065 burst=0/0 stab=0/0 x=772.5 z=342.5 target=斗兽标定_red_level60_blue_r001_0敌人-方舟兽王虎14 targetHp=89920 targetX=962.5 targetZ=342.5"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 3010,
+      "localTime": "2026-10-18T12:18:15.054000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0 form=human level=60 clock=455 starts=9 contacts=9 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/4 stab=8/5 x=874 z=430 target=斗兽标定_blue_level60_red_r001_0 targetHp=75643 targetX=714 targetZ=430"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 3030,
+      "localTime": "2026-10-18T12:18:18.098000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r001_0 child=斗兽标定_red_level60_red_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=1503 defense=6186 enemy=true"
+    },
+    {
+      "group": "beastking-level60",
+      "session": "e87c27139bac406c9ae0ebe7704d6a54",
+      "sourceArchiveSha256": "51882a42298834f9e3ee26f420fded5f41ef825ac8d02679d62b30c5e4db8a5a",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "3d6c810627313bb9cfec293d66613512f0ebfceb6b62c27c819607f76d08b29e",
+      "lineNumber": 3561,
+      "localTime": "2026-10-18T12:19:40.984000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0__elderbot form=robot level=60 clock=2410 starts=30 contacts=43 heavyBeam=4/16 heavyActual=10/11.5 slamHeavyStarts=3 beam=9/9 beamActual=5/15 beamShield=5916.15183803154/20787.6481619685 shieldSamples=13 reactive=19/798 reactiveHp=20616/16707.6968749998/11569.0664341223 incomingLeech=17 rageLeech=2 rageSources=斗兽标定_blue_level60_red_r001_0@2@5950@1653-1662 incomingCrumble=2 kicks=2/4 slam=15/14 kicksShield=2 slamShield=14 meleeShieldAbsorbed=0.707967963816102/3330.39922561251 burst=0/0 stab=0/0 x=936.85 z=430 target=斗兽标定_blue_level60_red_r001_0敌人-方舟兽王虎51 targetHp=73582 targetX=776.85 targetZ=430"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 4354,
+      "localTime": "2026-10-18T12:21:07.269000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0 form=human level=99 clock=614 starts=13 contacts=9 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=2/6 stab=11/3 x=784.9 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=105602 targetX=944.9 targetZ=430"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 4375,
+      "localTime": "2026-10-18T12:21:10.333000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r001_0 child=斗兽标定_blue_level99_blue_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=2114 defense=7224 enemy=false"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 5073,
+      "localTime": "2026-10-18T12:22:59.164000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0__elderbot form=robot level=99 clock=3264 starts=42 contacts=59 heavyBeam=5/20 heavyActual=15/17.5 slamHeavyStarts=5 beam=12/12 beamActual=10/30 beamShield=5922.90010827128/12260.4936766518 shieldSamples=17 reactive=19/1086 reactiveHp=27408/23719.2131249998/16902.0229193529 incomingLeech=29 rageLeech=4 rageSources=斗兽标定_red_level99_blue_r001_0@4@5950@2060-2137 incomingCrumble=4 kicks=3/6 slam=22/21 kicksShield=5 slamShield=17 meleeShieldAbsorbed=2646.5/4755.98931589091 burst=0/0 stab=0/0 x=412.95 z=347.5 target=斗兽标定_red_level99_blue_r001_0敌人-方舟兽王虎14 targetHp=86638 targetX=322.95 targetZ=347.5"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 5257,
+      "localTime": "2026-10-18T12:23:27.065000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0 form=human level=99 clock=726 starts=18 contacts=10 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/4 stab=17/6 x=868.8 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=102907 targetX=708.8 targetZ=430"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 5278,
+      "localTime": "2026-10-18T12:23:30.120000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r001_0 child=斗兽标定_red_level99_red_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=2114 defense=7224 enemy=true"
+    },
+    {
+      "group": "beastking-level99",
+      "session": "631fbf21a7624b909427430ac0795160",
+      "sourceArchiveSha256": "e82e31671830e15d5d33cdb8d0ecc1bd024cc46f3240e41fe9eaf2c0f2b394ee",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "61bee08cef3e10e0e170ad173c3bb025f16e2a0d7c2925068785f3331feaa287",
+      "lineNumber": 6066,
+      "localTime": "2026-10-18T12:25:32.792000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0__elderbot form=robot level=99 clock=3679 starts=45 contacts=63 heavyBeam=5/20 heavyActual=11/12 slamHeavyStarts=5 beam=11/11 beamActual=6/18 beamShield=6322.33071334099/10832.9285749641 shieldSamples=16 reactive=19/1221 reactiveHp=27180/28384.5881249996/20421.1986482119 incomingLeech=27 rageLeech=2 rageSources=斗兽标定_blue_level99_red_r001_0@2@5950@2327-2347 incomingCrumble=2 kicks=3/6 slam=26/26 kicksShield=6 slamShield=21 meleeShieldAbsorbed=1030.26192415381/6201.06574403699 burst=0/0 stab=0/0 x=1008.8 z=347.5 target=斗兽标定_blue_level99_red_r001_0敌人-方舟兽王虎77 targetHp=63101 targetX=848.8 targetZ=347.5"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 6778,
+      "localTime": "2026-10-18T12:26:48.184000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0 form=human level=30 clock=246 starts=3 contacts=9 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=3/9 stab=0/0 x=1262 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=35015 targetX=749.05 targetZ=430"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 6801,
+      "localTime": "2026-10-18T12:26:51.249000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level30_blue_r001_0 child=斗兽标定_blue_level30_blue_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=1033 defense=5388 enemy=false"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 6957,
+      "localTime": "2026-10-18T12:27:14.355000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level30_blue_r001_0__elderbot form=robot level=30 clock=692 starts=5 contacts=8 heavyBeam=1/4 heavyActual=2/3.5 slamHeavyStarts=0 beam=3/3 beamActual=2/6 beamShield=9773.4350021773/9079.48807474578 shieldSamples=4 reactive=19/210 reactiveHp=15258/7690.45687499996/5233.971201922 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=1/1 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=699 z=430 target=斗兽标定_red_level30_blue_r001_0 targetHp=25242 targetX=1561.4 targetZ=430"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 7025,
+      "localTime": "2026-10-18T12:27:23.839000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0 form=human level=30 clock=173 starts=3 contacts=10 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=3/10 stab=0/0 x=1044 z=430 target=斗兽标定_blue_level30_red_r001_0 targetHp=35545 targetX=1526.55 targetZ=430"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 7046,
+      "localTime": "2026-10-18T12:27:26.899000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level30_red_r001_0 child=斗兽标定_red_level30_red_r001_0__elderbot level=30 maxHp=15318 hp=15318 attack=1033 defense=5388 enemy=true"
+    },
+    {
+      "group": "exusiai-level30",
+      "session": "57242059c05b4d558952ec64932a2298",
+      "sourceArchiveSha256": "004629822d5fd5e7405695372b882aa567c9468417932b598d6a38066198663c",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "cf70390bee622141c6bf6abd62817890c50ce741194b7c6d23375b19c1958dbd",
+      "lineNumber": 7306,
+      "localTime": "2026-10-18T12:28:04.037000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level30_red_r001_0__elderbot form=robot level=30 clock=1113 starts=12 contacts=15 heavyBeam=1/4 heavyActual=4/5 slamHeavyStarts=1 beam=6/6 beamActual=6/18 beamShield=5566.31284778184/27426.3025368335 shieldSamples=7 reactive=17/370 reactiveHp=13217/8313.74624999996/5330.63776404918 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=5/5 kicksShield=0 slamShield=3 meleeShieldAbsorbed=0/459.54 burst=0/0 stab=0/0 x=239.7 z=429 target=无 targetHp=undefined targetX=undefined targetZ=undefined"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 7996,
+      "localTime": "2026-10-18T12:29:18.622000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0 form=human level=60 clock=203 starts=5 contacts=4 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=3/4 stab=2/0 x=238 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=46859 targetX=862.85 targetZ=430"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 8017,
+      "localTime": "2026-10-18T12:29:21.693000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level60_blue_r001_0 child=斗兽标定_blue_level60_blue_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=1503 defense=6186 enemy=false"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 8155,
+      "localTime": "2026-10-18T12:29:41.519000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level60_blue_r001_0__elderbot form=robot level=60 clock=584 starts=5 contacts=8 heavyBeam=1/4 heavyActual=0/0 slamHeavyStarts=0 beam=4/4 beamActual=3/9 beamShield=5725.10422111035/4592.89577888965 shieldSamples=5 reactive=19/191 reactiveHp=20579/9925.36499999997/7981.65184081641 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=328.5 z=430 target=斗兽标定_red_level60_blue_r001_0 targetHp=33073 targetX=915.65 targetZ=430"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 8268,
+      "localTime": "2026-10-18T12:29:57.597000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0 form=human level=60 clock=370 starts=2 contacts=8 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=2/8 stab=0/0 x=1463.75 z=429 target=斗兽标定_blue_level60_red_r001_0 targetHp=40019 targetX=1359.6 targetZ=430"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 8290,
+      "localTime": "2026-10-18T12:30:00.652000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level60_red_r001_0 child=斗兽标定_red_level60_red_r001_0__elderbot level=60 maxHp=20636 hp=20636 attack=1503 defense=6186 enemy=true"
+    },
+    {
+      "group": "exusiai-level60",
+      "session": "78f8deaf2f1a4b00b7f2ab533f53bc6b",
+      "sourceArchiveSha256": "3e669756c48457e32373c750c92da7ee4741064974d48f50573f6ad9f3bb4def",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "d0d737070d9e4d707f23dde1ef18375cf07f6a75a84d0ce28a787cc8cca4c988",
+      "lineNumber": 8468,
+      "localTime": "2026-10-18T12:30:27.285000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level60_red_r001_0__elderbot form=robot level=60 clock=798 starts=8 contacts=11 heavyBeam=1/4 heavyActual=0/0 slamHeavyStarts=0 beam=6/6 beamActual=5/15 beamShield=5821.25851482091/8623.94148517909 shieldSamples=7 reactive=19/247 reactiveHp=20554/10835.093125/7415.86657584599 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=1/1 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=583.25 z=433.295645215757 target=斗兽标定_blue_level60_red_r001_0 targetHp=17430 targetX=1525.35 targetZ=433.295645215757"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9139,
+      "localTime": "2026-10-18T12:31:35.569000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0 form=human level=99 clock=70 starts=1 contacts=3 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=1/3 stab=0/0 x=719.1 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=59144 targetX=1208.3 targetZ=430"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9162,
+      "localTime": "2026-10-18T12:31:38.626000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_blue_level99_blue_r001_0 child=斗兽标定_blue_level99_blue_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=2114 defense=7224 enemy=false"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9270,
+      "localTime": "2026-10-18T12:31:54.294000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_blue_level99_blue_r001_0__elderbot form=robot level=99 clock=469 starts=4 contacts=7 heavyBeam=1/4 heavyActual=4/5 slamHeavyStarts=0 beam=3/3 beamActual=3/9 beamShield=4083.74110381335/237.247034604451 shieldSamples=4 reactive=19/138 reactiveHp=26794/12432.211875/9745.28180259824 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=0/0 stab=0/0 x=1114.4 z=430 target=斗兽标定_red_level99_blue_r001_0 targetHp=28083 targetX=272.35 targetZ=430"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9356,
+      "localTime": "2026-10-18T12:32:06.001000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0 form=human level=99 clock=239 starts=3 contacts=11 heavyBeam=0/0 heavyActual=0/0 slamHeavyStarts=0 beam=0/0 beamActual=0/0 beamShield=0/0 shieldSamples=0 reactive=0/0 reactiveHp=0/0/0 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=0/0 kicksShield=0 slamShield=0 meleeShieldAbsorbed=0/0 burst=3/11 stab=0/0 x=314.85 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=48819 targetX=1556 targetZ=430"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9377,
+      "localTime": "2026-10-18T12:32:09.057000+08:00",
+      "message": "[CF6_ELDER_PHASE_READY] parent=斗兽标定_red_level99_red_r001_0 child=斗兽标定_red_level99_red_r001_0__elderbot level=99 maxHp=27549 hp=27549 attack=2114 defense=7224 enemy=true"
+    },
+    {
+      "group": "exusiai-level99",
+      "session": "9609d33beb1d47acb6b0b719e7934924",
+      "sourceArchiveSha256": "a08d0217429d4bde5ed7fd58cbe77213ff4551d49004624e063ae3d46ffb8c73",
+      "sourceEntry": "logs/launcher.log",
+      "sourceEntrySha256": "86586b9ff55779eded3d0dd392dbd023b03643b96bb622fb653f2d1abda4d992",
+      "lineNumber": 9551,
+      "localTime": "2026-10-18T12:32:35.457000+08:00",
+      "message": "[CF6_ELDER_COMBAT_END] unit=斗兽标定_red_level99_red_r001_0__elderbot form=robot level=99 clock=791 starts=9 contacts=14 heavyBeam=2/7 heavyActual=0/0 slamHeavyStarts=0 beam=5/5 beamActual=4/12 beamShield=4882.26173418267/2679.46750804849 shieldSamples=7 reactive=19/262 reactiveHp=27007/14387.186875/10421.2434535461 incomingLeech=0 rageLeech=0 rageSources=none incomingCrumble=0 kicks=0/0 slam=2/2 kicksShield=0 slamShield=2 meleeShieldAbsorbed=0/826.47 burst=0/0 stab=0/0 x=838.45 z=430 target=斗兽标定_blue_level99_red_r001_0 targetHp=15580 targetX=1533.8 targetZ=430"
+    }
+  ],
+  "boundary": "Original diagnostic archives include isolated save/configuration data and remain private. This derived list contains only literal CF6 combat/phase messages, with source archive and entry hashes plus line numbers.",
+  "filter": "Only timestamped lines within this exact receipt hostStartedAt..lifecycleCompletedAt (local UTC+08:00); prior sessions in the rolling log are excluded. Diagnostic exporter text is preserved literally, including any pre-existing replacement characters; authoritative identity still comes from original arena rows.",
+  "completedGroups": 6,
+  "completedShards": 6
+}

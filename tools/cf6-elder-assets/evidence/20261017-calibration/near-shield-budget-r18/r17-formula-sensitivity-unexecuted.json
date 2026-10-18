@@ -1,0 +1,67 @@
+{
+  "status": "read_only_formula_sensitivity; unexecuted_candidate; no production files changed",
+  "oldFlags": {
+    "阶段": 8.0,
+    "档次系数": 20.0,
+    "成长系数": 1.0,
+    "攻速系数": 2.0,
+    "攻击倍率": 5.375,
+    "段数系数": 1.3220721,
+    "速度系数": 2.0,
+    "高攻低血防系数": 2.0,
+    "霸体系数": 3.2,
+    "高防低血系数": 34.0
+  },
+  "uniformThreeActionReductionFlags": {
+    "阶段": 8.0,
+    "档次系数": 20.0,
+    "成长系数": 1.0,
+    "攻速系数": 2.0,
+    "攻击倍率": 4.09375,
+    "段数系数": 1.3220721,
+    "速度系数": 2.0,
+    "高攻低血防系数": 2.0,
+    "霸体系数": 3.2,
+    "高防低血系数": 34.0
+  },
+  "oldPanel": {
+    "最小经验值": 11882,
+    "最大经验值": 31703,
+    "hp_min": 10001,
+    "hp_max": 20459,
+    "空手攻击力_min": 564,
+    "空手攻击力_max": 1488,
+    "基本防御力_min": 4590,
+    "基本防御力_max": 6160
+  },
+  "candidatePanel": {
+    "最小经验值": 11882,
+    "最大经验值": 31703,
+    "hp_min": 10001,
+    "hp_max": 20459,
+    "空手攻击力_min": 739,
+    "空手攻击力_max": 1942,
+    "基本防御力_min": 4590,
+    "基本防御力_max": 6160
+  },
+  "directPowerRatio": 0.75,
+  "normalBeamRawPowerRatios": {
+    "空手攻击力_min": 0.9827127659574468,
+    "空手攻击力_max": 0.9788306451612904
+  },
+  "boundary": "The canonical formula divides base attack by weighted action multiplier. Uniform action scaling is therefore substantially offset by base attack regeneration; it is not a valid direct twenty-five-percent output reduction. No arena prediction or candidate acceptance is implied.",
+  "sourceBindings": [
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "sha256": "7a2a7c3bd7dd2d9ae376585b0199fd1002a17b5b4f27b631b8b5d4b48e55c21c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+    },
+    {
+      "path": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+      "sha256": "ecacf243e9cfff1d51d3c05ccad544bb4c407511944d42a32bd1f61eae7e6cba"
+    }
+  ]
+}

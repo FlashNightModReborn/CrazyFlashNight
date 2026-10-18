@@ -195,7 +195,7 @@ _root.敌人函数.被击移动 = function(移动方向, 速度, 摩擦力) {
     this.speed = 速度;
     this.onEnterFrame = function() {
         if (!this.硬直中) {
-            this.speed -= 减速度;
+            this.speed -= this.减速度;
             if (this.speed <= 0) {
                 delete this.onEnterFrame;
                 return;

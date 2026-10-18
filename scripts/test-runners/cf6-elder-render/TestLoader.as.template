@@ -1,0 +1,9 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.elderRenderSwf = "../flashswf/arts/new/Codex老头素材.swf";
+_root.elderRenderTag = "after";
+_root.cf6ElderRenderComplete = function():Void {
+    trace("FocusedTestRunId cf6-elder-render Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-elder-render Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6ElderRenderTest.runAllTests();

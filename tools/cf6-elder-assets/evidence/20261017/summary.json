@@ -1,0 +1,454 @@
+{
+  "schema": "cf6-elder.two-phase.v1",
+  "completedAt": "2026-10-16T22:40:02.180Z",
+  "revision": "r15",
+  "repositoryHeadAtArchive": "17561174fbc5ff04b90a29212e05491bbbcb8de6",
+  "evidenceState": "candidate_executed",
+  "positioningMatrixVerified": false,
+  "balanceCalibrationComplete": false,
+  "humanReviewRequested": true,
+  "handoffPurpose": "User selected move/gameplay review first, then strength tuning.",
+  "userTargetNetHpExchangePercent": [
+    50,
+    80
+  ],
+  "targetBandMatches": 10,
+  "targetScope": "Complete human then robot versus same-level Ark Beast King or EXUSIAI commander; record final net HP loss, including opponent healing. Current candidate is not declared balanced.",
+  "historicalWorkingThreatCriterion": "Before R8, agent chose mean and median net HP loss at least 25 percent per six-match group with no wins or timeouts. Superseded by the user 50-80 percent expectation; retained only to explain earlier revisions.",
+  "historicalWorkingSurvivalMargin": "Before R11, agent added a 15 percent opponent remaining-HP check. R15 fails this old check in one EXUSIAI 99 match; retained as history, not waived or labelled passed.",
+  "minimumOpponentRemainingHpPercent": 4.114287512390064,
+  "formalRuntimePromoted": false,
+  "standardEntryVerified": false,
+  "humanAcceptance": false,
+  "fixed": {
+    "human": {
+      "stage": 8,
+      "tier": 9,
+      "unitId": 471
+    },
+    "robot": {
+      "stage": 8,
+      "tier": 20,
+      "unitId": 472
+    }
+  },
+  "games": 36,
+  "wins": 0,
+  "timeouts": 0,
+  "singleSuccessorPerMatch": true,
+  "levels": [
+    {
+      "rivalUnitId": 78,
+      "level": 30,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 20.565042264707557,
+      "meanPercent": 48.15875897455293,
+      "medianPercent": 47.38185737788619,
+      "maxPercent": 76.49061099449708,
+      "withinTargetBand": 3,
+      "minFrames": 2234.0,
+      "maxFrames": 3139.0
+    },
+    {
+      "rivalUnitId": 78,
+      "level": 60,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 14.07169821282437,
+      "meanPercent": 32.570197900442615,
+      "medianPercent": 35.69863519970434,
+      "maxPercent": 39.49869327631267,
+      "withinTargetBand": 0,
+      "minFrames": 2371.0,
+      "maxFrames": 2782.0
+    },
+    {
+      "rivalUnitId": 78,
+      "level": 99,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 27.122113962922246,
+      "meanPercent": 33.634416347575545,
+      "medianPercent": 31.267297266557986,
+      "maxPercent": 46.248625696629645,
+      "withinTargetBand": 0,
+      "minFrames": 2704.0,
+      "maxFrames": 3607.0
+    },
+    {
+      "rivalUnitId": 361,
+      "level": 30,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 30.31940053274913,
+      "meanPercent": 44.508202842988375,
+      "medianPercent": 45.848788867036774,
+      "maxPercent": 56.25482337125645,
+      "withinTargetBand": 2,
+      "minFrames": 741.0,
+      "maxFrames": 1173.0
+    },
+    {
+      "rivalUnitId": 361,
+      "level": 60,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 10.62219396877111,
+      "meanPercent": 41.63190167799012,
+      "medianPercent": 44.989868489014256,
+      "maxPercent": 64.78207318526759,
+      "withinTargetBand": 2,
+      "minFrames": 614.0,
+      "maxFrames": 1265.0
+    },
+    {
+      "rivalUnitId": 361,
+      "level": 99,
+      "games": 6,
+      "wins": 0,
+      "measure": "opponent_net_hp_loss_percent",
+      "minPercent": 17.972277726207142,
+      "meanPercent": 56.141275560240615,
+      "medianPercent": 55.26676001825075,
+      "maxPercent": 95.88571248760994,
+      "withinTargetBand": 3,
+      "minFrames": 740.0,
+      "maxFrames": 1389.0
+    }
+  ],
+  "priorAttempts": [
+    {
+      "label": "r2-pilot",
+      "experiment": "elder-r2-pilot-20261016",
+      "qualified": false,
+      "status": "unqualified",
+      "rows": 4,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r3-pilot",
+      "experiment": "elder-r3-pilot-20261017",
+      "qualified": false,
+      "status": "unqualified",
+      "rows": 4,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r3-beast-pilot",
+      "experiment": "elder-r3-beast-pilot-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 2,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r4-pilot",
+      "experiment": "elder-r4-pilot-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 4,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r6-pilot",
+      "experiment": "elder-r6-pilot-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 4,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r7-pilot",
+      "experiment": "elder-r7-pilot-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 4,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r7-matrix",
+      "experiment": "elder-r7-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r8-pilot",
+      "experiment": "elder-r8-pilot-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 12,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r9-matrix",
+      "experiment": "elder-r9-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r10-matrix",
+      "experiment": "elder-r10-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r11-matrix",
+      "experiment": "elder-r11-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r12-matrix",
+      "experiment": "elder-r12-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r13-matrix",
+      "experiment": "elder-r13-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    },
+    {
+      "label": "r14-matrix",
+      "experiment": "elder-r14-matrix-20261017",
+      "qualified": true,
+      "status": "completed",
+      "rows": 36,
+      "acceptedAsFinalPositioning": false
+    }
+  ],
+  "preparedButNotExecuted": [
+    {
+      "revision": "r16",
+      "growth": 0.9,
+      "staticChecksPassed": true,
+      "combatExecuted": false,
+      "restoredForReview": "r15",
+      "record": "raw/r16-prepared-not-executed.json"
+    }
+  ],
+  "priorQualificationScope": "Historical coordinator qualified flags establish execution and protection checks only; none of the prior attempts is accepted as the final positioning matrix.",
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/things5.swf",
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    },
+    {
+      "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+      "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "b3fc7521bacf6eeace4b479755e2d6f77de6af487f93e2f0d9a2493e20b67461"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277"
+    },
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "data/enemy_properties/天网.xml",
+      "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "82e7217f78abb1a944b0a5ebce600cd07167c320bd865e7254a0d8c4632218c4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "5db3726dbb6c66cf7bb8b36945fc895648eaf2d45f346dd753f1993a4e91aa1b"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "a4ef8aaf7fee5a89821b2b5745f91f016f990c70f4bf39bf57915839fde1f56c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "sha256": "daed03fba6d3d59c566bba36a12858a0a4886f5e950b7c8a5237720049dbb68d"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "ce1385ebf3fc3a424b9e56f271f22b25f0a6d8c78656a310e517fccd72dabbb0"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "verified": true
+    }
+  ],
+  "native": {
+    "revision": "r15",
+    "bytes": 356937,
+    "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93",
+    "shapes": 53,
+    "sprites": 28,
+    "bitmaps": 0,
+    "symbols": 82
+  },
+  "behavior": {
+    "runId": "a78a0cd2de3c48619e2276a699400ea4",
+    "passed": 690,
+    "failed": 0,
+    "traceSha256": "e1e7c78319e9d112ad20ead4fd4d5ecf2c56d3e9ab2e23c7afc7b7f1d5ffeb8a",
+    "timelineCases": 34,
+    "phaseCases": 13
+  },
+  "render": {
+    "fullR6RunId": "002525ae1e7a4c818082329aecfa041c",
+    "fullR6Passed": 1439,
+    "drawPoints": 718,
+    "images": 19,
+    "r7ProbeRunId": "ab9ca9340e47403e97bf0d38daef7d83",
+    "r7ProbePassed": 16,
+    "r7ProbePoints": 6,
+    "equivalentGraphicsXmlFiles": 85,
+    "currentProbe": {
+      "runId": "62441b6c95644811a82a41f9fbb52aa2",
+      "passed": 16,
+      "failed": 0,
+      "traceSha256": "068b43b0eb50bf0af9e1ca852d7491d31053e2dec8a1540d573f04cd9e77f81e",
+      "drawPoints": 6,
+      "revision": "r15"
+    }
+  },
+  "limits": "Human move review handoff only; strength calibration toward 50-80 percent remains incomplete. Finite repeated isolated candidate combat; no cumulative damage claim; fixture render timing is not game performance. Physical appearance, motion, gameplay and standard entry acceptance remain open."
+}

@@ -1,0 +1,518 @@
+{
+  "scope": "Changes since this user request; earlier uncommitted work is not attributed to this task. New files and the separately preserved two old-agent source files are indexed by the final source package.",
+  "baselineFiles": 1447,
+  "unchangedBaselineFiles": 1347,
+  "changedBaselineFiles": 100,
+  "unchangedExistingAuthorityInputs": [
+    "data/enemy_properties/CF6重制敌人.xml",
+    "data/items/asset_source_map.xml",
+    "data/units/units.json",
+    "scripts/asLoader.swf",
+    "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+  ],
+  "changes": [
+    {
+      "path": "agentsDoc/testing-details.md",
+      "beforeSha256": "4509639d86d1587aba76c412df4d060a3d4153daa383b3a0cb17d044166747f6",
+      "sha256": "1fbbadb3869f16e3b189b5424868332360af6daf5eb73184a988f79c5225acf1"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/动作/倒地.xml",
+      "beforeSha256": "2189cf23c7c9c2a4840bac54b7304d6902f90643a3ee854dec59bda1998f9bfe",
+      "sha256": "ccb6690e4285da197aa0f73970d1b493334cc97d135618c2e0d8f78c50c472d6"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/动作/击倒.xml",
+      "beforeSha256": "af0e0e644f5c67f31ee850fdffebfbbc0f57c6a4442c3ae0d61e92a03b323a56",
+      "sha256": "76c347035c17bd8c96734b7711ed422d292d4128ed092e5ba602966d88d245b8"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/动作/攻击.xml",
+      "beforeSha256": "ba7c1a0755b7df7dc0a953d0214cc30dedd45940d914ff3f8b919b19468d0a21",
+      "sha256": "8ba0812668179bf7a8187219bc5570baf3b74d1acef4367c1e6b672714f614b8"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/动作/被投.xml",
+      "beforeSha256": "463783aa04f83e3e10a1f7bc1d0442493d38d1039de4838957a9e82c88ddc235",
+      "sha256": "7aad99e9b1183a9da2aa834fb7f27e36c058349b62b786a1d1505a5f0716b87f"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6女僵尸/敌人-CF6女僵尸.xml",
+      "beforeSha256": "cc16d2a60b89a72f9d5240f25821ce37f7a89058afde5471ab7d86da8854f222",
+      "sha256": "f55b98648db7207fa3d5cd568f943fc71d08e891f507a5da3adc036145ab27e7"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6普通男僵尸/动作/倒地.xml",
+      "beforeSha256": "d0fe8f7469184977a1f8edd0bfc6587263a341c089138a9ef34a1cb6dfaa286c",
+      "sha256": "30e7c3a250da0d5047d9aceb2a35022018fea911f08625a0fbe037b690a4ebd7"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6普通男僵尸/动作/攻击.xml",
+      "beforeSha256": "42e3b3e7be2fb781fb9cfa7ae8732bb1f72d9e841d08e0c30e0f8d8365e1da04",
+      "sha256": "b6fc5581a1429f882ee233241c466390a107a6cac664ff7373aade89f03f5373"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材/LIBRARY/Antigravity/CF6普通男僵尸/动作/被投.xml",
+      "beforeSha256": "da495c9b61cc8e2f13cd58ded7195c37d8cd317969896fa5d9e18d1ddbbc918d",
+      "sha256": "29f2df6e85865d1f152af25fb76cfac5c94959457b68ee5921bc6c41076cef88"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材.swf",
+      "beforeSha256": "2ab9c86284e8bf2d8cee6e5262ce5153aea0efe2c5df543bd0b33afd9398c74a",
+      "sha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 861.xml",
+      "beforeSha256": "decc898338bd47f66e30e3e44428478c83248233c1338f618fcf09dfb3525229",
+      "sha256": "3f7affe4057d68d1ef27467d3d8f27b59e5b8ce3254a3c37b8f6801015dd2b0c"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 863.xml",
+      "beforeSha256": "27d886c7221aa1aac3387a4e3ee1c78517e039c44917de4c478fa17f161b687a",
+      "sha256": "313642a7fa48142d583484f98f86507f4cb58e520318057df8ae62eba09dc20f"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/起身.xml",
+      "beforeSha256": "df0e30c6bf9ec9f11d42a1f4a0edb9039273101ffef9bb5eb4dd8a9edb8f7689",
+      "sha256": "c8236babc469f6a65f8495ce70314bc6ba2bb1a9c472e27bb694ba6207d10df9"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材/LIBRARY/Codex/Wings/动作/死亡.xml",
+      "beforeSha256": "6a272c81af763089571eee20cf6d329f838d0115b408db8b2be0b84e47dcd646",
+      "sha256": "8618eaf3e049fab73896435e8ce7e91812b84910274fe35662529066614ec109"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "beforeSha256": "d63ab76fba6609b339128d6460ba9fc769ccafcdac9ebccce17569db5469a107",
+      "sha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/倒地恢复.xml",
+      "beforeSha256": "2f6c9bca0d1812ab69aaa784b5f17d0dc0cb740ceade7a3033eb6a758635067c",
+      "sha256": "0c1de2ea4a3b59702a0b1b5aafec5b1d9379301bb9435a16a92f454c680e06dc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/击飞.xml",
+      "beforeSha256": "01a9df47e3668ce92407aa016108bebe1b210745ff357ff51bd6e8a12b831330",
+      "sha256": "8e083f23a60cfcaaf98ae4a1a477415020d939e4f218b111fb3f50d82e897016"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/变身.xml",
+      "beforeSha256": "47f6053e1a2711a607517c914233fc5ddfcc297384a20d17275ca8ce94ce213d",
+      "sha256": "f1623f2a1aadb261b5fdf40a4484bf1a7f5d9f74b73f23e8312d6a76b3ba9e83"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/死亡.xml",
+      "beforeSha256": "1d5173802ba8f4b89f579cf2b8f83cc3732b685fb9fe07349c268dc41f29f2a8",
+      "sha256": "a6673847f4c846c68303c7ddce8e3a8c1dcaaa1b7cd514f94c556de21370102c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材/LIBRARY/Codex/光头保安/动作/被投.xml",
+      "beforeSha256": "f1c9139bf144ebaecf9922034d469f4ff190724803f2cfa4829e39386e91768c",
+      "sha256": "4bb82536dd85f38ccf9cc4d48cb0c2a3d88da86bb977efe15a89f3e26e984811"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "beforeSha256": "58de7ecac69f667f960d9a5b85766d12b12689bdbe363e759155511098c2a2d1",
+      "sha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/DOMDocument.xml",
+      "beforeSha256": "95cfe3b0e8d64b3af48b304af3549f99a07fdf357569da51260278bb8d55637e",
+      "sha256": "2358adfefa5238d615a03f7e6cc709104e4e27da27fd836681425e9555be54ac"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
+      "beforeSha256": "e911821bc811677d418bf1f01db1ce8c84d39521af77750b83350a9b1e9fd37c",
+      "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/横扫.xml",
+      "beforeSha256": "8d6c8a7454f1ce25b4502f456fea4addcdedfff3e469701df24412c83eab69e3",
+      "sha256": "6ee1992595087899fe7144f36f782bfc9fd405521a0451652826d5be4bfa995f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/波属性光束.xml",
+      "beforeSha256": "149ed4b5ccf9d9f7917f64078b096cee047bb85998c8f2b2c956f83d81dbca88",
+      "sha256": "0fd1f9f08b88283edf39e425c7f12bdc934d763e85e3beb436103e36a470cb70"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/重劈.xml",
+      "beforeSha256": "204f71f139105c94aa102a6cebbab9de390651727ba2e8cd7da96dcf6561817e",
+      "sha256": "5fa51459952935400fc2b13b77d0118955e90549e7778d46a7335a6184444404"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+      "beforeSha256": "4451a22c484770a5c887727d65b0d636b0198b9cd1721126a22ce6d834e1d297",
+      "sha256": "c8ff185b3fe67a01ca028ae7b74690e67e0509e8cfbd34b03ffd65f33c49e25d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "beforeSha256": "963cd8383edff068891c1d766b6880d02999beb4bd114a12e49b9ff2fb4765a2",
+      "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/DOMDocument.xml",
+      "beforeSha256": "0676d656240f91ba6a490763572b540bb36b90b569e811ec8032ea63dc80b031",
+      "sha256": "9189979705dfc542c7c5817c3da649f5642a4e92534ec1b983bc20895d4ca421"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/伸缩冲击.xml",
+      "beforeSha256": "25eaab7fee95cfe179f66d8b8c04beb9cca3241342a4793dc38c1a47d6da2876",
+      "sha256": "f94178e4e092e73c3b2b5208f47a2e79c874937e3f3ec57e948db09e33e418b2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/双臂光束.xml",
+      "beforeSha256": "edf04f53751717724ad0d411849eda16941bf9fa185b8b50d82f9422844b475e",
+      "sha256": "7716ebe90ab364f8833c103baff02c2ab937afabc2aad90516abdc8870bc808c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/动作/机械碎裂.xml",
+      "beforeSha256": "456255f5239d333663d99e48b334586fccc27248b239f5f3dc9c3e93d910cf47",
+      "sha256": "44fd1ebec738ecc0f96113e4bbeaa3c310fdccfecbaddae1a75fa53dbf53c37e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片/分件2.xml",
+      "beforeSha256": "d02cdcaa0323154442c70d7943171f0e483cf09d782c27b65056c7a67d5a9401",
+      "sha256": "d3729aef5cc0dd18bdde0214877e5824c97f28936ba3b3bfc08f363f6835f428"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片/分件3.xml",
+      "beforeSha256": "12adeb362369a2d43116d14c3dd44018f2f5412984cf95ac311337c7bc402f1c",
+      "sha256": "695bbfc5f5524f6e4d427c58b167b1b8065c52aad06a56bc7a881f7ba59b8571"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片/分件4.xml",
+      "beforeSha256": "4f18d5969d4661a77000247601a4325b17b151b25d6ea2c54832bdd4ff64f57e",
+      "sha256": "4f43527bb69b919f1620e14f5d9f9b93eb11adca0845f4f850012fad47161d5c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片/分件5.xml",
+      "beforeSha256": "ac319a8d95d4b136ead163bd3afc930e8cbd1d1d5e53273647088e69d3102073",
+      "sha256": "a072776afdd730cc5dd8ff098c0568b95241633aeb1dcbc2a2295e3b795c1a78"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片/分件6.xml",
+      "beforeSha256": "ec7fcf4b00fadb9a34d50bebd3d4c7081e6cb5a65ac0e8bd6b746e114c691f46",
+      "sha256": "8c0f93af8dfb1a9ba3800e7be40441a5eb5959d220bb6ffae006ec859111db4c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/尸体碎片.xml",
+      "beforeSha256": "da1c911ad4c4a9a3b0e12dd8d932b568ad8697ad65e12d24e957afbaef72d827",
+      "sha256": "6a6a3581604b517d9ceb91c4c49f30e42d1115f4f07840abd0f02bacc5e3a3dc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材/LIBRARY/Codex/大头机器人/敌人-CF6大头机器人.xml",
+      "beforeSha256": "e2d2f237a59862021571a07c316ef3074638bcd40ac3836e23fb731fbcac03b9",
+      "sha256": "2f06bdfb9f8e165b80681d4b35f3caccb21d0f865fa9045c38dea91d268678c2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "beforeSha256": "a087e4b44fde4e4fb7c5434a2ac1855f93ac075b2b2af6e68b762f8b00924eb9",
+      "sha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/倒地恢复.xml",
+      "beforeSha256": "94e281b4fe2fcdf245ce0cd34c8c875527bbf7193cf785cd43e8ae55db2d9de3",
+      "sha256": "c0bf305ccec556e3c61769766f51ba5c006b8d60e555a49b35e90ce8f698d393"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/击飞.xml",
+      "beforeSha256": "5edeca3758c5e861ebf3323bdf2ca4c544c4ad4446a1e802f0cc74b99f0cde53",
+      "sha256": "a0603757cb32751d4a6614c82b434ed2c52c83222a35e1f7e754fdfacd61e597"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/匕首刺击.xml",
+      "beforeSha256": "2513931663eadc1a555eb9027293a761656f31ce2a241a62a9b876ecf5dd87f1",
+      "sha256": "2bc2ae7aeadfa00a7129e4e5cb073d1e34d8d42b3d1a1946855d2e077e1e2fd6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/持盾匕首刺击.xml",
+      "beforeSha256": "059b0551c59a3e26d4dc4d2abe79424cad8094f96f7201b6a664d121d0fe9422",
+      "sha256": "ecfa70d7fde3873165702f03d1c655ad505fd21f418a919c80ab99f3cd6fcd36"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/死亡.xml",
+      "beforeSha256": "aeca7d8b94be40c7036d61fd5cecc5119017d21946656d3e9e68116ccc5bc94d",
+      "sha256": "d5787f31c800827356b2439447f34fb6b13e57ed7f57aeb4d827a0a5234247a8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/破盾.xml",
+      "beforeSha256": "17d1f2609a55ce7ce58764d627d8b46d335d1ad6e42aceecf5088bddfd0819f8",
+      "sha256": "0c7319af1a2682444b7434e164dad071638652aaa9c2461acddf5e805a4f3550"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材/LIBRARY/Codex/特种兵/动作/被投.xml",
+      "beforeSha256": "acdadd01fa245574828d71cee305f6918850c8e44722700b2b2948d57eeea003",
+      "sha256": "1e467a761ae3c10b70ded249269a2df275c9c0591964c54d734638017a88b183"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "beforeSha256": "d4e4e94d71cff15442018583b824d9c810ef66d1a88efd2e93daf3d2dedc2edb",
+      "sha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/DOMDocument.xml",
+      "beforeSha256": "ce1dc8d60f3e66cb85c8c1dfe9477fcb735113c4fd6dd9905c4ff8eda146e46f",
+      "sha256": "09da3e62c9d9f898ac37c2444d0a952f44fbf5f1bd6c990acf0418015a7a3b6c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/970.xml",
+      "beforeSha256": "91e246a6783f991d503aa74a670773075a4c7866470420d1f9f2428f90017f7e",
+      "sha256": "dda7ac11c9cce54e9cd57098759ae17716aa419d64d95a8f80dafbee5d733a1c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/972.xml",
+      "beforeSha256": "ed0177f23ea746fe756fde562d6c1dd9f86e2754eb78d05be24ffa9a1a59f455",
+      "sha256": "ccbcc249d6306ef64c932802d231c2e16e5a5f7d724b5007563df756fb8df83c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/974.xml",
+      "beforeSha256": "36f4db61512b15fd2e67da647fd6dde663ed992275c7ae16e88cdf5dd3dae097",
+      "sha256": "023f37695a532aa3141397c3d134b6e38cb58aa7aee8d2fe78b03be29085f8fd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1007.xml",
+      "beforeSha256": "a15c42af54d184db5041ed8c27648b3a8e3258628246f6790c893ad545700290",
+      "sha256": "d0f22e5c8ea061c3337242a392d60c0e521d2aecf718657718cf18872cf982ea"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1010.xml",
+      "beforeSha256": "beac4a55589121c57f493fb865dc9b68bcb49cb4921ead05853e6ef6ad2e6e14",
+      "sha256": "c49d47fbda7e245df6244bc3ff23a5f11b46000c297e24a3533aa4eb351b913e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/19940.xml",
+      "beforeSha256": "c17991e621206846f77ca70474aa29d12a5ddec8e9a396842c07d4adb8b018dc",
+      "sha256": "41eb5e30ef768c458b07498bf0c549c6c038cced54fae37755af31e71172b221"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/994.xml",
+      "beforeSha256": "9626bc226164c53218e4495f91189ddf49fb2bc85a1229c59f8f321649564251",
+      "sha256": "cc32ee2e791f6302fa47e1c58d806760b45e697b4196e33d68203c1248e4c637"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/997.xml",
+      "beforeSha256": "68b0a89bf9bfc1a0fe2e19e3d4e31cb0d8db0d227e4319c2d8e2d22841d48910",
+      "sha256": "8b081d340a3bbd50e313680a16a9be42a5f4646d831a011f70da182421181b67"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/变身/角色演出.xml",
+      "beforeSha256": "2dc28bf1158b35d7e45ef1f7f5243a65a24e28fd517d6db11a89758784853ea3",
+      "sha256": "cd45a8eb4390ac55e4cf288d120af75b64b5e49f2e041d0334d272a85aca896e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "beforeSha256": "25da700caaefcb5451396fbc7ec8244f0ad465c4a06c2bdef788c4a423763598",
+      "sha256": "0e72e821ed6e7b79d5016d0038c4d8030ececf06780a8987571c414361b81959"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "beforeSha256": "4a0a6876a2e260c8ff8de91a8b62c329588beed80256986ab13ff705b578eb1e",
+      "sha256": "c53022ec82f56d2ea9cc1223e0b48fe7f0e66cef81c64e411771f99b66f1df4d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "beforeSha256": "0feee79a4ca52dd846d7512f97303de26d64fe252b430d6fcf741876196fdf42",
+      "sha256": "adfd0e7a1187b49f8e6f8647e2e1204b52c771ad3fea319b96cc62543e8a61f8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1116.xml",
+      "beforeSha256": "906690329d0fafcc7630507d09845b7f7576ece801460bdb9f24faebacc3c67f",
+      "sha256": "76d2ea9f3c53ed995ffe392026e57e791ab8d0c815b81bc5e6da6c0d4faaca4d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1117.xml",
+      "beforeSha256": "b3f9b5b15c10f057ba7295288270e96eb56577cb8367c56cd82960ad290384c3",
+      "sha256": "02a63b75fe5476ab0a87e6d0226b30986edf9999de5e6aa09e9cc914eec57d1d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/CF7/Symbol 1118.xml",
+      "beforeSha256": "1f976c7e0b70486f0cd13fae52c4a085b25b3d4d4432df6590c75c96aac681ca",
+      "sha256": "50904c8ec00e452cc1d210facc4f6f3d860b833061f5bb75cf9495b79bfd7716"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材/LIBRARY/Codex/蛮蛮/动作/血腥死.xml",
+      "beforeSha256": "12314059c140c27cc616d4ccf085e4af6f1d877eae99c2d2ef57f7845c0f4209",
+      "sha256": "b49910e1ed7de2f071d78154540e0ca07656a71aa5a4fecaf68d4e63eee5b505"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "beforeSha256": "74616617a2655c31b17652f334e8bca681b42e2941c19b094a356ff43124109f",
+      "sha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3"
+    },
+    {
+      "path": "scripts/run-cf6-player-aim-tests.ps1",
+      "beforeSha256": "d0ffab8fc3f008cd08debcc4e20117492f2e37e56e685adac520950e4b567511",
+      "sha256": "df5dfb8028366c80fecd5ddcee346add1735b2104ed7d06d8770eaa2747e5eeb"
+    },
+    {
+      "path": "scripts/test-runners/cf6-bladebot/TestLoader-capture.as.template",
+      "beforeSha256": "8485ddb0bd5f89301e56fad508410f85adda75be35c7d6fe2cd422ef5f664a04",
+      "sha256": "ea65953ab5a64af704352f37489a36e5d28bf16441889a95c7c75885f5d9fe33"
+    },
+    {
+      "path": "scripts/test-runners/cf6-bladebot/TestLoader.as.template",
+      "beforeSha256": "f993496195b8f1cf1ac33763abf0b55d2576977559500283ec1930a8720fb15c",
+      "sha256": "e71dbc2e483dccbbc6b967a397916fd66040419013f99516fe6f25bc16c17d70"
+    },
+    {
+      "path": "scripts/test-runners/cf6-headbot/TestLoader.as.template",
+      "beforeSha256": "f75be4f20a45e945d6ea7d9cada7d982713d4360320b827b54420f5cfe9de2ab",
+      "sha256": "a2dc45e3991ae82104129fdaa170def77470dba077ad259fa2c787a343993985"
+    },
+    {
+      "path": "scripts/test-runners/cf6-playtest/PlaytestFixture.as",
+      "beforeSha256": "740bb45e9f20f3cee1824c2922d80b6da50484d6648d63015f1ab46050d0d151",
+      "sha256": "4a9d5e20c06611a7073e87fefe82adebb96ba835f650958b0de6b6ffd91f3c43"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+      "beforeSha256": "2806e89c796248a8b98c13d9eeec49589034614d93e8b91955ecd203df3cebea",
+      "sha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "12a805b88d0831380f58e0cb986508753175aae96266de3ed626b35c25f963f5",
+      "sha256": "1351a42f972c30832643cd72e72ae7d1c5a83322d4f4f29ea2328e6201d4f343"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "beforeSha256": "f183bbc04070b3bcc3148786f26fb4307892df3d0b1919f571837f48e34d1fe8",
+      "sha256": "cd89b1914c0cf75ad79fa4943a14f5383f64fd2b2b60ec6d343527706a4371f8"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotAssetTest.as",
+      "beforeSha256": "65f25f351ecc1981e61450836740af810c61cff913e247c1df2eafc35ad7fa85",
+      "sha256": "a9a478162dece1b01801bf5c640ff712f7695939e464f317f587823eea27ea0a"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as",
+      "beforeSha256": "e20100d9c19262c235357701ac282104d8646bcde798d7c0d875701971411b47",
+      "sha256": "a921861e5d8da26e63da2c4cd1a3598504af164280c46cdecb47b360c4f065b6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "beforeSha256": "dd4d3a0dfaec42dc35078b5826f77b1530150a55e3e9c975e48fd5884d8261ce",
+      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "beforeSha256": "4c6066afb0ed1fbf904fe0b648eb8ebf107c3f2ec6d2ce6d2e799ef07ae05cb5",
+      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "beforeSha256": "1538c2dbc6ffc747c1b0430d90290e060083d0bc64f7525c2efe51af315d88a4",
+      "sha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/README.md",
+      "beforeSha256": "5efe3b433615ed1cc53b670c0f2044450817627432b9b159f4fb6c34296304db",
+      "sha256": "0f8ec9fe54bf8bc431cbe516848b672ca040a09ded831b815d50d5b0920ad20a"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build-playtest-fixture.py",
+      "beforeSha256": "bfb93372d9de795ab03afcc85871718cf4fbcbbbaed3d3e033d4cc6fedba22d3",
+      "sha256": "9ffb56930ffe5fdeb6d52edf5ec16cc0f88bd9c729b5f4dd9492c949adf2997a"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "beforeSha256": "77e8617326d38669b1f68cc6529a2dc07dd4bad2450ca3b96ec04d59daf83e4e",
+      "sha256": "9be06c53402c2e6aa4f02df2eb14e0a2fc8446bcd27aa00bb5561a8c3c23185c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "beforeSha256": "813382ef0f41e193ce519d6582addbe7e890001bf883135895583ac47e0eaeed",
+      "sha256": "87d488f8a48168ee3268f48115e156d3ee655c2df4938d3a475c5bfd57fce997"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "beforeSha256": "358da82db32f3857e2a008ba1187f808cabd9f3257a5fb78caba6a5407d3b80d",
+      "sha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "beforeSha256": "52ea49495d4dd829cd16223c65fb250929c4039a8afbeea3978700faa3681a6c",
+      "sha256": "e2075d8ab70fb8fb82379737f305d4c4e4d2ec66a0bcf3f6f447136f81b069e2"
+    },
+    {
+      "path": "tools/cf6-guard-assets/build.py",
+      "beforeSha256": "5fe4874a96e5c522faf040e101742cd52b96d87194ab0cc6db6eea511b77faa7",
+      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "beforeSha256": "0a5630fda4cb2ec4be688bf557164d54513e805c036d3d60a91ee447f908fcc0",
+      "sha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "beforeSha256": "3ba83ff3b79e5db6818206188e5389c7e62eae05665e33a845b7ebe8c17f4e5b",
+      "sha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/corpse.py",
+      "beforeSha256": "1dc3475299f0ee7e88235267d67a63016f0afaca26c8d7cf0b5c2bb0a5194584",
+      "sha256": "632123220a09764588f6872f158be2b158b09aa6b36544d93abe76af9995146c"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "beforeSha256": "273619fcb89dc22d1579f95e3e79f6a03ca9b3efa71e30858d105eeae8cd6442",
+      "sha256": "80b622fb1899d34c93ad4000f867d2f2dd9c4a6c31976226d347e2c2f37f758a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "beforeSha256": "c9e77fde5ee386bc995b005faadbf07e89b572b242b0bbbab5525064226ff9d7",
+      "sha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/README.md",
+      "beforeSha256": "b4467240e7340f4c089bbecd325aa75efb2fd55c7a496ef2cca8b6e8946b1989",
+      "sha256": "41dc43804312329b4531d27c1f942977be79899ddee62521613ab9909da554c6"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "beforeSha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "beforeSha256": "f0694c9f523bd935f3a79ff694b8bd38532152cc50e584274049a8e5f34a7f37",
+      "sha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "beforeSha256": "75d0c0d588037a0e40d28a626b8b03a73a4700a8a322d1b45ca7cf1d5096e8d7",
+      "sha256": "b49aa11ded92adf8e49e027d7bcbc2bf5293e14e8f7b5a84b5ba0f14d451cc10"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "beforeSha256": "987d56c9741e21df2a5dba055785b19252a32eb1ae18c17bbd9968e21b0d900c",
+      "sha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+    },
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "beforeSha256": "518f047556cfa6e13f470b99d0183355156e79b5945216e3a9f69f0799cd762a",
+      "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+    },
+    {
+      "path": "tools/cf6-wings-assets/native-manifest.json",
+      "beforeSha256": "a4a04702aa38d1474d01db4c7f6680c807d47c9835bfb38ced14f2e687730d95",
+      "sha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "beforeSha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/native-manifest.json",
+      "beforeSha256": "a88d1cc397b99cfd1d79d91b7ad0969e2fbd50ff5e45e031303bc14bfdde05e4",
+      "sha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+    }
+  ],
+  "notCoveredByThisBaseline": [
+    "flashswf/arts/things-new.swf"
+  ]
+}

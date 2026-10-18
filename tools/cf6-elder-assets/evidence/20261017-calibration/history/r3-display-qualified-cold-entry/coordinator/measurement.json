@@ -1,0 +1,1360 @@
+{
+  "schema": "arena-worker.p0-measurement.v1",
+  "measuredAt": "2026-10-17T22:34:30.502Z",
+  "planHash": "sha256:db0ac8fa4f18ec7d8ac1e9db699266c51528e4fabbd9fcad4dc70e333723a2b6",
+  "evidenceLevel": "candidate_measurement",
+  "qualified": true,
+  "groups": [
+    {
+      "groupId": "cold1",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 74231,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 73457,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold1\\group-report.json",
+        "reportSha256": "sha256:48fdda201a64a0f6db1e75f0aec14e52a67aaf66bd340987495efebb4f587570",
+        "startedAt": "2026-10-17T22:27:42.307Z",
+        "completedAt": "2026-10-17T22:28:56.538Z",
+        "wallDurationMs": 74231
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-c5b4feca12ab42e4a812047c6a6e840a\\assignment-c5b4feca12ab42e4a812047c6a6e840a\\attempt-c5b4feca12ab42e4a812047c6a6e840a\\shard-receipt.json",
+          "receiptSha256": "sha256:21751251c3d8c39c3a203103f5d2550c9e8481e8a84a4b56506920a96faa4529",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-c5b4feca12ab42e4a812047c6a6e840a",
+            "assignmentId": "assignment-c5b4feca12ab42e4a812047c6a6e840a",
+            "attemptId": "attempt-c5b4feca12ab42e4a812047c6a6e840a",
+            "batchId": "cf6-cold-r3-20261017-cold1",
+            "manifestHash": "sha256:2770bf7133d04463f82744a215874984781fec32a54ba221f5fe4505c2449ffb"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold1",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 73457,
+          "cadence": [
+            {
+              "runId": "cold1-r001",
+              "frames": 60,
+              "durationMs": 1983,
+              "framesPerSecond": 30.257186081694403,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold1-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold1_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold1_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 12,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 5,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 12,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 4
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 12,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 17740,
+                      "processStartUtcTicks": "639278728756946971",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:28:10.1051312Z",
+                      "endedAt": "2026-10-17T22:28:40.7009238Z",
+                      "elapsedMs": 30595,
+                      "cpuTimeMs": 6031.25,
+                      "averageLogicalCores": 0.19713188429481943
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 636690432,
+                    "sampledPeakPrivateMemoryBytes": 512409600
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 12,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 21720,
+                      "processStartUtcTicks": "639278728901588148",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 11,
+                    "cpuSamples": 11,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:28:12.7232452Z",
+                      "endedAt": "2026-10-17T22:28:40.6983577Z",
+                      "elapsedMs": 27975,
+                      "cpuTimeMs": 18312.5,
+                      "averageLogicalCores": 0.6546023235031277
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 511688704,
+                    "sampledPeakPrivateMemoryBytes": 489623552
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "cold2",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 70417,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 69729,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold2\\group-report.json",
+        "reportSha256": "sha256:55cf34f934d20ef541a34f85a79a5f826b5c2e30bd84684a7ff02aceea3dd27b",
+        "startedAt": "2026-10-17T22:28:56.540Z",
+        "completedAt": "2026-10-17T22:30:06.957Z",
+        "wallDurationMs": 70417
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4464756d8197483fab5b83f289a2cb2d\\assignment-4464756d8197483fab5b83f289a2cb2d\\attempt-4464756d8197483fab5b83f289a2cb2d\\shard-receipt.json",
+          "receiptSha256": "sha256:b2b3d4b15058ab1566801d0903e2ad4002efc180a62e95340486e902b458867e",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-4464756d8197483fab5b83f289a2cb2d",
+            "assignmentId": "assignment-4464756d8197483fab5b83f289a2cb2d",
+            "attemptId": "attempt-4464756d8197483fab5b83f289a2cb2d",
+            "batchId": "cf6-cold-r3-20261017-cold2",
+            "manifestHash": "sha256:9aa9b189a9997ba50696b9675a8a6beb713528bb9f407bed7efaa29d589cfcb7"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold2",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 69729,
+          "cadence": [
+            {
+              "runId": "cold2-r001",
+              "frames": 60,
+              "durationMs": 1980,
+              "framesPerSecond": 30.303030303030305,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold2-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold2_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold2_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 12,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 5,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 12,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 4
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 12,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 18868,
+                      "processStartUtcTicks": "639278729501872850",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:29:22.2436141Z",
+                      "endedAt": "2026-10-17T22:29:52.2069837Z",
+                      "elapsedMs": 29963,
+                      "cpuTimeMs": 6031.25,
+                      "averageLogicalCores": 0.20128992423989586
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 636391424,
+                    "sampledPeakPrivateMemoryBytes": 511897600
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 12,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 16624,
+                      "processStartUtcTicks": "639278729623048974",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 11,
+                    "cpuSamples": 11,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:29:24.5025739Z",
+                      "endedAt": "2026-10-17T22:29:52.2033194Z",
+                      "elapsedMs": 27701,
+                      "cpuTimeMs": 18468.75,
+                      "averageLogicalCores": 0.666717808021371
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 496390144,
+                    "sampledPeakPrivateMemoryBytes": 475738112
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "cold3",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 68785,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 68230,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold3\\group-report.json",
+        "reportSha256": "sha256:494322a06ec77d2f47fad01c1fc95773967ff550b593a8bcefae956cddeb6ed2",
+        "startedAt": "2026-10-17T22:30:06.959Z",
+        "completedAt": "2026-10-17T22:31:15.744Z",
+        "wallDurationMs": 68785
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-7941232bb99f4fc2a97f865f86888b9c\\assignment-7941232bb99f4fc2a97f865f86888b9c\\attempt-7941232bb99f4fc2a97f865f86888b9c\\shard-receipt.json",
+          "receiptSha256": "sha256:5063161d7782e2eb8e51ef159262a516e844a1b8b8283e68cac391f0c6b77aca",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-7941232bb99f4fc2a97f865f86888b9c",
+            "assignmentId": "assignment-7941232bb99f4fc2a97f865f86888b9c",
+            "attemptId": "attempt-7941232bb99f4fc2a97f865f86888b9c",
+            "batchId": "cf6-cold-r3-20261017-cold3",
+            "manifestHash": "sha256:cb283114d6a596b9ee5b8b2be5665c95d2430c3e426c45440e618e8dcfdab2b5"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold3",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 68230,
+          "cadence": [
+            {
+              "runId": "cold3-r001",
+              "frames": 60,
+              "durationMs": 1978,
+              "framesPerSecond": 30.33367037411527,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold3-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold3_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold3_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 6,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 5
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 20984,
+                      "processStartUtcTicks": "639278730219373175",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:30:34.2972993Z",
+                      "endedAt": "2026-10-17T22:31:01.6154140Z",
+                      "elapsedMs": 27318,
+                      "cpuTimeMs": 5531.25,
+                      "averageLogicalCores": 0.20247638919393807
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 652042240,
+                    "sampledPeakPrivateMemoryBytes": 527548416
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 7744,
+                      "processStartUtcTicks": "639278730343386786",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:30:36.4233119Z",
+                      "endedAt": "2026-10-17T22:31:01.6126596Z",
+                      "elapsedMs": 25189,
+                      "cpuTimeMs": 16218.75,
+                      "averageLogicalCores": 0.6438822501885744
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 492314624,
+                    "sampledPeakPrivateMemoryBytes": 471748608
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "cold4",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 65629,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 65097,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold4\\group-report.json",
+        "reportSha256": "sha256:dfab605327e454fcaef59a0dadf0b7f32e1fb7e1e8bbd1b0bf71804c9956c25b",
+        "startedAt": "2026-10-17T22:31:15.746Z",
+        "completedAt": "2026-10-17T22:32:21.375Z",
+        "wallDurationMs": 65629
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-70c8544432124cf0a6911f39649076d8\\assignment-70c8544432124cf0a6911f39649076d8\\attempt-70c8544432124cf0a6911f39649076d8\\shard-receipt.json",
+          "receiptSha256": "sha256:eaa580d1ebd1519f0f18c7a31d05e372218815e3ebb704fdc3920fdc399d2d97",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-70c8544432124cf0a6911f39649076d8",
+            "assignmentId": "assignment-70c8544432124cf0a6911f39649076d8",
+            "attemptId": "attempt-70c8544432124cf0a6911f39649076d8",
+            "batchId": "cf6-cold-r3-20261017-cold4",
+            "manifestHash": "sha256:7e9cde0e60e49c46f91c2e90829f7ba36fe0302a7072121c1c8d1f9e530d97b4"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold4",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 65097,
+          "cadence": [
+            {
+              "runId": "cold4-r001",
+              "frames": 60,
+              "durationMs": 1990,
+              "framesPerSecond": 30.150753768844222,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold4-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold4_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold4_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 6,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 5
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 21088,
+                      "processStartUtcTicks": "639278730877514614",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:31:38.8946649Z",
+                      "endedAt": "2026-10-17T22:32:06.8250607Z",
+                      "elapsedMs": 27931,
+                      "cpuTimeMs": 5703.125,
+                      "averageLogicalCores": 0.2041862088718628
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 651476992,
+                    "sampledPeakPrivateMemoryBytes": 527634432
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 20556,
+                      "processStartUtcTicks": "639278730989382556",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:31:40.9070199Z",
+                      "endedAt": "2026-10-17T22:32:06.8226263Z",
+                      "elapsedMs": 25915,
+                      "cpuTimeMs": 16062.5,
+                      "averageLogicalCores": 0.6198147790854718
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 496988160,
+                    "sampledPeakPrivateMemoryBytes": 476278784
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "cold5",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 65631,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 65102,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold5\\group-report.json",
+        "reportSha256": "sha256:2df496c0de179b0529572de83647d37b29d82469230ed753d9e5a18248684a59",
+        "startedAt": "2026-10-17T22:32:21.377Z",
+        "completedAt": "2026-10-17T22:33:27.008Z",
+        "wallDurationMs": 65631
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-19820b166ef24bf6877f5f4c281edfd7\\assignment-19820b166ef24bf6877f5f4c281edfd7\\attempt-19820b166ef24bf6877f5f4c281edfd7\\shard-receipt.json",
+          "receiptSha256": "sha256:58782e52f0a4562f1ef04494dff694f3f229b608efba7b9920dd665ab4facd80",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-19820b166ef24bf6877f5f4c281edfd7",
+            "assignmentId": "assignment-19820b166ef24bf6877f5f4c281edfd7",
+            "attemptId": "attempt-19820b166ef24bf6877f5f4c281edfd7",
+            "batchId": "cf6-cold-r3-20261017-cold5",
+            "manifestHash": "sha256:f77282b606fbab5899f2a1f2a295801560d8b47554070c3538a32359e03f4ea5"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold5",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 65102,
+          "cadence": [
+            {
+              "runId": "cold5-r001",
+              "frames": 60,
+              "durationMs": 1988,
+              "framesPerSecond": 30.18108651911469,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold5-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold5_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold5_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 6,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 5
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 22052,
+                      "processStartUtcTicks": "639278731523759263",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:32:43.6551896Z",
+                      "endedAt": "2026-10-17T22:33:13.1510815Z",
+                      "elapsedMs": 29496,
+                      "cpuTimeMs": 6500,
+                      "averageLogicalCores": 0.220368863574722
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 636465152,
+                    "sampledPeakPrivateMemoryBytes": 511918080
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 8656,
+                      "processStartUtcTicks": "639278731637053197",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:32:45.8169040Z",
+                      "endedAt": "2026-10-17T22:33:13.1486769Z",
+                      "elapsedMs": 27332,
+                      "cpuTimeMs": 18703.125,
+                      "averageLogicalCores": 0.6842940509293136
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 493023232,
+                    "sampledPeakPrivateMemoryBytes": 472379392
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "groupId": "cold6",
+      "qualified": true,
+      "reasons": [],
+      "expectedReceipts": 1,
+      "observedReceipts": 1,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 1,
+      "expectedRuns": 1,
+      "counts": {
+        "observed": 1,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 1,
+        "failed": 0
+      },
+      "wallDurationMs": 63379,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": 62854,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cold-r3-20261017\\groups\\cold6\\group-report.json",
+        "reportSha256": "sha256:f10dd7a24370a17e46e330e52d5033465ad61259b137dcdea70ba1ebf9ef4a7f",
+        "startedAt": "2026-10-17T22:33:27.010Z",
+        "completedAt": "2026-10-17T22:34:30.389Z",
+        "wallDurationMs": 63379
+      },
+      "workloadHash": "sha256:9259cf032e34fc467a57da9106290023c7bf3359cda37eb27c6c9fa1a177800a",
+      "runtimeKey": "sha256:d84d9dbd688db2c5472ba4f133997668e0127c0c875b2dc4e061634553b39250",
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": 0,
+      "rejectedAttempts": [],
+      "attempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4c318f0489b14673bcf0e4f7b7d8b1f5\\assignment-4c318f0489b14673bcf0e4f7b7d8b1f5\\attempt-4c318f0489b14673bcf0e4f7b7d8b1f5\\shard-receipt.json",
+          "receiptSha256": "sha256:78f1d793e87f23c5caa7c0f5b670dac5bbe74af62c30e151c3e7a4f1fbadcc14",
+          "identity": {
+            "workerId": "headbot-w1",
+            "sessionEpoch": "session-4c318f0489b14673bcf0e4f7b7d8b1f5",
+            "assignmentId": "assignment-4c318f0489b14673bcf0e4f7b7d8b1f5",
+            "attemptId": "attempt-4c318f0489b14673bcf0e4f7b7d8b1f5",
+            "batchId": "cf6-cold-r3-20261017-cold6",
+            "manifestHash": "sha256:f7c6babf3464149e5a193c59309b54b332cfbf99b11a4c56b9f9b052e095a2b1"
+          },
+          "reasons": [],
+          "counts": {
+            "observed": 1,
+            "finished": 0,
+            "strengthSamples": 0,
+            "combatTimeouts": 1,
+            "failed": 0
+          },
+          "experiment": {
+            "groupId": "cold6",
+            "condition": "readiness-only",
+            "concurrency": 1,
+            "sessionState": "cold",
+            "visibility": "background-visible",
+            "qualityRequested": "unknown",
+            "qualityApplied": "LOW"
+          },
+          "resourceClosureScope": "observed_runtime_resources",
+          "completeResourceClosure": false,
+          "wallDurationMs": 62854,
+          "cadence": [
+            {
+              "runId": "cold6-r001",
+              "frames": 60,
+              "durationMs": 1996,
+              "framesPerSecond": 30.060120240480963,
+              "qualityApplied": "LOW",
+              "presentationAtStart": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              },
+              "presentationAtEnd": {
+                "observed": true,
+                "qualityApplied": "LOW",
+                "performanceLevel": 1,
+                "lastAppliedSoftU": 1,
+                "appliedCommand": 3,
+                "sceneEpoch": 3,
+                "paused": false,
+                "frameRate": 30
+              }
+            }
+          ],
+          "skillStates": [
+            {
+              "runId": "cold6-r001",
+              "repeatIndex": 1,
+              "audit": {
+                "blue": [
+                  {
+                    "unit": "兵种470",
+                    "sourceId": "headbot-30",
+                    "name": "斗兽标定_blue_cold6_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ],
+                "red": [
+                  {
+                    "unit": "兵种286",
+                    "sourceId": "arkclaw-30",
+                    "name": "斗兽标定_red_cold6_r001_0",
+                    "observed": false,
+                    "state": null
+                  }
+                ]
+              }
+            }
+          ],
+          "observations": {
+            "windows": {
+              "scope": "window_point_samples",
+              "continuousVisibilityVerified": false,
+              "totalSamples": 13,
+              "counts": {
+                "backgroundVisible": 6,
+                "foreground": 0,
+                "minimized": 0,
+                "hidden": 6,
+                "unavailable": 1
+              }
+            },
+            "performance": {
+              "scope": "last_applied_display_state_samples",
+              "requested": {
+                "preset": "performance",
+                "mode": "fixed",
+                "maxRenderHeight": 180
+              },
+              "totalSamples": 13,
+              "unavailableSamples": 7,
+              "states": [
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "ready",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 5
+                },
+                {
+                  "preset": "performance",
+                  "mode": "fixed",
+                  "status": "switching",
+                  "width": 256,
+                  "height": 144,
+                  "quality": "LOW",
+                  "effectLevel": 2,
+                  "reason": "viewport_changed",
+                  "samples": 1
+                }
+              ]
+            },
+            "processResources": {
+              "scope": "host_and_flash_only",
+              "webViewChildrenIncluded": false,
+              "host": {
+                "totalSamples": 13,
+                "unavailableSamples": 0,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 20008,
+                      "processStartUtcTicks": "639278732188535505",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe"
+                    },
+                    "observedSamples": 13,
+                    "cpuSamples": 13,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:33:50.8499056Z",
+                      "endedAt": "2026-10-17T22:34:17.4108022Z",
+                      "elapsedMs": 26561,
+                      "cpuTimeMs": 5562.5,
+                      "averageLogicalCores": 0.2094235909792553
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 629510144,
+                    "sampledPeakPrivateMemoryBytes": 505896960
+                  }
+                ]
+              },
+              "flash": {
+                "totalSamples": 13,
+                "unavailableSamples": 1,
+                "identityCount": 1,
+                "streams": [
+                  {
+                    "identity": {
+                      "pid": 7284,
+                      "processStartUtcTicks": "639278732308970659",
+                      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\Adobe Flash Player 20.exe"
+                    },
+                    "observedSamples": 12,
+                    "cpuSamples": 12,
+                    "cpuInterval": {
+                      "startedAt": "2026-10-17T22:33:52.9447823Z",
+                      "endedAt": "2026-10-17T22:34:17.4084501Z",
+                      "elapsedMs": 24464,
+                      "cpuTimeMs": 16203.125,
+                      "averageLogicalCores": 0.6623252534336167
+                    },
+                    "cpuCounterRegressed": false,
+                    "sampledPeakWorkingSetBytes": 488869888,
+                    "sampledPeakPrivateMemoryBytes": 468144128
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "comparisons": []
+}

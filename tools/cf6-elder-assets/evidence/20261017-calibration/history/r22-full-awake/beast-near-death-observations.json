@@ -1,0 +1,682 @@
+{
+  "experiment": "cf6-cal-r22-full-20261018",
+  "wholeExperimentFinal": true,
+  "rows": [
+    {
+      "group": "beastking-level100-s1",
+      "runId": "level100-blue-s1-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 3705.0,
+      "startedAt": "2026-10-18T09:25:08.2353607Z",
+      "completedAt": "2026-10-18T09:27:13.5731781Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:26:48.413000+08:00",
+          "lineNumber": 7276,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "46827d6b45f4238ac7de1427adf6eef1af3232c3b81ca9f930ffe9379d4bf05b",
+          "sourceEntrySha256": "047e11875f3e176a7cd5377a56b5592ad651f71213299a2ee18b5d4778679fba",
+          "runId": "level100-blue-s1-r001"
+        }
+      ],
+      "resultSha256": "f51c34668ef02f563c0db4128458b915fd01280536c778d6e0323208d05b0bc7"
+    },
+    {
+      "group": "beastking-level100-s1",
+      "runId": "level100-red-s1-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 4456.0,
+      "startedAt": "2026-10-18T09:27:13.5764084Z",
+      "completedAt": "2026-10-18T09:29:42.0990086Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:28:34.344000+08:00",
+          "lineNumber": 7963,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "46827d6b45f4238ac7de1427adf6eef1af3232c3b81ca9f930ffe9379d4bf05b",
+          "sourceEntrySha256": "047e11875f3e176a7cd5377a56b5592ad651f71213299a2ee18b5d4778679fba",
+          "runId": "level100-red-s1-r001"
+        }
+      ],
+      "resultSha256": "f51c34668ef02f563c0db4128458b915fd01280536c778d6e0323208d05b0bc7"
+    },
+    {
+      "group": "beastking-level100-s2",
+      "runId": "level100-blue-s2-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 3055.0,
+      "startedAt": "2026-10-18T09:30:45.5045883Z",
+      "completedAt": "2026-10-18T09:32:29.1791111Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:32:05.497000+08:00",
+          "lineNumber": 9571,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "515f1742dcedde0b9d3d67850da56c842e5b7cc2532a4cba1fbd135478417264",
+          "sourceEntrySha256": "0efaa83c7267e53d84f291d9b0a44997ca77f920017e67c9b82fd90095932262",
+          "runId": "level100-blue-s2-r001"
+        }
+      ],
+      "resultSha256": "5f41612ce5568fe403192b622f0339c9c2808d0564ecb4b75c7eed399a3e6ad5"
+    },
+    {
+      "group": "beastking-level100-s2",
+      "runId": "level100-red-s2-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 4893.0,
+      "startedAt": "2026-10-18T09:32:29.1821442Z",
+      "completedAt": "2026-10-18T09:35:18.3926062Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:34:30.996000+08:00",
+          "lineNumber": 10509,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "515f1742dcedde0b9d3d67850da56c842e5b7cc2532a4cba1fbd135478417264",
+          "sourceEntrySha256": "0efaa83c7267e53d84f291d9b0a44997ca77f920017e67c9b82fd90095932262",
+          "runId": "level100-red-s2-r001"
+        }
+      ],
+      "resultSha256": "5f41612ce5568fe403192b622f0339c9c2808d0564ecb4b75c7eed399a3e6ad5"
+    },
+    {
+      "group": "beastking-level100-s3",
+      "runId": "level100-blue-s3-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2785.0,
+      "startedAt": "2026-10-18T09:36:32.7057095Z",
+      "completedAt": "2026-10-18T09:38:07.4140753Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:38:00.464000+08:00",
+          "lineNumber": 1179,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "2ed35091ca9e4f85af9ca56d68f5344482ef2bce8c7a40df527f664a4816ca16",
+          "sourceEntrySha256": "e0d924d253d35e9022c0afc3f37f524d34379b006a89e6d7ce0825a2a15f5392",
+          "runId": "level100-blue-s3-r001"
+        }
+      ],
+      "resultSha256": "3d07a1b5fdd4bcb93a1aa5b3f997124efacbbf678869bdbd6e991c6d31392d20"
+    },
+    {
+      "group": "beastking-level100-s3",
+      "runId": "level100-red-s3-r001",
+      "rival": 78,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 3686.0,
+      "startedAt": "2026-10-18T09:38:07.4170955Z",
+      "completedAt": "2026-10-18T09:40:10.4815591Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:39:34.332000+08:00",
+          "lineNumber": 1790,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "2ed35091ca9e4f85af9ca56d68f5344482ef2bce8c7a40df527f664a4816ca16",
+          "sourceEntrySha256": "e0d924d253d35e9022c0afc3f37f524d34379b006a89e6d7ce0825a2a15f5392",
+          "runId": "level100-red-s3-r001"
+        }
+      ],
+      "resultSha256": "3d07a1b5fdd4bcb93a1aa5b3f997124efacbbf678869bdbd6e991c6d31392d20"
+    },
+    {
+      "group": "beastking-level60-s1",
+      "runId": "level60-blue-s1-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2319.0,
+      "startedAt": "2026-10-18T08:59:24.5750942Z",
+      "completedAt": "2026-10-18T09:00:43.6482856Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:00:38.630000+08:00",
+          "lineNumber": 6812,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "a57930bbec7c871dad088552a846f8f21961e9858e732febb6085fe3a9de75a3",
+          "sourceEntrySha256": "24b9e0065946947aa0449e1a4cbf6f344162111ef679fbebfb35e4487e3e5735",
+          "runId": "level60-blue-s1-r001"
+        }
+      ],
+      "resultSha256": "ce756bd50fa15d5c59d2ab17bf315c9f23c8a88103fc7a6914a24c0c2bf545d7"
+    },
+    {
+      "group": "beastking-level60-s1",
+      "runId": "level60-red-s1-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 2774.0,
+      "startedAt": "2026-10-18T09:00:43.6511037Z",
+      "completedAt": "2026-10-18T09:02:16.1209779Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:01:46.567000+08:00",
+          "lineNumber": 7254,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "a57930bbec7c871dad088552a846f8f21961e9858e732febb6085fe3a9de75a3",
+          "sourceEntrySha256": "24b9e0065946947aa0449e1a4cbf6f344162111ef679fbebfb35e4487e3e5735",
+          "runId": "level60-red-s1-r001"
+        }
+      ],
+      "resultSha256": "ce756bd50fa15d5c59d2ab17bf315c9f23c8a88103fc7a6914a24c0c2bf545d7"
+    },
+    {
+      "group": "beastking-level60-s2",
+      "runId": "level60-blue-s2-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2955.0,
+      "startedAt": "2026-10-18T09:03:17.8379665Z",
+      "completedAt": "2026-10-18T09:04:58.1018461Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:04:23.817000+08:00",
+          "lineNumber": 8540,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "c1d84cadc78b1aac77fa9919a86b6f9b6fe4ca54d24cf7e3a3f1490cfe4fda46",
+          "sourceEntrySha256": "ab265edc69870d2713d7c9cdca2d577f2dbe0942961e4404e89debdecab56314",
+          "runId": "level60-blue-s2-r001"
+        }
+      ],
+      "resultSha256": "59a8a2f648dea8137e7f1d092a6aafcfca633015fdf76c398690ff182250aab3"
+    },
+    {
+      "group": "beastking-level60-s2",
+      "runId": "level60-red-s2-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 2813.0,
+      "startedAt": "2026-10-18T09:04:58.1047092Z",
+      "completedAt": "2026-10-18T09:06:31.8913025Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:06:06.781000+08:00",
+          "lineNumber": 9207,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "c1d84cadc78b1aac77fa9919a86b6f9b6fe4ca54d24cf7e3a3f1490cfe4fda46",
+          "sourceEntrySha256": "ab265edc69870d2713d7c9cdca2d577f2dbe0942961e4404e89debdecab56314",
+          "runId": "level60-red-s2-r001"
+        }
+      ],
+      "resultSha256": "59a8a2f648dea8137e7f1d092a6aafcfca633015fdf76c398690ff182250aab3"
+    },
+    {
+      "group": "beastking-level60-s3",
+      "runId": "level60-blue-s3-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2505.0,
+      "startedAt": "2026-10-18T09:07:32.5948059Z",
+      "completedAt": "2026-10-18T09:08:58.5322664Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:08:46.175000+08:00",
+          "lineNumber": 10504,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "64191cd1bdbd71480ae63c7c94a59a7e801ef75119d9b7b94cb65525cdcd0ec9",
+          "sourceEntrySha256": "cdeb11d46f6b9f47eaf0b630d3593718089967345407198fddbc40170f8cf39e",
+          "runId": "level60-blue-s3-r001"
+        }
+      ],
+      "resultSha256": "b7010fa59ebbc54485254712f2ef18af913b6528cd23119d0689670c62114a26"
+    },
+    {
+      "group": "beastking-level60-s3",
+      "runId": "level60-red-s3-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 2794.0,
+      "startedAt": "2026-10-18T09:08:58.5385001Z",
+      "completedAt": "2026-10-18T09:10:32.6286819Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:10:22.436000+08:00",
+          "lineNumber": 11128,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "64191cd1bdbd71480ae63c7c94a59a7e801ef75119d9b7b94cb65525cdcd0ec9",
+          "sourceEntrySha256": "cdeb11d46f6b9f47eaf0b630d3593718089967345407198fddbc40170f8cf39e",
+          "runId": "level60-red-s3-r001"
+        }
+      ],
+      "resultSha256": "b7010fa59ebbc54485254712f2ef18af913b6528cd23119d0689670c62114a26"
+    },
+    {
+      "group": "beastking-level80-s1",
+      "runId": "level80-blue-s1-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2902.0,
+      "startedAt": "2026-10-18T09:11:33.4883357Z",
+      "completedAt": "2026-10-18T09:13:12.0552052Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:12:48.902000+08:00",
+          "lineNumber": 1093,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "9aa5a7e853d16df91b74b56fe4148d2502e4fdd5355f832305a19e552d37b66e",
+          "sourceEntrySha256": "5fcae45e4411b0c3d2afe99525d470e33e8d8e31b99911cc6eca58861f93a36b",
+          "runId": "level80-blue-s1-r001"
+        }
+      ],
+      "resultSha256": "c27ed9421c4f3bd1c8bdc8087632e1899b4e3f5b2352cd024481fd1e5e490e44"
+    },
+    {
+      "group": "beastking-level80-s1",
+      "runId": "level80-red-s1-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 2695.0,
+      "startedAt": "2026-10-18T09:13:12.0579487Z",
+      "completedAt": "2026-10-18T09:14:41.9004700Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s1_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:14:34.736000+08:00",
+          "lineNumber": 1779,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "9aa5a7e853d16df91b74b56fe4148d2502e4fdd5355f832305a19e552d37b66e",
+          "sourceEntrySha256": "5fcae45e4411b0c3d2afe99525d470e33e8d8e31b99911cc6eca58861f93a36b",
+          "runId": "level80-red-s1-r001"
+        }
+      ],
+      "resultSha256": "c27ed9421c4f3bd1c8bdc8087632e1899b4e3f5b2352cd024481fd1e5e490e44"
+    },
+    {
+      "group": "beastking-level80-s2",
+      "runId": "level80-blue-s2-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 4171.0,
+      "startedAt": "2026-10-18T09:15:42.3383121Z",
+      "completedAt": "2026-10-18T09:18:03.1779653Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:17:38.962000+08:00",
+          "lineNumber": 3233,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "6addfaeffed9cf86357f72e1f37376e1ea24622d74ce4c195574227f76666c4b",
+          "sourceEntrySha256": "c19dea30c07700bc0aba871764bd6f5bbe24d114b1e0a48571f65f1538fa58d0",
+          "runId": "level80-blue-s2-r001"
+        }
+      ],
+      "resultSha256": "b72827133557cae8aac03211911b4109771fab772a2c5989417737ef08997fec"
+    },
+    {
+      "group": "beastking-level80-s2",
+      "runId": "level80-red-s2-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 2665.0,
+      "startedAt": "2026-10-18T09:18:03.1805289Z",
+      "completedAt": "2026-10-18T09:19:32.2168067Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s2_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:19:18.932000+08:00",
+          "lineNumber": 3879,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "6addfaeffed9cf86357f72e1f37376e1ea24622d74ce4c195574227f76666c4b",
+          "sourceEntrySha256": "c19dea30c07700bc0aba871764bd6f5bbe24d114b1e0a48571f65f1538fa58d0",
+          "runId": "level80-red-s2-r001"
+        }
+      ],
+      "resultSha256": "b72827133557cae8aac03211911b4109771fab772a2c5989417737ef08997fec"
+    },
+    {
+      "group": "beastking-level80-s3",
+      "runId": "level80-blue-s3-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 3439.0,
+      "startedAt": "2026-10-18T09:20:32.8587150Z",
+      "completedAt": "2026-10-18T09:22:29.6268985Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:22:10.135000+08:00",
+          "lineNumber": 5249,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "7ddd46533455bd578d5a0e29f7055a3108d41097ea38d1737468514f8e8c9c5a",
+          "sourceEntrySha256": "06fe9cccdf4cac3f184f930ab888a78e7a12fbf345594f362f77c34ca4b3f8f9",
+          "runId": "level80-blue-s3-r001"
+        }
+      ],
+      "resultSha256": "68778fb8f91b0c69878f086dfabb9a910579b88ec3c8ca1b3db353be90257b08"
+    },
+    {
+      "group": "beastking-level80-s3",
+      "runId": "level80-red-s3-r001",
+      "rival": 78,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 2778.0,
+      "startedAt": "2026-10-18T09:22:29.6297463Z",
+      "completedAt": "2026-10-18T09:24:02.2435458Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s3_r001_0",
+      "notifications": [
+        {
+          "localTime": "2026-10-18T17:23:50.546000+08:00",
+          "lineNumber": 5900,
+          "literalMessage": "{\"payload\":\"封印崩解……\",\"task\":\"toast\"}",
+          "sourceArchiveSha256": "7ddd46533455bd578d5a0e29f7055a3108d41097ea38d1737468514f8e8c9c5a",
+          "sourceEntrySha256": "06fe9cccdf4cac3f184f930ab888a78e7a12fbf345594f362f77c34ca4b3f8f9",
+          "runId": "level80-red-s3-r001"
+        }
+      ],
+      "resultSha256": "68778fb8f91b0c69878f086dfabb9a910579b88ec3c8ca1b3db353be90257b08"
+    },
+    {
+      "group": "exusiai-level100-s1",
+      "runId": "level100-blue-s1-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 972.0,
+      "startedAt": "2026-10-18T09:54:37.1895460Z",
+      "completedAt": "2026-10-18T09:55:11.6375260Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "bd4c644feb6429c0150aabeb7c65b47aca9973899afd6d14d14f5bd2f9c467be"
+    },
+    {
+      "group": "exusiai-level100-s1",
+      "runId": "level100-red-s1-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 1033.0,
+      "startedAt": "2026-10-18T09:55:11.6440199Z",
+      "completedAt": "2026-10-18T09:55:46.6200722Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "bd4c644feb6429c0150aabeb7c65b47aca9973899afd6d14d14f5bd2f9c467be"
+    },
+    {
+      "group": "exusiai-level100-s2",
+      "runId": "level100-blue-s2-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 794.0,
+      "startedAt": "2026-10-18T09:56:56.6972856Z",
+      "completedAt": "2026-10-18T09:57:24.9600318Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "db5b149f584841fb21a095113a2ad179fd017df200837feb01e93e552fd3b28e"
+    },
+    {
+      "group": "exusiai-level100-s2",
+      "runId": "level100-red-s2-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 984.0,
+      "startedAt": "2026-10-18T09:57:24.9626548Z",
+      "completedAt": "2026-10-18T09:57:57.7545371Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "db5b149f584841fb21a095113a2ad179fd017df200837feb01e93e552fd3b28e"
+    },
+    {
+      "group": "exusiai-level100-s3",
+      "runId": "level100-blue-s3-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "blue",
+      "status": "finished",
+      "frames": 819.0,
+      "startedAt": "2026-10-18T09:59:03.5109382Z",
+      "completedAt": "2026-10-18T09:59:32.6626291Z",
+      "initialOpponentName": "斗兽标定_red_level100_blue_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "36720c59044403d350e2e2458753ad216a4d58347cc4d2559605b5ca42638ab6"
+    },
+    {
+      "group": "exusiai-level100-s3",
+      "runId": "level100-red-s3-r001",
+      "rival": 361,
+      "level": 100,
+      "side": "red",
+      "status": "finished",
+      "frames": 1171.0,
+      "startedAt": "2026-10-18T09:59:32.6654133Z",
+      "completedAt": "2026-10-18T10:00:11.7350075Z",
+      "initialOpponentName": "斗兽标定_blue_level100_red_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "36720c59044403d350e2e2458753ad216a4d58347cc4d2559605b5ca42638ab6"
+    },
+    {
+      "group": "exusiai-level60-s1",
+      "runId": "level60-blue-s1-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 702.0,
+      "startedAt": "2026-10-18T09:41:17.0248258Z",
+      "completedAt": "2026-10-18T09:41:42.6116392Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "829cd1e84cc5f0c1dd47bd774055da45bcb723c400249d59074f54251ed67a58"
+    },
+    {
+      "group": "exusiai-level60-s1",
+      "runId": "level60-red-s1-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 1248.0,
+      "startedAt": "2026-10-18T09:41:42.6142963Z",
+      "completedAt": "2026-10-18T09:42:24.2076353Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "829cd1e84cc5f0c1dd47bd774055da45bcb723c400249d59074f54251ed67a58"
+    },
+    {
+      "group": "exusiai-level60-s2",
+      "runId": "level60-blue-s2-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 892.0,
+      "startedAt": "2026-10-18T09:43:30.5987968Z",
+      "completedAt": "2026-10-18T09:44:02.1090911Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "f812f5c4c5cf2b622634300edce6b5240e01b45fd8a36cf21673019dfa030ebe"
+    },
+    {
+      "group": "exusiai-level60-s2",
+      "runId": "level60-red-s2-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 1038.0,
+      "startedAt": "2026-10-18T09:44:02.1121256Z",
+      "completedAt": "2026-10-18T09:44:36.7016325Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "f812f5c4c5cf2b622634300edce6b5240e01b45fd8a36cf21673019dfa030ebe"
+    },
+    {
+      "group": "exusiai-level60-s3",
+      "runId": "level60-blue-s3-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 833.0,
+      "startedAt": "2026-10-18T09:45:41.2329039Z",
+      "completedAt": "2026-10-18T09:46:10.7508820Z",
+      "initialOpponentName": "斗兽标定_red_level60_blue_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "34b9dd7300785b0543433c1890bcfe1b0f8632feb17a1d590c86fa5a7064bc58"
+    },
+    {
+      "group": "exusiai-level60-s3",
+      "runId": "level60-red-s3-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 848.0,
+      "startedAt": "2026-10-18T09:46:10.7536797Z",
+      "completedAt": "2026-10-18T09:46:38.9996203Z",
+      "initialOpponentName": "斗兽标定_blue_level60_red_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "34b9dd7300785b0543433c1890bcfe1b0f8632feb17a1d590c86fa5a7064bc58"
+    },
+    {
+      "group": "exusiai-level80-s1",
+      "runId": "level80-blue-s1-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 978.0,
+      "startedAt": "2026-10-18T09:47:46.0121781Z",
+      "completedAt": "2026-10-18T09:48:20.5999097Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "a4a2bf503c6c429c916fd9624ae56c6fe7b8880c9ca26c760d5a13b378209bfe"
+    },
+    {
+      "group": "exusiai-level80-s1",
+      "runId": "level80-red-s1-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 1114.0,
+      "startedAt": "2026-10-18T09:48:20.6052220Z",
+      "completedAt": "2026-10-18T09:48:57.9618814Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s1_r001_0",
+      "notifications": [],
+      "resultSha256": "a4a2bf503c6c429c916fd9624ae56c6fe7b8880c9ca26c760d5a13b378209bfe"
+    },
+    {
+      "group": "exusiai-level80-s2",
+      "runId": "level80-blue-s2-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 993.0,
+      "startedAt": "2026-10-18T09:49:57.6921567Z",
+      "completedAt": "2026-10-18T09:50:32.4914485Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "cad3e128d07e0061c745e6f9267b68fed13a4b6c52c1acd6fa7c00d9572f7a78"
+    },
+    {
+      "group": "exusiai-level80-s2",
+      "runId": "level80-red-s2-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 1190.0,
+      "startedAt": "2026-10-18T09:50:32.4940818Z",
+      "completedAt": "2026-10-18T09:51:12.1298891Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s2_r001_0",
+      "notifications": [],
+      "resultSha256": "cad3e128d07e0061c745e6f9267b68fed13a4b6c52c1acd6fa7c00d9572f7a78"
+    },
+    {
+      "group": "exusiai-level80-s3",
+      "runId": "level80-blue-s3-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "blue",
+      "status": "finished",
+      "frames": 1244.0,
+      "startedAt": "2026-10-18T09:52:14.4983263Z",
+      "completedAt": "2026-10-18T09:52:57.8718513Z",
+      "initialOpponentName": "斗兽标定_red_level80_blue_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "a2f92e336824dd15666f7814d7eda99b61e0a2bfaee9e9344f98856966844ca8"
+    },
+    {
+      "group": "exusiai-level80-s3",
+      "runId": "level80-red-s3-r001",
+      "rival": 361,
+      "level": 80,
+      "side": "red",
+      "status": "finished",
+      "frames": 866.0,
+      "startedAt": "2026-10-18T09:52:57.8743809Z",
+      "completedAt": "2026-10-18T09:53:26.7376343Z",
+      "initialOpponentName": "斗兽标定_blue_level80_red_s3_r001_0",
+      "notifications": [],
+      "resultSha256": "a2f92e336824dd15666f7814d7eda99b61e0a2bfaee9e9344f98856966844ca8"
+    }
+  ],
+  "observedBeastRageNotifications": 18,
+  "unattributedNotifications": [],
+  "sourceContract": {
+    "path": "flashswf/arts/things5/LIBRARY/敌人-方舟兽王.xml",
+    "sha256": "e5faffe047fd4c3988f25f9fd4c0253863dad44d6ee391b6532c6af5b6e83d7a",
+    "thresholdRatio": 0.2,
+    "branchCount": 3
+  },
+  "diagnosticIndexSha256": "01e79e209c247bee8b5c0880382c74cdc811b14cccf0074042fa60420f4e89a6",
+  "boundary": "Literal XmlSocket toast notifications only, matched first to the exact receipt host interval and then to a unique raw battle startedAt..completedAt interval. Each accepted fight has exactly one initial opponent. Beast source sets its rage flag before this unique notification; no HP-only or damage-only inference is used. Zero notifications do not establish that rage never occurred. Unattributed notifications are excluded."
+}

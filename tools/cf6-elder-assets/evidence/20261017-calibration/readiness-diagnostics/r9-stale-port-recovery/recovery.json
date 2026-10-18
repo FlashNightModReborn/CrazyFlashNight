@@ -1,0 +1,20 @@
+{
+  "time": "2026-10-17T22:25:48.7613587+08:00",
+  "source": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\launcher_ports.json",
+  "originalSha256": "56694556F5860BBD96F215D9DAD79C8A866C608B9A2595236BE1087BC8684363",
+  "ownerPid": 33576,
+  "ownerStartUtc": "2026-10-17T13:21:41.7215975Z",
+  "bootUtc": "2026-10-17T13:37:47.5000000Z",
+  "workerId": "elder-w1",
+  "sessionEpoch": "session-90c60217cdec4149aa5c03b1123b8d95",
+  "endpointPorts": [
+    54280,
+    54559
+  ],
+  "pidAbsent": true,
+  "listenersAbsent": true,
+  "ownedRootProcessesAbsent": true,
+  "exclusiveRead": true,
+  "action": "Preserved stale owned descriptor outside the test root after proving the pre-reboot owner absent",
+  "startupGuardUnchanged": true
+}

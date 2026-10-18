@@ -1,0 +1,32 @@
+{"source": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as", "functionSha256": "41ec5a010fa561be4fbc16d91c4f8173cb427bb2261ec89daf29817ac659beb2", "templateSha256": "a1fe26b66e6d4cfa4dafcbe7a54edee189ad880ebf284b066100b1af4a3f73cb"}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 5179 bytes, 2026/10/17 0:51:29)
+[INFO] 触发编译... (超时 180s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (9s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-knockback-scope Start: 998e4958fdb046518e768863b048ae85
+[KNOCKBACK_SCOPE] rootFriction=undefined ownFriction=3 speed=21 x=21
+[KNOCKBACK_SCOPE] rootFriction=99 ownFriction=2 speed=22 x=-22
+Cf6KnockbackScopeTest: 7 passed, 0 failed
+FocusedTestRunId cf6-knockback-scope Complete: 998e4958fdb046518e768863b048ae85
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/17 0:52:55
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (5173 bytes, 2026/10/17 0:52:55)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 9   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    1877 B  DefineFunction2  (anon)
+     330 B  DefineFunction2  (anon)
+     213 B  DefineFunction2  (anon)
+     187 B  DefineFunction2  (anon)
+     107 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[OK] cf6-knockback-scope: 敌人击退使用自身摩擦力且独立衰减; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.

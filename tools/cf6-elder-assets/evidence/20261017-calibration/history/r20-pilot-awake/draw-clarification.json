@@ -1,0 +1,32 @@
+{
+  "wins": 4,
+  "losses": 7,
+  "draws": 1,
+  "timeouts": 0,
+  "drawRows": [
+    {
+      "runId": "level99-red-r001",
+      "rival": 361,
+      "level": 99,
+      "side": "red",
+      "candidateUnitId": 473,
+      "successorUnitId": 474,
+      "status": "finished",
+      "won": false,
+      "lost": false,
+      "frames": 1288.0,
+      "ownPhaseSpawns": 1,
+      "ownPhaseValid": true,
+      "opponentPhaseSpawns": 0,
+      "errors": [],
+      "initialFormMaxHp": 63559,
+      "successorFormMaxHp": 0,
+      "fullChainMaxHp": 63559,
+      "fullChainRemainingHp": 0.0,
+      "fullChainNetLoss": 1.0,
+      "reportedSideMaxHp": 63559.0,
+      "reportedSideNetLoss": 1.0
+    }
+  ],
+  "boundary": "The original phase-aware rows already had won=false and lost=false for the simultaneous-death result. The temporary progress output omitted draws and the first commentary misclassified the non-win total as losses. Original results are unchanged; the completed collector had counted seven losses correctly but did not print a draw field. Full strength acceptance already requires every row to be a finished loss."
+}

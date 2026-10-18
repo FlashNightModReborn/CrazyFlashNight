@@ -1,0 +1,242 @@
+[
+  {
+    "name": "current",
+    "form": "human",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 22988,
+        "atk": 780,
+        "def": 938
+      },
+      {
+        "level": 60,
+        "hp": 34028,
+        "atk": 1142,
+        "def": 1269
+      },
+      {
+        "level": 99,
+        "hp": 48380,
+        "atk": 1612,
+        "def": 1698
+      }
+    ]
+  },
+  {
+    "name": "current",
+    "form": "robot",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 25542,
+        "atk": 3556,
+        "def": 1504
+      },
+      {
+        "level": 60,
+        "hp": 36105,
+        "atk": 5154,
+        "def": 1794
+      },
+      {
+        "level": 99,
+        "hp": 49836,
+        "atk": 7231,
+        "def": 2171
+      }
+    ]
+  },
+  {
+    "name": "attack-human-def-robot",
+    "form": "human",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 12158,
+        "atk": 1538,
+        "def": 552
+      },
+      {
+        "level": 60,
+        "hp": 17642,
+        "atk": 2244,
+        "def": 740
+      },
+      {
+        "level": 99,
+        "hp": 24772,
+        "atk": 3162,
+        "def": 984
+      }
+    ]
+  },
+  {
+    "name": "attack-human-def-robot",
+    "form": "robot",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 21368,
+        "atk": 3556,
+        "def": 2281
+      },
+      {
+        "level": 60,
+        "hp": 29789,
+        "atk": 5154,
+        "def": 2673
+      },
+      {
+        "level": 99,
+        "hp": 40737,
+        "atk": 7231,
+        "def": 3182
+      }
+    ]
+  },
+  {
+    "name": "balanced",
+    "form": "human",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 18002,
+        "atk": 1159,
+        "def": 537
+      },
+      {
+        "level": 60,
+        "hp": 26484,
+        "atk": 1693,
+        "def": 740
+      },
+      {
+        "level": 99,
+        "hp": 37511,
+        "atk": 2387,
+        "def": 1005
+      }
+    ]
+  },
+  {
+    "name": "balanced",
+    "form": "robot",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 24747,
+        "atk": 3203,
+        "def": 2158
+      },
+      {
+        "level": 60,
+        "hp": 34901,
+        "atk": 4643,
+        "def": 2556
+      },
+      {
+        "level": 99,
+        "hp": 48101,
+        "atk": 6515,
+        "def": 3073
+      }
+    ]
+  },
+  {
+    "name": "lower-growth",
+    "form": "human",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 17969,
+        "atk": 1156,
+        "def": 519
+      },
+      {
+        "level": 60,
+        "hp": 24038,
+        "atk": 1514,
+        "def": 652
+      },
+      {
+        "level": 99,
+        "hp": 31928,
+        "atk": 1980,
+        "def": 824
+      }
+    ]
+  },
+  {
+    "name": "lower-growth",
+    "form": "robot",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 24707,
+        "atk": 3199,
+        "def": 2101
+      },
+      {
+        "level": 60,
+        "hp": 31929,
+        "atk": 4146,
+        "def": 2164
+      },
+      {
+        "level": 99,
+        "hp": 41318,
+        "atk": 5378,
+        "def": 2245
+      }
+    ]
+  },
+  {
+    "name": "r8-candidate",
+    "form": "human",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 12158,
+        "atk": 1538,
+        "def": 552
+      },
+      {
+        "level": 60,
+        "hp": 17642,
+        "atk": 2244,
+        "def": 740
+      },
+      {
+        "level": 99,
+        "hp": 24772,
+        "atk": 3162,
+        "def": 984
+      }
+    ]
+  },
+  {
+    "name": "r8-candidate",
+    "form": "robot",
+    "levels": [
+      {
+        "level": 30,
+        "hp": 17119,
+        "atk": 3556,
+        "def": 3990
+      },
+      {
+        "level": 60,
+        "hp": 23361,
+        "atk": 5154,
+        "def": 4605
+      },
+      {
+        "level": 99,
+        "hp": 31475,
+        "atk": 7231,
+        "def": 5405
+      }
+    ]
+  }
+]

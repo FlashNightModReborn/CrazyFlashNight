@@ -1,0 +1,66 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "blackiron-level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-93655c41429c4fbaaced44dd1936b017\\assignment-93655c41429c4fbaaced44dd1936b017\\attempt-93655c41429c4fbaaced44dd1936b017\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-969bf04ae2924ad5a318d2e1c43e338e\\assignment-969bf04ae2924ad5a318d2e1c43e338e\\attempt-969bf04ae2924ad5a318d2e1c43e338e\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level30\\group-report.json"
+    },
+    {
+      "groupId": "blackiron-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-e9d72451662c4aa1bd929a68d43c0168\\assignment-e9d72451662c4aa1bd929a68d43c0168\\attempt-e9d72451662c4aa1bd929a68d43c0168\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cd54c35b76674356a07fdb95f1f414a3\\assignment-cd54c35b76674356a07fdb95f1f414a3\\attempt-cd54c35b76674356a07fdb95f1f414a3\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level60\\group-report.json"
+    },
+    {
+      "groupId": "blackiron-level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-befe5cd5e0034bb9a025b497df1ad401\\assignment-befe5cd5e0034bb9a025b497df1ad401\\attempt-befe5cd5e0034bb9a025b497df1ad401\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-282e9968a63a4ef3be631654c82ee438\\assignment-282e9968a63a4ef3be631654c82ee438\\attempt-282e9968a63a4ef3be631654c82ee438\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\blackiron-level99\\group-report.json"
+    },
+    {
+      "groupId": "arkclaw-level30",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-8b97376cd9ae4c20b051c024c7a0e1bd\\assignment-8b97376cd9ae4c20b051c024c7a0e1bd\\attempt-8b97376cd9ae4c20b051c024c7a0e1bd\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4d24344492ca407c91974b261c5a5c20\\assignment-4d24344492ca407c91974b261c5a5c20\\attempt-4d24344492ca407c91974b261c5a5c20\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level30\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level30\\group-report.json"
+    },
+    {
+      "groupId": "arkclaw-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-7e52ad020760400d9c12ef842b23b16b\\assignment-7e52ad020760400d9c12ef842b23b16b\\attempt-7e52ad020760400d9c12ef842b23b16b\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-ebdb0cb1582243f1a448a77ec9aa239b\\assignment-ebdb0cb1582243f1a448a77ec9aa239b\\attempt-ebdb0cb1582243f1a448a77ec9aa239b\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level60\\group-report.json"
+    },
+    {
+      "groupId": "arkclaw-level99",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-fc72b3ab65be406dae7c81382ed6048f\\assignment-fc72b3ab65be406dae7c81382ed6048f\\attempt-fc72b3ab65be406dae7c81382ed6048f\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-cb4fc138c2144dbe82a3b0b789cc6d55\\assignment-cb4fc138c2144dbe82a3b0b789cc6d55\\attempt-cb4fc138c2144dbe82a3b0b789cc6d55\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level99\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-matrix-20261017\\groups\\arkclaw-level99\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

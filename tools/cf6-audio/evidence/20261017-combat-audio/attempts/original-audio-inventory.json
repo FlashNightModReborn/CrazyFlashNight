@@ -1,0 +1,2320 @@
+{
+  "originalSwf": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-headbot-20261016\\original-source.swf",
+  "sha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "fps": 30.0,
+  "units": [
+    {
+      "root": 353,
+      "unit": "旧克隆兽",
+      "originalLinkage": "aw-异形",
+      "timelineSounds": [
+        {
+          "spriteId": 294,
+          "frame": 2,
+          "soundId": 287,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 294,
+          "frame": 11,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 298,
+          "frame": 2,
+          "soundId": 295,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 298,
+          "frame": 8,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 302,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 304,
+          "frame": 12,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 352,
+          "frame": 45,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 352,
+          "frame": 83,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 352,
+          "frame": 177,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_353_aw-异形/frame_70/PlaceObject2_304_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"异形死\" + random(2));"
+        },
+        {
+          "path": "DefineSprite_353_aw-异形/frame_77/PlaceObject2_352_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"异形死\" + random(2));"
+        }
+      ]
+    },
+    {
+      "root": 477,
+      "unit": "男僵尸",
+      "originalLinkage": "aw-僵尸",
+      "timelineSounds": [
+        {
+          "spriteId": 405,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 407,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 408,
+          "frame": 12,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_477_aw-僵尸/frame_70/PlaceObject2_408_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"男-兽人-\" + random(3));"
+        },
+        {
+          "path": "DefineSprite_477_aw-僵尸/frame_77/PlaceObject2_476_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"jiangshideadsound\" + random(6));"
+        }
+      ]
+    },
+    {
+      "root": 1694,
+      "unit": "女僵尸",
+      "originalLinkage": "aw-僵尸-女",
+      "timelineSounds": [
+        {
+          "spriteId": 1631,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1633,
+          "frame": 2,
+          "soundId": 288,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1634,
+          "frame": 12,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_1694_aw-僵尸-女/frame_70/PlaceObject2_1634_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"女惨叫\" + random(2));"
+        },
+        {
+          "path": "DefineSprite_1694_aw-僵尸-女/frame_77/PlaceObject2_1693_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"女惨叫\" + random(2));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        }
+      ]
+    },
+    {
+      "root": 559,
+      "unit": "特种兵",
+      "originalLinkage": "敌人-特种兵",
+      "timelineSounds": [
+        {
+          "spriteId": 517,
+          "frame": 14,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 520,
+          "frame": 19,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_519/frame_2/DoAction.as",
+          "source": "firesound.attachSound(\"男-主角-\" + random(3));"
+        },
+        {
+          "path": "DefineSprite_559_敌人-特种兵/frame_70/PlaceObject2_520_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"男-主角-\" + random(3));"
+        },
+        {
+          "path": "DefineSprite_559_敌人-特种兵/frame_77/PlaceObject2_558_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"boydeadsound\" + random(6));"
+        }
+      ]
+    },
+    {
+      "root": 580,
+      "unit": "持盾特种兵",
+      "originalLinkage": "敌人-特种兵-带盾",
+      "timelineSounds": [
+        {
+          "spriteId": 573,
+          "frame": 12,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 579,
+          "frame": 2,
+          "soundId": 576,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_579/frame_10/DoAction.as",
+          "source": "_root.gameworld[僵尸型敌人newname].枪声音 = 枪声音;"
+        },
+        {
+          "path": "DefineSprite_579/frame_10/DoAction.as",
+          "source": "枪声音 = _parent.枪声音;"
+        }
+      ]
+    },
+    {
+      "root": 692,
+      "unit": "蛮蛮",
+      "originalLinkage": "aw-蛮蛮",
+      "timelineSounds": [
+        {
+          "spriteId": 653,
+          "frame": 2,
+          "soundId": 649,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 653,
+          "frame": 16,
+          "soundId": 652,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 656,
+          "frame": 2,
+          "soundId": 654,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 656,
+          "frame": 13,
+          "soundId": 655,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 659,
+          "frame": 2,
+          "soundId": 658,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 691,
+          "frame": 21,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        }
+      ]
+    },
+    {
+      "root": 873,
+      "unit": "Wings及旧女特工",
+      "originalLinkage": "敌人-wings",
+      "timelineSounds": [
+        {
+          "spriteId": 868,
+          "frame": 7,
+          "soundId": 513,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 868,
+          "frame": 20,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 868,
+          "frame": 23,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 868,
+          "frame": 26,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 868,
+          "frame": 29,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 868,
+          "frame": 38,
+          "soundId": 866,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 871,
+          "frame": 15,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_870/frame_2/DoAction.as",
+          "source": "firesound.attachSound(\"女惨叫\" + random(2));"
+        },
+        {
+          "path": "DefineSprite_873_敌人-wings/frame_70/PlaceObject2_871_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"女惨叫\" + random(2));"
+        },
+        {
+          "path": "DefineSprite_873_敌人-wings/frame_77/PlaceObject2_872_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"girldeadsound\" + random(2));"
+        }
+      ]
+    },
+    {
+      "root": 888,
+      "unit": "光头保安",
+      "originalLinkage": "敌人-光头男",
+      "timelineSounds": [
+        {
+          "spriteId": 875,
+          "frame": 20,
+          "soundId": 303,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 887,
+          "frame": 2,
+          "soundId": 879,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 887,
+          "frame": 44,
+          "soundId": 881,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_598/frame_2/DoAction.as",
+          "source": "firesound.attachSound(\"男-主角-\" + random(3));"
+        },
+        {
+          "path": "DefineSprite_887/frame_70/DoAction.as",
+          "source": "_root.gameworld[僵尸型敌人newname].枪声音 = 枪声音;"
+        },
+        {
+          "path": "DefineSprite_888_敌人-光头男/frame_70/PlaceObject2_875_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"男-主角-\" + random(3));"
+        },
+        {
+          "path": "DefineSprite_888_敌人-光头男/frame_77/PlaceObject2_611_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"boydeadsound\" + random(6));"
+        }
+      ]
+    },
+    {
+      "root": 925,
+      "unit": "大刀机器人",
+      "originalLinkage": "敌人-大刀机器人",
+      "timelineSounds": [
+        {
+          "spriteId": 906,
+          "frame": 10,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 910,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 910,
+          "frame": 17,
+          "soundId": 908,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 910,
+          "frame": 20,
+          "soundId": 652,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 912,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 912,
+          "frame": 9,
+          "soundId": 911,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 924,
+          "frame": 2,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        }
+      ]
+    },
+    {
+      "root": 952,
+      "unit": "大头机器人",
+      "originalLinkage": "敌人-大头机器人",
+      "timelineSounds": [
+        {
+          "spriteId": 936,
+          "frame": 2,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 936,
+          "frame": 10,
+          "soundId": 904,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 937,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 1006,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 951,
+          "frame": 2,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        }
+      ]
+    },
+    {
+      "root": 975,
+      "unit": "老头人形",
+      "originalLinkage": "敌人-老头人形",
+      "timelineSounds": [
+        {
+          "spriteId": 970,
+          "frame": 2,
+          "soundId": 969,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 972,
+          "frame": 3,
+          "soundId": 971,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 972,
+          "frame": 10,
+          "soundId": 296,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        },
+        {
+          "path": "DefineSprite_975_敌人-老头人形/frame_70/PlaceObject2_974_1/CLIPACTIONRECORD onClipEvent(load).as",
+          "source": "firesound.attachSound(\"老头倒\" + random(2));"
+        }
+      ]
+    },
+    {
+      "root": 1011,
+      "unit": "老头机器人",
+      "originalLinkage": "敌人-老头机器人",
+      "timelineSounds": [
+        {
+          "spriteId": 994,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 994,
+          "frame": 28,
+          "soundId": 992,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 997,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 997,
+          "frame": 8,
+          "soundId": 995,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 997,
+          "frame": 25,
+          "soundId": 995,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1007,
+          "frame": 2,
+          "soundId": 907,
+          "syncStop": false,
+          "syncNoMultiple": false,
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "spriteId": 1007,
+          "frame": 36,
+          "soundId": 998,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1010,
+          "frame": 2,
+          "soundId": 1009,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1010,
+          "frame": 14,
+          "soundId": 915,
+          "syncStop": false,
+          "syncNoMultiple": false
+        },
+        {
+          "spriteId": 1010,
+          "frame": 30,
+          "soundId": 1009,
+          "syncStop": false,
+          "syncNoMultiple": false
+        }
+      ],
+      "scriptSoundCalls": [
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"blood\" + random(6));"
+        },
+        {
+          "path": "DefineSprite_299/frame_1/DoAction.as",
+          "source": "firesound.attachSound(\"Metal Hits\" + random(4));"
+        }
+      ]
+    }
+  ],
+  "sounds": [
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 946,
+      "soundId": 37,
+      "linkage": null,
+      "bodySha256": "beac4403cfce00d68d57e92eff0128adc692c63afbec0c2d345f20daff57b5e8",
+      "mp3Bytes": 624,
+      "mp3Sha256": "edb50993606f494071518fd99d03e1908ab765052c4bbeddc0f675dcb7fa53ec"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 893,
+      "soundId": 38,
+      "linkage": null,
+      "bodySha256": "8204e9855462da220ed37b9c8165e95055d8199c7eaf1b6060887ac4263a1eac",
+      "mp3Bytes": 624,
+      "mp3Sha256": "4d547c14aec5fbebcd92ad7dd228f3bef919b7e30cc6e695a9ced3ef20592557"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 52992,
+      "soundId": 83,
+      "linkage": null,
+      "bodySha256": "05457fa1c7cd2b095a51c2ebcb803dbc5939a885cec866d013880666a13b3644",
+      "mp3Bytes": 9575,
+      "mp3Sha256": "ff9817608afe3085c7e8f2af4423c335eca2495521074627e8df20e75ec7b0ac"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 81792,
+      "soundId": 84,
+      "linkage": null,
+      "bodySha256": "d4ffc0fa00e6699e1bb8d45342263b69aabeb4f33d6e7dc736bd49d65535ac69",
+      "mp3Bytes": 29675,
+      "mp3Sha256": "9d905b69ad911eac771ff6d25839341129fbbc253eb6839c15e66ff6a587a87c"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 13993,
+      "soundId": 287,
+      "linkage": null,
+      "bodySha256": "c06741341589aa1add7d48db038e45d47432029c03198affdc67a90801d2e2e9",
+      "mp3Bytes": 3016,
+      "mp3Sha256": "bb53e916de679b41e1b7810a741dcfbe15117c20d78631e238fc05b4b0ee6824"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10528,
+      "soundId": 288,
+      "linkage": null,
+      "bodySha256": "9e071809b640ded43f10c4dda945d640a7cff5629e5c1f62ee8b0c4cac81bf08",
+      "mp3Bytes": 2392,
+      "mp3Sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6062,
+      "soundId": 295,
+      "linkage": null,
+      "bodySha256": "659bdb986fdef051123f922295618fa25c9b9b96ac50c1c382ce185ac480df88",
+      "mp3Bytes": 1560,
+      "mp3Sha256": "621964c5e0de81e7637ac311892a502b389e9557667458da618192ec4447cd4d"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 13438,
+      "soundId": 296,
+      "linkage": null,
+      "bodySha256": "2ae19fb4be04d5f391e42c388441e2bf1a23605ce3f7fbd1786198b1f22ee8e3",
+      "mp3Bytes": 3640,
+      "mp3Sha256": "46a45bcf50194df834b6be99d121ab6ffcbffed4e5d3edce05b6c0c948971f7f"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9125,
+      "soundId": 303,
+      "linkage": null,
+      "bodySha256": "25c70f9a08313779cffde1375931b8f76dc5c94a1695de1854b539335e4dfb5a",
+      "mp3Bytes": 1976,
+      "mp3Sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7263,
+      "soundId": 480,
+      "linkage": "gunpickup",
+      "bodySha256": "23c155d87f805bf29879d4a0d86430a2cb01fb59a3a25db5e1b2ee14171b0646",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "27fa58a4d924eeac46e702192e8394a20674dd3b0a8e8197d8c5b0b701f5ff87"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6620,
+      "soundId": 513,
+      "linkage": "knifehit0",
+      "bodySha256": "c1bcb9cf6a7aef8c819b6955f3240b6c7442f00a59ba242dddd42914bd94a056",
+      "mp3Bytes": 1664,
+      "mp3Sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9297,
+      "soundId": 576,
+      "linkage": null,
+      "bodySha256": "28dee92f686638b0c6936f5ddeb82e197aebe4514e448a423539f35484e2c77c",
+      "mp3Bytes": 2184,
+      "mp3Sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6401,
+      "soundId": 626,
+      "linkage": null,
+      "bodySha256": "5f41f4f8ad101801c32c7eb14423e2733af74812f3b0ffdabf62cdcbcded8648",
+      "mp3Bytes": 1664,
+      "mp3Sha256": "c983d0e339d3153ae4e294cba82686338f746197ad70083511e8a516c12ea3f1"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6880,
+      "soundId": 649,
+      "linkage": null,
+      "bodySha256": "8825dd60f0cb1f5ddb274b2de50a7a03182fbe42a94000221a097219091466d5",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 18079,
+      "soundId": 652,
+      "linkage": null,
+      "bodySha256": "8485a7b31838f1608872fc389d849da9c3c5b24929eab4fe5e4a21eea9c190d9",
+      "mp3Bytes": 4680,
+      "mp3Sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7117,
+      "soundId": 654,
+      "linkage": null,
+      "bodySha256": "08e66df91675bd24deb67e599833005eede7ef16c4537b6f3402f8a43b3a315d",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5512,
+      "soundId": 655,
+      "linkage": null,
+      "bodySha256": "98e3861ae66a639bd1e954e3e704234644ce5fe8b2dd887d936304a2a4e3466e",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 13567,
+      "soundId": 658,
+      "linkage": null,
+      "bodySha256": "0ae041b5ac13275cdc74bad16cb91c51f41fa11f062baa48f8bd8c50c504a560",
+      "mp3Bytes": 2912,
+      "mp3Sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5393,
+      "soundId": 694,
+      "linkage": null,
+      "bodySha256": "36913bb2082429839bba6ba8e4eda538940b3c1327b82af23e77b7305ffdcd94",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "b4688ea9576ffb4ddda389a4712d0e60f76455ac2d24e90cbe6c039fac949509"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8040,
+      "soundId": 866,
+      "linkage": null,
+      "bodySha256": "1cd6b6c3cdf2b60847a1bbae388ad237ce5f8b5ee6a4f5445045908c141a52d9",
+      "mp3Bytes": 2470,
+      "mp3Sha256": "86fa3700cd822129c2b01817e75ede7cc43fc024fe75afffd541d48ab2bf2947"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 22912,
+      "soundId": 879,
+      "linkage": null,
+      "bodySha256": "ef196cb8238012c54fcff7c70080f8fa25696ff4a03e0c26625edaa1678db2ed",
+      "mp3Bytes": 4576,
+      "mp3Sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 19008,
+      "soundId": 881,
+      "linkage": null,
+      "bodySha256": "ae479cf4b5b351f17c721758773ffca72cf60a1e4678e94e9b5f62ef73ee2207",
+      "mp3Bytes": 3952,
+      "mp3Sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8992,
+      "soundId": 904,
+      "linkage": null,
+      "bodySha256": "4c3d6b487b753b59e3554c70b8bec1a197484b983570da45dfe3d1c25fa2c4c5",
+      "mp3Bytes": 2080,
+      "mp3Sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 23904,
+      "soundId": 907,
+      "linkage": null,
+      "bodySha256": "1be3b3c0f59738bbf6798abee673557f7502a6f889e8415fe87d624bc1ed0ef2",
+      "mp3Bytes": 4784,
+      "mp3Sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 15104,
+      "soundId": 908,
+      "linkage": null,
+      "bodySha256": "cd89ec7d17e24040549051938f85266f9993a305b3997d87c0612c0731651cd0",
+      "mp3Bytes": 4030,
+      "mp3Sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 22093,
+      "soundId": 911,
+      "linkage": null,
+      "bodySha256": "6c35ea9a6d1d9740f49fa8671f32c15f1201b59bdc07e132f8861747ace93139",
+      "mp3Bytes": 4472,
+      "mp3Sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 25622,
+      "soundId": 915,
+      "linkage": null,
+      "bodySha256": "9d213f80186c6b0a6150861030b36d6d0b59708a299fb8839839a2d57a81e7a7",
+      "mp3Bytes": 5096,
+      "mp3Sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 23405,
+      "soundId": 969,
+      "linkage": null,
+      "bodySha256": "59d43c2b2dc018d1a999201efa69e19a2104881d9f4eacd402c1939477563ecf",
+      "mp3Bytes": 4680,
+      "mp3Sha256": "29a8c37a8830edc7e3938363fa25cdcf78bdb581d197237a2737c396524e5ae9"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3968,
+      "soundId": 971,
+      "linkage": null,
+      "bodySha256": "7482fc1c8541c1c9feb49790fac3ec2a2b392afa9c23760e432318283d922dc5",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "539e07d489dbd1e4b41f0cf19b6b58ab6aafdfd8d5f3010cb236b6eb814eb312"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 16486,
+      "soundId": 992,
+      "linkage": "shoot",
+      "bodySha256": "b81f2c743c699326fa718d04daec1ad97273b816ec8e326d09579353b1cb7b9f",
+      "mp3Bytes": 3432,
+      "mp3Sha256": "1b7c3d48d8c3e34db8d6a4f01b27aa7d5a51b674c3030c71875cab31d4f7217f"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 12232,
+      "soundId": 995,
+      "linkage": null,
+      "bodySha256": "fefd86ece50397ec10de27d7d7027f0ffa572df1084222b989811a222f47334b",
+      "mp3Bytes": 2704,
+      "mp3Sha256": "bc133bae4c87fedd26d10d7cacd0082d41de5da488b825ffbfb8eb1077db7804"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 13472,
+      "soundId": 998,
+      "linkage": null,
+      "bodySha256": "895771f1312218295bf12cbccba785bf4b8d7bd3ac9f80b66c5a133d00bcd418",
+      "mp3Bytes": 2912,
+      "mp3Sha256": "c15c98f7c48569c0ad84c51148391d9bd55b0e85ca0b5003f9358fc92edf2202"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 16225,
+      "soundId": 1009,
+      "linkage": "爆炸1",
+      "bodySha256": "22e279bcbdaea5d36d4e77d335019db57ea65a4597abc0abd654e224e6fe452a",
+      "mp3Bytes": 3432,
+      "mp3Sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 2592,
+      "soundId": 1043,
+      "linkage": null,
+      "bodySha256": "6f66b5e693b8499b6f1cfad967f6aa237cbc2aa7f8f770c3c943c4d76f0f6b0b",
+      "mp3Bytes": 936,
+      "mp3Sha256": "382c9b40acebe55df3c22fd27daf74563cccd47debe23e435e341feb1fb2bfb5"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8037,
+      "soundId": 1045,
+      "linkage": null,
+      "bodySha256": "f549f09474ef4b0ea57d839c2e417729c4ea6089e17acbd074eeadd1786f752c",
+      "mp3Bytes": 1976,
+      "mp3Sha256": "d2fb7ce5eb281a414a416b190a77f85a6e6678e580819026fddfdc31bc4ac947"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7323,
+      "soundId": 1046,
+      "linkage": null,
+      "bodySha256": "80bebf19be8f50bbdf99dc92af7a42998fafd5877193e870e610e5201ce61a28",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "14dee8182a699f6226c8cf878adecc6fb3dac5009a61c5808bc346b4fbc0baa0"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17216,
+      "soundId": 1060,
+      "linkage": null,
+      "bodySha256": "f3d62fce2106dd6198ebe305a67d61ae094507373f9e70ed530a9a98aedf78d8",
+      "mp3Bytes": 4550,
+      "mp3Sha256": "2ee2aabac8176eaa1ddc18e09a1b018ae0bff92062393c36c23c5a213917e5a5"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3736,
+      "soundId": 1063,
+      "linkage": null,
+      "bodySha256": "be0a66135bbae67dd4395f42675a816010791cf94703324a039fcac266ac553e",
+      "mp3Bytes": 1144,
+      "mp3Sha256": "320c731f3b88859c57c5f9be090f71eefbcbe1de5fa7ce8f7430e7e0a2163398"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 4608,
+      "soundId": 1064,
+      "linkage": null,
+      "bodySha256": "27709de217466bdd32da30c7d1aa449fe49b965c8e41ae53bdad89ebe750e27e",
+      "mp3Bytes": 1352,
+      "mp3Sha256": "76b05349d113386a33540b500c08698c24c25dbe129adcd97b3bd691067c0484"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3200,
+      "soundId": 1066,
+      "linkage": null,
+      "bodySha256": "156ffae4fc4caf2d825588b5538ceb6a2ed753f4fc0976f59e3ed5abb3bbcaad",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "7cd35fa2e1e0bce54cae436e48aa8d7adcc701813bf334c4df04677f7582dcc4"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3072,
+      "soundId": 1068,
+      "linkage": null,
+      "bodySha256": "7fab38ea2e948a2cad2b492e2dd1dd2589010e1bc2b6bed41c7533cb96aa4f5d",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "8feb54eff75f7c9f56bdf4594d56e778533fe5f83211e18b686b69bc8a7ee8b4"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 4085,
+      "soundId": 1070,
+      "linkage": null,
+      "bodySha256": "392a0f936c5a2121411edf7edde2dc6614a5d91b87544b7b4d86f8a945fc2fb4",
+      "mp3Bytes": 1248,
+      "mp3Sha256": "d1b3972a2ceab2d016ebda920c5e1a8781953b3af0577ce6abe5959b0e35d978"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8064,
+      "soundId": 1073,
+      "linkage": null,
+      "bodySha256": "efcbdbd37a7117c83c690c5eab34f6ab302d1dbe54ac309412d88a9a7b463343",
+      "mp3Bytes": 1976,
+      "mp3Sha256": "2b60e0d7ce564d3d3b007b1ea285a9e1eb87eb11e7a1711f69120423f8fcebd9"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10463,
+      "soundId": 1081,
+      "linkage": null,
+      "bodySha256": "a8769416925e4129a973b152c7ed6b7e3b6b3e43ce7095cfef523e5c4eec76d8",
+      "mp3Bytes": 2392,
+      "mp3Sha256": "b378880bb24f1ecdbb996277ea589cc543bbc286add105a9a8fd0758388e24c7"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 16448,
+      "soundId": 1090,
+      "linkage": null,
+      "bodySha256": "1e931416f4f71d5ee8a65f2d635d9e0923686485ecc22ef7fd386f73ef614d9f",
+      "mp3Bytes": 3432,
+      "mp3Sha256": "6c9eccacbc15def212e661702ba5ec1d0f47a53eea9bb8b17229705e227d5ea7"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10165,
+      "soundId": 1094,
+      "linkage": null,
+      "bodySha256": "60e669a50704413f76160dbb87a4754f301389e7e7e79eb5f736cbdef728ec6c",
+      "mp3Bytes": 2288,
+      "mp3Sha256": "c31b4f32022ce49b223620491352315a9e39b5f40f2e24720f22690ca1857d01"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6284,
+      "soundId": 1099,
+      "linkage": null,
+      "bodySha256": "0e640a87f89815c780bfd4d8adf26bd409598ac380ecd63dfb5a8fd2e09ffdea",
+      "mp3Bytes": 1664,
+      "mp3Sha256": "d864d51903eb1ba084606accf20177e664f3a26b0f495bfd2724a122b43896b1"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 2,
+      "sampleCount": 9720576,
+      "soundId": 1110,
+      "linkage": "music01",
+      "bodySha256": "e427f522fdbf5d0a5a5c12820f73d050edefbbe06b7182749341fc3e032b2b78",
+      "mp3Bytes": 3526740,
+      "mp3Sha256": "244c97f15033fcd82376881d8547cca1d2fbe2c3c1fe46d686afad98493c9f3e"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 2,
+      "sampleCount": 6640128,
+      "soundId": 1111,
+      "linkage": "music02",
+      "bodySha256": "cafdcb9ccd67e9e615b353e38a28e61041dd85f7374b4335055046f60475e71c",
+      "mp3Bytes": 2409117,
+      "mp3Sha256": "e2914b77190786f11b565a50190c59af98f0f9019bd01270a72c8212692be53d"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 2,
+      "sampleCount": 1791360,
+      "soundId": 1112,
+      "linkage": "music03",
+      "bodySha256": "b382c3cc22cda693d17f528678e78449aabe95f7b14b41a80bba1f981310f69a",
+      "mp3Bytes": 649926,
+      "mp3Sha256": "76d3427c67b32547529db3af4f5dd47a63e53110dd3cd23218696e92c2759b91"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 2,
+      "sampleCount": 6172416,
+      "soundId": 1113,
+      "linkage": "music04",
+      "bodySha256": "3f30efa30c15c01e60ebd69c78a2b2da94b79d4d7f9de702105cad2bbd483b71",
+      "mp3Bytes": 2239426,
+      "mp3Sha256": "e1dd8ed23ed71b26ff67085c48d02ae4607e850e061d29283e3a99b86779f6f0"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 4456,
+      "soundId": 1114,
+      "linkage": "主角中招0",
+      "bodySha256": "04224e692f73fe13c65a11a199f9b725dfe447b1a37c3cd87c0fe6fdacf578d5",
+      "mp3Bytes": 1248,
+      "mp3Sha256": "15cf8e930186f3a7ac6d8cc9ae32c07bfd1539f6563ed6812d48c4e6e6822ff4"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 15085,
+      "soundId": 1115,
+      "linkage": "gogogo",
+      "bodySha256": "ed836a180b39fad9b65fa707241ddfacf9493b01a4b23f0e37cb8c37b12b049a",
+      "mp3Bytes": 3224,
+      "mp3Sha256": "6d7066c4c51109e5d32eb3c9b8a766ed107db90b03833a88a8e95f8b9ce0c173"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 4778,
+      "soundId": 1116,
+      "linkage": "pl_shell1",
+      "bodySha256": "cc995794975291271e5102b2610a8b819fdf9df104f3e3a7dd3763f2f096048d"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 4528,
+      "soundId": 1117,
+      "linkage": "老头倒0",
+      "bodySha256": "09d4d3acd4770240bf68be7339c92c2ebc30d637dc37bed826435523a79f0402",
+      "mp3Bytes": 1144,
+      "mp3Sha256": "88b4949ed0ad9db81682e6066e6f38fa297891c021b66caab7ebab988ebc1b82"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 14824,
+      "soundId": 1118,
+      "linkage": "异形死0",
+      "bodySha256": "ca797a17947985174359ca4c389e6ee59a418023b0c003ff780db47e1b371d4a",
+      "mp3Bytes": 3120,
+      "mp3Sha256": "310172ffc6ef4521741a9d3a46f239028238119ecd701f348f331f3e0a263283"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 2937,
+      "soundId": 1119,
+      "linkage": "npc_step0",
+      "bodySha256": "314e894768f6afab6a668939e1dc32c94ccd086dd6f7bb095853226c8689bec1",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "3841edf0893de0fb17b22e10893edc5d5c5e3b2906dbffd1680d377be557038e"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 19380,
+      "soundId": 1120,
+      "linkage": "girldeadsound0",
+      "bodySha256": "c025cd4d614658873a0cce49e60df6fa8850240107edba9364aee128216a7a46",
+      "mp3Bytes": 3952,
+      "mp3Sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3184,
+      "soundId": 1121,
+      "linkage": "男-主角-0",
+      "bodySha256": "b268f2b93b217b430f62bc63bc36536e810c9b26e99d0efd9a01bb99bf566891",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10606,
+      "soundId": 1122,
+      "linkage": "男-兽人-0",
+      "bodySha256": "18ac2a043b7c3b5baf5afc2ae237a2f2a50111eed0024f1bde969b2ef8ef4ad1",
+      "mp3Bytes": 2392,
+      "mp3Sha256": "53d773ba333fc92e2818bf9386aea492f36bb5fd45f7e05f0da2e5e26fcad881"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7623,
+      "soundId": 1123,
+      "linkage": "boydeadsound0",
+      "bodySha256": "776810d4edbc2bba95c7b5954523fc7425edbc5a0691d2d91ec81f3f1329270a",
+      "mp3Bytes": 1872,
+      "mp3Sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 21560,
+      "soundId": 1124,
+      "linkage": "jiangshideadsound0",
+      "bodySha256": "c3a2e0cbbe8f5f61e7b2b0ba3893ff1734dcc5e62a70b4359b9e2f54f2dd601c",
+      "mp3Bytes": 4368,
+      "mp3Sha256": "91d12b2a2a33f13af2d43350ae34c999d3aeccf1194efc7d7367a273f2a74ee3"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 2643,
+      "soundId": 1125,
+      "linkage": "blood0",
+      "bodySha256": "d8b9fafe71c702c2774b03814d42bcc95d9974d465998a64591f32b0f08aded2"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5997,
+      "soundId": 1126,
+      "linkage": "hit0",
+      "bodySha256": "2fab829bb64baafda298dabb24e022ede2fff2d08a75a4a31b61395613b1a540",
+      "mp3Bytes": 1560,
+      "mp3Sha256": "d678c8d7b63fc124fe6fea995200e8e7a52b1239b0655fda71b3063907c362ab"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 12965,
+      "soundId": 1127,
+      "linkage": "ak47",
+      "bodySha256": "59fcbd9aebbb577a1296c8f4e286a1c0a95dd89395939269aebd9113709fb432",
+      "mp3Bytes": 2808,
+      "mp3Sha256": "1126f2c77ae9a6ba11c414d421c60de43991dc17a564e2772e1c4e127caed0b0"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 12016,
+      "soundId": 1128,
+      "linkage": "glock",
+      "bodySha256": "b6288269d1488b6099307aa1e0532f86add862b197383467012c144bbb756363",
+      "mp3Bytes": 2496,
+      "mp3Sha256": "3bafc61a50373100fe1d3d9de91e97f13e90eafa19bd895f82fbad94d6361b8c"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5344,
+      "soundId": 1129,
+      "linkage": "主角中招1",
+      "bodySha256": "e939e70d73acf065ffc0da7ae36c5de0ab5cf30ff0fdc82fd0128bc2ae0ea2c2",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "a22aed5d9177c515442adec5c17063f4ba87de197b2fad29e7366e23876c7e92"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 9752,
+      "soundId": 1130,
+      "linkage": "pl_shell2",
+      "bodySha256": "2ceeca967b0c0ae9f976e9b3c942c71484b9e008580928ac81bd46b9cb6c0d98"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7104,
+      "soundId": 1131,
+      "linkage": "老头倒1",
+      "bodySha256": "e93f1c1a6d96029d9104fff34cd7917f3f319fdadbc8e62772dee1be59d25b52",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "68dda6627fc47b7957c01d43acbe4ef4a04c2275ce4dde2ca78b14b30ada4bea"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17539,
+      "soundId": 1132,
+      "linkage": "异形死1",
+      "bodySha256": "4dfbdf8739782245faf2b89abf627500db6680ff999401b013277a9e87b9b6a9",
+      "mp3Bytes": 3640,
+      "mp3Sha256": "259404e9493848ea7363ff9d624acf8b5262f2e577529b409612cd4051b53667"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 2430,
+      "soundId": 1133,
+      "linkage": "npc_step1",
+      "bodySha256": "1d37aa2dc997883211a09f4f716652f89fb3be15cd3af64cac53c1f3eb9ab03f",
+      "mp3Bytes": 936,
+      "mp3Sha256": "461da517d58da359a15bbec4b97401392c30095bd08f64d36526bb0ddd87c1c5"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 18624,
+      "soundId": 1134,
+      "linkage": "girldeadsound1",
+      "bodySha256": "3f45b52df3e2136a498be63df89c6239c4157539fc5de8a66787f55775fd0692",
+      "mp3Bytes": 3848,
+      "mp3Sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6240,
+      "soundId": 1135,
+      "linkage": "男-主角-1",
+      "bodySha256": "77b3cce0f2986a11bc12c471f1229900773b84848c840846058d2b59c5efa150",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6016,
+      "soundId": 1136,
+      "linkage": "男-兽人-1",
+      "bodySha256": "9fb067377e7754ad6c06752a94bc523845b857c74efe30594895bd7ed12dd8ab",
+      "mp3Bytes": 1560,
+      "mp3Sha256": "bd9a05f157db4475c0d61ec52af5acfbf69aa854563ada479409c3da262fb0b8"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 11119,
+      "soundId": 1137,
+      "linkage": "boydeadsound1",
+      "bodySha256": "3412d2277900b513a4e7245404a3f2b37bde3182ce06dbdec44d737e589343e7",
+      "mp3Bytes": 2496,
+      "mp3Sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 11691,
+      "soundId": 1138,
+      "linkage": "jiangshideadsound1",
+      "bodySha256": "795d162e0e5bdb98f7b7c6281e63dee9daba01ecd310141f55feee30f92cfbab",
+      "mp3Bytes": 2600,
+      "mp3Sha256": "d602e68b0c66799d4ea4bc42065d233e49a15e089fb376fb663810158dba7f26"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 4046,
+      "soundId": 1139,
+      "linkage": "blood1",
+      "bodySha256": "535d4232b3713429bbb391bc8a9f8fa0ba5f7cb1f8bc6b80357d822876ed13cc"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3960,
+      "soundId": 1140,
+      "linkage": "主角中招2",
+      "bodySha256": "ef114c0a4b08b45d9fee6b940ca9deabd469ff20f2694cd20086b08ab74ef301",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "cfd202dbe6e55e57e40c1850919fdb7047aee35b78eb70335fb5fed3a15003f6"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 8330,
+      "soundId": 1141,
+      "linkage": "pl_shell0",
+      "bodySha256": "c5d5a9ee17c9335512e6a7b4f34e5415365122ded7fee86e6673ddbdc777fba7"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 2217,
+      "soundId": 1142,
+      "linkage": "npc_step2",
+      "bodySha256": "15de0d0ae9717a71dbfdb524ca27d22b963d6ef71bc3d4b380c54405acb73a2b",
+      "mp3Bytes": 728,
+      "mp3Sha256": "fcb10c3bea0776e92d0579982335858db85b398fc2adf720f22d2ca9d5890281"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 11112,
+      "soundId": 1143,
+      "linkage": "女惨叫0",
+      "bodySha256": "5184485ba14337e54e4cdb71a35f73c69d1a6481fe9bd340031d62a246a894f3",
+      "mp3Bytes": 2496,
+      "mp3Sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8432,
+      "soundId": 1144,
+      "linkage": "男-主角-2",
+      "bodySha256": "25e3c129a00ad800cab184fbcefdd35b37837879f34e57af8bb3928f4bc5a4d1",
+      "mp3Bytes": 1976,
+      "mp3Sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 19392,
+      "soundId": 1145,
+      "linkage": "男-兽人-2",
+      "bodySha256": "d2eced80062c24457085d45f38ea6a2d8c4ab74cde9909d3a09d5dcb6efc1e55",
+      "mp3Bytes": 3952,
+      "mp3Sha256": "8e2a1d78eacfd32d3974f30b0917c11a966fd5508e61a7c3fd08a55edbf1154b"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5695,
+      "soundId": 1146,
+      "linkage": "boydeadsound2",
+      "bodySha256": "97685c475efaf25257ad33858e38b70c1c140c085309786c0765f6913a8bafe8",
+      "mp3Bytes": 1352,
+      "mp3Sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 18111,
+      "soundId": 1147,
+      "linkage": "jiangshideadsound2",
+      "bodySha256": "784e1933c33f0ecb036c5670377cd739568ab01ba67b00efb44508863589d963",
+      "mp3Bytes": 3744,
+      "mp3Sha256": "0cdb6d0e975e584fbc27d0c567f8db38a1acf16d32f5213a6402388f3e89f646"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9828,
+      "soundId": 1148,
+      "linkage": "blood2",
+      "bodySha256": "3be12bad630547436c2c13e76739fe86536374cce1abddcfaae704ff3864477d"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 2821,
+      "soundId": 1149,
+      "linkage": "npc_step3",
+      "bodySha256": "6440e4b9cd6d79b848323341c25584e3360711b03ca3f2373b5345bb93169a51",
+      "mp3Bytes": 832,
+      "mp3Sha256": "e48a232762a5903c2f575674af546365e996162297e2c6a08da1e0a03f13c9a6"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 3119,
+      "soundId": 1150,
+      "linkage": "女惨叫1",
+      "bodySha256": "9f5d51f8b38e0aab1cb8e3f1277f418fa1a41dc647956b29a371d1aa2b12a2e2",
+      "mp3Bytes": 1040,
+      "mp3Sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 16074,
+      "soundId": 1151,
+      "linkage": "boydeadsound3",
+      "bodySha256": "0ff9172bfd4318722d70f8683365896099ef8c3b74871e80dc538fd6d7ce4bf5",
+      "mp3Bytes": 3432,
+      "mp3Sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 23138,
+      "soundId": 1152,
+      "linkage": "jiangshideadsound3",
+      "bodySha256": "c3240f3ce715686cec2e66befffef77f4fffa5263d3bb1730435d574fd19f6ac",
+      "mp3Bytes": 4680,
+      "mp3Sha256": "097de5dd0b36d33842053f968df4e059957297ee0fd1fb6d8f67d2e9f486e18d"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 14720,
+      "soundId": 1153,
+      "linkage": "blood3",
+      "bodySha256": "f4a9c751dd71e716dabc2d5f293d92091bfef03e19c5d49ba89cf319f234dea1"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 15136,
+      "soundId": 1154,
+      "linkage": "boydeadsound4",
+      "bodySha256": "1e2a9a5150cd1e9cf0a80e44aced7cc0b84c7a585c5a273033a8fa1f375f8f03",
+      "mp3Bytes": 3224,
+      "mp3Sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17070,
+      "soundId": 1155,
+      "linkage": "jiangshideadsound4",
+      "bodySha256": "786c9ba86abbc5c1fa4837156eb39243f6c3c10234e8d355c90336bdc8b8b9e8",
+      "mp3Bytes": 3536,
+      "mp3Sha256": "6d3ba23eebbccaf3c48879b4bb0d7bd5a2d7cc57bbf172fafdaeb060f7a43017"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 22140,
+      "soundId": 1156,
+      "linkage": "blood4",
+      "bodySha256": "c3abe9b80e58a7bdc39ff02817a2b494fb6593c3e4b0363da6ec5dc6b8de22f3"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9599,
+      "soundId": 1157,
+      "linkage": "boydeadsound5",
+      "bodySha256": "c6ec3733ab597c51313bc9a3e88d3fe0d05521bd951a1e81a68ee575d404728e",
+      "mp3Bytes": 2184,
+      "mp3Sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17131,
+      "soundId": 1158,
+      "linkage": "jiangshideadsound5",
+      "bodySha256": "8fab5f0c2cb9cc951376ea0e02e196a1857c1a5fdcac14f41f2929c3d00051e7",
+      "mp3Bytes": 3536,
+      "mp3Sha256": "d8b83868f13427ca06b2266795b8258ff12b2b76543da916d5a0dc49dacac99a"
+    },
+    {
+      "codec": 0,
+      "rate": 22050,
+      "bits": 8,
+      "channels": 1,
+      "sampleCount": 15656,
+      "soundId": 1159,
+      "linkage": "blood5",
+      "bodySha256": "83453bfcd5b9ace2c49caf40e4d837cfaae9c457318087c0df51decae49747a2"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7671,
+      "soundId": 1160,
+      "linkage": "Metal Hits0",
+      "bodySha256": "e74fcf253489121f9a139bb826e736aee1f2eb42970790a0a923c5f5aa98b7f2"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7738,
+      "soundId": 1161,
+      "linkage": "Metal Hits1",
+      "bodySha256": "a5763cd4e509a4c22e3595b97f7585410c3a67c833067ea015b51fcbe9a2cdc6"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 8216,
+      "soundId": 1162,
+      "linkage": "Metal Hits2",
+      "bodySha256": "1826f25e7d5bb1f9f2bd4546c2fd67f3e6231d3607d311994f8ce80a073626f1"
+    },
+    {
+      "codec": 3,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9466,
+      "soundId": 1163,
+      "linkage": "Metal Hits3",
+      "bodySha256": "9b720948276a7feb2758a5fcdcca92c5942e15861511fb851923af2798b94ae6"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6925,
+      "soundId": 1164,
+      "linkage": "hit1",
+      "bodySha256": "346bf93c168314f31ee838ad598feef5d5f70d88113aabe02189ef3d2947a8d1",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "02d8dfa92ec31011ac4b3cafbeb23643f052954a94d77bc34be7dc4ea907a0d8"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5527,
+      "soundId": 1165,
+      "linkage": "m4",
+      "bodySha256": "7558f081fb261c153eb2585fb6510abf0bd31cebea843d24c276637e31bb8311",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "5f7d4f1bdae9230800764c699f3bf71d4e884831bd81268d79a23b783492482b"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5314,
+      "soundId": 1166,
+      "linkage": "hit2",
+      "bodySha256": "0768f083a3be874b10f3bd488f69473789b2104b70fefff4d8066d9c200eeda6",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "3dd0c85b69348deefc88daa530def757b2e5aa4995b9ed9b7e482bb62c8fe4dc"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10005,
+      "soundId": 1167,
+      "linkage": "g3",
+      "bodySha256": "869c33c531919cab9be5830a9a5ffe156642d58b530923cd768588665130ec11",
+      "mp3Bytes": 2288,
+      "mp3Sha256": "6522c6928cb1c6771f2b0a2e7f85bd9a53302227f0c716380d37d3e5aa41b8e6"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6470,
+      "soundId": 1168,
+      "linkage": "hit3",
+      "bodySha256": "2fd9376bff35be3b432bae754be9991dab40e473981ae78c8076964ad386be5c",
+      "mp3Bytes": 1664,
+      "mp3Sha256": "04321513511559a6a1049bcb918269a3d48c6d05fa3700325e02c68d1d9f1f42"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10688,
+      "soundId": 1169,
+      "linkage": "ump",
+      "bodySha256": "a999abaa557b7117ddaef4a31905f1885bc08e946d16f831fbc836cfbba267ad",
+      "mp3Bytes": 2392,
+      "mp3Sha256": "4d042c4e7e3ae242f32f357bdda66b575be4abe6f0c647d443a0d648bffe2a0a"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 15180,
+      "soundId": 1170,
+      "linkage": "mp5",
+      "bodySha256": "03174ff716ddd5edd0a6290fe6480c8da963e4ba77136df6f316167148852aa6",
+      "mp3Bytes": 3224,
+      "mp3Sha256": "03c72b9ca2577c8c7ac7ebb17206618e2e7e2d5e298e08e0fb7e6c420e373220"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9404,
+      "soundId": 1171,
+      "linkage": "m4a",
+      "bodySha256": "93202182c02120d6442705dcca6ddd138a1f33ef77e499f0dd40f32fc7c6e04f",
+      "mp3Bytes": 2184,
+      "mp3Sha256": "a31b8a21d7240337aed7f6e797c428ea20598ae02cd452d6def327d1e6d97277"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 5226,
+      "soundId": 1172,
+      "linkage": "hit4",
+      "bodySha256": "99cb24e16f1ccf2c9e7397703a6fed6631dfe27573912edd96d2343343117480",
+      "mp3Bytes": 1456,
+      "mp3Sha256": "b2d3fdc146c8116f2ad52aeaad407ccf8cf2c5cdd2ff5e474d8bb8d3a0266a08"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 7682,
+      "soundId": 1173,
+      "linkage": "type97",
+      "bodySha256": "3359221dc1cb9dc382517fabc278b692e84705cfc6cc7d6441b370942e0a14fe",
+      "mp3Bytes": 1872,
+      "mp3Sha256": "bbea9d1dd204d6573f5503a25dab7c5bcb8c21cf1b2670941a38f1f1ed7b23e5"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17654,
+      "soundId": 1174,
+      "linkage": "m1",
+      "bodySha256": "226e79e4b6e447a067a694bfc24ddccc870dd42662080cbad436ffdd0c960c03",
+      "mp3Bytes": 3640,
+      "mp3Sha256": "82430317f99b1f893c86df47d397742171963bd1e9af73874b2332b5a45107c0"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 10804,
+      "soundId": 1175,
+      "linkage": "xm",
+      "bodySha256": "144e9b6a2a1a33d4252748a0887ffd00fb7fa38c360ff12d9056a1ff3ccd702c",
+      "mp3Bytes": 2392,
+      "mp3Sha256": "96afc8d6992ef2ef2dbb656592ba986c66191d6f7bc4bf28aca7aa035a053177"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 25491,
+      "soundId": 1176,
+      "linkage": "awp",
+      "bodySha256": "7aecd27589b525cf22073c6b52f0a5dca88ce264edfc2b27ccd6b54de8caf380",
+      "mp3Bytes": 5096,
+      "mp3Sha256": "a8e7498563e2f5207b3a8aeb1c046facb2ea3cb52afe15f6873488d937cbea90"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 12611,
+      "soundId": 1177,
+      "linkage": "m249",
+      "bodySha256": "f7f60c45ffd84e35a9d8fb49600c095cae0bf32142d67cfc59b02626e46df179",
+      "mp3Bytes": 2600,
+      "mp3Sha256": "3b521539ca26c050da1452c6c42f13e13381ec19be4f2ddf83871dba35ad6d1e"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 6990,
+      "soundId": 1178,
+      "linkage": "supergun",
+      "bodySha256": "c2299929e3c27b8722c598b7f331ea5b770695a4b54268e91fc0690f8735f3c2",
+      "mp3Bytes": 1768,
+      "mp3Sha256": "1f30bc56a0b2af28508c2dc2977cca245a0b9455acac2716535ee3fd619fffe2"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17536,
+      "soundId": 1264,
+      "linkage": null,
+      "bodySha256": "8fa66e166d548d7ea62e529d2126152680494aafdd2e7d33fbd3dc12ea346c1c",
+      "mp3Bytes": 3640,
+      "mp3Sha256": "bf9dc3c4745dd5b607896aa57206a4f8e6134ac7645d0812a7e314e16aa4e2dd"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 25344,
+      "soundId": 1270,
+      "linkage": null,
+      "bodySha256": "b6274f963c097e987d7886fa43a38b063ee27181f7847eb8d01c0dc2ffd3174e",
+      "mp3Bytes": 18653,
+      "mp3Sha256": "97756627f81273d3148d386b2c0702a1ab318207b95f0f5afa06f558d502dd1e"
+    },
+    {
+      "codec": 2,
+      "rate": 22050,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 17280,
+      "soundId": 1280,
+      "linkage": null,
+      "bodySha256": "7eec7bad526c6e7b571b9a56ed0a6b28829e969067a2f29267a17cc6900a35f6",
+      "mp3Bytes": 12801,
+      "mp3Sha256": "27df9ff28ac731a684acffaa06686d52a75e93beb89dd9afb7c988d8fdcce173"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 84306,
+      "soundId": 1398,
+      "linkage": null,
+      "bodySha256": "099e70fa665a095cb7a1319505ad4dfdbcbece710a1ae0e86528cae6bf16dce8",
+      "mp3Bytes": 15704,
+      "mp3Sha256": "faafebfd37fa1864a53a4b5f6b4c00d27d17c6275bfc0b0c3c828d118bb5edeb"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 11908,
+      "soundId": 1427,
+      "linkage": null,
+      "bodySha256": "8fda34023563698c45ef9696a4f00bc685d88ad826378d04265ac6b0c453f7da",
+      "mp3Bytes": 2600,
+      "mp3Sha256": "7ac9ccb94b7f058fa0d3ce198e9e6d120073429a3bea09d1f06fa9c76efb77a1"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 52992,
+      "soundId": 1428,
+      "linkage": null,
+      "bodySha256": "fadb53a69ba43b4ed1b14097f20f7683f31111d3a66ca6895aee4437c056763d",
+      "mp3Bytes": 19226,
+      "mp3Sha256": "9ed63a8c9d65e0277267fd07ffee0b9f753fd143a447c8c34b9dc0f64c0e21a0"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 93312,
+      "soundId": 1429,
+      "linkage": null,
+      "bodySha256": "12e1178f3f2106293683e381261a2772b1527c1de1ec35aaccb8376041010035",
+      "mp3Bytes": 33854,
+      "mp3Sha256": "51528913564667c99d0810bda4a50275d439c6c4e64e389bef3375fcf4ae70db"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 1205,
+      "soundId": 1565,
+      "linkage": null,
+      "bodySha256": "42795c4b4fd838028abedf6f5d0346dd1e2f31e6eebcc620956ceb3a90bedeb1",
+      "mp3Bytes": 728,
+      "mp3Sha256": "ea5e2fe3f2c6761ad8cd68db7dd60964466c5d816faf65664e8f18a2dc81afe9"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 46080,
+      "soundId": 1699,
+      "linkage": null,
+      "bodySha256": "699051f48a20bd077777134e7800ee78893b0f1bf8cdd4b70150b70ad02e62f9",
+      "mp3Bytes": 6375,
+      "mp3Sha256": "a831f9f553a7b7c4664e280789ffcf481ad7fc0c2dfe55d36b3d9ce2e16ebe15"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 9576,
+      "soundId": 1713,
+      "linkage": null,
+      "bodySha256": "872e48b003bfd65bf9910a92f197ef4b20c9f1db79e954fb8cf0cc40229d3494",
+      "mp3Bytes": 2184,
+      "mp3Sha256": "97d2147782481455356ef4e78fa10312ea75a8373734783bc1a2b3941cdef160"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 35267,
+      "soundId": 1719,
+      "linkage": null,
+      "bodySha256": "f08909282b4fd9c0a1a752e73f9c18bd6abc408442057298f4f692d1ad82dc41",
+      "mp3Bytes": 6864,
+      "mp3Sha256": "48e8364d15ec8fcbf2cd770cdb7d72b1ba1ce169b09743ee88c7085d2d970d20"
+    },
+    {
+      "codec": 2,
+      "rate": 44100,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 49536,
+      "soundId": 1856,
+      "linkage": null,
+      "bodySha256": "175287921144fa0e9da363f263e3edf64e87274a0180882bb14884c3fccb5c70",
+      "mp3Bytes": 17972,
+      "mp3Sha256": "636f653f5542827888dcb388a827e3d8959246ca226657cadea79f6d5cda93bf"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 49279,
+      "soundId": 1993,
+      "linkage": null,
+      "bodySha256": "f871f6b1955ad8d7e5dd938e176c6c1fd79b316b6f8019ace520f62cf1e4f35a",
+      "mp3Bytes": 9360,
+      "mp3Sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 63868,
+      "soundId": 2004,
+      "linkage": null,
+      "bodySha256": "16f7a9a35458c27012884c59aee00fdfe2ff8d2bcf0b4cf5cf2f2ca64360eda1",
+      "mp3Bytes": 11856,
+      "mp3Sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de"
+    },
+    {
+      "codec": 2,
+      "rate": 11025,
+      "bits": 16,
+      "channels": 1,
+      "sampleCount": 16309,
+      "soundId": 2007,
+      "linkage": null,
+      "bodySha256": "c2426e0317fde9ea331429711d7c1a5075f97618ec48ab95b91e150ced964227",
+      "mp3Bytes": 3432,
+      "mp3Sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc"
+    }
+  ]
+}

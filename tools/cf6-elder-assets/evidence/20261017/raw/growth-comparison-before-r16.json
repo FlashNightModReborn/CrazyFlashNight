@@ -1,0 +1,98 @@
+{
+  "scope": "Read-only formula estimates. R15 remains running and unchanged; only robot growth varies in this calculation. Not combat evidence.",
+  "source": "tools/cf6-elder-assets/balance-inputs.json",
+  "rows": [
+    {
+      "growthFactor": 1,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 15318,
+          "atk": 3556,
+          "def": 5388
+        },
+        {
+          "level": 60,
+          "hp": 20636,
+          "atk": 5154,
+          "def": 6186
+        },
+        {
+          "level": 99,
+          "hp": 27549,
+          "atk": 7231,
+          "def": 7224
+        }
+      ]
+    },
+    {
+      "growthFactor": 0.95,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 15318,
+          "atk": 3555,
+          "def": 5357
+        },
+        {
+          "level": 60,
+          "hp": 20427,
+          "atk": 5078,
+          "def": 6031
+        },
+        {
+          "level": 99,
+          "hp": 27068,
+          "atk": 7059,
+          "def": 6907
+        }
+      ]
+    },
+    {
+      "growthFactor": 0.9,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 15316,
+          "atk": 3554,
+          "def": 5329
+        },
+        {
+          "level": 60,
+          "hp": 20198,
+          "atk": 4998,
+          "def": 5873
+        },
+        {
+          "level": 99,
+          "hp": 26545,
+          "atk": 6874,
+          "def": 6580
+        }
+      ]
+    },
+    {
+      "growthFactor": 0.85,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 15313,
+          "atk": 3553,
+          "def": 5302
+        },
+        {
+          "level": 60,
+          "hp": 19948,
+          "atk": 4910,
+          "def": 5709
+        },
+        {
+          "level": 99,
+          "hp": 25974,
+          "atk": 6674,
+          "def": 6239
+        }
+      ]
+    }
+  ]
+}

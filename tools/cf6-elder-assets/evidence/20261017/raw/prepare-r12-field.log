@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\cf6-elder-20261016\prepare-r12-field.py", line 74, in <module>
+    assert relative.startswith(('tools/cf6-elder-assets/','flashswf/arts/new/Codex老头素材/')) or relative in [
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: scripts/test-runners/cf6-knockback-scope/EnemyKnockbackFixture.as

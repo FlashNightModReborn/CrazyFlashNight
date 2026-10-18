@@ -1,0 +1,16 @@
+{
+  "released": true,
+  "unsubscribed": true,
+  "firstObserverPid": 19148,
+  "nextObserverPid": 19008,
+  "nextObservedOnUtc": "2026-10-17T23:42:04.1242969Z",
+  "releasedUtc": "2026-10-17T23:42:50.4035869Z",
+  "overlappingObservationConfirmed": true,
+  "sameHumanAuthorizationContinues": true,
+  "completedExperiments": [
+    "cf6-cold-r3-20261017",
+    "cf6-cal-r10-integrated-20261018",
+    "cf6-cal-r11-slam-20261018"
+  ],
+  "boundary": "The first helper released its request. A second helper continues the same authorized test round; this is not final release of all display requests."
+}

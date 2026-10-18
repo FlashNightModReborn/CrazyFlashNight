@@ -1,0 +1,22 @@
+{
+  "status": "preregistered_not_executed",
+  "experiment": "cf6-cal-head-current-20261018",
+  "candidate": "Current C3 loader and isolated R4 Host; unchanged selected Headbot SWF.",
+  "rows": 18,
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "sides": [
+    "blue",
+    "red"
+  ],
+  "repeatsPerSide": 3,
+  "requiredWins": 18,
+  "allowedTimeouts": 0,
+  "continuousDisplayObservationRequired": true,
+  "runtimeResourcesSaveProtectionCleanupRequired": true,
+  "maximumConcurrentGames": 1,
+  "boundary": "Execute only after the active Elder matrix has completed and its worker diagnostics are preserved. Recheck display scope lifetime and frozen inputs before launch."
+}

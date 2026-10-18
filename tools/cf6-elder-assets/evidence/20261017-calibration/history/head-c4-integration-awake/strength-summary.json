@@ -1,0 +1,180 @@
+{
+  "experiment": "cf6-cal-head-c4-20261018",
+  "fullMatrix": false,
+  "strengthPassed": true,
+  "wins": 6,
+  "timeouts": 0,
+  "groups": [
+    {
+      "level": 30,
+      "n": 2,
+      "wins": 2,
+      "timeouts": 0,
+      "minimumRemainingHpRatio": 0.265168329322711,
+      "frameRange": [
+        2381.0,
+        2685.0
+      ]
+    },
+    {
+      "level": 60,
+      "n": 2,
+      "wins": 2,
+      "timeouts": 0,
+      "minimumRemainingHpRatio": 0.2546795946178788,
+      "frameRange": [
+        2177.0,
+        2613.0
+      ]
+    },
+    {
+      "level": 99,
+      "n": 2,
+      "wins": 2,
+      "timeouts": 0,
+      "minimumRemainingHpRatio": 0.5014283286087915,
+      "frameRange": [
+        2129.0,
+        2237.0
+      ]
+    }
+  ],
+  "rows": [
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "side": "blue",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2381.0,
+      "remainingHpRatio": 0.4902343293694367
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "side": "red",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2685.0,
+      "remainingHpRatio": 0.265168329322711
+    },
+    {
+      "runId": "level60-blue-r001",
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2177.0,
+      "remainingHpRatio": 0.45114424899359346
+    },
+    {
+      "runId": "level60-red-r001",
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2613.0,
+      "remainingHpRatio": 0.2546795946178788
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "side": "blue",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2237.0,
+      "remainingHpRatio": 0.5014283286087915
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "side": "red",
+      "status": "finished",
+      "naturalWin": true,
+      "frames": 2129.0,
+      "remainingHpRatio": 0.5384606949188786
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+    },
+    {
+      "path": "data/enemy_properties/诺亚新敌人.xml",
+      "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance-inputs.json",
+      "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "CD107FD8FD296164047746BB222DB70F1549C5553C1ECFFFC82B4C79B7B0E6E1",
+      "buildIdentity": "E0C12C51B3E0488D4BB26FA6F4087B1A0CA074CDEDC577B37F86C32A91B590D9",
+      "payloadClosure": "AE639985B8AE2029BFFEAF46FC1633C56E833DB6E62A6ABB58A9C135F3CDCCB4",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "CD107FD8FD296164047746BB222DB70F1549C5553C1ECFFFC82B4C79B7B0E6E1",
+      "buildIdentity": "E0C12C51B3E0488D4BB26FA6F4087B1A0CA074CDEDC577B37F86C32A91B590D9",
+      "payloadClosure": "AE639985B8AE2029BFFEAF46FC1633C56E833DB6E62A6ABB58A9C135F3CDCCB4",
+      "verified": true
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "CD107FD8FD296164047746BB222DB70F1549C5553C1ECFFFC82B4C79B7B0E6E1",
+      "buildIdentity": "E0C12C51B3E0488D4BB26FA6F4087B1A0CA074CDEDC577B37F86C32A91B590D9",
+      "payloadClosure": "AE639985B8AE2029BFFEAF46FC1633C56E833DB6E62A6ABB58A9C135F3CDCCB4",
+      "verified": true
+    }
+  ],
+  "rawResultsSha256": "6a13edcd4fd6638b555106974e274a573f4210e146e53a53fdd6a63e7a7a25e3",
+  "boundary": "These six C4 integration fights are separate from the eighteen-fight C3 strength matrix. All unchanged Headbot inputs and 726 compiled shared class actions are separately verified. Finite outcomes do not guarantee every future matchup; formal promotion and player acceptance remain separate."
+}

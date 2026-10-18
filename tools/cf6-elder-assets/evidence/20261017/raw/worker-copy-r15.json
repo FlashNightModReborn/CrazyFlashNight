@@ -1,0 +1,89 @@
+{
+  "scope": "R15 Elder native behavior, matching root XML, test and current README only; all 17 declared inputs match. Offline helper exclusions remain as recorded in worker-copy-r12.json; no whole-worktree equality claim.",
+  "files": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "beforeSha256": "7d50931a3f7b91366dcdd4e494f44ed6dfdcf1d6cc2a795a66483a07dd1c2942",
+      "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "beforeSha256": "95b4189ac042252964cd07197663d31e2a06df5c48c58c4a7d76f5561d1e21fe",
+      "sha256": "95bc482d15ec5412528c6de37d9f746a7fed44d639fc4fbad9ec6d5c5df64f5c"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "beforeSha256": "60fdea68005790a1c8fc97294630183f5fbe1a7fccf97176f5f88ef7c5663155",
+      "sha256": "ac3340566fd7947f1f7f388eed18eed14958e63aaa80e92cabfc182f9b8ffd9c"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "22beac16792f8b9528c2174aba54574f062c1244b9f76e3b2235d88d24909b73",
+      "sha256": "b8d07f24319cab99b9389cc3e675f4bf17ebe67c755dbe46b73ec6d60aaf7bc5"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "beforeSha256": "55c4fb1b5971be1b03914ed17e0d6112041a85f45c7b78e07ef16b4b861cc4fc",
+      "sha256": "82e7217f78abb1a944b0a5ebce600cd07167c320bd865e7254a0d8c4632218c4"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/README.md",
+      "beforeSha256": "45938fbceced46e92c8e74813b765af8638b62dec5ee04667ad5f04996c37dab",
+      "sha256": "bc6f7ee3f483a2bc0870893cc87feafb38f86a2ccf95317704df63b52737df30"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "beforeSha256": "47fface528e1f38eecccf70111cb9c467aa0f7de9661aa7acf17cd1061eac74b",
+      "sha256": "a4ef8aaf7fee5a89821b2b5745f91f016f990c70f4bf39bf57915839fde1f56c"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "beforeSha256": "7d50931a3f7b91366dcdd4e494f44ed6dfdcf1d6cc2a795a66483a07dd1c2942",
+      "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "beforeSha256": "95b4189ac042252964cd07197663d31e2a06df5c48c58c4a7d76f5561d1e21fe",
+      "sha256": "95bc482d15ec5412528c6de37d9f746a7fed44d639fc4fbad9ec6d5c5df64f5c"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "beforeSha256": "60fdea68005790a1c8fc97294630183f5fbe1a7fccf97176f5f88ef7c5663155",
+      "sha256": "ac3340566fd7947f1f7f388eed18eed14958e63aaa80e92cabfc182f9b8ffd9c"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "22beac16792f8b9528c2174aba54574f062c1244b9f76e3b2235d88d24909b73",
+      "sha256": "b8d07f24319cab99b9389cc3e675f4bf17ebe67c755dbe46b73ec6d60aaf7bc5"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "beforeSha256": "55c4fb1b5971be1b03914ed17e0d6112041a85f45c7b78e07ef16b4b861cc4fc",
+      "sha256": "82e7217f78abb1a944b0a5ebce600cd07167c320bd865e7254a0d8c4632218c4"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/README.md",
+      "beforeSha256": "45938fbceced46e92c8e74813b765af8638b62dec5ee04667ad5f04996c37dab",
+      "sha256": "bc6f7ee3f483a2bc0870893cc87feafb38f86a2ccf95317704df63b52737df30"
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "beforeSha256": "47fface528e1f38eecccf70111cb9c467aa0f7de9661aa7acf17cd1061eac74b",
+      "sha256": "a4ef8aaf7fee5a89821b2b5745f91f016f990c70f4bf39bf57915839fde1f56c"
+    }
+  ]
+}

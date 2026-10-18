@@ -1,0 +1,29 @@
+{
+  "files": [
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher\\tests\\bin\\Release\\Launcher.Tests.dll",
+      "bytes": 5837312,
+      "sha256": "a5994aab387baed7262e617a276668a4357ac3343a137297a76146ae195dc8bf",
+      "modifiedUtc": "2026-10-17T15:19:05.682659+00:00"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\launcher\\tests\\bin\\Release\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 6412800,
+      "sha256": "714dfc2ff121e500630311f5448edd8cd7c98b618d31ad176ca30ed15dfd200b",
+      "modifiedUtc": "2026-10-17T15:18:44.347378+00:00"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 79553,
+      "sha256": "57a97cbfff020bedf61086880d34cbbad1931954779ce64de09d454056c464ce"
+    },
+    {
+      "path": "launcher/tests/Guardian/WorldCompositorTests.cs",
+      "bytes": 29124,
+      "sha256": "073a3a02b1edc50658668ee3bbcf13248c756ff146947b541b6c6d75254b06ea"
+    }
+  ],
+  "boundRun": "transition-repaint-request-scoped-tests",
+  "casesPassed": 183,
+  "boundary": "Binaries from the R3 focused run, not a replacement for the earlier complete-suite result."
+}

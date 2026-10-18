@@ -1,0 +1,48 @@
+{
+  "status": "native_verified; exploratory_pilot_running",
+  "lossBasis": "Observed HP decreases per form, accumulated exactly once; healing rebases the observation without adding credit. Lethal damage cannot grant a shield.",
+  "lossStepOfInitialMaximumHp": 0.05,
+  "forcedConversion": 1,
+  "capacityLimitOfInitialMaximumHp": 0.1,
+  "pulseFrames": 24,
+  "pulseMissingHpRatio": 0.05,
+  "pulseCapacityLimitOfInitialMaximumHp": 0.01,
+  "decayFrames": 36,
+  "strengthRatio": 10,
+  "robotOnly": true,
+  "oneOwnedLayer": true,
+  "incomingLeechDiagnostic": "Counts the production damage-result leech flag, with a separate count for a shooter whose rage flag is active. This is not a pre-hit HP probe or a blanket zero-healing proof.",
+  "native": {
+    "assetPassed": 906,
+    "effectsPassed": 116,
+    "robotPassed": 45,
+    "totalPassed": 1067,
+    "timelineCases": 46,
+    "phaseCases": 13,
+    "audioPassed": 340,
+    "audioRoutes": 81,
+    "playerAimPassed": 1023,
+    "playerAimCases": 74,
+    "selectedFolders": {
+      "elder-asset": "native-r16-decay-adapter-repair",
+      "player-aim": "native-r16-decay-adapter-repair",
+      "audio": "native-r16-reactive-shield"
+    },
+    "totalSelectedChecks": 2430
+  },
+  "firstAttempt": {
+    "overallPassed": false,
+    "effectsPassed": 105,
+    "effectsFailed": 10,
+    "assetPassed": 905,
+    "assetFailed": 1,
+    "diagnosedCause": "The generated fixture omitted the existing production decay-shield adapter. The candidate SWF and production behavior were unchanged by the fixture repair."
+  },
+  "candidateSwfSha256": "9d6002d4b6512c23c8a8006da2d612be45a7664f084cf553e7a58c7ebb58c32d",
+  "loaderSha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467",
+  "exploratoryPilot": "cf6-cal-r16-pilot-20261018",
+  "exploratoryPilotRows": 12,
+  "boundary": "Native tests distinguish the trigger hit, whose leech has already settled, from later shielded hits. Full-matrix balance, field rage-heal gaps, player experience and formal runtime promotion remain separate.",
+  "beamCapacityAccountingQualified": false,
+  "beamCapacityAccountingLimitation": "../shield-accounting-limit/assessment.json"
+}

@@ -1,0 +1,41 @@
+{
+  "ok": true,
+  "passed": 508,
+  "failed": 0,
+  "skipped": 0,
+  "families": {
+    "WorldCompositorTests": 49,
+    "SceneTransitionResumeTests": 5,
+    "SceneTransitionTaskTests": 76,
+    "SceneTransitionPresentationPolicyTests": 14,
+    "MapDomainSessionTests": 39,
+    "MapAuthoringContentTests": 20,
+    "LauncherCommandRouterTests": 244,
+    "TaskRegistryStatusTests": 35,
+    "RagTerminalServiceTests": 26
+  },
+  "sourceBindings": 994,
+  "sdk": "10.0.300",
+  "sourceUnchanged": true,
+  "serialPolicyObserved": true,
+  "trxSha256": "ef707d96a7651040e9a76877df0489c17045bee941ae7d30eda61ddc850cc459",
+  "assemblies": [
+    {
+      "path": "Launcher.Tests.dll",
+      "bytes": 5849600,
+      "sha256": "72f93d74ce44bbe0b07b06003c549ddfeee056b454c1eee28cb5a515b27322ad"
+    },
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 6415360,
+      "sha256": "0cd9e38f5295bafe27609d789a9128e1ba5837e3e0ca02f87241f1f761363eb4"
+    },
+    {
+      "path": "xunit.runner.json",
+      "bytes": 148,
+      "sha256": "5916f34c0f76ff79c2675613573838dd1b67db7ea93ea461c420c40145668ca1"
+    }
+  ],
+  "wholeHostSuitePassed": false,
+  "boundary": "Fresh selected nine-family regression against the merged current source, with actual test assemblies preserved. The historical full-suite result remains 7367 passed, 120 prerequisite failures, 30 skipped out of 7517; it is not replaced by this focused success. No candidate rebuild, formal promotion, or runtime deployment is implied."
+}

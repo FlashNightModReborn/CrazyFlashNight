@@ -1,0 +1,910 @@
+[
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-68d08c34be32425da645757210700d3d",
+    "assignmentId": "assignment-68d08c34be32425da645757210700d3d",
+    "attemptId": "attempt-68d08c34be32425da645757210700d3d",
+    "batchId": "cf6-cal-r3-headbot-20261017-l30-w1",
+    "manifestHash": "sha256:e6138a444ef605444d310c9fe06efb4735d35f7ebfd0678839ffcaef50969c05",
+    "caseId": "level30-blue",
+    "caseHash": "sha256:2d2fedbdaa2032cfa968e32e8077ec658c86fde08ab3886968e162b9912f012c",
+    "runId": "level30-blue-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "blue",
+    "startedAt": "2026-10-17T09:37:12.9763220Z",
+    "completedAt": "2026-10-17T09:38:37.6530107Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 0.0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种470",
+        "level": 30,
+        "name": "斗兽标定_blue_level30_blue_r001_0",
+        "x": 570,
+        "y": 430
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种286",
+        "level": 30,
+        "name": "斗兽标定_red_level30_blue_r001_0",
+        "x": 1220,
+        "y": 430
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 470,
+      "level": 30,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "7044c64b844a53329fee3c30bb90d5d1babbe4aa9c72dcbd338ffa0c900bac6f"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "1176ef55d3c0ba96d1f98467542fe16cdc70a921b28548def3deddeb81ce50ea"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "671b8867696a6cd0126dc125f6ce5da53fdd098bcf2dcc715edd337f9a37ac0f"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "headbot-30",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 85606.0,
+        "remainHp": 21328.0,
+        "hpPermille": 249,
+        "alive": true
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "arkclaw-30",
+        "petId": -1,
+        "identifier": "敌人-方舟爪豪",
+        "resolvedType": "敌人-方舟爪豪",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 37711.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "frames": 2489.0,
+    "durationMs": 83053.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种470",
+          "sourceId": "headbot-30",
+          "name": "斗兽标定_blue_level30_blue_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种286",
+          "sourceId": "arkclaw-30",
+          "name": "斗兽标定_red_level30_blue_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 85606.0,
+      "remainHp": 21328.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 85606.0,
+      "startCount": 1.0
+    },
+    "red": {
+      "maxHp": 37711.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 37711.0,
+      "startCount": 1.0
+    },
+    "errors": []
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w2",
+    "sessionEpoch": "session-c87c25e4a3104dd297eaaec2450f8a62",
+    "assignmentId": "assignment-c87c25e4a3104dd297eaaec2450f8a62",
+    "attemptId": "attempt-c87c25e4a3104dd297eaaec2450f8a62",
+    "batchId": "cf6-cal-r3-headbot-20261017-l30-w2",
+    "manifestHash": "sha256:d60f874111d435abb002297b1d92ca57e3d1447b7d76a5f554c57d790a65f046",
+    "caseId": "level30-red",
+    "caseHash": "sha256:5115b1e9911b6f4b108b704a022728bb910f31bf95f7701ceb45905ce3e353b8",
+    "runId": "level30-red-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "red",
+    "startedAt": "2026-10-17T09:37:07.0154865Z",
+    "completedAt": "2026-10-17T09:38:36.5323220Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 0.0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种286",
+        "level": 30,
+        "name": "斗兽标定_blue_level30_red_r001_0",
+        "x": 570,
+        "y": 430
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种470",
+        "level": 30,
+        "name": "斗兽标定_red_level30_red_r001_0",
+        "x": 1220,
+        "y": 430
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "red",
+      "candidateUnitId": 470,
+      "level": 30,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "7044c64b844a53329fee3c30bb90d5d1babbe4aa9c72dcbd338ffa0c900bac6f"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "1176ef55d3c0ba96d1f98467542fe16cdc70a921b28548def3deddeb81ce50ea"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "671b8867696a6cd0126dc125f6ce5da53fdd098bcf2dcc715edd337f9a37ac0f"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "arkclaw-30",
+        "petId": -1,
+        "identifier": "敌人-方舟爪豪",
+        "resolvedType": "敌人-方舟爪豪",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 37711.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "headbot-30",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 85606.0,
+        "remainHp": 25324.0,
+        "hpPermille": 296,
+        "alive": true
+      }
+    ],
+    "frames": 2624.0,
+    "durationMs": 87643.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种286",
+          "sourceId": "arkclaw-30",
+          "name": "斗兽标定_blue_level30_red_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种470",
+          "sourceId": "headbot-30",
+          "name": "斗兽标定_red_level30_red_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 37711.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 37711.0,
+      "startCount": 1.0
+    },
+    "red": {
+      "maxHp": 85606.0,
+      "remainHp": 25324.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 85606.0,
+      "startCount": 1.0
+    },
+    "errors": []
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-b463a0010e9e418fafeff5952b20bf1a",
+    "assignmentId": "assignment-b463a0010e9e418fafeff5952b20bf1a",
+    "attemptId": "attempt-b463a0010e9e418fafeff5952b20bf1a",
+    "batchId": "cf6-cal-r3-headbot-20261017-l99-w1",
+    "manifestHash": "sha256:e650f6d790b2f4df4024a53257e419988f6c322279af63c9e70467a7983a0671",
+    "caseId": "level99-blue",
+    "caseHash": "sha256:10db6f83a4fcf9e02db10d2590298213fc5cabebf337a5eb40862ab891836266",
+    "runId": "level99-blue-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "blue",
+    "startedAt": "2026-10-17T09:39:59.9239479Z",
+    "completedAt": "2026-10-17T09:41:19.7937971Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 0.0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种470",
+        "level": 99,
+        "name": "斗兽标定_blue_level99_blue_r001_0",
+        "x": 570,
+        "y": 430
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种286",
+        "level": 99,
+        "name": "斗兽标定_red_level99_blue_r001_0",
+        "x": 1220,
+        "y": 430
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 470,
+      "level": 99,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "7044c64b844a53329fee3c30bb90d5d1babbe4aa9c72dcbd338ffa0c900bac6f"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "1176ef55d3c0ba96d1f98467542fe16cdc70a921b28548def3deddeb81ce50ea"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "671b8867696a6cd0126dc125f6ce5da53fdd098bcf2dcc715edd337f9a37ac0f"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "headbot-99",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 99,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 182381.0,
+        "remainHp": 80400.0,
+        "hpPermille": 441,
+        "alive": true
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "arkclaw-99",
+        "petId": -1,
+        "identifier": "敌人-方舟爪豪",
+        "resolvedType": "敌人-方舟爪豪",
+        "level": 99,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 66949.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "frames": 2341.0,
+    "durationMs": 78036.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种470",
+          "sourceId": "headbot-99",
+          "name": "斗兽标定_blue_level99_blue_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种286",
+          "sourceId": "arkclaw-99",
+          "name": "斗兽标定_red_level99_blue_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 182381.0,
+      "remainHp": 80400.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 182381.0,
+      "startCount": 1.0
+    },
+    "red": {
+      "maxHp": 66949.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 66949.0,
+      "startCount": 1.0
+    },
+    "errors": []
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w2",
+    "sessionEpoch": "session-8fcc875d509b47fc88130d7951a684e0",
+    "assignmentId": "assignment-8fcc875d509b47fc88130d7951a684e0",
+    "attemptId": "attempt-8fcc875d509b47fc88130d7951a684e0",
+    "batchId": "cf6-cal-r3-headbot-20261017-l99-w2",
+    "manifestHash": "sha256:3193bf99282ca53ac9feeda845116c96815f6ceacfc84755d9f84ece9fa68dc5",
+    "caseId": "level99-red",
+    "caseHash": "sha256:a684dc561fced02bbe7a023e0b244062872ef99c510ad0ceb52de1aeac197918",
+    "runId": "level99-red-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "red",
+    "startedAt": "2026-10-17T09:39:53.1269640Z",
+    "completedAt": "2026-10-17T09:41:11.9187787Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 0.0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种286",
+        "level": 99,
+        "name": "斗兽标定_blue_level99_red_r001_0",
+        "x": 570,
+        "y": 430
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种470",
+        "level": 99,
+        "name": "斗兽标定_red_level99_red_r001_0",
+        "x": 1220,
+        "y": 430
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "red",
+      "candidateUnitId": 470,
+      "level": 99,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "7044c64b844a53329fee3c30bb90d5d1babbe4aa9c72dcbd338ffa0c900bac6f"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "1176ef55d3c0ba96d1f98467542fe16cdc70a921b28548def3deddeb81ce50ea"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "671b8867696a6cd0126dc125f6ce5da53fdd098bcf2dcc715edd337f9a37ac0f"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "arkclaw-99",
+        "petId": -1,
+        "identifier": "敌人-方舟爪豪",
+        "resolvedType": "敌人-方舟爪豪",
+        "level": 99,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 66949.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "headbot-99",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 99,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 182381.0,
+        "remainHp": 92216.0,
+        "hpPermille": 506,
+        "alive": true
+      }
+    ],
+    "frames": 2301.0,
+    "durationMs": 76783.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种286",
+          "sourceId": "arkclaw-99",
+          "name": "斗兽标定_blue_level99_red_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种470",
+          "sourceId": "headbot-99",
+          "name": "斗兽标定_red_level99_red_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 66949.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 66949.0,
+      "startCount": 1.0
+    },
+    "red": {
+      "maxHp": 182381.0,
+      "remainHp": 92216.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 182381.0,
+      "startCount": 1.0
+    },
+    "errors": []
+  }
+]

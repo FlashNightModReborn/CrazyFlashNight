@@ -1,0 +1,6 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.cf6AimBaseline=false;
+_root.cf6PlayerAimComplete=function():Void {trace("FocusedTestRunId cf6-player-aim Complete: __FOCUSED_RUN_ID__");};
+trace("FocusedTestRunId cf6-player-aim Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6PlayerAimTest.runAllTests();

@@ -1,0 +1,1390 @@
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+MapLootTestRunId Start: 88b61a28c4574ec9895060de8a3f42f3
+=== BoxInteractionArbiter Test Suite (A01-A12 + A03F) ===
+BoxInteractionArbiterTest: 13/13 cases, 53 assertions passed
+=== LootContainerServiceTest start ===
+PASS: 任意正网格按 8 列/64 格边界进入 Web，精确 0x0 direct，其余非正或超界 fail closed
+PASS: 六箱域内 malformed/负数/混合符号 fail closed；正网格投影召唤器不被 loot 劫持
+PASS: authored rollout marker 不再参与运行时路由
+PASS: commit 先固化唯一 inventory；覆盖、并发 reservation 与同箱破碎均 fail closed
+PASS: kill proof 后重复 death/open-frame 均幂等且不推进 revision
+PASS: planner inventory 先固化；capacity 拒绝后覆盖、abort 与 scene cleanup 均不可吞奖励
+PASS: kill adapter 缺失保留 pending hard fence，scene cleanup 不得吞掉已物化奖励
+PASS: activation/target hold 内部失败保留 materialized pending hard fence，scene cleanup 不吞奖励
+PASS: 物化前 unexpected death 无可 recovery inventory 时终止 reservation 并释放全局槽
+PASS: 生产 death→onUnload→open-frame 顺序保持 own-kill proof 幂等，不误入 recovery
+PASS: abort 只终止同 target 未 kill reservation，留下 tombstone 并立即释放全局槽
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] claim commit exception: forced_classification_error
+PASS: commit 抛异常后恢复 LOOT_ACTIVE/_busy，原 source 可重新领取
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: abortReservedOpen 不得终止或改写 active authority
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: snapshot 同时投影 loot/背包 lease、装备描述与插件三元身份
+PASS: 装备 BaseItem 原对象移入背包，descriptor 与 lastUpdate 不重建
+PASS: 成功写后旧 authorityRevision/slot lease 全部失效
+PASS: 伪造方向被 AS2 白名单拒绝且 source 零变化
+PASS: 普通栈在空目的槽保留 BaseItem 对象并清空 loot
+PASS: 原型同名 operationId 仍可幂等；空箱 close/tombstone query 完成对账
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: claimBatch 只在批末返回投影；stage settlement 只落一条 root receipt 并 flush 一次
+PASS: 重复 claimBatch root operation 只返回当前投影，不重放任何子写
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: claimBatch 保留容量受阻格，同时领取后续可合并格并给出精确部分进度
+PASS: 部分成功后受阻格租约跨兄弟写保持稳定，已领取格租约轮换
+PASS: 部分成功 claimBatch 的重复请求不重试受阻格也不重复合并
+PASS: 部分成功后 query 投影仍携带同一受阻格租约，Web reconcile 可证明
+PASS: 受阻格租约仍通过校验：补领被确定性容量拒绝而非 stale_state
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 单格领取后被领取格租约轮换，兄弟格租约跨写保持稳定
+PASS: 旧快照的写仍被容器级 CAS 拒绝：租约稳定不削弱失鲜防护
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: claimBatch 全部容量受阻时保留 exact 零写 authority proof
+PASS: claimBatch 在首写前拒绝重复 physical slot
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 满背包仍优先合并第二组现有同名药剂；duplicate 不重放也不重存
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 耗尽 affinity 按最近序列恢复原物理槽，并转为 occupied 绑定
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 两组同时存在同名药剂时固定选择最低物理槽，不依赖活动组
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 从未绑定的新药剂继续进入背包，不擅自占用空药剂槽
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: ordinary empty-slot：destination 已落地却返回 false 时，两次 causal query 仅前滚 source 且不重复写入 destination
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootClaimCommitCoordinator] rollback failed: injected_ordinary_rollback
+PASS: ordinary merge：rollback throw 不清 pending；query 只删 source，不二次累加 destination
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: special material：rollback false 保留 before/after journal；query forward-complete 后材料不复制
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: pending claim 拒绝不同 operationId，source/destination exact 状态不变
+PASS: pending claim 拒绝同 operationId 不同 fingerprint，随后只按原 journal 收敛
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] post-commit dirty pending
+[LootContainerService] post-commit dirty pending
+PASS: journal 后 dirty 失败保持 pending；所有旁路拒绝，仅 causal query 完成 exact 副作用且事件一次
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] post-commit destination cache pending
+PASS: destination cache 失败不重做 dirty/写入；query 恢复后 duplicate 也不重复事件
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] durable save pending
+PASS: 资产已写但 flush 返回 false 时保持 pending；causal query strict true 后才成功且 duplicate 不重存
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.1488.2 state=web_active remaining=1 receipts=2 blocker=pending_stage_settlement seq=1
+PASS: 领取-关闭-重开-再领取后重启，durable journal 容许非资产 revision 跳号并精确恢复
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] post-commit dirty pending
+[LootContainerService] post-commit dirty pending
+PASS: SceneManager 在 commit/effects pending 时零 teardown；下一次收敛后才销毁 world
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootContainerService] post-commit dirty pending
+PASS: detach unpause retry
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: detach 遇 destination 冲突保持 journal、inventory、pause 与 scene hard fence
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: scene cleanup 先完成 ordinary empty-slot pending，再写 journal/dirty 并终止
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootClaimCommitCoordinator] rollback failed: injected_ordinary_rollback
+PASS: scene cleanup 先完成 ordinary merge pending，destination 不二次累加
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: scene cleanup 对 destination-after-false 装备执行 exact source settle 后才终止
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: scene cleanup 先完成 scalar pending，数值不重复累加且进入成功 journal
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+[LootClaimCommitCoordinator] rollback failed: injected_special_rollback
+PASS: scene cleanup 先完成 collection pending，收集品不复制且成功副作用可持久化
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 满背包装备领取失败时 source/背包/dirtyMark 均零副作用
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 50/50 满背包已有同名数值抗生素栈时仍原位合并，source 清空且 authority/dirty 推进
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 材料按独立 claim 原子进入材料域，不塞背包
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 情报已满或差部分容量时整格保留，不静默 clamp
+PASS: 目标可完整接收时情报整格提交并删除 source
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 金币/K点/经验值/技能点使用内部稳定键进入各自权威域
+PASS: failure 零奖励初次离线保留报告；重连只 reopen 一次并在真实关闭后终结
+PASS: retreat 零奖励 open rejection 保留报告和同一 suspended authority
+PASS: zero-reward victory 断线恢复同一报告且 exactly-once reopen/terminal
+PASS: report tooltip reuses common HTML and semantic document for the frozen item
+PASS: report inspection does not mutate inventory currency authority dirty mark or saves
+PASS: report tooltip rejects indexes outside frozen flows
+PASS: report currency never masquerades as an item definition
+PASS: report tooltip rejects forged definition names
+PASS: report tooltip retains exact revision fence
+PASS: report tooltip cannot receive write fields
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: map loot cannot read settlement definitions
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 初次 open 同步失败保留 same target/inventory 并进入 Web-only suspend
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: panel open 使用 callback envelope，authored payload/initData 保持 exact 3/8 键并携 attempt token
+PASS: exact Host rejection 收回 same inventory 到 Web-only suspend
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: panel callback timeout 保留 same inventory 并进入 Web-only suspend
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: panel callback 断线保留 same inventory 并进入 Web-only suspend
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 迟到旧 open callback 复核 session/container/epoch，不污染 fresh authority
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: wire query 严格 7/9 键、recovery 严格 8 键；opaque 与 Host 统一 ._~- 及 128 边界
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: initial recovery 早于 ACK 只登记；ACK 后挂起同一 inventory，错 nonce 零副作用
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: accepted 后 exact8 recovery 匹配 identity+attempt+nonce并挂起；畸形/迟到拒绝、重复幂等
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: gameCommands 返回 exact loot_response/callId 与 active closeLease
+PASS: 未知顶层字段被 strict command shape 拒绝
+PASS: ServerManager envelope 必须 task/action/callId 三字段原子出现
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+Extracting ports from eyeOf119: 1192433993
+Final extracted ports: 1192, 1924, 9243, 2433, 4339, 3399, 3993, 11924, 19243, 24339, 43399, 33993, 3000
+[ServerManager] Trying ports file: file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/launcher_ports.json
+PASS: legacy map close false retains the exposed candidate without publishing committed stock
+PASS: legacy map query pending retains the exact original candidate
+PASS: legacy close query resumes the same saved source into stash
+PASS: legacy closed source replay cannot duplicate stock or save
+PASS: legacy map durable source proof and stock share the same save 0
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: opened legacy map expiry preserves remaining stock in one save
+PASS: legacy map durable source proof and stock share the same save 1
+PASS: materialized reservation expiry preserves its unique stock before kill projection
+PASS: legacy map durable source proof and stock share the same save 2
+PASS: legacy grenade carrier migrates itself once into a stable recovery batch
+PASS: full reward inbox refuses before clearing the legacy grenade slot
+PASS: confirmed obsolete starter carrier tombstones to empty hand without recovery
+PASS: online supply facade appends one durable occurrence and treats duplicate sourceKey as success
+PASS: flush failure rolls back the ledger, while a fresh Flash session replaces only the bounded supply index
+PASS: online supply click requests the strict reward inbox Loot panel after durable delivery
+PASS: reward panel rejection preserves the already durable supply batch
+PASS: unopened reward authority refreshes after a later durable batch append
+PASS: opened reward authority keeps its identity and sees appended batches after close
+PASS: active standard loot reservation prevents reward inbox materialization without overwrite
+PASS: materialized read-only reward stock does not block a new map source
+PASS: reward_inbox sourceKind routes through the existing Loot snapshot projection
+PASS: reward inbox close/query preserve unclaimed occurrences as nonterminal suspended state
+PASS: save boundary reset discards transient reward authority before reading the next _saveExt
+PASS: durable root query reload 后只 forward-complete 一次并返回 exact terminal
+PASS: fault-cut admission false:root 未 admitted，restart 后仍 not_started 且批次无损
+PASS: fault-cut destination write:restart 后 exact query 恰好补一次且不重放
+PASS: fault-cut source write:restart 后 exact query 恰好补一次且不重放
+PASS: fault-cut effect 后 bridge false:pending 无投影，restart 恰好续跑两 child
+PASS: fault-cut 中间 bridge pending:durable 前缀精确到 child0，restart 续跑不重放
+PASS: fault-cut 末 child terminal throw:restart 只补 terminal 一次落盘
+PASS: fault-cut terminal false(N=1):restart 只补 terminal 一次落盘
+PASS: fault-cut terminal durable 后响应丢失:restart exact query 不重放不增存盘
+PASS: fault-cut duplicate write:重复 claim 只读 tombstone，不重放不增存盘
+PASS: fault-cut capacity partial:受阻 remainder 跨 terminal fault 精确保留
+PASS: Reward root partial_applied 精确区分已落地与容量受阻 child
+PASS: Reward root no_effect_capacity durable 化零资产容量结果
+PASS: Reward root failed 在 durable admission 后保留 exact 非容量错误
+PASS: Reward root partial_failed 不把已应用 child 回滚或伪装为全失败
+PASS: Reward root third-state destination 只隔离 root，绝不猜测提交或回滚
+PASS: Reward root ordinary empty-slot descriptor 精确落地
+PASS: Reward root ordinary merge descriptor 绑定 exact before/after
+PASS: Reward root material descriptor 使用 collection exact delta
+PASS: Reward root information descriptor 保持上限检查与 exact delta
+PASS: Reward root drug descriptor 同步持久化 affinity before/after
+PASS: successor 以 predecessor 原子 supersede 旧 tombstone，response loss 后可 exact query
+PASS: terminal acknowledgement 只推进 discovery bit，丢响应也不改变 exact result
+PASS: ack 后 rewardReady 可回落，但 restart 不清除 terminal tombstone
+PASS: A-compat-disabled 拒绝新 admission，同时保留 discovery、tombstone 与 exact query reader
+PASS: v1 nested future root 原样保留并只 quarantine Reward lane
+PASS: malformed nested root opaque 隔离，顶层未来 Reward 版本仍拒绝整档
+PASS: rewardPack normalizer accepts closed modes and the live data.rewardPack shape projects open
+PASS: item-use cooldown snapshot exposes four frame-authoritative lanes and rejects shape drift
+PASS: 旧终态根空数组在加载时修复，旧版新开包仍明确拒绝
+[PROBE] claimBatch n=2 success=true flushCalls=3
+[PROBE] claimBatch n=10 success=true flushCalls=11
+[PROBE] claimBatch n=20 success=true flushCalls=21
+PASS: 存盘门:claimBatch 全 applied N=1 恰好 N+1 次强存盘，逐 cut 物理成像且 cut 序列精确
+PASS: 存盘门:claimBatch 全 applied N=2 恰好 N+1 次强存盘，逐 cut 物理成像且 cut 序列精确
+PASS: 存盘门:claimBatch 全 applied N=20 恰好 N+1 次强存盘，逐 cut 物理成像且 cut 序列精确
+PASS: 存盘门:claimBatch 全 applied N=50 恰好 N+1 次强存盘，逐 cut 物理成像且 cut 序列精确
+PASS: 存盘门:claimBatch 全 capacity N=2 恰好 N+1 次强存盘且资产零写
+PASS: 存盘门:claimBatch 部分 capacity N=2 恰好 N+1 次强存盘
+PASS: 存盘门:terminal ACK 恰好 +1，重复 query/ACK 零存盘且 exact tuple 稳定
+PASS: 完整物化、同步 own-kill proof 后才进入 LOOT_ACTIVE
+PASS: 存盘门:标准 standalone claim 恰好 1、claimBatch(2) 恰好 1、duplicate +0
+[StageSettlementDiag] terminal state=claimed settlementId=stage.settlement.1 result=cleared remaining=0 seq=2
+PASS: 存盘门:settlement batch 恰好 1，terminal close 额外 +1
+PASS: Reward 分段：一项 durable 后健康 pending，不投影资产且不增加保存
+PASS: Reward 分段：重启后 exact query 完成原 root，50 项仍恰好 51 次保存且无重复资产
+PASS: Reward 分段：完成后重复 query 不增加保存或奖励
+PASS: bridge flush 失败的 pending 响应不携带可应用资产投影（内存已收敛也不出快照）
+PASS: exact query 恢复后 terminal 响应重新携带完整三快照投影
+[ManualCooldownService] 缺少帧计时器，冷却保持锁定: drug:0
+PASS: consume receipt 落地失败返回 commit_pending、不写 receipt，药效按无逆操作惯例保持已发生
+PASS: consume receipt 失败按 exact snapshot 恢复被消耗药剂的数量与槽位
+PASS: consume receipt 失败复位被选中 lane 冷却并还原 dirtyMark
+PASS: consume receipt 失败补一笔对冲 gain 冲平已播报 loss，资产流水净零
+[ManualCooldownService] 缺少帧计时器，冷却保持锁定: drug:0
+PASS: consume 恢复后以新 operationId 重试只再真实扣一次药，receipt 重放不再扣，无账实分叉
+LootContainerServiceTest Tests Passed: 198
+LootContainerServiceTest Tests Failed: 0
+=== LootContainerServiceTest end ===
+=== LootMaterializationPlannerTest start ===
+PASS: 校验先于随机推进并拒绝超 safe-int；缺省数量归一为 1；接受 64 格能力边界；retry 冻结源数组顺序
+PASS: 数量仅允许两端同时缺省或同时提供严格数字；半缺省/字符串/显式 undefined 均在随机前 fail closed
+PASS: direct/break 复用 Web 同一规则校验；失败不归一源数据且不推进随机
+PASS: AVM1 random span 接受 2^31-1 边界并在 2^31 时于随机推进前 fail-closed
+PASS: retry 使用计划前冻结的逆向 bonus/PRD 引擎，不读取后改角色幸运状态
+PASS: roll 边界失败回滚 PRD/RNG 后可重入；最终 journal 命中记录只提交一次
+PASS: create 后故障保留 exact BaseItem；重试不重新创建且总数只扣一次
+PASS: add 后未记 applied 的故障由 exact slot/item 自愈，不复制物品、不重复扣总数
+PASS: 总数批次故障先回滚，重试后两条规则与 source detach 一次提交
+PASS: 已满零价情报不生成：槽位留空，掷骰量仍按原语义扣减 总数，非情报规则照常生成
+PASS: 情报剩余容量 2 时按请求 4 截断为 2 生成
+PASS: 情报容量充足时请求量全额生成
+LootMaterializationPlannerTest Tests Passed: 12
+LootMaterializationPlannerTest Tests Failed: 0
+=== LootMaterializationPlannerTest end ===
+=== StageRunSessionTest start ===
+PASS: missing history does not infer a clear
+PASS: unknown difficulty never creates history
+PASS: invalid record preserves an old save
+PASS: begin clear history run
+PASS: entering is not clearing
+PASS: real completion grants record
+PASS: actual victory unlocks intel
+PASS: only actual difficulty is recorded
+PASS: history participates in existing dirty-save flow
+PASS: duplicate completion cannot write again
+PASS: UI snapshot cannot mutate authority
+PASS: duplicate difficulty is stable
+PASS: another real mode can be added
+PASS: history projects standard mode order
+PASS: stage identities remain isolated
+PASS: another save slot does not inherit discovery
+PASS: restored ext projects saved clear record
+PASS: failure rejects completion
+PASS: failure grants no intel
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=3
+PASS: retreat rejects completion
+PASS: retreat grants no intel
+PASS: unknown history version is preserved
+PASS: optional history never replaces future data
+PASS: begin creates one stage run
+PASS: unpaused StageManager frames are the report clock
+PASS: victory survives a later death
+PASS: post-victory death remains independently visible
+PASS: a non-player respawn cannot clear the hero death state
+PASS: respawn changes only the life axis
+PASS: settlement freezes a valid reward inventory
+PASS: frozen report keeps outcome
+PASS: frozen report keeps exact active frames
+PASS: all kill facts remain counted
+PASS: kill presentation has a bounded type list
+PASS: omitted unique kill types are explicit
+PASS: all deterministic rewards materialize once
+PASS: ordinary reward keeps its item identity
+PASS: legacy money reward normalizes to scalar authority identity
+PASS: legacy experience reward normalizes to scalar authority identity
+PASS: reward random spans above AVM1 int range fail closed
+[StageRunSession] stage_run_active blocks a new stage
+PASS: a frozen unclaimed reward blocks run overwrite
+PASS: battle subscriber retains unrelated death handlers
+PASS: death event and fallback deduplicate one life
+PASS: down ally counts as one current loss
+PASS: one unit has one ally record
+PASS: reentrant death emits one casualty fact
+PASS: casualty has a dedicated kind
+PASS: casualty is a loss fact
+PASS: revival removes the current loss exactly once
+PASS: revival retains the individual record
+PASS: second life increments downs on the same unit
+PASS: two lives still yield one final lost unit
+PASS: terminal retreat replaces dead status
+PASS: each life has a distinct feed identity
+PASS: controlled hero is counted separately
+PASS: hero down never increases allied final loss
+PASS: hostile neutral is excluded from allied records
+PASS: a dead enemy grants one kill fact
+PASS: duplicate enemyKilled cannot grant a second kill
+PASS: a genuinely revived enemy grants its next life kill
+PASS: reused MovieClip path creates a new unit record
+PASS: unit identity survives AVM1 path reuse
+PASS: 敌人-终结者T800 fixed appearance overrides equipment capability
+PASS: 敌人-终结者T800 fixed portrait does not bake a human doll
+PASS: 敌人-终结者T800 fixed type does not claim a humanoid loadout
+PASS: 敌人-终结者T800 keeps its fixed portrait identity
+PASS: 敌人-终结者T800 enemy name comes from the type catalog
+PASS: 敌人-终结者T800 snapshot preserves equipment initialization flag
+PASS: 敌人-终结者T800 snapshot preserves the live weapon
+PASS: 敌人-终结者T800 fixed ally keeps its personal name
+PASS: 敌人-终结者T800 fixed allies remain eligible for display grouping
+PASS: 敌人-终结者T800 casualty feed uses the fixed portrait
+PASS: 敌人-终结者T800 casualty feed cannot override the portrait with a doll
+PASS: 敌人-终结者T800 different weapons still aggregate by fixed type
+PASS: 敌人-终结者T800 report retains the fixed classification
+PASS: 敌人-终结者T800 grouped kill obeys the existing schema
+PASS: 敌人-终结者T800 grouped kill does not expose an individual identity
+PASS: 敌人-二足型机器人 fixed appearance overrides equipment capability
+PASS: 敌人-二足型机器人 fixed portrait does not bake a human doll
+PASS: 敌人-二足型机器人 fixed type does not claim a humanoid loadout
+PASS: 敌人-二足型机器人 keeps its fixed portrait identity
+PASS: 敌人-二足型机器人 enemy name comes from the type catalog
+PASS: 敌人-二足型机器人 snapshot preserves equipment initialization flag
+PASS: 敌人-二足型机器人 snapshot preserves the live weapon
+PASS: 敌人-二足型机器人 fixed ally keeps its personal name
+PASS: 敌人-二足型机器人 fixed allies remain eligible for display grouping
+PASS: 敌人-二足型机器人 casualty feed uses the fixed portrait
+PASS: 敌人-二足型机器人 casualty feed cannot override the portrait with a doll
+PASS: 敌人-二足型机器人 different weapons still aggregate by fixed type
+PASS: 敌人-二足型机器人 report retains the fixed classification
+PASS: 敌人-二足型机器人 grouped kill obeys the existing schema
+PASS: 敌人-二足型机器人 grouped kill does not expose an individual identity
+PASS: 敌人-Codex黑仔 fixed appearance overrides equipment capability
+PASS: 敌人-Codex黑仔 fixed portrait does not bake a human doll
+PASS: 敌人-Codex黑仔 fixed type does not claim a humanoid loadout
+PASS: 敌人-Codex黑仔 keeps its fixed portrait identity
+PASS: 敌人-Codex黑仔 enemy name comes from the type catalog
+PASS: 敌人-Codex黑仔 snapshot preserves equipment initialization flag
+PASS: 敌人-Codex黑仔 snapshot preserves the live weapon
+PASS: 敌人-Codex黑仔 fixed ally keeps its personal name
+PASS: 敌人-Codex黑仔 fixed allies remain eligible for display grouping
+PASS: 敌人-Codex黑仔 casualty feed uses the fixed portrait
+PASS: 敌人-Codex黑仔 casualty feed cannot override the portrait with a doll
+PASS: 敌人-Codex黑仔 different weapons still aggregate by fixed type
+PASS: 敌人-Codex黑仔 report retains the fixed classification
+PASS: 敌人-Codex黑仔 grouped kill obeys the existing schema
+PASS: 敌人-Codex黑仔 grouped kill does not expose an individual identity
+PASS: 敌人-固定装备回归 fixed appearance overrides equipment capability
+PASS: 敌人-固定装备回归 fixed portrait does not bake a human doll
+PASS: 敌人-固定装备回归 fixed type does not claim a humanoid loadout
+PASS: 敌人-固定装备回归 keeps its fixed portrait identity
+PASS: 敌人-固定装备回归 enemy name comes from the type catalog
+PASS: 敌人-固定装备回归 snapshot preserves equipment initialization flag
+PASS: 敌人-固定装备回归 snapshot preserves the live weapon
+PASS: 敌人-固定装备回归 fixed ally keeps its personal name
+PASS: 敌人-固定装备回归 fixed allies remain eligible for display grouping
+PASS: 敌人-固定装备回归 casualty feed uses the fixed portrait
+PASS: 敌人-固定装备回归 casualty feed cannot override the portrait with a doll
+PASS: 敌人-固定装备回归 different weapons still aggregate by fixed type
+PASS: 敌人-固定装备回归 report retains the fixed classification
+PASS: 敌人-固定装备回归 grouped kill obeys the existing schema
+PASS: 敌人-固定装备回归 grouped kill does not expose an individual identity
+PASS: 敌人-大学军校生 real dressup unit retains its individual record
+PASS: 敌人-大学军校生 retains appearance and weapon snapshots
+PASS: 敌人-大学军校生 retains the individual name
+PASS: 敌人-军阀派学员 real dressup unit retains its individual record
+PASS: 敌人-军阀派学员 retains appearance and weapon snapshots
+PASS: 敌人-军阀派学员 retains the individual name
+PASS: 敌人-剑道社社员 real dressup unit retains its individual record
+PASS: 敌人-剑道社社员 retains appearance and weapon snapshots
+PASS: 敌人-剑道社社员 retains the individual name
+PASS: 敌人-黑铁派学员 real dressup unit retains its individual record
+PASS: 敌人-黑铁派学员 retains appearance and weapon snapshots
+PASS: 敌人-黑铁派学员 retains the individual name
+PASS: 敌人-重装拾荒者 real dressup unit retains its individual record
+PASS: 敌人-重装拾荒者 retains appearance and weapon snapshots
+PASS: 敌人-重装拾荒者 retains the individual name
+PASS: fixed appearances preserve all kill facts
+PASS: fixed appearances retain four independent type groups
+PASS: fixed allies retain per-unit down facts
+PASS: fixed allies retain per-unit final losses
+PASS: fixed equipment report freezes through the production boundary
+PASS: fixed equipment report passes the persisted decoder
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.11128.10 state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=4
+PASS: fixed equipment report restores without reroll
+PASS: restored fixed report keeps its type groups
+PASS: restored fixed report keeps aggregate kills
+PASS: restored fixed portrait cannot become a human doll
+PASS: restored fixed report keeps every allied unit
+PASS: enemy shooter cannot claim a player kill
+PASS: third-party kill does not emit the player feed
+PASS: callback reads the shooter's current faction after initialization
+PASS: real dispatcher reaches the stage report
+PASS: duplicate real event cannot grant another kill
+PASS: allied target is excluded before the kill claim
+PASS: hostile neutral shooter does not receive player credit
+PASS: player kill of hostile neutral remains eligible
+PASS: hostile neutral kill enters the settlement
+PASS: true revival grants the next real-event kill
+PASS: same unit's next life retains one individual card
+PASS: individual card counts kills across its lives
+PASS: individual card retains its first-kill equipment
+PASS: switching away from player faction stops future credit
+PASS: map element never becomes a battle unit kill
+PASS: live target cannot grant a premature kill
+PASS: new battle report freezes before durable settlement
+PASS: new report has its own v2 schema
+PASS: two same-name humanoids and one fixed group stay distinct
+PASS: first humanoid is not merged with its sibling
+PASS: second humanoid remains independent
+PASS: fixed monsters retain type aggregation
+PASS: weapon summary freezes before later changes
+PASS: appearance sharing does not alias unit identity
+PASS: individual level is frozen
+PASS: v2 report passes the AS2 persisted decoder
+PASS: persisted equipment is independent of live units
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.11245.12 state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=5
+PASS: v2 report restores without reroll
+PASS: restart retains the report identity
+PASS: restart retains report version
+PASS: restart retains ally loss facts
+PASS: restart retains frozen weapons
+PASS: individual overflow does not lose kill totals
+PASS: individual records have an independent bound
+PASS: omitted individual kill facts are explicit
+PASS: individual overflow never becomes a merged type
+PASS: allied detail list is bounded
+PASS: omitted allied units are explicit
+PASS: allied overflow retains all downs
+PASS: revival beyond detail cap still corrects final losses
+PASS: bounded v2 report freezes
+PASS: bounded v2 report persists without recombination
+PASS: asset report starts with the same authoritative stage run
+PASS: settlement freezes pickup and consumption facts with the run
+PASS: same pickup fact aggregates its exact positive quantity
+PASS: item consumption stays on an independent loss total
+PASS: gain and loss remain two explicit presentation facts
+PASS: pickup report preserves catalog display, source, reason, and aggregate count
+PASS: consumption report preserves the authoritative asset broadcast context
+PASS: invalid neutral broadcasts do not consume the presentation budget
+PASS: a frozen settlement report cannot be mutated by a later broadcast
+PASS: a fresh run owns a fresh bounded asset ledger
+PASS: bounded asset ledger remains a valid settlement report
+PASS: bounded presentation never drops the exact aggregate gain total
+PASS: asset presentation list is capped at the frozen protocol maximum
+PASS: each extra unique asset type is disclosed exactly once
+PASS: victory followed by death still accepts the shared revive path
+PASS: respawn event restores hero hp
+PASS: revive cannot erase victory
+PASS: successful respawn returns life to alive
+PASS: successful revive spends exactly one coin
+PASS: alive actor cannot spend a second revive coin
+PASS: rejected duplicate revive is zero-write
+PASS: an already restored hero reconciles without another revive
+PASS: external hp recovery repairs the life projection
+PASS: external hp recovery spends no revive coin
+PASS: a dispatcher throw after real hp recovery still commits the revive
+PASS: post-write dispatcher failure cannot mark a restored hero dead again
+PASS: post-write dispatcher failure never refunds an already successful revive
+PASS: shared revive publishes the hero through the real EventDispatcher
+PASS: real dispatcher callback receives the hero and restores hp
+PASS: real dispatcher executes exactly one respawn callback
+PASS: real dispatcher revive commits the life axis
+PASS: real dispatcher revive spends exactly one coin without rollback
+PASS: downed death fixture blocks an ordinary skill before respawn
+PASS: downed death fixture reproduces the unconditional small-jump exception
+PASS: respawn restores the same unit's hp and mp
+PASS: respawn clears the downed gate before ordinary skills resume
+PASS: respawn rearms kill delivery and clears the prior death diagnostic guard
+PASS: respawn resets zero-hp watchdog state instead of publishing a duplicate respawn
+PASS: respawn performs one animation recovery and restores visibility
+PASS: a second lethal hit reaches the production kill/death event chain
+PASS: the second death re-establishes the duplicate-death guard exactly once
+PASS: a dispatched event without hp recovery is not accepted
+PASS: failed respawn refunds the deducted coin
+PASS: failed respawn returns to dead for retry
+PASS: failed path dispatches only once
+PASS: stage restriction rejects revive before dispatch
+PASS: restricted revive spends no coin
+PASS: restricted revive publishes no respawn event
+[StageRunSession] stage outcome projection failed
+[StageRunSession] stage outcome projection failed
+[StageRunSession] stage outcome projection failed
+[StageRunSession] stage outcome projection failed
+PASS: a throwing C# projection cannot interrupt the authoritative revive
+PASS: projection failure still leaves the hero restored
+PASS: projection failure still commits exactly one revive coin
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=6
+PASS: dead post-victory actor can return to base
+PASS: return freezes the run before transition
+PASS: return atomically stashes the frozen reward source
+PASS: frozen reward has one durable stash owner
+PASS: return transition removes the revive capability before base load
+PASS: late settings recovery cannot spend a coin during return
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=7
+PASS: offline report does not reacquire asset authority
+PASS: offline report cannot lose the stored reward
+PASS: stored rewards do not keep a pending asset authority
+PASS: base settlement survives unrelated scene cleanup
+PASS: repeated return after a terminal settlement remains idempotent
+PASS: terminal return cannot materialize the same stage rewards a second time
+PASS: rolling a reward does not claim a committed gain true
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=8
+PASS: only confirmed save admits return true
+PASS: committed reward enters final report true
+PASS: committed reward has one visible row true
+PASS: row retains reward source true
+PASS: report count matches committed stash true
+PASS: repeated return does not duplicate report or reward true
+PASS: rolling a reward does not claim a committed gain false
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=unknown error=commit_pending seq=9
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=10
+PASS: only confirmed save admits return false
+PASS: failed or unknown save leaves reward report unchanged false
+PASS: failed or unknown save exposes no committed reward false
+PASS: committed reward enters final report false
+PASS: committed reward has one visible row false
+PASS: row retains reward source false
+PASS: report count matches committed stash false
+PASS: repeated return does not duplicate report or reward false
+PASS: rolling a reward does not claim a committed gain pending
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=unknown error=commit_pending seq=11
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=12
+PASS: only confirmed save admits return pending
+PASS: failed or unknown save leaves reward report unchanged pending
+PASS: failed or unknown save exposes no committed reward pending
+PASS: committed reward enters final report pending
+PASS: committed reward has one visible row pending
+PASS: row retains reward source pending
+PASS: report count matches committed stash pending
+PASS: repeated return does not duplicate report or reward pending
+PASS: curtain handoff begins victory
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=13
+PASS: curtain handoff freezes victory
+PASS: return stashes rewards before any presentation victory
+PASS: SceneReady cannot open a pausing report under the curtain victory
+PASS: automatic help keeps waiting for the report victory
+PASS: presentation delay preserves durable source finality victory
+PASS: duplicate ready does not bypass the presentation fence victory
+PASS: foreign reveal cannot open the report victory
+PASS: report waits for the successful tail and hide publication victory
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=14
+PASS: successful curtain release dispatches one report victory
+PASS: report request ends its automatic-help wait victory
+PASS: release never replays a reward write victory
+PASS: late ready and duplicate clear never redispatch the report victory
+PASS: curtain handoff begins retreat
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=15
+PASS: curtain handoff freezes retreat
+PASS: return stashes rewards before any presentation retreat
+PASS: SceneReady cannot open a pausing report under the curtain retreat
+PASS: automatic help keeps waiting for the report retreat
+PASS: presentation delay preserves durable source finality retreat
+PASS: duplicate ready does not bypass the presentation fence retreat
+PASS: foreign reveal cannot open the report retreat
+PASS: report waits for the successful tail and hide publication retreat
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=16
+PASS: successful curtain release dispatches one report retreat
+PASS: report request ends its automatic-help wait retreat
+PASS: release never replays a reward write retreat
+PASS: late ready and duplicate clear never redispatch the report retreat
+PASS: curtain handoff begins failure
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=17
+PASS: curtain handoff freezes failure
+PASS: return stashes rewards before any presentation failure
+PASS: SceneReady cannot open a pausing report under the curtain failure
+PASS: automatic help keeps waiting for the report failure
+PASS: presentation delay preserves durable source finality failure
+PASS: duplicate ready does not bypass the presentation fence failure
+PASS: foreign reveal cannot open the report failure
+PASS: report waits for the successful tail and hide publication failure
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=18
+PASS: successful curtain release dispatches one report failure
+PASS: report request ends its automatic-help wait failure
+PASS: release never replays a reward write failure
+PASS: late ready and duplicate clear never redispatch the report failure
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=19
+PASS: parallel return has durable stash closeEarlyvictory
+PASS: foreign return cannot borrow a report closeEarlyvictory
+PASS: frozen report projects before target SceneReady closeEarlyvictory
+PASS: parallel report preserves outcome closeEarlyvictory
+PASS: early report does not acquire a pausing panel closeEarlyvictory
+PASS: unissued open is definitely not pending closeEarlyvictory
+PASS: foreign report never supplies rejection authority closeEarlyvictory
+PASS: rewards remain unavailable before curtain coverage closeEarlyvictory
+PASS: early close returns to the same curtain
+PASS: early close consumes presentation only
+PASS: target readiness preserves one curtain identity closeEarlyvictory
+PASS: arrival never remounts the bound report closeEarlyvictory
+PASS: dismissed report never reopens on arrival closeEarly
+PASS: parallel presentation completes closeEarlyvictory
+PASS: presentation never rerolls or reclaims the stored reward closeEarlyvictory
+PASS: late arrival cannot reopen a report closeEarlyvictory
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=20
+PASS: parallel return has durable stash closeReadyretreat
+PASS: foreign return cannot borrow a report closeReadyretreat
+PASS: frozen report projects before target SceneReady closeReadyretreat
+PASS: parallel report preserves outcome closeReadyretreat
+PASS: early report does not acquire a pausing panel closeReadyretreat
+PASS: unissued open is definitely not pending closeReadyretreat
+PASS: foreign report never supplies rejection authority closeReadyretreat
+PASS: rewards remain unavailable before curtain coverage closeReadyretreat
+PASS: target readiness preserves one curtain identity closeReadyretreat
+PASS: arrival never remounts the bound report closeReadyretreat
+PASS: capture never dismisses the player's report closeReadyretreat
+PASS: scene readiness does not repeat reward admission closeReadyretreat
+PASS: ready close reveals the base directly
+PASS: dismissed report never reopens on arrival closeReady
+PASS: parallel presentation completes closeReadyretreat
+PASS: presentation never rerolls or reclaims the stored reward closeReadyretreat
+PASS: late arrival cannot reopen a report closeReadyretreat
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=21
+PASS: parallel return has durable stash managefailure
+PASS: foreign return cannot borrow a report managefailure
+PASS: frozen report projects before target SceneReady managefailure
+PASS: parallel report preserves outcome managefailure
+PASS: early report does not acquire a pausing panel managefailure
+PASS: unissued open is definitely not pending managefailure
+PASS: foreign report never supplies rejection authority managefailure
+PASS: rewards remain unavailable before curtain coverage managefailure
+PASS: display advances before the covered report intent arrives failure
+PASS: foreign future and malformed report intents stay fenced failure
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=22
+PASS: durable report binds before target SceneReady failure
+PASS: early binding never pauses loading failure
+PASS: same durable report survives actual scene cleanup failure
+PASS: active reward owner cannot be dismissed through a visual close failure
+PASS: target readiness preserves one curtain identity managefailure
+PASS: arrival never remounts the bound report managefailure
+PASS: capture never dismisses the player's report managefailure
+PASS: scene readiness does not repeat reward admission managefailure
+PASS: reward handoff locks the preview failure
+PASS: issued unacknowledged open keeps the result lock failure
+PASS: capture authorizes one full report open failure
+PASS: unknown open cannot replay or unlock through close failure
+PASS: old panel paint receipt cannot withdraw the report failure
+PASS: full panel paint completes without relying on paused world frames failure
+PASS: parallel presentation completes managefailure
+PASS: presentation never rerolls or reclaims the stored reward managefailure
+PASS: late arrival cannot reopen a report managefailure
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=23
+PASS: parallel return has durable stash managevictory
+PASS: foreign return cannot borrow a report managevictory
+PASS: frozen report projects before target SceneReady managevictory
+PASS: parallel report preserves outcome managevictory
+PASS: early report does not acquire a pausing panel managevictory
+PASS: unissued open is definitely not pending managevictory
+PASS: foreign report never supplies rejection authority managevictory
+PASS: rewards remain unavailable before curtain coverage managevictory
+PASS: display advances before the covered report intent arrives victory
+PASS: foreign future and malformed report intents stay fenced victory
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=24
+PASS: durable report binds before target SceneReady victory
+PASS: early binding never pauses loading victory
+PASS: same durable report survives actual scene cleanup victory
+PASS: active reward owner cannot be dismissed through a visual close victory
+PASS: target readiness preserves one curtain identity managevictory
+PASS: arrival never remounts the bound report managevictory
+PASS: capture never dismisses the player's report managevictory
+PASS: scene readiness does not repeat reward admission managevictory
+PASS: reward handoff locks the preview victory
+PASS: issued unacknowledged open keeps the result lock victory
+PASS: capture authorizes one full report open victory
+PASS: unknown open cannot replay or unlock through close victory
+PASS: old panel paint receipt cannot withdraw the report victory
+PASS: full panel paint completes without relying on paused world frames victory
+PASS: parallel presentation completes managevictory
+PASS: presentation never rerolls or reclaims the stored reward managevictory
+PASS: late arrival cannot reopen a report managevictory
+PASS: early close begins one stage owner
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=25
+PASS: early close durably stashes the single reward
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=26
+PASS: one early business owner opens without pausing the scene
+PASS: the early reward owner remains authoritative during retry
+PASS: retry borrows the same committed report
+PASS: a fresh loading attempt carries the existing reward session
+PASS: loading retry cannot reopen the early reward authority
+PASS: stashed report reads its real empty authority before arrival
+PASS: existing exact close terminalizes the early business session
+PASS: a closed reward session cannot be revived by loading retry
+PASS: authority-confirmed early closure returns to the same curtain
+PASS: early business close cannot reopen the report on arrival
+PASS: early business close preserves the committed stash without a second reward write
+PASS: zero-reward production splice begins a real stage run
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=27
+PASS: zero-reward failure enters the canonical return lifecycle
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=28
+PASS: offline zero-reward report has a durably ended source
+PASS: offline zero-reward settlement reports exact zero remaining
+PASS: offline zero-reward settlement retains the exact failure report
+PASS: zero-reward report owns no pending asset write
+PASS: scene expiry preserves zero-reward stage settlement as SUSPENDED
+PASS: scene expiry preserves the same zero-reward report object
+PASS: scene expiry preserves the stored source finality
+PASS: scene expiry cannot create reward write authority for a report
+PASS: settlement intel-cap stage run begins
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=2 omitted=1 result=committed seq=29
+PASS: victory return prepares the settlement
+PASS: capped story intel does not enter the stash
+PASS: only actually generated rewards acquire stash ownership
+PASS: the capped intel roll is counted as an omission
+PASS: settlement intel-accept stage run begins
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=2 outcome=victory configured=2 omitted=0 result=committed seq=30
+PASS: victory return prepares the second settlement
+PASS: uncapped intel is stashed alongside the other reward
+PASS: stashed intel remains available exactly once
+PASS: persistent settlement begins from an ordinary stage run
+PASS: prepare writes the frozen settlement into save ext
+PASS: first persisted settlement receives a stable monotonic identity
+PASS: pending record freezes manifest, remaining inventory, and report
+PASS: ext persistence marks the save dirty without pretending it was flushed
+PASS: repeated prepare reuses the already materialized settlement
+PASS: prepare retry never rerolls or replaces the reward inventory
+PASS: prepare retry reuses the same id and immutable manifest
+PASS: durable return fixture begins from an ordinary stage run
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=unknown error=commit_pending seq=31
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=32
+PASS: return is denied when the first durable save reports false
+PASS: unconfirmed flush preserves the exact prepared reward and held save before transition
+PASS: same return request succeeds after the durable save retry reports true
+PASS: durable retry reuses one settlement id and reward object without rerolling
+PASS: restart fixture persists two exact reward slots
+PASS: claim progress stores exact remaining inventory and first receipt
+PASS: same operation id and result is an idempotent persistence success
+PASS: a new claim receipt cannot persist without removing exactly one current reward
+PASS: persisted receipt can seed claim idempotency after process restart
+PASS: same operation id cannot be rebound to a different remaining manifest
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.12954.40 state=prepared remaining=1 receipts=1 blocker=pending_stage_settlement seq=33
+PASS: restart restores one exact pending reward and its receipt journal
+PASS: remaining manifest rebuilds BaseItem objects at their original physical slots
+PASS: restart restores report/run authority as a resumable base settlement
+PASS: restored pending settlement blocks a new stage overwrite
+[StageSettlementDiag] restore result=duplicate settlementId=stage.settlement.1 seq=34
+PASS: duplicate restore preserves the existing in-memory authority
+[StageSettlementDiag] restore result=inspect_failed error=future_settlement_store_version blocker=pending_stage_settlement seq=35
+PASS: future settlement schema fails closed under an older runtime
+PASS: unknown future settlement authority remains an admission blocker
+[StageRunSession] pending_stage_settlement blocks a new stage
+PASS: future pending schema cannot be overwritten by a new run
+PASS: future store is preserved byte-structure-wise instead of downgraded
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId= runId= remaining=-1 blocker=pending_stage_settlement seq=36
+PASS: malformed current-version pending record fails closed
+PASS: malformed pending record still blocks destructive overwrite
+[StageRunSession] pending_stage_settlement blocks a new stage
+PASS: malformed pending record closes stage admission
+PASS: malformed store remains untouched for diagnosis and recovery
+PASS: migrate 把结算持久态五个被磨成空对象的数组字段修复回 []
+PASS: 形状修复只换容器，不捏造任何结算内容
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.amf0.empty.arrays state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=37
+PASS: 修复后的零奖励结算在重启恢复路径上成功 decode 并恢复
+[StageSettlementDiag] terminal state=claimed settlementId=stage.settlement.1 result=cleared remaining=0 seq=38
+PASS: 恢复后的零奖励结算可写入终态 marker 并释放 pending
+PASS: 终态收敛后新关卡准入恢复，软锁解除
+PASS: 带键非数组不被形状修复吞掉，原文保留供诊断
+[StageSettlementDiag] restore result=decode_failed reason=report_invalid index=-1 settlementId=stage.settlement.1 runId=run.amf0.corrupt remaining=0 blocker=pending_stage_settlement seq=39
+PASS: 真损坏结算仍 fail closed 并报畸形
+PASS: 真损坏结算继续阻止新关卡覆盖，保留诊断现场
+PASS: migrate 把被磨成空对象的 tasks_to_do 修复回空数组
+PASS: migrate 把宠物信息五个被磨成空对象的内层空槽修复回 []
+PASS: 修复后的 tasks_to_do 上 push/splice 正常生效
+PASS: 修复后的宠物内层槽按 length==0 全部判为空槽
+PASS: 修复结果经 syncTopLevelFromMydata 同步到顶层 tasks_to_do / 战宠
+PASS: 占用槽与既有任务原样保留，仅空槽 {} 被修复
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=40
+PASS: late terminal cleanup recognizes an already stashed source
+PASS: terminal marker preserves stash finality and its single asset owner
+PASS: repeated terminal cleanup is idempotent after pending removal
+PASS: a cleared settlement cannot be relabeled with a conflicting terminal state
+PASS: terminal in-memory and persisted cleanup reopen stage admission
+PASS: next stage can persist a new settlement after terminal cleanup
+PASS: terminal cleanup retains the monotonic sequence for the next settlement
+PASS: failed-save fixture begins an ordinary stage run
+[RewardCommit] save boundary: stage_stash_pack_failed
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=not_committed error=save_not_committed seq=1
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=2
+PASS: unexposed pack failure still denies the return transition
+PASS: failed save keeps the run in prepared settlement authority
+PASS: failed save records a retryable return failure instead of a silent drop
+PASS: failed save keeps the return path retryable
+PASS: not_committed rollback restores the exact persisted pending record
+PASS: not_committed keeps persisted settlement authority
+PASS: not_committed exposes no stashed stock
+PASS: not_committed releases the reward commit lock
+PASS: stash not_committed produces a bounded diagnostic record
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=3
+PASS: return retry succeeds once the durable save reports true
+PASS: successful retry reuses the same settlement identity without reroll
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=unknown error=commit_pending seq=1
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=2
+PASS: unknown stash save still denies the return transition
+PASS: unknown save keeps the same reward commit candidate pending
+PASS: unknown save keeps the in-memory run under settlement authority
+PASS: unknown save parks the pending record inside the held candidate image
+PASS: unknown save exposes only previously committed stock
+PASS: read-only diagnostics expose the held reward commit owner
+PASS: unknown save leaves the active run as the truthful exit blocker
+PASS: unknown stash outcome produces a bounded diagnostic record
+PASS: explicit resolve commits the held candidate without a new domain write
+PASS: committed candidate releases the run to stashed terminal state
+PASS: resolved candidate releases the reward commit lock
+PASS: resolved candidate lands the exact stashed reward
+PASS: resolved stash lets the same return request proceed
+PASS: fixture holds a reward commit candidate over a live pending record
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.8 runId=run.held.commit state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=3
+PASS: pending record restores while the commit is held
+PASS: restored pending keeps the map in settlement_pending mode
+PASS: pending detail reports the unconfirmed save truthfully
+PASS: fixture releases the held candidate
+PASS: fresh scene has no report waiting ahead of tutorials
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=1
+PASS: return commits the stash save before arrival
+PASS: stash is durable before the report attempt
+PASS: durable stash still reserves the first report before optional tutorials
+PASS: fixture occupies loot authority so the stashed report cannot open
+[StageSettlementDiag] report result=begin_failed error=loot_flow_busy settlementId=stage.settlement.1 blocker= owner=base_scene seq=2
+PASS: report failure keeps the stashed terminal settlement
+PASS: report failure does not mark the settlement as started
+PASS: report admission failure does not release tutorial priority
+PASS: saved stash keeps scene exit eligible when the report fails
+PASS: saved stash does not re-block scene navigation after report failure
+PASS: post-stash report failure produces a bounded production diagnostic
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.amf0.partial state=rewards_pending remaining=1 receipts=1 blocker=pending_stage_settlement seq=1
+PASS: migrated partial settlement restores one exact remaining reward
+PASS: restored diagnostic carries bounded identity and exact counts
+PASS: restored pending settlement owns the scene-exit block
+PASS: restored pending settlement names the blocker owner
+PASS: diagnostics expose the persisted pending identity
+PASS: diagnostics expose the exact nonzero remaining count
+PASS: read-only diagnostics never mutate the persisted store
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=retreat configured=0 omitted=0 result=committed seq=2
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=3
+PASS: restored partial settlement stashes durably on arrival
+PASS: admitted partial report releases the pre-report tutorial hold
+PASS: committed stash emits a bounded diagnostic record
+PASS: post-stash report open emits a bounded diagnostic record
+PASS: committed stash plus opened report frees the exit gate
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.9 runId=run.zero.rewards state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=4
+PASS: zero-reward pending restores the exact empty settlement
+PASS: zero-reward restore diagnostic carries the exact zero count
+[StageSettlementDiag] stash settlementId=stage.settlement.9 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=5
+[StageSettlementDiag] report result=begin_failed error=loot_flow_busy settlementId=stage.settlement.9 blocker= owner=base_scene seq=6
+PASS: zero-reward stash commits and releases the exit gate
+PASS: empty durable report retains tutorial priority while earlier loot is active
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId= runId= remaining=-1 blocker=pending_stage_settlement seq=7
+PASS: malformed pending still fails closed
+PASS: decode diagnostic names the first violated field
+PASS: decode failure emits a bounded reason record
+PASS: malformed record remains preserved for diagnosis
+[StageSettlementDiag] restore result=inspect_failed error=future_settlement_store_version blocker=pending_stage_settlement seq=8
+PASS: future store version still fails closed at inspect
+PASS: future schema emits a distinct bounded diagnostic
+[StageSettlementDiag] snapshot run=none settlementId= remaining=0 pendingId= pendingState= pendingRemaining=-1 storeError= rewardCommit= blocker= owner=base_scene returnFailure= canRetry=false seq=1
+PASS: identical diagnostic lines collapse into one record
+[StageSettlementDiag] restore result=absent blocker= seq=2 suppressed=2
+PASS: collapsed repeats surface as an explicit suppressed count
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.0 runId= remaining=-1 blocker=pending_stage_settlement seq=3
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.1 runId= remaining=-1 blocker=pending_stage_settlement seq=4
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.2 runId= remaining=-1 blocker=pending_stage_settlement seq=5
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.3 runId= remaining=-1 blocker=pending_stage_settlement seq=6
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.4 runId= remaining=-1 blocker=pending_stage_settlement seq=7
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.5 runId= remaining=-1 blocker=pending_stage_settlement seq=8
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.6 runId= remaining=-1 blocker=pending_stage_settlement seq=9
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.7 runId= remaining=-1 blocker=pending_stage_settlement seq=10
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.8 runId= remaining=-1 blocker=pending_stage_settlement seq=11
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.9 runId= remaining=-1 blocker=pending_stage_settlement seq=12
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.10 runId= remaining=-1 blocker=pending_stage_settlement seq=13
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.11 runId= remaining=-1 blocker=pending_stage_settlement seq=14
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.12 runId= remaining=-1 blocker=pending_stage_settlement seq=15
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.13 runId= remaining=-1 blocker=pending_stage_settlement seq=16
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.14 runId= remaining=-1 blocker=pending_stage_settlement seq=17
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.15 runId= remaining=-1 blocker=pending_stage_settlement seq=18
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.16 runId= remaining=-1 blocker=pending_stage_settlement seq=19
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.17 runId= remaining=-1 blocker=pending_stage_settlement seq=20
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.18 runId= remaining=-1 blocker=pending_stage_settlement seq=21
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.19 runId= remaining=-1 blocker=pending_stage_settlement seq=22
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.20 runId= remaining=-1 blocker=pending_stage_settlement seq=23
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.21 runId= remaining=-1 blocker=pending_stage_settlement seq=24
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.22 runId= remaining=-1 blocker=pending_stage_settlement seq=25
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.23 runId= remaining=-1 blocker=pending_stage_settlement seq=26
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.24 runId= remaining=-1 blocker=pending_stage_settlement seq=27
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.25 runId= remaining=-1 blocker=pending_stage_settlement seq=28
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.26 runId= remaining=-1 blocker=pending_stage_settlement seq=29
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.27 runId= remaining=-1 blocker=pending_stage_settlement seq=30
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.28 runId= remaining=-1 blocker=pending_stage_settlement seq=31
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.29 runId= remaining=-1 blocker=pending_stage_settlement seq=32
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.30 runId= remaining=-1 blocker=pending_stage_settlement seq=33
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.31 runId= remaining=-1 blocker=pending_stage_settlement seq=34
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.32 runId= remaining=-1 blocker=pending_stage_settlement seq=35
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.33 runId= remaining=-1 blocker=pending_stage_settlement seq=36
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.34 runId= remaining=-1 blocker=pending_stage_settlement seq=37
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.35 runId= remaining=-1 blocker=pending_stage_settlement seq=38
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.36 runId= remaining=-1 blocker=pending_stage_settlement seq=39
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.37 runId= remaining=-1 blocker=pending_stage_settlement seq=40
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.38 runId= remaining=-1 blocker=pending_stage_settlement seq=41
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.39 runId= remaining=-1 blocker=pending_stage_settlement seq=42
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.40 runId= remaining=-1 blocker=pending_stage_settlement seq=43
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.41 runId= remaining=-1 blocker=pending_stage_settlement seq=44
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.42 runId= remaining=-1 blocker=pending_stage_settlement seq=45
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.43 runId= remaining=-1 blocker=pending_stage_settlement seq=46
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.44 runId= remaining=-1 blocker=pending_stage_settlement seq=47
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.45 runId= remaining=-1 blocker=pending_stage_settlement seq=48
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.46 runId= remaining=-1 blocker=pending_stage_settlement seq=49
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.47 runId= remaining=-1 blocker=pending_stage_settlement seq=50
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.48 runId= remaining=-1 blocker=pending_stage_settlement seq=51
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.49 runId= remaining=-1 blocker=pending_stage_settlement seq=52
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.50 runId= remaining=-1 blocker=pending_stage_settlement seq=53
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.51 runId= remaining=-1 blocker=pending_stage_settlement seq=54
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.52 runId= remaining=-1 blocker=pending_stage_settlement seq=55
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.53 runId= remaining=-1 blocker=pending_stage_settlement seq=56
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.54 runId= remaining=-1 blocker=pending_stage_settlement seq=57
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.55 runId= remaining=-1 blocker=pending_stage_settlement seq=58
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.56 runId= remaining=-1 blocker=pending_stage_settlement seq=59
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.57 runId= remaining=-1 blocker=pending_stage_settlement seq=60
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.58 runId= remaining=-1 blocker=pending_stage_settlement seq=61
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.59 runId= remaining=-1 blocker=pending_stage_settlement seq=62
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.60 runId= remaining=-1 blocker=pending_stage_settlement seq=63
+[StageSettlementDiag] restore result=decode_failed reason=record_revision index=-1 settlementId=bad.61 runId= remaining=-1 blocker=pending_stage_settlement seq=64
+PASS: diagnostic channel hard-caps process output regardless of spam
+PASS: capped diagnostics leave the malformed record preserved
+PASS: alive active run cannot use the outcome return action
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=1
+PASS: dead active run may retreat to base
+PASS: dead active return freezes a retreat outcome
+PASS: retreat durably closes its empty reward source
+PASS: prepare preserves reward manifest for the old-save fixture
+[StageSettlementDiag] restore result=restored settlementId=stage.settlement.1 runId=run.13400.48 state=prepared remaining=0 receipts=0 blocker=pending_stage_settlement seq=2
+PASS: old true navigation field remains schema-compatible
+PASS: old reward identity survives restart
+PASS: old navigation is never reactivated
+PASS: same reward can be persisted without reroll
+PASS: next normal write neutralizes the legacy bit
+[StageSettlementDiag] terminal state=claimed settlementId=stage.settlement.1 result=cleared remaining=0 seq=3
+PASS: terminal notification has no navigation authority
+PASS: exact close has no navigation authority
+PASS: duplicate close has no navigation authority
+PASS: retired unselected return is rejected
+PASS: old Host must explicitly upgrade selection
+PASS: old intent does not begin a return
+PASS: old intent does not persist navigation
+PASS: closing an unrelated panel preserves the explicit choice opportunity
+PASS: duplicate close cannot install navigation
+PASS: exact host intent reaches the shared revive path
+PASS: exact host intent spends one coin
+PASS: duplicate intent id cannot replay a spend
+PASS: new id with stale revision is also zero-write
+PASS: focus observation defaults off
+PASS: observation configuration rejects extra keys
+PASS: AS2 explicitly acknowledges a diagnostic session
+PASS: observation leaves one business dispatch
+PASS: local rejection is correlated to existing intent id
+PASS: diagnostics do not replay duplicate business intent
+PASS: stageOutcomeAction still rejects diagnostic envelope fields
+PASS: stale revision remains zero write with a rejection reason
+PASS: diagnostic sink failure cannot interrupt the business handler
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=victory configured=0 omitted=0 result=committed seq=4
+[StageSettlementDiag] report result=opened settlementId=stage.settlement.1 blocker= seq=5
+PASS: scene correlation is fixed before returning from transition dispatch
+PASS: AS2 observation budget includes failed sink delivery and is bounded
+PASS: duplicate diagnostic configuration cannot rearm the budget
+PASS: rolling observation rejects unknown mode
+PASS: rolling observation acknowledges host-owned retention
+PASS: rolling observation survives 512 events and expired legacy deadline
+PASS: rolling observation still cannot issue business operations
+PASS: repeated rolling configuration preserves sequence
+PASS: rolling AS2 sequence continues without resetting business correlation
+PASS: rolling observation rejects extra configuration fields
+PASS: input observation binds sampled mask and movement intent
+PASS: input observations are rate bounded
+PASS: input observations never mutate unit state
+PASS: missing controller is explicit
+PASS: no-run battle map still rejects a forged stage reservation
+PASS: no-run calibration state rejects an ordinary stage reservation
+PASS: first asynchronous stage start obtains a reservation
+PASS: canonical return fails closed while a stage start is pending
+[StageManager] clear rejected before StageRunSession return started
+PASS: ordinary StageManager.clear cannot cancel a pending reservation
+PASS: a second asynchronous start cannot reserve the same vacant run slot
+PASS: pending reservation closes the public stage admission gate
+PASS: only the exact owner token can cancel a reservation
+PASS: the exact owner token releases a failed transition
+[StageRunSession] stale_or_cancelled_stage_start_token
+PASS: a cancelled asynchronous token cannot start a stale loaded scene
+PASS: cancelled token rejection creates no replacement run
+PASS: failed transition cancellation reopens stage admission
+PASS: restart never reuses a prior stage-start token
+PASS: pre-restart token cannot inspect or cancel the post-restart reservation
+PASS: post-restart reservation remains owned by its new exact token
+PASS: a later valid transition can reserve again
+[StageRunSession] missing_or_mismatched_stage_start_token
+PASS: a matching target without the exact token cannot steal a reservation
+PASS: first gameplay frame consumes the matching reservation
+PASS: an active run blocks every new stage start
+[StageRunSession] stage_run_active blocks a new stage
+PASS: an active run cannot be overwritten by a second begin
+PASS: rejected second begin preserves the original run identity
+PASS: an active run blocks map and stage-select scene exits
+PASS: victory remains nonterminal until canonical return and settlement
+PASS: victory cannot bypass the canonical return lifecycle
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=victory configured=0 omitted=0 result=committed seq=6
+PASS: canonical return freezes the victory settlement
+PASS: durably stashed stock alone does not block a new run
+PASS: terminal settlement after return allows the next stage
+PASS: terminal settlement after return allows ordinary navigation
+PASS: terminal returned run can reserve the next stage
+PASS: terminal-run reservation remains exactly cancellable
+PASS: failure coverage creates an independent active run
+PASS: failure remains nonterminal until canonical return and settlement
+PASS: failure cannot bypass the canonical return lifecycle
+[ItemObtainIndex] 动态发现集合已清空（静态索引保留）
+PASS: StageManager accepts a valid exact reservation before mutation
+PASS: prepared manager rejects a forged abort token
+PASS: forged abort preserves the exact reservation
+PASS: exact abort clears an unentered prepared manager
+PASS: exact abort clears prepared manager activity
+PASS: StageManager stages candidate rewards and drops without old-scene mutation
+PASS: exact preload abort discards staged rewards and drops without pollution
+PASS: late A/B coverage prepares request A
+PASS: request A can release only its own preload
+PASS: request B can prepare after A releases
+PASS: late request A error cannot abort prepared request B
+PASS: late A error preserves B manager state and reservation
+PASS: request B remains exactly abortable by its own token
+[StageTimePool] invalid config: SubStage[0] 引用了未知计时池: missing_pool
+PASS: invalid TimePool references fail StageManager initialization
+PASS: invalid TimePool exact-cancels reservation and leaves no active preload
+[StageManager] stage-start admission rejected at initialize
+PASS: calibration host admission rejects a forged ordinary reservation source
+PASS: owner can release reservation rejected by forged calibration admission
+PASS: narrow calibration host accepts its exact source and target token
+PASS: calibration preload has the same exact abort semantics
+PASS: cancelled calibration coverage first prepares an exact host admission
+[StageManager] calibration admission token was already cancelled
+PASS: cancelled calibration token cannot enter or leave active calibration globals
+PASS: normal preload initializes before target mismatch coverage
+[StageRunSession] calibration_active blocks a new stage
+[StageManager] stage run admission rejected at first initStage
+PASS: stale calibration globals cannot bypass normal token target matching
+PASS: normal initStage coverage keeps staged drops undiscovered before exact init
+[ItemObtainIndex] 关卡首次发现: 初始化异常关
+[StageManager] initStage setup failed: synthetic normal stage setup failure
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=1 omitted=0 result=committed seq=7
+PASS: first exact gameplay init commits staged rewards and drops exactly once
+PASS: normal setup throw invokes one canonical return/fade and leaves no active manager
+PASS: normal setup throw becomes a canonical returnable failure terminal
+PASS: empty reward preload remains staged and preserves old-scene rewards
+[StageManager] initStage setup failed: synthetic empty reward setup stop
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=8
+PASS: first exact gameplay init commits an authored empty reward list
+PASS: drop commit exception coverage first prepares without visible mutation
+[StageManager] prepared reward cache commit failed: synthetic updateStageDrops failure
+[StageManager] initStage setup failed: prepared stage reward cache commit failed
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=1 omitted=0 result=committed seq=9
+PASS: drop commit throw preserves old rewards and enters recoverable failure return
+PASS: retryable initStage failure coverage prepares an exact first stage
+[StageManager] initStage setup failed: synthetic retryable stage setup failure
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=10
+PASS: rejected first fade preserves a fail-stopped battle manager for retry
+PASS: second canonical return retries the frozen run and clears after fade
+PASS: calibration initStage failure coverage prepares its exact host token
+[StageManager] initStage setup failed: synthetic calibration stage setup failure
+PASS: calibration setup throw clears host state without creating a run or leak
+PASS: ordinary clear coverage creates an active run
+[StageManager] clear rejected before StageRunSession return started
+PASS: ordinary StageManager.clear rejects an active run without half cleanup
+PASS: restart dispose force-resets manager and StageRunSession together
+PASS: forced restart reset reopens exact stage reservation admission
+PASS: real calibration token-flow fixture reserves and prepares an exact stage
+PASS: real initStage passes its captured token through initializeStageWorld after clearing the field
+PASS: calibration host captures the plain world identity before a real same-path Start replacement
+PASS: calibration token-flow creates no ordinary run and restores its fixture: 
+PASS: focused runner includes the production stage XML root coordinator
+[StageXMLLoaderRoot] manager initialize threw: synthetic initialize failure
+[StageXMLLoaderRoot] debug projection failed: synthetic debug projection failure
+PASS: production stage XML root invokes throwing initialize once
+PASS: initialize throw produces exactly one error and zero success callbacks
+PASS: initialize throw exact-aborts its prepared manager state once
+PASS: initialize throw releases only its stage-start reservation
+[StageXMLLoaderRoot] success debug projection failed: synthetic debug projection failure
+PASS: success debug throw still hands off exactly one success callback
+PASS: success and duplicate terminal callbacks do not repeat initialize or abort
+PASS: success debug throw leaves prepared manager and exact token to its caller
+PASS: production root stages rewards on the exact manager without old-scene mutation
+PASS: projection failure coverage prepares a timed stage
+PASS: socket throw during TimePool flush still fully aborts manager and reservation
+PASS: clearStage projection coverage prepares a timed stage
+[StageManager] stage event Clear failed: synthetic Clear listener failure
+[StageManager] clear animation projection failed: synthetic clear animation failure
+[StageManager] stage event StageFinished failed: synthetic StageFinished listener failure
+PASS: clearStage contains TimePool and native HUD socket projection failures
+PASS: throwing StageFinished listener still commits authoritative victory exactly once
+PASS: failStage projection coverage creates the exact active run
+[StageManager] stage event StageFailed failed: synthetic StageFailed listener failure
+PASS: failStage contains TimePool and native HUD socket projection failures
+PASS: failStage socket throw still commits failure and publishes StageFailed
+PASS: finish callback failure coverage creates the exact active run
+[StageManager] finish callback failed: synthetic finish callback failure
+PASS: throwing finish callback cannot interrupt victory terminal or EndFrame
+[StageManager] spawner close failed: synthetic spawner close failure
+[StageManager] stage handler clear failed: synthetic handler clear failure
+PASS: throwing close callbacks cannot retain manager refs or cleared flag
+[StageManager] spawner close failed: synthetic spawner close failure
+[StageManager] stage handler clear failed: synthetic handler clear failure
+PASS: focused runner captures production return-base and stage-finished functions
+PASS: production return projection coverage creates an active run
+[ReturnBase] HP projection failed: synthetic HP projection failure
+[ReturnBase] restriction cleanup failed: synthetic restriction projection failure
+[ReturnBase] BGM transition projection failed: synthetic BGM projection failure
+PASS: production return ignores HP/restriction/BGM throws and clears after one fade
+PASS: production book return queues context restoration without a playable temporary base: case 0
+[ReturnBase] HP projection failed: synthetic HP projection failure
+[ReturnBase] BGM transition projection failed: synthetic BGM projection failure
+PASS: production book return queues context restoration without a playable temporary base: case 1
+[ReturnBase] HP projection failed: synthetic HP projection failure
+[ReturnBase] BGM transition projection failed: synthetic BGM projection failure
+PASS: production book return queues context restoration without a playable temporary base: case 2
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=11 suppressed=4
+PASS: production book return queues context restoration without a playable temporary base: case 3
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=failure configured=0 omitted=0 result=committed seq=12
+[ReturnBase] fade transition failed: synthetic production fade failure
+PASS: production fade throw preserves manager and rolls back all three transition globals
+PASS: second production return retries the frozen run and clears after one accepted fade
+[StageFinish] victory effect failed: synthetic victory effect failure
+PASS: production victory effect throw still commits FinishStage exactly once
+PASS: prepare retry fixture starts a real run
+PASS: legacy Host keeps the exact v1 projection shape
+PASS: v2 Host negotiates explicit return failure projection
+[StageSettlementDiag] prepare result=persist_failed error=audit_prepare settlementId=stage.settlement.1 seq=13
+[StageSettlementDiag] return_gate result=prepare_failed blocker=stage_run_active seq=14
+PASS: prepare failure exposes its exact reason and retry capability
+PASS: prepare nonempty prepared reward keeps a return-only visible projection
+PASS: prepare failure preserves the durable latch and current world
+PASS: a replaced world cannot reuse the previous failure retry
+PASS: old down/revision cannot consume the failed attempt retry
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=15
+PASS: prepare original HUD retries the same frozen settlement without reroll
+PASS: repeat intent and fresh duplicate cannot fade twice or reopen stage admission
+PASS: terminal run preserves ordinary settings return without creating new rewards
+PASS: terminal settlement releases the next stage without a stale retry
+PASS: pack retry fixture starts a real run
+PASS: legacy Host keeps the exact v1 projection shape
+PASS: v2 Host negotiates explicit return failure projection
+[RewardCommit] save boundary: return_retry_pack_failed
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=not_committed error=save_not_committed seq=16
+[StageSettlementDiag] return_gate result=stash_failed settlementId=stage.settlement.1 blocker=stage_run_active seq=17
+PASS: pack failure exposes its exact reason and retry capability
+PASS: pack nonempty prepared reward keeps a return-only visible projection
+PASS: pack failure preserves the durable latch and current world
+PASS: a replaced world cannot reuse the previous failure retry
+PASS: old down/revision cannot consume the failed attempt retry
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=1 outcome=victory configured=1 omitted=0 result=committed seq=18
+PASS: pack original HUD retries the same frozen settlement without reroll
+PASS: repeat intent and fresh duplicate cannot fade twice or reopen stage admission
+PASS: terminal run preserves ordinary settings return without creating new rewards
+PASS: terminal settlement releases the next stage without a stale retry
+PASS: fade retry fixture starts a real run
+PASS: legacy Host keeps the exact v1 projection shape
+PASS: v2 Host negotiates explicit return failure projection
+[ReturnBase] fade transition failed: retry test fade failure
+PASS: fade failure exposes its exact reason and retry capability
+PASS: fade nonempty prepared reward keeps a return-only visible projection
+PASS: fade failure preserves the durable latch and current world
+PASS: a replaced world cannot reuse the previous failure retry
+PASS: old down/revision cannot consume the failed attempt retry
+PASS: fade original HUD retries the same frozen settlement without reroll
+PASS: repeat intent and fresh duplicate cannot fade twice or reopen stage admission
+PASS: terminal run preserves ordinary settings return without creating new rewards
+PASS: terminal settlement releases the next stage without a stale retry
+PASS: retreat regression loads the production task requirement writer
+PASS: retreat wave starts an active production run
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=retreat configured=0 omitted=0 result=committed seq=19 suppressed=1
+PASS: retreat wave uses the production return entry
+PASS: retreat wave stops spawning before timeline unload
+PASS: retreat wave retires the old stage event handler
+PASS: retreat wave keeps the frozen retreat and empty rewards
+PASS: retreat wave cannot satisfy the real task requirement
+PASS: retreat wave cannot emit STAGE CLEAR after leaving
+PASS: retreat wave cannot finish an inactive stage manager
+PASS: retreat event starts an active production run
+PASS: retreat event uses the production return entry
+PASS: retreat event stops spawning before timeline unload
+PASS: retreat event retires the old stage event handler
+PASS: retreat event keeps the frozen retreat and empty rewards
+PASS: retreat event cannot satisfy the real task requirement
+PASS: retreat event cannot emit STAGE CLEAR after leaving
+PASS: retreat event cannot finish an inactive stage manager
+PASS: retreat root starts an active production run
+PASS: retreat root uses the production return entry
+PASS: retreat root stops spawning before timeline unload
+PASS: retreat root retires the old stage event handler
+PASS: retreat root keeps the frozen retreat and empty rewards
+PASS: retreat root cannot satisfy the real task requirement
+PASS: retreat root cannot emit STAGE CLEAR after leaving
+PASS: retreat root cannot finish an inactive stage manager
+PASS: normal victory can start after retreat cleanup
+PASS: normal precommitted victory remains accepted
+PASS: normal victory satisfies the real lower-difficulty task requirement
+PASS: normal victory emits one completion effect
+PASS: duplicate victory callback cannot repeat completion effects
+[StageSettlementDiag] stash settlementId=stage.settlement.1 items=0 outcome=victory configured=0 omitted=0 result=committed seq=20 suppressed=2
+PASS: post-victory death still permits the production return entry
+PASS: returned victory cannot replay completion
+PASS: terminal settlement permits the next run without restarting
+PASS: next run gets its own single victory completion
+PASS: map authority creates an active run
+PASS: active run denies async navigation before any fresh RPC
+PASS: active rejection has no fade side effect
+PASS: victory still rejects navigation before canonical return
+PASS: terminal return releases the lifecycle gate
+PASS: missing domain admission remains fail closed after lifecycle release
+PASS: no C# admission means no scene execution
+PASS: failure rejects map navigation before canonical return
+PASS: stage-select coverage creates an active run
+PASS: active run rejects stage-select return before fade
+PASS: active run rejects difficulty entry before stage load
+PASS: active difficulty rejection preserves current stage globals
+PASS: active run rejects stage-select map entry before fade
+PASS: victory rejects stage-select return before canonical return
+PASS: victory rejects difficulty entry before stage load
+PASS: victory rejects stage-select map entry before fade
+PASS: stage-select coverage creates a failure run
+PASS: failure rejects stage-select return before canonical return
+PASS: failure rejects difficulty entry before stage load
+PASS: failure rejects stage-select map entry before fade
+PASS: vacant stage-select entry starts exactly one asynchronous load
+PASS: deferred stage-select entry performs no fade before XML success
+PASS: stage-select passes its exact reservation token into the loader
+PASS: deferred stage-select entry preserves globals before XML success
+PASS: deferred stage-select entry sends no premature success response
+PASS: XML success performs exactly one stage-select fade
+PASS: XML success commits the selected stage globals
+PASS: XML success sends exactly one stage-select response
+PASS: deferred stage-select success preserves the exact wire callId
+PASS: deferred stage-select success preserves its complete correlation envelope
+PASS: duplicate stage loader callbacks cannot repeat the fade
+PASS: duplicate stage loader callbacks cannot repeat the response
+PASS: stage-select reservation stays held until first gameplay init
+PASS: first gameplay init consumes the exact stage-select reservation
+[StageSelectPanelService] committed response failed: injected stage-select response failure
+PASS: committed stage-select response failure cannot escape the loader callback
+PASS: response failure happens after exactly one committed fade
+PASS: post-commit response failure preserves the exact reservation
+PASS: gameplay init still consumes the reservation after response transport failure
+PASS: deferred stage-select error and late success perform no fade
+PASS: deferred stage-select error preserves stage globals
+PASS: deferred stage-select error responds exactly once
+PASS: deferred stage-select error preserves exact callId and error on the wire
+PASS: deferred stage-select error exact-cancels its reservation
+PASS: empty authoritative StageInfo.Name fails before loader start
+PASS: empty authoritative StageInfo.Name creates no reservation leak
+PASS: transition failure coverage begins with vacant admission
+PASS: missing fade fails preflight before stage loading
+PASS: missing fade fails before current-stage mutation
+PASS: failed stage-select preflight exact-cancels its reservation
+[StageSelectPanelService] stage transition failed: synthetic stage-select fade failure
+[StageSelectPanelService] prepared stage abort failed: synthetic stage-select abort failure
+PASS: stage-select fade failure preserves exact correlation and failure wire
+PASS: stage-select fade failure restores every transition global
+PASS: stage-select fade failure restores restrictions and exact-cancels admission
+PASS: 大学入口可打开共享选关页
+PASS: 大学选关页归一为车库而根返回地址保留大学
+PASS: 大学返回身份经真实 snapshot wire 保留
+PASS: 切换选关子页不改大学返回身份
+PASS: 大学普通返回只关闭面板不跳车库或重复淡出
+PASS: 大学额外回车库按钮仍执行显式车库跳转
+PASS: 其他外交地图返回也保留真实场景而非关卡目录
+PASS: 随后车库入口重新绑定返回身份不沿用大学
+PASS: dispatch load performs no fade before deferred XML success
+PASS: dispatch load sends no premature success response
+PASS: dispatch XML success performs exactly one fade
+PASS: dispatch XML success preserves exact callId and authoritative fields in its raw response
+PASS: dispatch duplicate callbacks cannot repeat transition
+PASS: dispatch duplicate callbacks cannot repeat response
+PASS: dispatch success preserves token until gameplay init
+[TaskPanelService] post-commit response failed: response transport failure
+PASS: post-fade dispatch response exception does not escape or cancel commit
+PASS: dispatch response exception happens after the successful fade
+PASS: dispatch response exception preserves gameplay reservation
+PASS: dungeon deferred load has zero asset/task/transition writes before callback
+PASS: dungeon load error and late success keep zero asset/task/transition writes
+PASS: dungeon load error preserves exact callId and error in its raw response
+PASS: dungeon load error exact-cancels reservation
+PASS: dungeon success commits task and both currencies before completing transition
+PASS: dungeon success performs one fade after commit
+PASS: dungeon success preserves exact callId and mode in its raw post-fade response
+PASS: dungeon duplicate success cannot double-charge or duplicate AddTask
+[TaskPanelService] stage transition failed: AddTask commit failure
+PASS: dungeon commit exception rolls back before fade and charges nothing
+PASS: dungeon commit exception emits one failure response
+PASS: dungeon commit exception exact-cancels its reservation
+[TaskPanelService] stage transition failed: fade failure
+[TaskPanelService] prepared stage abort failed: synthetic task abort failure
+PASS: dungeon transition exception rolls back committed task and currencies
+PASS: dungeon fade failure restores transition globals, restrictions, and dialogue
+PASS: dungeon transition exception emits one failure response
+PASS: dungeon transition exception aborts prepared preload and reservation
+PASS: arena starts one deferred stage load with an exact reservation
+PASS: arena deferred load writes no context before XML success
+PASS: arena error and late success terminate exactly once
+PASS: arena late load error preserves all arena transition context
+PASS: arena late error exact-cancels its reservation
+PASS: arena can reserve again after a failed deferred load
+PASS: arena deferred success ignores duplicate and late error callbacks
+PASS: arena loader success alone still does not commit context
+PASS: arena final commit explicitly applies prepared context
+PASS: arena prepared context uses frozen authoritative values
+PASS: arena prepared success remains exact-cancellable before gameplay init
+PASS: arena race coverage reserves request A
+PASS: external close exact-cancels arena request A
+PASS: arena race coverage reserves request B after A closes
+PASS: late A loader error and service cleanup cannot cancel request B
+PASS: request B remains exactly cancellable by its own token
+PASS: arena deferred success preserves exact callId and authority in its raw post-fade response
+PASS: arena pending lineup clear fails before charge, reuse mutation, or fade
+PASS: arena lineup-clear failure exact-cancels and never reports success
+PASS: arena deferred failure preserves exact callId and error in its raw response
+PASS: arena pending lineup replacement fails before authoritative writes
+PASS: arena lineup-replacement failure releases reservation without false success
+PASS: empty merc commit returns false instead of a silent no-op
+PASS: empty roster commit returns false instead of a silent no-op
+PASS: empty escalation commit returns false instead of a silent no-op
+PASS: calibration abort coverage owns a pending reservation
+PASS: calibration pending abort releases admission for a new reservation
+PASS: calibration supersede coverage owns the old pending reservation
+PASS: calibration pending supersede releases admission for the replacement run
+PASS: calibration supersede starts one exact replacement load
+[ArenaCalibration] stale stage initialization failure ignored
+PASS: late calibration A initialization failure preserves pending owner B
+PASS: late calibration A error preserves pending B and performs no stale fade
+PASS: calibration B success alone commits exactly its own pending fade
+PASS: abort after calibration fade commit is rejected without dismantling B
+PASS: supersede after calibration fade commit is rejected without preparing C
+PASS: focused calibration committed-transition cleanup leaves no reservation leak
+PASS: late calibration A success cannot complete or clear pending B
+PASS: B still completes after stale A success is ignored
+PASS: late-success calibration sequence leaves no reservation leak after exact cleanup
+[ArenaCalibration] stage fade failed: synthetic calibration fade failure
+PASS: calibration fade throw exact-releases A and restores every transition global
+PASS: calibration fade failure allows a new exact pending reservation
+PASS: late callbacks from fade-failed A cannot mutate or cancel pending B
+PASS: replacement B remains exactly abortable after A fade failure
+[ArenaCalibrationService] response projection failed: synthetic calibration response failure
+PASS: throwing A supersede response still clears A and prepares exact B
+PASS: late A callbacks after response throw cannot consume or transition B
+PASS: B failure after throwing A response exact-releases the replacement reservation
+PASS: O1 scene owner names the idle base without mutation
+PASS: O1 scene owner names the existing transition wait
+PASS: O1 scene owner names the legacy battle owner
+PASS: O1 scene owner names the calibration owner
+PASS: O1 observation fixture can establish a normal stage owner
+PASS: O1 scene owner names an active StageRunSession
+PASS: reading the O1 scene owner leaves the exact run unchanged
+PASS: O1 pause owner names an unpaused runtime
+PASS: O1 pause owner names the existing Web panel lease without its id
+PASS: reading the O1 pause owner leaves pause state unchanged
+StageRunSessionTest Tests Passed: 920
+StageRunSessionTest Tests Failed: 0
+=== StageRunSessionTest end ===
+MapLootTestRunId Complete: 88b61a28c4574ec9895060de8a3f42f3
+监听器已移除：HID1
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+监听器已移除：HID3
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+监听器已移除：HID5
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+监听器已移除：HID7
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+监听器已移除：HID9
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+监听器已移除：HID11
+所有监听器已移除：onUnload，已恢复原生处理器。
+目标对象的所有事件已清理，已释放 watch 拦截器。
+[ServerManager] Ports file not found, fallback to blind scan
+[FSM] DISCONNECTED -> HTTP_PROBING (retry=0, frame=1)

@@ -1,0 +1,191 @@
+{
+  "schema": "cf6-calibration-restart-checkpoint.v1",
+  "time": "2026-10-17T13:29:51.098Z",
+  "reason": "User reports machine lag after owned game processes stopped and is considering a full Windows restart",
+  "task": "Complete authorized CF6 balance tuning and qualified final combat validation, then commit and push the related work",
+  "status": "incomplete; heavy tests stopped; no commit or push performed",
+  "head": "46977734df67f2eadabe59831f95320a1a472a1b",
+  "sourceFiles": [
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "bytes": 13433,
+      "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "bytes": 26571,
+      "sha256": "11065b2e183417333360aed98c0ef1355f5f16723bee250946e3379aba732f27"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "bytes": 24036,
+      "sha256": "f144759dd43a21e959178685f946c8bc74557223340b581cbfac8caacf2e6999"
+    },
+    {
+      "path": "tools/cf6-elder-assets/analyze-arena.py",
+      "bytes": 7759,
+      "sha256": "201feb8f2e0c0982044612a5ce48595f5139bf710c119389a56f7e7dbac03e4f"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6084042,
+      "sha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "bytes": 235870,
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "bytes": 400992,
+      "sha256": "3e652c9a643074da92ed6ac3342c2b21fdeebf397d9e4fb3418e5bb500550e69"
+    },
+    {
+      "path": "scripts/TestLoader.as",
+      "bytes": 89,
+      "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b"
+    }
+  ],
+  "nativeTests": [
+    {
+      "name": "headbot-asset",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "time": "2026-10-17T20:55:14.9030552+08:00"
+    },
+    {
+      "name": "elder-asset",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "time": "2026-10-17T20:56:48.9062735+08:00"
+    },
+    {
+      "name": "player-aim",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "time": "2026-10-17T20:59:21.6617701+08:00"
+    },
+    {
+      "name": "bladebot-asset",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "time": "2026-10-17T21:02:34.8465411+08:00"
+    },
+    {
+      "name": "audio",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "time": "2026-10-17T21:03:07.3833371+08:00"
+    }
+  ],
+  "interruptedArena": [
+    {
+      "groupId": "beastking-level30",
+      "originalGroupReport": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r8-elder-20261017\\groups\\beastking-level30\\group-report.json",
+      "completedReport": true,
+      "outcomes": [
+        {
+          "status": "failed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        },
+        {
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        }
+      ],
+      "globalSaveUnchanged": true
+    },
+    {
+      "groupId": "beastking-level60",
+      "originalGroupReport": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r8-elder-20261017\\groups\\beastking-level60\\group-report.json",
+      "completedReport": true,
+      "outcomes": [
+        {
+          "status": "completed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        },
+        {
+          "status": "failed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        }
+      ],
+      "globalSaveUnchanged": true
+    },
+    {
+      "groupId": "beastking-level99",
+      "originalGroupReport": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r8-elder-20261017\\groups\\beastking-level99\\group-report.json",
+      "completedReport": true,
+      "outcomes": [
+        {
+          "status": "failed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        },
+        {
+          "status": "failed",
+          "cleanupVerified": true,
+          "protectedSavesVerified": true,
+          "runtimeResourcesVerified": true
+        }
+      ],
+      "globalSaveUnchanged": true
+    },
+    {
+      "groupId": "exusiai-level30",
+      "completedReport": false,
+      "recoveryPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\resource-reduction\\interrupted-group-save-recovery.json",
+      "saveComparison": [],
+      "qualified": false
+    }
+  ],
+  "nextSteps": [
+    "Save any unsaved human editor documents before restarting Windows. Do not automatically shut down the machine.",
+    "After restart, measure idle CPU first. Keep validation to one game instance; do not restore three concurrent workers.",
+    "Preserve original failed/stalled attempts. Run a fresh single-instance scene-readiness probe with exact runtime and asLoader identity before attributing the failure to source or resource pressure.",
+    "Continue full current-runtime Head 18 and Elder 36 matrices only after the readiness problem is resolved; R8 strength is not yet established.",
+    "Seal new evidence, preserve excluded failures, restage exact approved scope, run documentation/native-input checks, commit and push normally after final gates.",
+    "Preserve ignored candidate/runtime/log files before archiving all three owned worktrees."
+  ],
+  "readonlySeed": {
+    "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-wings-20261015\\readonly-test-seed.json",
+    "expectedSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+    "actualSha256": "sha256:b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5"
+  },
+  "processCleanup": {
+    "time": "2026-10-17T21:24:44.1917649+08:00",
+    "remainingOwnedProcesses": [],
+    "absenceVerified": true,
+    "cleanupAttempt": "Window close attempted for both owned Flash players; helper ended when broker had already exited. Individual termination results were not finalized.",
+    "originalEditorPreserved": true
+  },
+  "nativePlayerCleanup": {
+    "ok": true,
+    "originalRunnerSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+    "pendingMarkersAbsent": true,
+    "controlReceipts": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\flash-testplayer-control\\8149cd6168d04a89a9a9a01ef0cdb1a7",
+    "editorPid": 11904,
+    "editorStartUtc": "2026-10-17T02:24:58.5053590Z",
+    "editorPreserved": true,
+    "time": "2026-10-17T21:23:27.9593911+08:00"
+  },
+  "performanceEvidence": [
+    "host-load-before-reduction.json",
+    "resource-reduction/idle-samples.json",
+    "resource-reduction/process-cpu-interval.json"
+  ],
+  "ownedWorktrees": [
+    "C:/Users/fs/.codex/worktrees/headbot-combat/CrazyFlashNight",
+    "C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight",
+    "C:/Users/fs/.codex/worktrees/cf6-head-final/CrazyFlashNight"
+  ]
+}

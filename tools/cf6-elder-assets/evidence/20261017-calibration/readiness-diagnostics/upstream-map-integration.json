@@ -1,0 +1,31 @@
+{
+  "before": "46977734df67f2eadabe59831f95320a1a472a1b",
+  "head": "26b69b72282cac806937a0aed619a785871f380c",
+  "upstreamPaths": [
+    "launcher/src/Data/MapNpcTaskProjection.cs",
+    "launcher/tests/Tasks/MapDomainSessionTests.cs"
+  ],
+  "preservedTaskSources": [
+    {
+      "sha256": "8B940DC105E6230DF2B2D05E676C573D0FA6DB67BE0CDED09B1325794AC3C43E",
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs"
+    },
+    {
+      "sha256": "22F37487CD98BE20FFFBA982F4F20D29D6D01D4C7F708634A94583511CCFF350",
+      "path": "launcher/tests/Guardian/WorldCompositorTests.cs"
+    },
+    {
+      "sha256": "22A8D6AFF5ADBE463CA3D318EC47F0C99D0BD145D6BE9C490176F90EF9787979",
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaCalibrationService.as"
+    },
+    {
+      "sha256": "AA8A60136CB4AF07D2E8B4F5469A154EDAFE4F56D7F237093E11FED22456C14F",
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaWorkerProtocolTest.as"
+    },
+    {
+      "sha256": "0C1B444E4E0649FCB9543E3E90F881D2CFF1357BA7236AF5694E5D6F2AD90EBB",
+      "path": "tools/cf6-elder-assets/ElderAI.as"
+    }
+  ],
+  "as2CompileInputsChanged": false
+}

@@ -2,6 +2,8 @@
 *.sh  text eol=lf
 *.bat text eol=crlf
 /.gitattributes text eol=lf
+/agentsDoc/testing-details.md text eol=lf
+/agentsDoc/game-design.md text eol=lf
 
 # 自动处理其他文件类型（跨平台推荐）
 * text=auto
@@ -21,6 +23,9 @@ scripts/asLoaderManifest/_collapsed_frame.as text eol=lf
 launcher/scripts/dist/hit-number-bundle.js text eol=lf
 launcher/web/modules/arena-custom-presets.js text eol=lf
 launcher/web/modules/arena-unit-catalog.js text eol=lf
+# Arena source receipts bind the generated registration table's canonical LF bytes.
+/data/units/units.json text eol=lf
+/tools/cf7-balance-tool/data/monster-flag-ledger.json text eol=lf
 launcher/web/modules/arena-unit-param-presets.js text eol=lf
 launcher/web/modules/stage-select/stage-select-blackiron-data.js text eol=lf
 launcher/web/assets/stage-diorama/blackiron-hq/** -text
@@ -212,4 +217,55 @@ launcher/app.manifest text eol=lf
 /flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/** -text whitespace=cr-at-eol
 /scripts/run-cf6-guard-render-tests.ps1 -text whitespace=cr-at-eol
 /scripts/test-runners/cf6-guard-render/** -text whitespace=cr-at-eol
+
+# Headbot, Elder and shared CF6 audio inputs use raw byte identities across checkouts.
+/flashswf/arts/new/Codex素材源稿/CF6大头机器人-R3/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex大头机器人素材/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex老头素材/** -text whitespace=cr-at-eol
+/tools/cf6-headbot-assets/** -text whitespace=cr-at-eol
+/tools/cf6-elder-assets/** -text whitespace=cr-at-eol
+/tools/cf6-audio/** -text whitespace=cr-at-eol
+/tools/cf6-zombie-assets/build.py -text whitespace=cr-at-eol
+/tools/cf6-zombie-assets/native-manifest.json -text whitespace=cr-at-eol
+/tools/cf6-zombie-assets/README.md text eol=lf
+# Immutable evidence retains compiler output, traces and captured source verbatim.
+/tools/cf6-headbot-assets/evidence/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/tools/cf6-elder-assets/evidence/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/tools/cf6-audio/evidence/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/tools/cf6-bladebot-assets/evidence/20261017-wave/** -text whitespace=-blank-at-eol,-blank-at-eof,-space-before-tab,cr-at-eol
+/scripts/run-cf6-headbot-*.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-elder-*.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-audio-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-legacy-audio-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-player-aim-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-knockback-scope-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-robot-death-render-tests.ps1 -text whitespace=cr-at-eol
+/scripts/run-cf6-bladebot-beam-render-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-headbot*/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-elder*/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-audio/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-player-aim/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-playtest/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-knockback-scope/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-robot-death-render/** -text whitespace=cr-at-eol
+/scripts/test-runners/cf6-bladebot-beam-render/** -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6Headbot*.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6Elder*.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotBeamRenderTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6Robot*.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6KnockbackScopeTest.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/component/Buff/Effect/ElderBeamVulnerability.as -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletHitEffectRegistry.as -text whitespace=cr-at-eol
+/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as -text whitespace=cr-at-eol
+/scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as -text whitespace=cr-at-eol
+# This archived author script is retained verbatim and is not a repository build entry.
+/flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/build_art.py whitespace=-blank-at-eol,cr-at-eol
+/scripts/逻辑/单位函数/单位函数_lsy_主角技能.as text eol=lf
+/tools/asset-metrology/xfl_geometry.py text eol=lf
 /scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardRenderTest.as -text

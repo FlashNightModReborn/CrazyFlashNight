@@ -1,0 +1,31 @@
+{
+  "registeredAtUtc": "2026-10-18T02:21:52.642140+00:00",
+  "purpose": "Exploratory hard-shield and actual beam-shield consumption pilot; does not replace the full thirty-six-fight acceptance matrix.",
+  "expectedRows": 12,
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "rivals": [
+    78,
+    361
+  ],
+  "perSideRepeat": 1,
+  "fullMatrixGroupMeanAndMedianNetHpLoss": [
+    0.5,
+    0.8
+  ],
+  "winsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "ownPhaseSpawnsPerFight": 1,
+  "netHpMethod": "Fixed full chain including unspawned beast successor; all rows retained.",
+  "executionQualificationRequired": true,
+  "continuousObservedDisplayRequired": true,
+  "displayLog": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\display-qualified-20261018-r4\\display-state.jsonl",
+  "nativeCandidate": "cf6-transition-paint-r4",
+  "maximumConcurrentGames": 1,
+  "perShardWallLimitMs": 900000,
+  "perFightTimeoutFrames": 5400,
+  "formalPromotion": false
+}

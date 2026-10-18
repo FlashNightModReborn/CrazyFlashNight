@@ -1,0 +1,115 @@
+{
+  "scope": "After Elder cleanup, restore the two old-agent cues before final Head matchups. Prior robot behavior remains unchanged.",
+  "workers": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "beforeSha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "tools/cf6-audio/audit.py",
+          "beforeSha256": "21cc35770cd8acadcfa5cdb13b2e66c69572dbe7f56747c234d6690a89de11cf",
+          "sha256": "c7d1612e3f43f1695d789beeb57f93fc7562aa184166c1ddb2b3779c2cb3b2a2"
+        },
+        {
+          "path": "tools/cf6-audio/build-legacy-test-fixture.py",
+          "beforeSha256": "4d02157baa4d0985abe9773923d4f516bd32b54570e85cf62c66f1d82f8ca33f",
+          "sha256": "aee77e17232117eb1acac2d1732da13a1f5d7073e0f0d2492a206e405b2e7223"
+        },
+        {
+          "path": "tools/cf6-audio/legacy-test-fixture-manifest.json",
+          "beforeSha256": "436a5e2a628d97fbca8b9294dd0315533d8b22a295d534493c068e0b13fb1832",
+          "sha256": "1b9eb9a6ff991cf978da5a5e8d728610a30208b722b5b458ca1b5541c68d10d1"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "beforeSha256": "c58972f03cc7d9f7b50e088da0e973442e9112ce52f98b944e61424ce3683ace",
+          "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "beforeSha256": "eff00696434a4c0f65e4d420e96afe217031a9740e1f67e4bcc25bcb687ae470",
+          "sha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+          "beforeSha256": "3dbda7aa4ccf1f36dd0b9295739d97066d907e062679abfd7a0493b35a498282",
+          "sha256": "756bd498aad04d443b51df937e5cc9799e6faf829a3a5b44734b5ee94da42c92"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+          "beforeSha256": "bbf0b8f12e9c36ec2ad4d666c52aa47d2c6a45151121db6befd4b3c54a528ec1",
+          "sha256": "3bb6bf640f5183a6a459f633b2eba7c32bc50a69891b5e54a2dcb126173a41e3"
+        },
+        {
+          "path": "tools/cf6-audio/legacy-cues.json",
+          "beforeSha256": null,
+          "sha256": "7e30633d7b1d680454c5e0e47390f18ca54f3e8f36ec1d6149bc4f116b51e297"
+        },
+        {
+          "path": "tools/cf6-audio/restore-legacy-cues.py",
+          "beforeSha256": null,
+          "sha256": "22a183c04635b7d00cacf68acc407e69e4bf501cd92ad6c065fc261b94d378ca"
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "beforeSha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "tools/cf6-audio/audit.py",
+          "beforeSha256": "21cc35770cd8acadcfa5cdb13b2e66c69572dbe7f56747c234d6690a89de11cf",
+          "sha256": "c7d1612e3f43f1695d789beeb57f93fc7562aa184166c1ddb2b3779c2cb3b2a2"
+        },
+        {
+          "path": "tools/cf6-audio/build-legacy-test-fixture.py",
+          "beforeSha256": "4d02157baa4d0985abe9773923d4f516bd32b54570e85cf62c66f1d82f8ca33f",
+          "sha256": "aee77e17232117eb1acac2d1732da13a1f5d7073e0f0d2492a206e405b2e7223"
+        },
+        {
+          "path": "tools/cf6-audio/legacy-test-fixture-manifest.json",
+          "beforeSha256": "436a5e2a628d97fbca8b9294dd0315533d8b22a295d534493c068e0b13fb1832",
+          "sha256": "1b9eb9a6ff991cf978da5a5e8d728610a30208b722b5b458ca1b5541c68d10d1"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "beforeSha256": "c58972f03cc7d9f7b50e088da0e973442e9112ce52f98b944e61424ce3683ace",
+          "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "beforeSha256": "eff00696434a4c0f65e4d420e96afe217031a9740e1f67e4bcc25bcb687ae470",
+          "sha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+          "beforeSha256": "3dbda7aa4ccf1f36dd0b9295739d97066d907e062679abfd7a0493b35a498282",
+          "sha256": "756bd498aad04d443b51df937e5cc9799e6faf829a3a5b44734b5ee94da42c92"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+          "beforeSha256": "bbf0b8f12e9c36ec2ad4d666c52aa47d2c6a45151121db6befd4b3c54a528ec1",
+          "sha256": "3bb6bf640f5183a6a459f633b2eba7c32bc50a69891b5e54a2dcb126173a41e3"
+        },
+        {
+          "path": "tools/cf6-audio/legacy-cues.json",
+          "beforeSha256": null,
+          "sha256": "7e30633d7b1d680454c5e0e47390f18ca54f3e8f36ec1d6149bc4f116b51e297"
+        },
+        {
+          "path": "tools/cf6-audio/restore-legacy-cues.py",
+          "beforeSha256": null,
+          "sha256": "22a183c04635b7d00cacf68acc407e69e4bf501cd92ad6c065fc261b94d378ca"
+        }
+      ]
+    }
+  ]
+}

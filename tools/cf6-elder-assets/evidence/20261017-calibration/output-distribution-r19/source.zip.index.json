@@ -1,0 +1,124 @@
+{
+  "files": [
+    {
+      "path": "agentsDoc/testing-details.md",
+      "bytes": 313039,
+      "sha256": "0a75f28be3730fe829a30bc2059bce3e3d80b63941c3dd112ebcad021bd64a6b"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 17972,
+      "sha256": "96b8a04607639d9d53edd61af6487923edd825efd5df45b0eed494a9a12280d0"
+    },
+    {
+      "path": "data/units/units.json",
+      "bytes": 155110,
+      "sha256": "79024eb7274d9fac3716e1a043340d117245e5d56209f93f84e857df52de22cc"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 109894,
+      "sha256": "de53e94da1875124b1811dcf963f4509d6f1f2101ea42cf9956689b4725bfbac"
+    },
+    {
+      "path": "scripts/run-cf6-elder-asset-tests.ps1",
+      "bytes": 1022,
+      "sha256": "73a74e080785bf190315191d669ab31e87d7e2520c8fb5d2c47840bf7f17ea23"
+    },
+    {
+      "path": "scripts/test-runners/cf6-playtest/PlaytestFixture.as",
+      "bytes": 10205,
+      "sha256": "3082ede17edd3e6747857b1aa7bea8ab80182c4a60c447a1cd72179cd17d738a"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Shield/AdaptiveShield.as",
+      "bytes": 126615,
+      "sha256": "819b16b39ef5b93fb1fd3f1bb0fa77880c794c5e618a3be22b9109a86b4f2586"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "bytes": 36291,
+      "sha256": "809d58630862fda5d455e0e7e63ba2612d4c574dc7b71824d5ec3625a61a77a7"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "bytes": 41464,
+      "sha256": "1a1e99af85adf50f48d187b4dfae4058c933f2309f6d6a9dcd70f55c17a3fd88"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as",
+      "bytes": 16131,
+      "sha256": "2d05ec32017e4d59475dca6ed47e118f8ecd8a28c830a2395e436404b77612c2"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "bytes": 38740,
+      "sha256": "94ca5c8d5c29d5b6eae75705059c0509bc8fac0dc154bf0c773dc294564c81eb"
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "bytes": 28455,
+      "sha256": "69996fa6482ef390039ae5980ff0485dfe2ed9909f299601d83ba586023eec07"
+    },
+    {
+      "path": "tools/cf6-elder-assets/analyze-arena.py",
+      "bytes": 8441,
+      "sha256": "cfcea9988cc328008ce1c8e97f02e3c5f110af105542350556ea52428bc6574d"
+    },
+    {
+      "path": "tools/cf6-elder-assets/arena-plan.js",
+      "bytes": 7666,
+      "sha256": "1f04a6fee46523d6be6b55df7ddeb2ff1b77a2c605b857e486a1d13bddf34c5e"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "bytes": 5333,
+      "sha256": "a9460f34e4398a363f11f618dde9fdb51e413686702c17991a8841018bd3b16c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "bytes": 7150,
+      "sha256": "927f219b92a3f93c4c1959cdf23e2fc3af1eda9dd1e0afb65af445ec2a21db8c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build-playtest-fixture.py",
+      "bytes": 4424,
+      "sha256": "b2bc2e8fb585bf8d7e9c3b5eb761016458bf04c508beeaf0c105bc2847b33124"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "bytes": 24156,
+      "sha256": "d14de158ded61c30b46f9e7d3d9db7f42042bfb9010a8301c5ecabff78b3a4fb"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "bytes": 43365,
+      "sha256": "4d5e25814999a0b0b5ad0ffd751ad6eab867d660f7e17be95ace4cdb94e8a348"
+    },
+    {
+      "path": "tools/cf6-elder-assets/playtest-fixture-manifest.json",
+      "bytes": 1433,
+      "sha256": "92689157dec8c9c585bd5270cfcb8ad3e76a8d75ce7b6f7695eefaf093dbbbdd"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/arena-plan.js",
+      "bytes": 6801,
+      "sha256": "b7398039b74b977b1447a899d8f5bb6a5c1b8965ef17b09bb9df7540d4ec1640"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance-inputs.json",
+      "bytes": 2380,
+      "sha256": "c4f7455d5ac201d8da5ac797cb8878834f8615d33560b50be0740117875cea40"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance.py",
+      "bytes": 7164,
+      "sha256": "e1cf82a4f9a270f26ddd134a5a13cb4a65857849e1f0c0ff7049531463aa0e9e"
+    },
+    {
+      "path": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+      "bytes": 3346,
+      "sha256": "ecacf243e9cfff1d51d3c05ccad544bb4c407511944d42a32bd1f61eae7e6cba"
+    }
+  ]
+}

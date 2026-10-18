@@ -1,0 +1,20 @@
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder Start: c88b0a14e7d44deda3c9529aadd7febc
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 0
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 1
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 2
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 3
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 4
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 5
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 6
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 7
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 8
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 9
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 10
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 11
+[TEST_FAIL] Cf6ElderAssetTest: actual death cleanup preserves running phase body 12

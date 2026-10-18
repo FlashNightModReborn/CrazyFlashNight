@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "lastExperiment": "cf6-cal-head-c5-20261018",
+  "lastExperimentCompletedAt": "2026-10-18T10:39:58.448Z",
+  "releaseRequestedAtUtc": "2026-10-18T10:39:58.733972+00:00",
+  "release": {
+    "event": "display_request_released",
+    "utc": "2026-10-18T10:39:58.9783985Z",
+    "pid": 12496,
+    "threadId": 23308,
+    "state": 1,
+    "result": 2147483651,
+    "holdRequested": true
+  },
+  "subscriptionEnd": {
+    "event": "subscription_ended",
+    "utc": "2026-10-18T10:39:58.9783985Z",
+    "pid": 12496,
+    "threadId": 23308,
+    "state": 1,
+    "result": 0,
+    "holdRequested": true
+  },
+  "displayHoldActive": false,
+  "persistentPowerPlanChanged": false,
+  "boundary": "The temporary display hold was released after the final live test and before documentation, evidence sealing or Git closeout."
+}

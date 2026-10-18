@@ -1,0 +1,116 @@
+{
+  "schema": "arena-calibration.case-manifest.v1",
+  "batchId": "cf6-cal-final-bladebot-20261017-arkclaw-l30-w2",
+  "createdAt": "2026-10-17T12:01:08.718Z",
+  "buildCommit": "0392d8144c20d62261b01df54e6787b845f75e73",
+  "planner": {
+    "name": "cf6-bladebot-wave-arkclaw",
+    "version": 2
+  },
+  "arenaMode": "calibration",
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "blueBench": null,
+  "cases": [
+    {
+      "caseId": "level30-red",
+      "blueRoster": [
+        {
+          "type": "兵种286",
+          "level": 30,
+          "sourceId": "arkclaw-30"
+        }
+      ],
+      "redRoster": [
+        {
+          "type": "兵种465",
+          "level": 30,
+          "sourceId": "bladebot-30"
+        }
+      ],
+      "repeat": 1,
+      "timeoutFrames": 5400,
+      "tags": [
+        "cf6-bladebot",
+        "arkclaw",
+        "wave-combo",
+        "red"
+      ],
+      "plannerReason": "同等级交换阵营复验大刀的重劈击退接波光束；保留全部重复、胜负与超时。",
+      "spawnDistance": 650,
+      "blueFormation": "line",
+      "redFormation": "line",
+      "formationSpacing": 54,
+      "authorityContext": {
+        "candidateSide": "red",
+        "candidateUnitId": 465,
+        "level": 30,
+        "rivalUnitId": 286,
+        "sourceBindings": [
+          {
+            "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+            "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+          },
+          {
+            "path": "flashswf/arts/things-new.swf",
+            "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+          },
+          {
+            "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+            "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+          },
+          {
+            "path": "scripts/asLoader.swf",
+            "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+          },
+          {
+            "path": "data/enemy_properties/CF6重制敌人.xml",
+            "sha256": "e128760af4010c4cd11a853ec5767ebab48edc7cc6191d0bad3e9c68cd659ecc"
+          },
+          {
+            "path": "data/enemy_properties/诺亚新敌人.xml",
+            "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+          },
+          {
+            "path": "data/units/units.json",
+            "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+          },
+          {
+            "path": "data/items/asset_source_map.xml",
+            "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+          },
+          {
+            "path": "launcher/web/modules/arena-unit-catalog.js",
+            "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+          },
+          {
+            "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+            "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+          },
+          {
+            "path": "tools/cf6-bladebot-assets/build.py",
+            "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+          },
+          {
+            "path": "tools/cf6-bladebot-assets/native-manifest.json",
+            "sha256": "4eaf0b689dfefb414fdf4deb273b33c31a4f0596b1c0f9cfaa1d5a464be1abf1"
+          },
+          {
+            "path": "tools/cf6-bladebot-assets/balance-inputs.json",
+            "sha256": "a21317cfaa091dd5cd4c88259c5244fed39a8daebe0f9b2ee5e29c27cfee4407"
+          },
+          {
+            "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+            "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+          }
+        ],
+        "stage": 8,
+        "targetPosition": "meaningful_threat",
+        "tier": 9,
+        "variant": "wave-combo"
+      },
+      "caseHash": "sha256:08f0c2d3b133559fb35c229a7970de7cf1f1704ede1aa9b22a8b419187cb748c"
+    }
+  ],
+  "manifestHash": "sha256:130f0bc007bf7b4f5a1080d48f71a4cf65b024a389f88cbf8c7f1624832badc5"
+}

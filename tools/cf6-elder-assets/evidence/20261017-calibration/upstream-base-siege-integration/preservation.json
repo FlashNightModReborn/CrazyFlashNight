@@ -1,0 +1,107 @@
+{
+  "base": "1bdc3ccd7382e84839652c2603f7c943ad20c057",
+  "upstream": "937e1815465a5c1c01376b1a947787c0e1b9de8f",
+  "recordedAtUtc": "2026-10-18T04:52:24.638668+00:00",
+  "upstreamFiles": 1399,
+  "overlap": [
+    "data/units/units.json",
+    "launcher/web/modules/arena-unit-catalog.js",
+    "scripts/asLoader.swf"
+  ],
+  "records": [
+    {
+      "kind": "working",
+      "path": "data/units/units.json",
+      "bytes": 153802,
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "kind": "index",
+      "path": "data/units/units.json",
+      "bytes": 153802,
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "kind": "base",
+      "path": "data/units/units.json",
+      "bytes": 152986,
+      "sha256": "6cc74fa9a609715a9394a8f3737a2036886505caa04369bafb9c1cb469bd9a57"
+    },
+    {
+      "kind": "upstream",
+      "path": "data/units/units.json",
+      "bytes": 154294,
+      "sha256": "362283ef94e426929e8ad391588f36b4ac58897b1f65db84408d80fd907e336d"
+    },
+    {
+      "kind": "working",
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 108463,
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "kind": "index",
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 108463,
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "kind": "base",
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 107971,
+      "sha256": "e3311090b83cd15f5168350006bac0cf83d40f2d8828b9a622210745032628f6"
+    },
+    {
+      "kind": "upstream",
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 109402,
+      "sha256": "8450a46ad70baf2f89e1ce01c7ca7db722b37d197aa738b46cfdccf1453d7281"
+    },
+    {
+      "kind": "working",
+      "path": "scripts/asLoader.swf",
+      "bytes": 6088341,
+      "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+    },
+    {
+      "kind": "index",
+      "path": "scripts/asLoader.swf",
+      "bytes": 6085125,
+      "sha256": "09af2e310232bb9cf73ecfe402d89c4266db7f4a8db8ccb766d84fc63ce0a5af"
+    },
+    {
+      "kind": "base",
+      "path": "scripts/asLoader.swf",
+      "bytes": 6085125,
+      "sha256": "09af2e310232bb9cf73ecfe402d89c4266db7f4a8db8ccb766d84fc63ce0a5af"
+    },
+    {
+      "kind": "upstream",
+      "path": "scripts/asLoader.swf",
+      "bytes": 6101116,
+      "sha256": "e08c0d567a8bd5db44a434fcb1a3d9a3170fe88aca73a539c95b8f3b8b9970bb"
+    }
+  ],
+  "indexEntries": {
+    "data/units/units.json": "100644 00380b1c65f8eb2e212171abaefaa6f17eab0d4a 0\tdata/units/units.json",
+    "launcher/web/modules/arena-unit-catalog.js": "100644 a6033b11ff3cca2213f44c769c862b477492dbd7 0\tlauncher/web/modules/arena-unit-catalog.js",
+    "scripts/asLoader.swf": "100644 a0a9b915d0b145ac413524b5a9f6de6860286c90 0\tscripts/asLoader.swf"
+  },
+  "registrationCollision": {
+    "upstreamPublished": [
+      470,
+      471
+    ],
+    "pendingCf6": [
+      470,
+      471,
+      472
+    ]
+  },
+  "pendingCf6NewIds": {
+    "headbot": 472,
+    "elderHuman": 473,
+    "elderRobot": 474
+  },
+  "boundary": "Preserve published companion IDs; regenerate only the pending CF6 registrations into free slots. Existing historical evidence retains its original IDs."
+}

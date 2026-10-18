@@ -1382,12 +1382,13 @@ class org.flashNight.arki.merc.ArenaCalibrationService {
     }
 
     private static function findPhaseSpawnParentRecord(name:String, initObject:Object):Object {
-        var best:Object = findPhaseSpawnParentRecordInSide(_active.blueUnits, name, initObject);
-        if (best != undefined) return best;
-        return findPhaseSpawnParentRecordInSide(_active.redUnits, name, initObject);
+        // Search both rosters before accepting a distance fallback. A nearby dead
+        // blue actor must not capture a red successor with an explicit parent name.
+        var units:Array = _active.blueUnits.concat(_active.redUnits);
+        return findPhaseSpawnParentRecordInUnits(units, name, initObject);
     }
 
-    private static function findPhaseSpawnParentRecordInSide(units:Array, name:String, initObject:Object):Object {
+    private static function findPhaseSpawnParentRecordInUnits(units:Array, name:String, initObject:Object):Object {
         var best:Object = undefined;
         var bestDist:Number = 999999999;
         var spawnX:Number = Number(initObject != undefined ? initObject._x : undefined);

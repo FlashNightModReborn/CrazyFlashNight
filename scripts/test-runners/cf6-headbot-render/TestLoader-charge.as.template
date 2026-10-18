@@ -1,0 +1,11 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+_root.headbotRenderCapture=true;
+_root.headbotRenderFrames=["beam-1","beam-8","beam-12","beam-15","beam-23","beam-30","beam-left-15"];
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.headbotRenderSwf = "../flashswf/arts/new/Codex大头机器人素材.swf";
+_root.headbotRenderTag = "after";
+_root.cf6HeadbotRenderComplete = function():Void {
+    trace("FocusedTestRunId cf6-headbot-render Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-headbot-render Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6HeadbotRenderTest.runAllTests();

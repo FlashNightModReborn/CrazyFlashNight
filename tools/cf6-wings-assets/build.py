@@ -36,6 +36,7 @@ def module(name, path):
     return result
 
 
+audio = module('cf6_audio_native',ROOT/'tools/cf6-audio/build.py')
 common = module('wings_native_common', ROOT / 'tools/cf6-manman-assets/build.py')
 vector = module('wings_vector', HERE / 'vector.py')
 native = common.native
@@ -97,6 +98,10 @@ def build_symbols():
             continue
         path = DONOR / (name + '.xml')
         source = E.parse(str(path), PARSER).getroot()
+        # Wings owns the equivalent two cues through cf6-audio/cues.json.
+        # The old agent now has its own repair layer; do not duplicate it here.
+        for layer in source.findall('x:timeline/x:DOMTimeline/x:layers/x:DOMLayer[@name="CF6旧特工原生SFX调用"]', NS):
+            layer.getparent().remove(layer)
         if source.get('linkageImportForRS') == 'true' or source.findall('.//x:BitmapFill', NS):
             raise ValueError('Unexpected donor external/bitmap dependency: ' + name)
         originals[name] = source
@@ -248,11 +253,13 @@ def import_assets():
     native.guard_overwrite_allowed(False)
     generated, root_name, donors = build_symbols()
     native.guard_overwrite_allowed(False)
+    audio_receipt=audio.apply(generated,OWNER,native.make_sparse_layer)
     outputs = common.write_workspace(generated, root_name)
     manifest = {'schema': native.MANIFEST_SCHEMA, 'owner': OWNER.relative_to(ROOT).as_posix(),
         'approvedInput': ARCHIVE.relative_to(ROOT).as_posix(), 'nativeSymbolCount': len(outputs), 'buildInputs': build_inputs(),
         'donor': {'rootSymbol': DONOR_ROOT, 'members': donors}, 'outputs': outputs,
         'projectFiles': [{'path': p, 'sha256': sha(OWNER / p), 'bytes': (OWNER / p).stat().st_size} for p in native.PROJECT_FILES]}
+    manifest['audio']=audio_receipt
     (HERE / 'native-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf8', newline='\n')
     common.mount_shared_library()
 
@@ -260,6 +267,7 @@ def import_assets():
 def check():
     common.verify_input()
     manifest = json.loads((HERE / 'native-manifest.json').read_text(encoding='utf8'))
+    audio.check(manifest,OWNER)
     failures = native.workspace_identity_failures(manifest)
     if manifest.get('buildInputs') != build_inputs():
         failures.append('Build recipe changed; perform protected regeneration')

@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/robot/尸体碎片/分件4" itemID="6af00000-d0ad6df4">
+  <timeline>
+    <DOMTimeline name="分件4">
+      <layers>
+        <DOMLayer name="原始分件" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/分件/980" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.245224" b="0.047806" c="-0.047806" d="0.245224"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

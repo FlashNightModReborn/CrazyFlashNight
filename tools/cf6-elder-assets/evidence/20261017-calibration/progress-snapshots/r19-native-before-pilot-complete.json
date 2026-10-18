@@ -1,0 +1,69 @@
+{
+  "status": "native_verified; exploratory_pilot_running",
+  "slamMultiplier": 8,
+  "oldSlamMultiplier": 12,
+  "canonicalFormulaRegenerated": true,
+  "baseAttackPanel": [
+    692,
+    1820
+  ],
+  "shieldAttackScale": 0.813953488372093,
+  "kicksCapacityRatio": 0.1,
+  "kicksReferenceStrengthLevelEndpoints": [
+    0.3,
+    0.12
+  ],
+  "kicksLifetimeLevelEndpoints": [
+    120,
+    60
+  ],
+  "slamCapacityRatio": 0.015,
+  "slamReferenceStrengthRatio": 10,
+  "slamLifetimeFrames": 120,
+  "lossStepOfInitialMaximumHp": 0.05,
+  "forcedConversion": 0.4,
+  "capacityLimitOfInitialMaximumHp": 0.1,
+  "pulseFrames": 1,
+  "pulseMissingHpRatio": 0.0010416666666666667,
+  "pulseCapacityLimitOfInitialMaximumHp": 0.00020833333333333335,
+  "pulseCeilingPer30ActiveFramesRatio": 0.00625,
+  "decayFrames": 36,
+  "referenceStrengthRatio": 10,
+  "sameReactiveSupplementCeilingAsR18": true,
+  "heavyBeamPowers": [
+    0.5,
+    1,
+    1.5,
+    2
+  ],
+  "robotOnly": true,
+  "oneOwnedReactiveLayer": true,
+  "noOpponentSpecificShieldDecision": true,
+  "beamCapacityAccountingQualified": true,
+  "meleeLayerAbsorptionAccountingQualified": true,
+  "native": {
+    "assetPassed": 906,
+    "effectsPassed": 124,
+    "robotPassed": 45,
+    "totalPassed": 1075,
+    "timelineCases": 46,
+    "phaseCases": 13,
+    "audioPassed": 340,
+    "audioRoutes": 81,
+    "playerAimPassed": 1023,
+    "playerAimCases": 74,
+    "totalSelectedChecks": 2438
+  },
+  "candidateSwfSha256": "aa84886bd82afa499f98a688de57e2517fa1719480e563fc464f6e7ecd3689c0",
+  "loaderSha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401",
+  "preIntegrationHeadDataImpact": "prior-C4-head-data-impact.json",
+  "currentRegistrationIds": [
+    472,
+    473,
+    474
+  ],
+  "loaderGeneration": "C5",
+  "exploratoryPilot": "cf6-cal-r19-pilot-20261018",
+  "exploratoryPilotRows": 12,
+  "boundary": "Native checks and scoped data equivalence do not establish final strength, zero first-phase rage healing, new Head execution, formal promotion or player acceptance."
+}

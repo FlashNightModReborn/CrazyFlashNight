@@ -1,0 +1,9 @@
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+Test player control has no fresh idle acknowledgement; recovery stays blocked.
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\test-runners\te
+stplayer-control.ps1:51 char:13
++             throw 'Test player control has no fresh idle acknowledgem ...
++             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Test player con... stays blocked.:String) [], RuntimeException
+    + FullyQualifiedErrorId : Test player control has no fresh idle acknowledgement; recovery stays blocked.
+ 

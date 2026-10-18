@@ -1,0 +1,16 @@
+{
+  "changes": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "beforeSha256": "cd053ce92dbe66c9cfcce49f6a3b0b019f610a8fedf66d7b68f4d6aeca17b79d",
+      "afterSha256": "14f35435f7cff9cea7ed5372106bbe79297221099947c535d7cf991dc3153c73"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "beforeSha256": "91d2c73cc94338a19f87e4fab2ac7bc96c716b7f86654860e3eb3a11cbe0d418",
+      "afterSha256": "8ca45683df896d692eb4cf68a20496691bf911639a04caeb936c7a6126e23be9"
+    }
+  ],
+  "productionInputsChanged": false,
+  "reason": "Keep the movement target outside the new 750 start range; make the shield-transition probe deplete the smaller hard layer while retaining soft capacity. Original failed assertions and all source snapshots are preserved."
+}

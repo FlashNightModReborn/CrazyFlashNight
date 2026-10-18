@@ -1,0 +1,26 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "beastking-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-f47cce490cb649d6bbc48aef16ae991f\\assignment-f47cce490cb649d6bbc48aef16ae991f\\attempt-f47cce490cb649d6bbc48aef16ae991f\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-4e505ad43399431a8e49f414ca56e2cf\\assignment-4e505ad43399431a8e49f414ca56e2cf\\attempt-4e505ad43399431a8e49f414ca56e2cf\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r4-pilot-20261017\\groups\\beastking-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r4-pilot-20261017\\groups\\beastking-level60\\group-report.json"
+    },
+    {
+      "groupId": "exusiai-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-bafc6a427b534a95b859a0e9e7322441\\assignment-bafc6a427b534a95b859a0e9e7322441\\attempt-bafc6a427b534a95b859a0e9e7322441\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-2c55c9db4eda4a14ba754b7ff4a9a7d1\\assignment-2c55c9db4eda4a14ba754b7ff4a9a7d1\\attempt-2c55c9db4eda4a14ba754b7ff4a9a7d1\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r4-pilot-20261017\\groups\\exusiai-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\elder-r4-pilot-20261017\\groups\\exusiai-level60\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

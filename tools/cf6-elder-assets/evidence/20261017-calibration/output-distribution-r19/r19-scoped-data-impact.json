@@ -1,0 +1,17 @@
+{
+  "qualified": true,
+  "beforeSha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333",
+  "afterSha256": "96b8a04607639d9d53edd61af6487923edd825efd5df45b0eed494a9a12280d0",
+  "path": "data/enemy_properties/CF6重制敌人.xml",
+  "onlyChangedEnemyNodes": [
+    "敌人-CF6老头机器人"
+  ],
+  "unchangedNonElderNormalizedSha256": "5035c5747977dae278f85122f7fb431deb1d40141caedea2f49f61db397bef8d",
+  "normalization": "UTF-8 BOM removal and CRLF to LF; remove only the two named Elder element blocks, then require exact remaining text equality.",
+  "headIntegration": "history/head-c4-integration-awake",
+  "headBindings": 13,
+  "otherHeadBindingsUnchanged": true,
+  "headNodeAndAllOtherEnemyNodesUnchanged": true,
+  "originalArchive": "before-r19-output-distribution.zip",
+  "boundary": "Source impact proof for an Elder-only shared XML edit; no new Head battle execution is claimed."
+}

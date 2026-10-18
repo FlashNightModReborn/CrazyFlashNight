@@ -1,0 +1,193 @@
+{
+  "experiment": "cf6-cal-r5-elder-20261017",
+  "reportSha256": "ee9e27f14dea9d76b988dd3fd789ebd24d68c1eb3cbbc665aff91354e634601d",
+  "qualified": true,
+  "groups": [
+    {
+      "rival": 78,
+      "level": 30,
+      "n": 2,
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.7883549857226603,
+        "mean": 0.853283788128061,
+        "median": 0.853283788128061,
+        "max": 0.9182125905334619
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        2984.0,
+        3449.0
+      ],
+      "in50to80": 1
+    },
+    {
+      "rival": 78,
+      "level": 99,
+      "n": 2,
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.5456932175759184,
+        "mean": 0.5856238389506009,
+        "median": 0.5856238389506009,
+        "max": 0.6255544603252834
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        4101.0,
+        4316.0
+      ],
+      "in50to80": 2
+    },
+    {
+      "rival": 361,
+      "level": 30,
+      "n": 2,
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.1084667280738878,
+        "mean": 0.3396275735019542,
+        "median": 0.3396275735019542,
+        "max": 0.5707884189300206
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        757.0,
+        1159.0
+      ],
+      "in50to80": 1
+    },
+    {
+      "rival": 361,
+      "level": 99,
+      "n": 2,
+      "wins": 1,
+      "losses": 1,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.4873110023757453,
+        "mean": 0.7436555011878727,
+        "median": 0.7436555011878727,
+        "max": 1.0
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        827.0,
+        1239.0
+      ],
+      "in50to80": 0
+    }
+  ],
+  "runs": [
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "rival": 78,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2984.0,
+      "remaining": 0.0,
+      "netLoss": 0.9182125905334619,
+      "phases": 1.0
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "rival": 78,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 3449.0,
+      "remaining": 0.0,
+      "netLoss": 0.7883549857226603,
+      "phases": 1.0
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "rival": 78,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 4316.0,
+      "remaining": 0.0,
+      "netLoss": 0.5456932175759184,
+      "phases": 1.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "rival": 78,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 4101.0,
+      "remaining": 0.0,
+      "netLoss": 0.6255544603252834,
+      "phases": 1.0
+    },
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "rival": 361,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 757.0,
+      "remaining": 0.0,
+      "netLoss": 0.1084667280738878,
+      "phases": 1.0
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "rival": 361,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 1159.0,
+      "remaining": 0.0,
+      "netLoss": 0.5707884189300206,
+      "phases": 1.0
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "rival": 361,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 827.0,
+      "remaining": 0.3365761357772214,
+      "netLoss": 1.0,
+      "phases": 1.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "rival": 361,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 1239.0,
+      "remaining": 0.0,
+      "netLoss": 0.4873110023757453,
+      "phases": 1.0
+    }
+  ]
+}

@@ -1,0 +1,1909 @@
+{
+  "archiveSha256": "d020055a975a67e896b77080049156001d1a9549134eb0b20dca5050a7b1f770",
+  "files": [
+    {
+      "path": "tools/cf6-bladebot-assets/.gitignore",
+      "sha256": "5ce4f3f01bfdbb5faf75130334957cbf480e59a402ee63e6c287f5da798f7ad3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/arena-plan.js",
+      "sha256": "4abda0d7aa90a5af4da1fdf3fb430d2b1e2b1100b61bdab9afa1a88190d54ae9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance-inputs.json",
+      "sha256": "1bbeb3bf950a7c174987ad2c86f09d08d3c93f5b33dea490f8a2260cc15ca389"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance.py",
+      "sha256": "152056a6cd1d259c47d0fd8f08c899bdaac9efb314329156bc9c0de1c85d3098"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "sha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "sha256": "d3a1a0be71aff4b363b40903c4f3cef3cce3bae33be042421db433f12b636dba"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/decode-native-capture.py",
+      "sha256": "c2998c1e22af095c5910714f946f7e2c9b7040d4deb138c8d797037d5a6f8017"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/foreground-evidence.js",
+      "sha256": "32b802f7c10a292eae3fedfb890284394ff7494df9ec2167f313d80571f402ba"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "sha256": "db24ae09336c3019e88194aef42d355dd52fb59f612264542429151ea2e7913b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/README.md",
+      "sha256": "6ca74869fdc4b1e50ff713d159bb386eeb0cc395e7139d389dee35b6751c55e3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/run-foreground.ps1",
+      "sha256": "2f36cf0e6e9e937d1917e9efb5d64a8b1f7fa50d1b165d7ecd32b93afcf7a1dd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/test_vector.py",
+      "sha256": "b2bebc1cf5717c16382f843d8f90fd01aa8474a37528bc1114cde0cc0c8d9069"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/vector.py",
+      "sha256": "81ae4a78b716c1dabf7681cb8394cdf9d6e1596f6ee8df178712cba4cc40f068"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/verify.py",
+      "sha256": "8754660dd2b23287dab81ea8051a21f759aab4cae7192d37455f9456851af06c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat-summary.json",
+      "sha256": "ef2cab956e9f8a2c7fca7fb93f661419e1e0ca47a1e95b8dea1990af842f53e9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/summary.json",
+      "sha256": "ed94281a2f58e87284c08fbc58b0b5a4482a8d469b680147ca0a2f449eeefa6d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/airborne-shadow.png",
+      "sha256": "f3b50976629ea8c43c13b1694673a41e7128990be4bb3d907d7ab02013ca825c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/cleave-impact.png",
+      "sha256": "28a221a1b7ad4d9fac7161707fc8c9bfd601cc510513d326fa61a84d0b2f2ba4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/death-fragments.png",
+      "sha256": "aaf5fcd84c89ab827d99a307ef76d720d36e4c1aa82b258d8972f99bee625038"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/death-late.png",
+      "sha256": "7fcea5d28ea7a1987adca4e416435967d561fe686ebcb60cfccbd19425b70d51"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/death-start.png",
+      "sha256": "cfaa08dc404325f432207e34f50b0d5e55a18270b6243b332f584b9c2a862fdb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/stand.png",
+      "sha256": "fc1ba016cef534a70068d657f9a28d48d13af47e4ef2e1ce6f5ebd05c5937265"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/sweep-back.png",
+      "sha256": "970761e67b70bb92291e7d4cb02b7b77fe3f06c54108daef232c38038874b69d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/images/sweep-front.png",
+      "sha256": "ce0fade140c9f1152d8c6211effe2fa242efc8c100ac5a55474dfe4e55861171"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/closeout-before-balance.py.gz",
+      "sha256": "3567c6808fa6d7417850340a4bc7382270f88692c3c7257329ef6b94ddbd4367"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/closeout-before-README.md.gz",
+      "sha256": "156acb1f2d29d3d206c62400401c57286c1f0fba911173cdc69ea261d1e67637"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/closeout-before-summary.json.gz",
+      "sha256": "9977635012c21fbfca3dd4c5a7c9645d234f1eb798299d492965a9b8ce4f06ad"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/display-keepawake-r3.json",
+      "sha256": "8b91f9963b9e9bea11604a3ab3885bc7b645fbd5baaaf34e0b8329ef05aa1432"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/display-keepawake-r3.json.closed.json",
+      "sha256": "c0bae53921c4000a63d5aa9616135822c18e32f13a33114fef25a58e21f2918c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-audit-r8.log",
+      "sha256": "736d1b87390d66f53829145b642084cd165e46151aa231bb74af98031079c3d4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-final-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-final-flashlog.txt.gz",
+      "sha256": "acd6353d23c19db7d7127703cf0d9d3e3ac3500fadcce0680f8d17365b58bd64"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-final.log",
+      "sha256": "ac5127bde276ab337d30f34681b1cf46667877288ab364c90977727323d65352"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r1-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r1-flashlog.txt.gz",
+      "sha256": "adf0bc5b0e50371d246eca09c3dcbe54f70539affc390aa445402cfade360c36"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r1.log",
+      "sha256": "518bb1bf091fd30df0aa7ba9a6e980e134dec2b40ebc96947b332347a75fac3a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r2-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r2-flashlog.txt.gz",
+      "sha256": "3a13a5691bf1f8d17627d3f01ad8e609c28ebc3a7569b985ccd4b8d52df8f09d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-r2.log",
+      "sha256": "e7224789159e7b170e7ac2e599b0dd07487ece9e5f95836148df27686a76bd3b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-capture-review.json",
+      "sha256": "560c8199275413fbc9b36cb0af117c92daaab420fe5236b3255d79ef0a737fad"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-class-closure-r8.json",
+      "sha256": "88d5064504449d1b0b7d83a372c059d0cdffd3fba31329a40c5e1b8127bfad58"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r1.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r2.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r4.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r5.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r6.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-compiler-r8.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r1.log",
+      "sha256": "90aede087220d1439532c53780f37d104961b5f7a03c98d9be080f0c56f4c7b4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r2.log",
+      "sha256": "7f00e5e57a81b44fc2f0c25905d890c3ee4e014edc351399fb1624d43d95d521"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r4.log",
+      "sha256": "ee16ec48f812228e884a15bd988f2ee7b1d8f9a3668a5a7bc28c47c4c88b0298"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r5.log",
+      "sha256": "0e46da16503705af36077823237004488f3c5f6fdf3c13fcd24b313aa78b9fe5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r6.log",
+      "sha256": "1912ecd977ee34a255c0a4fc5c145500fac0a61832e7d39ae9e7b4d8deba6d63"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-publish-r8.log",
+      "sha256": "925d196d8767bbdb29bcacec833894aceb0336a558e3128a968670cfb5c60eb6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-source-qa.json",
+      "sha256": "f4421c4153f1669960b9d4d312f502c46989d1b15523ea384845713ff0d2e902"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r1-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r1-flashlog.txt",
+      "sha256": "586154f9cc39ad019f10996bd24d65ea1e87207eb3fd0371e2e376cfdc338a8b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r1.log",
+      "sha256": "22b8716966ba3190933d7a45639e110c143df3e0dc4e53c2d7eb2076f7d89785"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r2-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r2-flashlog.txt",
+      "sha256": "e1fc7337b2fd278eaa8c28ee982072a9346c4104f28ab61bd35a07dff0c99936"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r2.log",
+      "sha256": "79db64fac5f1810fc267c5e1d1710c4c0ce7978c0b69d7cd6bf9c7d583649d56"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r4-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r4-flashlog.txt",
+      "sha256": "c7d1bbbc15de1593a5091c745c29fa2d449f3c4ebdd9ed596196ec22506e5c60"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r4.log",
+      "sha256": "349e8fc8016a641617ebb4bd4fb7f236ac06a10c72ebae54e9a7d86f66ff5662"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r5-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r5-flashlog.txt",
+      "sha256": "ff73ba69b826472c96b86d32f05c20060f9e1e3d87622fed17d19fec33588e3f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r5.log",
+      "sha256": "668285f6b55017e5dafdffcbd99d37bc61f3f55ca4dfced7b0dc37539088695f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r6-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r6-flashlog.txt",
+      "sha256": "f02bdedb2c633616e1f407e601befac075be2e257195458ad896e9b8d41818c5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r6.log",
+      "sha256": "a8d862c1dae9ba920c7893ced11ddaf6dc9fba83afac1264190befabb91314e3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r8-compiler.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r8-flashlog.txt",
+      "sha256": "09b4a209173a1f48aa442fa7f49f6748fbaa64c3971bbe15e049fcfeb1e67e84"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-tests-r8.log",
+      "sha256": "2491a5aafcdd1df777f939db07803ba5261a43311515eaaae73a8f469b89136b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-verify-r8.log",
+      "sha256": "003e8b65f84bb9454674f66a4a1ffb021aeac5516cd4743127fe13196533728e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/native-verify-r9.log",
+      "sha256": "ac5a0e8f3014746095c0a15705016c0baf7764d2fbc825636dbd5f978e47b20f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r1.json",
+      "sha256": "a41b8112a93892b24ca01a718e2ad8f4235e2e6c0e02f756f42d413fd91c5a02"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r2.json",
+      "sha256": "50eb97a8b53a38a3a93aa6801fcb932ffdc4c39475dd48307777af2f6be70619"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r4.json",
+      "sha256": "ceb463e2d1779adc7c5d764f70021db8f3a1f9c35db6b0360820717a2b357e0d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r6.json",
+      "sha256": "4f54f9200d3a10af223de98c266b1372347008e7920b6864f4778ca34c8d986f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r7.json",
+      "sha256": "42f07ec58c1cc4355b3858999de9b5bed746d873172aecd3a42b7b5156706b2d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r8.json",
+      "sha256": "fd27cdfb695e71ece3bb53bfd88b8e11f10fc02722e8cea5015d1712328cf23f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/overlay-r9.json",
+      "sha256": "9fab8b8e89c3534721617822aed3618e2be52863f98970998bc6d6fbe13f7046"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/r7-review-plan.json",
+      "sha256": "d2e1c7bbeb61b0427598b7d624aad67c47bacd0ce0f0466b11c71dd2e9964b3c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/r8-review-plan.json",
+      "sha256": "8ff6300d1eb268cf9e8f7112d3ef322546ea074bbf396d9f7313745e4575d6ef"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/r9-longtime-review-plan.json",
+      "sha256": "709f5510354c4d0f62a4c19ca40b7fd058f3bab64bfebd9da7a3d097a0320eea"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/r9-review-plan.json",
+      "sha256": "08dc327cc1ff68c75e84d22221da83fa39f83d3d38a62da347a8e9f69e49e316"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/shared-compiler-r1.txt",
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/shared-publish-r1.log",
+      "sha256": "695469aceac7eca6261f11de1889844eb88423c6776f8333f85b9a85ed934bd5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-final.log",
+      "sha256": "1c2ee28431509d6cec0f18b715d60e417265559f3d2d52885063b2f5045d24b2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r2.log",
+      "sha256": "fa8269887abd3a008d7d655aae3056b20137f45e4d8af7530e3effc0464a740c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r3.log",
+      "sha256": "580666a5d040b89b2c8c609801a770094a4f026a2b35560b02e789e8843abe29"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r4.log",
+      "sha256": "42838fe55765df8fc99ee417d580d62595a46b5ed3bcce7547486c1367c041c2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r5.log",
+      "sha256": "426a28560bbba45624e1ea37dc2a5d109f50f435b801ee5215c100aa870a924b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r6.log",
+      "sha256": "b60b5e54071f101495f14c7ddae2f763167feee526fd731056fdb1bdd825662e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/stop-testplayers-r8.log",
+      "sha256": "504a3b4413a2e5688fd9b7b4c36613d37491db3e53804962698e9216c0f6de4d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/logs/visible-preflight-error.json",
+      "sha256": "8ef632a2776c8576344447847eb7233d9434415afba47cee8cc3b7f4e79b5e9f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/manifest.json",
+      "sha256": "1956fbf5c7d8096a2f80a0f39f9b1f9ff973d4f11f0bbc1ae0bf4022896da8fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-global-after.json.gz",
+      "sha256": "f5fac93ee56aadbe061bbeb0fce91393a92c57a498e8729a3617dbb53209ef8c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-global-before.json.gz",
+      "sha256": "8563ab1cf37d9e2257aaec7859c7fd17e2330f7a2e7ad88bb17c7d0c07decaae"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-global-options.json",
+      "sha256": "3f7f392c10b4690993407460cdc6f0ffb2d42dcf05114d8983f7d2243d37b68f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-global-protection.json",
+      "sha256": "19b9ed28400ee1596b89b7e32f6bcebfae216cae929072e49664969190462a55"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-manifest.json",
+      "sha256": "1956fbf5c7d8096a2f80a0f39f9b1f9ff973d4f11f0bbc1ae0bf4022896da8fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-metadata-attribution.json",
+      "sha256": "d0dbbc4e310f0d64b8ec1e0047630ef40704661ccaf7be8f287ec4547a138e7f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-run.log",
+      "sha256": "a07ec451d7d656f91e8cfeaf133a8a47b5ebf98e32e9ce70f080356408bb2202"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-run2.log",
+      "sha256": "4e696dc91e98da9221d7a7f9e86648c8f0ec1fda3f006478556ab174c123a836"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/outer-worker.log",
+      "sha256": "a89f0a8b13d03bb94e3402c713222cd7bd76e2bfac2e851986cd5c104ca4ca67"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/run-report.json.gz",
+      "sha256": "6a3946aa39c7e403774c563812b1371ee109319901345778d718ed27782b43bc"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162446Z-r2-20261016/run-report.md",
+      "sha256": "4e809941dbde275162cee9aac4b11666c76cd7ad2749848f9b230984a26bf4ff"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/manifest.json",
+      "sha256": "1956fbf5c7d8096a2f80a0f39f9b1f9ff973d4f11f0bbc1ae0bf4022896da8fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-global-after.json.gz",
+      "sha256": "f5fac93ee56aadbe061bbeb0fce91393a92c57a498e8729a3617dbb53209ef8c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-global-before.json.gz",
+      "sha256": "8563ab1cf37d9e2257aaec7859c7fd17e2330f7a2e7ad88bb17c7d0c07decaae"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-global-options.json",
+      "sha256": "3f7f392c10b4690993407460cdc6f0ffb2d42dcf05114d8983f7d2243d37b68f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-global-protection.json",
+      "sha256": "19b9ed28400ee1596b89b7e32f6bcebfae216cae929072e49664969190462a55"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-manifest.json",
+      "sha256": "1956fbf5c7d8096a2f80a0f39f9b1f9ff973d4f11f0bbc1ae0bf4022896da8fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-metadata-attribution.json",
+      "sha256": "d0dbbc4e310f0d64b8ec1e0047630ef40704661ccaf7be8f287ec4547a138e7f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-run.log",
+      "sha256": "a07ec451d7d656f91e8cfeaf133a8a47b5ebf98e32e9ce70f080356408bb2202"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-run2.log",
+      "sha256": "4e696dc91e98da9221d7a7f9e86648c8f0ec1fda3f006478556ab174c123a836"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/outer-worker.log",
+      "sha256": "a89f0a8b13d03bb94e3402c713222cd7bd76e2bfac2e851986cd5c104ca4ca67"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/results.jsonl",
+      "sha256": "549fd6bc39f9b55d8ef779a8c24df093456df10f0659a886f16e566a2dd432d4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/run-report.json.gz",
+      "sha256": "6023ebcfcc6161fa6aa83a0fb6df8ca7b5801a3a704c517a1de2a988ede9ca94"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/run-report.md",
+      "sha256": "48a90461885ea76eb53c1f56dd4a7ac6fa0cc512118e175db402befb24e9fa9e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/summary.json.gz",
+      "sha256": "b2716359b5ebac9c0c047af51678dc9510600d63ed3e3deec9fdc2329ecd74e4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T162849Z-r2-20261016/summary.md",
+      "sha256": "ff21cdab41af9c673047fda325c8de2860c81dd16a25154b5b44e329e5e589cd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/manifest.json",
+      "sha256": "63b17bc9c1aaf7eefc24abcf9a913e1fad0c9286f67ab41d659586b0500bf735"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-global-after.json.gz",
+      "sha256": "c4639f773fa2e523a4d8f95c4948a7b792dd6fa61b82af25bb6e2ebb7f9a8842"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-global-before.json.gz",
+      "sha256": "cb831b9c5a6df4baf855a3bc602b58b53e128def301c8e9bae0b09aadefa4321"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-global-options.json",
+      "sha256": "64c73ce049737fcf69b913dc32a937c0c4f76f2f932988c41cec96e2b9fa7c9e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-global-protection.json",
+      "sha256": "274bb57fa9cb6d28613d10fff7abc46859f49591a42da89706aac9a9de248b26"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-manifest.json",
+      "sha256": "63b17bc9c1aaf7eefc24abcf9a913e1fad0c9286f67ab41d659586b0500bf735"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-run.log",
+      "sha256": "86fa16c24f918edadc3dbdc224eb324ac7a41da6a55fc951133330a794c93fbd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/outer-run2.log",
+      "sha256": "2312bb3dd61487648b8b6bb185d8cd8fd62b3d7015ad6500e2e188f2ecfb782c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/results.jsonl",
+      "sha256": "3737dcdcd05e756df7ab0bf664c314cf64b1409cd0ce7cdfe329dc8542745cd0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/run-report.json.gz",
+      "sha256": "7bf8f7a9c5af1f7070cc603b6ecb1acd5d92cdd35b24a8c25351d27e0b7fb8a2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/run-report.md",
+      "sha256": "a5e4e5f8cd6aaf9795553d05b0b425f7801e6b493fda03078056b8333c2bfc02"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/summary.json.gz",
+      "sha256": "f9e1c3a04b034a86d44fb3e70b4ff359bfe5a16cdd1c0b6fb1e4525cba8feff2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T164221Z-r3-20261016/summary.md",
+      "sha256": "87d7cd2b0f6d2b2cfb200e3d50521b6d1c28c4942f0af2d75fdb9e08aa33be76"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/manifest.json",
+      "sha256": "0312233535be90f37676058f90b34c585d271152aadee93bd23a23d75306feee"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-global-after.json.gz",
+      "sha256": "fc5fdff682e7bad263f574003f6e9212adc445f981ff70fbec667ad0df855c84"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-global-before.json.gz",
+      "sha256": "f87eedd05859521829ef172fa8379a9acb5745ceeffb64d160fa7944996a086c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-global-options.json",
+      "sha256": "878596c7c8650bda6d16362646f7afcdf646f764de90b6095890f020994dd8f1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-global-protection.json",
+      "sha256": "8befdd891910f123aba57652416503c25c976676dcbf8188b970f6a38e76ab1d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-manifest.json",
+      "sha256": "0312233535be90f37676058f90b34c585d271152aadee93bd23a23d75306feee"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/outer-run.log",
+      "sha256": "4ad4c9bd3ca748dd3366a2def09182a68bdc5d1eba4cbc3a80045bfc07b2032f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/results.jsonl",
+      "sha256": "13744b1e34399fb47ba4989473c99aba1c0ddd8555b2673c2897f161393fd8bb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/run-report.json.gz",
+      "sha256": "1c1a3f1829f7e2756464f6b73541890875dadd327a0788cc3e5aed5dd9e1f67c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/run-report.md",
+      "sha256": "61b08a0df7e51df53f89b7251626006dbb761cabebdd734dceb23bf62354213a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/summary.json.gz",
+      "sha256": "52b933483b097ee3694baf77cef45444b9b1ebe6218c8edb2c15480acb35fc2b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T165816Z-r4-20261016/summary.md",
+      "sha256": "8e299fb969cbb16256755f95328fb8e02eac51f24525f7bc10493cef1ca6136d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/manifest.json",
+      "sha256": "bbe92c2b1f28a3b3626a0998962f7003408a418ed650586be571432fbf6dd1d4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/outer-global-before.json.gz",
+      "sha256": "5f3bbf16f0864e9535c05f057b24f5d62fcf538252015ba870f0ef18f7fb7c00"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/outer-global-options.json",
+      "sha256": "e2ed855389b60d4accc91c45bb52027e60596680316fbae5aa5ba3aca3ea9771"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/outer-manifest.json",
+      "sha256": "bbe92c2b1f28a3b3626a0998962f7003408a418ed650586be571432fbf6dd1d4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/outer-run.log",
+      "sha256": "f3f9832df2adc72f758dfa218d33085c59b6211a462ae8efc7d33e111b9a4736"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/results.jsonl",
+      "sha256": "29a615f09bf55d55c49ec3108600b36b21357126da0cab0c9e47b816070a1420"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/run-report.json.gz",
+      "sha256": "c5d7eea15dbfdae7d3cb286d85c4774b7124433e22aad889de7d7a162ba28fa1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/run-report.md",
+      "sha256": "9cfb34b0d96d70ed690ca3a70b513d2f83209b6450f19c7c2f34f429c0b77791"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/summary.json.gz",
+      "sha256": "1a5990913632b4cc48714b456536fe1724f6a237a3a1c44d04671a8990fb4f94"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T170604Z-r4b-20261016/summary.md",
+      "sha256": "526215aabdb9ba5b499841bbfe65f14eb7525aff531e87f12ff8d18cc20d5f7a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/manifest.json",
+      "sha256": "870f88da1e9a35e0e7bbd04ee19747fbc9d65c56ca8f055c851fe2449379ec25"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/outer-before-after.json.gz",
+      "sha256": "d03c11a6e1148285392b0496c96b2a8f4251436d39d21ce3910038f815d5a997"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/outer-before.json.gz",
+      "sha256": "da8a16452ce3f8b43e841a9c59a559688090ee10786f996e56b7b9bed0723a13"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/outer-evidence-config.json",
+      "sha256": "8651895b203337f2b4fd4210e08874b526db80ff2dba69d309728dc07c8c203c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/outer-manifest.json",
+      "sha256": "870f88da1e9a35e0e7bbd04ee19747fbc9d65c56ca8f055c851fe2449379ec25"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/outer-run.log",
+      "sha256": "6e43503170a4c252db94b58a1ccdbaa2308dcc4eaa3f1b9428b703e2ae0b3101"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/results.jsonl",
+      "sha256": "bb47b28101d7a1a543a1a3fd359dcf762234e1c449bd91a33aa041c9b2b972a6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/run-report.json.gz",
+      "sha256": "8fe789d5bf73eec8c50fc55d25322cf9b08fe032913daff359460f45957d54a3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/run-report.md",
+      "sha256": "aea10cc1f8f4e2bb949a4b827bf4825358b0047bdb7dd424977f572a6d210acc"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/summary.json.gz",
+      "sha256": "1d8b8e1016a74566f9c97c94820dced9d3c4ac63e3314f13afb67b043677efd9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T173509Z-r6-20261016/summary.md",
+      "sha256": "a416fb98df4863c0f48cd7197b01cf216be3d98fa6c858b2a4265983e21e72f7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/manifest.json",
+      "sha256": "ed42bc7874415cf06463cb24080a4d4896ea644a18f37c7aa074fbc4ee5c6f75"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/outer-before-after.json.gz",
+      "sha256": "e6f8304ead9bc5b899b96c94372dc8616e26da5ba953bdde27e3f18253681c31"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/outer-before.json.gz",
+      "sha256": "c5a8951ad8be16294260c4c326cfdcb4648b52d6650dbefd802bd29a3ec20584"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/outer-evidence-config.json",
+      "sha256": "7ec72d5c08ed968df37419d43e5a6902942c6c5e2f39b9b214edb0075ef5d247"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/outer-manifest.json",
+      "sha256": "ed42bc7874415cf06463cb24080a4d4896ea644a18f37c7aa074fbc4ee5c6f75"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/outer-run.log",
+      "sha256": "d1b779e3696be54f98d39faa62deeb41ffc7ed1ca1f0851f2178c6570ffdedc1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/results.jsonl",
+      "sha256": "924d63b2aa4e875d5773739c8b445b28a69874fe19f86e8dd37dfd22d9e73d75"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/run-report.json.gz",
+      "sha256": "f91797c0b18241442cb496ce37238d555cbc9b5ec09f0f6cc646c5c6c7cabfe0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/run-report.md",
+      "sha256": "dc15a1f3f20e81d117d9d0579ae6fbfbffb33d518e4d12835b3efebefb64e94a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/summary.json.gz",
+      "sha256": "09f7dceb262cfa1be2c9c39e5e224af773c56fbb31fb50fdb90572ef05d122f5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T174625Z-r6b-20261016/summary.md",
+      "sha256": "1c4593f734d77c8080a8ced3af7d408c20cc2a885202b41f6e3f59378fa1d691"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/manifest.json",
+      "sha256": "dd649ad07998f243120fad2770177d8ad53c1220f0284e8a1f3735d873ecfb23"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-before-after.json.gz",
+      "sha256": "c2c6bf89b0b187884541977d273e28daea7b12aa92596f37d7af69200652c5fd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-before.json.gz",
+      "sha256": "c4f02780d01a58ef3b2eb2398d56446b328cf625145b031d6ec75afc4201a401"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-bounded-shutdown-localhost.json",
+      "sha256": "16630c47434effb05a836ae8de72d9f60ab2eb28a8fe11e2f109947b75fab5db"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-bounded-shutdown.json",
+      "sha256": "4b74d62997e4920d0dff5c370a99f4123aeaf01e4de3f827543e416882a4a470"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-evidence-config.json",
+      "sha256": "c5b281a959974644697998b8c510e6481ca63ef6e70e0f598a00bb2a5d21cadb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-manifest.json",
+      "sha256": "dd649ad07998f243120fad2770177d8ad53c1220f0284e8a1f3735d873ecfb23"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/outer-run.log",
+      "sha256": "804a8a321d3a06b5d3a50be3958ba973d9ce762c6b49c57f57c0fca729bb5c6f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/results.jsonl",
+      "sha256": "b74ca0a1056000825eb0f7bacfbf8c5feb2178884a40f95264a2b727769775ff"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/run-report.json.gz",
+      "sha256": "30145dd0bd794ccc696dd8d7caa47172f3b8570f3e795815019d3987d524bf3f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/run-report.md",
+      "sha256": "9c8d09ee479552f45212e4d0242a2f0606035cdd9582da59a22b8eb635b9743e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/summary.json.gz",
+      "sha256": "f1b64b210ada2add5f8f572ba2469dbbb29ed442aba23a90b57889f4dbb7966a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T175913Z-r6c-20261016/summary.md",
+      "sha256": "0ac213049c72fd954d1217b4e8803f03225499d8be4c3eb771166b66160aef0f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/manifest.json",
+      "sha256": "5d59625d0dcc891b513608098f2c25af7e861843a558d97976198790f790192b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-before-after.json.gz",
+      "sha256": "5fb82b6c8528ad9ff1ebca437bd98e6df9197201463bf130fce33a1c2183d258"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-before.json.gz",
+      "sha256": "28735fa811653107bd4e228815e480fe9c62706002458c6eebac4ec899370181"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-bounded-shutdown.json",
+      "sha256": "e28fbcf9655aae8d32e66d2619c830b7c6d7cfae4c444f5789fd813b7a0f6fd8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-evidence-config.json",
+      "sha256": "1382c9030233ff66ded7cf5692d4e1c6dabc719e237c742116937f7fc79ece39"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-manifest.json",
+      "sha256": "5d59625d0dcc891b513608098f2c25af7e861843a558d97976198790f790192b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/outer-run.log",
+      "sha256": "35f7049b545119e8a11bc12d701a9d4b1277396e6408e5eaa353510a679ce0b9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/results.jsonl",
+      "sha256": "7e9ac9e60f0e3aaaf22fbbfedc1b5e87df8a49256411e389f7100150fd9fc132"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/run-report.json.gz",
+      "sha256": "81fa2b21bb5b87b7f0e50b8beff7ae766264638cd46331faf4d24213abeb8f76"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/run-report.md",
+      "sha256": "806ca94d771b3ffd27af7c97892a43758493a82c3f96f79d77b418f54d205032"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/summary.json.gz",
+      "sha256": "964fd5e61b7b12c89b80fe57783cfbd74acbf14471b812a78f359dae1788d5ca"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T180524Z-r6d-20261016/summary.md",
+      "sha256": "becdb5d97829813ff46254bb31a586016deacfaba83bda7e55e50cb76e43af20"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/manifest.json",
+      "sha256": "3e001717e21e8b7205159061d2fd5490f605c501b89b9dd8669b4c8b879801a3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-before-after.json.gz",
+      "sha256": "59b484e44ae169ce179ae47c7bc0325ec11a032b59e434ff66f58491acc05d39"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-before.json.gz",
+      "sha256": "2799922504a00743e9bdea12cf56f5b8cc6c99172f1bbf69307dd38e6dddf3cb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-bounded-shutdown.json",
+      "sha256": "f13e87f5577300c12c034bff64f7f4b55db2f333e7ff02d08e8ff971039f96b9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-evidence-config.json",
+      "sha256": "06f1501f702d6c227e7102cb0288e84b6f3449e491b8cf1b8fe5811fec1ebc4b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-manifest.json",
+      "sha256": "3e001717e21e8b7205159061d2fd5490f605c501b89b9dd8669b4c8b879801a3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/outer-run.log",
+      "sha256": "a685e9edbdea08b659ff7ca62b5cea9d7044ff8fc5a63fce98e3c922309fc7a0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/results.jsonl",
+      "sha256": "722a4a96e6bef0bf946537ed17f7a0486819b8d0857bcb28f84deda69c127b3f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/run-report.json.gz",
+      "sha256": "8613f46017d973ee8fef80d79cba06e432949a7f3be9584132c8b0f42b6733a2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/run-report.md",
+      "sha256": "754b64823e37344ce0325af76ad20f3ce34cc1abc170612bee5fc25254831228"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/summary.json.gz",
+      "sha256": "80aafe6d0d69f5d0a4f0b9ac268d1a6d3bee7b7051645f664d0359c832a47516"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181050Z-r6e-20261016/summary.md",
+      "sha256": "aabcf65824bc44c4bfbf5bca0e2c3d43dcdc426d5d1fd6a10371c817adab2926"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/manifest.json",
+      "sha256": "6d885c19044cadc72d2ed24df22bc6cda14198c48aa8205ebe1b2f2cfab2d7b7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-before-after.json.gz",
+      "sha256": "b176e248654e3c298a1a85c8075c061e112faedf01095fb21afdf5900195e732"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-before.json.gz",
+      "sha256": "21e44296690ccb1050c7fd6921edccb11668cc95782088c6a5dd868534fe27ab"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-evidence-config.json",
+      "sha256": "4922d7efe7777c4706eff73de56b1d9f3dc1d47d96002fef93034b66df837c9e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-manifest.json",
+      "sha256": "6d885c19044cadc72d2ed24df22bc6cda14198c48aa8205ebe1b2f2cfab2d7b7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-run.log",
+      "sha256": "d6f3fcf9af2c7577a25d4a86fb5868effba83e97d3e020fd40e3148bca31b6e3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/outer-ui-admission.json",
+      "sha256": "2450f412802dde668f916a571cd98bff1abc1630a0758e090fd31258f92ed769"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/results.jsonl",
+      "sha256": "2e352edadc4a584f333b6b4fa4f7d623cf016d08adc3b72366308e67b5ff066d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/run-report.json.gz",
+      "sha256": "1924c08722876e766c90495b16301b3056b591031fa8e7c03a7e2e66789c6075"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/run-report.md",
+      "sha256": "0bf50db0c19695142129920d53eef2952a282bdbd23cdd5845abf57093fec197"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/summary.json.gz",
+      "sha256": "fabf0ac0a51d029cc781ac81fe5dd26ea6ee1c05b7be67844f3986f63cbc9e31"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T181453Z-r6f-20261016/summary.md",
+      "sha256": "924511adae0c8e961c40612a52352a6bdb8801072236cfd15337ab5d032aa738"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/manifest.json",
+      "sha256": "dd4d37531ee5fa670607b91e9e0196afa1923bd60ee449aedb10d03651919081"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-before-after.json.gz",
+      "sha256": "918d8d30c0ef95d2fb34e6672cd2467088bf8b1866c7378e5598815bce1954a7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-before.json.gz",
+      "sha256": "d6f439b19d67d31e24a20817e7717f207fa97b823501e83265bc5b5533f4a8bb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-evidence-config.json",
+      "sha256": "0ead6b9b68dd459c9bd390281a7803fce0e07b1f681d3673534e511c8a11e803"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-manifest.json",
+      "sha256": "dd4d37531ee5fa670607b91e9e0196afa1923bd60ee449aedb10d03651919081"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-run.log",
+      "sha256": "4eef2c124bf2d85936f4b656d1f5c52f3ef4794431ba47087f7f5dd7c5e9d921"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-ui-admission.json",
+      "sha256": "c47bd16b9cd54a5c4f9c34351beab671a229c53a6f9aa36e8e501c79d89cf144"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/outer-ui-maintenance.jsonl",
+      "sha256": "6d95a1a12f00f621ec1828de0150a84f02dd73c188a164425f4be8b02242a2e2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/results.jsonl",
+      "sha256": "12fe5f305d4f703e2afeadaf6ae27279ab603d4e8648f2da9f6f4e4278ad16ef"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/run-report.json.gz",
+      "sha256": "94c310b1fdafb27fdd64a212e49899832b3452f604b6d693872573aa0b929fc2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/run-report.md",
+      "sha256": "e5cd738c5f595d37bd01e83cc6305c4e934142987b00e4afe04b3f8a52f50581"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/summary.json.gz",
+      "sha256": "36d7f705f407a373f3e4944c0ffe217ad62b9a59b80aec92ea8dd1a0a741a539"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T182502Z-r7a-20261016/summary.md",
+      "sha256": "cb4f315b2c3c08621d25950a87f4a7bf460fd752998a949bdf2706c2a54ab67d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/manifest.json",
+      "sha256": "99ab8bf25e328d16bba8b927948fa453e36c3e6d97ce109c3bd3db1dea4111a6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-before-after.json.gz",
+      "sha256": "852bc89befb16dfa946eaa286e037df9bc582e3a9f6cbabedbf62a98900afca8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-before.json.gz",
+      "sha256": "5b6d3785b1b55db2c2c52025dfb7b6446c37d350b98c241675c414c4bf3703eb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-evidence-config.json",
+      "sha256": "1ec8c309425c232b5cbdcffd7807c9f1e25fc4c38d34b440753811a5361bb72c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-manifest.json",
+      "sha256": "99ab8bf25e328d16bba8b927948fa453e36c3e6d97ce109c3bd3db1dea4111a6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-run.log",
+      "sha256": "b79274cc93624f65f858dd727b44d56e34920f09029a67f174964e95d5b05858"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/outer-ui-admission.json",
+      "sha256": "15914188b6945a02a3a82be449dac7f78b622bd077c965ad763c4dc9bf01fadf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/results.jsonl",
+      "sha256": "73a93ff09288c1117950e34fbf33694cd17a0db3c0c6327371cf1c92953d0691"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/run-report.json.gz",
+      "sha256": "c0ccdf0de221f9a239a999e8a88de1e4028189ab13227e07d213ce7908b7ce80"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/run-report.md",
+      "sha256": "2cb1868443b759c7dff647045da69152f61ab4bde4ccf28ca70b522249c38cae"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/summary.json.gz",
+      "sha256": "7ab42cdc3f7cd011cc30360196f481aaceac9ab018784d961a9c84ff82a94841"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T184338Z-r8a-20261016/summary.md",
+      "sha256": "c43c4e08f2b854fe75835b4a61941e5930c9e46f6c415e562f6afa79bff8e61f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/manifest.json",
+      "sha256": "69f3724e06cc53ae2bb49f2e08b89ea8909e1be6152f0a7af2aac4d35e422281"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-before-after.json.gz",
+      "sha256": "f77ceb61befd64fc75b3554a81d4d781c6ef7424cacfa118d1d87d3da01ba46a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-before.json.gz",
+      "sha256": "4b5d5eed1ce989bc4a7e2c84635c215bd1b5d37ef13e757088049f71937b0580"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-evidence-config.json",
+      "sha256": "77fd016bdf87ff9393813579749553e574855d9f78269caa6aa5627ff7772cb9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-manifest.json",
+      "sha256": "69f3724e06cc53ae2bb49f2e08b89ea8909e1be6152f0a7af2aac4d35e422281"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-run.log",
+      "sha256": "37a01f549f0dffe94932304806b69bc48c67f2084ddb6ba37a86e3006ac6d904"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-ui-admission.json",
+      "sha256": "11a275a6284e572095fa6b31cbff83b6b40e765b8d56c0383c0bdcdb743c1603"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/outer-ui-maintenance.jsonl",
+      "sha256": "cd892e8cfdcac70a367993d6a5f22e5a7fae45fc992773dc196f4e8c692e18b7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/results.jsonl",
+      "sha256": "ffa30b8baa2be60532254d40b14c7d5489b386f9c9296a23f1129625e9a56c28"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/run-report.json.gz",
+      "sha256": "616f5a4f366a7a43cf9c872fb0f84129a442f40a0f570be57e5f71c88606c148"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/run-report.md",
+      "sha256": "b91f4070bce9ea46f45e33eb9074b9b5a9fbc6d81d77c733b68328e73a8a648e"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/summary.json.gz",
+      "sha256": "0e2eb5262640594a9af2e80fb122fb4821f3fb3722b65e5eefaafc5c79f76ba4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T185804Z-r9a-20261016/summary.md",
+      "sha256": "c6003043ca80bfd8b5107388f844a69ffac8100321a8c5e7bd98007aa6e14d11"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/manifest.json",
+      "sha256": "d116956e8d49ed7d7175ea05521bf1e909a3578a35e58f5f42ea806a71106109"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-before-after.json.gz",
+      "sha256": "26f00b345e454ef81357b26a26b3235784943e0767c4ce54bcdafde599a393e3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-before.json.gz",
+      "sha256": "4d52bc56b1ec4c3bf01dad808c6e373b28a888cb0e673ca71fe590d302aae216"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-evidence-config.json",
+      "sha256": "ca16d56a8062224cab7b125adf4d53d60da9f7c826b870b3c4bb3d95dd4b27ba"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-manifest.json",
+      "sha256": "d116956e8d49ed7d7175ea05521bf1e909a3578a35e58f5f42ea806a71106109"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-run.log",
+      "sha256": "a3dbf12ff5e58ddc0675e04178febfeb1b2b9501240f9252dad234e0c2e9d664"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-ui-admission.json",
+      "sha256": "47fb2bf11903b39f4d556d0ca6d41c7a66ca8328e231bf574c2c338c1de1622f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/outer-ui-maintenance.jsonl",
+      "sha256": "b8658fb7a50f186eb726aeb5e772e526edbdea04e3c7b7f54c1c2757c320c8df"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/results.jsonl",
+      "sha256": "56fdf1dd9c4892ef85d276bccd212b305fa5033ffdd893bb4f5c9883156ca8d2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/run-report.json.gz",
+      "sha256": "85a2a80d6eb70ea0b010d7a55b6b3d55f4a5a7f3feaacc3277cae3e08e0cdef4"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/run-report.md",
+      "sha256": "fd53e91ac333dcccf5c80fb3195a84d1cd6813a3634103fd27f24e9639b702a0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/summary.json.gz",
+      "sha256": "15a8d8262d8207f33f4f7131ffd8d58a07a487e567199483e96abc180f433235"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T190820Z-r9b-20261016/summary.md",
+      "sha256": "bb8b48c1d1fb645ee183f7427b4703de7289f731698f930f74e86bf5a1702040"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/manifest.json",
+      "sha256": "f47fe563a6a4ad6d1216a6e5cb384f8a91f9c078328390037e8c29914341c9c5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-before-after.json.gz",
+      "sha256": "ea349850c96c3d8f20f188fd12b0b7166ae64834cbc66d5ebc0c2f1cd252fe92"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-before.json.gz",
+      "sha256": "60ab0105cf6814aa78341dc01da3d769abc1a8c93c5587e6a939f1ab2d8b98f9"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-evidence-config.json",
+      "sha256": "2dde33b0b33518eb4d3e4f65b9f6a7c94ae2085347163a5ebf9f431d2055c3e2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-manifest.json",
+      "sha256": "f47fe563a6a4ad6d1216a6e5cb384f8a91f9c078328390037e8c29914341c9c5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-run.log",
+      "sha256": "361d64a40015c27fb1cc69feb9c19edddbbeb1a7e5607f3a9dea0609a3f8133f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-ui-admission.json",
+      "sha256": "49a430407b59330bb5659f754aa1cc5e8d24047a793f6debff8fc63d78b9afac"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/outer-ui-maintenance.jsonl",
+      "sha256": "ee6109ce99ea69c1e8244c88fb4576630e68b66e9c194d45021251c770b62542"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/results.jsonl",
+      "sha256": "91b8cd068d2c2720cb603c05ef48542e46d987d063b53fbf1610211496cd0151"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/run-report.json.gz",
+      "sha256": "f16cd6a048afe4d09d511076f2c6fccb14596bc5150230f4b14b315b20641eac"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/run-report.md",
+      "sha256": "029f1656d3e1da7ceea8e495f7048b44bbc0e3d0c120f1787db576e810dc8ea2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/summary.json.gz",
+      "sha256": "5645720c5f323cb5870db0d474052d082c97427cf57b3d80fde9222c44be7563"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T192218Z-r9c2-20261016/summary.md",
+      "sha256": "38e17b6b845497752f3cd058ac0d6296c721e06da5094925d2b6031a302325c0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/manifest.json",
+      "sha256": "7330158999712fb6dad4ed111517aaf618563792b2fdab44501eaa4bd04b5f2b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-before-after.json.gz",
+      "sha256": "ebd11658d6c448d135eeb5b7086ae168a7c7aafcdd19d5a3ceb868ae7ddd9029"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-before.json.gz",
+      "sha256": "a9e5ca2bb2a95cc0fb75dec4b529760307418721ec868885a50db75a20bdb15a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-evidence-config.json",
+      "sha256": "b9c3104aa2062c4ec4c224d510334d5be835e5260420969817768e112d27895c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-manifest.json",
+      "sha256": "7330158999712fb6dad4ed111517aaf618563792b2fdab44501eaa4bd04b5f2b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-run.log",
+      "sha256": "0f705fb53473bfd44bb9543c087e4533237942d361f7536c556cdaf40ca9b787"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/outer-ui-admission.json",
+      "sha256": "baece5462913264ae31f625d61d2ab2a0dc5c5dd92103496cd882b6a8f5dbf1c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/results.jsonl",
+      "sha256": "017e12f1c9446f710de6133b37248d44377d09f990d90008a8482d7f0ebd8107"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/run-report.json.gz",
+      "sha256": "9ae22b94189a647a7e3a648ec80cb1503e3163c8d1e698c77b697b20b2eda9c0"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/run-report.md",
+      "sha256": "c88dd83941ffc044aceb18105f7f67b7ed20ae2325f0b114fa867570c97d8aca"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/summary.json.gz",
+      "sha256": "d3b20f4659bb11b8ec1cbff8a3f4ded8d54f4ecb2edf0eb0ca68889e0ad99026"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T193423Z-r9d-20261016/summary.md",
+      "sha256": "4db60e5ea62625f317e51960cdb721ff683150bf6df8ff281c826812ba88255c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/manifest.json",
+      "sha256": "b04565a6a910dce4fc21792356b101c9394a05213684a09a195d0b26983fbae6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-before-after.json.gz",
+      "sha256": "a2df00a432d1ad420fd7232e43cc5f7288de55734f38df1b4247753787868b95"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-before.json.gz",
+      "sha256": "9969e0132e813485038d7ca82a86fb1e2700100bce4ad400960e36e1e75418f8"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-evidence-config.json",
+      "sha256": "be7e94571474d83e900166959c45e759db70add5a641d90f6f92722f73e1a752"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-manifest.json",
+      "sha256": "b04565a6a910dce4fc21792356b101c9394a05213684a09a195d0b26983fbae6"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-run.log",
+      "sha256": "b03aa70786003b37b272489fc6fbf17272e973d413f70e09d79666b39c3ddae7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/outer-ui-admission.json",
+      "sha256": "2fee4d406779cdfec25673c0d9188eebac0251affcb3435f6f462afb1d2bd7b1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/results.jsonl",
+      "sha256": "ad6432b48ab5adb89030e58d603eba184aeddce3b3b215cb9339b7360ec7861a"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/run-report.json.gz",
+      "sha256": "3d808925a7121a8773c0f133f75b92351fccbb3f292d2e343fdc8e3aa27b27cd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/run-report.md",
+      "sha256": "d310ad17c8e24e18c9431825cf3a184acf55f32b6a96fb275294a9e91ee1e3a3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/summary.json.gz",
+      "sha256": "41c58b6969c2d033fab4a8b00a3f3cf0d0099ed9dc8a668aa66460250afd03af"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/foreground/20261015T194309Z-r9e-20261016/summary.md",
+      "sha256": "423b509c247a78c1b65ae8cd497c966c022ccaf7093436deb8afc9e4bcc4b671"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/expected-receipts.json.gz",
+      "sha256": "b4c1893dfdcd909afe78f5a1439771bca1c9e87709d11862e7c2346dd8741ece"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/experiment-report.json.gz",
+      "sha256": "bf53c255738d676aebfa775f2db78f4b752eb8b149d78f92ddc0a9747f17d82b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/frozen-plan.json.gz",
+      "sha256": "519921febe4ec07cdb979c15bbb6f6dcd47aa4266f033efdc93657caebf35ebd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/measurement.json.gz",
+      "sha256": "ae4a7c877dfefef9e814310569574d231116c363528082a964c8fedd72fabceb"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/expected-receipts.json.gz",
+      "sha256": "82ecf8b5d495e68ea6f449c50364f7c3404241dc3e97e6aa4095e0227e0b9675"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/experiment-report.json.gz",
+      "sha256": "a3b832a40b983e7ea262b07721cea2f052ab183d67b6422620d6585d6a890984"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/frozen-plan.json.gz",
+      "sha256": "6f93c392d9c2883c1fad7772ff7357ef8eeddce698dd0251f9a2582a4ea112cf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/measurement.json.gz",
+      "sha256": "c685c2f03ee57b5115e47a513ceeeff6f198f9d65330386eb4e8a5e5d3b3fb81"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/expected-receipts.json.gz",
+      "sha256": "71b3a44068e7c73061a5f7e574544e9f65dc909a03e2f6bec03a51f8304ccacf"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/experiment-report.json.gz",
+      "sha256": "4fbccaaa17eab2f8a3129e2afc5b9d51b3b097babb771243f3e0cacab46d2708"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/frozen-plan.json.gz",
+      "sha256": "f2dd72b0c527c6458759dead3135b58666e0b7f7a7a283d6e8fefbd1c60d1d77"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/measurement.json.gz",
+      "sha256": "9f6d6461c085d72ca7b4d85fc2dd27f981945c7886f8a1a76fe1c8d3635f8afe"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/arkclaw-30/arkclaw-30-manifest.json",
+      "sha256": "17c487c0f1c02e6711708b6a13288bfe9ee110395ebd0878abc060b77c821e44"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/arkclaw-30/arkclaw-30-receipt.json.gz",
+      "sha256": "a7cca86eca12d6031900bdc1d69951e07f602d12a9d999ed81af53150e719495"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/arkclaw-30/group-report.json.gz",
+      "sha256": "6c8f458a1e2f693e5837bd4b3530839744711c56bec7b5e9635e1058362ef9b7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/arkclaw-30/save-protection.json.gz",
+      "sha256": "7a08c3fb368a17a4ca62d1b996da91df1688ff217f47529a35f2d8585c9104fe"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/blackiron-30/blackiron-30-manifest.json",
+      "sha256": "cc1edbd93307932b78a691b9956ea6020206d51815b29f4952501c88f55bbc1d"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/blackiron-30/blackiron-30-receipt.json.gz",
+      "sha256": "a8968a4bb5db35ae82c2c1945c1ab3e12dafea56ade995710496826911871e2b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/blackiron-30/blackiron-30-results.jsonl",
+      "sha256": "e47db3b6e3c45173a4e7f6cde4071c6405367c0fb876673eb69c59a2ccdcb157"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/blackiron-30/group-report.json.gz",
+      "sha256": "012daa1d06a3c889ba76b4488d8d6f4e31ebc81cca26ea5dd646925e82c64dfd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-display-r2-20261016/blackiron-30/save-protection.json.gz",
+      "sha256": "da9d0279302771f45dd2796691d3a2d23e04f2ce457bd8b174c811b644d333fe"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/arkclaw-30/arkclaw-30-manifest.json",
+      "sha256": "ab67ec90c0cab264cd3e0858ae095814a25e61867943d280e28f9b110f6a42ec"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/arkclaw-30/arkclaw-30-receipt.json.gz",
+      "sha256": "35fe94f625601bd62df1f42d46f2b145a9e5cae17224e347dc24df1211845ca5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/arkclaw-30/arkclaw-30-results.jsonl",
+      "sha256": "c466b8d7c589471375e9c51ac36f9b50913a4907f871ef692e8002543e92d394"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/arkclaw-30/group-report.json.gz",
+      "sha256": "940765ce220576bf7cd2a7709b8f6b1b88d96fd72350add0036f760810ec72dc"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/arkclaw-30/save-protection.json.gz",
+      "sha256": "49fe81b081e5ca93898a317d955f82680fee64500540036f47463375bbc769cd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/blackiron-30/blackiron-30-manifest.json",
+      "sha256": "dd3e3d7e5473d31469d68a279a8e44566dc0e1d0ddb5d02b0f69a30bd42c627f"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/blackiron-30/blackiron-30-receipt.json.gz",
+      "sha256": "b6eb0e4d5c5dac1d6fde13ec2e8951673c29a49905bbc49129eafb0b96d4c388"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/blackiron-30/blackiron-30-results.jsonl",
+      "sha256": "7bb5cefe40dc14efab98e6ad4f0b78ee1501ba7dcbcc31917c71582057a97230"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/blackiron-30/group-report.json.gz",
+      "sha256": "2aaad53c982b185c01fc09514334218a8652939f21b602c7ba011f4f7c718e5b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-pilot-r1-20261015/blackiron-30/save-protection.json.gz",
+      "sha256": "4b3a459ebcc16dbbe333c9f0d90293601717028925b3d0dcc8570a46f6311ac1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/arkclaw-30/arkclaw-30-manifest.json",
+      "sha256": "e7db122ae492f28666ac2aa85d941a458a3a1074aaf464dba7915aa6cd67a2c3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/arkclaw-30/arkclaw-30-receipt.json.gz",
+      "sha256": "1ec3b1717f9373042ec2a96f74528aa0fce474209d70a8e9a0b9a5798f1e4ce3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/arkclaw-30/arkclaw-30-results.jsonl",
+      "sha256": "5eae440d7a9bf1a8f323b55560e2bad9b890ee7fe704b9e3e5bbdf9477cca8c2"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/arkclaw-30/group-report.json.gz",
+      "sha256": "ed092cc370a4b8327c84457e7034a73dbc45cd6cda06c86719abd77c870537aa"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/arkclaw-30/save-protection.json.gz",
+      "sha256": "346ef7d1100df9c5f3c05a9e83aad1a05df3657c54749664fc42d715e26706c3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/blackiron-30/blackiron-30-manifest.json",
+      "sha256": "1740bb09660e7cc1d60e60616acaf9014ecd60577523e2a861ea2a3d4042fe7b"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/blackiron-30/blackiron-30-receipt.json.gz",
+      "sha256": "a4fa545425ba45d34aa941d68a6493fe61ea30e1a9cd4cb8ee9ef6a35468b9c5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/blackiron-30/blackiron-30-results.jsonl",
+      "sha256": "08accc57d40f57ac1e8572f724a51d631d8ea4a0fac6fef388e79e4725ca5ddd"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/blackiron-30/group-report.json.gz",
+      "sha256": "7e85522dbb6baae2cd5635a395ac6abf9b175d5f4899aa88587daaba88ad0c60"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/evidence/20261016/combat/worker-failures/bladebot-visible-r1-20261016/blackiron-30/save-protection.json.gz",
+      "sha256": "3c808b489543d5b2cd5200319e90839788f2024c116cac26cce10d50e88c9a37"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/Codex大刀机器人素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/DOMDocument.xml",
+      "sha256": "65b284ce39758d3e2683ed82a70747a618b8af942d10d1b83c1cd3687aa4abd8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/PublishSettings.xml",
+      "sha256": "c9101a70cce529b64e4aba65f4ad4e33e1421ec1dbde826a6484726d761e15b0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex大刀机器人素材.xml",
+      "sha256": "edfa82af38a73a7cf5b876b071bac95e93a748aa92387916a8c41fb000573542"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+      "sha256": "bd8cfcd3fa0c8ed9b24c86b070b214683d396a2cccdd764b19e6c0addc09903a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/行为驱动.xml",
+      "sha256": "3523b334999d8a8cf5cc86e681e97e34358541c1c2d4f2db147cd8e967f8988c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 113.xml",
+      "sha256": "782c3dd9b5c4f3ac77363c5853192e5708fe6379b495c0f72898650e6941e47e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 15.xml",
+      "sha256": "066ffab9cb552591cea687abd96f4b6ca8f98539fa4e3535a9d88285ccf4addc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 16.xml",
+      "sha256": "eaa41e50492ae743ea6d62e867b9e53f81e92caeaa58324016cf2d86014171c5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 18.xml",
+      "sha256": "28999181dfac893b8df4f6c6b5c4eecf8a05c87cad69e7ddc6f080b03488091f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 19.xml",
+      "sha256": "c5a082d25ee5bee89a55ba3dc95eac0529e3f95f10f68a475a8cf452c9b6ecfb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 195.xml",
+      "sha256": "32eee01f764190991a508d1b700347e8ca29d7eb0b6a76f8486d6e0514b6076c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 2.xml",
+      "sha256": "0ac6684f38c506f65f97dfa00d411d8c357ae32fbd69df8a410eab070f471b90"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 21.xml",
+      "sha256": "07e72504e757b0aebb891712e363e1493351376f06913b92e8d5e318b88ae1bf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 23.xml",
+      "sha256": "b4024a4128637ba76430cd56eeb4fe3b91ee614d984a7ac7a0d1b453570a12c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 24.xml",
+      "sha256": "da1de5d9d5117d7bdfbaeb6b3d1351cf69cdfc67770cb2a85dc631058c69ce4b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 26.xml",
+      "sha256": "84027a789c311c0e1f2dd6da065ff88146345ef76efdd565a848073641d450b3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 32.xml",
+      "sha256": "cae5fe57ff8a260e647f875f4166dd8ae987bdcda284fbd68e71d7dbaf067d12"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/Symbol 99.xml",
+      "sha256": "0cd6418a8f3520fa1efa4282d17badf5a4d14985c16d97dc1dca0b8d10e3688e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/CF7/思考标签.xml",
+      "sha256": "a83fd8804a3bac0facaa20de84f5ca071e61b7d3ca2dfa9c7349e283512840ff"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/890-遮罩0.xml",
+      "sha256": "4935d95f78c890f97bc7412a534e841ccae898f2d054c646c3a173f9a0bc93e1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/890.xml",
+      "sha256": "0f62a5fad557ef471bd007df3676e1b7ad4ba7df7a5d8ae1e0d48d45b30c5e25"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/891-遮罩0.xml",
+      "sha256": "9a5b691fddf2d2eec4dac1b9f7ee64d0378cd5b7465a4430e88073785c3a1513"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/891.xml",
+      "sha256": "bd5a44e2b0b3f2003b41cd03843467a4dfd4789a9b7687c3a2607c25a17c9978"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/892-遮罩0.xml",
+      "sha256": "9846f211abb54f98c36c54b87ee05ee009d694034aeda34057a3e635643e0ca9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/892.xml",
+      "sha256": "6c696dc437facb9a679de895360e36622b8bb26f36b604addd11610157c38725"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/893-遮罩0.xml",
+      "sha256": "cd6b4cc258afcba6cf9ca937ca31783cd88796c2284fd16d9d19ba47e35971b5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/893.xml",
+      "sha256": "489502d031df740310503966d9cb4d404d66a33e525723e7b5526de9d4106235"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/894-遮罩0.xml",
+      "sha256": "6d81cc4c2b4228e3eae72c6813e7f7f4161102ecebcd39bf5a3f898b0f175191"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/894.xml",
+      "sha256": "678b7d7c752acf3e473d517670538d3d475e51af1dca3755c5018190dba55ea3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/895-遮罩0.xml",
+      "sha256": "0acc2ee2277bed1fecb8ffa7338d92718f6d4a8a9df14347db7b72d891b5e337"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/895.xml",
+      "sha256": "ee5ebd889d12920d5bd04643a083b7e543102e6bf840bd0d0e192e2696a62678"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/896-遮罩0.xml",
+      "sha256": "21e5ea411be3093c247ab1c9e74622298bcae875903b96af969cf8b2ff54ba08"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/896.xml",
+      "sha256": "e30e9e50f61a8be0a865e35cd43a22c0fc0c2cfb952132ee5b40c44cf602cfb7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/897-遮罩0.xml",
+      "sha256": "00888fbf38ddd8d48ba86606e368cdfcc2fb70e42cf4588045fd7c1217b7a40e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/897.xml",
+      "sha256": "b07b96a7650f3eb30b8cafc9d836910b9b90b58e3a1614e160b628045ee7c505"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/898-遮罩0.xml",
+      "sha256": "dfff6dd3debe3735a42c86b7fd3b1b843b5156926e67bd16c05f7124e7e09dc6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/898.xml",
+      "sha256": "2ca8aa6690873c435a7de6fd3f310829e62ea9f01be67adc41f34f092e4f7800"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/899-遮罩0.xml",
+      "sha256": "9b4a1d99c93458f3aed1c87ef41e3bb2818e7078701f608ac32cb341f99fb73e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/899-遮罩1.xml",
+      "sha256": "68c350009745c57fd0d17a1d2cf59ae912f727018aaf23f9cf64a98020df6c93"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/899.xml",
+      "sha256": "f8b1086d6340a986523c0f1e0eaac5c1463b0f5e066e4080163b498aa531e622"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/900-遮罩0.xml",
+      "sha256": "2da408759fb234b5bfe0d801a4117a2619bc6f25a2ace6cc1493c075c9944613"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/900.xml",
+      "sha256": "4a1b4d4f2b03f4d233bd44b3f73a59634c7e25c0815ade140527198b3a9a0119"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/分件/909.xml",
+      "sha256": "a8b30d62fcde31701c91a63fb37a63138aac79f762bc7c93b89fad0804dfcbfd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/倒地恢复.xml",
+      "sha256": "2a809320366e2ad2fdd4d658af9e36f27e61fea45730d46ab3e3edaae463827c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/击飞姿势.xml",
+      "sha256": "6f242102fcd0fdc21806ae7f5a832e947a2a30d99f69ba680f6924d9025cdf0f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
+      "sha256": "e911821bc811677d418bf1f01db1ce8c84d39521af77750b83350a9b1e9fd37c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/横扫.xml",
+      "sha256": "3860c46205a8a4a13f613fdff58e1c9899eb073e6e7fd7b5e2b84667724ceb84"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/站立.xml",
+      "sha256": "5f0f95bd02d66d69ca3290c0700e8dd568a69d21a0338ae2feb2546c3085bc83"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/行走.xml",
+      "sha256": "509e58a95fdc964cb26040a3e239a4e150a341a4a52f49f84ca4fd75c0e4f0e5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/被击.xml",
+      "sha256": "78866b6deaca15132ca5ff50b09ac7d85bc77b0150f581fa4b0ac048fd9c13d8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/重劈.xml",
+      "sha256": "536a12c8411753c23d0b5dc085e1a0d3e09e955437c3bcd3c1731324efa3f21d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩0.xml",
+      "sha256": "a3af85e67d1c994321ce22df1b497188b00f4f86872963ad6ac2d9b159463c65"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩1.xml",
+      "sha256": "b0e569d772f780d06fd83d2c2610236234c64a2257bef684141a4f633fb64eca"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩2.xml",
+      "sha256": "571e9fbc250422a9a8701e56672f9d8778baec616e2bd2e2855f278f58e0470a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩3.xml",
+      "sha256": "ae0c29cae8abc15c93bbe07bfad1d024ea5be7ff7dc251e98039c4daec394844"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩4.xml",
+      "sha256": "bdd9abd62445e08c8f71a613fdd74d94ae11cbbcb5e4d6a18f02cef8b9ec702f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/916.xml",
+      "sha256": "e462547516763843023626ac03faa4063aadb63060c824185d5672fe5789cf05"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩0.xml",
+      "sha256": "43f3cf85e41611afb02f643bfffe98e7439ab5afbe0e71bf9ebb4c3afd010a08"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩1.xml",
+      "sha256": "7dcc1211d16e5a17d69cced07ec2ddc825b74eb2a5bcbe9cbd68df6402353df7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩2.xml",
+      "sha256": "aec4879c10f50efc014ad4d046dd71d0a4d53a87916eed5ea646877ecbed67f6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩3.xml",
+      "sha256": "2df735ecf48869e2d8f57753a8d1d3c0f361807f72534055c9eacc5d8263c01a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩4.xml",
+      "sha256": "86f977b73d82383fd79ffd5a15230663fc7eb4b6ab9387d32559741df745a69d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/917.xml",
+      "sha256": "6b18452577502a32c0d97bace944e1241ee8122e62597bd6c74f584212b6e485"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩0.xml",
+      "sha256": "b8bdf393244f1ec31f6e2145d1e61a8e4bdce06a63112854299c58153b781d98"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩1.xml",
+      "sha256": "3e1c66e4f375bf002db961ff844c66aee99a46700db98d3e8e16aa1ef87a87c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩2.xml",
+      "sha256": "3de8916b3a6961ed0cab65522f641e26502054ffded4cfc3e294f44acd276d2b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩3.xml",
+      "sha256": "51dd82e593cf5db770cd4c602c5f3de786ff621d135808f10d84df6f5d9d779c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩4.xml",
+      "sha256": "981d85052f6a698c0d5fe3a4ec071113f65de5f5090ed72259bd082c90978d02"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/918.xml",
+      "sha256": "12b94d5011aae1ade7ff9801fa3d84e09d3600371f4abe9779f884d15ea3a32d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩0.xml",
+      "sha256": "efbb8bb6bd04a05077ccb26ece4a6b5214571551bdd4c6e97bdfba91bf24d08e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩1.xml",
+      "sha256": "d5d140f60a2df5fd56f794eff5cca199a49d05096c565d076e400b4b022258ec"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩2.xml",
+      "sha256": "a598f1a36f7835c33095ad0cdb800204cc876bb8da5c79e81a1296f5edc13bf2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩3.xml",
+      "sha256": "12197fe0b8c60673e8d7aa6f049e37991e5b26ee76d0548f348ce492ae41bcfd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩4.xml",
+      "sha256": "b81a1a88dfabe5acaee531f5ee14e52536b47508d044b47bf09d48f51d44d24f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/919.xml",
+      "sha256": "903cca0bde43aba96cc2dab5ac700fb535032a4ba53de8e329814903c71cf92a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩0.xml",
+      "sha256": "95fd67326357812bb040fb0a4cecb923f1ae29a4e141fe382f70ac310bddb48f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩1.xml",
+      "sha256": "be1d850b35db3287dfeba5ae9171976ac47b167cce168a74bcda21ac32850087"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩2.xml",
+      "sha256": "65c7e65384f1ef375f4cf5d48e20f453c6958fc68453440fc0e0d63086607a12"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩3.xml",
+      "sha256": "2ec14054826e278517b9a892eab0af6b5ba972b4188bae6b9c88f69c4c8332c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩4.xml",
+      "sha256": "4b34431c70c97d96953afe565e30af8183ec1698002d05798b01091e4fbca516"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/920.xml",
+      "sha256": "fd2d663abe63fc4e12c23c9a1c0e5df3c0cf77ec3f1ffc46fbd9dee7271a4091"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩0.xml",
+      "sha256": "0c6126da37800c825fe248a7a85828f66de4a38be9624e739f3736a28e4f71a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩1.xml",
+      "sha256": "189511b7e1a4ad2bb965a96652c14d5fa52d23bc4857a5ece4257ce50926a313"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩2.xml",
+      "sha256": "966efa04ea2c64adb3eef1e4344d3a6626fa3bbdb41e872cb9d3c73cc1e1d620"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩3.xml",
+      "sha256": "d6e1abe604275353345c4f42c980f1c7269f934a1dc5b16584857608abade932"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩4.xml",
+      "sha256": "938b775c2dbd87292403e39efcb9e4df2db4acd534403af5bb4c13bec4242b50"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/921.xml",
+      "sha256": "6d91fd60c8832b416a419c355c9861e45bdd2a9e180b5695694a6262a8a8e79c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩0.xml",
+      "sha256": "4129dadd5c02c82da620fcccf7b72d60f33b9cd7e2ac24243372ea963361563b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩1.xml",
+      "sha256": "0e99fadebb4a014a643dff650a238c28369fa1efe4db74ecf8fb8a7d003854d6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩2.xml",
+      "sha256": "013b417b874731e3ea44fe76172f62c1aa76d08677f2a65e83603d028290553d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩3.xml",
+      "sha256": "326c4a57b57425c6b9e5544a5b58144f6b4ab248e5ab1b37564e154822505e91"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩4.xml",
+      "sha256": "6446de4b01bedbf0ba7596c1c9df9dd9b8d1120cb9ca6f85f1beb74c95102f74"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/922.xml",
+      "sha256": "42744d61f13e61dd06ad16aff6025f911cf83e17242555f1f9d0de49df4c617e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩0.xml",
+      "sha256": "53cc9be10fddbcf179f0272ef7c3bb67ca49bbeb20f3efb5c52d64d0b65ff790"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩1.xml",
+      "sha256": "8f2cc3b4e0370426d5079ba0bf369d02eee148dd159dba17b6a99a96d44ca3f9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩2.xml",
+      "sha256": "b210bb34ca6cbb99042612882a8002334cc950663ebb59ee419038c7f041ccc0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩3.xml",
+      "sha256": "9c0ff2b37e6aa08460a268b9eafa212a1173c91b66169839c3eaff887674e56f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩4.xml",
+      "sha256": "e830765329129f787ba063a165dfe04a6cc990a2fa35664b60b5525fcb497eed"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/死亡碎片/923.xml",
+      "sha256": "de8784cb116e54b1a2cf1c3cc329c62400c342cfa62d118da55f957127a3aea8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩0.xml",
+      "sha256": "986c2d4de3282c987250aafa4fc14e6ca0471151a3c0d103fce5eeda30f0e5c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩1.xml",
+      "sha256": "8013d6a55807bb2fd1dc894ec13a9b4c8eb137252ca31ea6c92dc90c446562a8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩10.xml",
+      "sha256": "0f7f121b958bfafec5d699082680b5a1b9e5b99a39dbd21a4dc78eba5790ddfe"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩11.xml",
+      "sha256": "e5e41e9eb9ec1dc792a9815b002045775d3b1c003120a54bcb6c0fec3d7c80e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩2.xml",
+      "sha256": "2ae792b20e03eb5478d702a51a4250f4ea4b077c19151ec243451d829b61c7a7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩3.xml",
+      "sha256": "0d69f1977bd42c489e6f64c1cd21f66336c2d9421eaa7c71e5a5ed99061de6b5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩4.xml",
+      "sha256": "77c225efb182bc2a35c424d89dcf48b0d61eb4627c25a2838e30cb51602652bf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩5.xml",
+      "sha256": "b128cb7dfb25e99853d7032ab7d840107305e93087eadf564a62aa3acd2525a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩6.xml",
+      "sha256": "8a01ecf42e812244b6a5d87cf9c7d41af29d8e6ea5f1d96fd4a586a1b51d9922"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩7.xml",
+      "sha256": "8f7aa37f68bf660fe6edd3571ee4c0e285f328491bebe7553bca562bc845ec48"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩8.xml",
+      "sha256": "9c716831fb7784df75f5736da59f3448ea16a6a9d9d4eda88d17ca9a5186b07b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩9.xml",
+      "sha256": "a2c6e25cb3528b522cd9be26c043fc89c475eca1192f5781baab292b85bbee2c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376.xml",
+      "sha256": "b0eb82b3c3bc96420dce452b3ad12ca11a21250b3cf751f793ae5c5f063d3b95"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "sha256": "d4dc955f19e7ad41e2da1018a8ab5f4af6469a762a2793c4a2e3ad4a6a9195c8"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "448505517bfd86413de30f3561b91918f70f512dda5c536f55dbed2696230df3"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "b0526a2a8ebbbccd4b091c3794083eb364b1dd46f87bf8b906ea0dd5addbdfba"
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "sha256": "08e8231de1ca370ffd51fc2036ee55f67d3105fa143c9d2b7860838e85ade715"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+      "sha256": "27e5c21d53b5334c96c523838bb9f75c5248a24696136ebbd1816e0734888ee8"
+    }
+  ]
+}

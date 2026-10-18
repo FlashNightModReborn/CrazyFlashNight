@@ -1,0 +1,489 @@
+{
+  "schema": "cf6-wings.native-import.v1",
+  "owner": "flashswf/arts/new/CodexWings素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6Wings-R3",
+  "nativeSymbolCount": 60,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "sha256": "c58972f03cc7d9f7b50e088da0e973442e9112ce52f98b944e61424ce3683ace"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-wings-assets/WingsAI.as",
+      "sha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    }
+  ],
+  "donor": {
+    "rootSymbol": "闪6特工/Symbol 776",
+    "members": [
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/area框/hitbox-area框载体.xml",
+        "sha256": "5a7d91aa851d06b5f3a1ce4ae345c4be56ebede535f75262e720e99ce6150b3c"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/area框/索敌框载体.xml",
+        "sha256": "e70586b93a67be086e949424922198d2a6c8487c147e399a1887597b13d30f24"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/思考标签.xml",
+        "sha256": "1d2dc3d6c44117f852f24cfe58a3cc36a22fc899babaa6c25876ac649e72d0ae"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+        "sha256": "8026a6de652e5dbef554987152d5a8479ed2ec4241ab0c5337971565cc811333"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/怪物通用模板/血条与名称/新版血条位置示意.xml",
+        "sha256": "d1de7e0207c48880cf3090dfbf0bcda9f424c4fd26bd16aa3b48a95ea3d6676a"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/方舟指挥官/透明控件.xml",
+        "sha256": "9e20ba1e6e1c7d9c33aadbf825ab7d3ea7f4e26457ce58690611d296c5b0e66d"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/诺亚克隆兽/阴影.xml",
+        "sha256": "f144212d186c288db6d9f621c99b224507fa4157ee586e5415f160cdbcaf552f"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/通用ai元件/行走ai载体.xml",
+        "sha256": "74f2189f502c39a205629704f2c429d8d6ebe8e8b5c5921f7419ff545da04280"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 855.xml",
+        "sha256": "a49450cd1e70656384d08c1e6a34ca0d4cc30da30290b1f9cee4a573177e6f19"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 856.xml",
+        "sha256": "bb138a8fb18abd744110fd8b111c48491c141ced25daa23b67335b7e70d868c3"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 861.xml",
+        "sha256": "3dbda7aa4ccf1f36dd0b9295739d97066d907e062679abfd7a0493b35a498282"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 862.xml",
+        "sha256": "e544a236cbe788ccb37e7751f1f9cf4e367743e5cd465224bb12164227686b5f"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/sprite 863.xml",
+        "sha256": "1668f4c14ea3190bf5bbd81316967bab9c2a52420c67253eb8a59d3ba03b3bf0"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/起身.xml",
+        "sha256": "bbf0b8f12e9c36ec2ad4d666c52aa47d2c6a45151121db6befd4b3c54a528ec1"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/MovieClip/跑步.xml",
+        "sha256": "f43b47c8f372eb6b7c9aef843f47d719b833f56fd50656dd1243175133a01292"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/Symbol 776.xml",
+        "sha256": "e579fcd9eb7fc0642a287be1291c2cb3bf38f3f734a7fab37a2c2a32407621f4"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/人物服装/元件 2.xml",
+        "sha256": "6dbc6fd22f267f0d7baa8de398d38beaf26a822fb43951d4308ebe26992760bf"
+      },
+      {
+        "path": "flashswf/arts/new/素材库-诺亚新敌人/LIBRARY/闪6特工/人物服装/元件 3.xml",
+        "sha256": "52600aa17ea2f8dee65fcb874e859498eef021728051b9bc83f4383a10814585"
+      }
+    ]
+  },
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/area框/hitbox-area框载体.xml",
+      "sha256": "e05e1ccd9dd243da7bc201874ae72298f333a5a82347f8fae72c9949cc039f2f",
+      "bytes": 1056
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/area框/索敌框载体.xml",
+      "sha256": "47211dc34071206d38f8feefe4f8bfe3440dfae84244bb55e3f22d0d9544a0b0",
+      "bytes": 1356
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/思考标签.xml",
+      "sha256": "4238806cda466efdd897779cd47caae95038d2bd1b7971c64a3832304fcdc3ff",
+      "bytes": 1476
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/怪物通用模板/新近战子弹定位元件/子弹素材/Symbol 13.xml",
+      "sha256": "411f5ecc4d372c799dab53c1b341305f17d93327c1610a46ee98022b2b0662f5",
+      "bytes": 1125
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/怪物通用模板/血条与名称/新版血条位置示意.xml",
+      "sha256": "d48295894cea2f23c64404e6be5f8cffc39efcffb1e6d73e8073ac11739de060",
+      "bytes": 11465
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/方舟指挥官/透明控件.xml",
+      "sha256": "dffa45297e2cbc3210cd9d91920a4d2d0fb711b170d396f86dc5751cc29a5d38",
+      "bytes": 1048
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/诺亚克隆兽/阴影.xml",
+      "sha256": "a9a78fed38066fadc4f848585031745924da81c7a05e02980a802c4701df9d0b",
+      "bytes": 2572
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/通用ai元件/行走ai载体.xml",
+      "sha256": "c0724e0b4c839198a24a1b2a65a78c337203bfea3cca173fd45b31a0b255c5d1",
+      "bytes": 1072
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 855.xml",
+      "sha256": "1b371c09ed96fab1f83c62d50895fb31abc7945e4b1d7d0250f0c5c9f66cd25c",
+      "bytes": 232033
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 856.xml",
+      "sha256": "a73473d11d839a1703e10474a9e14590355740e369e82fd9be7b3440db99b01c",
+      "bytes": 376931
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 861.xml",
+      "sha256": "3f7affe4057d68d1ef27467d3d8f27b59e5b8ce3254a3c37b8f6801015dd2b0c",
+      "bytes": 259391
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 862.xml",
+      "sha256": "748015a4c907aa327de6fc3fce520928f7ad73afd0e37f427bc1c641d289a395",
+      "bytes": 103023
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/sprite 863.xml",
+      "sha256": "313642a7fa48142d583484f98f86507f4cb58e520318057df8ae62eba09dc20f",
+      "bytes": 13600
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/起身.xml",
+      "sha256": "c8236babc469f6a65f8495ce70314bc6ba2bb1a9c472e27bb694ba6207d10df9",
+      "bytes": 133072
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/MovieClip/跑步.xml",
+      "sha256": "0d39d5d446ad80c92a0f67883b0a253baf8c1e15b35ba825e33b8f36d03d6adf",
+      "bytes": 100541
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/人物服装/元件 2.xml",
+      "sha256": "ed7607333c05790d6b1a579ba29404d03d4ad8ebfb3550cd0e3eb3b300ec708a",
+      "bytes": 8974
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/CF7/闪6特工/人物服装/元件 3.xml",
+      "sha256": "57b2249af84e1ffd0c58c93db8318bf1e945e276c2d88bfa8619e4cfb176cfde",
+      "bytes": 8995
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/847.xml",
+      "sha256": "eb331690668ceab73155c0f28a9c2a903392b9ce55d4ef2b31ff21243286be2d",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/847-遮罩0.xml",
+      "sha256": "cfc68ddc84a0aae2748bbbbcbc0732c565d689a13bf99c5970cc6eb70b489c99",
+      "bytes": 1892
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/847-遮罩1.xml",
+      "sha256": "0635b203295ea17832ad2de74238f8637bd2411f5e3347efbea7791367bce1a1",
+      "bytes": 28174
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/848.xml",
+      "sha256": "42232fdb56ee9bc78d869c9c029dd404d6615a563394f4d18fed8e779b4463af",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/848-遮罩0.xml",
+      "sha256": "607866b08c364ccfc867aaa27f04248efb8e9a3661d08bd7a239ddcb053a8fa2",
+      "bytes": 3474
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/848-遮罩1.xml",
+      "sha256": "e14fd57b6f707fb7d67833c4423f67edf5ab3e17419705867d6705370cab7eb4",
+      "bytes": 112477
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/849.xml",
+      "sha256": "2e4b7ede7707f21885b06c64fa473bd967f0656ae79d94c7868f66976afd2c3c",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/849-遮罩0.xml",
+      "sha256": "7569eac85c12ee881feead3c4d5bfa38fa7d117878ffebb406be59e4f2794a8e",
+      "bytes": 2048
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/849-遮罩1.xml",
+      "sha256": "8b409b257de84798a1b062df1a87cc64999a2c19e0dba429d7afef4d1c076f41",
+      "bytes": 19163
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/850.xml",
+      "sha256": "a7a396da9a28586c197b5eb81a0f919117932a2be5c17b04f9e9be374c36d8a0",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/850-遮罩0.xml",
+      "sha256": "df85c4ccd52bbb0de541d7f06cb20754fd8eda7aa72f54e77d9556b4d99c8fde",
+      "bytes": 1829
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/850-遮罩1.xml",
+      "sha256": "05f97cdc1d160d2f298bc07cbc25fc3b9b08e1f85f957ac5ba3dd88d5e80c147",
+      "bytes": 17307
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/851.xml",
+      "sha256": "09d3919136fa88629b8872ba911b3f5e6da361ec57171a2cacb96fee73679116",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/851-遮罩0.xml",
+      "sha256": "7d0572e7cf2270c5aade0d74302317baeff01f919a7712d762bb2d1cb6d7bf6b",
+      "bytes": 2333
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/851-遮罩1.xml",
+      "sha256": "34be8a942cf13874de1892bdf9ec7a4317a40cae2e6add587e73d8f6fa633a71",
+      "bytes": 35069
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/852.xml",
+      "sha256": "c1296117732450b8746060a5255ec6e4eee57b5e2a7720bdc738098a21e792cd",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/852-遮罩0.xml",
+      "sha256": "fd327b7b68b7c109fc687d3f389896a9db46bfdb5fff5397ee4f99ffbc412f96",
+      "bytes": 2138
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/852-遮罩1.xml",
+      "sha256": "00ac4b2a52e4533be919416503d9d8d1d79acd01b6d04d8a67ce7cea704c5822",
+      "bytes": 29283
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/854.xml",
+      "sha256": "15222717a8e4f1502a5d5367b183dc912b586e0605468e4a8280d9038119b2ce",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/854-遮罩0.xml",
+      "sha256": "34fc969cd89976f6ea7fc56862bd6f90e084b35394a74364c5c77c1a363f0670",
+      "bytes": 1710
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/854-遮罩1.xml",
+      "sha256": "abb87ad6c84703734426f5d332e774a1ca0190a356c954811e79b7bae375dd75",
+      "bytes": 72463
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/855.xml",
+      "sha256": "99dacd9d96c81c79c1b25c7f4dd22d8d0781d294d53f9e5b602568aa329f68c4",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/855-遮罩0.xml",
+      "sha256": "bdeef7c2705f097745b9f8d923de2fed751206bc795ec1fd9ca28113a282243a",
+      "bytes": 5102
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/855-遮罩1.xml",
+      "sha256": "a06805c9e0873a770dd2ec9e9a01564a1ec455917804adc084afa62a838dd54d",
+      "bytes": 93496
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/857.xml",
+      "sha256": "3d4b6f0a0d4ab38fed8d3813ad4edbe677f8e5f6891f0c67a90f983a05540485",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/857-遮罩0.xml",
+      "sha256": "abd543ada8e6ee2c55603f6ca57e6015556b6b60328657466c954394607a439d",
+      "bytes": 1896
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/857-遮罩1.xml",
+      "sha256": "c7e0e0433239b16ddcdd6353d1a058d8c717844f37cbb1691abb15c13941d652",
+      "bytes": 17616
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/858.xml",
+      "sha256": "5790937debd72caf874ba155ac8ce5a9aa21115b4d2360dfa5724b77ee5ce9ce",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/858-遮罩0.xml",
+      "sha256": "df9ef5f35844fe6498a2fc71443f0b92f6d0f3f7b25f3d59a871e7469024c904",
+      "bytes": 2372
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/858-遮罩1.xml",
+      "sha256": "015c9e14a5259267ce968672dfb24ee59dfa2a6736393da2f55dd18a1a9abe2d",
+      "bytes": 38736
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/859.xml",
+      "sha256": "10179730f307d8fec6062bdcf3a545d03bae1ea4d6b4295aa9cfc5b670f60235",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/859-遮罩0.xml",
+      "sha256": "4e1c8ce6ce90cd29324c3a414999e84e7154c00fed2f8896f89b09be90d6aee5",
+      "bytes": 1972
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/859-遮罩1.xml",
+      "sha256": "6757333df7539960c5937a65a0a73f79b219758bcbf21871f193c69f70e82ba7",
+      "bytes": 17023
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/860.xml",
+      "sha256": "bd82c18aa5c8697617d55f1de3d0cf43078cb365de1e774fc1043b0d802d52d0",
+      "bytes": 957
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/860-遮罩0.xml",
+      "sha256": "cd2836c70518cc291e02c2a0d84f0dac926830f5c3427866bed2b94a6d832889",
+      "bytes": 2245
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/分件/860-遮罩1.xml",
+      "sha256": "c4e26a6df298d75674f57966d0e5b23c9f4061d69b7cfd23020d4e29019746e7",
+      "bytes": 39128
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/动作/死亡.xml",
+      "sha256": "8618eaf3e049fab73896435e8ce7e91812b84910274fe35662529066614ec109",
+      "bytes": 184747
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/动作/站立.xml",
+      "sha256": "b26f85e9203a07461a3ca217da185713fd66522f5ee19d0ae70d7a110b905c1f",
+      "bytes": 33800
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/敌人-CF6Wings.xml",
+      "sha256": "6136b25f0af3ad018e9ab14dfa785065732ba5e689b65edbc5c9d5deae0b164b",
+      "bytes": 34256
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/武器/双枪刃.xml",
+      "sha256": "8542edf577b89ea1d08cc6e571dc8012ae40eef066f082fb35c9b144e6e47e9e",
+      "bytes": 1636
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/武器/枪口定位.xml",
+      "sha256": "a84884ac0752547974564e3f084d749b6ac5db2b509048d635146f5c716b6107",
+      "bytes": 666
+    },
+    {
+      "path": "LIBRARY/Codex/Wings/行为驱动.xml",
+      "sha256": "5693e42b359388428cd35b5c5c3d3a2e82e56331916736bd0697d2f80ebe3407",
+      "bytes": 656
+    },
+    {
+      "path": "LIBRARY/CodexWings素材.xml",
+      "sha256": "ef73c31e4f51f6c03744c4f9c8fe3eb046b09ce27e5b048fb0721f9ac430ebd5",
+      "bytes": 1132
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "8956255a9dc1f68ceea42a700ec01d6fc43ef20c201662235a6cbe7c25b1e6dc",
+      "bytes": 9180
+    },
+    {
+      "path": "CodexWings素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "5572cda2d9e70f71fc025da043688e43877320a27137bb993beb01aa2c903f19",
+      "bytes": 7899
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 6,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0513.mp3",
+        "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1120.mp3",
+        "sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1134.mp3",
+        "sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1143.mp3",
+        "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1150.mp3",
+        "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "8e73c1a5beda86fcb8ceb8b823b33f3f6b72ca2843ad157203fd9c76d9ecff4e"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "0ec2d31fd70ee3c4ba6e53096edca0ad48120c56809694f7090c03f419712df8"
+      }
+    ]
+  }
+}

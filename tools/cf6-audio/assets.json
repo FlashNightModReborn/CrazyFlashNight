@@ -1,0 +1,968 @@
+{
+  "schema": "cf6.audio-assets.v1",
+  "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "sourceFps": 30.0,
+  "cuesSha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0",
+  "ffmpegVersion": "ffmpeg version 8.1-full_build-www.gyan.dev Copyright (c) 2000-2026 the FFmpeg developers",
+  "files": [
+    {
+      "name": "CF6_0288.mp3",
+      "path": "sounds/export/人物/CF6_0288.mp3",
+      "soundId": 288,
+      "bytes": 2392,
+      "sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 10528,
+        "soundId": 288,
+        "linkage": null,
+        "bodySha256": "9e071809b640ded43f10c4dda945d640a7cff5629e5c1f62ee8b0c4cac81bf08",
+        "mp3Bytes": 2392,
+        "mp3Sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0296.mp3",
+      "path": "sounds/export/人物/CF6_0296.mp3",
+      "soundId": 296,
+      "bytes": 3640,
+      "sha256": "46a45bcf50194df834b6be99d121ab6ffcbffed4e5d3edce05b6c0c948971f7f",
+      "source": {
+        "codec": 2,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 13438,
+        "soundId": 296,
+        "linkage": null,
+        "bodySha256": "2ae19fb4be04d5f391e42c388441e2bf1a23605ce3f7fbd1786198b1f22ee8e3",
+        "mp3Bytes": 3640,
+        "mp3Sha256": "46a45bcf50194df834b6be99d121ab6ffcbffed4e5d3edce05b6c0c948971f7f"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0303.mp3",
+      "path": "sounds/export/人物/CF6_0303.mp3",
+      "soundId": 303,
+      "bytes": 1976,
+      "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 9125,
+        "soundId": 303,
+        "linkage": null,
+        "bodySha256": "25c70f9a08313779cffde1375931b8f76dc5c94a1695de1854b539335e4dfb5a",
+        "mp3Bytes": 1976,
+        "mp3Sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0513.mp3",
+      "path": "sounds/export/人物/CF6_0513.mp3",
+      "soundId": 513,
+      "bytes": 1664,
+      "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 6620,
+        "soundId": 513,
+        "linkage": "knifehit0",
+        "bodySha256": "c1bcb9cf6a7aef8c819b6955f3240b6c7442f00a59ba242dddd42914bd94a056",
+        "mp3Bytes": 1664,
+        "mp3Sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0576.mp3",
+      "path": "sounds/export/人物/CF6_0576.mp3",
+      "soundId": 576,
+      "bytes": 2184,
+      "sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 9297,
+        "soundId": 576,
+        "linkage": null,
+        "bodySha256": "28dee92f686638b0c6936f5ddeb82e197aebe4514e448a423539f35484e2c77c",
+        "mp3Bytes": 2184,
+        "mp3Sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0649.mp3",
+      "path": "sounds/export/人物/CF6_0649.mp3",
+      "soundId": 649,
+      "bytes": 1768,
+      "sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 6880,
+        "soundId": 649,
+        "linkage": null,
+        "bodySha256": "8825dd60f0cb1f5ddb274b2de50a7a03182fbe42a94000221a097219091466d5",
+        "mp3Bytes": 1768,
+        "mp3Sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0652.mp3",
+      "path": "sounds/export/人物/CF6_0652.mp3",
+      "soundId": 652,
+      "bytes": 4680,
+      "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f",
+      "source": {
+        "codec": 2,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 18079,
+        "soundId": 652,
+        "linkage": null,
+        "bodySha256": "8485a7b31838f1608872fc389d849da9c3c5b24929eab4fe5e4a21eea9c190d9",
+        "mp3Bytes": 4680,
+        "mp3Sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0654.mp3",
+      "path": "sounds/export/人物/CF6_0654.mp3",
+      "soundId": 654,
+      "bytes": 1768,
+      "sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 7117,
+        "soundId": 654,
+        "linkage": null,
+        "bodySha256": "08e66df91675bd24deb67e599833005eede7ef16c4537b6f3402f8a43b3a315d",
+        "mp3Bytes": 1768,
+        "mp3Sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0655.mp3",
+      "path": "sounds/export/人物/CF6_0655.mp3",
+      "soundId": 655,
+      "bytes": 1456,
+      "sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 5512,
+        "soundId": 655,
+        "linkage": null,
+        "bodySha256": "98e3861ae66a639bd1e954e3e704234644ce5fe8b2dd887d936304a2a4e3466e",
+        "mp3Bytes": 1456,
+        "mp3Sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0658.mp3",
+      "path": "sounds/export/人物/CF6_0658.mp3",
+      "soundId": 658,
+      "bytes": 2912,
+      "sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 13567,
+        "soundId": 658,
+        "linkage": null,
+        "bodySha256": "0ae041b5ac13275cdc74bad16cb91c51f41fa11f062baa48f8bd8c50c504a560",
+        "mp3Bytes": 2912,
+        "mp3Sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0879.mp3",
+      "path": "sounds/export/人物/CF6_0879.mp3",
+      "soundId": 879,
+      "bytes": 4576,
+      "sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 22912,
+        "soundId": 879,
+        "linkage": null,
+        "bodySha256": "ef196cb8238012c54fcff7c70080f8fa25696ff4a03e0c26625edaa1678db2ed",
+        "mp3Bytes": 4576,
+        "mp3Sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0881.mp3",
+      "path": "sounds/export/人物/CF6_0881.mp3",
+      "soundId": 881,
+      "bytes": 3952,
+      "sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 19008,
+        "soundId": 881,
+        "linkage": null,
+        "bodySha256": "ae479cf4b5b351f17c721758773ffca72cf60a1e4678e94e9b5f62ef73ee2207",
+        "mp3Bytes": 3952,
+        "mp3Sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0904.mp3",
+      "path": "sounds/export/人物/CF6_0904.mp3",
+      "soundId": 904,
+      "bytes": 2080,
+      "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 8992,
+        "soundId": 904,
+        "linkage": null,
+        "bodySha256": "4c3d6b487b753b59e3554c70b8bec1a197484b983570da45dfe3d1c25fa2c4c5",
+        "mp3Bytes": 2080,
+        "mp3Sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0907.mp3",
+      "path": "sounds/export/人物/CF6_0907.mp3",
+      "soundId": 907,
+      "bytes": 4784,
+      "sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 23904,
+        "soundId": 907,
+        "linkage": null,
+        "bodySha256": "1be3b3c0f59738bbf6798abee673557f7502a6f889e8415fe87d624bc1ed0ef2",
+        "mp3Bytes": 4784,
+        "mp3Sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0907_224cc88267.wav",
+      "path": "sounds/export/人物/CF6_0907_224cc88267.wav",
+      "soundId": 907,
+      "bytes": 423980,
+      "sha256": "af371cf9608f42d7c24aafbb5b500f313ce62b9b45ededdedab16b0f2eaf1dcd",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 23904,
+        "soundId": 907,
+        "linkage": null,
+        "bodySha256": "1be3b3c0f59738bbf6798abee673557f7502a6f889e8415fe87d624bc1ed0ef2",
+        "mp3Bytes": 4784,
+        "mp3Sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+      },
+      "derivation": "decoded PCM with source envelope",
+      "envelope": [
+        {
+          "position44": 40743,
+          "left": 32768,
+          "right": 32768
+        },
+        {
+          "position44": 53821,
+          "left": 2085,
+          "right": 0
+        }
+      ]
+    },
+    {
+      "name": "CF6_0907_c56b689a20.wav",
+      "path": "sounds/export/人物/CF6_0907_c56b689a20.wav",
+      "soundId": 907,
+      "bytes": 423980,
+      "sha256": "1f2dd5e941606c234478c96380196e99ac71eb80494336acea50f3cae544b613",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 23904,
+        "soundId": 907,
+        "linkage": null,
+        "bodySha256": "1be3b3c0f59738bbf6798abee673557f7502a6f889e8415fe87d624bc1ed0ef2",
+        "mp3Bytes": 4784,
+        "mp3Sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+      },
+      "derivation": "decoded PCM with source envelope",
+      "envelope": [
+        {
+          "position44": 0,
+          "left": 17873,
+          "right": 19959
+        },
+        {
+          "position44": 25653,
+          "left": 2085,
+          "right": 0
+        }
+      ]
+    },
+    {
+      "name": "CF6_0907_ea2159328f.wav",
+      "path": "sounds/export/人物/CF6_0907_ea2159328f.wav",
+      "soundId": 907,
+      "bytes": 423980,
+      "sha256": "3b617c5c2a07411cc6ba4c0ad98c5f7af47d519ecbeb8a2a36931f33ba2e2bee",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 23904,
+        "soundId": 907,
+        "linkage": null,
+        "bodySha256": "1be3b3c0f59738bbf6798abee673557f7502a6f889e8415fe87d624bc1ed0ef2",
+        "mp3Bytes": 4784,
+        "mp3Sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+      },
+      "derivation": "decoded PCM with source envelope",
+      "envelope": [
+        {
+          "position44": 1006,
+          "left": 32768,
+          "right": 32768
+        },
+        {
+          "position44": 25653,
+          "left": 2085,
+          "right": 0
+        }
+      ]
+    },
+    {
+      "name": "CF6_0908.mp3",
+      "path": "sounds/export/人物/CF6_0908.mp3",
+      "soundId": 908,
+      "bytes": 4030,
+      "sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf",
+      "source": {
+        "codec": 2,
+        "rate": 22050,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 15104,
+        "soundId": 908,
+        "linkage": null,
+        "bodySha256": "cd89ec7d17e24040549051938f85266f9993a305b3997d87c0612c0731651cd0",
+        "mp3Bytes": 4030,
+        "mp3Sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0911.mp3",
+      "path": "sounds/export/人物/CF6_0911.mp3",
+      "soundId": 911,
+      "bytes": 4472,
+      "sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 22093,
+        "soundId": 911,
+        "linkage": null,
+        "bodySha256": "6c35ea9a6d1d9740f49fa8671f32c15f1201b59bdc07e132f8861747ace93139",
+        "mp3Bytes": 4472,
+        "mp3Sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0915.mp3",
+      "path": "sounds/export/人物/CF6_0915.mp3",
+      "soundId": 915,
+      "bytes": 5096,
+      "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 25622,
+        "soundId": 915,
+        "linkage": null,
+        "bodySha256": "9d213f80186c6b0a6150861030b36d6d0b59708a299fb8839839a2d57a81e7a7",
+        "mp3Bytes": 5096,
+        "mp3Sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0969.mp3",
+      "path": "sounds/export/人物/CF6_0969.mp3",
+      "soundId": 969,
+      "bytes": 4680,
+      "sha256": "29a8c37a8830edc7e3938363fa25cdcf78bdb581d197237a2737c396524e5ae9",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 23405,
+        "soundId": 969,
+        "linkage": null,
+        "bodySha256": "59d43c2b2dc018d1a999201efa69e19a2104881d9f4eacd402c1939477563ecf",
+        "mp3Bytes": 4680,
+        "mp3Sha256": "29a8c37a8830edc7e3938363fa25cdcf78bdb581d197237a2737c396524e5ae9"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0971.mp3",
+      "path": "sounds/export/人物/CF6_0971.mp3",
+      "soundId": 971,
+      "bytes": 1040,
+      "sha256": "539e07d489dbd1e4b41f0cf19b6b58ab6aafdfd8d5f3010cb236b6eb814eb312",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 3968,
+        "soundId": 971,
+        "linkage": null,
+        "bodySha256": "7482fc1c8541c1c9feb49790fac3ec2a2b392afa9c23760e432318283d922dc5",
+        "mp3Bytes": 1040,
+        "mp3Sha256": "539e07d489dbd1e4b41f0cf19b6b58ab6aafdfd8d5f3010cb236b6eb814eb312"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0992.mp3",
+      "path": "sounds/export/人物/CF6_0992.mp3",
+      "soundId": 992,
+      "bytes": 3432,
+      "sha256": "1b7c3d48d8c3e34db8d6a4f01b27aa7d5a51b674c3030c71875cab31d4f7217f",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 16486,
+        "soundId": 992,
+        "linkage": "shoot",
+        "bodySha256": "b81f2c743c699326fa718d04daec1ad97273b816ec8e326d09579353b1cb7b9f",
+        "mp3Bytes": 3432,
+        "mp3Sha256": "1b7c3d48d8c3e34db8d6a4f01b27aa7d5a51b674c3030c71875cab31d4f7217f"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0995.mp3",
+      "path": "sounds/export/人物/CF6_0995.mp3",
+      "soundId": 995,
+      "bytes": 2704,
+      "sha256": "bc133bae4c87fedd26d10d7cacd0082d41de5da488b825ffbfb8eb1077db7804",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 12232,
+        "soundId": 995,
+        "linkage": null,
+        "bodySha256": "fefd86ece50397ec10de27d7d7027f0ffa572df1084222b989811a222f47334b",
+        "mp3Bytes": 2704,
+        "mp3Sha256": "bc133bae4c87fedd26d10d7cacd0082d41de5da488b825ffbfb8eb1077db7804"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_0998.mp3",
+      "path": "sounds/export/人物/CF6_0998.mp3",
+      "soundId": 998,
+      "bytes": 2912,
+      "sha256": "c15c98f7c48569c0ad84c51148391d9bd55b0e85ca0b5003f9358fc92edf2202",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 13472,
+        "soundId": 998,
+        "linkage": null,
+        "bodySha256": "895771f1312218295bf12cbccba785bf4b8d7bd3ac9f80b66c5a133d00bcd418",
+        "mp3Bytes": 2912,
+        "mp3Sha256": "c15c98f7c48569c0ad84c51148391d9bd55b0e85ca0b5003f9358fc92edf2202"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1009.mp3",
+      "path": "sounds/export/人物/CF6_1009.mp3",
+      "soundId": 1009,
+      "bytes": 3432,
+      "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 16225,
+        "soundId": 1009,
+        "linkage": "爆炸1",
+        "bodySha256": "22e279bcbdaea5d36d4e77d335019db57ea65a4597abc0abd654e224e6fe452a",
+        "mp3Bytes": 3432,
+        "mp3Sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1117.mp3",
+      "path": "sounds/export/人物/CF6_1117.mp3",
+      "soundId": 1117,
+      "bytes": 1144,
+      "sha256": "88b4949ed0ad9db81682e6066e6f38fa297891c021b66caab7ebab988ebc1b82",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 4528,
+        "soundId": 1117,
+        "linkage": "老头倒0",
+        "bodySha256": "09d4d3acd4770240bf68be7339c92c2ebc30d637dc37bed826435523a79f0402",
+        "mp3Bytes": 1144,
+        "mp3Sha256": "88b4949ed0ad9db81682e6066e6f38fa297891c021b66caab7ebab988ebc1b82"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1120.mp3",
+      "path": "sounds/export/人物/CF6_1120.mp3",
+      "soundId": 1120,
+      "bytes": 3952,
+      "sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 19380,
+        "soundId": 1120,
+        "linkage": "girldeadsound0",
+        "bodySha256": "c025cd4d614658873a0cce49e60df6fa8850240107edba9364aee128216a7a46",
+        "mp3Bytes": 3952,
+        "mp3Sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1121.mp3",
+      "path": "sounds/export/人物/CF6_1121.mp3",
+      "soundId": 1121,
+      "bytes": 1040,
+      "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 3184,
+        "soundId": 1121,
+        "linkage": "男-主角-0",
+        "bodySha256": "b268f2b93b217b430f62bc63bc36536e810c9b26e99d0efd9a01bb99bf566891",
+        "mp3Bytes": 1040,
+        "mp3Sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1123.mp3",
+      "path": "sounds/export/人物/CF6_1123.mp3",
+      "soundId": 1123,
+      "bytes": 1872,
+      "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 7623,
+        "soundId": 1123,
+        "linkage": "boydeadsound0",
+        "bodySha256": "776810d4edbc2bba95c7b5954523fc7425edbc5a0691d2d91ec81f3f1329270a",
+        "mp3Bytes": 1872,
+        "mp3Sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1131.mp3",
+      "path": "sounds/export/人物/CF6_1131.mp3",
+      "soundId": 1131,
+      "bytes": 1768,
+      "sha256": "68dda6627fc47b7957c01d43acbe4ef4a04c2275ce4dde2ca78b14b30ada4bea",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 7104,
+        "soundId": 1131,
+        "linkage": "老头倒1",
+        "bodySha256": "e93f1c1a6d96029d9104fff34cd7917f3f319fdadbc8e62772dee1be59d25b52",
+        "mp3Bytes": 1768,
+        "mp3Sha256": "68dda6627fc47b7957c01d43acbe4ef4a04c2275ce4dde2ca78b14b30ada4bea"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1134.mp3",
+      "path": "sounds/export/人物/CF6_1134.mp3",
+      "soundId": 1134,
+      "bytes": 3848,
+      "sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 18624,
+        "soundId": 1134,
+        "linkage": "girldeadsound1",
+        "bodySha256": "3f45b52df3e2136a498be63df89c6239c4157539fc5de8a66787f55775fd0692",
+        "mp3Bytes": 3848,
+        "mp3Sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1135.mp3",
+      "path": "sounds/export/人物/CF6_1135.mp3",
+      "soundId": 1135,
+      "bytes": 1456,
+      "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 6240,
+        "soundId": 1135,
+        "linkage": "男-主角-1",
+        "bodySha256": "77b3cce0f2986a11bc12c471f1229900773b84848c840846058d2b59c5efa150",
+        "mp3Bytes": 1456,
+        "mp3Sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1137.mp3",
+      "path": "sounds/export/人物/CF6_1137.mp3",
+      "soundId": 1137,
+      "bytes": 2496,
+      "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 11119,
+        "soundId": 1137,
+        "linkage": "boydeadsound1",
+        "bodySha256": "3412d2277900b513a4e7245404a3f2b37bde3182ce06dbdec44d737e589343e7",
+        "mp3Bytes": 2496,
+        "mp3Sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1143.mp3",
+      "path": "sounds/export/人物/CF6_1143.mp3",
+      "soundId": 1143,
+      "bytes": 2496,
+      "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 11112,
+        "soundId": 1143,
+        "linkage": "女惨叫0",
+        "bodySha256": "5184485ba14337e54e4cdb71a35f73c69d1a6481fe9bd340031d62a246a894f3",
+        "mp3Bytes": 2496,
+        "mp3Sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1144.mp3",
+      "path": "sounds/export/人物/CF6_1144.mp3",
+      "soundId": 1144,
+      "bytes": 1976,
+      "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 8432,
+        "soundId": 1144,
+        "linkage": "男-主角-2",
+        "bodySha256": "25e3c129a00ad800cab184fbcefdd35b37837879f34e57af8bb3928f4bc5a4d1",
+        "mp3Bytes": 1976,
+        "mp3Sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1146.mp3",
+      "path": "sounds/export/人物/CF6_1146.mp3",
+      "soundId": 1146,
+      "bytes": 1352,
+      "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 5695,
+        "soundId": 1146,
+        "linkage": "boydeadsound2",
+        "bodySha256": "97685c475efaf25257ad33858e38b70c1c140c085309786c0765f6913a8bafe8",
+        "mp3Bytes": 1352,
+        "mp3Sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1150.mp3",
+      "path": "sounds/export/人物/CF6_1150.mp3",
+      "soundId": 1150,
+      "bytes": 1040,
+      "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 3119,
+        "soundId": 1150,
+        "linkage": "女惨叫1",
+        "bodySha256": "9f5d51f8b38e0aab1cb8e3f1277f418fa1a41dc647956b29a371d1aa2b12a2e2",
+        "mp3Bytes": 1040,
+        "mp3Sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1151.mp3",
+      "path": "sounds/export/人物/CF6_1151.mp3",
+      "soundId": 1151,
+      "bytes": 3432,
+      "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 16074,
+        "soundId": 1151,
+        "linkage": "boydeadsound3",
+        "bodySha256": "0ff9172bfd4318722d70f8683365896099ef8c3b74871e80dc538fd6d7ce4bf5",
+        "mp3Bytes": 3432,
+        "mp3Sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1154.mp3",
+      "path": "sounds/export/人物/CF6_1154.mp3",
+      "soundId": 1154,
+      "bytes": 3224,
+      "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 15136,
+        "soundId": 1154,
+        "linkage": "boydeadsound4",
+        "bodySha256": "1e2a9a5150cd1e9cf0a80e44aced7cc0b84c7a585c5a273033a8fa1f375f8f03",
+        "mp3Bytes": 3224,
+        "mp3Sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1157.mp3",
+      "path": "sounds/export/人物/CF6_1157.mp3",
+      "soundId": 1157,
+      "bytes": 2184,
+      "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 9599,
+        "soundId": 1157,
+        "linkage": "boydeadsound5",
+        "bodySha256": "c6ec3733ab597c51313bc9a3e88d3fe0d05521bd951a1e81a68ee575d404728e",
+        "mp3Bytes": 2184,
+        "mp3Sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_1993.mp3",
+      "path": "sounds/export/人物/CF6_1993.mp3",
+      "soundId": 1993,
+      "bytes": 9360,
+      "sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 49279,
+        "soundId": 1993,
+        "linkage": null,
+        "bodySha256": "f871f6b1955ad8d7e5dd938e176c6c1fd79b316b6f8019ace520f62cf1e4f35a",
+        "mp3Bytes": 9360,
+        "mp3Sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_2004.mp3",
+      "path": "sounds/export/人物/CF6_2004.mp3",
+      "soundId": 2004,
+      "bytes": 11856,
+      "sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 63868,
+        "soundId": 2004,
+        "linkage": null,
+        "bodySha256": "16f7a9a35458c27012884c59aee00fdfe2ff8d2bcf0b4cf5cf2f2ca64360eda1",
+        "mp3Bytes": 11856,
+        "mp3Sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    },
+    {
+      "name": "CF6_2007.mp3",
+      "path": "sounds/export/人物/CF6_2007.mp3",
+      "soundId": 2007,
+      "bytes": 3432,
+      "sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc",
+      "source": {
+        "codec": 2,
+        "rate": 11025,
+        "bits": 16,
+        "channels": 1,
+        "sampleCount": 16309,
+        "soundId": 2007,
+        "linkage": null,
+        "bodySha256": "c2426e0317fde9ea331429711d7c1a5075f97618ec48ab95b91e150ced964227",
+        "mp3Bytes": 3432,
+        "mp3Sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc"
+      },
+      "derivation": "unmodified MP3 payload",
+      "envelope": null
+    }
+  ],
+  "bytes": 1401498,
+  "embeddedSoundTracks": 0
+}

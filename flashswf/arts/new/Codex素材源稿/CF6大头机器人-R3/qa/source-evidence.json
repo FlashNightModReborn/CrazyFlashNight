@@ -1,0 +1,48 @@
+{
+  "inputEvidence": {
+    "shape929CrownPathPrefix": "M-19.95,-210.35 L-15.2,-211.4 L-15.1,-211.9 L11.9,-211.9 L11.9,-209.85 L18.75,-209.85 Q23.65,-209.5 27.2,-207.85 L28.15,-207.35 L29.7,-206.5 L29.9,-205.9 Q30.9,-205.4 31.95,-205.15 L33.7,-204.5 L33.9,-203.9 Q47.95,-197.95 55.65,-185.75 L56.15,-185.15 Q56.4,-184.9 56.9,-184.9 Q60.6,-167.6 64.8,-150.85 L64.9,-149.9 L64.9,-148.9 Q64.85,-146.95 64.15,-145.75 L63.9,-144.9 L63.9,-143.9 L64.8,-139.9 L64.9,-138.9 L64.9,-137.9 Q65.9,-137.4 66.95,-137.05 L67.65,-136.65 L67.9,-1",
+    "explicitStairSegment": "L-15.1,-211.9 L11.9,-211.9 L11.9,-209.85 L18.75,-209.85",
+    "horizontalRun": 27,
+    "verticalStep": 2.05,
+    "secondHorizontalRun": 6.85,
+    "bitmap927Dimensions": [
+      293,
+      278
+    ],
+    "opaqueAtTopEdgeX": [
+      72,
+      73,
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81,
+      82,
+      83,
+      84,
+      85,
+      86,
+      87,
+      88,
+      89,
+      90,
+      91,
+      92,
+      93,
+      94,
+      95,
+      96,
+      97,
+      98,
+      99
+    ]
+  },
+  "supportedConclusion": "The supplied original shape already has an explicit stepped crown clip; original bitmap also touches its top boundary. R2 preserved both and inherited the defect. This is not a newly random R2 rasterizer artifact.",
+  "unknown": "Why the original asset has this boundary, and which upstream authoring/export operation produced it, cannot be established from these supplied files.",
+  "redrawIntakeError": "R2 left intake had five short strokes instead of full-height fins across the aperture; right fins were also short. This was a redraw simplification error.",
+  "authorizedLocalException": "R3 request explicitly permits repairing the damaged top alpha/clip into a continuous dome. Only shape 929 crown clip is changed; transforms and viewBox remain exact.",
+  "scope": "Single standing pose and local image review; no 183-frame or 78-isolated-fill raster rerun."
+}

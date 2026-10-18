@@ -1,0 +1,745 @@
+{
+  "scope": "Main source after upstream integration, before loader republish; prior loader bytes retained",
+  "files": [
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 17972,
+      "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+    },
+    {
+      "path": "flashswf/arts/new/Antigravity专用素材.swf",
+      "bytes": 113124,
+      "sha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da"
+    },
+    {
+      "path": "flashswf/arts/new/CodexWings素材.swf",
+      "bytes": 97610,
+      "sha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34"
+    },
+    {
+      "path": "flashswf/arts/new/Codex光头保安素材.swf",
+      "bytes": 189659,
+      "sha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "bytes": 86270,
+      "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "bytes": 235870,
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex特种兵素材.swf",
+      "bytes": 100202,
+      "sha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "bytes": 401128,
+      "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "bytes": 86613,
+      "sha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3"
+    },
+    {
+      "path": "launcher/src/Guardian/WorldCompositor/WorldCompositorController.cs",
+      "bytes": 79553,
+      "sha256": "57a97cbfff020bedf61086880d34cbbad1931954779ce64de09d454056c464ce"
+    },
+    {
+      "path": "launcher/tests/Guardian/WorldCompositorTests.cs",
+      "bytes": 29124,
+      "sha256": "073a3a02b1edc50658668ee3bbcf13248c756ff146947b541b6c6d75254b06ea"
+    },
+    {
+      "path": "scripts/TestLoader.as",
+      "bytes": 89,
+      "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 6083998,
+      "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+    },
+    {
+      "path": "scripts/run-arena-worker-protocol-tests.ps1",
+      "bytes": 1423,
+      "sha256": "e223ffc367f41b83b41fca4f1e6169c3d404fae7b6d418f9b218d138d72d3f69"
+    },
+    {
+      "path": "scripts/run-cf6-audio-tests.ps1",
+      "bytes": 917,
+      "sha256": "853861f139efb9a1b840e1d88a031698ea4a9c4e579437a84001450789cf2b9f"
+    },
+    {
+      "path": "scripts/run-cf6-elder-asset-tests.ps1",
+      "bytes": 1022,
+      "sha256": "4c9574f5fedd391aaa37fa7e2f0b47fed88437d5b52678d1b7427fa00ac2e9d7"
+    },
+    {
+      "path": "scripts/run-cf6-elder-render-tests.ps1",
+      "bytes": 1216,
+      "sha256": "3a39b3ed72d788272349b562d3a5d972aaa6f10b49220b0affd03099d5235c8d"
+    },
+    {
+      "path": "scripts/run-cf6-headbot-render-tests.ps1",
+      "bytes": 1208,
+      "sha256": "1da18abb160b251cf06ab3d56ab997759957a5a383656f34e9c1892a282f4163"
+    },
+    {
+      "path": "scripts/run-cf6-player-aim-tests.ps1",
+      "bytes": 1101,
+      "sha256": "7f7b57266f1d275bec3009f39c77c096cc90badabe559d3fe5c43093865987f3"
+    },
+    {
+      "path": "scripts/run-map-loot-tests.ps1",
+      "bytes": 22697,
+      "sha256": "fa3e533ae3ff71115a84f18f232e7b2d45274a88892cb0bde89bcc82aa24549f"
+    },
+    {
+      "path": "scripts/run-scene-transition-tests.ps1",
+      "bytes": 1036,
+      "sha256": "a4871c8ebe683bd43214d1dfa94ae6341ecdb1a7a5644fcc14c024d42b3d717c"
+    },
+    {
+      "path": "scripts/test-runners/cf6-audio/AudioFixture.as",
+      "bytes": 14485,
+      "sha256": "de4733d0f52048d176643aa6509faa4b2f288a0e6348ab7d6220fa63a2d0b7bd"
+    },
+    {
+      "path": "scripts/test-runners/cf6-audio/TestLoader.as.template",
+      "bytes": 338,
+      "sha256": "884e29a715edc9d74715c83d8b90b68936bf9c17a9970298aea5f7f390ea3be2"
+    },
+    {
+      "path": "scripts/test-runners/cf6-bladebot/TestLoader.as.template",
+      "bytes": 845,
+      "sha256": "e71dbc2e483dccbbc6b967a397916fd66040419013f99516fe6f25bc16c17d70"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder-render/TestLoader-charge.as.template",
+      "bytes": 710,
+      "sha256": "2f670a2b9cc46095de1087b3bc4161a78df4fcd49a200a8f36503a828e59b5e2"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder/TestLoader.as.template",
+      "bytes": 482,
+      "sha256": "7c41ba921b9fbd2a4c393ac0ce16ac9fe30861248b694db2974d63c70d468abf"
+    },
+    {
+      "path": "scripts/test-runners/cf6-headbot-render/TestLoader-charge.as.template",
+      "bytes": 635,
+      "sha256": "b34f691b4ceb704c89bb49cb620dea8c7c44b466948cc14079206fc7d579575f"
+    },
+    {
+      "path": "scripts/test-runners/cf6-headbot/TestLoader.as.template",
+      "bytes": 492,
+      "sha256": "a2dc45e3991ae82104129fdaa170def77470dba077ad259fa2c787a343993985"
+    },
+    {
+      "path": "scripts/test-runners/cf6-knockback-scope/EnemyKnockbackFixture.as",
+      "bytes": 532,
+      "sha256": "c47a65c0af3176b93574b50f42647225f4aec3f97e3d0df1799073ad63622e6f"
+    },
+    {
+      "path": "scripts/test-runners/cf6-player-aim/TestLoader-baseline.as.template",
+      "bytes": 389,
+      "sha256": "a2cdbbcc152236136459bae5412e8068edc2972debcc48f7d053d6e833d3fadd"
+    },
+    {
+      "path": "scripts/test-runners/cf6-player-aim/TestLoader.as.template",
+      "bytes": 390,
+      "sha256": "8aac42b4384b162311aa3d757257e0e784a18fc204d183e7e3f095548b40f495"
+    },
+    {
+      "path": "scripts/test-runners/cf6-playtest/PlaytestFixture.as",
+      "bytes": 9224,
+      "sha256": "fe0e8966d708f0da42899322dfd0877c159ab13a2aaecd3ffdbfb2a5089817f8"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/bullet/BulletComponent/Queue/BulletHitEffectRegistry.as",
+      "bytes": 4738,
+      "sha256": "b42cb8f236d0c37ba225346a25104e9b2e9e0cfcb715fec2d6e022dd542fe5b0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/Component/TimeLimitComponent.as",
+      "bytes": 2910,
+      "sha256": "22a0e1e21c8fe8a833b7927212e5c4f2a3766d7e7c2f25ac1017b0f69e1ebfc1"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/Effect/ElderBeamVulnerability.as",
+      "bytes": 2738,
+      "sha256": "19f4b34859dca1890a5319cfecc678d7432aad35aa0a8ca1f3321eda5df857a6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/Effect/FireControlVulnerability.as",
+      "bytes": 2816,
+      "sha256": "77f3382a57a99561c40cf009ba19106351fa6c962cebda62b969276b078300d0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Buff/MetaBuff.as",
+      "bytes": 17160,
+      "sha256": "78674c6318175981749666a355e07f3ea4d202ad692304635fab41ce9b5c2a0b"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaCalibrationService.as",
+      "bytes": 113526,
+      "sha256": "22a8d6aff5adbe463ca3d318ec47f0c99d0bd145d6be9c490176f90ef9787979"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaWorkerProtocolTest.as",
+      "bytes": 29527,
+      "sha256": "aa8a60136cb4af07d2e8b4f5469a154edafe4f56d7f237093e11fed22456c14f"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+      "bytes": 7655,
+      "sha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+      "bytes": 27756,
+      "sha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "bytes": 33890,
+      "sha256": "02884bfdb68d050159686d3e9acc8bef88eaf72b2673645f258aafc128a53523"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "bytes": 16559,
+      "sha256": "57d61acc631ad990a90377d637e7b482f0f5ae16c399b1320da994c566e93b4b"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderRenderTest.as",
+      "bytes": 10938,
+      "sha256": "45ae70b64db5ff85258b3d0cd6c27625f35c9825552a3b9d29c16a50a968b521"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotAssetTest.as",
+      "bytes": 23031,
+      "sha256": "6bbb3dcb18daa88fff9e4c152a0286e0811ab210b96b3153f56ffd85c80b9a40"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as",
+      "bytes": 9393,
+      "sha256": "f6a2644a71e08f3bb4261220d938f9f3c299692cd5ae12410035ea3ba360e241"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6PlayerAimTest.as",
+      "bytes": 16131,
+      "sha256": "2d05ec32017e4d59475dca6ed47e118f8ecd8a28c830a2395e436404b77612c2"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6RobotCombatTest.as",
+      "bytes": 11438,
+      "sha256": "a79f7dc469ba4e0f32d2244d8bdddd696f73c19ee620faf80d302e1bcbf5ff08"
+    },
+    {
+      "path": "scripts/通信/通信_aka_Agent联动.as",
+      "bytes": 40499,
+      "sha256": "19964ce9396781dd80199370fa46ba6adb1d97cfa2d420843e2423619725dc75"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as",
+      "bytes": 21184,
+      "sha256": "0a2deffd0a29a0a38b46d2268c9aa64835e22c0459be3e75602d820999f21191"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_护盾函数.as",
+      "bytes": 10607,
+      "sha256": "3e33b12eae554c708eb9a8d920b55abc880fd47cc3d3b180cb899d8d0fd338b2"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36900,
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0288.mp3",
+      "bytes": 2392,
+      "sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0296.mp3",
+      "bytes": 3640,
+      "sha256": "46a45bcf50194df834b6be99d121ab6ffcbffed4e5d3edce05b6c0c948971f7f"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0303.mp3",
+      "bytes": 1976,
+      "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0513.mp3",
+      "bytes": 1664,
+      "sha256": "d7c2e6de68f5f6abb25c5307d7883963f789a659d4e6758f8e83196aa75ece2d"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0576.mp3",
+      "bytes": 2184,
+      "sha256": "546f90b9a2b5d484a3355a4f45ee8a2c9512a304c9519ae9efd318125e560405"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0649.mp3",
+      "bytes": 1768,
+      "sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0652.mp3",
+      "bytes": 4680,
+      "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0654.mp3",
+      "bytes": 1768,
+      "sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0655.mp3",
+      "bytes": 1456,
+      "sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0658.mp3",
+      "bytes": 2912,
+      "sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0879.mp3",
+      "bytes": 4576,
+      "sha256": "6e7b14b9ad766d05a9bd9a204512a7830fceab348744322df83c0ef20c5dc897"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0881.mp3",
+      "bytes": 3952,
+      "sha256": "5d36ffb8a6cdc828519b01109d39d5ec3dcf08b2e39f15d22f892f4b54cf3c90"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0904.mp3",
+      "bytes": 2080,
+      "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0907.mp3",
+      "bytes": 4784,
+      "sha256": "0df8e067fceedbc048199fa0072600dc223e2f0a1e6751e37342d804ec3005e9"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0907_224cc88267.wav",
+      "bytes": 423980,
+      "sha256": "af371cf9608f42d7c24aafbb5b500f313ce62b9b45ededdedab16b0f2eaf1dcd"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0907_c56b689a20.wav",
+      "bytes": 423980,
+      "sha256": "1f2dd5e941606c234478c96380196e99ac71eb80494336acea50f3cae544b613"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0907_ea2159328f.wav",
+      "bytes": 423980,
+      "sha256": "3b617c5c2a07411cc6ba4c0ad98c5f7af47d519ecbeb8a2a36931f33ba2e2bee"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0908.mp3",
+      "bytes": 4030,
+      "sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0911.mp3",
+      "bytes": 4472,
+      "sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0915.mp3",
+      "bytes": 5096,
+      "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0969.mp3",
+      "bytes": 4680,
+      "sha256": "29a8c37a8830edc7e3938363fa25cdcf78bdb581d197237a2737c396524e5ae9"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0971.mp3",
+      "bytes": 1040,
+      "sha256": "539e07d489dbd1e4b41f0cf19b6b58ab6aafdfd8d5f3010cb236b6eb814eb312"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0992.mp3",
+      "bytes": 3432,
+      "sha256": "1b7c3d48d8c3e34db8d6a4f01b27aa7d5a51b674c3030c71875cab31d4f7217f"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0995.mp3",
+      "bytes": 2704,
+      "sha256": "bc133bae4c87fedd26d10d7cacd0082d41de5da488b825ffbfb8eb1077db7804"
+    },
+    {
+      "path": "sounds/export/人物/CF6_0998.mp3",
+      "bytes": 2912,
+      "sha256": "c15c98f7c48569c0ad84c51148391d9bd55b0e85ca0b5003f9358fc92edf2202"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1009.mp3",
+      "bytes": 3432,
+      "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1117.mp3",
+      "bytes": 1144,
+      "sha256": "88b4949ed0ad9db81682e6066e6f38fa297891c021b66caab7ebab988ebc1b82"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1120.mp3",
+      "bytes": 3952,
+      "sha256": "e9b757b76073058f881b2465a3d6de883980ebff2a4918e46ba86af28348b42d"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1121.mp3",
+      "bytes": 1040,
+      "sha256": "c78670619065a5b47644bd663e939580909233f173a9971a2b0f24ce5c2f522b"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1123.mp3",
+      "bytes": 1872,
+      "sha256": "44db07b892fa6ab5f9b0d0a6e5535104df01cf53b62d8e8ac24b35d2434505ea"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1131.mp3",
+      "bytes": 1768,
+      "sha256": "68dda6627fc47b7957c01d43acbe4ef4a04c2275ce4dde2ca78b14b30ada4bea"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1134.mp3",
+      "bytes": 3848,
+      "sha256": "a4ea2b646dffe70b57a754049e99a032f77c56d6691856cc87002009e38f5755"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1135.mp3",
+      "bytes": 1456,
+      "sha256": "2d783930898280a3f2edcfe7920a5b28347237ce283eb72cae033ef59a532c4c"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1137.mp3",
+      "bytes": 2496,
+      "sha256": "4ee7c0a56c614bae3e5dfc2bcf68f25fd556ac8346fa51165cfb8bc67859237a"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1143.mp3",
+      "bytes": 2496,
+      "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1144.mp3",
+      "bytes": 1976,
+      "sha256": "520a7851041ecefef3ad75b083c9669457482f9d634cfd415d8a182c1af2669b"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1146.mp3",
+      "bytes": 1352,
+      "sha256": "7e6f0e0944373f4c85cc3ad0e62b72354ca201b1b59ae474fc0ed21d5aa1a68f"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1150.mp3",
+      "bytes": 1040,
+      "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1151.mp3",
+      "bytes": 3432,
+      "sha256": "945dc8d35d90bd92ef1e79497795831fdff22a110e26ba38f148879e79972445"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1154.mp3",
+      "bytes": 3224,
+      "sha256": "423e6edf86535278e1ee18381d58e2a70ace893f166dcc2ddf2b97af693f7535"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1157.mp3",
+      "bytes": 2184,
+      "sha256": "b3a91644404e1dcc257a855309608927f4c48c340805b64ef33ff87a6c09f79c"
+    },
+    {
+      "path": "sounds/export/人物/CF6_1993.mp3",
+      "bytes": 9360,
+      "sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e"
+    },
+    {
+      "path": "sounds/export/人物/CF6_2004.mp3",
+      "bytes": 11856,
+      "sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de"
+    },
+    {
+      "path": "sounds/export/人物/CF6_2007.mp3",
+      "bytes": 3432,
+      "sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc"
+    },
+    {
+      "path": "tools/cf6-audio/assets.json",
+      "bytes": 32456,
+      "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+    },
+    {
+      "path": "tools/cf6-audio/build-test-fixture.py",
+      "bytes": 5605,
+      "sha256": "dcd02324ee78bd97a93e47be33d75f7327130062223e74c89ee8fcc556252926"
+    },
+    {
+      "path": "tools/cf6-audio/build.py",
+      "bytes": 4801,
+      "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+    },
+    {
+      "path": "tools/cf6-audio/cues.json",
+      "bytes": 27136,
+      "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+    },
+    {
+      "path": "tools/cf6-audio/extract.py",
+      "bytes": 4115,
+      "sha256": "57a3c7ee612a4751992db7dd3be01a3d3899c1660132fe0d89f1ca5331f77dd5"
+    },
+    {
+      "path": "tools/cf6-audio/source.py",
+      "bytes": 5224,
+      "sha256": "cee56f73bbdc49e91711bbee8c9e135e592eb4b121c02f0ae997b2981fbd7e64"
+    },
+    {
+      "path": "tools/cf6-audio/test-fixture-manifest.json",
+      "bytes": 36751,
+      "sha256": "78103ae6353e6e11cf46c0dd531f4946269a0b484fe686ce28257c860050f2c3"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "bytes": 12247,
+      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance-inputs.json",
+      "bytes": 2077,
+      "sha256": "a21317cfaa091dd5cd4c88259c5244fed39a8daebe0f9b2ee5e29c27cfee4407"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance.py",
+      "bytes": 8742,
+      "sha256": "73ced2035b06da169b87b3e4c4d36b3d63d27d8b2dffeb840225ff141d12b910"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build-knockback-fixture.py",
+      "bytes": 1671,
+      "sha256": "cf35777b9733978b64fe15a33092378bf8e274114d09d2b15d54f6c515692b62"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "bytes": 18167,
+      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/decode-native-capture.py",
+      "bytes": 3543,
+      "sha256": "f1924acbf73e620afc6a7abb99904a086d995be78bfd78f86cc5021398657998"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "bytes": 32103,
+      "sha256": "4eaf0b689dfefb414fdf4deb273b33c31a4f0596b1c0f9cfaa1d5a464be1abf1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/test_vector.py",
+      "bytes": 2101,
+      "sha256": "b2bebc1cf5717c16382f843d8f90fd01aa8474a37528bc1114cde0cc0c8d9069"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/vector.py",
+      "bytes": 4276,
+      "sha256": "81ae4a78b716c1dabf7681cb8394cdf9d6e1596f6ee8df178712cba4cc40f068"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/verify.py",
+      "bytes": 4820,
+      "sha256": "8754660dd2b23287dab81ea8051a21f759aab4cae7192d37455f9456851af06c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "bytes": 26929,
+      "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "bytes": 5160,
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "bytes": 5336,
+      "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "bytes": 7150,
+      "sha256": "7a2a7c3bd7dd2d9ae376585b0199fd1002a17b5b4f27b631b8b5d4b48e55c21c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build-playtest-fixture.py",
+      "bytes": 4375,
+      "sha256": "9ffb56930ffe5fdeb6d52edf5ec16cc0f88bd9c729b5f4dd9492c949adf2997a"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "bytes": 24040,
+      "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/decode-native-capture.py",
+      "bytes": 4839,
+      "sha256": "e639b55b99b47ee08e364a155cbf2b47a3ce543c3d3eda3cbac5a4ec2b534441"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "bytes": 43309,
+      "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+    },
+    {
+      "path": "tools/cf6-elder-assets/playtest-fixture-manifest.json",
+      "bytes": 1433,
+      "sha256": "bbb21d505ba6c584c6cbade5f99934a8591e0e28ff3fd77e7557b8e213d8302f"
+    },
+    {
+      "path": "tools/cf6-elder-assets/register.py",
+      "bytes": 2172,
+      "sha256": "587a4f8e0e704a2bc05dbe10d8425904e796d202addbc72a86dfc4c10384949c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/verify.py",
+      "bytes": 5298,
+      "sha256": "92e852b579626a98e80457ffc540ebeee3936f785c4dc5be2c709dd220ea170f"
+    },
+    {
+      "path": "tools/cf6-guard-assets/build.py",
+      "bytes": 22066,
+      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "bytes": 62643,
+      "sha256": "3893cda9663b0fe5f66a8aa714c9dd08f947603e039878298007061fc447715e"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/CorpseFragments.as",
+      "bytes": 2568,
+      "sha256": "3c89a4879d4723df16ac7d72bef706c244cf406941d75df5cb2137f8b17711e0"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "bytes": 13433,
+      "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "bytes": 1895,
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance-inputs.json",
+      "bytes": 2380,
+      "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance.py",
+      "bytes": 7164,
+      "sha256": "59fa2ed96ed3fd0a9768178ab432720acc8b63c8fb3893b1fd2ee58995bce080"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "bytes": 18072,
+      "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/corpse.py",
+      "bytes": 1492,
+      "sha256": "632123220a09764588f6872f158be2b158b09aa6b36544d93abe76af9995146c"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/debris.py",
+      "bytes": 2312,
+      "sha256": "7d8f833580995b13703fff55aff9d2fd4f8d01f0894172ee386f8f8cb86f3f73"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/decode-native-capture.py",
+      "bytes": 4820,
+      "sha256": "29148f03e8337a6b15e97feef029eb3a8bfcba306bf6f6510a7853e405ced986"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "bytes": 33058,
+      "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/register.py",
+      "bytes": 2124,
+      "sha256": "c73825ed6070b004e3c30b10936715a24a094edb59aae995ed1ed20bd26d3125"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "bytes": 3843,
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/vector.py",
+      "bytes": 2467,
+      "sha256": "524283301a2d8ddb0cd2c017c73771e5065f3ef83a1efd80c00c72573502ef03"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/verify.py",
+      "bytes": 4816,
+      "sha256": "d01800c57a8dddf76f54dc3cb912a68b96dfa262593713a408884733f56a266d"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "bytes": 21678,
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "bytes": 26474,
+      "sha256": "6c4f68fc72eca602f0f9f8662eccd32b7b1bfe291aa1de69955bcf03824795b0"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "bytes": 26155,
+      "sha256": "b49aa11ded92adf8e49e027d7bcbc2bf5293e14e8f7b5a84b5ba0f14d451cc10"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "bytes": 59394,
+      "sha256": "ae4c8515ed00a777349be3ad8c86194d5b8feb8cd14f62ea069a31b0c668d35f"
+    },
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "bytes": 16883,
+      "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+    },
+    {
+      "path": "tools/cf6-wings-assets/native-manifest.json",
+      "bytes": 18424,
+      "sha256": "67cd79683df69aef4fa83836b3a82564a470023c4fc995711f232688342d25e9"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "bytes": 57541,
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/native-manifest.json",
+      "bytes": 76352,
+      "sha256": "ca8c92fba18a0b10ac262b8c4516fbc5d949c3fa71638e17c9e8892a765a08b2"
+    }
+  ]
+}

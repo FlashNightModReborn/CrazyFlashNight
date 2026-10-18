@@ -1,0 +1,76 @@
+{
+  "status": "native_verified; exploratory_pilot_running",
+  "authorization": "User approved trial 750 robot range and reduced shield sustain after visible/collision extension was explained.",
+  "robotStartRange": 750,
+  "humanStartRange": 500,
+  "localBeamLength": 600,
+  "oldLocalBeamLength": 461.05,
+  "shieldCapacityScale": 0.5,
+  "shieldStrengthAndDurationsChanged": false,
+  "damageMultipliersAndNumericPanelsChanged": false,
+  "actualKicksCapacityRatio": 0.05,
+  "actualSlamCapacityRatio": 0.0075,
+  "lossStepOfInitialMaximumHp": 0.05,
+  "actualForcedConversion": 0.2,
+  "actualReactiveCapacityLimit": 0.05,
+  "pulseFrames": 1,
+  "actualPulseMissingHpRatio": 0.0005208333333333333,
+  "actualPulseCapacityLimit": 0.00010416666666666667,
+  "actualPulseCeilingPer30ActiveFrames": 0.003125,
+  "decayFramesWithoutRefresh": 36,
+  "heavyBeamPowers": [
+    0.5,
+    1,
+    1.5,
+    2
+  ],
+  "nativeSelectedChecks": 2669,
+  "selectedNativeCohorts": {
+    "native-r20-fixture-repair/elder-asset": [
+      [
+        "Cf6ElderAssetTest",
+        908
+      ],
+      [
+        "Cf6ElderCombatEffectsTest",
+        125
+      ],
+      [
+        "Cf6RobotCombatTest elder",
+        45
+      ]
+    ],
+    "native-r20-range-support/audio": [
+      [
+        "Cf6AudioTest",
+        340
+      ]
+    ],
+    "native-r20-range-support/player-aim": [
+      [
+        "Cf6PlayerAimTest",
+        1211
+      ]
+    ],
+    "native-r20-range-support/elder-render": [
+      [
+        "Cf6ElderRenderTest",
+        40
+      ]
+    ]
+  },
+  "nativeImages": 12,
+  "playerSourceCases": 96,
+  "fixtureRepairScope": "r20-unaffected-native-suites.json",
+  "currentElderSwfSha256": "cf0e735226737e39ba9a5692b15fafef90dfc37abf713528496a9e191e41fe36",
+  "loaderSha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401",
+  "currentRegistrationIds": [
+    472,
+    473,
+    474
+  ],
+  "exploratoryPilot": "cf6-cal-r20-pilot-20261018",
+  "exploratoryPilotRows": 12,
+  "fullMatrixAccepted": false,
+  "boundary": "Selected native evidence and source scope do not establish final strength, zero Beast healing, current Head full matrix, formal promotion or human acceptance. Diagnostic range counts are selector calls, not all runtime frames."
+}

@@ -58,7 +58,7 @@
               <Actionscript>
                 <script><![CDATA[if(_parent.已加经验值 != true)
 {
-   _root.播放音效("僵尸0" + (random(6) + 1) + ".wav");
+   _root.播放音效(["CF6_1143.mp3", "CF6_1150.mp3"][random(2)]);
 }
 ]]></script>
               </Actionscript>

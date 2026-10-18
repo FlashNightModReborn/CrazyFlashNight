@@ -1,0 +1,11 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+_root.elderRenderCapture=true;
+_root.elderRenderFrames=["human-stand-1","burst-13","stab-7","human-fall-31","robot-stand-1","beam-29","kicks-9","slam-37","robot-death-32","robot-death-111","phase-1","phase-18","phase-49","phase-55","phase-80","phase-93","heavy-beam-1","heavy-beam-24","heavy-beam-34","heavy-beam-35","heavy-beam-106","burst-left-13","beam-left-29","phase-left-55","heavy-beam-left-35"];
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.elderRenderSwf = "../flashswf/arts/new/Codex老头素材.swf";
+_root.elderRenderTag = "after";
+_root.cf6ElderRenderComplete = function():Void {
+    trace("FocusedTestRunId cf6-elder-render Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-elder-render Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6ElderRenderTest.runAllTests();

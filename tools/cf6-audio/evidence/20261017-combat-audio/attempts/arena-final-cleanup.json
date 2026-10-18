@@ -1,0 +1,77 @@
+{
+  "ok": true,
+  "timeUtc": "2026-10-17T06:15:51.788297+00:00",
+  "ownedGameProcessesAbsent": true,
+  "seedUnchanged": true,
+  "seedSha256": "b4891b47106093e89a78bb91eaa043233f67d52dcd4566f1afbbc13c2a95adf5",
+  "reports": [
+    {
+      "family": "headbot",
+      "reportSha256": "2bf7a7332066c8a542c433abe35e810e12d506b35bf7e6d5479dfb3e72d35e90",
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "family": "bladebot",
+      "reportSha256": "881dd27c6de7a3be7a9497afd21f0cc41b405df7f3235481f54cd0bbfc177b4a",
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "family": "elder",
+      "reportSha256": "2b43fae50ddd4519008ace83c28f565e25bec8ca406547381eedbfd4f83d8b5b",
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "family": "headbot-final",
+      "reportSha256": "d6400320ab8089827f08f942097b3267ddb98daef281ed9f7672d6221ccbf37b",
+      "saveProtectionAndCleanupVerified": true
+    }
+  ],
+  "workers": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "frozenFilesVerified": 1486,
+      "currentPublishedSwfsVerified": 9,
+      "logs": [
+        {
+          "file": "bootstrap.log",
+          "sha256": "9f8b4d9f3ae22723c11c9f4ffee21b0973d7a8f08ec36aa7e5b22b310c52721d",
+          "bytes": 1059935
+        },
+        {
+          "file": "launcher.log",
+          "sha256": "93a4247b13892caf6047e3195d29c46aafeb1be0b71a7343f6700abf4caf0ef5",
+          "bytes": 1230567
+        },
+        {
+          "file": "launcher.log.1",
+          "sha256": "3a404af12346fd460b2d07f42a46de0f08f860ccead00a29b9fdcf7a7ba18eae",
+          "bytes": 2196111
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "frozenFilesVerified": 1486,
+      "currentPublishedSwfsVerified": 9,
+      "logs": [
+        {
+          "file": "bootstrap.log",
+          "sha256": "31380abb45757e8f750ed2b9c8c3c9d867e5796b9c532105d9b82018a7f25858",
+          "bytes": 1041398
+        },
+        {
+          "file": "launcher.log",
+          "sha256": "2ec2c0ea12574ec9d8190f778f574fb835bc3fa49600f74e7f5617c8db23d921",
+          "bytes": 807476
+        },
+        {
+          "file": "launcher.log.1",
+          "sha256": "4eb92e74d194d3409d80536faf676ae24bb9215f0f4ccaa65ec1411e03306b81",
+          "bytes": 2217664
+        }
+      ]
+    }
+  ],
+  "otherProcessesWereNotChanged": true,
+  "noSaveRestorePerformed": true
+}

@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\..\tools\cf6-audio\build-test-fixture.py", line 85, in <module>
+    if __name__=='__main__':main()
+                            ^^^^^^
+  File "C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\..\tools\cf6-audio\build-test-fixture.py", line 76, in main
+    assert destination.read_bytes()==expected and json.loads(manifest.read_text('utf8'))==report,'Regenerate audio probe bindings'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Regenerate audio probe bindings

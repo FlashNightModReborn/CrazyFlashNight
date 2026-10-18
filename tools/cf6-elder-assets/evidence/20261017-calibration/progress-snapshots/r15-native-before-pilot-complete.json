@@ -1,0 +1,35 @@
+{
+  "status": "native_verified; exploratory_pilot_pending",
+  "slamShield": {
+    "capacityRatio": 0.03,
+    "strengthRatio": 10,
+    "frames": 120
+  },
+  "observedLevel30Fixture": {
+    "attack": 1033,
+    "maximumHp": 15318,
+    "shieldStrength": 10330,
+    "shieldCapacity": 459.54,
+    "rageHeavyRawPower": 8925
+  },
+  "beamShieldAccounting": "Read actual capacity once at replacement, cancellation or form end; expiry retains remaining capacity. No shield or damage writes.",
+  "kickShieldUnchanged": true,
+  "beamShieldLifecycleUnchanged": true,
+  "actionPowersAndFormulaPanelUnchanged": true,
+  "native": {
+    "assetPassed": 906,
+    "effectsPassed": 92,
+    "robotPassed": 45,
+    "totalPassed": 1043,
+    "timelineCases": 46,
+    "phaseCases": 13,
+    "audioPassed": 340,
+    "audioRoutes": 81,
+    "playerAimPassed": 1023,
+    "playerAimCases": 74
+  },
+  "candidateSwfSha256": "d15c6778237384db72be2351a50097dc9995115d0118ab1695d6d834e9d86bee",
+  "exploratoryPilot": "cf6-cal-r15-pilot-20261018",
+  "exploratoryPilotRows": 12,
+  "boundary": "Native fixtures verify mechanisms and specific trajectories. The twelve-fight pilot is diagnostic and does not replace full-matrix balance acceptance; player experience and formal runtime promotion remain separate."
+}

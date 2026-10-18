@@ -9,9 +9,9 @@
     "stage": 8,
     "tierFactor": 9,
     "speedFactor": 3,
-    "atkSpeedFactor": 3,
-    "atkMultiplier": 1.7,
-    "segmentFactor": 2.5,
+    "atkSpeedFactor": 4,
+    "atkMultiplier": 1.8,
+    "segmentFactor": 2,
     "superArmorFactor": 2.5,
     "growthFactor": 1,
     "highAtkFactor": 0.75,
@@ -22,8 +22,8 @@
     "最大经验值": 10193,
     "hp_min": 9687,
     "hp_max": 26716,
-    "空手攻击力_min": 169,
-    "空手攻击力_max": 473,
+    "空手攻击力_min": 150,
+    "空手攻击力_max": 421,
     "基本防御力_min": 1541,
     "基本防御力_max": 2751
   },
@@ -31,9 +31,9 @@
     "阶段": 8,
     "档次系数": 9,
     "速度系数": 3,
-    "攻速系数": 3,
-    "攻击倍率": 1.7,
-    "段数系数": 2.5,
+    "攻速系数": 4,
+    "攻击倍率": 1.8,
+    "段数系数": 2,
     "霸体系数": 2.5,
     "成长系数": 1,
     "高攻低血防系数": 0.75,
@@ -44,28 +44,46 @@
     "speedMean": 72.5,
     "attackFirstHitFrames": [
       20,
-      19
+      19,
+      11
     ],
     "attackLastHitFrames": [
       22,
-      34
+      34,
+      11
     ],
     "attackTotalFrames": [
       37,
-      49
+      49,
+      31
     ],
-    "windupMean": 18.5,
-    "tailMean": 15,
+    "windupMean": 15.666666666666666,
+    "tailMean": 16.666666666666668,
     "tempoTailFactor": 0.2,
-    "weightedTempo": 21.5,
-    "physicalMultipliers": [
+    "weightedTempo": 19,
+    "powerMultipliers": [
       2.4,
+      1,
       1
+    ],
+    "damageTypeFactors": [
+      1,
+      1,
+      2
     ],
     "effectiveMeleeSegments": [
       2,
-      3
+      3,
+      1
     ],
+    "cleaveHorizontalKnockback": 24,
+    "cleaveVerticalKnockback": 0,
+    "beamRange": [
+      250,
+      600
+    ],
+    "beamCooldown": 90,
+    "comboWindow": 45,
     "sweepDirections": {
       "front": 3,
       "back": 3

@@ -1,0 +1,51 @@
+{
+  "qualified": true,
+  "suites": [
+    {
+      "name": "audio",
+      "testSwfSha256": "4a6b73c5f960afda6f8af9cd9cc0c0aaec59bc426b65342adc4527ab419c33e1",
+      "compiledClasses": 1,
+      "unchangedCurrentBindings": 144,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    },
+    {
+      "name": "player-aim",
+      "testSwfSha256": "f76fe9ebcf7365253f23dea60aa11c5c762d79e3a86baaef7decd73a8becc6cc",
+      "compiledClasses": 400,
+      "unchangedCurrentBindings": 144,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    },
+    {
+      "name": "elder-render",
+      "testSwfSha256": "8da54418e8da4858f2f558110b851fbe357228a8ae734aa9b60d6fcc7a20509f",
+      "compiledClasses": 397,
+      "unchangedCurrentBindings": 144,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    }
+  ],
+  "boundary": "The first-cohort audio, player and rendering executions retain their actual frozen identities. Only two unrelated test fixture files changed afterwards; neither class is embedded in these test SWFs, and all their other bound inputs match current bytes."
+}

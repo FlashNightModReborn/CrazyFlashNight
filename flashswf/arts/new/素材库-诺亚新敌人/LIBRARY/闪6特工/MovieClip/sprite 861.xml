@@ -2,6 +2,12 @@
   <timeline>
     <DOMTimeline name="sprite 861" currentFrame="10">
       <layers>
+        <DOMLayer name="CF6旧特工原生SFX调用" color="#FFFF00" locked="true">
+          <frames>
+            <DOMFrame index="0" duration="6" keyMode="9728"><Actionscript><script><![CDATA[cf6LegacyAudioBody=true;]]></script></Actionscript><elements/></DOMFrame>
+            <DOMFrame index="6" duration="43" keyMode="9728"><Actionscript><script><![CDATA[cf6LegacyAudioBody=true;if(!_root.暂停 && _parent._currentframe==42 && _parent[this._name]===this){_root.播放音效("CF6_0513.mp3");}]]></script></Actionscript><elements/></DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="Event Sound Layer" color="#FFFF00" locked="true">
           <frames>
             <DOMFrame index="0" duration="6" motionTweenScale="false" keyMode="8192">

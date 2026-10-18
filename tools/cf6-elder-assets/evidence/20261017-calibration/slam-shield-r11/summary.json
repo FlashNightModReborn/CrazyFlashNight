@@ -1,0 +1,40 @@
+{
+  "status": "native_mechanism_verified; battle_calibration_in_progress",
+  "scope": "Independent slam-earned hard shield and unchanged kick-earned soft shield. No opponent-identity condition.",
+  "slamShield": {
+    "capacityRatio": 0.1,
+    "strengthAttackRatio": 6,
+    "effectiveFrames": 60
+  },
+  "kickShieldUnchanged": true,
+  "beamShieldUnchanged": true,
+  "actionPowersAndFormulaPanelUnchanged": true,
+  "genericThreshold": "Both shipped leech and crumble handlers reject when bullet power <= active shield strength, before the later ordinary capacity absorption. Capacity alone does not provide this immunity.",
+  "beastSourceFacts": {
+    "initialFormLeechPercent": 50,
+    "tigerFormLeechPercent": 75,
+    "lowHpRageEnablesCrumblePercent": 1,
+    "initialRageAttack": "attack_max * 7 * difficulty",
+    "tigerRageAttack": "attack_max * 2.5 * difficulty"
+  },
+  "nativeTests": {
+    "asset": 844,
+    "effects": 67,
+    "robot": 45,
+    "total": 956,
+    "newEffectChecks": 14,
+    "audio": 340,
+    "audioRoutes": 81
+  },
+  "counterBoundaries": [
+    "miss gives no hard shield",
+    "duplicate callback gives no refresh",
+    "kick preserves the hard shield without extending it",
+    "new slam does not delete the kick shield",
+    "threshold equality blocks both generic effects",
+    "power above threshold retains both effects",
+    "spent hard capacity immediately exposes the soft strength",
+    "death removes only owned layers"
+  ],
+  "battleConclusion": "Pending the complete R11 pilot and final selected matrix; source rules and fixture checks do not establish the final match-up strength."
+}

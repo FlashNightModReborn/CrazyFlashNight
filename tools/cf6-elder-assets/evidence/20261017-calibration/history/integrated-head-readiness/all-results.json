@@ -1,0 +1,344 @@
+[
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-6394528c10564028a021651bd1118879",
+    "assignmentId": "assignment-6394528c10564028a021651bd1118879",
+    "attemptId": "attempt-6394528c10564028a021651bd1118879",
+    "batchId": "cf6-cal-integrated-head-20261017-l30-w1",
+    "manifestHash": "sha256:c34d75c0685d0003015974577e5cbbdbc5932b864031d2959b75721dd3dd7eb0",
+    "caseId": "level30-blue",
+    "caseHash": "sha256:63cebd3ff6d8db31518b42e100979aecf238830a86c1cadd0d62ea0c49a25450",
+    "runId": "level30-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T12:48:20.0798449Z",
+    "completedAt": "2026-10-17T12:52:50.0977901Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 470,
+      "level": 30,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "e128760af4010c4cd11a853ec5767ebab48edc7cc6191d0bad3e9c68cd659ecc"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-0c819f172bd54090bbc548a3c73d9e24",
+    "assignmentId": "assignment-0c819f172bd54090bbc548a3c73d9e24",
+    "attemptId": "attempt-0c819f172bd54090bbc548a3c73d9e24",
+    "batchId": "cf6-cal-integrated-head-20261017-l60-w1",
+    "manifestHash": "sha256:a081a875a567bfb2a619eaf42ef6459fcc2672aa7ef59f626687c85bf87932cc",
+    "caseId": "level60-blue",
+    "caseHash": "sha256:f259fffd77e3d8c8df43b879b4390ce853c91704863e83f142f16cc044c9d1ba",
+    "runId": "level60-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T12:54:08.9544151Z",
+    "completedAt": "2026-10-17T12:58:38.9597067Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 470,
+      "level": 60,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "e128760af4010c4cd11a853ec5767ebab48edc7cc6191d0bad3e9c68cd659ecc"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "headbot-w1",
+    "sessionEpoch": "session-fd433115f7564f32a34af1c08c1f0466",
+    "assignmentId": "assignment-fd433115f7564f32a34af1c08c1f0466",
+    "attemptId": "attempt-fd433115f7564f32a34af1c08c1f0466",
+    "batchId": "cf6-cal-integrated-head-20261017-l99-w1",
+    "manifestHash": "sha256:9fd4ce3b36e58c4e90ba751a5540dc1f0487197710d973d6f62c79129bc1e5c9",
+    "caseId": "level99-blue",
+    "caseHash": "sha256:1bc47b3a64e70024d4f358e2d629363825b0be5ac060d044db808d5567d1434b",
+    "runId": "level99-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T13:00:02.7311457Z",
+    "completedAt": "2026-10-17T13:04:32.7418534Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 470,
+      "level": 99,
+      "rivalUnitId": 286,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+          "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "e128760af4010c4cd11a853ec5767ebab48edc7cc6191d0bad3e9c68cd659ecc"
+        },
+        {
+          "path": "data/enemy_properties/诺亚新敌人.xml",
+          "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+          "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/balance-inputs.json",
+          "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+        }
+      ],
+      "stage": 7,
+      "targetPosition": "stable_wins_over_arkclaw",
+      "tier": 16,
+      "variant": "wave"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  }
+]

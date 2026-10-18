@@ -1,0 +1,21 @@
+FocusedTestRunId cf6-headbot Start: a69693a5303d46f0887244193fcd6f73
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase19 frame=19 power=200 damage=201
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase7 frame=19 power=200 damage=200
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase10 frame=19 power=200 damage=196
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase11 frame=19 power=200 damage=197
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase22 frame=19 power=200 damage=186
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=headbotCase23 frame=19 power=200 damage=196
+[CF6_CORPSE_DIAGNOSTIC] tick=34 bodyFrame=27 id=2 settled=false step=function handler=function x=17.85 y=54.85 ground=60.45 running=true vx=-3.52246182085946,-2.67527039209381,-2.7009707018733,-2.84333050996065,-6.64134697336704,-6.62582606822252,-4.30989949312061,-2.90510903857648,-3.44910022849217,-5.1424574740231,0,-1.82615546299732,-2.69491950329393,-1.41815739192337 vy=4.81246707820853,6.22808461969222,7.31879635587591,7.77442243568605,4.02661568155379,6.41077896436543,5.09777241336939,5.05596365002271,6.27542816145212,4.75787189873495,0,0,7.01709144335141,0 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[CF6_CORPSE_DIAGNOSTIC] tick=60 bodyFrame=48 id=2 settled=true step=undefined handler=undefined x=11.05 y=60.45 ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+[CF6_CORPSE_STAMP] unit=headbotCase19 stamps=1 settled=true grounded=true pieces=14 bounds=-175.8,-40.05,58.8,39.35
+[CF6_CORPSE_STAMP] unit=headbotCase7 stamps=1 settled=true grounded=true pieces=14 bounds=-187.2,-32.15,57.05,32.15
+[CF6_CORPSE_STAMP] unit=headbotCase10 stamps=1 settled=true grounded=true pieces=14 bounds=-198.4,-33.1,44.7,32.65
+[CF6_CORPSE_STAMP] unit=headbotCase11 stamps=1 settled=true grounded=true pieces=14 bounds=-196.55,-39.7,49.5,39.35
+[CF6_CORPSE_STAMP] unit=headbotCase22 stamps=1 settled=true grounded=true pieces=14 bounds=-162.55,-37.35,60.65,37.5
+[CF6_CORPSE_STAMP] unit=headbotCase23 stamps=1 settled=true grounded=true pieces=14 bounds=-191.7,-39.35,50.95,38.85
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=cleanupCorpse1 frame=19 power=200 damage=196
+[CF6_ROBOT_DEATH_TEST] family=headbot actor=cleanupCorpse0 frame=19 power=200 damage=195
+[CF6_CORPSE_DIAGNOSTIC] tick=119 bodyFrame=undefined id=undefined settled=undefined step=undefined handler=undefined x=undefined y=undefined ground=undefined running=undefined vx=undefined vy=undefined scope=undefined
+Cf6RobotCombatTest headbot: 110 passed, 0 failed; deathBursts=8
+Cf6HeadbotAssetTest: 427 passed, 0 failed; 24 actual timeline cases
+FocusedTestRunId cf6-headbot Complete: a69693a5303d46f0887244193fcd6f73

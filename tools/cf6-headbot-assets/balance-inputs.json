@@ -1,0 +1,106 @@
+{
+  "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+  "schemaReference": "敌人-黑铁会改造人",
+  "unitId": 472,
+  "linkage": "敌人-CF6大头机器人",
+  "requestedStage": 7,
+  "requestedTier": 16,
+  "fixedByUser": [
+    "阶段",
+    "档次系数"
+  ],
+  "input": {
+    "stage": 7,
+    "tierFactor": 16,
+    "growthFactor": 1,
+    "atkSpeedFactor": 4,
+    "atkMultiplier": 2.0,
+    "segmentFactor": 3.0,
+    "speedFactor": 2,
+    "highAtkFactor": 1,
+    "superArmorFactor": 4.5,
+    "highDefFactor": 1
+  },
+  "flags": {
+    "阶段": 7,
+    "档次系数": 16,
+    "成长系数": 1,
+    "攻速系数": 4,
+    "攻击倍率": 2.0,
+    "段数系数": 3.0,
+    "速度系数": 2,
+    "高攻低血防系数": 1,
+    "霸体系数": 4.5,
+    "高防低血系数": 1
+  },
+  "integerPanel": {
+    "最小经验值": 3133,
+    "最大经验值": 19950,
+    "hp_min": 43531,
+    "hp_max": 126280,
+    "空手攻击力_min": 247,
+    "空手攻击力_max": 672,
+    "基本防御力_min": 192,
+    "基本防御力_max": 512
+  },
+  "observedBasis": {
+    "rulebook": "tools/cf7-balance-tool/docs/monster-flag-rulebook.md",
+    "speedMean": 52.5,
+    "attackFirstHitFrames": [
+      15,
+      3
+    ],
+    "attackLastHitFrames": [
+      23,
+      12
+    ],
+    "attackTotalFrames": [
+      30,
+      37
+    ],
+    "windupMean": 8.0,
+    "tailMean": 16.0,
+    "tempoTailFactor": 0.2,
+    "weightedTempo": 11.2,
+    "tempoThresholdScale": 1.2,
+    "powerMultipliers": [
+      1.5,
+      1
+    ],
+    "damageTypeFactors": [
+      2,
+      1
+    ],
+    "attackMultiplierMean": 2.0,
+    "effectiveContactSegments": [
+      2,
+      4
+    ],
+    "segmentMean": 3.0,
+    "hitRecoveryFrames": [
+      6,
+      6
+    ],
+    "knockdownAndDownBothDelegate": false,
+    "baseArmorBand": 4,
+    "tenacity": 100,
+    "tenacityDecimal": 0.5
+  },
+  "adaptation": {
+    "speed": [
+      45,
+      60
+    ],
+    "weight": 200,
+    "height": 185,
+    "defaultLevel": 40,
+    "growthAndAttackDefenseBias": [
+      1,
+      1,
+      1
+    ],
+    "damage": "Beam uses instantaneous wave magic damage; thrust remains physical. CF7 area bullets own resolution.",
+    "targetPosition": "Stable same-level wins over Arkclaw; stage 7 and tier 16 stay fixed.",
+    "hit": "Short reaction, horizontal knockback allowed, no airborne/down state; original hover preserved."
+  }
+}

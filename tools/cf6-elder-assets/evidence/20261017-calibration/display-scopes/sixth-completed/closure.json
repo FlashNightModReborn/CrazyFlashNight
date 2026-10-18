@@ -1,0 +1,25 @@
+{
+  "release": {
+    "event": "display_request_released",
+    "utc": "2026-10-18T05:34:18.0093947Z",
+    "pid": 19428,
+    "threadId": 23912,
+    "state": 1,
+    "result": 2147483651,
+    "holdRequested": true
+  },
+  "subscriptionEnd": {
+    "event": "subscription_ended",
+    "utc": "2026-10-18T05:34:18.0093947Z",
+    "pid": 19428,
+    "threadId": 23912,
+    "state": 1,
+    "result": 0,
+    "holdRequested": true
+  },
+  "latestCompletedExperiment": "cf6-cal-r19-pilot-20261018",
+  "latestExperimentCompletedAt": "2026-10-18T05:30:35.169Z",
+  "displayHoldCurrentlyActive": false,
+  "reason": "R19 pilot complete. Release the bounded display request during product-scope clarification. Any subsequent test requires a new authorized observed display scope.",
+  "boundary": "This closes R6 only. It does not mark the calibration or commit/push task complete."
+}

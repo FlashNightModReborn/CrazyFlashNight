@@ -1,0 +1,18 @@
+{
+  "source": "Actual Flash native captures; no generated or redrawn graphics",
+  "transform": "Alpha-composite on RGB(232,230,226), same 1100x280 crop from y=70..350 on each 1100x500 source; no rescaling",
+  "sources": [
+    {
+      "path": "final-images/elder/images/beam-29.png",
+      "sha256": "52547abc45e5087a291b65e9059b56a86830b08f12b519670588302e77b669c2"
+    },
+    {
+      "path": "final-images/elder/images/heavy-beam-52.png",
+      "sha256": "03cfbef6646cfe6d4c32d02d8861eba41cac1501336b10a9d6601e938ff96b97"
+    },
+    {
+      "path": "final-images/elder/images/heavy-beam-53.png",
+      "sha256": "38a32eb0917a0293554930a3f323904afef3cff05da96b3a13237c9abac6ce12"
+    }
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+    },
+    {
+      "path": "data/enemy_properties/诺亚新敌人.xml",
+      "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/balance-inputs.json",
+      "sha256": "83ac79714f048a1007fb8b87ac11b631517489091761bdac874584c279a00e20"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "845912B808EC606503FDE2C89559E3EAFA8E4098C5D408B2139601201C95DA89",
+      "buildIdentity": "C0E19F5672D89DA0A04088F9420F6EA982119F4128CBFDA7DB02108F5845367C",
+      "payloadClosure": "0DC42B15346307E4D470B3C7044C65A26A47BF55DA04065F3142288415F49A90",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3"
+    }
+  ],
+  "levels": [
+    30
+  ],
+  "repeat": 1,
+  "variant": "wave",
+  "rivalId": 286,
+  "expectedRows": 6,
+  "performanceQualification": false,
+  "qualificationScope": "Six serial cold starts with real reveal and 60 subsequent gameplay frames; not balance acceptance.",
+  "acceptedForStrength": false,
+  "expectedOutcome": "timeout",
+  "executionPrerequisite": "Explicit user authorization for temporary display wake; continuous display notifications must cover every owned Host and Flash lifetime."
+}

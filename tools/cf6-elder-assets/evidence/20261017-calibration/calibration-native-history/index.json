@@ -1,0 +1,3189 @@
+{
+  "files": [
+    {
+      "path": "asloader-late-recovery/asLoader.swf",
+      "bytes": 6070322,
+      "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+    },
+    {
+      "path": "asloader-late-recovery/before-hashes.json",
+      "bytes": 1188,
+      "sha256": "6c2c8a46ae21c7d9e5db5a945b7418c915e44e5f4cef70622d865fa04abce8ca"
+    },
+    {
+      "path": "asloader-late-recovery/class-ownership.log",
+      "bytes": 160,
+      "sha256": "96cba69d16fc890718ad5b78f0029aeb7d0a328b2cb9d7b41f7da31463458130"
+    },
+    {
+      "path": "asloader-late-recovery/compile_output.txt",
+      "bytes": 63,
+      "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6"
+    },
+    {
+      "path": "asloader-late-recovery/compile_state_uncertain.marker",
+      "bytes": 106,
+      "sha256": "c802eb82b8d5c5523931e7b467f1daaf244115e986995fefe2dec0f68a1f4cbf"
+    },
+    {
+      "path": "asloader-late-recovery/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "asloader-late-recovery/control-receipts/phase-0.receipt",
+      "bytes": 198,
+      "sha256": "71b8cf9cf25245d9e8023e96da4ba795ebf3291aea4e7c947550f500ee7fcb08"
+    },
+    {
+      "path": "asloader-late-recovery/control-receipts/phase-1.receipt",
+      "bytes": 198,
+      "sha256": "400fc51d8f3ba09ce0ebb9b33ab76221cffade029b771cf1dd87758bccf69f77"
+    },
+    {
+      "path": "asloader-late-recovery/publish_done.marker",
+      "bytes": 2,
+      "sha256": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df"
+    },
+    {
+      "path": "asloader-late-recovery/recovery.json",
+      "bytes": 680,
+      "sha256": "4225587fc8383ca5a88cb3c32c04a308328b5ffa39901f92fe5921876b38642d"
+    },
+    {
+      "path": "asloader-late-recovery/stop.log",
+      "bytes": 228,
+      "sha256": "0c05a16418504fa565712a8ac338d84c1bfc3af83b4cc3e9e276bc7980aa8019"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/candidate.swf",
+      "bytes": 235861,
+      "sha256": "f28976503c6177c69e0f742dc81245405e9f3f256ae09cbed2eeb9b8dcafc8d3"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/compile.log",
+      "bytes": 2518,
+      "sha256": "39f6cf1795a7e99ffd58a66a768ad300ec44265bae2f687e6ed7e74967350334"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/identity.json",
+      "bytes": 763,
+      "sha256": "7158067699154ffaaee4b960df33991e15484ffff4725d20d1d01148064b5952"
+    },
+    {
+      "path": "build-head-eof-normalized/headbot/native-manifest.json",
+      "bytes": 33058,
+      "sha256": "a33337c2e89aaa66f7936d3e1677bbae5a51760a523660e6f54f427df3cd6f0a"
+    },
+    {
+      "path": "build-integrated-asloader/compile.log",
+      "bytes": 1048,
+      "sha256": "18eac4f84af74587940573fa190aa253c934f7cf382f744a063f90630e4d1c33"
+    },
+    {
+      "path": "build-integrated-asloader/compile_output.txt",
+      "bytes": 347,
+      "sha256": "82e68ad7ddfb5ebd888104a08ffa8af28f72891bff2816ffd8d89abf884f2572"
+    },
+    {
+      "path": "build-integrated-asloader/identity.json",
+      "bytes": 250,
+      "sha256": "cd71f29747843bed50b02a7224f320b12d0c140c7be9b3cbf2853ad747651df5"
+    },
+    {
+      "path": "build-integrated-asloader-camera/asLoader.swf",
+      "bytes": 6084042,
+      "sha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5"
+    },
+    {
+      "path": "build-integrated-asloader-camera/attempt.json",
+      "bytes": 399,
+      "sha256": "6aa422d8d1837ba7984a0b880e082f27a593f0c079ca1e11328b6a25e70984b5"
+    },
+    {
+      "path": "build-integrated-asloader-camera/class-ownership.log",
+      "bytes": 322,
+      "sha256": "6fc8f22dcb5692c4f5b93a6c8a85c63a50dcab7423e603b486259467ea5b8d4b"
+    },
+    {
+      "path": "build-integrated-asloader-camera/compile.log",
+      "bytes": 2170,
+      "sha256": "f784bc812fe5018f23089afc67abb09506beac209885a07e9660aa98a256899a"
+    },
+    {
+      "path": "build-integrated-asloader-camera/compile_output.txt",
+      "bytes": 63,
+      "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6"
+    },
+    {
+      "path": "build-integrated-asloader-camera/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-integrated-asloader-camera/identity.json",
+      "bytes": 370,
+      "sha256": "c59ec61d4a429d614aea4c926d528f8e4fcecd5ac8313072f4bd3c5194061b9b"
+    },
+    {
+      "path": "build-phase-parent-asloader/asLoader.swf",
+      "bytes": 6083998,
+      "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+    },
+    {
+      "path": "build-phase-parent-asloader/attempt.json",
+      "bytes": 399,
+      "sha256": "48ee8c3e89ee23da66ac1e39f77dd09af93f350c52e2af4090fdf8460c5e7db6"
+    },
+    {
+      "path": "build-phase-parent-asloader/class-ownership.log",
+      "bytes": 320,
+      "sha256": "afe50b85e733fda8d1d08a8209ff38f994283e738034097a4638d91e2964d8d0"
+    },
+    {
+      "path": "build-phase-parent-asloader/compile.log",
+      "bytes": 2170,
+      "sha256": "02be2eff9183e2de069ad07b83e4ce15e793172fea0574f6fcde79c36ec7a5c0"
+    },
+    {
+      "path": "build-phase-parent-asloader/compile_output.txt",
+      "bytes": 63,
+      "sha256": "89abf2a02804799df25ceb3bf810f66094af348f73465277451e89e8c5b919b6"
+    },
+    {
+      "path": "build-phase-parent-asloader/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-phase-parent-asloader/identity.json",
+      "bytes": 370,
+      "sha256": "d84a827c0715a4f846606cfd99fbaca172d31a4c151590111df1f224be743742"
+    },
+    {
+      "path": "build-r1/elder/candidate.swf",
+      "bytes": 399977,
+      "sha256": "254b39d1a0229fb9523e44036f2a4bbee766c1ae2ab9c89a7a3bcadb1cc3ef13"
+    },
+    {
+      "path": "build-r1/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "98d88612d2e1ca3226cf9822124e8d9de54d4d3474b74f7701f98b854d2d3c64"
+    },
+    {
+      "path": "build-r1/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r1/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r1/elder/identity.json",
+      "bytes": 734,
+      "sha256": "7f02ba0a9589ca7c3fd0e3e1414f5e00cfc7cb3df2d62e3f887b173df9f86093"
+    },
+    {
+      "path": "build-r1/elder/native-manifest.json",
+      "bytes": 43127,
+      "sha256": "ec898f5ac5fe46d7c55ea900b52e5c9aca6783f5570024eba714efa2d40be83d"
+    },
+    {
+      "path": "build-r1/headbot/candidate.swf",
+      "bytes": 235712,
+      "sha256": "3e5d7efc4f5e8adc5ff8f8dcb264c477effefb2b30707c0831143735b88aca37"
+    },
+    {
+      "path": "build-r1/headbot/compile.log",
+      "bytes": 2514,
+      "sha256": "83a7765a2c8bc8225d3bf148e6af8824590300bbb8a9b7b320e7fc17d447618d"
+    },
+    {
+      "path": "build-r1/headbot/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "build-r1/headbot/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r1/headbot/identity.json",
+      "bytes": 763,
+      "sha256": "6cab3ac9cf2007b93db5c8db352bf4323700e8f1746d399404c0a824aec66ab4"
+    },
+    {
+      "path": "build-r1/headbot/native-manifest.json",
+      "bytes": 33056,
+      "sha256": "7bde9ab67ad1a008ead542721a432739ee5d90ca889665f47b70db560b6a081c"
+    },
+    {
+      "path": "build-r10-elder/elder/candidate.swf",
+      "bytes": 401128,
+      "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+    },
+    {
+      "path": "build-r10-elder/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "d96f9aa5762087b8e046e386952bc37360195eb34c2fd1707b26d8af560624db"
+    },
+    {
+      "path": "build-r10-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r10-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r10-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "38334a9aae4dad214a68458991f01034703e01509ce846233fe4c32647446b12"
+    },
+    {
+      "path": "build-r10-elder/elder/native-manifest.json",
+      "bytes": 43309,
+      "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+    },
+    {
+      "path": "build-r2-elder/elder/candidate.swf",
+      "bytes": 400204,
+      "sha256": "69b291ff6c13b162f10e2418c6b3d77a6962d87c18c75d90cd9b0e8269d96ce3"
+    },
+    {
+      "path": "build-r2-elder/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "c7034724dc2ab9bd8368497167266c7859666dd225952fd4775a0e57a9d28df8"
+    },
+    {
+      "path": "build-r2-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r2-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r2-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "ed296f9312deac873fb6a3be2ae14013d937708ad03f7e98d9b0eb1329f75d41"
+    },
+    {
+      "path": "build-r2-elder/elder/native-manifest.json",
+      "bytes": 43127,
+      "sha256": "12edd242c03170f1c7edcb14e8ea69edfcfd66193632770ee1a6227da9bcea98"
+    },
+    {
+      "path": "build-r2-melee/headbot/candidate.swf",
+      "bytes": 235846,
+      "sha256": "92e842cd135cc179e6c9b72b256010fe41407e69876d993129b1c968aaf64a84"
+    },
+    {
+      "path": "build-r2-melee/headbot/compile.log",
+      "bytes": 2518,
+      "sha256": "15823dee962098eb8d2a9d24190b9d95c366719b8a1c0dff7de87b787d1b9181"
+    },
+    {
+      "path": "build-r2-melee/headbot/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "build-r2-melee/headbot/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r2-melee/headbot/identity.json",
+      "bytes": 763,
+      "sha256": "b8806ab265ac4e21fd64ac510262da266ae7d58e13d9a1f728c34a634ad262a9"
+    },
+    {
+      "path": "build-r2-melee/headbot/native-manifest.json",
+      "bytes": 33056,
+      "sha256": "4074fd40bd454c3f3640aa574fb5077f71c6360b7b7cf3135b9fcfc7d4f77aa9"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/candidate.swf",
+      "bytes": 382969,
+      "sha256": "25f8b05a0bc5814bf5e011694752bb1d9824f639b05634258f24e873ae6f9a01"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/compile.log",
+      "bytes": 2510,
+      "sha256": "1d3e3f2d59c13a1e01d56c55613379fd163fbc80f57e68205aefbc7f7955a531"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/compiler_errors.txt",
+      "bytes": 230,
+      "sha256": "f4680b8d4f420e0bca91661e8518382cbf9843588f761ecf433be9a7ab3d3803"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/identity.json",
+      "bytes": 734,
+      "sha256": "50875e0be578f384fbaed66b0b8ef91cce24b405b9be25181090fb61cbcca0bd"
+    },
+    {
+      "path": "build-r3-elder-ramp/elder/native-manifest.json",
+      "bytes": 43277,
+      "sha256": "ce9c16a289a0eabf1a37d0bf6eadb94d809051ff442bcf98a4ebe9ad73174c33"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/candidate.swf",
+      "bytes": 400200,
+      "sha256": "113343d5682e4e329524e5f8a0ffb27377332ce46aeed903aa0fa4720da550e6"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "b07bba42ff9f01558149652575fcbea17bf308f0aff19e0e955ea5109332c667"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/identity.json",
+      "bytes": 734,
+      "sha256": "79399d952bb723a34a4bde1bbe7f59d57b8797f2d41eaa37ab3955639a22097c"
+    },
+    {
+      "path": "build-r3-elder-ramp-repaired/elder/native-manifest.json",
+      "bytes": 43277,
+      "sha256": "de17a2d326112b1a4a4ef9f16378115e8d5d7263228837812a2ecb4c00e4bff4"
+    },
+    {
+      "path": "build-r3-head/headbot/candidate.swf",
+      "bytes": 235758,
+      "sha256": "346ed99e4edb54bc445addfc298df2e39b3b5973654288f8497226463c073e8b"
+    },
+    {
+      "path": "build-r3-head/headbot/compile.log",
+      "bytes": 2518,
+      "sha256": "16cd1387e9348151be392bdac3b50e7b58d56eebc1ef9ed0b9fa290346b285d5"
+    },
+    {
+      "path": "build-r3-head/headbot/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "build-r3-head/headbot/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r3-head/headbot/identity.json",
+      "bytes": 763,
+      "sha256": "ead3908c5198d95d76bc4aaf41629b004ad3eaaf033caef7d1228788af25342f"
+    },
+    {
+      "path": "build-r3-head/headbot/native-manifest.json",
+      "bytes": 33058,
+      "sha256": "1f8084fc4fcbb734bf2c0eec2fe99866d7a5408816c9333be262fa292d77ed1f"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/candidate.swf",
+      "bytes": 235870,
+      "sha256": "4008c8785676464f8bc66659d07888cae1749376d4dd7f2beb286e9c51a1daaa"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/compile.log",
+      "bytes": 2518,
+      "sha256": "16503fb415e222ab4bc2ba5354c3c27fd32c805ecebbd9546c339a60d3238ea0"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/identity.json",
+      "bytes": 763,
+      "sha256": "107f0e71bd06d8323da10c67835c0c081a9ef435c174d87a28c98c1924eea205"
+    },
+    {
+      "path": "build-r3-head-repaired/headbot/native-manifest.json",
+      "bytes": 33058,
+      "sha256": "671b8867696a6cd0126dc125f6ce5da53fdd098bcf2dcc715edd337f9a37ac0f"
+    },
+    {
+      "path": "build-r4-elder/elder/candidate.swf",
+      "bytes": 400167,
+      "sha256": "6e77362089a118303c08a340771afe9679010313e9fe0fd93bd39283aea3b9c5"
+    },
+    {
+      "path": "build-r4-elder/elder/compile.log",
+      "bytes": 2486,
+      "sha256": "581668a2815fd08ff70f68be2a7b95b1854c15cc0bf407a0b0dc6b3d7d986243"
+    },
+    {
+      "path": "build-r4-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r4-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r4-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "2186856b4110e3a137e4d49d965463e2b800157283d5dc47d382e2d19247ff8f"
+    },
+    {
+      "path": "build-r4-elder/elder/native-manifest.json",
+      "bytes": 43276,
+      "sha256": "cff7ff08fbb6448fe98fddd869a0b14c824032ce964e118eaa49c49c0cdabb76"
+    },
+    {
+      "path": "build-r5-elder/elder/candidate.swf",
+      "bytes": 400598,
+      "sha256": "4f28953d71dd0893eb0d285502ced2a8722d8a0d909cc347ab502ebdb85f3b2f"
+    },
+    {
+      "path": "build-r5-elder/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "b2582b9529e615bd8d60e3838a197d72023e87b3a6cb7e918f49d279be191c66"
+    },
+    {
+      "path": "build-r5-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r5-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r5-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "d61b0bd8a7a57e19b146820f28d75f9ec231d5fd20aad894d061c3b85a91c10e"
+    },
+    {
+      "path": "build-r5-elder/elder/native-manifest.json",
+      "bytes": 43276,
+      "sha256": "29cc21d157ab5e437d8260f5c953762cc876977a90e953993cf9377aebec4cad"
+    },
+    {
+      "path": "build-r6-elder/elder/candidate.swf",
+      "bytes": 400830,
+      "sha256": "bdb142d418700b659e59ccd2af2554686059582110a5fffcbcae9645b6207046"
+    },
+    {
+      "path": "build-r6-elder/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "f972393aae91746b5e6abf91c77faf1e7ab37c72207987c08197e85067fc4733"
+    },
+    {
+      "path": "build-r6-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r6-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r6-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "b8f122f7bd22e270a05670610270bd7628fce221d4da53db66021a82f61a7dd8"
+    },
+    {
+      "path": "build-r6-elder/elder/native-manifest.json",
+      "bytes": 43305,
+      "sha256": "1f93dd59a6843283bef9051baf5dc261a14575904ed0bb5c6aa2f861503bcffb"
+    },
+    {
+      "path": "build-r7-elder/elder/candidate.swf",
+      "bytes": 400841,
+      "sha256": "84e2d90a56e504d0c6b002778d10ae148210a6aab192c4b369dad409e55cf3e2"
+    },
+    {
+      "path": "build-r7-elder/elder/compile.log",
+      "bytes": 2484,
+      "sha256": "8770103b78217db781d31c2cc04d26f4f3ba04bb275ea858a29c137a72bdf921"
+    },
+    {
+      "path": "build-r7-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r7-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r7-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "1c1f06d0d395615cac401458a027b7d0041556a8a51fc52fc9031dde5037b801"
+    },
+    {
+      "path": "build-r7-elder/elder/native-manifest.json",
+      "bytes": 43305,
+      "sha256": "e33f278865ecded49d27abf9e7eb9cc11ed77cbc0b8b706b12844731317df687"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/candidate.swf",
+      "bytes": 400905,
+      "sha256": "5ead605ef7db15465a560da395eb9c0e40cda515eb34ee4b6dd46ef0247d0fa0"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "4fde71b0cb66c4bf2dc599a46715accd7c2b5ffeb8141ad27015869f44ee9f1e"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/identity.json",
+      "bytes": 734,
+      "sha256": "3ff21a392a595404304510daf22fa2c2724b4573c801f5d7a75e3b5eca20174f"
+    },
+    {
+      "path": "build-r7-elder-repaired/elder/native-manifest.json",
+      "bytes": 43305,
+      "sha256": "9e3a797da77a656137bf6f2907c0c115659d28033a26307818f08d927515497b"
+    },
+    {
+      "path": "build-r8-elder/elder/candidate.swf",
+      "bytes": 400992,
+      "sha256": "3e652c9a643074da92ed6ac3342c2b21fdeebf397d9e4fb3418e5bb500550e69"
+    },
+    {
+      "path": "build-r8-elder/elder/compile.log",
+      "bytes": 2482,
+      "sha256": "4c21061e53b42fa360f41e42a90307d26a364bf7f0bbbd720def37c9779472c5"
+    },
+    {
+      "path": "build-r8-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r8-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r8-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "18627c4027f4dc1713c1ce480fcef62720bf7571dd44b0e1ff53826e7d656e8a"
+    },
+    {
+      "path": "build-r8-elder/elder/native-manifest.json",
+      "bytes": 43305,
+      "sha256": "3211bec8149b7ef85d2d348d1818ff6e5d88e712e34430747aa2f9bbfc12bc70"
+    },
+    {
+      "path": "build-r9-elder/elder/candidate.swf",
+      "bytes": 400981,
+      "sha256": "b455d5da9b08b113c58aee4ca06fa8f448026b28fa9fc9dd36d72725dce491cc"
+    },
+    {
+      "path": "build-r9-elder/elder/compile.log",
+      "bytes": 2596,
+      "sha256": "5b08d6102b315284afff49b8cfb67ea077a3ae458b82dfae642a32d7a90d0472"
+    },
+    {
+      "path": "build-r9-elder/elder/compile_output.txt",
+      "bytes": 72,
+      "sha256": "06376bd479bfab3284e3289b233f1a0ac5e6615830cc49cc3176d0edd6d8bbbc"
+    },
+    {
+      "path": "build-r9-elder/elder/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "build-r9-elder/elder/identity.json",
+      "bytes": 734,
+      "sha256": "1351147c3303c22078eeef18f90b95335dd3debc6c7d2dfd5230b5dff7d485bb"
+    },
+    {
+      "path": "build-r9-elder/elder/native-manifest.json",
+      "bytes": 43305,
+      "sha256": "12248f4965b3e8a5693fb1da5636d2a067e7c5c7543dc09925e98bc1ec5d24fb"
+    },
+    {
+      "path": "native-r1/elder-asset/bindings-after.json",
+      "bytes": 25095,
+      "sha256": "1370595c50b4ebd635f183d5d7a2a4ad224c13d1d7eeccb81585a3c180e2daca"
+    },
+    {
+      "path": "native-r1/elder-asset/bindings-before.json",
+      "bytes": 25095,
+      "sha256": "1370595c50b4ebd635f183d5d7a2a4ad224c13d1d7eeccb81585a3c180e2daca"
+    },
+    {
+      "path": "native-r1/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "19f7f82a1d08be55fd993a4d88e0e07f9aeddd528c8e70beac1c5af962c7daa9"
+    },
+    {
+      "path": "native-r1/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r1/elder-asset/flashlog.txt",
+      "bytes": 7316,
+      "sha256": "d88b18a0e5c9ef778d4d9fead4588fe695c2b10e26c8d18469ea74ac4409912c"
+    },
+    {
+      "path": "native-r1/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "4c74bc01eca4ea322231304b18c365088d7c624f394bc80248752db82ba2d24f"
+    },
+    {
+      "path": "native-r1/elder-asset/run.log",
+      "bytes": 14650,
+      "sha256": "b3015576ab5d0262e8dad13c936e67d039d3dc7017cc3145ace5cb7f5b6043be"
+    },
+    {
+      "path": "native-r1/elder-asset/TestLoader.swf",
+      "bytes": 892062,
+      "sha256": "0fb4627f650cb4264059ee1b1ca2190e3facbbb3ac0f2a509f4b8bc78c12616a"
+    },
+    {
+      "path": "native-r1/headbot-asset/bindings-after.json",
+      "bytes": 25095,
+      "sha256": "1370595c50b4ebd635f183d5d7a2a4ad224c13d1d7eeccb81585a3c180e2daca"
+    },
+    {
+      "path": "native-r1/headbot-asset/bindings-before.json",
+      "bytes": 25095,
+      "sha256": "1370595c50b4ebd635f183d5d7a2a4ad224c13d1d7eeccb81585a3c180e2daca"
+    },
+    {
+      "path": "native-r1/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "493699f6360420491a083322fdda71446fc5cc725fcd8b666b4626cfac27d9ae"
+    },
+    {
+      "path": "native-r1/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r1/headbot-asset/flashlog.txt",
+      "bytes": 2716,
+      "sha256": "25d39307045c08f03aed02543671d08cff1fc76fb6ea8a4ac6074968b9fc864c"
+    },
+    {
+      "path": "native-r1/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "4e3a3335b30c6fe31043206bdbc44c9bf5227ac3c450a7fb23551b1d31bcb6be"
+    },
+    {
+      "path": "native-r1/headbot-asset/run.log",
+      "bytes": 4758,
+      "sha256": "89eaefc79af5b95bf8ef86ab631ca7af9ab36248dfc21fcffb3ebcfaeceed118"
+    },
+    {
+      "path": "native-r1/headbot-asset/TestLoader.swf",
+      "bytes": 884725,
+      "sha256": "934768725f90104e3922379c1c97c7b9adc7c345454a6c56c56587810972539e"
+    },
+    {
+      "path": "native-r10-elder/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "d99dfdb362822d24566c13c37b5b30e1513c13ec00a487cac1632a09c9fbbf28"
+    },
+    {
+      "path": "native-r10-elder/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r10-elder/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "da9bcdb597b4aa4fe554e057051e627fdb76d2636b0cb2dc278658a2d6bb572e"
+    },
+    {
+      "path": "native-r10-elder/audio/result.json",
+      "bytes": 136,
+      "sha256": "754eeabe8048e4471c1ba22ea3de34d1d815d50b896d0fc9c4787c904cb002ed"
+    },
+    {
+      "path": "native-r10-elder/audio/run.log",
+      "bytes": 3882,
+      "sha256": "c52592509e85ea9d267353194c5199553e3dd0cdb020702ac972aaf547c4bb24"
+    },
+    {
+      "path": "native-r10-elder/audio/TestLoader.swf",
+      "bytes": 8264,
+      "sha256": "788e7bb10f72cb8997aaaa99db0da9bb1a14c589afdcabd90df9a7f9765d304f"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "6af7178e6fa9a36d1acdb52d1b485de5c3cddc7b0d2c737b732b08ef9b9aa8cd"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/flashlog.txt",
+      "bytes": 8067,
+      "sha256": "49b57efe131eb5b25ad4927950941dcea5ce660d99bfe284d54b84df29078640"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "ec481849d235561d8e4d09f24c1b12a4796bdf4ed2e22ee4571932d1432cddbf"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/run.log",
+      "bytes": 15948,
+      "sha256": "bcfde31448f84004dba735af8f2b9ae4a0fce5dfe7012b5c572a7e9f18aee709"
+    },
+    {
+      "path": "native-r10-elder/elder-asset/TestLoader.swf",
+      "bytes": 913961,
+      "sha256": "09b82e9f33d1094336fa70ce36e3a7fa2a67bb1062df347bb8f958b44a41424f"
+    },
+    {
+      "path": "native-r10-elder/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f8269299bb05f19cedb04e5e6c0baa02762b2ac5a07eb967b2cf9939aa88d437"
+    },
+    {
+      "path": "native-r10-elder/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "a443067f1b7257d68ac929ea1ac29651bc89f25db43e03383a2a2734cfdc6ae6"
+    },
+    {
+      "path": "native-r10-elder/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r10-elder/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "1b3c98f97efdd86737ccab910f4bd826293a1faf9f34f69fd6c1f67c07c2f7e5"
+    },
+    {
+      "path": "native-r10-elder/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "c4982d343f86c50d755722dd6d21f05316599e14f865d46815aa2efb0f1ed5b1"
+    },
+    {
+      "path": "native-r10-elder/player-aim/run.log",
+      "bytes": 4752,
+      "sha256": "fa4958ff0fde14905edbd4c81c8894233fdfd7c1fbc0502e68271b7aa377ad25"
+    },
+    {
+      "path": "native-r10-elder/player-aim/TestLoader.swf",
+      "bytes": 898905,
+      "sha256": "b31141d3d7d422269b00d5940381fc0564da5d72db8f007bf351e2ca3a3f6029"
+    },
+    {
+      "path": "native-r2-final/elder-asset/bindings-after.json",
+      "bytes": 25096,
+      "sha256": "cb1723e37d6b8093c75358e42dc25ee3c422be44a2d4dfb773894025bcb8890f"
+    },
+    {
+      "path": "native-r2-final/elder-asset/bindings-before.json",
+      "bytes": 25096,
+      "sha256": "cb1723e37d6b8093c75358e42dc25ee3c422be44a2d4dfb773894025bcb8890f"
+    },
+    {
+      "path": "native-r2-final/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "a6ff747640f058e639515527e04d0cebd123cdd2a6730d9b1faa6f4479fcf51d"
+    },
+    {
+      "path": "native-r2-final/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r2-final/elder-asset/flashlog.txt",
+      "bytes": 7309,
+      "sha256": "14b4aa78c8ac364fead800cdfbd23f85e78312cd917b0fa2637c3bf51bba78fc"
+    },
+    {
+      "path": "native-r2-final/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "1c56821a6907865eec4235d5d164d37123beda5a3de8a8cdbbfb703b886cf650"
+    },
+    {
+      "path": "native-r2-final/elder-asset/run.log",
+      "bytes": 5182,
+      "sha256": "3a3ba54ccb9b9ce6b4611f80d955137d7fc530494b58e3f94c1c979b09bf8470"
+    },
+    {
+      "path": "native-r2-final/elder-asset/TestLoader.swf",
+      "bytes": 909118,
+      "sha256": "8d3c0371f58c830058913e6f632acd2f0a8bfb53b67f89e0d11ba8c8c1ff5383"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/bindings-after.json",
+      "bytes": 25096,
+      "sha256": "cb1723e37d6b8093c75358e42dc25ee3c422be44a2d4dfb773894025bcb8890f"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/bindings-before.json",
+      "bytes": 25096,
+      "sha256": "cb1723e37d6b8093c75358e42dc25ee3c422be44a2d4dfb773894025bcb8890f"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "bd46e61c504f5cfd0a433b21eab21f3259b1512b9af16f0262c0bf18c68366e5"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/flashlog.txt",
+      "bytes": 2810,
+      "sha256": "572073c545d21f6f046213692305b6f1756a2d9783beb70a87df7f8e9b2aa84e"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "5e7fc72a9a3276dc93872d6f11c43155c47a9807eae005a4265e95736e5f86d2"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/run.log",
+      "bytes": 4762,
+      "sha256": "bacc5eaab0d5352c251202927d5e8dba71b821e80e2d8f9218af5f3f2fe5802b"
+    },
+    {
+      "path": "native-r2-final/headbot-asset/TestLoader.swf",
+      "bytes": 901323,
+      "sha256": "efa868a42235c0efccfcb1bd85a5247f7c1cf6cf077b8e42cd2b722c467bad72"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/bindings-after.json",
+      "bytes": 25096,
+      "sha256": "25b603ffb916f1008031b87cf0815de0c07688683f8fac19ca963f5067a4d731"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/bindings-before.json",
+      "bytes": 25096,
+      "sha256": "25b603ffb916f1008031b87cf0815de0c07688683f8fac19ca963f5067a4d731"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/compile_output.txt",
+      "bytes": 81,
+      "sha256": "1180389117bb70ccf6be2357893c02adc4fca558244bc47d306f83dbf7c7bb5c"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/flashlog.txt",
+      "bytes": 7316,
+      "sha256": "d88b18a0e5c9ef778d4d9fead4588fe695c2b10e26c8d18469ea74ac4409912c"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "d92b42b2f967d4841837f2531c2b5a4a158e50b7527cb097dd1ec038d68d4278"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/run.log",
+      "bytes": 1670,
+      "sha256": "aedebd8778478438fe15c427b4e381a4cfcf4a726123a2601993231763141ce9"
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/TestLoader.swf",
+      "bytes": 892062,
+      "sha256": "0fb4627f650cb4264059ee1b1ca2190e3facbbb3ac0f2a509f4b8bc78c12616a"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/bindings-after.json",
+      "bytes": 25096,
+      "sha256": "d52c27812681fabf229fe5e3ef6457a4ae332466b8d2954eba20bd3caa072229"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/bindings-before.json",
+      "bytes": 25096,
+      "sha256": "d52c27812681fabf229fe5e3ef6457a4ae332466b8d2954eba20bd3caa072229"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "a7e6d1acc24acbe7274ac143ceacbf9b03939b3f15522f1d6eb527e34b1d045a"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/flashlog.txt",
+      "bytes": 2886,
+      "sha256": "799f37b1f43ae4fec0db6a168c825cdb52b161b371b0be3904c9706908ec3912"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "d337a4bb9a39411a268e25c8b81e76007905a30503fcf56aa5bb2876b9d90ebd"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/run.log",
+      "bytes": 6982,
+      "sha256": "37aa38997effc849cc81b378a78e211f2fb2af5ff435b9c4ef35b6281fac179a"
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/TestLoader.swf",
+      "bytes": 901230,
+      "sha256": "1247258ceb5c34f9a7678f105e483163e07a5ad4931fd7090886dbe4ae1e765e"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/bindings-after.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/bindings-before.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/compile_output.txt",
+      "bytes": 452,
+      "sha256": "a7d0dad3d74887c178a56cf4d2202a3e60f30c04ddb7990ecbee975b1ffb270e"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/flashlog.txt",
+      "bytes": 1714304,
+      "sha256": "5cd4477be467684443b5618967844aa68d08b18af85e725793a32d48c4f4da9b"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/result.json",
+      "bytes": 136,
+      "sha256": "8753f9e0d6ecbdb31e98b751a662c6afd355885d59e607da664c42f6b6272f6d"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/run.log",
+      "bytes": 2474,
+      "sha256": "15caf884d45902a11640b32009847828ac9460fa4f2d103a63357b488c70fcc2"
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/TestLoader.swf",
+      "bytes": 892723,
+      "sha256": "c764bedc3f59934ff3418f348ab4c5a16d29365ef5c911ed50e5144412e473b0"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/bindings-after.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/bindings-before.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "892c41ab9ee836b064919199b362777b25aaa93bb539e443f71bf42a0e3ba6bd"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/flashlog.txt",
+      "bytes": 7312,
+      "sha256": "f07a133c883dc0c2cfa61f1a2d6ffede86e8a3d02f12186668bde396170b839d"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "2def59c455f2a625f24aef3a8eb3ac8f5929ac97643aae19f970e4840d9679a8"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/run.log",
+      "bytes": 5182,
+      "sha256": "08fbcd39678bb80ff9e31f8433ae7cac728db6fc6898fbcaa0ae3a854a45c1ba"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/TestLoader.swf",
+      "bytes": 909308,
+      "sha256": "cf49aec564767a2e48407da55f58d3885375b5d5769d9c6a697626b2ec35361b"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/bindings-after.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/bindings-before.json",
+      "bytes": 26724,
+      "sha256": "fea291850ce840d0ad1eda5ad3f5d33f3df104d8a0b02316ea61c2a0011de125"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/compile_output.txt",
+      "bytes": 452,
+      "sha256": "a7d0dad3d74887c178a56cf4d2202a3e60f30c04ddb7990ecbee975b1ffb270e"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/flashlog.txt",
+      "bytes": 1714304,
+      "sha256": "5cd4477be467684443b5618967844aa68d08b18af85e725793a32d48c4f4da9b"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/result.json",
+      "bytes": 143,
+      "sha256": "dbac304d4645b2125fd5202445eec76db05a139bea9111bad16ad6b38ddced8c"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/run.log",
+      "bytes": 4770,
+      "sha256": "68aa12b95f143176ed150f7403454ebb20b05e9e5951378aea7664dfe2740737"
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/TestLoader.swf",
+      "bytes": 892723,
+      "sha256": "c764bedc3f59934ff3418f348ab4c5a16d29365ef5c911ed50e5144412e473b0"
+    },
+    {
+      "path": "native-r3-head/head-charge/bindings-after.json",
+      "bytes": 25730,
+      "sha256": "b5d2771dedfaf818d86f1f0de70c2b09ea2c5cdf9bb248210c3ed0de999aea6d"
+    },
+    {
+      "path": "native-r3-head/head-charge/bindings-before.json",
+      "bytes": 25730,
+      "sha256": "b5d2771dedfaf818d86f1f0de70c2b09ea2c5cdf9bb248210c3ed0de999aea6d"
+    },
+    {
+      "path": "native-r3-head/head-charge/compile_output.txt",
+      "bytes": 454,
+      "sha256": "03a29d153f99e702cf5d99e65d2e1bbf4ee39aa3dc6bfff971f808967652ceb1"
+    },
+    {
+      "path": "native-r3-head/head-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-head/head-charge/flashlog.txt",
+      "bytes": 1643578,
+      "sha256": "1722e482fdb6286a266ddf28ce1b30dbdda4a2763fb48ab59d9ad1df4f3d95fd"
+    },
+    {
+      "path": "native-r3-head/head-charge/result.json",
+      "bytes": 142,
+      "sha256": "f9cabe0ceb5e048c309a139d392ec2b23cbfb1cf8c591de001a011d75dd61f33"
+    },
+    {
+      "path": "native-r3-head/head-charge/run.log",
+      "bytes": 4542,
+      "sha256": "a3b8dbd9714009f2753faf4acff9f4d13ed2adc23d68c47a24ed56ee3807eaaa"
+    },
+    {
+      "path": "native-r3-head/head-charge/TestLoader.swf",
+      "bytes": 892073,
+      "sha256": "2fcb71e312b15c94ae641157de7f1853c1ece354c82ae66008ad6b4b3aae4215"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/bindings-after.json",
+      "bytes": 25730,
+      "sha256": "b5d2771dedfaf818d86f1f0de70c2b09ea2c5cdf9bb248210c3ed0de999aea6d"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/bindings-before.json",
+      "bytes": 25730,
+      "sha256": "b5d2771dedfaf818d86f1f0de70c2b09ea2c5cdf9bb248210c3ed0de999aea6d"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "dc8743a2ef8eb5a2d76973a304922fc2f1a4507ffdb6466c6c52a7ae2ddc7460"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/flashlog.txt",
+      "bytes": 3362,
+      "sha256": "4b7fcc92efe1055e60d95a403d536bc0007423b27807305d36fd4c33286cf572"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "41994ae5b5eb160bd7c12be1c25cfd22872adac3912b85ef3d4625457a00bebc"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/run.log",
+      "bytes": 6982,
+      "sha256": "5d08c8fcdb2057dd37d268b0b220a2523a7fbcd9bdcfa2d90177182d4a6d337b"
+    },
+    {
+      "path": "native-r3-head/headbot-asset/TestLoader.swf",
+      "bytes": 901339,
+      "sha256": "d634c8e312114139e0993d184612b5a3ec4ebd2642ee73441079bd665566f906"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/bindings-after.json",
+      "bytes": 25730,
+      "sha256": "b1d6b22d3dfae1e04a31c18e652b36f03c3a47442bfdf41865534cf112f68646"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/bindings-before.json",
+      "bytes": 25730,
+      "sha256": "b1d6b22d3dfae1e04a31c18e652b36f03c3a47442bfdf41865534cf112f68646"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "3c7e57b4188d81dc3846f06ab0585e99ee0aaf4b28c87b972ef03d46f826701a"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/flashlog.txt",
+      "bytes": 2841,
+      "sha256": "f81b2335a35c5f9ab17c9c57f2974bfb1bf6aa409916972b375ac344067288ef"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "e8745153d621f0b0f490ef0622314b8aee46ac859717893d2b8d6b506d5c43ce"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/run.log",
+      "bytes": 4762,
+      "sha256": "25e90f3e637390687ef92fbf894ce823030bb9532eb9b0bdd980c94cefc3cf0b"
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/TestLoader.swf",
+      "bytes": 901332,
+      "sha256": "628e901ce777bccd03c81ff44461e4ac911e31bee7e8e99a8bc12d76d4f7d77e"
+    },
+    {
+      "path": "native-r3-integration/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "99f288e111f66e2dcab02c6474b0d1c294feeaa9409a3170c5f2d29500a62253"
+    },
+    {
+      "path": "native-r3-integration/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-integration/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "f75a05faa5879500fc1fab8fcf941966c483d150fc9eb8531c295366e60e5551"
+    },
+    {
+      "path": "native-r3-integration/audio/result.json",
+      "bytes": 136,
+      "sha256": "41d7e406630ef372df9dc503374aa50c611e8e0396b35072363a933e52cd430b"
+    },
+    {
+      "path": "native-r3-integration/audio/run.log",
+      "bytes": 3884,
+      "sha256": "a9cd2ff4e7cf390651913ead2b9dc499ba72d49a713c264259fd08dc6c84a9ca"
+    },
+    {
+      "path": "native-r3-integration/audio/TestLoader.swf",
+      "bytes": 8260,
+      "sha256": "4a0390f054ec384134f5113a8f3200791ec7fe4aab6a01c78dba3dfa9bd06724"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/compile_output.txt",
+      "bytes": 448,
+      "sha256": "d06e7e2f0c2b8beaf853d2405f8011206c152b1126466962f4cd684c495bd20c"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/flashlog.txt",
+      "bytes": 3390,
+      "sha256": "290770c608ea87466d399730c2420f741570a7fbc7f137c413a1d948b3216a62"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/result.json",
+      "bytes": 145,
+      "sha256": "264bad5717bc24f30aa3ecaa4510af909b36d60a3e8a40cf56e3ba78c811a019"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/run.log",
+      "bytes": 4536,
+      "sha256": "56309b1a9a02fc67bc98d26b8315c27c52ad67dc8ef534a4edcfa6e530676e53"
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/TestLoader.swf",
+      "bytes": 1029793,
+      "sha256": "d29960b3e204d69b914170e5d7240a22944cb9738fd96e74c4fdb378ad0b1403"
+    },
+    {
+      "path": "native-r3-integration/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d4f3853dee0d46d6e0c9c9e8d6bd0dd87a0d9bf97fb2f82390ae3b8d04449dbc"
+    },
+    {
+      "path": "native-r3-integration/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "cdc92ec45787aa79a25a8f5a14b64d15e08363153eb5a1d0c35112091166ac85"
+    },
+    {
+      "path": "native-r3-integration/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-integration/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "5081bc39456b51b8442e2ce960a6dd5a15bf5dbe7224b6574f82a45285ffb813"
+    },
+    {
+      "path": "native-r3-integration/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "36cf42b69aa02970588e182f35ac8ccef4f452c781ea13332bf3922deefd157d"
+    },
+    {
+      "path": "native-r3-integration/player-aim/run.log",
+      "bytes": 4754,
+      "sha256": "305f4480788a531c54e210be62ee42a7f9a00a4a82c8e393ce9a04db3f1b50ea"
+    },
+    {
+      "path": "native-r3-integration/player-aim/TestLoader.swf",
+      "bytes": 895063,
+      "sha256": "c4cbb9ff2c3bc5626cc5574f961894c8e66329b228fd5c3386e6c36546f55658"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "7b971fbd4d90dc562ea920b88c4cd0f2a0e2fbe7a742defe8f3971e43c8ec147"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "7b971fbd4d90dc562ea920b88c4cd0f2a0e2fbe7a742defe8f3971e43c8ec147"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "c1db1ba8da070db6fada8f194d7ae8703e43a3a10c13ea4d63567297e33cf1e1"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "65d9913fa906026b760ca407326877cd3215a6035971d35dffa5ce4e1b3c2076"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "aca1a9713c133d5192198d2b313ea45697344d61a4e08db2ef563f90fe87b0cf"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/run.log",
+      "bytes": 4748,
+      "sha256": "be9b075ca757642d5d25b2dfdb31275c736488b2a503f482c8a8150b364afd12"
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/TestLoader.swf",
+      "bytes": 895179,
+      "sha256": "cb7e854b8756108673aa9ec1bf15a8f69d6c5c57348624624198ea61cf26019b"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "312d4934a0afa8af1bfc9306413e978aa5fdeca8bd117bec94863ac3cde9cc84"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "312d4934a0afa8af1bfc9306413e978aa5fdeca8bd117bec94863ac3cde9cc84"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "ae5e41b012d7a08b866cc65ea9d60915dd1331bdfabb8d9953bd97bdb32132d9"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "4fc0330a26b82a01920c9b1515ae8df07cae04b5ff89fb29eb0ddd0979bbbfd3"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/result.json",
+      "bytes": 136,
+      "sha256": "c5cd5d6eed27a36a608dc2ffd34301a8cf830a172c98300dd0bcb19a021479d1"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/run.log",
+      "bytes": 4282,
+      "sha256": "42dec9b4d4e9e62f66c2e7ae8bb33fcfd9d1d5903142e534c68ae4362f158b42"
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/TestLoader.swf",
+      "bytes": 8260,
+      "sha256": "a08c8eeee18f2882130c2bdd3da2080d0c6d07891c2041134f87d935ef466af8"
+    },
+    {
+      "path": "native-r4-elder/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/audio/compile_output.txt",
+      "bytes": 450,
+      "sha256": "a0278dc77f1035c90a46205201e282fcfe40cefd4e1b98a800ad65927d59c18b"
+    },
+    {
+      "path": "native-r4-elder/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r4-elder/audio/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "145fa1cc5f54f71b622a1aa73812c70195f3bcb7149325b6b43da8989c346cd8"
+    },
+    {
+      "path": "native-r4-elder/audio/result.json",
+      "bytes": 136,
+      "sha256": "bfff95c0c6496975953ea332957c8a1f597280ca1a0654a5a8b1838fccf6582e"
+    },
+    {
+      "path": "native-r4-elder/audio/run.log",
+      "bytes": 2474,
+      "sha256": "15caf884d45902a11640b32009847828ac9460fa4f2d103a63357b488c70fcc2"
+    },
+    {
+      "path": "native-r4-elder/audio/TestLoader.swf",
+      "bytes": 895178,
+      "sha256": "c10f60379b0b983c53a6389ded3cdf28f4bc280ff03c9321645ac9052a2e7b4d"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "5417bea82a5e346c67cd436ff010cddb8956f844def3fd2d602a51055763ed95"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/flashlog.txt",
+      "bytes": 7315,
+      "sha256": "45414e20af9346e3dce7f2f3e9e054f8896194432654a94c00067d19a0280a84"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "c991c69fa33c17750e99360d95d786f78d9e0d777ebb80bfb6830eac129d274c"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/run.log",
+      "bytes": 5184,
+      "sha256": "3c08013a9296f3d9864d60393999a21277f9309debb0bb9d02cb58e12445e345"
+    },
+    {
+      "path": "native-r4-elder/elder-asset/TestLoader.swf",
+      "bytes": 909333,
+      "sha256": "c4544ea0a0a1068954da9dbfbe676095d8e830eb649cb458eb899a64454dd1d6"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/compile_output.txt",
+      "bytes": 452,
+      "sha256": "1d3b98ed0beb7f8b2597d1449673574c4d1bcaccd2e19645ab3dbe53cec8685f"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/flashlog.txt",
+      "bytes": 1714282,
+      "sha256": "51635ed1ebde148b71e601f880c74a65169f7c3501675d0a9717cf2e608f057b"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/result.json",
+      "bytes": 143,
+      "sha256": "7c419a4f88dfe5948d07a63e55a6b976fefa3914ad5f6d7652b90417d450baa2"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/run.log",
+      "bytes": 4934,
+      "sha256": "c57b05bb51be252cd479586d2e953a2f7179a041b1516dc862aa2b5b883f170f"
+    },
+    {
+      "path": "native-r4-elder/elder-charge/TestLoader.swf",
+      "bytes": 892720,
+      "sha256": "e636593f2635a08f49935bfc40aaf6d683e1503299fa2ec0e434665e6a76ddb8"
+    },
+    {
+      "path": "native-r4-elder/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "9c63bd42c03185c1d0bbd63223a2dff76834b407c782cf9deae2a441750773de"
+    },
+    {
+      "path": "native-r4-elder/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "a0278dc77f1035c90a46205201e282fcfe40cefd4e1b98a800ad65927d59c18b"
+    },
+    {
+      "path": "native-r4-elder/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r4-elder/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "145fa1cc5f54f71b622a1aa73812c70195f3bcb7149325b6b43da8989c346cd8"
+    },
+    {
+      "path": "native-r4-elder/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "f4fd1eb5989b38f4e30047d9cfcde9f5cdc3a9dbca93150d1d5fe92f2486a07c"
+    },
+    {
+      "path": "native-r4-elder/player-aim/run.log",
+      "bytes": 4754,
+      "sha256": "2b78a4e689c38a9a16b79c9a2aea99fd9cbe12932fdd18a90ceb92a261769f21"
+    },
+    {
+      "path": "native-r4-elder/player-aim/TestLoader.swf",
+      "bytes": 895178,
+      "sha256": "c10f60379b0b983c53a6389ded3cdf28f4bc280ff03c9321645ac9052a2e7b4d"
+    },
+    {
+      "path": "native-r5-elder/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "7b814e99db0fd76aa04831f95ddacd8617ca31960cc16d9cc3cf0cfb3784d120"
+    },
+    {
+      "path": "native-r5-elder/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r5-elder/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "c0bc7a05313494683e980867509321636e2ccf0865b48cd555fe5d5e7d6d0688"
+    },
+    {
+      "path": "native-r5-elder/audio/result.json",
+      "bytes": 136,
+      "sha256": "a4fd9eaf41944e970d48e50ac4221b172a5a73ea3a3806d1ab6630fe79773031"
+    },
+    {
+      "path": "native-r5-elder/audio/run.log",
+      "bytes": 3882,
+      "sha256": "9e477150c41a51238e60ac59d309bdee873cf6a580f81c02ff79da5ca37ad556"
+    },
+    {
+      "path": "native-r5-elder/audio/TestLoader.swf",
+      "bytes": 8263,
+      "sha256": "d7d99dd1c4cda8acab8c6b9e541954f1bae00051c4687221c0d70c722b71ec6b"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "725f5dbeddc24b1937d9d548cc6eeb773107ffe34f6999d837c927781a4c3d10"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/flashlog.txt",
+      "bytes": 7962,
+      "sha256": "6d93075dd3b56a245ccdfecb34a062ff394854c6cbca28962717a91be5370051"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "af5693cf659d0ea9b38375401aedd5fdac83c3541465bcc53c113d20868db5fc"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/run.log",
+      "bytes": 13896,
+      "sha256": "4223db29e13fb7848fe48328dd564f4d6aed754a7feb3efabb310d3375cca36c"
+    },
+    {
+      "path": "native-r5-elder/elder-asset/TestLoader.swf",
+      "bytes": 909521,
+      "sha256": "522bf664e51a75d9f5f75d33c066023649004c80c8e5d868c0952e833f4ccc8f"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/compile_output.txt",
+      "bytes": 452,
+      "sha256": "8dc1072a691abc725b9ddd9b365f4092e8616d7a105243dfcaefa7550cad536e"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/flashlog.txt",
+      "bytes": 1714309,
+      "sha256": "0ca50e826ad91c884cba88ebf6bff907269d62f82a25462e04416c1f2f793ecc"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/result.json",
+      "bytes": 143,
+      "sha256": "645b7d79a1842d99abc5fa6b9e1abc48d14bb98fb155f1c0fa76fdea1f0e743b"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/run.log",
+      "bytes": 4766,
+      "sha256": "ca3790cbbb68cd1c441a97fe62a11d63686b89ef8be3a381573dcfcd76ffd3de"
+    },
+    {
+      "path": "native-r5-elder/elder-charge/TestLoader.swf",
+      "bytes": 892723,
+      "sha256": "a80b4f8596c06a9a43fdc12d79ed270c50eaab081a52684edfa46df23aed30c2"
+    },
+    {
+      "path": "native-r5-elder/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d37bc1a1cfa5967d4a33bc72cfb392d6a21d201cd98d7a674cb71dada65f1178"
+    },
+    {
+      "path": "native-r5-elder/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "637776cafe9876bef7f0fcd6ac85c1b9515e048034b65da2d4dbc95d4ca6cd9c"
+    },
+    {
+      "path": "native-r5-elder/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r5-elder/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "7dbcc7e387446b35d3df6bd5ec14727ec0a728013c1c71bd41d42c9bb060cc3c"
+    },
+    {
+      "path": "native-r5-elder/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "11c5440514cf2dad70c08419c1f3c07e404a112c4a18621b4b8af9313075c2df"
+    },
+    {
+      "path": "native-r5-elder/player-aim/run.log",
+      "bytes": 16442,
+      "sha256": "f71b01fb1f3d65bee122d73ef1ddd30b4355b566cea98b7d6fa8fab54cc6ae68"
+    },
+    {
+      "path": "native-r5-elder/player-aim/TestLoader.swf",
+      "bytes": 895177,
+      "sha256": "01207379dd8708faf2145d3748957f9864d1246fe0fd48ac600755b5e51cd177"
+    },
+    {
+      "path": "native-r6-elder/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "73949abe12df58ffe544d7cfd5b6b8f7720318cd7357a3c9adbf8b4c7579410e"
+    },
+    {
+      "path": "native-r6-elder/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r6-elder/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "e8922aff788294da74246fa2b68206e1c1a210f718d06fa4693bb8cbbced8dcd"
+    },
+    {
+      "path": "native-r6-elder/audio/result.json",
+      "bytes": 136,
+      "sha256": "44785408dd3c024c11e8754593fa03b8a3fac533c5ede76759873eb988c19106"
+    },
+    {
+      "path": "native-r6-elder/audio/run.log",
+      "bytes": 4282,
+      "sha256": "dc00fa60fb766e4d89ea3438b95cf43a56dce2e85f4b2f9623469030b37d8d16"
+    },
+    {
+      "path": "native-r6-elder/audio/TestLoader.swf",
+      "bytes": 8261,
+      "sha256": "5b418f5b76c086c1c692c1bc6a0475aabd6c174a2f83029508f7408e4d1cb930"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "b3e498654bbae8b0b0d8a944d9a3f5d5c5d941d1c69e49bec1140f4f53915cfb"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/flashlog.txt",
+      "bytes": 8020,
+      "sha256": "f537abed28d13759cfebb954b0f603f48cf9f43e01282fb72542d02bbf048dbd"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "4d3333cd3fb3dec7e48586681244c6d8275db297d534fa0d1e622a5eeeb82034"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/run.log",
+      "bytes": 5182,
+      "sha256": "0dfd85ee7fe44153a3cc577758903fbf4c387568c10feea49e499b9d573700e7"
+    },
+    {
+      "path": "native-r6-elder/elder-asset/TestLoader.swf",
+      "bytes": 909742,
+      "sha256": "d9038a01db7a7c4bacb60b627a008f1bde8bc1d6a0261785dbe4bc204b7666d3"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/compile_output.txt",
+      "bytes": 452,
+      "sha256": "9e837de45deeb6170b8b54fac0cfdea8cb2fc0212d7f12b291b516ac92b395cb"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/flashlog.txt",
+      "bytes": 2276036,
+      "sha256": "3c69a3ae380e61fca276ded03a40e94b9423b3b1b7abfba96e3eabf86d79057f"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/result.json",
+      "bytes": 143,
+      "sha256": "d44b2eb67e248850300a3f94da2daa078e435a6030d829dec50c888afac4c529"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/run.log",
+      "bytes": 168462,
+      "sha256": "9c1a64a488b50074e932899e8d53446c45ae17851c5a7b7f6d18f1e7a7fb7392"
+    },
+    {
+      "path": "native-r6-elder/elder-charge/TestLoader.swf",
+      "bytes": 892740,
+      "sha256": "5635813e8300518342d162d352ed8652b38fd989bbbe95b1f373a27b25533b36"
+    },
+    {
+      "path": "native-r6-elder/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "d07d50598b562bae6176541b054b7bb698da144b10c03aa12d50a41517265d8d"
+    },
+    {
+      "path": "native-r6-elder/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "a9a10e3a59763a75ebb95b8301c824b602046d52137c0fa0b7dbbb061c1815cf"
+    },
+    {
+      "path": "native-r6-elder/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r6-elder/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "12b8e3a3c134ae331c39d5b95b9e0aea492171c7767b2d08f980cefc4618ef43"
+    },
+    {
+      "path": "native-r6-elder/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "7fba6b8ef1e29c80811e94e7e586d27279041157f99d2c2f5cb98192f24ad47b"
+    },
+    {
+      "path": "native-r6-elder/player-aim/run.log",
+      "bytes": 4752,
+      "sha256": "98e7b82bead64093e8bde551344f1177cf1a9e511fa716e49f0688c174ca2ea3"
+    },
+    {
+      "path": "native-r6-elder/player-aim/TestLoader.swf",
+      "bytes": 895175,
+      "sha256": "1f24cf23012ce241faad4839e9d7c8b8a141d906954e9b141dd24a73277b51bf"
+    },
+    {
+      "path": "native-r7-elder/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "200bf16240a16eacd57f74f115d541b7028ca4ce924ab41865c921dbd49696e8"
+    },
+    {
+      "path": "native-r7-elder/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "c67231d16dbad2c9f7eaee9ecd1e0f773db4f1b44a3c18e6f190a7b5c158a7ac"
+    },
+    {
+      "path": "native-r7-elder/audio/result.json",
+      "bytes": 136,
+      "sha256": "9b5bea3fb5443e79aa1515aa415ae01812eb1f19ed828624f7bad23898b714c9"
+    },
+    {
+      "path": "native-r7-elder/audio/run.log",
+      "bytes": 4082,
+      "sha256": "810a1e6a2f286c889a2dd5fc994c3d58a02655c284033040b009c81daa2ce7d0"
+    },
+    {
+      "path": "native-r7-elder/audio/TestLoader.swf",
+      "bytes": 8262,
+      "sha256": "3c930237483abf592d5a28c205a4f67a7ef3d586fc4310a13f77ae7431b838d9"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "a7dfc3c3c6c6ccdb39af412af667ccb9f077bfd3e5425950941a7838696f183c"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/flashlog.txt",
+      "bytes": 8182,
+      "sha256": "5189f811a0a66b41c6095fe88ceb0820cf894c9e80bc4b2161986bb509d6ec9f"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "e6dda909292712708b46f3d3b01475ce44990d448dae266624d86e5f0678d8ef"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/run.log",
+      "bytes": 7478,
+      "sha256": "bf6206a96f04bd2656669f7de847aef066e156a576cec62c1b20689f1c029f47"
+    },
+    {
+      "path": "native-r7-elder/elder-asset/TestLoader.swf",
+      "bytes": 909728,
+      "sha256": "edb345e838e61a0c0c44143330307b7773e3489e5af9d676d7fde1b03bd56977"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/compile_output.txt",
+      "bytes": 452,
+      "sha256": "3cd24431dd9287b2e4df0b8435773ab14e31b1a84aaf9dfd9fc60bb82f50ff33"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/flashlog.txt",
+      "bytes": 2276036,
+      "sha256": "cc5928376d774c2b7c561274ad5871375b40de04b760bf4ad0e370a23ef78609"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/result.json",
+      "bytes": 143,
+      "sha256": "7505900896e41848c50b32384ce0dc7e178286b8de041ff4952e891664d5f6e2"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/run.log",
+      "bytes": 4766,
+      "sha256": "ef90d9b55351b56337a803b387732205cf755a747b52583773fe1b2c5c221a16"
+    },
+    {
+      "path": "native-r7-elder/elder-charge/TestLoader.swf",
+      "bytes": 892741,
+      "sha256": "95b408c3a8bb5cd98b286e1143de6633a537b06587a1723d9556b7e3f2f3fe8e"
+    },
+    {
+      "path": "native-r7-elder/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "f432209ddbd7b66b459fee81c7b54d21481b03d199f6f340c2fa519879fba5e8"
+    },
+    {
+      "path": "native-r7-elder/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "c45491fd52a2d715bf6091682a848d6cd37a286436c69a031d5ef5d5da7c33d8"
+    },
+    {
+      "path": "native-r7-elder/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "75fc9ff1dc27c0df38cdfad8af6878c8a0b0c44495e8cff2434a88a1a644acfb"
+    },
+    {
+      "path": "native-r7-elder/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "2dd99d4cc14d55a709c257f1c9eb73ced26810635d3bd1d5c82e938e267effe4"
+    },
+    {
+      "path": "native-r7-elder/player-aim/run.log",
+      "bytes": 4754,
+      "sha256": "d085c767e1391361fba31afdd2aa6b175fe6b1cab93b1a86639a4fbce3c598ba"
+    },
+    {
+      "path": "native-r7-elder/player-aim/TestLoader.swf",
+      "bytes": 895179,
+      "sha256": "8768691a033633167f7938453409df475875573d8e92226bc9dc8b7dd50e75c6"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "077c8b78edd1062df4571cb5ab89b1231681371fd03ed9ba020927ca04bb034f"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "8b75219c92bb0883c5b39532021636269069eb30faf9c04a127665541b9485a4"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/result.json",
+      "bytes": 136,
+      "sha256": "e2b43bb0a41ccced279aba3cc7e7fddeb0e6ab15b1ce78508fb020d9ec0d22b4"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/run.log",
+      "bytes": 3882,
+      "sha256": "7e741dd58aed07027cf0e84f5d585663a684e6a460f0d7352416584477dc686c"
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/TestLoader.swf",
+      "bytes": 8269,
+      "sha256": "9bd94731023f9437359ba3d3856a682658106a68fa67fa4222756a506c22303a"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "5095fc011f43d793163572b21e6a4d29058d362e71142a23cf29a7cb87a40a47"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/flashlog.txt",
+      "bytes": 8014,
+      "sha256": "6487fb3a18f0ca6c347cb15de7c9a38245de4876cd21010b5525143408bf2083"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "7fd2aea56b97f9eb56963df0abc5125ad16e9febcc0c65d6c2ff517c6da1f128"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/run.log",
+      "bytes": 13900,
+      "sha256": "b8f00044a3b50ceb2aa45559d82d85c69dce61148ce05c393091a6e4e1235a54"
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/TestLoader.swf",
+      "bytes": 909925,
+      "sha256": "ce244641683d391a3bddbc4afac0267cb6d4c242a1024c518b001e6c3ddb760f"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "fdabf1aa7d6db2607b6becc34d5f5375bbc230b181bc363ea8b39ab535a009dc"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "5c2af5c15ddf97bfc0379ba4a4f2ebdc49be6d9e01fc1857a93df94bf8f40438"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "4bd109792365cb037a7d0e7fce5f1cb360b051b4fb942da8516a51d24c218d94"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "095554218f73b5f1c5869531c1a4f19684865cf25e1e8ef8e17ec40f907cc66b"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/run.log",
+      "bytes": 4750,
+      "sha256": "11e66494b73d89256660c78c58d2e6f19950117fc8835b8792f6056b28ddc463"
+    },
+    {
+      "path": "native-r7-player-final/player-aim/TestLoader.swf",
+      "bytes": 895178,
+      "sha256": "44414b25890d1a84c5ae69c65c8e9a53fc0bc660bac8b5ef90babf062da545ce"
+    },
+    {
+      "path": "native-r8-integrated/audio/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/audio/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "3b1edc2442fb517ceb3dc524061cbff4d44a004996b0044fd075dbbe0e7c7c9d"
+    },
+    {
+      "path": "native-r8-integrated/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r8-integrated/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "94a46eb3c981b82ec338b073f4670141387f8b894d09c2b9415b377f7a00f81e"
+    },
+    {
+      "path": "native-r8-integrated/audio/result.json",
+      "bytes": 136,
+      "sha256": "9e36bdb52ca1cfa75e742ca64b256ce9c97e2b6d099bdfbaaeea2f1d40b2d4d9"
+    },
+    {
+      "path": "native-r8-integrated/audio/run.log",
+      "bytes": 4084,
+      "sha256": "881a78a20171b437dd44a4a3c316eb5c6913c634fdbe0932e147cfe6e79eea1c"
+    },
+    {
+      "path": "native-r8-integrated/audio/TestLoader.swf",
+      "bytes": 8262,
+      "sha256": "a4784143f5887388929dbe9dddc50f5b2ea6e991d5f7edcd3ab6121417e1524b"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/compile_output.txt",
+      "bytes": 448,
+      "sha256": "87c0de082bb2c48a3ff8d575329e01365d9474c9929cc25e83785ae75b51eeb8"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/flashlog.txt",
+      "bytes": 3390,
+      "sha256": "9722560fe4fbebf70ac6ebb1906b8432f2aabf6a13bac56fd731f0b5ff16accb"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/result.json",
+      "bytes": 145,
+      "sha256": "b5d7dee3058b4f2a1ede8989cc586ae2ee50d25fad107290961e2fb1bec87e91"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/run.log",
+      "bytes": 4536,
+      "sha256": "7fb3cf2922157b4f53c8ce05b5b104637fa2062ab260eb60dcc140612b3f8088"
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/TestLoader.swf",
+      "bytes": 1033388,
+      "sha256": "f86bdb4405b1c9b4b1c139be387e4f5dfd25711de6dde54512e9c2f05b575824"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "6a49fa37f405ddde5384dbb1f9c824bc00d5e0ce37dd9934896f00706240e9a3"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/flashlog.txt",
+      "bytes": 8017,
+      "sha256": "90effe7bee0689dde195654e1142750e1498fab966168003210f467f1a0cc5d9"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "8ae92fdb2ee6702ade0c7aa0b1e8e5525cd85091f83c9a6d4a926056c9136938"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/run.log",
+      "bytes": 13898,
+      "sha256": "20afaf43742c3105e2115aca36038118f61ce9b088cac6f89f43d1591c519289"
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/TestLoader.swf",
+      "bytes": 913642,
+      "sha256": "57fc0ed5e4c3c7b16c1ad7232b9efa071ccf6bda5b8e3ef1e65cc9bf57b100e9"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/compile_output.txt",
+      "bytes": 447,
+      "sha256": "ec1b171ef48f3e4757e8331c8b94cd9094cb96cc890fb94124350b4badc72951"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/flashlog.txt",
+      "bytes": 2849,
+      "sha256": "1705c8f82d214affca42379cb4c51a78c63477169ce5d0ee58062c9b053f87c8"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/result.json",
+      "bytes": 144,
+      "sha256": "c61da1c198976c62a3561a026621ea9438a448175b4bdc1ba0010f351b6d7e70"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/run.log",
+      "bytes": 4764,
+      "sha256": "34cae3892eacfe0f2d43dfb27754fbc8db934e89cf4fe5440c0b76a124f69a2d"
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/TestLoader.swf",
+      "bytes": 905062,
+      "sha256": "192d0eb02103db91377c614f6222407b1a9af01faeb6ebeb02c47ee5dcba5fb6"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/bindings-after.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/bindings-before.json",
+      "bytes": 26909,
+      "sha256": "02cf1f4bd9ee3cdecb3d5147907e5d0da5e25cb88a47e7ee3ba98cfa9fbc4640"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/compile_output.txt",
+      "bytes": 450,
+      "sha256": "dd6e3fe836c2fb47e14954c11c7803bd46adf7590be21b9ab2bc3bc737c53fee"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/flashlog.txt",
+      "bytes": 21421,
+      "sha256": "54e7034112c639e66fba1c1f12a7431582ac4178cda6ee548fcadd6c07fce0f5"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/result.json",
+      "bytes": 141,
+      "sha256": "fbd41a5445a07aa6b535fb51598ad7ae6fe291d5f4ed1b0766781e3f7e553d5e"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/run.log",
+      "bytes": 4754,
+      "sha256": "e227944c9f647b91bffa77be1c5c4ad64e21300ed4de0032edbd2505952bdf43"
+    },
+    {
+      "path": "native-r8-integrated/player-aim/TestLoader.swf",
+      "bytes": 898894,
+      "sha256": "34995a35d474492c5ed1eae68c11efa11126d4ebfc4a6e93da3a4d7f80a32824"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/bindings-after.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/bindings-before.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/compile_output.txt",
+      "bytes": 4595,
+      "sha256": "666b6f5c4334cc805c1eb6c74525824ea86dcc5ff0ab22d3be5cb1a32958bf9b"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/flashlog.txt",
+      "bytes": 4576,
+      "sha256": "fcceda529373934da630e09c1af050ed9c27c04047005819e778650f738efc87"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/result.json",
+      "bytes": 145,
+      "sha256": "0613feaa0b559f655c2bac6f425d67385567558d48fe8a4adb3bbc4c7bc1a7aa"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/run.log",
+      "bytes": 12414,
+      "sha256": "e74115157a4d5afcefe7abc329d78f3ce4fd9eefa7053fe58c23ea757038dd97"
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/TestLoader.swf",
+      "bytes": 866894,
+      "sha256": "e7fba55889f1d50e0163b2bbe5f6ad40b054d9af4f99a77507efe8990502ffff"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/bindings-after.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/bindings-before.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/compile_output.txt",
+      "bytes": 87,
+      "sha256": "654ea2b5a17f216443b19a5c3733164d42e9cadfc616d7114952ed6287331864"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/flashlog.txt",
+      "bytes": 9859,
+      "sha256": "ecd8c2870e19c9131dc0b142016672ba7d1d534d84506d6df921ab5396b3f98f"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/result.json",
+      "bytes": 136,
+      "sha256": "5787fef669ac23192da9f21405c4c6059d22c813ae9c279ec4922f6768f6b18f"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/run.log",
+      "bytes": 4282,
+      "sha256": "c86509fb813fa5b96f1704600894d8ac68764d297165dc9b2e52669202cf886f"
+    },
+    {
+      "path": "native-r9-phase-parent/audio/TestLoader.swf",
+      "bytes": 8265,
+      "sha256": "92ab54e312786f9178c7221ab94b0bdf34f9842df53eab80bb15711200585507"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/bindings-after.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/bindings-before.json",
+      "bytes": 27540,
+      "sha256": "f2550d5a68731ff749233fe44d407c78b7733c43a23480021657f100962a6835"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/compile_output.txt",
+      "bytes": 445,
+      "sha256": "a8c74e58ab6a3956cd13736189109db038b38eff014058de6881144367934a11"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/flashlog.txt",
+      "bytes": 8019,
+      "sha256": "2b464742dbf983d25afd1589a81ce8dcf85f0d8e3f5afed8ab7d546fa8007292"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/result.json",
+      "bytes": 142,
+      "sha256": "290ecee5b29ff2c35562f5a4827722b390e05929a701865a536904abdf33457a"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/run.log",
+      "bytes": 5182,
+      "sha256": "be230283f7c2e44ec3db71b1db3c4cb0422b8ed3395cd3a9956665c54212a2ff"
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/TestLoader.swf",
+      "bytes": 913764,
+      "sha256": "346936216a88b8343bf0954ee37f312985d6cb47ef92283274e2a6a244962cc9"
+    },
+    {
+      "path": "audio-fixture-r10-generation.log",
+      "bytes": 88,
+      "sha256": "feb79f72cba78bf03f5ceef90592886485a725218f1fda695db2666e2706a35d"
+    },
+    {
+      "path": "audio-fixture-r7-generation.log",
+      "bytes": 43,
+      "sha256": "f6e1a0bcc9f0c3909d43c96af6d0a2d4cc48e75cec70f42d81c989953d6670e6"
+    },
+    {
+      "path": "audio-fixture-r7-repaired-generation.log",
+      "bytes": 43,
+      "sha256": "f6e1a0bcc9f0c3909d43c96af6d0a2d4cc48e75cec70f42d81c989953d6670e6"
+    },
+    {
+      "path": "audio-fixture-r8-generation.log",
+      "bytes": 43,
+      "sha256": "f6e1a0bcc9f0c3909d43c96af6d0a2d4cc48e75cec70f42d81c989953d6670e6"
+    },
+    {
+      "path": "audio-fixture-r9-generation.log",
+      "bytes": 88,
+      "sha256": "feb79f72cba78bf03f5ceef90592886485a725218f1fda695db2666e2706a35d"
+    },
+    {
+      "path": "balance-r10-elder.log",
+      "bytes": 1292,
+      "sha256": "6cd22e31cfeb6ddc594bf309518a4c9807c6d01359100e693c9400fa1504ed5b"
+    },
+    {
+      "path": "balance-r7-write.log",
+      "bytes": 935,
+      "sha256": "265fe656be72f0ba0bf3e41d4f9a5f75cf44d69bc60f4fec1f7517e8c0abf350"
+    },
+    {
+      "path": "before-heavy-player-test.zip",
+      "bytes": 5454,
+      "sha256": "c017148544d0dcd5d6f214b7b7df42256dabb59151cb03fd5d00b9fb8f54b186"
+    },
+    {
+      "path": "before-heavy-tracking-test.zip",
+      "bytes": 5177,
+      "sha256": "1f5a36578789638ceaf8ad44793ac38b92fbb226c3b0146845c60c002865edff"
+    },
+    {
+      "path": "before-r1-index.json",
+      "bytes": 46093,
+      "sha256": "52961599c2e5cce306bbb04860522f3aea20f57eba2ab2dc6df258977a32f64e"
+    },
+    {
+      "path": "before-r1.zip",
+      "bytes": 5120503,
+      "sha256": "acd0bcd7fd6c3f3acb36b5007284116fc5144e2df58eadbced8eb1193f37591c"
+    },
+    {
+      "path": "before-r10-elder-index.json",
+      "bytes": 318048,
+      "sha256": "21f9c0481a6197cecded0fe4df338dbc4305335cab926cfcb5ec8f4e7809c14d"
+    },
+    {
+      "path": "before-r10-elder.zip",
+      "bytes": 9482921,
+      "sha256": "d94a462d8fbcfdf187b3988b62e68caffcd76800fa87598b5229e239b7c91267"
+    },
+    {
+      "path": "before-r2-elder.zip",
+      "bytes": 422056,
+      "sha256": "dc2c84adbebce64e5bdef37c3d4570f26954b98769c9c5786e2116ee1de285c9"
+    },
+    {
+      "path": "before-r2-index.json",
+      "bytes": 45940,
+      "sha256": "e4bd8b892881322369a66b9b410c38c888db021e8443a9c34268341c4af55416"
+    },
+    {
+      "path": "before-r2.zip",
+      "bytes": 3582379,
+      "sha256": "a76e13b7ca6c73e5cda4446cfe3e937ceceac76132c8726bbc0b8797d67c8d38"
+    },
+    {
+      "path": "before-r3-elder-ramp-index.json",
+      "bytes": 308717,
+      "sha256": "7676109ef84efbdffb1358fc6bc4bc879a7d810c9d583548a75b187f7a39e3ed"
+    },
+    {
+      "path": "before-r3-elder-ramp.zip",
+      "bytes": 7212774,
+      "sha256": "5ea13f496cc1b30d80c88ee3d714fa6ae326c17eba816fb733baf326c9eb0956"
+    },
+    {
+      "path": "before-r3-index.json",
+      "bytes": 309074,
+      "sha256": "fe388272ef946b6be822f431cfba5a8d29c58509def25fd655ba07f7d576e9fe"
+    },
+    {
+      "path": "before-r3.zip",
+      "bytes": 8768320,
+      "sha256": "2a69d7c422a43a84c7257d994127347e46a01c28c95b78a1f9bb81e6c322e34d"
+    },
+    {
+      "path": "before-r4-elder-index.json",
+      "bytes": 309462,
+      "sha256": "2dfedb683de0ace7a27d2f4dc2c79984fb833ea21214d522f468d82c0accb7a9"
+    },
+    {
+      "path": "before-r4-elder.zip",
+      "bytes": 7222914,
+      "sha256": "8aae1c88f1a3fe50745937f926fc503751670b86a7852be0933457e40c73a055"
+    },
+    {
+      "path": "before-r5-elder-index.json",
+      "bytes": 309650,
+      "sha256": "4308b743f664a480a9d60ba541a3188d2afc8df098864d478816f945c150b651"
+    },
+    {
+      "path": "before-r5-elder.zip",
+      "bytes": 7230086,
+      "sha256": "eef130c9f49760317a931c4cd7384c64c513ea5ecdc7a12b05f864d20e383fd1"
+    },
+    {
+      "path": "before-r6-elder-index.json",
+      "bytes": 309650,
+      "sha256": "edad396009afeb8eea077310cfa6423711fe7580c0390f94911ed0fea0efad35"
+    },
+    {
+      "path": "before-r6-elder.zip",
+      "bytes": 7231548,
+      "sha256": "7af37eb4934c9972c0be1a04d101278641c2bd9cc83ea7d0d6857b4c0b0e75a7"
+    },
+    {
+      "path": "before-r7-duration-repair-index.json",
+      "bytes": 309651,
+      "sha256": "388c3d74a0c288dc38dcb294e370b2c8f954f879ed064b00bf82d92ff28069cd"
+    },
+    {
+      "path": "before-r7-duration-repair.zip",
+      "bytes": 7233596,
+      "sha256": "af8b995637fcb05fc0300a96460b285f1bbb33e3da6b66f83b50670ad22cdfdc"
+    },
+    {
+      "path": "before-r7-elder-index.json",
+      "bytes": 309651,
+      "sha256": "0c7dfce139e7b5ca3e331814f4ed2473691084c2600a9f951321b0da432b33e5"
+    },
+    {
+      "path": "before-r7-elder.zip",
+      "bytes": 7233139,
+      "sha256": "f2491c62093eedeb0879e2a01bb0b1b2032d37a6b6815f534c7c7a4a2557ca4a"
+    },
+    {
+      "path": "before-r8-elder-index.json",
+      "bytes": 317331,
+      "sha256": "50fff6dc97f4f08753773d51a56b103148c619effdd598956428aad7c439710f"
+    },
+    {
+      "path": "before-r8-elder.zip",
+      "bytes": 9452387,
+      "sha256": "3496a457c81d104695e5853cc66b6596a6fd8269848df3c13d004e4360ef39ed"
+    },
+    {
+      "path": "before-r9-and-phase-parent-fix-index.json",
+      "bytes": 318048,
+      "sha256": "a0cd660ce891d900883242d3c663a8b92242b6840fac0dd29ee3aa59a58e88a7"
+    },
+    {
+      "path": "before-r9-and-phase-parent-fix.zip",
+      "bytes": 9482201,
+      "sha256": "b12b2d29d52fb488c866d776d3b2b49865f6b6f2f672f9d864e26a30709f0575"
+    },
+    {
+      "path": "native-cleanup-after-r10.json",
+      "bytes": 516,
+      "sha256": "b02dcaacaa0d0aeeaecc4a678ee61553aabeca4f9fd087e1b1778dfc5412fe9f"
+    },
+    {
+      "path": "native-cleanup-after-r10.log",
+      "bytes": 410,
+      "sha256": "693d55ce3812cf67665f299c50efe1db3ccb4eb041737d1ac44a7cbc18e4ec36"
+    },
+    {
+      "path": "native-cleanup-after-r4.json",
+      "bytes": 516,
+      "sha256": "3e44b85c19d364db77d690c788d173399ce236850d54334e5059737f83422cdf"
+    },
+    {
+      "path": "native-cleanup-after-r4.log",
+      "bytes": 410,
+      "sha256": "3ccd11b6ce5e773705a8a9e6116b38238972b9da0a92e14d814b9e1ce9dc8587"
+    },
+    {
+      "path": "native-cleanup-after-r5.json",
+      "bytes": 516,
+      "sha256": "62ce40d4e9d7d5475ded89f96c919975a9a96e9adc4a17eb252600226dfb6bd0"
+    },
+    {
+      "path": "native-cleanup-after-r5.log",
+      "bytes": 410,
+      "sha256": "0855a1ecf4e67431b15cfd88dfc1910cf5106b0ba75320e363e684b32b2c624c"
+    },
+    {
+      "path": "native-cleanup-after-r6.json",
+      "bytes": 516,
+      "sha256": "4ff15650ae38b9b90d82c8bf0103bd669da9d5c87e62da0260bb09ba41920211"
+    },
+    {
+      "path": "native-cleanup-after-r6.log",
+      "bytes": 410,
+      "sha256": "87e9e87c89096cdc5e240bd1fa0a672e939d1318c0cabe631337e4194ba7679d"
+    },
+    {
+      "path": "native-cleanup-after-r7.json",
+      "bytes": 516,
+      "sha256": "5fb2af881e34b3f243173d4b8c9e2423f4cfe1e02a35e2052803d6d865cae8b0"
+    },
+    {
+      "path": "native-cleanup-after-r7.log",
+      "bytes": 410,
+      "sha256": "b949dd144c6a4cef4c6952348854221efb767d52b5b5513676a53512f45a20c7"
+    },
+    {
+      "path": "native-cleanup-after-r9.json",
+      "bytes": 516,
+      "sha256": "048999f5c66f0dde3e2d82318e5d7b9a73a5610d48ae1d65dd8e97584fccf37f"
+    },
+    {
+      "path": "native-cleanup-after-r9.log",
+      "bytes": 410,
+      "sha256": "1282b09201a60d83345db64a985c64e04025b043e6f7c2f3ad6ec084e475caf0"
+    },
+    {
+      "path": "native-r1-plan.json",
+      "bytes": 7117,
+      "sha256": "7d57bf1ab06c82c083ea801c554506e6bc81678c9edbff9cd912a285690f63aa"
+    },
+    {
+      "path": "native-r10-elder-plan.json",
+      "bytes": 7833,
+      "sha256": "4b3135be1fac21216eeae695e1897742a35b718649a05c3c1a39941596b2e113"
+    },
+    {
+      "path": "native-r2-elder-plan.json",
+      "bytes": 6947,
+      "sha256": "6b48655b90ea182617d7bf55a6843cf9447a3b184b4c02288e4e89b949d8f173"
+    },
+    {
+      "path": "native-r2-final-plan.json",
+      "bytes": 7123,
+      "sha256": "bac24400e80caa5ec64c8fcc5a14b754f42517e4e60d0fbc820dac3957c788e3"
+    },
+    {
+      "path": "native-r2-head-plan.json",
+      "bytes": 6950,
+      "sha256": "fe94b2ad477a7df3621b53618c4ec019734c41b2b33eb54e430445ee84beda69"
+    },
+    {
+      "path": "native-r2-melee-plan.json",
+      "bytes": 6951,
+      "sha256": "5aac49c252d8750f53c64a34b23e5c7877a6426fbdb640188004b9d4da3f2c16"
+    },
+    {
+      "path": "native-r2-melee2-plan.json",
+      "bytes": 6952,
+      "sha256": "2070a960fdba77111e1009460a1c1aa976252420470935973a82244ad3801328"
+    },
+    {
+      "path": "native-r3-elder-ramp-plan.json",
+      "bytes": 7816,
+      "sha256": "3ee6d6311d2d4b8a9ce5376c8d0349b4170b84c207a6118cd8b1b246a2ac86e9"
+    },
+    {
+      "path": "native-r3-head-plan.json",
+      "bytes": 7520,
+      "sha256": "9a66239244f442b5f0f5da4f9160cb87c5a6ee2d28adb11daad85b05586e3b20"
+    },
+    {
+      "path": "native-r3-head-repaired-plan.json",
+      "bytes": 7174,
+      "sha256": "d00e544da0281709ab8f39acef1f6f2620752a4266fee3da25de319f63d1b872"
+    },
+    {
+      "path": "native-r3-head-visual-plan.json",
+      "bytes": 7360,
+      "sha256": "b027e86efad1587f27ecfecb3549dfc14b437b41df22107a21a2a8ddce09fcb7"
+    },
+    {
+      "path": "native-r3-integration-plan.json",
+      "bytes": 7844,
+      "sha256": "5b90e6e5b226a628becc402071f36c137e4075ae8bf119d97dd28d4f26495f5a"
+    },
+    {
+      "path": "native-r3-player-tracking-plan.json",
+      "bytes": 7510,
+      "sha256": "820527c60eb2c28efb60d3a1f367cf8d441d7c7b2ed0c77558491265a60e7edc"
+    },
+    {
+      "path": "native-r4-audio-rebound-plan.json",
+      "bytes": 7498,
+      "sha256": "49d867696f0cf4c3f1a75245842ff5674bf8125e255e1ddb4bf9e671593c66ac"
+    },
+    {
+      "path": "native-r4-elder-plan.json",
+      "bytes": 8026,
+      "sha256": "7bcd505a09c7a89608c720860eeab4003004f41cbb97f9c3dcbc71dfce88a844"
+    },
+    {
+      "path": "native-r5-elder-plan.json",
+      "bytes": 8026,
+      "sha256": "b6db667f2811679fc51991dd570f9cdab16fd8adefd561d1da6a055e820098e9"
+    },
+    {
+      "path": "native-r6-elder-plan.json",
+      "bytes": 8026,
+      "sha256": "163696207337c040d9a5a07c95a6900b0076bd6b60d2175c6f440c0782025993"
+    },
+    {
+      "path": "native-r7-elder-plan.json",
+      "bytes": 8026,
+      "sha256": "5d1be3cdf39aa2f7b96e1d6f3e9f4f2258613c9cc2250c60d1d99a5a65a976d5"
+    },
+    {
+      "path": "native-r7-elder-repaired-plan.json",
+      "bytes": 7671,
+      "sha256": "0901fecdad66cd9c44fefe48f2865bbce5e8aa50670ca7348f227c397226f45b"
+    },
+    {
+      "path": "native-r7-player-final-plan.json",
+      "bytes": 7507,
+      "sha256": "5c635814094ee1aa20546b8110282f32a01a687812ad44bbae1a889fd512f1dc"
+    },
+    {
+      "path": "native-r8-integrated-plan.json",
+      "bytes": 8191,
+      "sha256": "de4a85917c01f4046425addd6f826d85ee7ee7f997b8559fd5717c13095ccdc2"
+    },
+    {
+      "path": "native-r9-phase-parent-plan.json",
+      "bytes": 8058,
+      "sha256": "80e71e939ecc8e4b90953a8879ae16ef691294df88599300af0e8a4df720b274"
+    },
+    {
+      "path": "regeneration-r10-elder.log",
+      "bytes": 258,
+      "sha256": "3d2aa9ba0fa743c3d7e642316cb9029470d007f09f1cdff3ee6ce5023df5ee58"
+    },
+    {
+      "path": "regeneration-r7-elder-repaired.log",
+      "bytes": 154,
+      "sha256": "55638eb706aacd06e3d47cfbd50e6eab5fce5379d1b823759eb960e9e53df74e"
+    },
+    {
+      "path": "regeneration-r7-elder.log",
+      "bytes": 154,
+      "sha256": "55638eb706aacd06e3d47cfbd50e6eab5fce5379d1b823759eb960e9e53df74e"
+    },
+    {
+      "path": "regeneration-r8-elder.log",
+      "bytes": 154,
+      "sha256": "55638eb706aacd06e3d47cfbd50e6eab5fce5379d1b823759eb960e9e53df74e"
+    },
+    {
+      "path": "regeneration-r9-elder.log",
+      "bytes": 154,
+      "sha256": "55638eb706aacd06e3d47cfbd50e6eab5fce5379d1b823759eb960e9e53df74e"
+    },
+    {
+      "path": "uncompiled-r2-shooting-shield.zip",
+      "bytes": 22520,
+      "sha256": "d91b836c31ee892c2fb738f27e4da5857772bc270abadde677ecd9e98c308bb4"
+    }
+  ],
+  "attempts": [
+    {
+      "path": "native-r1/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r1/headbot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r10-elder/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r10-elder/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r10-elder/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r2-final/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r2-final/headbot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r2-melee/headbot-asset/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r2-melee2/headbot-asset/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-elder-ramp/audio/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-elder-ramp/elder-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-head/head-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-head/headbot-asset/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-head-repaired/headbot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-integration/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-integration/bladebot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-integration/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r3-player-tracking/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r4-audio-rebound/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r4-elder/audio/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r4-elder/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r4-elder/elder-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r4-elder/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r5-elder/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r5-elder/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r5-elder/elder-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r5-elder/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r6-elder/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r6-elder/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r6-elder/elder-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r6-elder/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder/elder-asset/result.json",
+      "exitCode": 1,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder/elder-charge/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder-repaired/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-elder-repaired/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r7-player-final/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r8-integrated/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r8-integrated/bladebot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r8-integrated/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r8-integrated/headbot-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r8-integrated/player-aim/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r9-phase-parent/arena-protocol/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r9-phase-parent/audio/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    },
+    {
+      "path": "native-r9-phase-parent/elder-asset/result.json",
+      "exitCode": 0,
+      "bindingsUnchanged": true,
+      "traceIsBehaviorEvidenceOnlyWhenFreshRunnerConfirmsIt": true
+    }
+  ],
+  "boundary": "Completed historical source snapshots, compilation attempts and native fixtures. Failed/precheck attempts remain failed; copied Compiler/Output files do not independently prove execution. Selection is recorded separately in the final summary."
+}

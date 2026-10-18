@@ -1,0 +1,26 @@
+{
+  "schema": "arena-worker.p0-plan.v1",
+  "groups": [
+    {
+      "groupId": "blackiron-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1094d8dfa3fd4358a9d1cda3e6dbcc69\\assignment-1094d8dfa3fd4358a9d1cda3e6dbcc69\\attempt-1094d8dfa3fd4358a9d1cda3e6dbcc69\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-5963dced89b247e29c3e7c7c3e7d9dcf\\assignment-5963dced89b247e29c3e7c7c3e7d9dcf\\attempt-5963dced89b247e29c3e7c7c3e7d9dcf\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-pilot-20261017\\groups\\blackiron-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-pilot-20261017\\groups\\blackiron-level60\\group-report.json"
+    },
+    {
+      "groupId": "arkclaw-level60",
+      "expectedConcurrency": 2,
+      "receiptPaths": [
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-71385005b8664633b781f5333c46062f\\assignment-71385005b8664633b781f5333c46062f\\attempt-71385005b8664633b781f5333c46062f\\shard-receipt.json",
+        "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-a51ec698ede1430ea64c4f15f32c8c95\\assignment-a51ec698ede1430ea64c4f15f32c8c95\\attempt-a51ec698ede1430ea64c4f15f32c8c95\\shard-receipt.json"
+      ],
+      "saveProtectionPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-pilot-20261017\\groups\\arkclaw-level60\\save-protection.json",
+      "groupReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\blade-wave-pilot-20261017\\groups\\arkclaw-level60\\group-report.json"
+    }
+  ],
+  "comparisons": []
+}

@@ -1,0 +1,32 @@
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 285 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 857284 bytes, 2026/10/17 1:18:48)
+[INFO] 触发编译... (超时 300s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (8s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-bladebot-beam-render Start: ced1a8b253684d0c9b3a0a49267558db
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/17 1:19:09
+=== COMPILER ERRORS ===
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，5 行	语句块必须以 '}' 结束
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，91 行	语法错误。
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，49 行	类外使用的属性。
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，15 行	语句块必须以 '}' 结束
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，85 行	类外使用的属性。
+**Error** C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\类定义\org\flashNight\arki\unit\Action\Melee\Cf6BladebotBeamRenderTest.as，91 行	语法错误。
+
+6 个错误, 0 个警告
+=== END COMPILER ERRORS ===
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (3651 bytes, 2026/10/17 1:19:09)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 1   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 1 个函数体:
+      90 B  DefineFunction  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。

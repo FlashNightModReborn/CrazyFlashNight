@@ -1,0 +1,149 @@
+{
+  "scope": "Formula estimates only. Fixed stage/tier and observed action factors; no predicted combat qualification.",
+  "rows": [
+    {
+      "name": "r9-current",
+      "form": "human",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 12158,
+          "atk": 1538,
+          "def": 552
+        },
+        {
+          "level": 60,
+          "hp": 17642,
+          "atk": 2244,
+          "def": 740
+        },
+        {
+          "level": 99,
+          "hp": 24772,
+          "atk": 3162,
+          "def": 984
+        }
+      ]
+    },
+    {
+      "name": "r9-current",
+      "form": "robot",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14471,
+          "atk": 3554,
+          "def": 6250
+        },
+        {
+          "level": 60,
+          "hp": 18953,
+          "atk": 4998,
+          "def": 6871
+        },
+        {
+          "level": 99,
+          "hp": 24780,
+          "atk": 6874,
+          "def": 7679
+        }
+      ]
+    },
+    {
+      "name": "j2.5-l50",
+      "form": "human",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 9992,
+          "atk": 1917,
+          "def": 474
+        },
+        {
+          "level": 60,
+          "hp": 14365,
+          "atk": 2795,
+          "def": 634
+        },
+        {
+          "level": 99,
+          "hp": 20051,
+          "atk": 3936,
+          "def": 841
+        }
+      ]
+    },
+    {
+      "name": "j2.5-l50",
+      "form": "robot",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 11630,
+          "atk": 4437,
+          "def": 6397
+        },
+        {
+          "level": 60,
+          "hp": 14769,
+          "atk": 6237,
+          "def": 6866
+        },
+        {
+          "level": 99,
+          "hp": 18850,
+          "atk": 8577,
+          "def": 7476
+        }
+      ]
+    },
+    {
+      "name": "j3-l60",
+      "form": "human",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 8548,
+          "atk": 2296,
+          "def": 423
+        },
+        {
+          "level": 60,
+          "hp": 12181,
+          "atk": 3345,
+          "def": 563
+        },
+        {
+          "level": 99,
+          "hp": 16903,
+          "atk": 4710,
+          "def": 746
+        }
+      ]
+    },
+    {
+      "name": "j3-l60",
+      "form": "robot",
+      "levels": [
+        {
+          "level": 30,
+          "hp": 9920,
+          "atk": 5319,
+          "def": 6545
+        },
+        {
+          "level": 60,
+          "hp": 12251,
+          "atk": 7475,
+          "def": 6861
+        },
+        {
+          "level": 99,
+          "hp": 15281,
+          "atk": 10278,
+          "def": 7272
+        }
+      ]
+    }
+  ]
+}

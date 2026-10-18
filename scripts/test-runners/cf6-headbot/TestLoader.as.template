@@ -1,0 +1,10 @@
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+_root.敌人函数={};
+#include "test-runners/cf6-knockback-scope/EnemyKnockbackFixture.as"
+_root.headbotCapture = false;
+_root.cf6HeadbotAssetComplete = function():Void {
+    trace("FocusedTestRunId cf6-headbot Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId cf6-headbot Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Melee.Cf6HeadbotAssetTest.runAllTests();

@@ -1,0 +1,199 @@
+{
+  "human": {
+    "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+    "form": "human",
+    "fixedByUser": [
+      "阶段",
+      "档次系数"
+    ],
+    "input": {
+      "stage": 8.0,
+      "tierFactor": 9.0,
+      "growthFactor": 1.0,
+      "atkSpeedFactor": 4.0,
+      "atkMultiplier": 1.0,
+      "segmentFactor": 1.7,
+      "speedFactor": 2.0,
+      "highAtkFactor": 2.0,
+      "superArmorFactor": 1.0,
+      "highDefFactor": 4.0
+    },
+    "flags": {
+      "阶段": 8.0,
+      "档次系数": 9.0,
+      "成长系数": 1.0,
+      "攻速系数": 4.0,
+      "攻击倍率": 1.0,
+      "段数系数": 1.7,
+      "速度系数": 2.0,
+      "高攻低血防系数": 2.0,
+      "霸体系数": 1.0,
+      "高防低血系数": 4.0
+    },
+    "actions": [
+      {
+        "name": "burst",
+        "first": 13,
+        "last": 37,
+        "total": 53,
+        "windup": 12,
+        "tail": 22,
+        "segments": 2.4,
+        "power": 1,
+        "typeFactor": 1
+      },
+      {
+        "name": "stab",
+        "first": 7,
+        "last": 7,
+        "total": 34,
+        "windup": 6,
+        "tail": 33,
+        "segments": 1.0,
+        "power": 1,
+        "typeFactor": 1
+      }
+    ],
+    "weightedTempo": 14.5,
+    "recoveryFrames": 6,
+    "attackTempoTailFactor": 0.2,
+    "integerPanel": {
+      "最小经验值": 1832,
+      "最大经验值": 10193,
+      "hp_min": 6674,
+      "hp_max": 17460,
+      "空手攻击力_min": 833,
+      "空手攻击力_max": 2221,
+      "基本防御力_min": 364,
+      "基本防御力_max": 734
+    },
+    "configuration": {
+      "id": 471,
+      "name": "老头",
+      "tier": 9,
+      "height": 180,
+      "speed": [
+        55,
+        65
+      ],
+      "tenacity": 20,
+      "growth": 1,
+      "attackBias": 2,
+      "defenseBias": 4
+    },
+    "armorEvidence": {
+      "hitDurations": [
+        12,
+        13
+      ],
+      "canBeAirborne": true,
+      "longThreshold": 9,
+      "derived": 1
+    },
+    "position": "Human then robot, meaningful threat to Ark Beast King and EXUSIAI commander, but neither target defeated."
+  },
+  "robot": {
+    "formula": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+    "form": "robot",
+    "fixedByUser": [
+      "阶段",
+      "档次系数"
+    ],
+    "input": {
+      "stage": 8.0,
+      "tierFactor": 20.0,
+      "growthFactor": 0.9,
+      "atkSpeedFactor": 3.0,
+      "atkMultiplier": 1.3333333,
+      "segmentFactor": 1.2222222,
+      "speedFactor": 2.0,
+      "highAtkFactor": 2.0,
+      "superArmorFactor": 3.2,
+      "highDefFactor": 40.0
+    },
+    "flags": {
+      "阶段": 8.0,
+      "档次系数": 20.0,
+      "成长系数": 0.9,
+      "攻速系数": 3.0,
+      "攻击倍率": 1.3333333,
+      "段数系数": 1.2222222,
+      "速度系数": 2.0,
+      "高攻低血防系数": 2.0,
+      "霸体系数": 3.2,
+      "高防低血系数": 40.0
+    },
+    "actions": [
+      {
+        "name": "beam",
+        "first": 29,
+        "last": 29,
+        "total": 64,
+        "windup": 28,
+        "tail": 41,
+        "segments": 1.0,
+        "power": 1,
+        "typeFactor": 2
+      },
+      {
+        "name": "kicks",
+        "first": 9,
+        "last": 26,
+        "total": 40,
+        "windup": 8,
+        "tail": 20,
+        "segments": 1.6666666666666667,
+        "power": 1,
+        "typeFactor": 1
+      },
+      {
+        "name": "slam",
+        "first": 37,
+        "last": 37,
+        "total": 62,
+        "windup": 36,
+        "tail": 31,
+        "segments": 1.0,
+        "power": 1,
+        "typeFactor": 1
+      }
+    ],
+    "weightedTempo": 30.133333333333333,
+    "recoveryFrames": 6,
+    "attackTempoTailFactor": 0.2,
+    "integerPanel": {
+      "最小经验值": 12807,
+      "最大经验值": 30805,
+      "hp_min": 9989,
+      "hp_max": 18804,
+      "空手攻击力_min": 2111,
+      "空手攻击力_max": 4950,
+      "基本防御力_min": 5629,
+      "基本防御力_max": 6851
+    },
+    "configuration": {
+      "id": 472,
+      "name": "老头机器人",
+      "tier": 20,
+      "height": 190,
+      "speed": [
+        45,
+        65
+      ],
+      "tenacity": 40,
+      "growth": 0.9,
+      "attackBias": 2,
+      "defenseBias": 40
+    },
+    "armorEvidence": {
+      "hitDurations": [
+        12,
+        13
+      ],
+      "canBeAirborne": false,
+      "longThreshold": 9,
+      "derived": 3.2
+    },
+    "position": "Human then robot, meaningful threat to Ark Beast King and EXUSIAI commander, but neither target defeated."
+  }
+}

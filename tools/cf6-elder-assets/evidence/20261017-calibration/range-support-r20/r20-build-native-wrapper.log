@@ -1,0 +1,165 @@
+Publishing elder
+[INFO] 编译目标: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材\Codex老头素材.xfl -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材\Codex老头素材.xfl (模式: publish)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材.swf (基线 405957 bytes, 2026/10/18 12:40:21)
+[INFO] 触发编译... (超时 240s)
+[OK] 编译完成 (11s)
+[WARN] flashlog.txt 未刷新，本次 trace 可能还是旧日志
+[INFO] compile_output.txt 已刷新: 2026/10/18 15:29:00
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\flashswf\arts\new\Codex老头素材.swf (406249 bytes, 2026/10/18 15:29:00)
+AS2 class ownership: {"errors":[],"files":3,"parsed":1,"cacheHits":2,"loaderClasses":728,"closureChecked":false,"policy":"production","milliseconds":71.2854}
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+{"source": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as", "functionSha256": "41ec5a010fa561be4fbc16d91c4f8173cb427bb2261ec89daf29817ac659beb2", "templateSha256": "a1fe26b66e6d4cfa4dafcbe7a54edee189ad880ebf284b066100b1af4a3f73cb"}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 903532 bytes, 2026/10/18 13:02:48)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (93s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder Start: 0139002bb3944289b0c8f26ed4351982
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 15:30:43
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (924014 bytes, 2026/10/18 15:30:37)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7254   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   23928 B  DefineFunction2  (anon)
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   12409 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+powershell.exe : Focused trace pattern must occur exactly once (found 0): Cf6ElderAssetTest: \d+ passed, 0 failed; 46 a
+ctual timeline ca
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tmp\cf6-combat-calibrat
+ion-20261017\run-bound-validation.ps1:25 char:2
++  & powershell -NoProfile -ExecutionPolicy Bypass -File $run.runner @r ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (Focused trace p...ual timeline ca:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ses; 13 phase cases
+At C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\test-runners\ru
+n-focused-testloader.ps1:366 char:21
++ ...             throw "Focused trace pattern must occur exactly once (fou ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : OperationStopped: (Focused trace p... 13 phase cases:String) [], RuntimeException
+    + FullyQualifiedErrorId : Focused trace pattern must occur exactly once (found 0): Cf6ElderAssetTest: \d+ passed,  
+   0 failed; 46 actual timeline cases; 13 phase cases
+ 
+{"ok": true, "cases": 81, "libraries": 8}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 924014 bytes, 2026/10/18 15:30:37)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (6s)
+=== FLASH TRACE OUTPUT ===
+FocusedTestRunId cf6-audio Start: b19cd1f2915c4c6c8e1d5dfd47f1ff29
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=14 calls=CF6_0904.mp3
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=42 bodyFrame=22 calls=CF6_0904.mp3
+[CF6_AUDIO_CALL] owner=Codex大头机器人素材 actor=敌人-CF6大头机器人 rootFrame=38 bodyFrame=2 calls=CF6_0907_ea2159328f.wav
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 15:31:03
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (8269 bytes, 2026/10/18 15:31:03)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 29   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+    4027 B  DefineFunction2  (anon)
+    1761 B  DefineFunction2  (anon)
+    1535 B  DefineFunction2  (anon)
+    1491 B  DefineFunction2  (anon)
+    1396 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-audio: 八个实际SWF的原生音效调用和新增触发暂停边界通过; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+{"ok": true, "sources": 7, "playerAreaMatrix": [2.11715698242188, 0.0, 0.0, 5.48248291015625, -26.45, -126.5]}
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 8269 bytes, 2026/10/18 15:31:03)
+[INFO] 触发编译... (超时 240s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (52s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-player-aim Start: fa3b10b2d8a64cf2b539b80f6e86f12a
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 15:32:25
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (903702 bytes, 2026/10/18 15:32:21)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7205   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-player-aim: 玩家来源受击框与实际资源弹道验证完成; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.
+[INFO] 复用 focused runner 持有的仓库编译 mutex。
+[INFO] TestLoader 目标 -> 自动启用 SWF 刷新与 function codeSize<60000 门
+[INFO] 编译目标: test -> C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader\TestLoader.xfl (模式: test)
+[INFO] 预编译 BOM 门: node tools/check-bom.js --dir boot --dir Server --dir StateMachine --dir 通信 --dir arki\task --dir arki\merc --dir arki\skill --dir arki\stageSelect --dir arki\scene --file ObstacleRenderer.as --file scripts/TestLoader.as
+[OK] check-bom: 300 个 .as 全部带 UTF-8 BOM
+[INFO] SWF 刷新门已启用: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (基线 903702 bytes, 2026/10/18 15:32:21)
+[INFO] 触发编译... (超时 900s)
+[INFO] JSFL 已关闭目标；触发二阶段重开 (file:///C|/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader/TestLoader.xfl)
+[OK] 编译完成 (51s)
+=== FLASH TRACE OUTPUT ===
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder-render Start: 838ead90231445e4b190806744fc8c49
+
+=== END ===
+[INFO] compile_output.txt 已刷新: 2026/10/18 15:33:35
+[OK] 目标 SWF 已刷新: C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\scripts\TestLoader.swf (901151 bytes, 2026/10/18 15:33:31)
+=== AVM1 函数体 64KB 门 ===  C:/Program Files (x86)/Steam/steamapps/common/CRAZYFLASHER7StandAloneStarter/CrazyFlashNight/scripts/TestLoader.swf
+函数总数: 7188   阈值(--max): 60000 字节 (UI16 上限 65535)
+
+最大的 5 个函数体:
+   19072 B  DefineFunction2  (anon)
+   18050 B  DefineFunction2  (anon)
+   16953 B  DefineFunction2  (anon)
+   10539 B  DefineFunction2  (anon)
+   10372 B  DefineFunction2  (anon)
+
+✓ 未发现 codeSize >= 60000 B 的近墙项；本门不能排除已越墙回绕，须与源闭包度量和 fresh 行为证据合用。
+[INFO] Waiting for this focused run to finish its asynchronous checks.
+[OK] cf6-elder-render: 老头双形态声明的原生帧集合绘制完成; blocks=1, 32K retry=0, compiler 0/0, fresh trace/output/errors.

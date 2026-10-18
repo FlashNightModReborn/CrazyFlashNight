@@ -1,0 +1,470 @@
+{
+  "roots": [
+    "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1",
+    "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+  ],
+  "bothCandidatesIdentical": true,
+  "files": [
+    {
+      "path": "CRAZYFLASHER7MercenaryEmpire.exe",
+      "bytes": 310784,
+      "sha256": "551924a87b70e79feae08848207690cac0ca987b4a76e5f3d4bd4624bb4f359c",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "CRAZYFLASHER7MercenaryEmpire.exe"
+      }
+    },
+    {
+      "path": "runtime-build-metadata.v2.json",
+      "bytes": 1295,
+      "sha256": "ec0a5dcf5a99a67910fd370388e756691a682a6948959cfc54fd8e83d5ac0c3c",
+      "source": {
+        "kind": "delta",
+        "archive": "owned-candidate-delta-r2.zip",
+        "path": "runtime-build-metadata.v2.json"
+      }
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.deps.json",
+      "bytes": 15866,
+      "sha256": "d82fc96c81658a10f7f7d665ccc1a9cadaba6dea18db17ec506d146ee0d572e5",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.deps.json"
+      }
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "bytes": 6403584,
+      "sha256": "0b77b242cd101494c5b4944a13b8226d7b3fbbb93d078386d0f3e7a342980de6",
+      "source": {
+        "kind": "delta",
+        "archive": "owned-candidate-delta-r2.zip",
+        "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll"
+      }
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "bytes": 261120,
+      "sha256": "3988b5f22f00880270bb2b8329f2e690c623887e6e0767483ae2d0ebf11621fe",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"
+      }
+    },
+    {
+      "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json",
+      "bytes": 554,
+      "sha256": "472b676ebdf55ddd7970837cbd81265e28d96053ce17fd22123db8fe802a940c",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json"
+      }
+    },
+    {
+      "path": "runtime/ClearScript.Core.dll",
+      "bytes": 479680,
+      "sha256": "839adfaa05a8f57bf1ba6fbffbe56b7a8e588b639e94677c2b630936bddab723",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ClearScript.Core.dll"
+      }
+    },
+    {
+      "path": "runtime/ClearScript.V8.ICUData.dll",
+      "bytes": 10742920,
+      "sha256": "0e908c1c261c251cbe9c49c4849e42e9d705f8643508b74e46140d66eed0f64e",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ClearScript.V8.ICUData.dll"
+      }
+    },
+    {
+      "path": "runtime/ClearScript.V8.dll",
+      "bytes": 332720,
+      "sha256": "d589dc227365284c4f1b00cf028b06e5c7c06f43085eb8eff10518fe9f029757",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ClearScript.V8.dll"
+      }
+    },
+    {
+      "path": "runtime/ClearScriptV8.win-x64.dll",
+      "bytes": 22564752,
+      "sha256": "8520c8b3eaba2f3ba19de03f9de06c68824b24ef484a2b3376fd0d6e49fd08fa",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ClearScriptV8.win-x64.dll"
+      }
+    },
+    {
+      "path": "runtime/ExCSS.dll",
+      "bytes": 347136,
+      "sha256": "6b166e638181eba3150f0d10379d1cc8362af6dfd518e9e9e194aa9a746293c2",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ExCSS.dll"
+      }
+    },
+    {
+      "path": "runtime/FlashCompositorNative.dll",
+      "bytes": 565760,
+      "sha256": "52dd65d50b366301b9f7334b637d65c18e6b1be2e723538bd22f12650ce2799e",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/FlashCompositorNative.dll"
+      }
+    },
+    {
+      "path": "runtime/FlashInputBridge.dll",
+      "bytes": 133632,
+      "sha256": "0bd4e2095971d014d1f64326c92b51fc13966e435868e6420a90b463be7d5718",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/FlashInputBridge.dll"
+      }
+    },
+    {
+      "path": "runtime/FlashInputBroker.exe",
+      "bytes": 178176,
+      "sha256": "18af07a384a06472ec565defafcde375097d7729eda5725d1301c2a491806ff6",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/FlashInputBroker.exe"
+      }
+    },
+    {
+      "path": "runtime/HarfBuzzSharp.dll",
+      "bytes": 122400,
+      "sha256": "55e72ac23263f8e12484f3435e02ec22fac9eff6e6d169bb0a8c246be6b99d29",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/HarfBuzzSharp.dll"
+      }
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.Core.dll",
+      "bytes": 649800,
+      "sha256": "8219a3135436c147f8eb02fb831e99596103eebc18b6d7b794ca93f4c67018a2",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Microsoft.Web.WebView2.Core.dll"
+      }
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.WinForms.dll",
+      "bytes": 39496,
+      "sha256": "69d70ef3061a5a973942b56ba0472a71f52a26ba22d58e7cb1d6c25b48ed544b",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Microsoft.Web.WebView2.WinForms.dll"
+      }
+    },
+    {
+      "path": "runtime/Microsoft.Web.WebView2.Wpf.dll",
+      "bytes": 83016,
+      "sha256": "7c4e4be02427f8b4c9bd0fabc285f02ea5fcf6256db7cfe12db479ae41e4667f",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Microsoft.Web.WebView2.Wpf.dll"
+      }
+    },
+    {
+      "path": "runtime/Newtonsoft.Json.dll",
+      "bytes": 712464,
+      "sha256": "22c649f75fce5be7c7ccda8880473b634ef69ecf33f5d1ab8ad892caf47d5a07",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Newtonsoft.Json.dll"
+      }
+    },
+    {
+      "path": "runtime/SharpGen.Runtime.COM.dll",
+      "bytes": 168960,
+      "sha256": "2686187b458aba592e845d8c47f28c730efcca23eae77e3950a5178a9846d9ba",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/SharpGen.Runtime.COM.dll"
+      }
+    },
+    {
+      "path": "runtime/SharpGen.Runtime.dll",
+      "bytes": 79872,
+      "sha256": "0e6acd59ab2173a6467626d69cf9f5b5b7651111ffee6e30fb7818de59335b4b",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/SharpGen.Runtime.dll"
+      }
+    },
+    {
+      "path": "runtime/ShimSkiaSharp.dll",
+      "bytes": 218624,
+      "sha256": "0ac0be60dafe273f4ca021bfda16d111ffba990f39e97ac9edc3bcf488e39603",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/ShimSkiaSharp.dll"
+      }
+    },
+    {
+      "path": "runtime/SkiaSharp.dll",
+      "bytes": 489824,
+      "sha256": "aaaaa18c68ba1f3a3408b00dff28b11d5705198e17ba9d3aa59222bfd35407c8",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/SkiaSharp.dll"
+      }
+    },
+    {
+      "path": "runtime/Svg.Animation.dll",
+      "bytes": 124416,
+      "sha256": "97e1674100225717aa2b5313ee6c3735cf87ef9056862df178ee2b91ecccf8c9",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Svg.Animation.dll"
+      }
+    },
+    {
+      "path": "runtime/Svg.Custom.dll",
+      "bytes": 1020416,
+      "sha256": "89242eb48a25e40dd4c06ad839e11addccc5c07412e319953752f7c963291704",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Svg.Custom.dll"
+      }
+    },
+    {
+      "path": "runtime/Svg.Model.dll",
+      "bytes": 160768,
+      "sha256": "df2b9eb253873321155e8b3173797d591a92d405f29ae725224e447289dc51cf",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Svg.Model.dll"
+      }
+    },
+    {
+      "path": "runtime/Svg.SceneGraph.dll",
+      "bytes": 1186816,
+      "sha256": "c7142d663bd11b898038f68eac40cb1182065f5cd1a3ec4bc2c18cbf0d3b6eca",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Svg.SceneGraph.dll"
+      }
+    },
+    {
+      "path": "runtime/Svg.Skia.dll",
+      "bytes": 292864,
+      "sha256": "7bc7fb1621133b3ca78edab82e26b520205107b0aedfb07b4a73eeb0050fc611",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Svg.Skia.dll"
+      }
+    },
+    {
+      "path": "runtime/THIRD-PARTY-NOTICES.txt",
+      "bytes": 152954,
+      "sha256": "ddc6df0189095d749e17bf8efd22b0e3a5d6fccb7591499ad5a31bf616904103",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/THIRD-PARTY-NOTICES.txt"
+      }
+    },
+    {
+      "path": "runtime/Vortice.DXGI.dll",
+      "bytes": 91136,
+      "sha256": "616983bed0d84c6ad499d1963edf12bb5bfe701e60a3ba860d1768516bf56d20",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Vortice.DXGI.dll"
+      }
+    },
+    {
+      "path": "runtime/Vortice.DirectX.dll",
+      "bytes": 274944,
+      "sha256": "5e1da8c22e0a33cc24078965c80ca4093a2c806aa580076441eb0f27ef38b56f",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Vortice.DirectX.dll"
+      }
+    },
+    {
+      "path": "runtime/Vortice.Mathematics.dll",
+      "bytes": 125440,
+      "sha256": "bf8aa203d01c565a26811e5b32afba5030c7c6e05298487c6d24608e4fb43fad",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/Vortice.Mathematics.dll"
+      }
+    },
+    {
+      "path": "runtime/WebView2Loader.dll",
+      "bytes": 161864,
+      "sha256": "eb5335edeaa6f2122c044e82aab2351dc8c9b4e0fe5e578c71922fb61be285e7",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/WebView2Loader.dll"
+      }
+    },
+    {
+      "path": "runtime/cf7-runtime-manifest.tsv",
+      "bytes": 5167,
+      "sha256": "f85e1630390d14611983f6cf910f9df4a6c1674fe8ffe6858f156d52ffeac06d",
+      "source": {
+        "kind": "delta",
+        "archive": "owned-candidate-delta-r2.zip",
+        "path": "runtime/cf7-runtime-manifest.tsv"
+      }
+    },
+    {
+      "path": "runtime/libHarfBuzzSharp.dll",
+      "bytes": 1816088,
+      "sha256": "145ade963eba427027d5e1381db5d51a0ef9e98e9fef9efbfa6074ca20da246f",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/libHarfBuzzSharp.dll"
+      }
+    },
+    {
+      "path": "runtime/libSkiaSharp.dll",
+      "bytes": 11628896,
+      "sha256": "7dec3ba900ab353491e6446f0083739924c6f8dd668832e2f09d38ebffdbbe1c",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/libSkiaSharp.dll"
+      }
+    },
+    {
+      "path": "runtime/miniaudio.dll",
+      "bytes": 1122816,
+      "sha256": "ac3a8fc3be306d595918f392b44e298d95b71221311920e892c4be2a6e3ad20a",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/miniaudio.dll"
+      }
+    },
+    {
+      "path": "runtime/sol_parser.dll",
+      "bytes": 225280,
+      "sha256": "3ac55bd6839b05090bb3c61ab28f930ed5f1ec59f6595a57fa086dc490fa8f92",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/sol_parser.dll"
+      }
+    },
+    {
+      "path": "runtime/webview2/000.cabpart",
+      "bytes": 50331648,
+      "sha256": "cb54ef133c7d9e49df2b094777ec0478e79ffef87ac28f9a52d421dcfc692bc3",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/000.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/001.cabpart",
+      "bytes": 50331648,
+      "sha256": "18fde3a675ffdb67cb3bb98183693c8679ebc7818f6a69e10e02f6abb9748c06",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/001.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/002.cabpart",
+      "bytes": 50331648,
+      "sha256": "7d11cb9fffa916cd5de0f17a635eb39aa115897a6f889a72ca1f592c6a927409",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/002.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/003.cabpart",
+      "bytes": 50331648,
+      "sha256": "296eb3c551d9a291f34e7cdb503527e091b7a8920531f97445ee7647e0ee045b",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/003.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/004.cabpart",
+      "bytes": 50331648,
+      "sha256": "e948c172ae8bed2ad1ddc3215db520cee7f8f980d8950dda311604be542d51ef",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/004.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/005.cabpart",
+      "bytes": 50331648,
+      "sha256": "0b44111bd158020b2cf2d3b4721e159325998cf1289891bcf50f3ebcf7caac95",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/005.cabpart"
+      }
+    },
+    {
+      "path": "runtime/webview2/006.cabpart",
+      "bytes": 6006435,
+      "sha256": "b72bb8e47980606a15db52d1092c53fa5a1dd95715080d5f74beaeaa40d6f0eb",
+      "source": {
+        "kind": "repository",
+        "commit": "1c572afa0ce26f245bf7515a3949c375e81fd87c",
+        "path": "runtime/webview2/006.cabpart"
+      }
+    }
+  ],
+  "bytes": 371288623,
+  "completeLocalArchive": "owned-candidate-complete-r2.zip",
+  "completeLocalArchiveSha256": "1bfda01ec8177b4b5c9ab5def38cc6ddcca237a23830555c0f104714783717d8",
+  "deltaArchive": "owned-candidate-delta-r2.zip",
+  "deltaArchiveSha256": "ad33365255d25391f7a6b8daf2a66befe07dbd608bf6fdac7b310070453ee775",
+  "deltaFiles": [
+    "runtime-build-metadata.v2.json",
+    "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+    "runtime/cf7-runtime-manifest.tsv"
+  ],
+  "boundary": "This preserves the already executed isolated candidate before archiving owned worktrees. It is neither a new native build nor a runtime promotion. A permanent evidence package can reconstruct the exact payload from the recorded repository commit plus the lossless delta."
+}

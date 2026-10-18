@@ -1,0 +1,235 @@
+{
+  "scope": "Final fragment identity correction and Blade explosion timing; preserve all prior Worker bytes",
+  "workers": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "beforeSha256": "f6cc21bd9e111bf332e65ed022c320832ad56d616310e9445a75ea35593142bd",
+          "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
+          "beforeSha256": "58ce4f8d85a7dedaf9d99d385d57a4f6e703a62e9732e025c286dbacd22a1fe0",
+          "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "beforeSha256": "d36c25e751a536a85dea0e2a9111276180493c016c986a3e9cb096e504187108",
+          "sha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材/DOMDocument.xml",
+          "beforeSha256": "7acd93a111fa78dd30a3d614717bccf7813c62cd18ef951fe38d5e8073f429e6",
+          "sha256": "9189979705dfc542c7c5817c3da649f5642a4e92534ec1b983bc20895d4ca421"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "beforeSha256": "8e73c1a5beda86fcb8ceb8b823b33f3f6b72ca2843ad157203fd9c76d9ecff4e",
+          "sha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "beforeSha256": "0ec2d31fd70ee3c4ba6e53096edca0ad48120c56809694f7090c03f419712df8",
+          "sha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "beforeSha256": "d092fed502ddb864272b68201f52e63af724bc48121340421521686544c464d0",
+          "sha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/README.md",
+          "beforeSha256": "5efe3b433615ed1cc53b670c0f2044450817627432b9b159f4fb6c34296304db",
+          "sha256": "0f8ec9fe54bf8bc431cbe516848b672ca040a09ded831b815d50d5b0920ad20a"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "beforeSha256": "cb451dd5382e54c0e521f129f7e2b5d1d574137c249355e92b509825c8a7f0b1",
+          "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "beforeSha256": "7933e8af76fd9794013f898f4fe8b8ab87eddf7eae7af2cc432c8422c04b7555",
+          "sha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/README.md",
+          "beforeSha256": "52ea49495d4dd829cd16223c65fb250929c4039a8afbeea3978700faa3681a6c",
+          "sha256": "e2075d8ab70fb8fb82379737f305d4c4e4d2ec66a0bcf3f6f447136f81b069e2"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "beforeSha256": "be820f440af5ab0a66959acc7e7786a15f8bde7e144a6b6a7899d666df62e0c7",
+          "sha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "beforeSha256": "3708eaed52650e1232d7193d4f13c8aa51cff1ce69b5277f2273ed71b4f23f06",
+          "sha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/README.md",
+          "beforeSha256": "b4467240e7340f4c089bbecd325aa75efb2fd55c7a496ef2cca8b6e8946b1989",
+          "sha256": "41dc43804312329b4531d27c1f942977be79899ddee62521613ab9909da554c6"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "beforeSha256": "4138bf497080fcf9385d4863d058784b1c02314e28f16e5a3a93c86dde0c579d",
+          "sha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-fixture-manifest.json",
+          "beforeSha256": "2bb683bf7980fd822ea4ec0c438d0eb8ce700439bdd03b68687bcf55af87de1f",
+          "sha256": "2cdf8cba9f3bc5febbdafafaa4bb38bc70aae6590c54963bba0f84b9889df1a0"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-plan.json",
+          "beforeSha256": "0d80d6dd35f87f2b94dca1805b893983ad6f6b9f2f77bef69a8cf115f11b981f",
+          "sha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "beforeSha256": "2d44a524ed52510b2ffa36314aff1f2dd6f3d0f8d518e7747da58765a3e0618f",
+          "sha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "beforeSha256": "1ba02c2d4eda0a6c28f13866f2f387fabd02f36336267584868ab20ddbfc53ed",
+          "sha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "beforeSha256": "71f741ac79cc916e42f77a5864c2ec56d95ade5a3010e5d6dac0ffe9ebc7dae4",
+          "sha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "beforeSha256": "ff200a68083435a88e1300f2a960109802c23c82cab445976cd3a682eb0674b1",
+          "sha256": "eff00696434a4c0f65e4d420e96afe217031a9740e1f67e4bcc25bcb687ae470"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "beforeSha256": "791bf2127d407d8eb71805d6651fcae2b4e41c378e092e931e8133475ff83519",
+          "sha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "beforeSha256": "f6cc21bd9e111bf332e65ed022c320832ad56d616310e9445a75ea35593142bd",
+          "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材/LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
+          "beforeSha256": "58ce4f8d85a7dedaf9d99d385d57a4f6e703a62e9732e025c286dbacd22a1fe0",
+          "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "beforeSha256": "d36c25e751a536a85dea0e2a9111276180493c016c986a3e9cb096e504187108",
+          "sha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材/DOMDocument.xml",
+          "beforeSha256": "7acd93a111fa78dd30a3d614717bccf7813c62cd18ef951fe38d5e8073f429e6",
+          "sha256": "9189979705dfc542c7c5817c3da649f5642a4e92534ec1b983bc20895d4ca421"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "beforeSha256": "8e73c1a5beda86fcb8ceb8b823b33f3f6b72ca2843ad157203fd9c76d9ecff4e",
+          "sha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "beforeSha256": "0ec2d31fd70ee3c4ba6e53096edca0ad48120c56809694f7090c03f419712df8",
+          "sha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "beforeSha256": "d092fed502ddb864272b68201f52e63af724bc48121340421521686544c464d0",
+          "sha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/README.md",
+          "beforeSha256": "5efe3b433615ed1cc53b670c0f2044450817627432b9b159f4fb6c34296304db",
+          "sha256": "0f8ec9fe54bf8bc431cbe516848b672ca040a09ded831b815d50d5b0920ad20a"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "beforeSha256": "cb451dd5382e54c0e521f129f7e2b5d1d574137c249355e92b509825c8a7f0b1",
+          "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "beforeSha256": "7933e8af76fd9794013f898f4fe8b8ab87eddf7eae7af2cc432c8422c04b7555",
+          "sha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/README.md",
+          "beforeSha256": "52ea49495d4dd829cd16223c65fb250929c4039a8afbeea3978700faa3681a6c",
+          "sha256": "e2075d8ab70fb8fb82379737f305d4c4e4d2ec66a0bcf3f6f447136f81b069e2"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "beforeSha256": "be820f440af5ab0a66959acc7e7786a15f8bde7e144a6b6a7899d666df62e0c7",
+          "sha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "beforeSha256": "3708eaed52650e1232d7193d4f13c8aa51cff1ce69b5277f2273ed71b4f23f06",
+          "sha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/README.md",
+          "beforeSha256": "b4467240e7340f4c089bbecd325aa75efb2fd55c7a496ef2cca8b6e8946b1989",
+          "sha256": "41dc43804312329b4531d27c1f942977be79899ddee62521613ab9909da554c6"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "beforeSha256": "4138bf497080fcf9385d4863d058784b1c02314e28f16e5a3a93c86dde0c579d",
+          "sha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-fixture-manifest.json",
+          "beforeSha256": "2bb683bf7980fd822ea4ec0c438d0eb8ce700439bdd03b68687bcf55af87de1f",
+          "sha256": "2cdf8cba9f3bc5febbdafafaa4bb38bc70aae6590c54963bba0f84b9889df1a0"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-plan.json",
+          "beforeSha256": "0d80d6dd35f87f2b94dca1805b893983ad6f6b9f2f77bef69a8cf115f11b981f",
+          "sha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "beforeSha256": "2d44a524ed52510b2ffa36314aff1f2dd6f3d0f8d518e7747da58765a3e0618f",
+          "sha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "beforeSha256": "1ba02c2d4eda0a6c28f13866f2f387fabd02f36336267584868ab20ddbfc53ed",
+          "sha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "beforeSha256": "71f741ac79cc916e42f77a5864c2ec56d95ade5a3010e5d6dac0ffe9ebc7dae4",
+          "sha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "beforeSha256": "ff200a68083435a88e1300f2a960109802c23c82cab445976cd3a682eb0674b1",
+          "sha256": "eff00696434a4c0f65e4d420e96afe217031a9740e1f67e4bcc25bcb687ae470"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "beforeSha256": "791bf2127d407d8eb71805d6651fcae2b4e41c378e092e931e8133475ff83519",
+          "sha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ]
+    }
+  ]
+}

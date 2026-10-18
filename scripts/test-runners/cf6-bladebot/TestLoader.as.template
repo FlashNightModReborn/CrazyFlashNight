@@ -1,4 +1,14 @@
-﻿import org.flashNight.arki.unit.Action.Melee.*;
+﻿#include "test-runners/cf6-playtest/PlaytestFixture.as"
+import org.flashNight.arki.unit.Action.Melee.*;
+import org.flashNight.arki.spatial.move.*;
+import org.flashNight.arki.unit.UnitComponent.Initializer.*;
+import org.flashNight.arki.unit.UnitComponent.Deinitializer.*;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.weather.*;
+import org.flashNight.naki.RandomNumberEngine.*;
+import org.flashNight.neur.ScheduleTimer.*;
+_root.主角函数 = {};
+#include "逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
 _root.bladebotCapture = false;
 _root.cf6BladebotAssetComplete = function():Void {
     trace("FocusedTestRunId cf6-bladebot Complete: __FOCUSED_RUN_ID__");

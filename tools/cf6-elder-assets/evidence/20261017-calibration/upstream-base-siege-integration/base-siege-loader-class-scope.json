@@ -1,0 +1,3686 @@
+{
+  "qualified": true,
+  "beforeSha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467",
+  "afterSha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401",
+  "beforeClasses": 726,
+  "afterClasses": 728,
+  "changedExistingClasses": [
+    "org.flashNight.arki.scene.StageManager",
+    "org.flashNight.arki.scene.WaveSpawner"
+  ],
+  "addedClasses": [
+    "org.flashNight.arki.scene.BaseSiegeController",
+    "org.flashNight.arki.scene.BaseSiegeRules"
+  ],
+  "removedClasses": [],
+  "unchangedExistingClasses": 724,
+  "sourceBindings": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/StageManager.as",
+      "sha256": "ae3b7740dc2641804f074ee2ae798850cce9cea2bbf9ae161d06f29dc3886039"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/WaveSpawner.as",
+      "sha256": "313f35a1cc878073e532a349af260001932160f7130c175aa2b56f8e2803f17e"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BaseSiegeController.as",
+      "sha256": "51d5c216d7a5447ed6628524efbf00cb7bf602b257f70d1b6f6070945e8d56d6"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/scene/BaseSiegeRules.as",
+      "sha256": "764d86674779b207541161187d42709f1208e286d6a5733474b88f2b12ec0d19"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as",
+      "sha256": "b1c7f7f7303fde1a6337f438f369956467ee3a31128135e68e5a0761199c316f"
+    },
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_无限过图.as",
+      "sha256": "04a9aecc08187f98adccc2b857f2a248ff530bbe255dc400a7f7d7393a711ef8"
+    }
+  ],
+  "classes": [
+    {
+      "name": "org.flashNight.gesh.tooltip.SkillTooltipComposer",
+      "actionSha256": "3fbb62a77d6ba81cf90558d884f7522928f338d6b38be3966d3d93bc2f19a7d9",
+      "actionBytes": 2941
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipConstants",
+      "actionSha256": "d6c6ccafda27829c9b4c3beb8033ec058b488a4f939d89f8487ad0ee1224730c",
+      "actionBytes": 10961
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.NativeTooltipDocument",
+      "actionSha256": "4e7df7da6325f349262050f2c47a8182bf9b781da8eafdf1bef5452805104564",
+      "actionBytes": 13677
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipLayout",
+      "actionSha256": "47172aa86309ec752ea21bdfac129555a9f91fe48a501d4c5c1ff2d46b33010d",
+      "actionBytes": 10737
+    },
+    {
+      "name": "org.flashNight.gesh.string.StringUtils",
+      "actionSha256": "3eda8d148188222d3cf5cb599fc27bed0694a9fdd222c89f4e1217517324b501",
+      "actionBytes": 25929
+    },
+    {
+      "name": "org.flashNight.gesh.string.RLE",
+      "actionSha256": "c091d7036432deb473f2d5ccc28d6eb97ae5e86f3cd244a7636f56534f2f756c",
+      "actionBytes": 3294
+    },
+    {
+      "name": "org.flashNight.gesh.string.LZW",
+      "actionSha256": "0841a6dbc95671da66a6b803d5d062bc73f943d8e4866c05534107b3ecb1f21f",
+      "actionBytes": 4987
+    },
+    {
+      "name": "org.flashNight.gesh.string.Hex16Encoder",
+      "actionSha256": "8f8a05ce2eaaf8bb80e45f71c220a1ebf84a07a092eab47645e5a1d363ea2945",
+      "actionBytes": 1756
+    },
+    {
+      "name": "org.flashNight.gesh.regexp.RegExp",
+      "actionSha256": "dc3bd17ccadbbbff7ba9b7011035da0d8ed57d38b846487ef464573bb3c44314",
+      "actionBytes": 5847
+    },
+    {
+      "name": "org.flashNight.gesh.regexp.ASTNode",
+      "actionSha256": "d2ec3a05c0d7032a35507ee3a9680cb431caa3953a06315ce586667e269dc6b4",
+      "actionBytes": 9074
+    },
+    {
+      "name": "org.flashNight.gesh.regexp.Parser",
+      "actionSha256": "1ae580b0f7f66eece0ac6507b34008e5c023b5b371f80521bcee041eb621ad71",
+      "actionBytes": 10815
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipBridge",
+      "actionSha256": "4bc925766bf4ad211c15ce07558271a07b15f72c1d6921fa6801fe58821fac76",
+      "actionBytes": 7411
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.ItemUseTypes",
+      "actionSha256": "e9fe5875854f2fdf6691ec355da2f5842eec788fbfde2e9aa51517c2d06d8042",
+      "actionBytes": 1146
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipFormatter",
+      "actionSha256": "15a3ec58e5cfb2b2871f16fa91b5d0b22462025088c2a31215746627f198bf0b",
+      "actionBytes": 4640
+    },
+    {
+      "name": "RegExp",
+      "actionSha256": "715c06886bd46c099eabd139561bf48798985cd45336f51dbc354512f6f92093",
+      "actionBytes": 12344
+    },
+    {
+      "name": "org.flashNight.arki.scene.WarlordActionEncounterService",
+      "actionSha256": "553888cf4158253f8b2ac564d8d6b81807d1db913ee540d7944bb8dd30d27496",
+      "actionBytes": 60605
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageManager",
+      "actionSha256": "1ce9f8eb0c2212175fe41a7559ba2dd639652d0a84b58fbdfc3beffbd8688e25",
+      "actionBytes": 35786
+    },
+    {
+      "name": "org.flashNight.arki.scene.SceneManager",
+      "actionSha256": "283a2cd0ce6c6e40959f9e206d64fe00ca21c6317617ea4ebd5280d08c8220d3",
+      "actionBytes": 8936
+    },
+    {
+      "name": "org.flashNight.arki.item.MapChestStashService",
+      "actionSha256": "fa7764a391a6927ed7a39f1957e75978e6bb950e3df97b00424fbd4b91b1e2b9",
+      "actionBytes": 6632
+    },
+    {
+      "name": "org.flashNight.arki.item.RewardStashStore",
+      "actionSha256": "beb644d82d52cbcbfce2de883bf28ae31b0972003c0ebc7ca223d31b99732056",
+      "actionBytes": 8346
+    },
+    {
+      "name": "org.flashNight.gesh.object.PersistedSnapshot",
+      "actionSha256": "9441626a051bed99d5e41a7d2b0707b2892090c89a0da8b9f71a5c9a1f3e9e6f",
+      "actionBytes": 2695
+    },
+    {
+      "name": "org.flashNight.arki.item.ChoiceRewardStore",
+      "actionSha256": "4c20cd94f3a4df2149171cbee659b4ca1707351a641b9781777bab14a9d39a71",
+      "actionBytes": 4744
+    },
+    {
+      "name": "org.flashNight.arki.item.LootContainerService",
+      "actionSha256": "134842ac35ffb3e02c52f835d3bad11769527d80f6bf6e10639a50ea6aac7903",
+      "actionBytes": 94509
+    },
+    {
+      "name": "IJSON",
+      "actionSha256": "38a68271b9d0a4105300c90b8d2c53c0b70ee73f2315389c4bd29b03e200e8a1",
+      "actionBytes": 60
+    },
+    {
+      "name": "LiteJSON",
+      "actionSha256": "e2a2c9993e047fd0e5c182729219dee9b70fa45516d2d03c3327fc797421142d",
+      "actionBytes": 6326
+    },
+    {
+      "name": "org.flashNight.arki.item.RewardInboxService",
+      "actionSha256": "3e92a27915d924ba8f0d86eab88d7ac8735ae02568f0fa2e0223429cab45c3dc",
+      "actionBytes": 62170
+    },
+    {
+      "name": "org.flashNight.arki.item.ItemUtil",
+      "actionSha256": "6e9b7bb25ebed8bb0b39e486c83f38e858bea501de23ffd9e9b83d0fd47b2861",
+      "actionBytes": 30807
+    },
+    {
+      "name": "org.flashNight.arki.item.EquipmentUtil",
+      "actionSha256": "f1e4f3932804f0943c072ffab449833c295e290df6fc0dd7df0af8879ee92ecb",
+      "actionBytes": 9864
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.EquipmentConfigManager",
+      "actionSha256": "f35d4db7f6e46dbeb08bc10f0f06c4485855d52ed816bbef0bc011f06d81e658",
+      "actionBytes": 6016
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.PropertyOperators",
+      "actionSha256": "b98619bf15c43f5568057fb2e8da3b8ec349faa09052b2ecdd6be56b6e5b35fb",
+      "actionBytes": 3990
+    },
+    {
+      "name": "org.flashNight.gesh.object.ObjectUtil",
+      "actionSha256": "a5732cabf4a12c65c767dd749251cf172ade534f0c9c34388579050c607f73e3",
+      "actionBytes": 10808
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.Dictionary",
+      "actionSha256": "3b29c44313c40d63563de8b050635387b60ac5bc6f8afde1b070193508fda4e5",
+      "actionBytes": 3436
+    },
+    {
+      "name": "org.flashNight.naki.Sort.InsertionSort",
+      "actionSha256": "b9a32430dfe82b8d22ec862df1e397dd278e528e9274c59a048825155ab83087",
+      "actionBytes": 6544
+    },
+    {
+      "name": "JSON",
+      "actionSha256": "153b6dfcf2b7605f2222f9a1e69e3741bf9adb26f394e92de4ee003b138901ab",
+      "actionBytes": 8041
+    },
+    {
+      "name": "Base64",
+      "actionSha256": "02ba5d8a1f56d45b11b41b20fd3dfdf490c768a0375b835a3eed93c4e6c2f0af",
+      "actionBytes": 4619
+    },
+    {
+      "name": "org.flashNight.gesh.fntl.FNTLEncoder",
+      "actionSha256": "b8780a5e26f12313a8a8434b6e2d49e12f7e69e5473168a96ccde1fa067bd53e",
+      "actionBytes": 13148
+    },
+    {
+      "name": "org.flashNight.naki.Sort.QuickSort",
+      "actionSha256": "09baee8c9c5b33c166e9dab7e9defc3ed7b90ba42f34c096566252f07500b9fa",
+      "actionBytes": 7573
+    },
+    {
+      "name": "org.flashNight.gesh.fntl.FNTLLexer",
+      "actionSha256": "2a215f31328a4f1d7cfea70fd873aea4e2e8820c134a6993c1bd4467255643a3",
+      "actionBytes": 15097
+    },
+    {
+      "name": "org.flashNight.gesh.fntl.FNTLParser",
+      "actionSha256": "099813a15e3b3c2bf8145b2254c4f7bdb7788adde01922f012d1e39b46849b79",
+      "actionBytes": 9600
+    },
+    {
+      "name": "org.flashNight.gesh.toml.TOMLEncoder",
+      "actionSha256": "7b2e27dba3b5404e3a5e6d60c7d47a18bfa4676cea4e82267dec1e7f9ad5657a",
+      "actionBytes": 5130
+    },
+    {
+      "name": "org.flashNight.gesh.toml.TOMLLexer",
+      "actionSha256": "5779c74689af925f664021f8ca4de4d0c977fce00251b65bad8223e3848490a8",
+      "actionBytes": 7798
+    },
+    {
+      "name": "org.flashNight.gesh.toml.TOMLParser",
+      "actionSha256": "78d438224cd715c4eaccdb69c1b1f8134774ec7a4f728d4953be1950468e3f48",
+      "actionBytes": 6703
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.ModRegistry",
+      "actionSha256": "3b1fe5760243b01512455ab85e75941e4a918d289ef77295ce161f8d26b0bc9b",
+      "actionBytes": 18023
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.TagManager",
+      "actionSha256": "385c8481d2d3444d68797d8fd31a8f7b73ef2f3423055c04bf72e0e5c63b3b37",
+      "actionBytes": 11140
+    },
+    {
+      "name": "org.flashNight.arki.item.BaseItem",
+      "actionSha256": "638f1128f315a7fbd4f8a260dab3c00e811a947684ea89f8b713d2711c0e205e",
+      "actionBytes": 2468
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.EquipmentLifecyclePolicy",
+      "actionSha256": "100c24ee05bb96188aa5c9623234fdfbfbef75bca2b5655d8a2d8b96821c880e",
+      "actionBytes": 2309
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.EquipmentCalculator",
+      "actionSha256": "8a4d7b1b7e01869ce280485b33e3520ee9a96cab7a0f116b14ca847316eb8099",
+      "actionBytes": 8218
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.TierSystem",
+      "actionSha256": "86c1ad7449149cbcfee55ce7e18411cbda1f055169cfe574772abe132515cae8",
+      "actionBytes": 5066
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.SubweaponDataUtil",
+      "actionSha256": "2908282a90cc0fcf19e623ef1541dfb54824daeaa821770328db2b33a71d6948",
+      "actionBytes": 3925
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil",
+      "actionSha256": "0e067f53e94864cb569c45b254e860b9878d8c6f5095080e8d1a90b66243c2ca",
+      "actionBytes": 4222
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Type.ITypesetter",
+      "actionSha256": "ad2a9002c559bfe927bf0719e4bd00ca6b0af52bf2691ddf07154e090ce5ac02",
+      "actionBytes": 637
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Type.BulletTypesetter",
+      "actionSha256": "9aba26ed88e97e403a2af4eee52d64ee8ee41e923ecd77825f255f8581be2fc3",
+      "actionBytes": 3116
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Init.BulletInitializer",
+      "actionSha256": "84dcbbe4a85a7fec62ad3568299bf0d95dcc064e5a7741f7760a468df2ad0bcc",
+      "actionBytes": 5509
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.InfoLoader",
+      "actionSha256": "83d7eab33660e1515f87abc586cd8b6d858743511aa1dff38b009ae804a470c2",
+      "actionBytes": 2653
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.IComponentLoader",
+      "actionSha256": "3f3b9c2a6c00f43db618105466579896bb2b3a16f2f388abfd765dcfd5958c4d",
+      "actionBytes": 644
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.ShellLoader",
+      "actionSha256": "a6adaf4bbce195f08dd226ccc8fbe401bf486df0dc4a9e96ef33f53884f2d33e",
+      "actionBytes": 1192
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.AttributeLoader",
+      "actionSha256": "5ab8c219151acec5b75904dbdd0bc672289dc99b21d00b15c28b7ac0e8968837",
+      "actionBytes": 1756
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Config.TeslaRayConfig",
+      "actionSha256": "ec40bedf078091b769d98362c8e8fe291c0b083aeadf07f62354b9e9b14a6553",
+      "actionBytes": 23291
+    },
+    {
+      "name": "org.flashNight.arki.render.VfxPresets",
+      "actionSha256": "1ea3951a7132dbe9be91dc3ba0c34a7c03fc4f27c5a80aeab99a57f13dacc0ef",
+      "actionBytes": 3815
+    },
+    {
+      "name": "org.flashNight.arki.render.RayStyleRegistry",
+      "actionSha256": "d5086ce073d96ede411ed6aa54c52767e428a1031b334a389cf7eeb374034646",
+      "actionBytes": 3605
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.TeslaRenderer",
+      "actionSha256": "d4bf824d069c947ba96a43a85eca02d62897fef2aba8eb42038ef9eecf1f4b1d",
+      "actionBytes": 4911
+    },
+    {
+      "name": "org.flashNight.arki.render.RayVfxManager",
+      "actionSha256": "d3a03ec2c781c06c0b176b0e61951cc98c1587818d8495ca99e10b13f26a3df5",
+      "actionBytes": 17954
+    },
+    {
+      "name": "org.flashNight.arki.render.WorkerProjectionPolicy",
+      "actionSha256": "af8da5a3cb9910f54c9b0a1f459d19785fc7741754d203bfa3d4fee18bc3c4bb",
+      "actionBytes": 14928
+    },
+    {
+      "name": "FastJSON",
+      "actionSha256": "f65d3f9c72a116e2298f0c651866eb1a8a48cfafd555e80ce2b3a927a5dddb3f",
+      "actionBytes": 11282
+    },
+    {
+      "name": "org.flashNight.naki.RandomNumberEngine.BaseRandomNumberEngine",
+      "actionSha256": "007fd0c7d6dcb748b345450d90aa9e035e2be054a6461df62c10bcb69cff30f6",
+      "actionBytes": 11625
+    },
+    {
+      "name": "org.flashNight.naki.RandomNumberEngine.SeededLinearCongruentialEngine",
+      "actionSha256": "13883fd140f2698d4fba3e38f0739777e084e39ad50ed4d34626c861b5d436ea",
+      "actionBytes": 912
+    },
+    {
+      "name": "org.flashNight.arki.render.VisualRandom",
+      "actionSha256": "9a4224057c9fe6573652a70a7e30931fe67340648feffad6036a1edb2609240c",
+      "actionBytes": 1946
+    },
+    {
+      "name": "org.flashNight.arki.render.FrameBroadcaster",
+      "actionSha256": "0c9bd1375cefe3775dc2bf53ee8451a174a22d8503552d82e5177f7aedbb4695",
+      "actionBytes": 5808
+    },
+    {
+      "name": "org.flashNight.arki.weather.NightVisionUnitTint",
+      "actionSha256": "01852617e2b165e20ba4a88c1f687830ce3320285772d31ab76e08ccb6599962",
+      "actionBytes": 8508
+    },
+    {
+      "name": "org.flashNight.arki.render.WeatherParticleRenderer",
+      "actionSha256": "82324199a0fd4a34eb91e624888cd480c981db0a55b75a1878c6115243ee7ea4",
+      "actionBytes": 1710
+    },
+    {
+      "name": "org.flashNight.arki.weather.NightVisionManager",
+      "actionSha256": "b34cae7e29e27221a062739d7fde76f45558f8c9e21efc4c9e83337429e37ada",
+      "actionBytes": 1426
+    },
+    {
+      "name": "org.flashNight.arki.weather.WeatherSystem",
+      "actionSha256": "4417694357131e9b8d3f4592e3294cc67a2011a0caad95313aa1ad4329de6069",
+      "actionBytes": 9872
+    },
+    {
+      "name": "org.flashNight.arki.weather.EnvironmentConfig",
+      "actionSha256": "672548f1aea4d01512729587146721b862e94efcfc61a1fb237dfccc60631905",
+      "actionBytes": 5553
+    },
+    {
+      "name": "org.flashNight.neur.Event.EventBus",
+      "actionSha256": "86b3d0839c80a6004d3bc52d9416069cc7777db686e346527424973c47ab35a4",
+      "actionBytes": 11527
+    },
+    {
+      "name": "org.flashNight.arki.render.SkyboxRenderer",
+      "actionSha256": "6d8a45aad109db124e9723e2f91111ee8e7d8a96f4b02b2e833c46429f5120b9",
+      "actionBytes": 8460
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.BaseXMLLoader",
+      "actionSha256": "21be5c2e1b633eac30af8b93bb4858cfb5b5041d4d0f3ae1e9993f01a04f4145",
+      "actionBytes": 5011
+    },
+    {
+      "name": "org.flashNight.gesh.path.PathManager",
+      "actionSha256": "23e5e720a2f9aea0b923f03807ae3b215ba3573f53250fac727730ed30fef351",
+      "actionBytes": 10017
+    },
+    {
+      "name": "org.flashNight.gesh.xml.XMLLoader",
+      "actionSha256": "7f61716d5885817a7edf8212a1bd8763eef425c37e34cb92c615b7a48d62b8a8",
+      "actionBytes": 1101
+    },
+    {
+      "name": "org.flashNight.gesh.xml.XMLParser",
+      "actionSha256": "73e0b32a099b2e48203fa17f837912f1daadd0bc4cb6b190dc6e7d17f7878fe9",
+      "actionBytes": 6364
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.WeatherSystemConfigLoader",
+      "actionSha256": "6a019f8ba8aa59e29a07066b866d858e8170365dcc832acbdbc26d0385675058",
+      "actionBytes": 1441
+    },
+    {
+      "name": "org.flashNight.arki.weather.WorldLightingBridge",
+      "actionSha256": "4e8c36da2d7de05141d88fdc342b37c1fb7eae370859b0544638b5654605449f",
+      "actionBytes": 5689
+    },
+    {
+      "name": "org.flashNight.arki.render.SceneLightBridge",
+      "actionSha256": "42b1c89898ddaae399b93bf194b731f3fbaa34a184fc8c6627a90330d486acf9",
+      "actionBytes": 13818
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.ColorEngine",
+      "actionSha256": "0f807a68aa6853d057831c6f388ae44503e83c05c785b3a6ce38bcac4d5c24b8",
+      "actionBytes": 10543
+    },
+    {
+      "name": "org.flashNight.arki.render.GameWorldOverlayRenderer",
+      "actionSha256": "68cb92591ab4486a9f8ba4d24a868cf17fc5cce62efc1c9d1901f4f467eda4a7",
+      "actionBytes": 2503
+    },
+    {
+      "name": "org.flashNight.naki.Interpolation.Interpolatior",
+      "actionSha256": "852fa564bb639ebf8b8df71cc652bc069c3351ea8e86bfb3c9acfaec1e5938d4",
+      "actionBytes": 2676
+    },
+    {
+      "name": "org.flashNight.gesh.number.NumberUtil",
+      "actionSha256": "087836ee4cb4a06dd3d46d4b83205575dbee38b0c18a9506c71823c487f003dc",
+      "actionBytes": 8216
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheUpdater",
+      "actionSha256": "41a9a34039b9fe4704f2cd5b62f1afa23b468cff91cabcba9041beb458859c79",
+      "actionBytes": 20005
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.AdaptiveThresholdOptimizer",
+      "actionSha256": "631971bd7e3034b88339d0205948c23ca7eed8177e8bf316183924560671897f",
+      "actionBytes": 8804
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.FactionManager",
+      "actionSha256": "b319f03e9e58667379bc02ef8c690b2290bf2a394f5c2b1f22cdfa2e5c56b3b4",
+      "actionBytes": 15940
+    },
+    {
+      "name": "org.flashNight.naki.Sort.TimSort",
+      "actionSha256": "e25f947fd0a6c1f49a8ec822a682dc179e8736ced158f93aaab33b058aeac89e",
+      "actionBytes": 37940
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheProvider",
+      "actionSha256": "012dbd3ba5b165a5de543c364ea34d0755472394dd210ab3615c932897e4cc93",
+      "actionBytes": 18505
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.SortedUnitCache",
+      "actionSha256": "7c3c25cf26d07590eaa800b19a8aebb08d9670459c5560587b93fcadd867aa73",
+      "actionBytes": 21365
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.SpatialHashGrid",
+      "actionSha256": "ee97397bc7ed14b9a2e926874512a97b2edb3b27a3cb61cde7838e8ca250c23d",
+      "actionBytes": 9535
+    },
+    {
+      "name": "org.flashNight.sara.util.AABB",
+      "actionSha256": "f2037badd1002f8128edbae4eba77fb2a9ea5bfc49587e2bcd218d125a5508d7",
+      "actionBytes": 10581
+    },
+    {
+      "name": "org.flashNight.sara.util.IVector",
+      "actionSha256": "03765675ac231d2481d3408d3393394da0ba1b17a914ce1571e9507b0a3dac0c",
+      "actionBytes": 390
+    },
+    {
+      "name": "org.flashNight.sara.util.Vector",
+      "actionSha256": "8acbd067433a1b173bb0e203e5e1c2a48ade92c5cda493ade0d4ed53a813c46e",
+      "actionBytes": 4917
+    },
+    {
+      "name": "org.flashNight.sara.graphics.Graphics",
+      "actionSha256": "127306032894d5269d06b4f9f05f2681089782f83ff4497477695b03aa041fc4",
+      "actionBytes": 3459
+    },
+    {
+      "name": "org.flashNight.sara.util.PointSet",
+      "actionSha256": "e55f5371b050f316ed6b978056ba6b3f0f1f9d368c2121321dc1967d04adf8c9",
+      "actionBytes": 4308
+    },
+    {
+      "name": "org.flashNight.naki.Interpolation.PointSetInterpolator",
+      "actionSha256": "4b1021d6c152ad3a474ea9d47d31314a533b311cad783a4e5aa28d0d5c7781e5",
+      "actionBytes": 4344
+    },
+    {
+      "name": "org.flashNight.arki.component.Collider.ICollider",
+      "actionSha256": "c32228e994bb47d99e903c1f954277c8acb6aa57c9760c4c85fe782750033e90",
+      "actionBytes": 510
+    },
+    {
+      "name": "org.flashNight.arki.component.Collider.CollisionResult",
+      "actionSha256": "ffdb3ce2b7cb34b27ccba8ef15023011c083eb5008696d2cc41ffe793e43ffca",
+      "actionBytes": 2064
+    },
+    {
+      "name": "org.flashNight.sara.util.LightObjectPool",
+      "actionSha256": "dd981f5f9dc89eed4951b51d78862343fcf27d178111e7d128522a84b55262cb",
+      "actionBytes": 1186
+    },
+    {
+      "name": "org.flashNight.arki.component.Collider.IColliderFactory",
+      "actionSha256": "a4d2c06ecc5524702f74b831f2fcf7af5d4629b594fdcda520b7f1ac8c29ea79",
+      "actionBytes": 517
+    },
+    {
+      "name": "org.flashNight.arki.component.Collider.AbstractColliderFactory",
+      "actionSha256": "20882a058e63c97213f91044e798731cf0760f104469a8c71630326ffbf91fdb",
+      "actionBytes": 1746
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.AABBCollider",
+      "actionSha256": "598f6ecc18dacfc971bb981f737f22ba69aaabf19f7f53b1f337a7371a4859f8",
+      "actionBytes": 6340
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup",
+      "actionSha256": "901da3a5241a07523c271c73f5b5a3d729ba6c2fb2b0cefb029997bd4a8fd40f",
+      "actionBytes": 1290
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Chain.ShotgunPattern",
+      "actionSha256": "5057a10941ed02de9a0524f1782f0afaaf39eeba9339760d8c1ce5236a54fb12",
+      "actionBytes": 6291
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData",
+      "actionSha256": "8f9803a275e4df85899350b5415629ed94cf9f1b43adf78e472c5dcbc2ba2083",
+      "actionBytes": 741
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitManager",
+      "actionSha256": "48028c98da94610a96f6b02602a92b034d20450ed871423d09d82ae45498fe5f",
+      "actionBytes": 14328
+    },
+    {
+      "name": "org.flashNight.arki.render.ChainVisualBridge",
+      "actionSha256": "6123009a07559291f9c699fb6c3ab3591e87d6bd75c80a68d98146eef4920c35",
+      "actionBytes": 10414
+    },
+    {
+      "name": "org.flashNight.neur.Server.ServerManager",
+      "actionSha256": "8f2fad5eb8886f80bcedfb075d72fd40a6927198d353b118f045ee0700f8662e",
+      "actionBytes": 22032
+    },
+    {
+      "name": "org.flashNight.neur.Event.Delegate",
+      "actionSha256": "689fca45557c8beaab9f23284935bffe9cc4177ac7be19046072e479439122cf",
+      "actionBytes": 6537
+    },
+    {
+      "name": "org.flashNight.arki.dialogue.NativeDialogueService",
+      "actionSha256": "0dfe8eb81b9e3a3caf6c84b00cbdded207c8c18af4ca66a07e5fe375f649cb5b",
+      "actionBytes": 21450
+    },
+    {
+      "name": "org.flashNight.arki.interaction.NativeInteractionContext",
+      "actionSha256": "be92cd554b0fc09fd8de6fe82613f3b97456211586c380da163b2a1652a274bb",
+      "actionBytes": 2413
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageReturnFlow",
+      "actionSha256": "19c8bd24c7b4e0cfbd471229282fcb4786f8848539b75b85f38191a0eb5cf352",
+      "actionBytes": 6662
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageRunSession",
+      "actionSha256": "3d2f9e72057ab9568919262e8d701024096769067198c7148c93feef8568f8ea",
+      "actionBytes": 104426
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.ICollection",
+      "actionSha256": "5f4a8a05f89e5305fe3d7b0cc894712dac58e069493d6aa722ee04eac8ae1b0e",
+      "actionBytes": 513
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.ItemCollection",
+      "actionSha256": "1d5bff53c2cd50667cfad49dd563aeea604e0cf343a337a9c0162749ec84ef75",
+      "actionBytes": 1978
+    },
+    {
+      "name": "org.flashNight.neur.Event.EventDispatcher",
+      "actionSha256": "c3ab3e2b53972e007672a0c7f3eace3f9f3ae1945f8b300fe941cfd6742aa121",
+      "actionBytes": 11356
+    },
+    {
+      "name": "org.flashNight.gesh.arguments.ArgumentsUtil",
+      "actionSha256": "6764fb3cf8154cf2eef1808350682980bb00a5140da2187d91cd0c87eccbac73",
+      "actionBytes": 4574
+    },
+    {
+      "name": "org.flashNight.neur.Event.LifecycleEventDispatcher",
+      "actionSha256": "af81bf2ec5f87f82f82c505fbc589b24bd2294f8a8bc554708ad4d7b505b69ac",
+      "actionBytes": 5275
+    },
+    {
+      "name": "org.flashNight.aven.Coordinator.EventCoordinator",
+      "actionSha256": "c93f4ab9d878e65b9eae2b1ba06343cadace5ad6fc974b698aa9163d2aa97b50",
+      "actionBytes": 8054
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.Inventory",
+      "actionSha256": "81b00c14fd1e14761a24a42f53edf7810cfabb144e51fb1ec9a88b6690fda41a",
+      "actionBytes": 1992
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.ArrayInventory",
+      "actionSha256": "e3e3315a9adfe66c72ffc8322a8678e9166e8fa8a6b717e2924490c6aa1899e8",
+      "actionBytes": 14821
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.IBalancedSearchTree",
+      "actionSha256": "b180d693143e4763496e25713ca3196eed0f3723481eaa5f93ed67e67457d7b0",
+      "actionBytes": 412
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.ITreeNode",
+      "actionSha256": "98c79f3960204eb49528836338eaa697a21a600ffc3be545c2e9fc81791db73f",
+      "actionBytes": 402
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.TreeSet",
+      "actionSha256": "8e704dca5dff3d023afefb3f153d7db62522764a9f1dc8a39c4a299c84755a1d",
+      "actionBytes": 2453
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.AbstractBalancedSearchTree",
+      "actionSha256": "b1bd2aeb4da58df3946a28c9a30f005c7f503e18cde013d645bce1cca3777b26",
+      "actionBytes": 2273
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.WAVLTree",
+      "actionSha256": "b2464e65910139a9c4b4acb42227a0c3158c03536f4e309beb22a7fd3d7ef7b9",
+      "actionBytes": 7310
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.WAVLNode",
+      "actionSha256": "0dcac5118fc1042b83609be8564959b31f7122e28bd2d6c102393fe141160d4a",
+      "actionBytes": 720
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageReturnSelection",
+      "actionSha256": "591d527bbb7209856079036728006c902b3c177c6e5fa03ad1d174cd2f5ea57f",
+      "actionBytes": 7665
+    },
+    {
+      "name": "org.flashNight.arki.map.MapDomainBridge",
+      "actionSha256": "1f595284fd902a6c69117ecf38f43c9b338c7bed6051c27eced00438ec318001",
+      "actionBytes": 19981
+    },
+    {
+      "name": "org.flashNight.arki.map.MapFactsSampler",
+      "actionSha256": "e20d35d1cc1a36dc974d8962bcd89752275ab8ccc65da905e265d2d48f63cb18",
+      "actionBytes": 3014
+    },
+    {
+      "name": "org.flashNight.arki.map.MapWorldNpcController",
+      "actionSha256": "52fd11ca05dc93f03ae80c2d369993c419a7097048fdbe1a1e069111f7b44f78",
+      "actionBytes": 3368
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageReturnOptions",
+      "actionSha256": "a2ca94f7353b1add11ac386904a16c3fb29ab945f3946847938284674dad10c2",
+      "actionBytes": 5694
+    },
+    {
+      "name": "org.flashNight.arki.task.TaskDestinationOptions",
+      "actionSha256": "1fc103091b53de918aa20b7cf7128b54768fc927d4741c49f7d1bb7404c88472",
+      "actionBytes": 1948
+    },
+    {
+      "name": "org.flashNight.arki.task.TaskUtil",
+      "actionSha256": "7e1b17da7e56f64900f1b3681558f1ad3dfaf5e00a551a3348f7e8bf4aa7084c",
+      "actionBytes": 6544
+    },
+    {
+      "name": "org.flashNight.arki.achievement.ObjectiveEvaluator",
+      "actionSha256": "e659d8a006124af5d599d7591b18000f921db0f1aa400af9e9ce04cb04a3dfef",
+      "actionBytes": 2534
+    },
+    {
+      "name": "org.flashNight.arki.task.TaskDeliverySelection",
+      "actionSha256": "004f08a6c814615d65afb8cf0d0bf796f0079493c2455f74b6b7c9b9c4b17983",
+      "actionBytes": 5960
+    },
+    {
+      "name": "org.flashNight.arki.map.MapPanelService",
+      "actionSha256": "e3aa7d208330180461a1a3bc014c0d5399a63c8d2053055d159b36bb02674f46",
+      "actionBytes": 7137
+    },
+    {
+      "name": "org.flashNight.arki.ui.PanelRequestEnvelope",
+      "actionSha256": "a1f7b42243b848e63b6a9124133393f9d3d6746b2d394a3345df6c111bd57359",
+      "actionBytes": 2207
+    },
+    {
+      "name": "org.flashNight.arki.map.MapHotspotResolver",
+      "actionSha256": "08b851a8130ac43bb3022af9f9d22f9afc0fc50bc7f96521e49eb650ae68ce64",
+      "actionBytes": 1768
+    },
+    {
+      "name": "org.flashNight.arki.ui.BookshelfPanelService",
+      "actionSha256": "6b83fa42edeada36a84f2ccfd660ae62eb7cccc1fcd768759e6ae6f418f786b1",
+      "actionBytes": 20138
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookRunService",
+      "actionSha256": "de7961792e83ff238bc4c3aec13354e2606bc7a8412ea9d447e9f6bbb17cdae8",
+      "actionBytes": 12755
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookComicService",
+      "actionSha256": "bb085488521676bf79ecb6b86970addddadf3f2347250a157fcd07d053e3501a",
+      "actionBytes": 7586
+    },
+    {
+      "name": "org.flashNight.arki.pause.PauseManager",
+      "actionSha256": "4be55571e556ca7e1f5d56bb49af36c49369e4802f7172d008a37348d2dd6332",
+      "actionBytes": 6416
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookRunClock",
+      "actionSha256": "1ff495f9051d433ea8b9388acdf6ba27bf42607cfc19da7656c12bbae9468f2b",
+      "actionBytes": 2920
+    },
+    {
+      "name": "org.flashNight.arki.scene.LeeTrialTelemetry",
+      "actionSha256": "34cde22be021b50f3783023b2210bca9039911d5204854e09d6246568cfd4468",
+      "actionBytes": 6598
+    },
+    {
+      "name": "org.flashNight.arki.scene.LeeTrialDefinition",
+      "actionSha256": "9109c9fb05d00b51cb6125e52442df159c1a6de611e1ea2cd9b863d0871ecb09",
+      "actionBytes": 6637
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.BaseJSONLoader",
+      "actionSha256": "85541d39526f0f39270ba8bba02ef15db7f5a370007644af898f490e09fa38bc",
+      "actionBytes": 5545
+    },
+    {
+      "name": "org.flashNight.gesh.json.JSONLoader",
+      "actionSha256": "a4e36f00888ad80e54a44f11a5dadca8bd736682dce0ff8c7832a28e85b8f2a9",
+      "actionBytes": 1771
+    },
+    {
+      "name": "org.flashNight.arki.scene.LeeAssaultService",
+      "actionSha256": "675291d3a6050583ec019668b09939ae00712e331128024f858f19659c74bd38",
+      "actionBytes": 14563
+    },
+    {
+      "name": "org.flashNight.arki.scene.LeeAssaultRules",
+      "actionSha256": "5c5d13aff5f8d80b61264d082ae75f64463f52a2d9873f6cc8c86f55a7e6528b",
+      "actionBytes": 2338
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Regeneration.HealApplier",
+      "actionSha256": "ec83906ab8fa293dada5f60ba90f5c67589abc53daf55b77b98b5cf35b974192",
+      "actionBytes": 3998
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookDefinition",
+      "actionSha256": "c436cd7d046b9bbf7b5a15b2f3dc52f423cf00ec31195970a4829bdc831baa1e",
+      "actionBytes": 13244
+    },
+    {
+      "name": "org.flashNight.arki.ui.SceneTransitionService",
+      "actionSha256": "ddfc4422b2693ca11f94165e7d6071eabeed48b5a2abba384f44718fc043e7d6",
+      "actionBytes": 18177
+    },
+    {
+      "name": "org.flashNight.dev.PanelTiming",
+      "actionSha256": "f404c1ad4280bd7557258e8f9765b3fe340936d2344a24ff3a97a87d397530ab",
+      "actionBytes": 1613
+    },
+    {
+      "name": "org.flashNight.arki.camera.HorizontalScroller",
+      "actionSha256": "7acde1b803c0fa285a7053804e97ac7f2081452f05c2689ba90d42bc2463dc58",
+      "actionBytes": 15080
+    },
+    {
+      "name": "org.flashNight.naki.Interpolation.LogisticPresets",
+      "actionSha256": "50dd85611f4522a92eb31a4631eb42bfd35c55f7c475af2e2c5d61c71c0ece4d",
+      "actionBytes": 7676
+    },
+    {
+      "name": "org.flashNight.naki.Interpolation.SymmetricLogistic",
+      "actionSha256": "1164e3d8c1c833a766238fccaed916e810b84857e465a6d54ddbcc5940bf4dab",
+      "actionBytes": 4828
+    },
+    {
+      "name": "org.flashNight.arki.camera.ZoomController",
+      "actionSha256": "1bf9c31c2ac20e4f6ef5d42312cb86713b90d27db653689797ea01b760960e71",
+      "actionBytes": 10342
+    },
+    {
+      "name": "org.flashNight.neur.Controller.SimpleKalmanFilter1D",
+      "actionSha256": "1a0e2edf44d73f94f81085efdeaed1da828d7d26e448f0bfea1e1641f232ce7f",
+      "actionBytes": 1614
+    },
+    {
+      "name": "org.flashNight.arki.camera.ParallaxBackground",
+      "actionSha256": "fcd2bdfc06b4cb9fef7ce0bd58d27adcadae607f8798dd42bd77647e77f1265f",
+      "actionBytes": 897
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookBossEncounter",
+      "actionSha256": "ea7f559725178a85e5f96d2e3b7c29cea3d4300d075c2e8fd3f57f5c96976a19",
+      "actionBytes": 4050
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageEvent",
+      "actionSha256": "49a5d2bf4a29e25989ae388bcf446a0b51becd498c76c8c14413172c42050c58",
+      "actionBytes": 4749
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageInfo",
+      "actionSha256": "6e62fd46dd1d8f1614f8696a92fc1675d7b452bf66155a914f021af070e1ff50",
+      "actionBytes": 5482
+    },
+    {
+      "name": "org.flashNight.arki.scene.WaveSpawner",
+      "actionSha256": "21658eed8935795d739c65c4a4d4aae7fc2a0051761f650852fce7f84a748a14",
+      "actionBytes": 8613
+    },
+    {
+      "name": "org.flashNight.naki.RandomNumberEngine.LinearCongruentialEngine",
+      "actionSha256": "9d2320962603cebc49627f807357025a9d53378990d6afeefae729c7b352acfb",
+      "actionBytes": 2266
+    },
+    {
+      "name": "org.flashNight.arki.scene.WaveSpawnWheel",
+      "actionSha256": "ca4e630db6408e4976ade3277ff8547c626b4a4f47e63d48df233fa4091d7da6",
+      "actionBytes": 4519
+    },
+    {
+      "name": "org.flashNight.arki.scene.BookRunRules",
+      "actionSha256": "8189eb9afcea2c21b9e8005af7dc200dee7d9fe1ad4ba31bc55f9acda9b54750",
+      "actionBytes": 7967
+    },
+    {
+      "name": "org.flashNight.neur.Server.SaveManager",
+      "actionSha256": "36757b0b367bfe7ead9586b5951829953640e7ff38bac0c29703d4894b576c7a",
+      "actionBytes": 83493
+    },
+    {
+      "name": "org.flashNight.neur.Server.SettingsAuthority",
+      "actionSha256": "a4b85fe28c409668adaf452fe24788ff7aab488e49672a60a51638e7ed9a2e03",
+      "actionBytes": 10371
+    },
+    {
+      "name": "org.flashNight.neur.Server.SettingsCanonical",
+      "actionSha256": "b0104d6faaf538df204c42ac0e7c51b0dbb587a747bfa467832044de2e9514f3",
+      "actionBytes": 2679
+    },
+    {
+      "name": "org.flashNight.neur.Server.SettingsCanonicalSchema",
+      "actionSha256": "5242a58b2d5e36b065fb623d29471f542bc3cf455634ae77250dc49aab31a16e",
+      "actionBytes": 1506
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.EnhancedCooldownWheel",
+      "actionSha256": "1111b797585dacd6c564275dd750f914044e276c0de8628aeff5099a7563b327",
+      "actionBytes": 3900
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.CooldownWheel",
+      "actionSha256": "83a1e34260e9a5a3b74f3e957534f0ee99ee4014798e77ec10705ad994890ca6",
+      "actionBytes": 2030
+    },
+    {
+      "name": "org.flashNight.arki.input.IsolatedInputPolicy",
+      "actionSha256": "ba2244e53d79b628aab0836ca7ae4d9d49e4accd20e013909c557a4470279ae4",
+      "actionBytes": 1201
+    },
+    {
+      "name": "org.flashNight.arki.key.KeyManager",
+      "actionSha256": "abd42cb071d91985a9dd382ded2279713d81f34e59b5755291fe20eadf942c5e",
+      "actionBytes": 24300
+    },
+    {
+      "name": "org.flashNight.arki.item.DrugSlotAffinityService",
+      "actionSha256": "6b090abd91e2da8add9db90e489a1557ab9bdbeaac68c694a87bc4d1a3c08bb6",
+      "actionBytes": 12566
+    },
+    {
+      "name": "org.flashNight.arki.item.obtain.ItemObtainIndex",
+      "actionSha256": "52e4e2b3e71fc82381922c219fcd5f06e8b13c574917c06773a24daf4f1c88f7",
+      "actionBytes": 22255
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.DrugInputService",
+      "actionSha256": "325dd691adc36139d319aeb2493d15771bd58d96bba2f3a67ac5bdc1bcb06d44",
+      "actionBytes": 16257
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.ManualCooldownService",
+      "actionSha256": "bba652ba94af20ac2aebc964e6c7c15f9201500714e6691d2854cbf20eb6f4ff",
+      "actionBytes": 6270
+    },
+    {
+      "name": "org.flashNight.arki.skill.SkillResourceService",
+      "actionSha256": "8609fab4e0901267d960274807f00040563bf958f218294820f071acb2ee3be0",
+      "actionBytes": 8547
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.DrugProhibitionService",
+      "actionSha256": "a28054a3b23dcd9e91086c325c9a9ba723aba70443d683aa4af09b36f7674a6b",
+      "actionBytes": 1023
+    },
+    {
+      "name": "org.flashNight.arki.item.PlayerAssetTransaction",
+      "actionSha256": "2cf6f10dd9477d43eabff1359c8242e4e7c662069d281a94dff8c78fd2eea490",
+      "actionBytes": 12190
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.EquipmentInventory",
+      "actionSha256": "37a164d5196da8728ccbfe79a96878702743f5b77cb9ab341da1a29ff43f01f8",
+      "actionBytes": 4761
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.DrugInventory",
+      "actionSha256": "e3da661e3508a1499e8a080f4884e08343589e25fb2419c5c57328c942a5a964",
+      "actionBytes": 869
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.DictCollection",
+      "actionSha256": "823bdbe967a9e2eec4d93b93a0a6177f356e0f5037358a773f4388d03d6256ef",
+      "actionBytes": 5647
+    },
+    {
+      "name": "org.flashNight.arki.item.itemCollection.InformationCollection",
+      "actionSha256": "4fdd74ee61236de560c8f7f0587d9c638fd8773c439bf2a54a8b3daeb66dbed8",
+      "actionBytes": 1229
+    },
+    {
+      "name": "org.flashNight.arki.item.RewardStashService",
+      "actionSha256": "5f825f8fad685d65879035b4791ee4e57fbbc404d29d319e84af8059ad061b35",
+      "actionBytes": 22965
+    },
+    {
+      "name": "org.flashNight.arki.item.InventoryPanelService",
+      "actionSha256": "0a8e293f6bc1244c6a228352701efe6cada0d5da67511e7fcd3d7a2bd6ce691a",
+      "actionBytes": 67235
+    },
+    {
+      "name": "org.flashNight.arki.item.CharacterBuildService",
+      "actionSha256": "df87b85350bac2cca7d3471b71e5eeead00349675446543dd4642eea122d028f",
+      "actionBytes": 88450
+    },
+    {
+      "name": "org.flashNight.arki.item.ItemUseService",
+      "actionSha256": "f1d7df0b48113489dd8dfd30158cce1d54d78d421925cf79d1345ae9df5b6c42",
+      "actionBytes": 35108
+    },
+    {
+      "name": "org.flashNight.arki.item.ChoiceRewardService",
+      "actionSha256": "931df83239fb876c41e4c17a698922e02c1ff51858f3df419d80db3d22c8e4c7",
+      "actionBytes": 11500
+    },
+    {
+      "name": "org.flashNight.arki.item.ChoiceRewardDefinition",
+      "actionSha256": "7a916638a57dfbeef1d717b80323ae487f2705a875f0c2330306fd167faadd2f",
+      "actionBytes": 21815
+    },
+    {
+      "name": "org.flashNight.arki.skill.SkillLoadoutService",
+      "actionSha256": "e1a5432263b44623c2b6e938f4576fae550bf6a3d2cba45f00222b58085b90f4",
+      "actionBytes": 46402
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipComposer",
+      "actionSha256": "96388367244df9cb3d0a9f6092b948d67f820656cb9bcd8c29a359fc92a27ae8",
+      "actionBytes": 7310
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipTextBuilder",
+      "actionSha256": "1e6811116448ca4174cac6ddd4e7abc5afb48b02f912d70966d51212c65bf124",
+      "actionBytes": 17175
+    },
+    {
+      "name": "org.flashNight.arki.item.synthesis.SynthesisIndex",
+      "actionSha256": "625329d924a4f154b8c8ed22fbad2e6afa1db4435eabe5eae3eb8ee43ca8c032",
+      "actionBytes": 3797
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.ObtainMethodsBuilder",
+      "actionSha256": "115c80463055470226224920fa91fbcecb2e3852becbae982c3504b7b2320297",
+      "actionBytes": 6885
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.UpgradePathBuilder",
+      "actionSha256": "ec98c20844647d9c9097f406e55bbe842bc3314d682687a41541c3127328448b",
+      "actionBytes": 4351
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipComposer",
+      "actionSha256": "b48552b1d3989436ab9a4f71012d1babb54aae638b39b58abc649271ecd23c9f",
+      "actionBytes": 1053
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.DrugEffectNormalizer",
+      "actionSha256": "372c097ded2ded70dd9c3bb61dde941123056e817048528573112eca664317a1",
+      "actionBytes": 1037
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipRegistry",
+      "actionSha256": "8fd0af53f76b137d5ba632ba78cf715fb65015950639042089b500e455ba1365",
+      "actionBytes": 3894
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.IDrugTooltipBuilder",
+      "actionSha256": "4383b2978678e40fbd94b65309dc4073f4d1727251589c0f55229f7044b4aa24",
+      "actionBytes": 638
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.HealTooltipBuilder",
+      "actionSha256": "b7233a5400e033ad120fd86ced747e1015fa0549b8995cf632aac69020fcb928",
+      "actionBytes": 2384
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.DrugTooltipUtil",
+      "actionSha256": "e64ea8c047c5c0c6f4e32d1a7816b26e71574d1d463fc9ebbe25e8e3d589eb36",
+      "actionBytes": 1511
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.RegenTooltipBuilder",
+      "actionSha256": "ac2ffd4ff7a73165c40e91a8e3ae2134fd0533a15dc965472b2a8358b9feffe6",
+      "actionBytes": 3089
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.StateTooltipBuilder",
+      "actionSha256": "82a6e6320c02b1035987317130231dfd22790f7840346677ecdaed9766c19fc8",
+      "actionBytes": 1920
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.PurifyTooltipBuilder",
+      "actionSha256": "7aff56034e1300697e3ceea3a9c79f12167af823bbda2b3fabe7c1030e9eae85",
+      "actionBytes": 1488
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.BuffTooltipBuilder",
+      "actionSha256": "9ce995be7b8e993fc70f1569fffc5f7549335e36ad2ed3090b1a990586255827",
+      "actionBytes": 2159
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessBuffTooltipBuilder",
+      "actionSha256": "b5176d1d0e156d6dda42232458b20d1635b9a67f52502172de4d0858565e4b17",
+      "actionBytes": 1743
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.ResistanceBuffTooltipBuilder",
+      "actionSha256": "4e1281fd0577ac186e6f48065e3c65199750b8fd6e17b59809c64bce5ef441c8",
+      "actionBytes": 2501
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.ToughnessRestoreTooltipBuilder",
+      "actionSha256": "851862e64a0c39fe081b68ad44108e6e676afa3a568cc49bf2be6d8ea20b0c41",
+      "actionBytes": 1404
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.drug.builders.GrantItemTooltipBuilder",
+      "actionSha256": "75c57ee670a25fe4171ab78e1103954614d929cba56d7316d1ab68a99c48b5bf",
+      "actionBytes": 2067
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.TooltipDataSelector",
+      "actionSha256": "93b00da5a64788772fd449ba65f74c4404245f423893afba62ba7916d36e4056",
+      "actionBytes": 1132
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.EquipmentStatsComposer",
+      "actionSha256": "fe8b22c07ce05f7c46375c1efc96c681f85a01f8fbb97091eaba901d2cb597a0",
+      "actionBytes": 1746
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.MeleeStatsBuilder",
+      "actionSha256": "475af60e4d08d7284fafe4867381d9154668972668dc125c79adb952bc186e15",
+      "actionBytes": 3124
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.GrenadeStatsBuilder",
+      "actionSha256": "a95ae8e25d0e68d8ac3601dcadd4a6ad792f65962e6a5c17835316ca58a90beb",
+      "actionBytes": 859
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.GunStatsBuilder",
+      "actionSha256": "84766aafde32a03beb52fca838fab0573648a74d440bd4bf419d1509dfeb3978",
+      "actionBytes": 6225
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder",
+      "actionSha256": "1284568204d30cf09ca9642d37086601b9ac317c774c3f3d3646c0b4e262b1ec",
+      "actionBytes": 3537
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.CommonStatsBuilder",
+      "actionSha256": "335031bc438c6b26512af895420e4fcc6fd487073255a30c65f4497704b07146",
+      "actionBytes": 2579
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.CriticalBlockBuilder",
+      "actionSha256": "268d805dfcb003bdd06d201a2976fd0101753a2e327718f2f27de783ec4bb7ba",
+      "actionBytes": 1334
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.DamageTypeBuilder",
+      "actionSha256": "41b598828c9beae171d133898bbc0be255e642dfe21239585cd171862a7d21d8",
+      "actionBytes": 3677
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.MagicDamageTypes",
+      "actionSha256": "b8a27aae9653d2b421a49aeea8f6396b2d120dc09cf568dd9912b5f4a7a778a6",
+      "actionBytes": 1065
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.ResistanceBlockBuilder",
+      "actionSha256": "e0457140701cb2925a89f0924868a0e252cdef2e62f3a874e33b08247a385581",
+      "actionBytes": 2001
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.ModStatBuilder",
+      "actionSha256": "a21c60c2e04b71226c48df33a538e39c366772d62b71e50bd6552316a418a7bf",
+      "actionBytes": 11941
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder",
+      "actionSha256": "a9a64a20da9ef48f0f8ecf438708aea14382313e9dbab85eef61d56427a0c328",
+      "actionBytes": 20075
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.SlayEffectBuilder",
+      "actionSha256": "e51babbeb86b76079cac96613fdab81a5ed65addc8efee6d64f4d5ba33c7fa48",
+      "actionBytes": 1580
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.TagSwitchStatsBuilder",
+      "actionSha256": "88996093567358512a6ecf803d7c511db44da692276ac2e9787e5d1b019121bc",
+      "actionBytes": 1527
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.EquipmentLightingInfoBuilder",
+      "actionSha256": "5e156a0ceed590c674c007250c6a856931ccabfa7e31f998961fd1776531d151",
+      "actionBytes": 4032
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.builder.ModsBlockBuilder",
+      "actionSha256": "c54d806718fa4076c66c6f22b55e7af85971d3961362a4fe7c7fe4b5dcbf9705",
+      "actionBytes": 8165
+    },
+    {
+      "name": "org.flashNight.gesh.tooltip.NativeTooltipBridge",
+      "actionSha256": "e3d670169f022fa9d608c77ba4ad1ef4dadc219d9c9cdabe8fede30d90062883",
+      "actionBytes": 4816
+    },
+    {
+      "name": "org.flashNight.arki.item.itemIcon.ItemIcon",
+      "actionSha256": "ebb1d0175ddddc1087494e0b273355c07a0f224eb0d7707be5347b69a4a95332",
+      "actionBytes": 2315
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.RuntimeEquipmentProjection",
+      "actionSha256": "5569e35fcdb8afa591c8ba11a381ef19b61eb77aa3aeed1f834161cd90b46fa8",
+      "actionBytes": 8998
+    },
+    {
+      "name": "org.flashNight.arki.unit.PlayerInfoProvider",
+      "actionSha256": "2e9490fab5518cb4f691d6d6e30c0ecb4036c049e68fe8de18d8ab04d8ff66f0",
+      "actionBytes": 23167
+    },
+    {
+      "name": "org.flashNight.arki.component.StatHandler.DamageResistanceHandler",
+      "actionSha256": "10f42027cbcc956f75fe17423cea3a9b366eca67cea8cd0b988103514c6770f3",
+      "actionBytes": 955
+    },
+    {
+      "name": "org.flashNight.arki.component.StatHandler.ImpactHandler",
+      "actionSha256": "1467bcd51a90ffd32ac7ecd29b4870c0e41348197c708f3838332bd1a9eb60c3",
+      "actionBytes": 4803
+    },
+    {
+      "name": "org.flashNight.arki.component.StatHandler.DodgeHandler",
+      "actionSha256": "abd2e697c7dfe05389da13e761f40a2d10c7aa38d997ecbace77056825a09bcb",
+      "actionBytes": 4925
+    },
+    {
+      "name": "org.flashNight.arki.component.StatHandler.DodgeStatus",
+      "actionSha256": "2e1cd5578ba776a69756ddfdb35b498e45a863540527531cd24ead7259603e7b",
+      "actionBytes": 1119
+    },
+    {
+      "name": "org.flashNight.naki.Normalization.NormalizationUtil",
+      "actionSha256": "b74fbcdf25450302b987f8edc1bf291a81ae2c29b5cf776fe0b3d7aa505d2a10",
+      "actionBytes": 2301
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.ShootInitCore",
+      "actionSha256": "2f67a33efa9694b2efb9b851998557ac75c2910824a0198941cd36b13ddfef4d",
+      "actionBytes": 14943
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.ShootCore",
+      "actionSha256": "6adf384c7dbd81832a593718120deea38e858e0391fa1bd8a85600c60139820e",
+      "actionBytes": 19287
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.ReloadManager",
+      "actionSha256": "219a432e635722dc1994188e757b7a20f472343c5e7d627e5bf8e3af5d8914f5",
+      "actionBytes": 18879
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore",
+      "actionSha256": "4cdf0bf9a685d7cb74858b9df254b03ccd6bf643981186563cd5a3d4d9e39bed",
+      "actionBytes": 31997
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Input.UnitActionIntentService",
+      "actionSha256": "5b2d50aa98dd1b74f89172f59ac29d0811c96a24a4e274f1cdeeb55ac9be04de",
+      "actionBytes": 3362
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.WeaponFireCore",
+      "actionSha256": "a15c88077c27b3ba7451c107d74952e73ee21a52c5d7ea739e54e9a5c3d5d251",
+      "actionBytes": 3351
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntime",
+      "actionSha256": "a76ef6a54713248df2b14165bfb66f9d8e15f6b4c08894f6ba9a9ed3d6acd50f",
+      "actionBytes": 5518
+    },
+    {
+      "name": "org.flashNight.arki.render.RayVisualBridge",
+      "actionSha256": "c732c43528342ff55283727152878500b4287ee119d8c65cd5016c5f3e6a108d",
+      "actionBytes": 30481
+    },
+    {
+      "name": "org.flashNight.arki.spatial.transform.SceneCoordinateManager",
+      "actionSha256": "8a7ec9a31ecf738205deadf171a2184a3d0bd5976178a754b45061e9570e14e1",
+      "actionBytes": 2553
+    },
+    {
+      "name": "org.flashNight.arki.spatial.move.Mover",
+      "actionSha256": "dadf9e0429ac93f7ddfa0b1b91e6488d4a1614b43ef7a342564bca53b368a6b6",
+      "actionBytes": 11444
+    },
+    {
+      "name": "org.flashNight.sara.util.Vertex3D",
+      "actionSha256": "bbad073c4b3bb63bca4321d2126c2c196f164da685ba441459d0c3791f2c8a2c",
+      "actionBytes": 3651
+    },
+    {
+      "name": "org.flashNight.gesh.depth.DepthManager",
+      "actionSha256": "30e9d98010791ac2a01c8345cae99e20fb22356e87c1b2d3062a5017b8831e61",
+      "actionBytes": 5131
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.EffectSystem",
+      "actionSha256": "2b1d361ec30eaf848a81602d27d08165e10b0aecb51ad74a88d944964fb0786c",
+      "actionBytes": 4315
+    },
+    {
+      "name": "org.flashNight.arki.render.CombatFxBridge",
+      "actionSha256": "c4b0e324724fb02f390a10a1f9023df62eaebc8161d6817f9c686e9d3e17680c",
+      "actionBytes": 10696
+    },
+    {
+      "name": "org.flashNight.arki.render.DecalStampQueue",
+      "actionSha256": "2f6cbba1c1804738c7b9b00b42157a781974b81b49423cddf1d4a1613b50136f",
+      "actionBytes": 5045
+    },
+    {
+      "name": "org.flashNight.arki.render.EquipmentLightBridge",
+      "actionSha256": "f6f466c19fe392c343296feaa13d15ee13e47ebb3f30d9be5447bf84d8b337b3",
+      "actionBytes": 27498
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitUtil",
+      "actionSha256": "0932f4299cf381ed7931d65012dbef261b487db24ad40ed67166b339f8da69c0",
+      "actionBytes": 2400
+    },
+    {
+      "name": "org.flashNight.arki.audio.AudioBridge",
+      "actionSha256": "2b1e5a110398d33f8845f2f6ce3d47cff76cf0b39902543a7e5cda58575d1434",
+      "actionBytes": 24385
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.WeaponStateManager",
+      "actionSha256": "bdea7bd880041e61832f40b05e4ea3456cb0ed0bc1a81741ec985e5f9be42b63",
+      "actionBytes": 4212
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Aggro.SilenceStrategyFactory",
+      "actionSha256": "a04ae3059924e1acf7b663a30d256880cd5d94bb112aa1cb07c6d763df0fcfda",
+      "actionBytes": 1692
+    },
+    {
+      "name": "org.flashNight.arki.unit.PlayerInfoSnapshotBuilder",
+      "actionSha256": "d48a046af54cf0ed0a09d84334fd37feb4b09f2c54fc732d87e3d0c0ed7b3f78",
+      "actionBytes": 10089
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.WeaponDpsEstimator",
+      "actionSha256": "00b26b80752bf2ba4c3e4bd39864eff864182f5aa554e619405d137852fc56db",
+      "actionBytes": 8207
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.data.AttackAssetMeta",
+      "actionSha256": "c4d773c57e6a15ea6b67c50c4fb0c10f16e8da75186996740fef6703065c8d5d",
+      "actionBytes": 5672
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.core.AIEnvironment",
+      "actionSha256": "1c8d818d80e9aefced3941cbc47d05d815c2a40c6817b09b58eeb592696641cf",
+      "actionBytes": 2708
+    },
+    {
+      "name": "org.flashNight.arki.item.ItemSortUtil",
+      "actionSha256": "9ac148520195f9118f96dac914f59b43c5b5d2f3bbbe3736293b0bdc4b72f4c2",
+      "actionBytes": 6585
+    },
+    {
+      "name": "org.flashNight.arki.stageSelect.StageClearHistory",
+      "actionSha256": "7c786ef708d5184d0fa8a323514308f0baeba301950780c26581a5801f9d8e11",
+      "actionBytes": 1772
+    },
+    {
+      "name": "org.flashNight.arki.dialogue.NativeDialogueAppearance",
+      "actionSha256": "e6dd2ddc32b36af3dc2c6ad87b5310eddc8182f8e7a80ec6d8943125f1fccbba",
+      "actionBytes": 5654
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.HitNumberBatchProcessor",
+      "actionSha256": "0b18a43ea6ed2d4be45404f8199bcc8071b1b42ccec42d77a217284953273470",
+      "actionBytes": 4911
+    },
+    {
+      "name": "org.flashNight.arki.render.VisualWireService",
+      "actionSha256": "c98118956f4b76d048592558898667fad8bb1d1fafd0105b88befc12eb5b4dce",
+      "actionBytes": 5160
+    },
+    {
+      "name": "org.flashNight.arki.render.BulletVisualProbe",
+      "actionSha256": "3cee2f6db79bcd3b0cdadfb3bd26fab3d7b911b502f7b4ebb8ca4ef380affa9d",
+      "actionBytes": 6775
+    },
+    {
+      "name": "org.flashNight.arki.ui.NativeGuidanceService",
+      "actionSha256": "47e2d91cf387e1dea73ad313f560f37a180afb57c8f226be6e15ee0a1e4d8a7a",
+      "actionBytes": 5658
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor",
+      "actionSha256": "87dedfe3eb3e24e75f3b2142e78f3ed84d1d986894f9dc4630065754c90b42c3",
+      "actionBytes": 55174
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueue",
+      "actionSha256": "c8cc193a2732d1db8eaa74440c04bc347f803b0ae918ceefc6003d5867246272",
+      "actionBytes": 6593
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.BulletThreatScanProcessor",
+      "actionSha256": "58a0cb358c3e6b075176ef0b48847ff848aff7b08373ea487884f6528756b1b1",
+      "actionBytes": 1593
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.RayCollider",
+      "actionSha256": "830021126df5472bcf2df18a3b5cecff42395f49d28caf30010c2b58cc6928ec",
+      "actionBytes": 5425
+    },
+    {
+      "name": "org.flashNight.sara.util.Ray",
+      "actionSha256": "58a59b8ac7778250c710e43d4a8142b4eb9c192d519dc938572a4440fdf2309e",
+      "actionBytes": 3317
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.BandRayCollider",
+      "actionSha256": "cac97f22fbcf6be6f96b481f4938b91a1cf84b6a3b649515c2b888dd5998299e",
+      "actionBytes": 1557
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBCollider",
+      "actionSha256": "4ef0d2ef37c9760475023c3e443e49a806877a3ab02552c86be3c259ac44de13",
+      "actionBytes": 1962
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.DamageResult",
+      "actionSha256": "a0eba4ade33dc1ed2de2b7c3ddfb91a132fae3c385351ac7783ad6a0200c4150",
+      "actionBytes": 6192
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry",
+      "actionSha256": "d6a8e48e0b9039e790ca770ac9896ea945f7b2b0dd47c0123b2455ad6e4f5ba7",
+      "actionBytes": 3466
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.DamageManagerFactory",
+      "actionSha256": "00d8c5a4662048d883c599b07cb87939bcda47ff3e4d3986fd0befdf79a18145",
+      "actionBytes": 7848
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.IDamageHandle",
+      "actionSha256": "58399cd229affb68b1a8c6998af8654ce51ea41694ad2add8af7391b8accbbbd",
+      "actionBytes": 512
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.BaseDamageHandle",
+      "actionSha256": "570c172cc48ae9c860db888faf70d93ce1eae2d012a6295a8c5ce9d75d57dd19",
+      "actionBytes": 1282
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.CritDamageHandle",
+      "actionSha256": "77900e2aebd946ef20c1e3172c1c7c9ed9007917ff29e890e4a8118a5c74291a",
+      "actionBytes": 1163
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.UniversalDamageHandle",
+      "actionSha256": "e36f92dd6ae985065894683a671d3124fe889b25335c38c99a466b6b1b70fb42",
+      "actionBytes": 2579
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.DodgeStateDamageHandle",
+      "actionSha256": "ec3a4a77543d4110828d62092e34a27542ff194ca78904b2907deaf658aae5e8",
+      "actionBytes": 2816
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.MultiShotDamageHandle",
+      "actionSha256": "6cc8c0be56690be9f37c83212f81905e83c863fb655f8d4840e6d2fae78a2e0c",
+      "actionBytes": 5892
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.NanoToxicDamageHandle",
+      "actionSha256": "f166647a709f0f888b45ff4879c9fea5b7a62073694d7e2073ce95eddc34c20e",
+      "actionBytes": 1899
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.IShield",
+      "actionSha256": "381751627d2d20180010a1387dc934ba5fe8256e7b6e5a3d21f5b8cfca6e172c",
+      "actionBytes": 506
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.LifeStealDamageHandle",
+      "actionSha256": "9b33088fc27aeef7f74c1c414dc6b086200332fdc6db64c0415b511aee48ad8a",
+      "actionBytes": 1667
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.CrumbleDamageHandle",
+      "actionSha256": "c3f06d9f8fd8bb7aa6c093cef5ed0ec49bdb5fe6ba9350eaa586e6f4190ff124",
+      "actionBytes": 1897
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.ExecuteDamageHandle",
+      "actionSha256": "04533600b5bc05274cd2dfb20ca81afe1563803f9d55e0b04975f944a8e1b2a8",
+      "actionBytes": 1675
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.ActualTerminalDamageHandle",
+      "actionSha256": "e293ca49b07e87acdd91b0b23b58c129d3375289241f7b374e9022e8c27151de",
+      "actionBytes": 1295
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.DamageManager",
+      "actionSha256": "a9e8bbe7ebc5ae56fa11aa3dc3567ca2e5e5516b834a45b4ae4cd41647dabd2c",
+      "actionBytes": 3222
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.IBuff",
+      "actionSha256": "54e5cfe1de5b3b6e1ecbecfbecc66ec672f807184d75433fedb3e1f7d3dce01b",
+      "actionBytes": 502
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.IBuffCalculator",
+      "actionSha256": "227b4d9ca5b5019bd67b2660dc1f0a64aa1eb2dd05a40c2edba6bf98ed182dc9",
+      "actionBytes": 512
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.BuffContext",
+      "actionSha256": "312abde764c0c21cce92f345604f242d5807b0cececaa12ef51921b73a453fa5",
+      "actionBytes": 746
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.BaseBuff",
+      "actionSha256": "e6da11c834760a28c977481e0cd51d97dab6395e6a8f612fd6fe98f8fca845a0",
+      "actionBytes": 1230
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.MetaBuff",
+      "actionSha256": "0fe9dacda6d4020f78bbfff9922f580461977ad3db99a80fc9ab9c2153a9740f",
+      "actionBytes": 5798
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.StateInfo",
+      "actionSha256": "20f119533bb090d3819352f53bf46e8dc141f03420f695f21c00469fe4862a47",
+      "actionBytes": 972
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Component.IBuffComponent",
+      "actionSha256": "2faa01963160d3a6a0967d71f0211d90d50f6b508febebdd0f1c088a649432d7",
+      "actionBytes": 637
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Component.TimeLimitComponent",
+      "actionSha256": "c74eac78a6fbf116f5f8555932d857af0fdabc3e5495d69c377ad9a094878f16",
+      "actionBytes": 1493
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.PodBuff",
+      "actionSha256": "2152457ab693e96f8cda083557bd90f8f3172a0346551548f641253af606000c",
+      "actionBytes": 1313
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Effect.ToughnessVulnerabilityController",
+      "actionSha256": "6c614d0c7d52e3a1206606265a915cf53e31aa3718f706d58105af9f03855db6",
+      "actionBytes": 12146
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.BuffManager",
+      "actionSha256": "cbace9edacf5c869d45cb87d4066d9d5925710dc4e09d6fc7e8825239228e86e",
+      "actionBytes": 20394
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.PropertyContainer",
+      "actionSha256": "317472d9ae612298841d84fa3b750a49ce190e5dc913a314387e5ccd97a3dfab",
+      "actionBytes": 4476
+    },
+    {
+      "name": "org.flashNight.gesh.property.IProperty",
+      "actionSha256": "6249f041188f9dc2da28294f484915ebe0059fee12c8e90b084bdbcb397594aa",
+      "actionBytes": 396
+    },
+    {
+      "name": "org.flashNight.gesh.property.PropertyAccessor",
+      "actionSha256": "77dc69916ef36d637e16e8cce2779ca8743718fd3d221a164fa841b80365ba8c",
+      "actionBytes": 2136
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.BuffCalculator",
+      "actionSha256": "55d9a15a86a71af883206638dead22d9000e5570323d9dd4280d06be3690190c",
+      "actionBytes": 3361
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.BuffCalculationType",
+      "actionSha256": "18de106a663ac8feb9df59f083151e0cae0829fac27c3637245391e92e6c31e9",
+      "actionBytes": 895
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Component.EventListenerComponent",
+      "actionSha256": "adc5951294ee525bdd16e53754ac79f022f39af78828112ad7d364a133560a30",
+      "actionBytes": 3859
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Effect.FireControlVulnerability",
+      "actionSha256": "7df0f0bfd69f9451cce40152fc73ae8bb39071b681e755c64777892a5482f419",
+      "actionBytes": 2755
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability",
+      "actionSha256": "a473e25f8bc4d5791d965466f288f75dbf659e825bca21e25953c2516237331d",
+      "actionBytes": 2744
+    },
+    {
+      "name": "org.flashNight.arki.component.Damage.DamageCalculator",
+      "actionSha256": "0a2c6cc8a49a81417e074ddb04efe9a1705c4df0134d41ce386b2b715947807f",
+      "actionBytes": 3746
+    },
+    {
+      "name": "org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine",
+      "actionSha256": "4572f5d0b1ca1acccfc0abcbcd78035b47c8c2712352eaf67dc9464ab4b20494",
+      "actionBytes": 4123
+    },
+    {
+      "name": "org.flashNight.arki.render.AABBRenderer",
+      "actionSha256": "c06ad2cd539f67c4ec57e276e459f4276a823e539a434bd07c7a65bd492551b5",
+      "actionBytes": 5203
+    },
+    {
+      "name": "org.flashNight.arki.render.VectorAfterimageRenderer",
+      "actionSha256": "745a27d3a2af01300e1edd9e6764652a487a7f696b241df07815442d48f726e3",
+      "actionBytes": 8258
+    },
+    {
+      "name": "org.flashNight.sara.util.ObjectPool",
+      "actionSha256": "81e58d3e64ec6eede0fbf314335c7199cfd71b6053daa1300bc4f58816f25b96",
+      "actionBytes": 3128
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.RayComboCursor",
+      "actionSha256": "fc54a1e86faccc7e382a1dfa4a4000336fa1d13013163cbbeb878f7d0b0d41ec",
+      "actionBytes": 2417
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Queue.BulletCancelQueueProcessor",
+      "actionSha256": "77d6cd28da223934700ffcfe92268fa26dc11691fa7ecfe7ee51e9962d332747",
+      "actionBytes": 6567
+    },
+    {
+      "name": "org.flashNight.arki.component.Collider.ColliderFactoryRegistry",
+      "actionSha256": "b7575dbefb9d59ed93baaa4e242532a8545c82ba87631578d5dbea26c9c5acf6",
+      "actionBytes": 1892
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.AABBColliderFactory",
+      "actionSha256": "d32c276f4720753ce46b249b77325f401d7f672a4adb540cfc135807362c2961",
+      "actionBytes": 1619
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.CoverageAABBColliderFactory",
+      "actionSha256": "b7337532a6ea025e3e21ee1b1ac96acc7beac5652ad7ad6c8957a8d3c762a605",
+      "actionBytes": 1807
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.PolygonColliderFactory",
+      "actionSha256": "cfd842e85a810b48942f732f677570ab000b47374b672353bc10d4ef9e7c3071",
+      "actionBytes": 1939
+    },
+    {
+      "name": "org.flashNight.sara.util.RectanglePointSet",
+      "actionSha256": "16c0335623e17f4c64fb0d67a47bf1d0553a58e7bc23b36cc0dbd26a50ddf48d",
+      "actionBytes": 2783
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.PolygonCollider",
+      "actionSha256": "4f3ebee3fde3214ff076d43991155297d72fb8738ae93531bc598220a3c08a05",
+      "actionBytes": 17326
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.RayColliderFactory",
+      "actionSha256": "ded0620f1c0bdacf137ce07eba3725c806174c3e678e728b4be8c63edf6aab46",
+      "actionBytes": 2009
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.PointColliderFactory",
+      "actionSha256": "4ca3ad46dd3e5ec2f1a5c0009882da1be07b1f59610978a20c99d0da07aeda96",
+      "actionBytes": 1737
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Collider.PointCollider",
+      "actionSha256": "9f68b9734d7b700eb51350d9d02a9a406615916fd9b8500f66c50c3fa81b8ccd",
+      "actionBytes": 3027
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager",
+      "actionSha256": "ffb0dca5f6c3feadcadeff901aaceb20cad55a016594e17060c436cc89d19e4f",
+      "actionBytes": 21014
+    },
+    {
+      "name": "org.flashNight.arki.merc.ArenaCalibrationService",
+      "actionSha256": "c5ebc19f85373f9c40c6667ab8a2543ba6b53d7a87b8f8a8252e0eb6ff0df9db",
+      "actionBytes": 69473
+    },
+    {
+      "name": "org.flashNight.arki.merc.ArenaController",
+      "actionSha256": "a01d09513f2bbe8d2c495a5dd4374e61420799ddf097ce501cb03e04bf99a39e",
+      "actionBytes": 7746
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercLibrary",
+      "actionSha256": "bec1e2cd3fb841b23e6cbb18c91b90c5344da573455b0083156e3437f06b909a",
+      "actionBytes": 7297
+    },
+    {
+      "name": "org.flashNight.neur.Server.DataQueryService",
+      "actionSha256": "81a7b5a1c42f7e3bc089a0641629a17bea4df7de7257d8a0334946aa201efefb",
+      "actionBytes": 1548
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercSpawner",
+      "actionSha256": "e28ac82b47b33ad2835e6affad8674d558f312bd30f4ddee2da5de6f5f7d8ae5",
+      "actionBytes": 11116
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercLoadoutService",
+      "actionSha256": "478d867277a1cddc80f047c372dbd9057a08f10faf3fb9bbfc0ddd307c5164e2",
+      "actionBytes": 18017
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer",
+      "actionSha256": "ac941ae6f13457253eb27a6c2eb694f3e95bfce7f30540c1067a113389d068b4",
+      "actionBytes": 19726
+    },
+    {
+      "name": "org.flashNight.arki.unit.HeroUtil",
+      "actionSha256": "3de859411263d5a5dc702e21ca7c9d9c420ceb3a4fe67a455e6f9e12c3c9d97b",
+      "actionBytes": 4733
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.HeroTitlesLoader",
+      "actionSha256": "b294078878daa7380928afefe96b92ca3df321cdb352fa3440881fc12005f138",
+      "actionBytes": 1409
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.SpeedDeriveInitializer",
+      "actionSha256": "c2c07924056656c423f68a68c098ac51a7b79e81291e583958c1957d5129497c",
+      "actionBytes": 1702
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController",
+      "actionSha256": "b3775727ce2286ba2971db22519c64eba81ec8c4a9ca33830d034528a810c288",
+      "actionBytes": 10816
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercBudget",
+      "actionSha256": "a02bcb6d022ecd70820cd84bbcd3b5c26f6f29e25ca3de90d17da769298724e1",
+      "actionBytes": 2106
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercCensus",
+      "actionSha256": "b3029b993f86f963f38928c6a02d0a31c0e3ee14e5cbbfbcf69bed21d5841617",
+      "actionBytes": 1190
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercHybridizer",
+      "actionSha256": "1f00b83e142fb4517cd98dd6330cb406ea89310706cb7ea7e7c89820dde08508",
+      "actionBytes": 3735
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.PrismRenderer",
+      "actionSha256": "0df68a4c766efa5c99c33b72117950ac9becdf8271cc9e5b9998fb26078e46a6",
+      "actionBytes": 4437
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.RenderColorUtil",
+      "actionSha256": "b78ac22c8bceb8c153566f75e82026bdd0b180b48c7f81b96743f14e7ea353f5",
+      "actionBytes": 1776
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.RadianceRenderer",
+      "actionSha256": "9420404f57bae71c58ade108feba6a829f27507de3ace16dd307fc0d9191bd6e",
+      "actionBytes": 3334
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.SpectrumRenderer",
+      "actionSha256": "4e5a09b59a316e0fa06d5b15f9f41f55f46571e6862e479c87434aad787d85c8",
+      "actionBytes": 4338
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.PhaseResonanceRenderer",
+      "actionSha256": "5934fea619ffc446db34e4d9f02182b9deeee8d42a4fae63bc915f4ff0140b9e",
+      "actionBytes": 4047
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.WaveRenderer",
+      "actionSha256": "ada94536b38caf4877e2d969226004415b1ed088625b15db4df0c82d60633179",
+      "actionBytes": 5324
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.ThermalRenderer",
+      "actionSha256": "c1a16312c364c72c7bbd3295e64ab0bafcaadc867fd2dbd70d1b84e19cd929b5",
+      "actionBytes": 3997
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.VortexRenderer",
+      "actionSha256": "e4f54c30d16615c8bc80f55aeafe5c59a0977c577f637509ad52e5777885ab95",
+      "actionBytes": 4225
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.PlasmaRenderer",
+      "actionSha256": "b1b6a077f66e04df5606bed7d0e6bad9f57383e624ac1f4084aa2dd1f8119cc8",
+      "actionBytes": 4190
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.ConvergenceRenderer",
+      "actionSha256": "1fc1653c8f3ef726ab3e349d73ef24f0aaab4948927b8b75cd7a56ac831c7d3d",
+      "actionBytes": 39259
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.BaguaRodRenderer",
+      "actionSha256": "fd19200b60f07873d62b914e1e97f50a455685f1282d446603c6ce7635881e1e",
+      "actionBytes": 6762
+    },
+    {
+      "name": "org.flashNight.arki.render.renderer.FlameStreamRenderer",
+      "actionSha256": "cbfa08f0718a76d56d4d63d680d0b8aa5ecf9487b6267bbfc424e584b8d7571a",
+      "actionBytes": 19607
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.MovementLoader",
+      "actionSha256": "7dceb6411439b9ae26df6b46fe20894f7747dd3122867a1e10f9471ef6ef174f",
+      "actionBytes": 1244
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.BulletsCasesLoader",
+      "actionSha256": "5a63617e81e8224585d37adbf072d42d8b00c78d23809f1a73ae4d946a17ba2e",
+      "actionBytes": 1418
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Loader.ChainBulletConfigResolver",
+      "actionSha256": "9318e7f0fb26fd93cb9617137c86e998878298d6b8ae80f230b0606abe1a7da3",
+      "actionBytes": 7038
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.ItemDataLoader",
+      "actionSha256": "a951326159fc426bc8103f13b0c7e7c31dd8ab0b4681fee45d28e6c7f27def18",
+      "actionBytes": 2409
+    },
+    {
+      "name": "org.flashNight.aven.Promise.ListLoader",
+      "actionSha256": "67350e32b81c3e95f51a40557136f45b06d352de95bd300dc7ce6c930ce49bb0",
+      "actionBytes": 4264
+    },
+    {
+      "name": "org.flashNight.aven.Promise.Promise",
+      "actionSha256": "408c55408e679e1f1009d968bbf38528a0d31ca234fa5595c3616de36ce0e83d",
+      "actionBytes": 7594
+    },
+    {
+      "name": "org.flashNight.aven.Promise.Scheduler",
+      "actionSha256": "55f0725e835711a62dd971f616ff0c12546c4c63a131670f18a0c720e2ec7b1a",
+      "actionBytes": 2876
+    },
+    {
+      "name": "org.flashNight.aven.Promise.LoaderPromise",
+      "actionSha256": "ba4e5f2d77ac52560eaad42bdf8f96aa0d34d7aff347c268c223bcdf7deab19e",
+      "actionBytes": 1143
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.EquipModListLoader",
+      "actionSha256": "70f707461b036b838f4bb1a621a511484aa155bef9591d01327aa5678b82bf00",
+      "actionBytes": 7323
+    },
+    {
+      "name": "org.flashNight.arki.item.LootClaimCommitCoordinator",
+      "actionSha256": "971fb722b16a16e8119ea7dc46d95dc9fe079317aa93dc23e31d285778fd3eaa",
+      "actionBytes": 19073
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BoxInteractionArbiter",
+      "actionSha256": "d5cd8be384766bbdcf840761d63259966589ac31686b7710a890d08ad4cbc355",
+      "actionBytes": 7945
+    },
+    {
+      "name": "org.flashNight.arki.scene.SceneInteractionManager",
+      "actionSha256": "ae4e8d9650a61e181cf9def59cc937f33346aef48b7f72684a53be5ad0f4caaf",
+      "actionBytes": 1950
+    },
+    {
+      "name": "org.flashNight.arki.item.LootContainerValidation",
+      "actionSha256": "155b6265a3beb57d71aeba4111056a82a9ed17f4b3fdeb23c8a6232d53be6ceb",
+      "actionBytes": 13529
+    },
+    {
+      "name": "org.flashNight.arki.item.MaterialArchiveProjector",
+      "actionSha256": "d2bbe0ca977f2a0f49762b104db2303af9f7f4a875315c12f48121613214d1a4",
+      "actionBytes": 57075
+    },
+    {
+      "name": "org.flashNight.arki.item.LootMaterializationPlanner",
+      "actionSha256": "fbe6e6b5272d303c426c8271bd5eaa16334921bfba9ead0365d9485d797b957e",
+      "actionBytes": 14519
+    },
+    {
+      "name": "org.flashNight.arki.item.DropLuckRoller",
+      "actionSha256": "dde8ac5fc494b916ea853c461193aa1680544e983aee0365d0010b0d9700b273",
+      "actionBytes": 1019
+    },
+    {
+      "name": "org.flashNight.arki.scene.SceneCollisionManager",
+      "actionSha256": "ca3aae824ff854333492888559e057f95be0d686e3f12a2cb25dc54278c13d58",
+      "actionBytes": 3207
+    },
+    {
+      "name": "org.flashNight.arki.collision.CollisionLayerRenderer",
+      "actionSha256": "151b614ced2fd4cc906ee3275c9b31a6addfb39d49ef5e2a9b37eba2d715f456",
+      "actionBytes": 3058
+    },
+    {
+      "name": "org.flashNight.arki.scene.SharedScenePlacement",
+      "actionSha256": "eda78357554eb96c0964a7b3bd2b73f396d1b2423ae1c1a3a3a514e526009b80",
+      "actionBytes": 4998
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageEventHandler",
+      "actionSha256": "1b5ef7c09d412f66f74a36a6f63abc6b4df6824b4c16cd5fda23c12e41beee21",
+      "actionBytes": 1663
+    },
+    {
+      "name": "org.flashNight.arki.scene.StageTimePoolController",
+      "actionSha256": "c9d50273f54c9d43d87a15d0fe87c100c291abe6a15f3d9f3afb381fa63761d5",
+      "actionBytes": 5966
+    },
+    {
+      "name": "org.flashNight.arki.scene.WarlordSubStageRunner",
+      "actionSha256": "4bc97ec83dbf2b54bde20bd58dde8a8a96e74a6f107efecceddfa7d4160fa2c1",
+      "actionBytes": 11082
+    },
+    {
+      "name": "org.flashNight.arki.scene.BaseSiegeController",
+      "actionSha256": "610d4999364a745be21151721590953fc02b16661da64c07ec3a0229d3697d1e",
+      "actionBytes": 14243
+    },
+    {
+      "name": "org.flashNight.arki.scene.BaseSiegeRules",
+      "actionSha256": "90b81d8aa4e448a41995bf4d223eac22b3296edc22158c235888059a349aa3a8",
+      "actionBytes": 765
+    },
+    {
+      "name": "org.flashNight.arki.ui.GameSettingsPanelService",
+      "actionSha256": "c03db97923def3708ca7b3ffe30bf586b99d4f9aeb280c684b3d8c81f3f0be9b",
+      "actionBytes": 36106
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.KeyEdgeTrigger",
+      "actionSha256": "4586dc798fb41c3c1c3ffb7a14484b68fa932ed6462368de2a37726456abd882",
+      "actionBytes": 1048
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.InputCommandRuntimeConfigLoader",
+      "actionSha256": "e33ff1ece96aedddba44d14f328daf645b2ea16cfe8a0eb86987f851c6914c9b",
+      "actionBytes": 7278
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitBattleRecord",
+      "actionSha256": "166c055074693a0d0748c1ea49e071c37918ed3f31978ef6148602c2fa02cc42",
+      "actionBytes": 6135
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.WeaponSkillInputService",
+      "actionSha256": "2e4ba8708035e9aec800835d1048f4699a8029f8d7689dcf8ae55a936144a766",
+      "actionBytes": 5968
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.SkillDataLoader",
+      "actionSha256": "e6c9334c3f92b11e412233309d0231d508bce7b59dd75b11fad8ad2043776b11",
+      "actionBytes": 1733
+    },
+    {
+      "name": "org.flashNight.arki.render.ClipFrameRenderer",
+      "actionSha256": "36b7dddad556a4f2f1cbac1389c016c8753ccc4ce8d0ad3f94b5b067825432a3",
+      "actionBytes": 4483
+    },
+    {
+      "name": "org.flashNight.arki.render.TrailRenderer",
+      "actionSha256": "9c329990ff4b46d1b5dbfaf76924ab49fd696f44c077bb19080f951a8bb99c13",
+      "actionBytes": 11330
+    },
+    {
+      "name": "org.flashNight.arki.render.TrailStyleManager",
+      "actionSha256": "5720d9cd6f4944019b61541a08cc04b8113ce49d7d6324d4ecc4b696d65c154d",
+      "actionBytes": 1820
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.TrailStylesLoader",
+      "actionSha256": "d874d0471755399e76d06737bc69fbbba35a22d859cb0f2d7df371eb901d43a6",
+      "actionBytes": 1775
+    },
+    {
+      "name": "org.flashNight.naki.Smooth.SmoothingUtil",
+      "actionSha256": "3c20a60a88639d1f3a9037b80e72692e24c90cc215893d6f4139c63d6cdaa779",
+      "actionBytes": 4319
+    },
+    {
+      "name": "org.flashNight.naki.DataStructures.RingBuffer",
+      "actionSha256": "612aad7e665ceefb0a80b1c437fbf8e39840c38499d952270253f3e4b40588e4",
+      "actionBytes": 4695
+    },
+    {
+      "name": "org.flashNight.arki.item.itemIcon.CollectionIcon",
+      "actionSha256": "c0c04b013b6a7dbfddabda6e583fa33c31704a17123c0146e3b2641cf7861ecf",
+      "actionBytes": 2005
+    },
+    {
+      "name": "org.flashNight.arki.item.itemIcon.DrugIcon",
+      "actionSha256": "9d224d4e0d782c37c6d7fff079a7cac2e631b14a502552446f503ff41aae25b8",
+      "actionBytes": 1482
+    },
+    {
+      "name": "org.flashNight.arki.item.DrugHudMutationService",
+      "actionSha256": "9edf6c14795728ec363c62309dde30f4e4ef4df93ff9031179465665c932b287",
+      "actionBytes": 1841
+    },
+    {
+      "name": "org.flashNight.arki.item.EquipmentTuningService",
+      "actionSha256": "7c4b6b443e6678a494eb6bddca24db3f35c6377e3bf3fa4cb179c721432db5d5",
+      "actionBytes": 50086
+    },
+    {
+      "name": "org.flashNight.arki.achievement.AchievementMetrics",
+      "actionSha256": "ad1379bc2a97c1add948d14a5449063c0f3fc38dad0511a499fece810de29518",
+      "actionBytes": 1914
+    },
+    {
+      "name": "org.flashNight.arki.item.equipment.EquipmentStatProjector",
+      "actionSha256": "5bfca59a77cb61bc06842cd4f5bc53b19c4cebeae64591cb7417459fee9ec079",
+      "actionBytes": 4057
+    },
+    {
+      "name": "org.flashNight.arki.ui.SleepPanelService",
+      "actionSha256": "f457ef1079b7413c8e2aece5c50f98867f2fa24eb0234e37ee450a93482e283a",
+      "actionBytes": 6232
+    },
+    {
+      "name": "org.flashNight.arki.merc.ArenaDropRuleCatalog",
+      "actionSha256": "5b47ee27687c2c90eaee2e0e08319d6bba86a5e5c8766d4d6e84dca795916dec",
+      "actionBytes": 9253
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.MissileConfig",
+      "actionSha256": "9123806a681f18b731128ce8b2725e09a32a04641c5fb40c8b27bc2ea011325e",
+      "actionBytes": 2438
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.MissileConfigLoader",
+      "actionSha256": "7ce76da43386671458a0de376aa35736c8fa055d8f2a592f717021d9517690bf",
+      "actionBytes": 2346
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.BaseShield",
+      "actionSha256": "6eca298e76a1884ee01ec47c9efba07b9c4152d3c2dc25eb1080f19f90360def",
+      "actionBytes": 4943
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.ShieldIdAllocator",
+      "actionSha256": "1e8d82c271129f08212772737f8eda318f99c90bffcf103eafcb8f763f5d6a5d",
+      "actionBytes": 912
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.ShieldUtil",
+      "actionSha256": "4c0805969b8da5fdb365ff95aad8ebe586bebd30d54affee7ba9cdf057aef292",
+      "actionBytes": 1513
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.Shield",
+      "actionSha256": "3c919dd51492b55f6f58974b4af8a0e109eb1c6a38387d2cc8a1f373efa2b999",
+      "actionBytes": 3273
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.DrugEffectRegistry",
+      "actionSha256": "e6deb5ba0d258ce27edbf2510e1a599d0271e92c29a64cc51e4f8862018cf620",
+      "actionBytes": 4023
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.IDrugEffect",
+      "actionSha256": "db313eda3623499efac0864a3150044b43218a4a442a31065efc24e22b625bfb",
+      "actionBytes": 503
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.HealEffect",
+      "actionSha256": "3619b5adb178a744ec0fd8978bd266428484c3cac356fc2a1971b574007b238e",
+      "actionBytes": 2167
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.DrugContext",
+      "actionSha256": "5d0d0df3845adbd715ce7942e0366d558c4416894acc4d797bb26e0e03f6ee13",
+      "actionBytes": 3200
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.DrugValueParser",
+      "actionSha256": "8870a1a3a0a09d67b897bc6ddeb297b3ee32e5c651d5bea43257a944a7749198",
+      "actionBytes": 1331
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.RegenEffect",
+      "actionSha256": "e3adb18461e4bbd8792161d47208d6a8379ea42da60d5848c4f936ef8afab432",
+      "actionBytes": 3835
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.Component.TickComponent",
+      "actionSha256": "7f8ffaba8534e2ba4c974b3392ebde14a7232b39ea992d4df0f9526dc82b6a4b",
+      "actionBytes": 2216
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.StateEffect",
+      "actionSha256": "f3bc2999243c2d34c85899a6201cf0f58ae59fe8355f543f93439e5199b8f406",
+      "actionBytes": 1527
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.PurifyEffect",
+      "actionSha256": "926be95fbb4a631cc4410d0efb949d8fada648d852d23b0dee77bba6167b2274",
+      "actionBytes": 1948
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.BuffDomainEffect",
+      "actionSha256": "750b7fb0ae6701b7ab9709ece198169f42e1765a8dd71fac92036a0dcffa28f3",
+      "actionBytes": 1135
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.BuffEffect",
+      "actionSha256": "3e4914a830e8bb7f6d1fea80bd11d3ce8558ccfca03e613b72aaa0347b1c8e26",
+      "actionBytes": 2881
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.ToughnessBuffEffect",
+      "actionSha256": "5c77d6ca3de5c4826dfc1f490ee1ae7ee6a7d22f1f01672c90c8261a13fe1b66",
+      "actionBytes": 2009
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.ResistanceBuffEffect",
+      "actionSha256": "adf02a895fe794fa1615e99a793663d7b041ac9871db2f6d0a3d21469e986670",
+      "actionBytes": 2746
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.ToughnessRestoreEffect",
+      "actionSha256": "cc510154c7f0f8b405f27866a22658d53df72210560d6185a1df43d252b1b7b5",
+      "actionBytes": 1244
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.GlobalEffect",
+      "actionSha256": "123d6969cda099d45c98f7b1a1d3c10e2c6bf0cbcf424803fa56c3f0d4350323",
+      "actionBytes": 1305
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.GrantItemEffect",
+      "actionSha256": "5679ae5f8175c9f134a461b8cad99a9ff14eef08b6091b7f49ed70b50c3edbc9",
+      "actionBytes": 1497
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.PlayEffectEffect",
+      "actionSha256": "2dec44f17b91754bb838554d23f8a4cda35843ffe088bbb31e2bed3ffc65f30e",
+      "actionBytes": 1506
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.MessageEffect",
+      "actionSha256": "4392500554680fc630bab8769a4e03c1f1593428b1714585366d043a884169dc",
+      "actionBytes": 1180
+    },
+    {
+      "name": "org.flashNight.arki.item.drug.effects.SupplyAmmoEffect",
+      "actionSha256": "39b2664ff8e5ca12705984044fb9970231a9527d9466420600398290f1544cb0",
+      "actionBytes": 1378
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService",
+      "actionSha256": "f50cc017ad9891ff98137c866784339807787487abdb5272f94a76090dbb2d28",
+      "actionBytes": 5367
+    },
+    {
+      "name": "org.flashNight.arki.achievement.AchievementService",
+      "actionSha256": "86d96c3b1cbbd42d49d2655cd99ca9da2e542e63990ea17b8bed0067505b3f78",
+      "actionBytes": 12670
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.AchievementDataLoader",
+      "actionSha256": "3d78f7d898d5ce3327b8c9ba517bc867c4aea9ed2b3aff18882d49e4d0f61f32",
+      "actionBytes": 2152
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Regeneration.LevelUpRecovery",
+      "actionSha256": "4e85bbf501692d51fd8ec559a718ef81f06dcaab5fd8181e5cee3b50c136e06b",
+      "actionBytes": 1089
+    },
+    {
+      "name": "org.flashNight.arki.scene.SceneTransitionGuard",
+      "actionSha256": "b5529b9bff69bd512b7aba2d09a0447fcf722f174a94e215006d5296fc66a7bb",
+      "actionBytes": 8551
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BladeFireSpinController",
+      "actionSha256": "cebabde2973160dae80672ea008b334ef5085c567903bc4e1219464019722f07",
+      "actionBytes": 1325
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.StaleRefCache",
+      "actionSha256": "235ec58a953e3870914a911ec67fb96eedc8482334c89bb79c7a42da3840c4d8",
+      "actionBytes": 1477
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentTick",
+      "actionSha256": "741e55bf3056f312ff349fbe2b302602b2fed54318d7e88577b0f1348b6f3e97",
+      "actionBytes": 1125
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.VisualSync",
+      "actionSha256": "51a078ef0e016fad0190f656309848d329aec302290c0bbbbd8c8dd4173b6f34",
+      "actionBytes": 1019
+    },
+    {
+      "name": "org.flashNight.neur.Server.CharacterCreationService",
+      "actionSha256": "13755fdeccc38a9ff6fc7e6990e9d7897165846c6a9c0dcec3fb2f0f475d291f",
+      "actionBytes": 22550
+    },
+    {
+      "name": "org.flashNight.arki.unit.CharacterIdentityRules",
+      "actionSha256": "9f8032a36324b9c7a0353583006fd005c6f0255fc08bde05eab9d2cb8ff43e97",
+      "actionBytes": 1402
+    },
+    {
+      "name": "org.flashNight.arki.ui.HairdresserPanelService",
+      "actionSha256": "8b7379ea40510cf32b98ee0ecae61fb3c61ab67037a5e6f9bd11187bd458fcfa",
+      "actionBytes": 5397
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.LiveAppearanceUpdater",
+      "actionSha256": "07dd9eb0a63b726dfa22176d7654c3008a028c5638fd3e5ae2f0e422f03d22c4",
+      "actionBytes": 1915
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.DisplayNameInitializer",
+      "actionSha256": "e3f91b3267e51a549124d708ee5e507465264a3b8c668c4377972c9e451a1159",
+      "actionBytes": 2397
+    },
+    {
+      "name": "org.flashNight.gesh.string.INameRandomizer",
+      "actionSha256": "82d866df4c8d0a8c9d7b5f0b3b8a7584fb963533a07f09b3f615af24b21e30e2",
+      "actionBytes": 400
+    },
+    {
+      "name": "org.flashNight.gesh.string.BaseNameRandomizer",
+      "actionSha256": "87bc7fb916b82c5f6b7e739063b71bd2daea0f359f1d2dff18cb96c6292afadc",
+      "actionBytes": 1682
+    },
+    {
+      "name": "org.flashNight.gesh.string.MansionRandomizer",
+      "actionSha256": "7732d558bca6238e0b04b012e9544fc7a869b84bfd2953fde868170d8123470b",
+      "actionBytes": 1666
+    },
+    {
+      "name": "org.flashNight.gesh.string.HexagramRandomizer",
+      "actionSha256": "aa8c70df9fd79a0fe6a7cd383f8f2b656a2e78fcf48a3a485e613c5bf0cea901",
+      "actionBytes": 2145
+    },
+    {
+      "name": "org.flashNight.gesh.string.JuntaRandomizer",
+      "actionSha256": "9b572ff79994ec30629b0d0b63f3f539be2f53c9055174f1dfb52457d6b2a57c",
+      "actionBytes": 2323
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.ContainerInitScratch",
+      "actionSha256": "b6af70f41bc544517af2f0e80002eb722702d239df497246b4c20bf91c7bf7af",
+      "actionBytes": 2886
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.RoutingFieldMap",
+      "actionSha256": "8ebf6e50c0141a36aa20c97bfb58c230ad45ee19c5fac90f195d05cffe70cfc9",
+      "actionBytes": 2587
+    },
+    {
+      "name": "org.flashNight.arki.item.KShopLegacyClaimSupport",
+      "actionSha256": "0dcea405da21f4aa5ac57986d52141ac8a3a507ea26cf60d00eb60b056751ea6",
+      "actionBytes": 8398
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EffectFunctionResolver",
+      "actionSha256": "dcd8939004c102c39320ebcdc33d879352c15aa2be38b037f6ba69bcacc9a138",
+      "actionBytes": 1002
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.TaskTextLoader",
+      "actionSha256": "f1005a305c17fdcff3d6a6eb860d38d2f7b674ba2a59f16ba68e1328b223c1bb",
+      "actionBytes": 4222
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.TaskOverlayLoader",
+      "actionSha256": "e6ed24d2700791c0beeade41d1f7595aabf31cf66fbc18309dc5222bb63d66fc",
+      "actionBytes": 2299
+    },
+    {
+      "name": "org.flashNight.neur.Server.BootstrapHandshake",
+      "actionSha256": "89d5b3df524401d4c97de79530796cfcc2b8dd08c3557eeb70a92bd332e116c5",
+      "actionBytes": 3155
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.IInitializer",
+      "actionSha256": "dd831ffda7c5f082aff5e54710c299022094f5b3d839ee3436b8906b660ac095",
+      "actionBytes": 641
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.StaticInitializer",
+      "actionSha256": "4a9138b22dccf619ab5a36ffd8ba95ebff610fa6c74854a5d850e114ae7b9067",
+      "actionBytes": 6871
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ComponentInitializer",
+      "actionSha256": "8f0bd8545aa6359c996d0cb395f387342fb0f96d34c3800a5aa2eb3f95ebcd99",
+      "actionBytes": 2569
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.UnitAIInitializer",
+      "actionSha256": "a589e82c49ce61e273483c1820383123c588e0bd009b4562253fec32c65ab8df",
+      "actionBytes": 1390
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.BaseUnitAI",
+      "actionSha256": "6bc63bb0b75f30d2365447269d7debb8eeb65dd707134d14ddff3e6c71993ceb",
+      "actionBytes": 2192
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.core.UnitAIData",
+      "actionSha256": "9bfa2d63b2a578645433bf8e4f90309b5fb6daf2686f8d7d58a18c7aa0590ef9",
+      "actionBytes": 6389
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.UtilityEvaluator",
+      "actionSha256": "90329f2f990783f25d5b89984b59a94f4aba797fe7586411bf4a324eb2200cff",
+      "actionBytes": 3378
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.ActionArbiter",
+      "actionSha256": "e56ba333829ffe8ec2940b1607423c3ca46d476ec6c06e16e70b12f6822bbd67",
+      "actionBytes": 14064
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.ActionExecutor",
+      "actionSha256": "b1745e6ae5a0b671b40dd035281c3f0a5936acac791f4daaf16b1ab25dc3eb57",
+      "actionBytes": 4055
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.StanceManager",
+      "actionSha256": "2aca3dbc430b6eb39b3c6fcade85a71679f85951cbaf84806991b418f1b50b73",
+      "actionBytes": 2410
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.WeaponEvaluator",
+      "actionSha256": "e7ac39e90fa7ef9ae55ec328eccf3e1afd7d1806e554e46b041154b8739cb488",
+      "actionBytes": 11191
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.AmmoHelper",
+      "actionSha256": "f54674310b70669604210ad5ecc722a9b81a2a53494a9fdeebc9b2cbeb4b80e1",
+      "actionBytes": 1334
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.HealExecutor",
+      "actionSha256": "0458d71fdb3b351b133a2b38f1fed7501aefc88183fc022bf6f357f77ead3e61",
+      "actionBytes": 1700
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.ScoringPipeline",
+      "actionSha256": "f5f4c5f153ea8ef70e3d4675380169b2b77b838e594b42acd4e2cc3bd924534d",
+      "actionBytes": 3343
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.core.AIContext",
+      "actionSha256": "1932da097e8e67cab67cdba9dd7823feb43d9192b01d1c2e909a53780fd20eb6",
+      "actionBytes": 3100
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.DecisionTrace",
+      "actionSha256": "f0e825067f0fbb49988fb011f005b0426cced94dd72a644adaad2871bffd92c5",
+      "actionBytes": 8540
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.ThreatAssessor",
+      "actionSha256": "d1fb04005358bce9a83d5d334b63f27abb39c10126641a7789b2c2cef6db7c7d",
+      "actionBytes": 2663
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.PipelineFactory",
+      "actionSha256": "34932632336525edee78c06829bb060f5e2351df5799e7642b531c049ca0e406",
+      "actionBytes": 7217
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.ScoringModifier",
+      "actionSha256": "4daa912c6c44837511d6c75fddfdeef526103d363823fdb48cd0cc152bb987ba",
+      "actionBytes": 1041
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.StanceAffinityMod",
+      "actionSha256": "1107d368225ef9beab2f3077147831ec9f78f7254fbd22455b38b4fb5e7c3b61",
+      "actionBytes": 1493
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.TacticalBiasMod",
+      "actionSha256": "6fc22b5ab2d8b27b94459657bca29f8be5551daf846f9db512d583d2796788c2",
+      "actionBytes": 1319
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.RigidStateMod",
+      "actionSha256": "b0418bcd826552f32a83fb3efb4bc3381468ad8d124b35b4b2e137daec51f845",
+      "actionBytes": 1345
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.RangePressureMod",
+      "actionSha256": "dc3866538d7bbfb9f4057be3d5fbc5eaabc45963f68af784aee54e7652f88673",
+      "actionBytes": 1622
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.ReactiveDodgeMod",
+      "actionSha256": "2f9f9551e1eca7fb20e045ae265aa4c61f4d23d28d82ec64af364d9f7881ee0d",
+      "actionBytes": 1224
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.AmmoReloadMod",
+      "actionSha256": "01d723aa0f9e68fd1863e9d3e3d484394ab2a08f76f95fe31eaf9cff3cfd3753",
+      "actionBytes": 1371
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.SkillHierarchyMod",
+      "actionSha256": "af3e329f47902e3a5d656732f44c3210e3cba08286efada8cf4181cb63e5dff4",
+      "actionBytes": 1569
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.SurvivalUrgencyMod",
+      "actionSha256": "0677720bc53e4a3a6256126ab7628bdcfcc4cea924e54d131322e941addcf686",
+      "actionBytes": 1915
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.BulletPressureMod",
+      "actionSha256": "4021d1be02895e3e6e8e74cddb1d39055aaff826544d225f6efac79cbee0cfdc",
+      "actionBytes": 1756
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.DecisionNoiseMod",
+      "actionSha256": "648fe09351d799ff98b221b6d53a970aafb7ffcc4ee49f5f6ef9ad97f10834ed",
+      "actionBytes": 1199
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.ComboDepthMod",
+      "actionSha256": "4a8175d98410b021c858acfe3def1ce4930909175bcbfccb835280290599feff",
+      "actionBytes": 1556
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.CrowdAwarenessMod",
+      "actionSha256": "e1193a12ed3838ae609f95ec0915f4d05a691bf5148639aca58452bb4f59f376",
+      "actionBytes": 1400
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.ReflexBoostMod",
+      "actionSha256": "4689a63c7c23ae11b398e614ba1257b83bd913dc8c177158ecbde18721df1c74",
+      "actionBytes": 1694
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.MomentumPost",
+      "actionSha256": "efb077e4ed22fdfae7af4586a2d15d2dc368505082283d23941de882a1b979f8",
+      "actionBytes": 1563
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.scoring.FreqAdjustPost",
+      "actionSha256": "0a96d735c924a9d65ca825e292e65ab38e697069d7a3c8eab61ce6863b8d0c09",
+      "actionBytes": 1398
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.BasicAttackStrategy",
+      "actionSha256": "3f47cd8d1e5a315f7ad390524890d7acee352ce7ee50aad30dc5dcabd75a46ab",
+      "actionBytes": 1337
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.SkillCandidateStrategy",
+      "actionSha256": "394c549c237c900d6c349d94617c31b5d2b22185e0adeaed15b7d0fd66e6506e",
+      "actionBytes": 2430
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.OffenseStrategy",
+      "actionSha256": "7c383494cd62a1082586cf8a464d0dcd3c2f986f25bb28d36b876d0b64c1845f",
+      "actionBytes": 1215
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.ReloadStrategy",
+      "actionSha256": "a157301cba3e412beb2b674fd4dbda8eea1fabb9f1c97f20ff8b2b2ecf18f9e4",
+      "actionBytes": 3353
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.PreBuffStrategy",
+      "actionSha256": "350143fac3bc717c5e512d12d88a9918dd1c56246125e40db24f02a44a49a5a8",
+      "actionBytes": 6813
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.AnimLockFilter",
+      "actionSha256": "ad288bcefaa120b0f7ead2d6d9dd1fa848f691dae4d914a516e3d6e4ec5e1270",
+      "actionBytes": 1545
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.InterruptFilter",
+      "actionSha256": "9f6dab269d14427a1882622beeac098deeeea161b634f8955d08d4fe38190213",
+      "actionBytes": 1340
+    },
+    {
+      "name": "org.flashNight.neur.StateMachine.IStatus",
+      "actionSha256": "4c7962a34661c7e022f174df2572a51406cbc5b9423aadd48ac9ef121ceba11d",
+      "actionBytes": 398
+    },
+    {
+      "name": "org.flashNight.neur.StateMachine.FSM_Status",
+      "actionSha256": "be5ef09d9395a760d322084fc3e8f8f4d6e487a20980b99523485dcf35a23561",
+      "actionBytes": 1210
+    },
+    {
+      "name": "org.flashNight.neur.StateMachine.IMachine",
+      "actionSha256": "683b2570c04e70bb2d0919c459fb413e1a5809c0b769f7c4bfadb0e3c62d8d00",
+      "actionBytes": 399
+    },
+    {
+      "name": "org.flashNight.neur.StateMachine.FSM_StateMachine",
+      "actionSha256": "067d04aadddde35c10b7a243ac19a869deadd8c54c70e50cc340cb6fee8888c8",
+      "actionBytes": 4594
+    },
+    {
+      "name": "org.flashNight.neur.StateMachine.Transitions",
+      "actionSha256": "fc15182eafac1f5f927155abac0acea3c45ea599f80e03f2aaaa56e0d8d18364",
+      "actionBytes": 3207
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.core.BaseUnitBehavior",
+      "actionSha256": "2a488ea14ce25cc6ea21f2d25730e32fda8a9f95abc352d45f352f0c0139e39f",
+      "actionBytes": 1713
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.EnemyBehavior",
+      "actionSha256": "a19733a7af6003711c9996b08135fa4b78e5ccaf2c633977a928cb81e8fe4137",
+      "actionBytes": 8028
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.CombatModule",
+      "actionSha256": "963815e2574aea3568ddf289c5f61a58421b15f7cd66693d88178e87861e0dca",
+      "actionBytes": 5591
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Input.EnemyActionRuntime",
+      "actionSha256": "4240eaae20bfd10fcbfd6a345f2cd053a6d4c7cf0cf90d5ae3ba8a445cfe87d6",
+      "actionBytes": 13164
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Input.EnemyActionInputService",
+      "actionSha256": "2572b87036528f3e3acdb22e66eefe77563fd017d53e5a8f8beef26608f8e98c",
+      "actionBytes": 4404
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Input.LeeActionProfile",
+      "actionSha256": "4c89856280b77a63670b71ac2b7da24d62ede7cd4bd21fbb3553ac827ac46174",
+      "actionBytes": 3525
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.PickupModule",
+      "actionSha256": "29f1b2bd6adb0f9ff1f23ed37c604468e005806e912a8adc8a30ebf253b5c989",
+      "actionBytes": 2053
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.PickUp.PickupEffectService",
+      "actionSha256": "71697ccc85145001b1efe8921e7eb2883e8c7103f2934754a493052f23f7e910",
+      "actionBytes": 4452
+    },
+    {
+      "name": "org.flashNight.naki.Select.QuickSelect",
+      "actionSha256": "2503176491aa5f508b371723e5138e2f8b04c42759e5162d89372d3aecd3a2a2",
+      "actionBytes": 2054
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroCombatBehavior",
+      "actionSha256": "9e60674921ab90f04ffcfaeffd88e28e589d607ac3dbfc1752d61ef48f32f73c",
+      "actionBytes": 8151
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.RetreatMovementStrategy",
+      "actionSha256": "8e44f4be28e5115c147b32f4ed9d9979fe8d86f91368c1c0fa36f2d1ca527a46",
+      "actionBytes": 8926
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.MovementResolver",
+      "actionSha256": "9806d053f99487fa6e6de526eb871dec7abcc54e49d4a133a84dea3c9624c3a2",
+      "actionBytes": 9163
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroCombatModule",
+      "actionSha256": "dca39b381cfec9cfefaa1b1cf7ae94e2f578e133f4223920b09883e0620cbb7a",
+      "actionBytes": 10886
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.combat.strategies.EngageMovementStrategy",
+      "actionSha256": "d4ae68043b9d8028af6fe5149d0593a92d95c91bfa148566c1cc8d3f28a6ba41",
+      "actionBytes": 5220
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.MecenaryBehavior",
+      "actionSha256": "92e0f925108dd08b06bf3b377bf2fef25daec8aa934a05ba41db46cfa3483d06",
+      "actionBytes": 12719
+    },
+    {
+      "name": "org.flashNight.neur.Navigation.AStarGrid",
+      "actionSha256": "ff7a8c0445ade56ac52937f8b5002991b55aac0169752b8fa133e68b3e5f4fca",
+      "actionBytes": 8841
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.AdaptiveShield",
+      "actionSha256": "a25a34114004ccaaa53746334ce3b2b1410394ba2e30b473bd9b0a7e59beacbb",
+      "actionBytes": 42151
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.ShieldSnapshot",
+      "actionSha256": "6f8eedf8ffea53367880e2eb78a49ac266b9e446136e7587ce7cb8ce93789bba",
+      "actionBytes": 3942
+    },
+    {
+      "name": "org.flashNight.arki.component.Shield.ShieldStack",
+      "actionSha256": "070678e738027c5518ab0cc301e900f8685c3f217e1ec6ead0d5c49d5e7c70f3",
+      "actionBytes": 11330
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Deinitializer.StaticDeinitializer",
+      "actionSha256": "746aa3830099ac3f43fc7f7b075c1444472fab79c2e17760063e505aff8ab8eb",
+      "actionBytes": 2067
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.BuffManagerInitializer",
+      "actionSha256": "75b468a9d81e438aeaa402271df557ad0e178cfa26734e3d669754985d6cba99",
+      "actionBytes": 1937
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ParameterInitializer",
+      "actionSha256": "559866ba1a75dcada018f304e6077875d89deae0e726732ff67f000f41902971",
+      "actionBytes": 2691
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventInitializer",
+      "actionSha256": "1e3b6ad1161bbe084e790e287c56e6b5f6b4fec35d5504009fa0a965b535c3e4",
+      "actionBytes": 1992
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HitEventComponent",
+      "actionSha256": "623fd89ce0d2a33994e660f8db337dce2c0eb56ba640d76e1945fa3eff58b8b4",
+      "actionBytes": 1639
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.HitUpdater",
+      "actionSha256": "164345f9a5ebc168b56860d21897b121c52d5a56d09225af238bf1643289779d",
+      "actionBytes": 3739
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Status.ImpactStateHandler",
+      "actionSha256": "e9bca601c0658a7b653a23bc2f6b97869684f7d1385d69712322a45b643a2c7a",
+      "actionBytes": 6429
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.BulletEffectHandler",
+      "actionSha256": "8b568691d823af2daaee5c48ce0751f44d1f2411a6f0383ca7c382ae7e70c550",
+      "actionBytes": 1180
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.BloodBarEffectHandler",
+      "actionSha256": "33162e2c7ee3535507c04f1730f68873ef0146f405a532801f088f487d336846",
+      "actionBytes": 1963
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.ColorEffects",
+      "actionSha256": "2c006c77d0c22835a83aabbb648304283522083e58f02f429d515845e94105fa",
+      "actionBytes": 4001
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.WeatherEventComponent",
+      "actionSha256": "117364e291702cb36ac3b3da9e90bf909d7113207ff81b8277e7007a51d7042b",
+      "actionBytes": 1144
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.WeatherUpdater",
+      "actionSha256": "7aca9764436bad6679c6f613860ffaf42510534c76fcf16220f7f25617d46e43",
+      "actionBytes": 1065
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.KillEventComponent",
+      "actionSha256": "92c20328db296c4bdab2571f57eee4a8e2684d113895d0d85c0a03b54bf971b2",
+      "actionBytes": 1652
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DeathEventComponent",
+      "actionSha256": "16b273ed79ed91301bb4e5f35393769656ff887e26c570c41999ade5f8348ddb",
+      "actionBytes": 4292
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.EnemyKilledEventComponent",
+      "actionSha256": "14c3bfaee01fdc665e7b352f0441639e03376f3cdc3cfbbed53219e43a58a790",
+      "actionBytes": 1876
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.HPEventComponent",
+      "actionSha256": "07025af0a89179077db09a397d7d99ee1d91c1a515881dcbe5b6dfc68d166b24",
+      "actionBytes": 1124
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.InformationComponentUpdater",
+      "actionSha256": "0adfdf0bb5ba713d7558aff4d6216ca2f5aa517b0f8bdd816f4c8be203d057a0",
+      "actionBytes": 3320
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.UpdateEventComponent",
+      "actionSha256": "42d68932e2f7dd4ac19b24fe2fa9db57556ffcbf3b1d675d1b15afbd89d68184",
+      "actionBytes": 3825
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.WatchDogUpdater",
+      "actionSha256": "0dbbe07a89ef135f6bb0aa7f436fed5c7e2f611a9ee065f6417da6475f85cf78",
+      "actionBytes": 1537
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.ZeroHPDetector",
+      "actionSha256": "f8e495da190ca2a88c93b859e394d7c23a662b39310398fe65bfe4b524166f4a",
+      "actionBytes": 3419
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.WatchDogComponent.StuckDetector",
+      "actionSha256": "c550005e64f5ac4ea06ce7edcd0f0f1a3b38c6b600f2acbf614f9d30129adbe3",
+      "actionBytes": 4172
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.HeroPositionUpdater",
+      "actionSha256": "ca3b0709e606163a4be48af4b6c7b87225c0196a63a080ccc4bd7f49c9af967f",
+      "actionBytes": 1470
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Updater.ImpactUpdater",
+      "actionSha256": "8f7ad00310480814439e48ef8d3d200d43d90a9f793b6b9b64979f25178f7f9b",
+      "actionBytes": 1026
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.RespawnEventComponent",
+      "actionSha256": "1e1197139a222b3d286d1e01234f9b0ad0d1a09b26a0a147799ab4d95f709fa2",
+      "actionBytes": 2241
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.AggroEventComponent",
+      "actionSha256": "897d2bd665de7754277a79a500b6c684fa0abfc90e89c2811544a6cca7791253",
+      "actionBytes": 1466
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.DyeEventComponent",
+      "actionSha256": "b59e427adb59018d7462141651308db25a6825b5a736276409cfc6defe9c55ca",
+      "actionBytes": 1156
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.ReloadEventComponent",
+      "actionSha256": "444dff7adc75d8f0ef3242fafc8a2ebfd1b8fc013bb2a63e5d4252a4fb4b22d3",
+      "actionBytes": 1920
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.EventComponent.FireEventComponent",
+      "actionSha256": "3dface4a6961328b2ee23150e1b998868a838bdf5ae54c5f4a25335eae4636a3",
+      "actionBytes": 1531
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ExtraPropertyInitializer",
+      "actionSha256": "830697dd660bd3b246bf36a007950e094f09a7becc9a6d39876972ff0c4d7c4f",
+      "actionBytes": 1244
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ProgressValidator",
+      "actionSha256": "7fac4a2bf91d8cba81b0e1627d735cecf4fee3c0b8f3edcd15649b34ac088261",
+      "actionBytes": 2605
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.QuantityRandomizer",
+      "actionSha256": "63f8a4a8fc6c25669753c5d2e273ffd6f05d5de7dacb5fc7873a717effb06296",
+      "actionBytes": 1389
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.BasicAttributeInitializer",
+      "actionSha256": "9337cf0a6bfa8b580f92b740aa508ec3c6e80c6b0a93790f72c4e6035a70e8af",
+      "actionBytes": 2750
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.InteractionHandler",
+      "actionSha256": "a75028111c0da2a1782b4a63de4e9cc56a2a483c521510a03acffb03d40e8a21",
+      "actionBytes": 7587
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ColorStainer",
+      "actionSha256": "b4efc518d934d21ae906099830eda4bdb8035a1e04316091e13252821c918ff0",
+      "actionBytes": 3855
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ObstacleRenderer",
+      "actionSha256": "94ecf88bb1417ba83c46d887db082c2f5da1f63eefb34c113a03f4fec509dea8",
+      "actionBytes": 1910
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.DisplayController",
+      "actionSha256": "24542194909866ff3527d0fee0760fe3f4d447eaaf77d752a2f91049470c0ca3",
+      "actionBytes": 2805
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.ElementPreset",
+      "actionSha256": "0eeb66fa7dca90482f915dadf82ed97a80b8f3f920bdd205556f684c7f5dbc40",
+      "actionBytes": 3281
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.ElementComponent.PresetManager",
+      "actionSha256": "2a7a3c5b13e3417d5c6a46407642b817141ad84de9060231692fd69ba0a3dd1f",
+      "actionBytes": 4370
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.BladeSlot",
+      "actionSha256": "4c16af5d8996b93942656c497817c41dfdb7bc140160c143e34f0f367f50c650",
+      "actionBytes": 1038
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.Task",
+      "actionSha256": "91ffa802a66bf87bd5e410033bb92a05ec7460647f87213b7fa6b44a68a17c80",
+      "actionBytes": 1014
+    },
+    {
+      "name": "org.flashNight.arki.audio.SoundEffectManager",
+      "actionSha256": "a2ea7767a4779b30225d7d883215d5f5051c1462ca6cad9f00e3db3171d3a579",
+      "actionBytes": 11855
+    },
+    {
+      "name": "org.flashNight.arki.item.PlayerAssetWireProjector",
+      "actionSha256": "c99a96424f5ce29846dc854f90ae212c51226f610ed4c0489b0191b84974c40a",
+      "actionBytes": 1769
+    },
+    {
+      "name": "org.flashNight.naki.RandomNumberEngine.MersenneTwister",
+      "actionSha256": "4eb44c8564417b979eeb4640a1826ff54b4a3c7f59ec4eb56b74d638f564ab76",
+      "actionBytes": 2210
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.SkillAttributeCore",
+      "actionSha256": "11c5f08ff47ae0a5a45f4d9981a21f1c0dd4a86c8ca69a019e20de0c21f99ace",
+      "actionBytes": 1789
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.InfrastructureLoader",
+      "actionSha256": "bb9dc90f0f48f83566f1e60eac4d7482d735956d8c9b3a03be41a3efc3afd357",
+      "actionBytes": 1434
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.MaterialDictionaryLoader",
+      "actionSha256": "3ae3766d3f0d62652613692fa1c6bbfdb61af9917a2637a35d14423d9c036a0a",
+      "actionBytes": 1566
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.EnemyPropertiesLoader",
+      "actionSha256": "93ff2c30e375e886304c0ad51391de33460ecdfab23327b07e49d0ea42099120",
+      "actionBytes": 2104
+    },
+    {
+      "name": "org.flashNight.arki.merc.PetPanelService",
+      "actionSha256": "1de8c97c90fdbc6f2d5d10133c6be928da2c7fe995de92d4d72625782b729ff6",
+      "actionBytes": 36604
+    },
+    {
+      "name": "org.flashNight.arki.merc.ManagedLongGunService",
+      "actionSha256": "cd26b8249114fcc5abe2bb4bd401a5fc9d0700000da073b6c5ecb664fc638ccd",
+      "actionBytes": 13436
+    },
+    {
+      "name": "org.flashNight.arki.scene.ControlledEnemyLifecycle",
+      "actionSha256": "78c8cef07b30fd5570bed93b9c9d2e4bd88b6ec580d3dcde4c590a693d5af7a6",
+      "actionBytes": 3625
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MovementSystem",
+      "actionSha256": "f1535b6665bcc368caabb003da4c9dcc7c3379c4832b750d7b6b7e43b1a5fcc4",
+      "actionBytes": 2707
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.IMovement",
+      "actionSha256": "79e81bd385fbccce8e70e9367f81554992e3841e0574458c70ac0ed7f8740537",
+      "actionBytes": 639
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.LinearBulletMovement",
+      "actionSha256": "26dc43da6e28c781ae1af183d0e3392ee510972d8132e0444fcc457d6cbc686d",
+      "actionBytes": 1716
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.DefaultMissileCallbacks",
+      "actionSha256": "d9023aa03a09642fac232e45e1048a2920eeb318046d9701ff8d909eed26b303",
+      "actionBytes": 1787
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.InitMissileCallbacks",
+      "actionSha256": "efc4172f6262776a85ba93b86bc9250df09d1940727a831623a6339309b8c8db",
+      "actionBytes": 1852
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.SearchForTargetCallbacks",
+      "actionSha256": "912ebc49f426139d662cddb50659e093b69048d10e331d7b35796b51e6664be1",
+      "actionBytes": 2143
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.TrackTargetCallbacks",
+      "actionSha256": "88b88a07dedfb113497afa9961dfe1adb8aabfb97f640c3969409e5099dca1fd",
+      "actionBytes": 1898
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.Util.PreLaunchMoveCallbacks",
+      "actionSha256": "0891c69bf8894bfc3da3f08af35861fc3d5b705604d895095e22beac51d9a281",
+      "actionBytes": 2702
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.FSMMovement",
+      "actionSha256": "befb6cc7211654383e6709b4f5cf00b23c1c4ac2b12c13c4f266edb0ea7473b5",
+      "actionBytes": 1364
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.BaseMissileMovement",
+      "actionSha256": "3d56769a20b43cf982293068e5a01fb93763de2c412b191866bc7cd6039b8e2f",
+      "actionBytes": 3171
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.InitializeState",
+      "actionSha256": "e37ad483337792e635e02896122315b7a7ae7fefcc0d0e13e77cca89604c804b",
+      "actionBytes": 1227
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.SearchTargetState",
+      "actionSha256": "6f8d3932d72ce73fc6194edba4fb3d9d34fc0c8b9176e9bfb9b18f70c853d054",
+      "actionBytes": 1370
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.TrackTargetState",
+      "actionSha256": "3d6e6a75d839b1b6c9a128466e579db79049912c305050e9f16535e30aec23fa",
+      "actionBytes": 1253
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.FreeFlyState",
+      "actionSha256": "f708cd853fdcee5fc7cdcad0a58466cdced4afaee41a0c1108d8672ce8e3c306",
+      "actionBytes": 1288
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileStates.PreLaunchState",
+      "actionSha256": "e32565a9c8ca8fdbbd08019f0b5470b4441c7723755b85ca61eb0067c17054f5",
+      "actionBytes": 1269
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.MissileMovement",
+      "actionSha256": "4f05d708f313f3cbc617d61c13f55a3d8459cc7f8620130863616eb1eb7abcf1",
+      "actionBytes": 4703
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.FreeFallLinearMovement",
+      "actionSha256": "22df64ab1af93be4b00dc3d3673a073cf499452368a92d0f9999a7bd6f4f735b",
+      "actionBytes": 2600
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.TrajectoryRotationComponent",
+      "actionSha256": "67b8e0f7790d7475b178c908dad92939128455310901dc9ec097790f14c508e0",
+      "actionBytes": 1537
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Movement.AcceleratedMovement",
+      "actionSha256": "2ac8a682a3ddbe8726cdb1d8190968280fb3c8a7a499034b5c489ae8dbc83378",
+      "actionBytes": 2086
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedMoveHelper",
+      "actionSha256": "65eb4fa92310bd7f14d65cebb8b3128ba66e06e57a96063303e2178efb39b127",
+      "actionBytes": 4091
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLightController",
+      "actionSha256": "f10ab3470dd027adcd90627eadc64a1499d3b6a56e2683c8bdade017813c0fe4",
+      "actionBytes": 7393
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentLightDefense",
+      "actionSha256": "195ec1ee73d9bb06eeaabff710c1b3181f15aae052878417a92f84645851322d",
+      "actionBytes": 4104
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PlacementVisual",
+      "actionSha256": "daca19ec0a68d55f193b760f00430cb1fc9af85aa062586a91152a40790f8f08",
+      "actionBytes": 1132
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.DressupSubscriber",
+      "actionSha256": "cff7885926c95c45d27fd5843786f699a77b315f9013068db3366e81a17679f3",
+      "actionBytes": 1188
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EliteTierReward",
+      "actionSha256": "03895add4ef74943f4ac2557147b1083cfa2e0c4c69605c918f7eef804bbe082",
+      "actionBytes": 1134
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.ChargeKeyAccumulator",
+      "actionSha256": "e86880eb2defa982218b79f2f67be2d9c16a843c9ce0a46080bec7df2f0bf920",
+      "actionBytes": 1319
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.StateTransition",
+      "actionSha256": "1a50139e093c3ed7944970ca592455618b17b9c4f126599f1627eac0568c2eb2",
+      "actionBytes": 1559
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionPlan",
+      "actionSha256": "e30a2496eebc580efd28e8a09b886406b2b69b192979135e2665f6445e583997",
+      "actionBytes": 2404
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.StateTransitionCore",
+      "actionSha256": "9b1da8b9a0e7a174b1d6ff8ba5ae62894f62cff7bde5fdbb1db8d2c2ce167b21",
+      "actionBytes": 1936
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.RoutingIntent",
+      "actionSha256": "ac5c65d83133b211708525596bf7a5b478b0f42f5104c87ec0ebff475f97c6a2",
+      "actionBytes": 4134
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.InputCommandListXMLLoader",
+      "actionSha256": "337f32991746ea3dd42a775f7531c8d2333661029242671e0500a0346d1d9495",
+      "actionBytes": 4725
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.InputCommandSetXMLLoader",
+      "actionSha256": "620b6f96eebffb5e520ef0068ce818a539d4cbfc3e43054d9dfe3bae3db1005f",
+      "actionBytes": 6115
+    },
+    {
+      "name": "org.flashNight.neur.InputCommand.InputEvent",
+      "actionSha256": "d706d1973eaa5d57f9e46b8d2e41a2cf06baa82ff594ec2727b0db5e56fa542c",
+      "actionBytes": 5967
+    },
+    {
+      "name": "org.flashNight.neur.InputCommand.CommandRegistry",
+      "actionSha256": "78d8d078115951d4235ea3d1107412a450fe4736d90073b9fa15c8071d570834",
+      "actionBytes": 5170
+    },
+    {
+      "name": "org.flashNight.neur.InputCommand.CommandDFA",
+      "actionSha256": "e6c6a6994f4ce6e1dc408e8d072d58ac662f0fa488014e39dc86e7c0cd2c5c6d",
+      "actionBytes": 2764
+    },
+    {
+      "name": "org.flashNight.neur.Automaton.TrieDFA",
+      "actionSha256": "2b9823e9392f7eb39d8d212f73571abac81fba35121174410aaa5e5fd8e3b81b",
+      "actionBytes": 8054
+    },
+    {
+      "name": "org.flashNight.arki.task.TaskPanelService",
+      "actionSha256": "1bcda13b2e0b28f4eec8bbce89fb778a4188c432d84ad79d8e9c4c1ecd5e06d0",
+      "actionBytes": 38545
+    },
+    {
+      "name": "org.flashNight.arki.task.TaskRewardCommit",
+      "actionSha256": "082b74f5908358ea1d6febb13ea45a958c53b47142fb688f0b07cff6c93b261e",
+      "actionBytes": 6888
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.PickUp.PickUpManager",
+      "actionSha256": "806f8631576a28df06bc87e240fed10ffb0873f0962fd71caf5173effce86df1",
+      "actionBytes": 8458
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmissionState",
+      "actionSha256": "deb602d48d0cc05bfc73b568da397167928983ccac00c010955c8bd223cb451a",
+      "actionBytes": 2485
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Melee.BladeShootCore",
+      "actionSha256": "51f95eb1116fafdce407c5ed6c81f2d17358af16ed26513290910f7e164759c7",
+      "actionBytes": 6900
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.RockQueenBattleSkill",
+      "actionSha256": "0b8f93c307cbcf31a482a2aa90f86d5c10454be2b55c612b8c4be0e2b93db17e",
+      "actionBytes": 16497
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycle",
+      "actionSha256": "af6b4dcc81c47248349ae732ad01c73b1804ee4823befc3ee916c29690bb0894",
+      "actionBytes": 4483
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.RoutingLifecycleCore",
+      "actionSha256": "0484aa4ff2034a92739541844512b113479434a44feb3743ba2377f45f7e89ee",
+      "actionBytes": 1547
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.RoutingRuntime",
+      "actionSha256": "679c9a258fd6d5e90c5912745c9b016b87319f0b2722aaf8b0ff9694f2b5071d",
+      "actionBytes": 2892
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.SkillDamageCore",
+      "actionSha256": "41425f4b8902a2c6026b19654502025cec3d69bbbbd97cd6358276241720fdcf",
+      "actionBytes": 1103
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.Custom.WingTigerController",
+      "actionSha256": "5f049618b7a440a80a724da403a270b825ec3de127ef57ec8057034e175d539b",
+      "actionBytes": 9009
+    },
+    {
+      "name": "org.flashNight.arki.spatial.animation.FragmentAnimator",
+      "actionSha256": "39e2e8a8e8fc698d4668d02b64a5801021a1fc8c46ddac426641a69208070bf7",
+      "actionBytes": 2380
+    },
+    {
+      "name": "org.flashNight.arki.spatial.animation.FragmentConfig",
+      "actionSha256": "ac449a4c632ea8546d9b634f1c650e0ab66010436448fd38bdffa4f7c22ed696",
+      "actionBytes": 3410
+    },
+    {
+      "name": "org.flashNight.arki.spatial.animation.FragmentAnimationInstance",
+      "actionSha256": "25644b359ce1ba91781f7ef0d324a62f6546c52e26a6013d8ec21a647492fbbe",
+      "actionBytes": 8726
+    },
+    {
+      "name": "org.flashNight.arki.spatial.animation.FragmentSize",
+      "actionSha256": "696807a6380898d99f9f5bc68c7f1e0e00ca30dc1fc575d37c14eeb982d1dc30",
+      "actionBytes": 2256
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.ContainerSpec",
+      "actionSha256": "7ed1202ed321390d3a8e02b6c192b6463e5beae0f4438ed67d2214b53df3506b",
+      "actionBytes": 2441
+    },
+    {
+      "name": "org.flashNight.arki.stageSelect.StageSelectPanelService",
+      "actionSha256": "ec834a918df54c704185f850a6d13a37c4405f551c07514b136c5f07d3046639",
+      "actionBytes": 20149
+    },
+    {
+      "name": "主角模板数值buff",
+      "actionSha256": "9d814a196c7f191040a719caaeca892267a59a284e07e7ce3297e7f9fc5d5ed5",
+      "actionBytes": 13372
+    },
+    {
+      "name": "org.flashNight.arki.merc.ArenaSkillCache",
+      "actionSha256": "c968897234bed2c270a25a9814b8fa535210b5b7651a7a8a58815c15150ed6ec",
+      "actionBytes": 1415
+    },
+    {
+      "name": "org.flashNight.arki.merc.MercPanelService",
+      "actionSha256": "74091a544514768eb6ba5b7fea931212ac994d4370a722fdc96202d4d11f71a9",
+      "actionBytes": 26205
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.TaskDataLoader",
+      "actionSha256": "f973b0278480c5f9da7a3028bd0c9a54b7dda375eb3a2fd5a95f75d958fd9559",
+      "actionBytes": 4352
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.UnitUpdateWheel",
+      "actionSha256": "ae2559d9e13dab6164c1f3791aa7ce78bb1a203218f927e8a21537600861cb82",
+      "actionBytes": 3397
+    },
+    {
+      "name": "org.flashNight.arki.item.CraftingPanelService",
+      "actionSha256": "552ea51f3a84ed30778766b9d527d256abbba366fa5a421a98057ed890500e87",
+      "actionBytes": 42672
+    },
+    {
+      "name": "org.flashNight.arki.item.ProcurementPlanService",
+      "actionSha256": "eefeb3d532656051ebf15b9b32b1bd0f91c10d6f3281e54fa63604008742189b",
+      "actionBytes": 26139
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillTable",
+      "actionSha256": "3818edffe607d18f4c4e27da53034348bab96c12bab2a2fc7fff80b30df7d85f",
+      "actionBytes": 5498
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentFireIntent",
+      "actionSha256": "5a094623d483344ab478e1f7f840579c454f2cce2d1405b3d83e2ff2075104d4",
+      "actionBytes": 1623
+    },
+    {
+      "name": "org.flashNight.arki.render.BladeMotionTrailsRenderer",
+      "actionSha256": "e3cf2b1a4893292cd2e58fd80c02122debe6606cb4b31773219cede888eab0c1",
+      "actionBytes": 6542
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentEmissiveController",
+      "actionSha256": "7c787f1db7faa90acd62300f7ae8ab2570d7b3410a0480b533525944280404f7",
+      "actionBytes": 5765
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Regeneration.RegenerationCore",
+      "actionSha256": "cee4f1d0c9166ff7284d17918ee24ac555b506da9846bcf87dda781de179c793",
+      "actionBytes": 7397
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.CerberusScheduler",
+      "actionSha256": "fe1618400dfee32861c898e2d6cbec16bda913dea84f0663bb598d6c291b9870",
+      "actionBytes": 7267
+    },
+    {
+      "name": "org.flashNight.gesh.string.EvalParser",
+      "actionSha256": "50dbb29fe8f44f4612a7f18768c998b8f8a54bd6b283ef4fcb93d0374ab4ab71",
+      "actionBytes": 4862
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.QuickSkillInputService",
+      "actionSha256": "769c6e2c63eb4ca8d803e30dc8852039a296408a0359a4764973eca81ad3efd1",
+      "actionBytes": 5436
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.SkillReleaseGuard",
+      "actionSha256": "8e953c1ba74d4fcab20b02bb2f23aea2fc392bc06b17c2d0c3ec9cd5041c1559",
+      "actionBytes": 1939
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.NPCSkillLoader",
+      "actionSha256": "298729261dbf19903ab842a5317eb67abc502b25fa3c86be44c02442a4935378",
+      "actionBytes": 1419
+    },
+    {
+      "name": "org.flashNight.arki.ui.GymPreviewPanelService",
+      "actionSha256": "871616bff246c128ff2e9e43ec84a86c4a11d355f2f30593c28cdeaeab7f2203",
+      "actionBytes": 1492
+    },
+    {
+      "name": "org.flashNight.arki.ui.GymTrainingPanelService",
+      "actionSha256": "8b2a5031d642ef48ea49c208453f155acbb4cc7f7bf28b0d5e7b7003d829261a",
+      "actionBytes": 21449
+    },
+    {
+      "name": "org.flashNight.arki.ui.GymPreviewProjection",
+      "actionSha256": "54c50e73d75b88d2be4278fec606b554784217f145e96826cafbfbffc80063c8",
+      "actionBytes": 4382
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.MagazineFrameSync",
+      "actionSha256": "821cd66a325b220f9c8a7efe161e8e5120fa879e358e68a98afea1e179b7b407",
+      "actionBytes": 1358
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PileBunkerClassicController",
+      "actionSha256": "a2d342275f5c603e85963a8359b393e508d639dcb4c12e89c5ba8c84d9e4c800",
+      "actionBytes": 7172
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PileBunkerMeleeProjection",
+      "actionSha256": "1bcaa5ae38e2d01988e55b460e07bc40d55947256e18be48cf228e57c3bd3988",
+      "actionBytes": 3526
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.SheriffBatonController",
+      "actionSha256": "1c1ad47f3b03668bbe08c90298342561837f77c40adbdfcae485d80230ae4202",
+      "actionBytes": 6002
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.SheriffShieldRush",
+      "actionSha256": "529f71dbbd8f885bcadb5cdcceca26f7331eb1bc5d08d85817c7b50daff7bfb5",
+      "actionBytes": 16508
+    },
+    {
+      "name": "org.flashNight.neur.Server.BootstrapWait",
+      "actionSha256": "a42e1f858723eb033c7bb450b140cdf1b3a0cc5fefb7f0d59eeeb51b0fe77ee3",
+      "actionBytes": 2695
+    },
+    {
+      "name": "org.flashNight.neur.InputCommand.CommandConfig",
+      "actionSha256": "6b11de0facb3a0a694884950873823850f60c2cad17c71b64c96750f5526199f",
+      "actionBytes": 6711
+    },
+    {
+      "name": "org.flashNight.neur.ScheduleTimer.TaskManager",
+      "actionSha256": "01818905fe0aceba22feec6838b61f8d5b48aaf835860f4a343648a67df637cc",
+      "actionBytes": 9378
+    },
+    {
+      "name": "org.flashNight.arki.component.Buff.IconBar.DetailedIconBar",
+      "actionSha256": "4b1305fb965329d8dcb7a6651eb92ce52416e0c41b73eb5b1d470d3efbb3ef5c",
+      "actionBytes": 2905
+    },
+    {
+      "name": "org.flashNight.arki.corpse.DeathEffectRenderer",
+      "actionSha256": "3ea92d46eaefa0abfa6227acdab417ae2b2d401405f1c1db81c62bca22f4fe8d",
+      "actionBytes": 4571
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Shell.ShellSystem",
+      "actionSha256": "b52471c2c2368bcd979f296bbc1e3331388d0bbad56437885ffa909f79367693",
+      "actionBytes": 10355
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime",
+      "actionSha256": "c37d70cd3c226ae25ed3183a839c0fe3dbaa4dc8b4d96e3aad02a888e4de3429",
+      "actionBytes": 29021
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.WeaponAnimationTarget",
+      "actionSha256": "a1d069e761e07497e62554f051e42df65abbcbd9349095735cf61b1f87e34a04",
+      "actionBytes": 1017
+    },
+    {
+      "name": "org.flashNight.naki.PseudoRandom.PseudoRandomDistribution",
+      "actionSha256": "afe73891ef0d0b0fba6e2d5aca072decc930508a6ddb69e95339eddb1597d7f3",
+      "actionBytes": 3022
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattEvaluator",
+      "actionSha256": "9d11cbab1f1339bbb19b729f8131b8579d1724fa16a6221fe48a0b5d7e211a91",
+      "actionBytes": 5746
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattParser",
+      "actionSha256": "86071bd179ce830ec36ed58eb57a16b9deca43a3e1fe8fc836107916652f460b",
+      "actionBytes": 5117
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattLexer",
+      "actionSha256": "dd423d43d9c827f069e33ccab2e767165b65716c37cfce9d833d3bc98cf35590",
+      "actionBytes": 7338
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattToken",
+      "actionSha256": "c45da3f3d78deb582600ca5fb0a67911f658beacb427922015200d2eb7653a55",
+      "actionBytes": 3043
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattParselet",
+      "actionSha256": "e1a09c67033b5be9091f4b3bae05a1977299ad6dd8fee401e85b2c7dbaf63345",
+      "actionBytes": 6486
+    },
+    {
+      "name": "org.flashNight.gesh.pratt.PrattExpression",
+      "actionSha256": "fd602021273bee3543a6f50a41cfe886efc72eb405ba89f7a1cce58b0dea726a",
+      "actionBytes": 8267
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.SceneEnvironmentLoader",
+      "actionSha256": "b694789b5ba06d7ebe133da39627963f4fc75f78803efaed31cec497fa6ab7ea",
+      "actionBytes": 1440
+    },
+    {
+      "name": "org.flashNight.arki.cursor.MouseProxy",
+      "actionSha256": "99e9034496b6a4f47f7d784da67f69831321acdb14768ff5e02c83efbddcd974",
+      "actionBytes": 4179
+    },
+    {
+      "name": "org.flashNight.arki.ui.MeridianPanelService",
+      "actionSha256": "d6be13821e34ee4339883cd82009c4315224a5b6542d899131e9fc12890e3683",
+      "actionBytes": 14694
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.MeridianDataLoader",
+      "actionSha256": "cfa15c264705cdb2f72f705f1c7a4c197c6aa259011da6012fc3b9b0b4d6d357",
+      "actionBytes": 2409
+    },
+    {
+      "name": "org.flashNight.arki.ui.GaragePurchasePanelService",
+      "actionSha256": "e934e4da4b13b2018fa924cca53d89048325bac743ba17395515d5481c014b29",
+      "actionBytes": 11433
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Utils.ShootingAngleCalculator",
+      "actionSha256": "a061c4f0a2acc8b49693e820348610122763f3ff0af5c56e5747578fdc09f180",
+      "actionBytes": 1019
+    },
+    {
+      "name": "org.flashNight.arki.spatial.animation.FragmentPresets",
+      "actionSha256": "d8ccf0bdbab0cfc0df736582ce588f91819b5da476e0d7eb8ceb0744140d5a47",
+      "actionBytes": 5537
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.P90EnergyGenerator",
+      "actionSha256": "a1c777249a93e4ccab8603664b7523b6ffdca1e6f0b42c4c66290c3f3ed8d808",
+      "actionBytes": 2346
+    },
+    {
+      "name": "org.flashNight.neur.PerformanceOptimizer.PerformanceScheduler",
+      "actionSha256": "fc280236f15be28e6cf37c419f45aca0d1fb78a7153a19262a33dc716dd4377f",
+      "actionBytes": 3777
+    },
+    {
+      "name": "org.flashNight.neur.PerformanceOptimizer.IntervalSampler",
+      "actionSha256": "7aa40345d7797205418993638d37dd6ee12d6db7e458fdd63658a05b53e96fc5",
+      "actionBytes": 1667
+    },
+    {
+      "name": "org.flashNight.neur.PerformanceOptimizer.PerformanceActuator",
+      "actionSha256": "9ca623114a5c071dfb096107ec8e3825bed5e75c81d95fc0767f17acc33e5c9b",
+      "actionBytes": 2421
+    },
+    {
+      "name": "org.flashNight.arki.scene.CutsceneService",
+      "actionSha256": "1d6cc4494769f0f706463918d6c91a838b4e045bd097a0a97349246f663cd5e8",
+      "actionBytes": 12260
+    },
+    {
+      "name": "org.flashNight.arki.skill.SkillPanelService",
+      "actionSha256": "1dfc60ab335460decb3ca7daba4baefbb363eb0075d021049a95f91c8eafcece",
+      "actionBytes": 26791
+    },
+    {
+      "name": "org.flashNight.arki.audio.AudioQualificationStimulus",
+      "actionSha256": "40189ff7a66edd75551d8de45bbaf91427b5ba20d15aaa2dac9715989e8fca21",
+      "actionBytes": 9403
+    },
+    {
+      "name": "org.flashNight.boot.BootSequencer",
+      "actionSha256": "73be746b167b569fbbc6d644c230fbe73d20e7d75bf1aa781d450c93f5660428",
+      "actionBytes": 11041
+    },
+    {
+      "name": "org.flashNight.gesh.init.GlobalInitializer",
+      "actionSha256": "4827eb0b6e925c2ee6cfa1f7b91b0f2d34559f8928194efa5e32b7dfd74e3579",
+      "actionBytes": 1171
+    },
+    {
+      "name": "org.flashNight.arki.component.Effect.BitmapEffectRenderer",
+      "actionSha256": "632b725dee853d385b9f83066ccf0a8cf2d509eded785e085f0fe7c5f8dc6f64",
+      "actionBytes": 1781
+    },
+    {
+      "name": "org.flashNight.arki.interaction.NativeMenuBridge",
+      "actionSha256": "d8a411e8a77a54ac278e26eb36ce00a2133f60ddf3c6c735088a0822c0625346",
+      "actionBytes": 9281
+    },
+    {
+      "name": "org.flashNight.arki.hud.PlayerHudService",
+      "actionSha256": "ee87ab0589e6765dcf83e5128d824d4d504ebd86623f6f3083e4147d968ab0ef",
+      "actionBytes": 37676
+    },
+    {
+      "name": "org.flashNight.arki.hud.PlayerHudBuffProjection",
+      "actionSha256": "6dcc4020dbe9c68b2c352c63068c035598d336fd854308622f862c58041cfcaf",
+      "actionBytes": 2373
+    },
+    {
+      "name": "org.flashNight.arki.hud.PlayerHudShieldProjection",
+      "actionSha256": "3ef03522a9c712a1e9e5fb30de1cfe0407c67d8043a3105e8f0752ad720c8880",
+      "actionBytes": 5039
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.ProgressGuideLoader",
+      "actionSha256": "a37ba56fec7cabf4184cc8c0847278e05f1b4e73d3079cab19dea62f67d23ef6",
+      "actionBytes": 1263
+    },
+    {
+      "name": "org.flashNight.gesh.json.LoadJson.CraftingListLoader",
+      "actionSha256": "d960c12aa92384fc983f5cbb382b267b8e662b578e9bfe0975e9cdd6870231e1",
+      "actionBytes": 2412
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.MaterialCatalogLoader",
+      "actionSha256": "cf05a0f00bf444415ad4660ceab39c953d90fa64a425d2873c992b6012471f24",
+      "actionBytes": 1628
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.ArenaDropRulesLoader",
+      "actionSha256": "042d0e83623c0a396076c278c9106fd6e32e5c87080be60c47491524739dcab0",
+      "actionBytes": 1677
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.EquipmentConfigLoader",
+      "actionSha256": "bd18757f2209d30579df093f09b9d96e4362f60c40758d97611ddaf996d7fd09",
+      "actionBytes": 3136
+    },
+    {
+      "name": "org.flashNight.gesh.text.IntelligenceTextLoader",
+      "actionSha256": "dc9ad3843a565860fdeea99afc5dee8b7332c321f179dbecbf3305f712560798",
+      "actionBytes": 4632
+    },
+    {
+      "name": "org.flashNight.arki.merc.ArenaPanelService",
+      "actionSha256": "0c8437d6bce097a33d8785a242d0e9b27d1fceda85fe613b11b9a3442a5755d2",
+      "actionBytes": 19814
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedAI",
+      "actionSha256": "af3d1c3a8522faa6e066e12b2b853853575222c6c10b67542a50ee0af3e6c759",
+      "actionBytes": 1695
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedBehavior",
+      "actionSha256": "987b42b037e44711a6bbac4611c67453828f57585b2d25e8d2067626c84e95f2",
+      "actionBytes": 8749
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedSkillBrain",
+      "actionSha256": "ef3f84c03f9fbdf0d4716055b778eb593d7bdc04db47d2c9dc8905bbb0dcb3d0",
+      "actionBytes": 17215
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.behavior.HeroUnarmedCombatModule",
+      "actionSha256": "559c64eff3817ca1c7273425adfc88063e6e9d08e8c0d8d3558afce606d3fd5b",
+      "actionBytes": 5057
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.MuzzleWorldShoot",
+      "actionSha256": "5d2bc1a8b4190399b0fed8be5ac746328ca4a446f80e7ee737f8258c805b12ed",
+      "actionBytes": 1301
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.DressupReferenceManager",
+      "actionSha256": "56c9c116db7dbc43513f72afb25dda31b91691cd1eea7e0f1d6f6c287b8e8cbc",
+      "actionBytes": 4489
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.SkinReadyClass",
+      "actionSha256": "1a746007a7fa8b657e4fb86b7e22902ef1cc744f35dcf95dad033fbfdf7fe20e",
+      "actionBytes": 1004
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.BaseStageXMLLoader",
+      "actionSha256": "b3e873cc376f6c48f077f9f2fbd3e9e065603b8fcfe0df642229acb39c50e15f",
+      "actionBytes": 1823
+    },
+    {
+      "name": "org.flashNight.gesh.xml.StageXMLLoader",
+      "actionSha256": "06846d759210921b85a8513976d98dad19c3da90a387070c8ed9196df326eb2f",
+      "actionBytes": 1834
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.JumpDeriveAction",
+      "actionSha256": "e6806b4f56d1c8a4b7e85f16b2f000a23d14f8430c5389ddf2052a3631c871e0",
+      "actionBytes": 1232
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.JumpDerivePlan",
+      "actionSha256": "81d181accf1d5f83050d9c5e523720d89674aa58abc5bc096fd4205c8ed67d45",
+      "actionBytes": 950
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.JumpDerivePredicate",
+      "actionSha256": "0bc73d3e4b8833c41a1e24fea2b43f0e9d79d453a0bb67b2e5ca9668fae09f94",
+      "actionBytes": 895
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.StageInfoLoader",
+      "actionSha256": "e508b889f39c1554429b38b2c5993cf8d5c707ab07e00efda7d47ea269e981d8",
+      "actionBytes": 2540
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.InformationDictionaryLoader",
+      "actionSha256": "1eb4d676c67151d8c649a2b04ee27e93c821f7511dac1aa04c1c2ec295502b5d",
+      "actionBytes": 1461
+    },
+    {
+      "name": "org.flashNight.arki.ui.EggSelectPanelService",
+      "actionSha256": "3db43ef46ebfbd15e546cee87c4d9f07920ae4b06ec1a18d5bc843ecbcc27792",
+      "actionBytes": 5381
+    },
+    {
+      "name": "org.flashNight.arki.ui.SubwaySelectPanelService",
+      "actionSha256": "9353f85062fc5ab3dc99d9c22e77274c6bf9560a6b286a463e25bf6c432cfaad",
+      "actionBytes": 6106
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.PileBunkerM7Controller",
+      "actionSha256": "24e35380e165af30e07cfcd022a6cdb4e1caa7b6b77a393ea671188a08a1f02d",
+      "actionBytes": 26598
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.NamedPosePlayer",
+      "actionSha256": "c780cb727fc9401d40fc1239008b052725521cc4f8879f440aeff0d35fca6487",
+      "actionBytes": 6274
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.NamedPoseDataStore",
+      "actionSha256": "7ab23422cb9d93988510f6e67dfb23a74e44f4ad6d2b765b56994f2ff1a12794",
+      "actionBytes": 4634
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.NamedPoseCodec",
+      "actionSha256": "186f297bcc069efcb0acb1ae4b4f396d9ef6007b594ef0f8d4a354cfe6122954",
+      "actionBytes": 4630
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.ActivationGlowWindow",
+      "actionSha256": "9407bbd869d7638230bdd0e1fb3e93de8f5740b963e4ed0c844eaad2bf9728e5",
+      "actionBytes": 1555
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.ToggleStateRestorer",
+      "actionSha256": "bffd87a1625772b62c226b4de80ab8da984af9b2b9fcf8cac35d17afdb41046b",
+      "actionBytes": 1657
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitAI.Custom.FormerSheriffController",
+      "actionSha256": "363193e6e3fa6230fb33cc33ffa6e59711331356436ea55fe3a280937c2af2b7",
+      "actionBytes": 40769
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Skill.SkillReloadCore",
+      "actionSha256": "01d2b8978b5bac60313fffc253add55f027628a1917f23f6694653ee737087f3",
+      "actionBytes": 1733
+    },
+    {
+      "name": "org.flashNight.arki.unit.Action.Melee.SwitchStrikeCore",
+      "actionSha256": "551748be30dba62dd03bfb807e10a4c2c1c888ac4246c81ef9ffe6bc0c9d8603",
+      "actionBytes": 5431
+    },
+    {
+      "name": "org.flashNight.arki.unit.UnitComponent.Routing.ContainerAttachAction",
+      "actionSha256": "8af226e60a6cdaf8a8392841d95b5ef8b0602fe1781c89f68f255e5a80bff3d5",
+      "actionBytes": 1542
+    },
+    {
+      "name": "org.flashNight.gesh.xml.LoadXml.StageEnvironmentLoader",
+      "actionSha256": "1f91c538e6d551710795832808b3c6f61bd028678a93cabc9cb55d35b03d2e0d",
+      "actionBytes": 1440
+    },
+    {
+      "name": "org.flashNight.arki.ui.PlasticSurgeryPanelService",
+      "actionSha256": "575abbb4981e5407b927ccbc156c098fa1b5c5027072e0aa67a590cf0c17a7f5",
+      "actionBytes": 11064
+    },
+    {
+      "name": "org.flashNight.arki.skill.SealDomain",
+      "actionSha256": "ca3595ec60c1c5b6feba1442c96be7e457459dfd9ca81bcc314fd3df28bf0559",
+      "actionBytes": 9727
+    },
+    {
+      "name": "org.flashNight.arki.bullet.Factory.BulletFactory",
+      "actionSha256": "94e5c0742cfc8c18f30dbdc04dbbb4ba4c0a4dc7bb9cf28bd4506ea1f1c4944d",
+      "actionBytes": 6191
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.PierceBulletProfile",
+      "actionSha256": "35eef0bcb7be70c13fb0f691d4fc8801dc4dfe72b417a7d997faf46dc186dfb2",
+      "actionBytes": 1503
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.ILifecycle",
+      "actionSha256": "cc98bda4435ce238555ce87a5e974b8ca94c2dc61c013a5e4d15c47747851974",
+      "actionBytes": 641
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.BulletLifecycle",
+      "actionSha256": "991aeb09548888b8c7d43675f3ef416ac0a44ed1dfaa7c8a0023c1bdd7ca1d51",
+      "actionBytes": 1989
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.ChainDetector",
+      "actionSha256": "dfca247e8a27f6285e86fee1546a88f6025f0c52700c15f337d1e188e9fd639a",
+      "actionBytes": 1363
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.NormalBulletLifecycle",
+      "actionSha256": "92c3a1e90fb26cecb9980c156e9b47bb2c95c96eb833a16bb5528fe5cd94c913",
+      "actionBytes": 1948
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.PierceBulletLifecycle",
+      "actionSha256": "5da7d57343110112245a430b3b7813971dfc011d67a8a2001c4d048843ae20f9",
+      "actionBytes": 1803
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.TransparentBulletLifecycle",
+      "actionSha256": "6bb5c0953486920f9a6b44bcaa6a7fead944d7503d6e05dd9224f5bc26deb233",
+      "actionBytes": 1435
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.TeslaRayLifecycle",
+      "actionSha256": "e81d89caa18fd3d39859302aebaf5dfd0672aef7cc033b783efefac2c33856f0",
+      "actionBytes": 2278
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.UnitBulletLifecycle",
+      "actionSha256": "06990e8a60d3b8bdbde8304a72d39393e607bc6c11104d9d320f9f1ee2e142e7",
+      "actionBytes": 3772
+    },
+    {
+      "name": "org.flashNight.arki.bullet.BulletComponent.Lifecycle.ChainObjectLifecycle",
+      "actionSha256": "b526c54be4e158339924185d2bf34fee7cac6709394e0329e1ec962190430107",
+      "actionBytes": 1730
+    }
+  ],
+  "boundary": "Compiled-class scope comparison only. Scene startup and clearing changed and require current-loader execution; previous C3/C4 arena results remain historical. Current registrations are 472/473/474 and require fresh complete matrices."
+}

@@ -1,0 +1,3 @@
+﻿$ErrorActionPreference='Stop'
+& scripts/test-runners/run-focused-testloader.ps1 -DomainId cf6-headbot-render -TemplateRelativePath tmp/cf6-playtest-feedback-20261017/TestLoader-head-framing.as.template -SuiteRelativePaths 'scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as' -SuiteFqns org.flashNight.arki.unit.Action.Melee.Cf6HeadbotRenderTest -ExpectedTracePatterns @('Cf6HeadbotRenderTest: \d+ passed, 0 failed; 2 draw points') -SuccessSummary 'Second beam framing checked on both affected native frames' -TimeoutSeconds 600 -AsyncBehaviorTimeoutSeconds 600
+exit $LASTEXITCODE

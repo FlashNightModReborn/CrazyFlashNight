@@ -1,0 +1,29 @@
+{
+  "status": "native_verified; full_matrix_pending",
+  "beamShieldCapacity": "maxHp * min(0.6, 1.35 / (1 + (clamp(level,1,99)/20)^2))",
+  "capacityRatios": {
+    "1": 0.6,
+    "30": 0.4153846153846154,
+    "60": 0.135,
+    "99": 0.05293598666797373
+  },
+  "beamShieldStrength": "min(800, 0.75 * attack)",
+  "slamShieldUnchanged": true,
+  "kickShieldUnchanged": true,
+  "actionPowersAndFormulaPanelUnchanged": true,
+  "native": {
+    "assetPassed": 906,
+    "effectsPassed": 86,
+    "robotPassed": 45,
+    "totalPassed": 1037,
+    "timelineCases": 46,
+    "phaseCases": 13,
+    "audioPassed": 340,
+    "audioRoutes": 81,
+    "playerAimPassed": 1023,
+    "playerAimCases": 74
+  },
+  "candidateSwfSha256": "9dc5b5bb6f393dbb0cdc4df3937ed4ece7cda37a8febbe8f90e214ad95c21428",
+  "fullMatrix": "cf6-cal-r13-full-20261018",
+  "boundary": "Native fixtures verify mechanisms and specific trajectories. Arena balance, final player experience and formal runtime promotion are separate conclusions."
+}

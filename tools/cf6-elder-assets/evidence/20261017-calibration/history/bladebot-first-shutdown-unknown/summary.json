@@ -1,0 +1,18 @@
+{
+  "experiment": "cf6-cal-final-bladebot-20261017",
+  "qualified": false,
+  "status": "unqualified",
+  "notStrengthSummary": true,
+  "reportSha256": "daeb5816b9cf5b46d60592885eae651f087d3f2bdd33c9da9b87097b03b96047",
+  "failedJob": "arkclaw-level60-w2",
+  "failure": [
+    {
+      "phase": "shutdown",
+      "message": "incomplete process identity observation; exit is unknown"
+    }
+  ],
+  "cleanupVerified": true,
+  "protectedSavesVerified": true,
+  "runtimeResourcesVerified": true,
+  "groups": []
+}

@@ -1,0 +1,90 @@
+{
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "sha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "sha256": "53d06b7c3808a6ccdf230953eef31dc43f7c3b9334ebe50f37aa7061501bba5d"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "b3fc7521bacf6eeace4b479755e2d6f77de6af487f93e2f0d9a2493e20b67461"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "7da1af02e7cec5053dc55213fcd6f1672d9ba6c0421d423d8cfdd72040fed29a"
+    },
+    {
+      "path": "data/enemy_properties/诺亚新敌人.xml",
+      "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "sha256": "ec13f32d0e4ee0982e5c1f48345f366d24f41064d2a43b9642c6e89af15cdcd1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "sha256": "1ca89b1c39325b7e1ecde746a0e8849983f770548c15738e9d9de27e03035140"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "sha256": "6cee0bdc6a621799633dc7f69eeaee1da7a25fc4764bf6c5a491110b4a33ebf7"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance-inputs.json",
+      "sha256": "a21317cfaa091dd5cd4c88259c5244fed39a8daebe0f9b2ee5e29c27cfee4407"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "ce1385ebf3fc3a424b9e56f271f22b25f0a6d8c78656a310e517fccd72dabbb0"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    }
+  ],
+  "levels": [
+    60
+  ],
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "variant": "wave-combo",
+  "rivals": [
+    "blackiron",
+    "arkclaw"
+  ],
+  "expectedRows": 4,
+  "performanceQualification": false
+}

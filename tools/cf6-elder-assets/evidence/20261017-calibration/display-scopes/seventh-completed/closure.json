@@ -1,0 +1,33 @@
+{
+  "oldRequestReleased": true,
+  "oldSubscriptionEnded": true,
+  "release": {
+    "event": "display_request_released",
+    "utc": "2026-10-18T08:57:51.7319073Z",
+    "pid": 24080,
+    "threadId": 23112,
+    "state": 1,
+    "result": 2147483651,
+    "holdRequested": true
+  },
+  "subscriptionEnd": {
+    "event": "subscription_ended",
+    "utc": "2026-10-18T08:57:51.7319073Z",
+    "pid": 24080,
+    "threadId": 23112,
+    "state": 1,
+    "result": 0,
+    "holdRequested": true
+  },
+  "nextScopeFirstOnObservation": {
+    "event": "state_observed",
+    "utc": "2026-10-18T08:57:11.9146423Z",
+    "pid": 2776,
+    "threadId": 14844,
+    "state": 1,
+    "result": 0,
+    "holdRequested": true
+  },
+  "authorization": "Same explicit human authorization for the ongoing test round; no persistent power-plan setting was changed.",
+  "boundary": "The newer request remains active for subsequent tests. Releasing this older request is not final test-round cleanup."
+}

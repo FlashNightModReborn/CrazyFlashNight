@@ -1,0 +1,7 @@
+onClipEvent(load){
+   var §\x01§ = 356;
+   var §\x0f§ = 1;
+   _root.电梯死亡敌人计数++;
+   _root.gameworld[_parent.产生源].僵尸型敌人场上实际人数--;
+   _root.gameworld[_parent.产生源].僵尸型敌人总个数--;
+}

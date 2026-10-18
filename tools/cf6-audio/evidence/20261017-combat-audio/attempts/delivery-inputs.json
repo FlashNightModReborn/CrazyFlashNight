@@ -1,0 +1,193 @@
+{
+  "nativeRuns": [
+    {
+      "folder": "head-final-pass1/headbot-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6HeadbotAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest headbot: (\\d+) passed, 0 failed;"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf"
+      ]
+    },
+    {
+      "folder": "native-tests-pass2/elder-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6ElderAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest elder: (\\d+) passed, 0 failed;",
+        "^Cf6ElderCombatEffectsTest: (\\d+) passed, 0 failed"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf"
+      ]
+    },
+    {
+      "folder": "blade-final-pass1/bladebot-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6BladebotAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest bladebot: (\\d+) passed, 0 failed;"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ]
+    },
+    {
+      "folder": "aim-final/player-aim",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6PlayerAimTest: (\\d+) passed, 0 failed; 62 player-source cases; baseline=false"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf",
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ]
+    },
+    {
+      "folder": "audio-legacy-final/audio",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6AudioTest: (\\d+) passed, 0 failed; 78 actual sound routes; libraries=8"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf",
+        "flashswf/arts/new/Codex老头素材.swf",
+        "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "flashswf/arts/new/CodexWings素材.swf",
+        "flashswf/arts/new/Codex特种兵素材.swf",
+        "flashswf/arts/new/Codex光头保安素材.swf",
+        "flashswf/arts/new/Antigravity专用素材.swf"
+      ]
+    },
+    {
+      "folder": "audio-legacy-final/legacy",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6AudioTest: (\\d+) passed, 0 failed; 8 actual sound routes; libraries=4"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/素材库-诺亚新敌人.swf",
+        "flashswf/arts/new/Codex专用素材.swf"
+      ]
+    },
+    {
+      "folder": "head-final-pass1/headbot-render",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf"
+      ]
+    },
+    {
+      "folder": "death-render-pass2/elder",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf"
+      ]
+    },
+    {
+      "folder": "blade-final-pass1/bladebot-render",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ]
+    }
+  ],
+  "builds": [
+    {
+      "family": "headbot",
+      "folder": "build-pass4/headbot",
+      "consumer": "flashswf/arts/new/Codex大头机器人素材.swf"
+    },
+    {
+      "family": "elder",
+      "folder": "build-pass2/elder",
+      "consumer": "flashswf/arts/new/Codex老头素材.swf"
+    },
+    {
+      "family": "bladebot",
+      "folder": "build-pass5/bladebot",
+      "consumer": "flashswf/arts/new/Codex大刀机器人素材.swf"
+    },
+    {
+      "family": "manman",
+      "folder": "build-pass1/manman",
+      "consumer": "flashswf/arts/new/Codex蛮蛮素材.swf"
+    },
+    {
+      "family": "wings",
+      "folder": "build-pass3/wings",
+      "consumer": "flashswf/arts/new/CodexWings素材.swf"
+    },
+    {
+      "family": "soldier",
+      "folder": "build-pass3/soldier",
+      "consumer": "flashswf/arts/new/Codex特种兵素材.swf"
+    },
+    {
+      "family": "guard",
+      "folder": "build-pass3/guard",
+      "consumer": "flashswf/arts/new/Codex光头保安素材.swf"
+    },
+    {
+      "family": "zombie",
+      "folder": "build-pass1/zombie",
+      "consumer": "flashswf/arts/new/Antigravity专用素材.swf"
+    },
+    {
+      "family": "legacy-agent",
+      "folder": "build-pass8/legacy-agent",
+      "consumer": "flashswf/arts/new/素材库-诺亚新敌人.swf"
+    }
+  ],
+  "arenaRuns": [
+    {
+      "label": "arena/headbot",
+      "experimentId": "cf6-headbot-combat-audio-20261017",
+      "planFolder": "arena-headbot",
+      "expectedRows": 18,
+      "versionScope": "before final fragment rendering correction; behavior DoAction bodies equal to final, but not final image qualification"
+    },
+    {
+      "label": "arena/bladebot",
+      "experimentId": "cf6-bladebot-combat-audio-20261017",
+      "planFolder": "arena-bladebot",
+      "expectedRows": 24,
+      "versionScope": "final published consumer version"
+    },
+    {
+      "label": "arena/elder",
+      "experimentId": "cf6-elder-combat-audio-20261017",
+      "planFolder": "arena-elder",
+      "expectedRows": 36,
+      "versionScope": "final published consumer version"
+    },
+    {
+      "label": "arena/headbot-final",
+      "experimentId": "cf6-headbot-final-combat-audio-20261017",
+      "planFolder": "arena-headbot-final",
+      "expectedRows": 6,
+      "versionScope": "final published consumer version"
+    }
+  ],
+  "cleanup": "native-cleanup-final.json",
+  "finalImages": {
+    "headbot": "final-images-head-fixed",
+    "elder": "final-images/elder",
+    "bladebot": "final-images-blade-fixed"
+  },
+  "visualReview": "image-review.json",
+  "audioAudit": "audio-audit-final5/audit.json",
+  "arenaSummary": "arena-summary.json"
+}

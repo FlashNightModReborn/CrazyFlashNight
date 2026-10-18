@@ -1,0 +1,55 @@
+{
+  "experiment": "cf6-cal-blade60-retry-20261017",
+  "reportSha256": "171af6569617e0332c56711933a49bdbe78ec37a5ebb6dbfb81f272efb4fc98d",
+  "qualified": true,
+  "groups": [
+    {
+      "rival": 286,
+      "level": 60,
+      "n": 2,
+      "wins": 0,
+      "losses": 2,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.2454435475874105,
+        "mean": 0.2516807805961565,
+        "median": 0.2516807805961565,
+        "max": 0.2579180136049025
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        2023.0,
+        2066.0
+      ],
+      "in50to80": 0
+    }
+  ],
+  "runs": [
+    {
+      "runId": "level60-blue-r001",
+      "level": 60,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2023.0,
+      "remaining": 0.0,
+      "netLoss": 0.2579180136049025,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-red-r001",
+      "level": 60,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 2066.0,
+      "remaining": 0.0,
+      "netLoss": 0.2454435475874105,
+      "phases": 0.0
+    }
+  ]
+}

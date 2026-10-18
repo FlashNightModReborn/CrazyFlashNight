@@ -1,0 +1,34 @@
+{
+  "schema": "cf6-owned-worker-interruption.v1",
+  "time": "2026-10-17T13:23:18.609Z",
+  "reason": "User reported machine lag; stop owned parallel validation",
+  "launchPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-dd0d0f71992e46adab77357ae96f42ab\\launch.json",
+  "workerId": "elder-w2",
+  "sessionEpoch": "session-dd0d0f71992e46adab77357ae96f42ab",
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+  },
+  "steps": [
+    {
+      "action": "status",
+      "error": "Worker endpoint ownership probe unavailable; no credential was sent"
+    },
+    {
+      "action": "abort",
+      "skipped": "No observed active assignment identity"
+    },
+    {
+      "action": "result",
+      "skipped": "No observed active assignment identity"
+    },
+    {
+      "action": "shutdown",
+      "error": "Worker endpoint ownership probe unavailable; no credential was sent"
+    }
+  ]
+}

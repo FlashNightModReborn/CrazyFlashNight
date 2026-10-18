@@ -1,0 +1,262 @@
+{
+  "schema": "arena-worker.p0-measurement.v1",
+  "measuredAt": "2026-10-17T14:23:31.159Z",
+  "planHash": "sha256:da7ba245837002d46f75e500bf67b01736dbffa0eeb4982285bf31d504f07f42",
+  "evidenceLevel": "candidate_measurement",
+  "qualified": false,
+  "groups": [
+    {
+      "groupId": "exusiai-level30",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 48957,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\exusiai-level30\\group-report.json",
+        "reportSha256": "sha256:e454a38cadaacf503d42e75e74a2f76ee692642998526dae14bd23e76d19dec8",
+        "startedAt": "2026-10-17T14:20:00.874Z",
+        "completedAt": "2026-10-17T14:20:49.831Z",
+        "wallDurationMs": 48957
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-a8b925f32b7442949c81a2c6d40badb7\\assignment-a8b925f32b7442949c81a2c6d40badb7\\attempt-a8b925f32b7442949c81a2c6d40badb7\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    },
+    {
+      "groupId": "exusiai-level60",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 32024,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\exusiai-level60\\group-report.json",
+        "reportSha256": "sha256:13d7a884f892b54ea5a3828683d6d68e5a87a49ebed638ae5f04ccfbdb4a77dd",
+        "startedAt": "2026-10-17T14:20:49.832Z",
+        "completedAt": "2026-10-17T14:21:21.856Z",
+        "wallDurationMs": 32024
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-1d40224fd83a4be3939e8e6f20ed61a0\\assignment-1d40224fd83a4be3939e8e6f20ed61a0\\attempt-1d40224fd83a4be3939e8e6f20ed61a0\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    },
+    {
+      "groupId": "exusiai-level99",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 32433,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\exusiai-level99\\group-report.json",
+        "reportSha256": "sha256:d7e9f7a0c513721bf8b3e2400bed428be35471325a978da7baf073f0fc434c88",
+        "startedAt": "2026-10-17T14:21:21.857Z",
+        "completedAt": "2026-10-17T14:21:54.290Z",
+        "wallDurationMs": 32433
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-3e95c41682c14aabb9f6c13b5a863150\\assignment-3e95c41682c14aabb9f6c13b5a863150\\attempt-3e95c41682c14aabb9f6c13b5a863150\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    },
+    {
+      "groupId": "beastking-level30",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 32801,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\beastking-level30\\group-report.json",
+        "reportSha256": "sha256:c9599e6a08ea5bfb444d2ef6f9247d71b3ef6b89a61c6f11219a08df2a75248d",
+        "startedAt": "2026-10-17T14:21:54.292Z",
+        "completedAt": "2026-10-17T14:22:27.093Z",
+        "wallDurationMs": 32801
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-de415ea37c4c49f18bdd81bf1001cd12\\assignment-de415ea37c4c49f18bdd81bf1001cd12\\attempt-de415ea37c4c49f18bdd81bf1001cd12\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    },
+    {
+      "groupId": "beastking-level60",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 31803,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\beastking-level60\\group-report.json",
+        "reportSha256": "sha256:4fbcecb5b03fd841a186a56bb18bb52cac596a156f6dcf72444aac55200360b9",
+        "startedAt": "2026-10-17T14:22:27.094Z",
+        "completedAt": "2026-10-17T14:22:58.897Z",
+        "wallDurationMs": 31803
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-a5b06aab4e354dbab6b54ba876604021\\assignment-a5b06aab4e354dbab6b54ba876604021\\attempt-a5b06aab4e354dbab6b54ba876604021\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    },
+    {
+      "groupId": "beastking-level99",
+      "qualified": false,
+      "reasons": [
+        "missing_or_invalid_attempt_evidence",
+        "mixed_or_missing_runtime_identity",
+        "observed_concurrency_differs_from_plan"
+      ],
+      "expectedReceipts": 1,
+      "observedReceipts": 0,
+      "expectedConcurrency": 1,
+      "observedConcurrency": 0,
+      "expectedRuns": 0,
+      "counts": {
+        "observed": 0,
+        "finished": 0,
+        "strengthSamples": 0,
+        "combatTimeouts": 0,
+        "failed": 0
+      },
+      "wallDurationMs": 32156,
+      "wallDenominatorScope": "coordinator_group",
+      "receiptEnvelopeWallDurationMs": null,
+      "coordinatorTiming": {
+        "reportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-r9-elder-20261017\\groups\\beastking-level99\\group-report.json",
+        "reportSha256": "sha256:939d9902996766d23f8230e5676f18503e30b2e36d79052653689374bb51d81c",
+        "startedAt": "2026-10-17T14:22:58.898Z",
+        "completedAt": "2026-10-17T14:23:31.054Z",
+        "wallDurationMs": 32156
+      },
+      "workloadHash": "sha256:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "runtimeKey": null,
+      "observedStrengthSamplesPerHour": 0,
+      "qualifiedStrengthSamplesPerHour": null,
+      "rejectedAttempts": [
+        {
+          "receiptPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\arena-calibration\\worker-runs\\session-aa35e355c8894a4f86710f77bc48a056\\assignment-aa35e355c8894a4f86710f77bc48a056\\attempt-aa35e355c8894a4f86710f77bc48a056\\shard-receipt.json",
+          "reason": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received null"
+        }
+      ],
+      "attempts": []
+    }
+  ],
+  "comparisons": []
+}

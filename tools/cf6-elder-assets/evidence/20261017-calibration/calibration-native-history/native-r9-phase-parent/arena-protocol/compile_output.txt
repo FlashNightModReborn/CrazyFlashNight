@@ -1,0 +1,66 @@
+﻿compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId arena-worker-protocol Start: c4090ee078e84de49a2b10d2ed82c530
+[PASS] missing context is rejected without manufacturing an echo
+[PASS] malformed typed context cannot enter the runner
+[PASS] validated loader failure echoes every captured identity
+[PASS] valid context preserves the real loader failure
+[PASS] Worker cannot consume another process session context
+[PASS] real handleRun owns one deferred stage load
+[PASS] delayed failure reads its frozen context instead of the caller object
+[PASS] deferred loader error remains an actual stage failure
+[PASS] replacement run owns an independent pending stage request
+[PASS] retired stage error does not answer the replacement
+[PASS] replacement delayed response retains its own context
+[PASS] foreign abort leaves the current reservation intact
+[PASS] exact abort response echoes the validated abort context
+[PASS] exact pending abort releases its own reservation
+[PASS] phase flag reaches the real original loader before initialization
+[PASS] derived loader receives the registered parent's actual faction
+[PASS] pre-marked derived unit is still registered exactly once
+[PASS] registration binds the derived unit to its actual run and parent
+[PASS] phase registration captures an independent skill initial-state value
+[PASS] duplicate callback for an already registered derived unit is ignored
+[PASS] an unregistered pre-marked actor is still contamination
+[PASS] red successor name outranks a nearer blue death fallback before original loader initialization
+[PASS] explicit red source outranks a nearer blue death fallback
+[PASS] identity-free legacy fallback compares distances across both rosters
+[PASS] phase fixture restores the original loader after the owned hook
+[PASS] real first run remains pending without actors or clock after stage data and cover
+[PASS] runner fixture uses a real rebound MovieClip path with a new captured identity
+[PASS] foreign stage token cannot prepare or release the pending runner
+[PASS] captured old same-path world identity cannot prepare the replacement
+[PASS] empty visual world and native lighting ready precede dedicated reveal admission
+[PASS] duplicate visual readiness does not prepare or start the run twice
+[PASS] another run cannot displace the committed presentation waiter
+[PASS] missing native Web reveal receipt leaves actors and timer blocked
+[PASS] stale reveal receipt cannot begin the battle
+[PASS] exact reveal receipt still waits for the original successful tail
+[PASS] real frame-36 release consumes pending once and starts the exact two actors and clock
+[PASS] duplicate retired release cannot restart the active run
+[PASS] normal finish removes its clock and clears root mode after the revealed run
+[PASS] same revealed world admits warm repeats despite the normal root mode reset
+[PASS] warm repeat finishes through the original runner with its own exact context
+[PASS] same MovieClip with a new native scene epoch cannot reuse the completed reveal
+[PASS] exact initialization failure retires a pending visual waiter without spawning
+[PASS] a later real successful tail cannot revive a cancelled pending run
+[PASS] an explicitly late cancelled callback also has no runner authority
+[PASS] old pending callback cannot consume a new waiter even after same-path world replacement
+[PASS] real release rejects changed pending context field: workerId
+[PASS] real release rejects changed pending context field: sessionEpoch
+[PASS] real release rejects changed pending context field: assignmentId
+[PASS] real release rejects changed pending context field: attemptId
+[PASS] real release rejects changed pending context field: batchId
+[PASS] real release rejects changed pending context field: manifestHash
+[PASS] real release rejects changed pending context field: caseId
+[PASS] real release rejects changed pending context field: caseHash
+[PASS] real release rejects changed pending context field: runId
+[PASS] real release rejects changed pending context field: repeatIndex
+ArenaWorkerProtocolTest Tests Passed: 55
+ArenaWorkerProtocolTest Tests Failed: 0
+FocusedTestRunId arena-worker-protocol Complete: c4090ee078e84de49a2b10d2ed82c530
+[compile] done

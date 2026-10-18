@@ -2,11 +2,11 @@
   "schema": "cf6-bladebot.native-import.v1",
   "owner": "flashswf/arts/new/Codex大刀机器人素材",
   "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6大刀机器人-R2",
-  "nativeSymbolCount": 110,
+  "nativeSymbolCount": 116,
   "buildInputs": [
     {
       "path": "tools/cf6-bladebot-assets/build.py",
-      "sha256": "d3a1a0be71aff4b363b40903c4f3cef3cce3bae33be042421db433f12b636dba"
+      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
     },
     {
       "path": "tools/cf6-bladebot-assets/vector.py",
@@ -14,7 +14,7 @@
     },
     {
       "path": "tools/cf6-bladebot-assets/BladebotAI.as",
-      "sha256": "53a2b3aa779ea2b66f69959c43b83ac44eedb57b2dba6823dc3a3359f778ef92"
+      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
     },
     {
       "path": "tools/cf6-wings-assets/vector.py",
@@ -22,11 +22,11 @@
     },
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
-      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
     },
     {
       "path": "tools/gamma-echo-assets/build.py",
@@ -34,7 +34,7 @@
     },
     {
       "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
-      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
@@ -99,6 +99,22 @@
     {
       "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
       "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
     }
   ],
   "parts": [
@@ -217,6 +233,18 @@
       "masks": 5
     },
     {
+      "id": 903,
+      "shapes": 1,
+      "segments": 8,
+      "masks": 0
+    },
+    {
+      "id": 905,
+      "shapes": 1,
+      "segments": 4,
+      "masks": 0
+    },
+    {
       "id": 909,
       "shapes": 1,
       "segments": 3,
@@ -248,10 +276,24 @@
         34
       ],
       "power": 1.0
+    },
+    "beam": {
+      "id": 906,
+      "state": "激光束",
+      "hits": [
+        11
+      ],
+      "power": 1.0,
+      "damageType": "魔法",
+      "magicAttribute": "波"
     }
   },
   "groundShift": -44.03251647949219,
   "sourceOffsets": {
+    "906": [
+      4.75,
+      -62.05
+    ],
     "901": [
       22.5,
       -76.55
@@ -277,7 +319,7 @@
       -61.0
     ]
   },
-  "excludedOriginalAttack": 906,
+  "restoredOriginalAttack": 906,
   "sharedDeathEffects": [
     "火花",
     "小烟雾"
@@ -469,9 +511,24 @@
       "bytes": 13640
     },
     {
+      "path": "LIBRARY/Codex/大刀机器人/分件/903.xml",
+      "sha256": "26e54d0c6b339db8bea19a297a002e9fa08a628f0574ff1772701f9865478f0e",
+      "bytes": 1407
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/905.xml",
+      "sha256": "22f41dee3b76ca8e3ad95dcb45ef722a0e141adce2c55fc718722cbbd8d0d1b1",
+      "bytes": 1424
+    },
+    {
       "path": "LIBRARY/Codex/大刀机器人/分件/909.xml",
       "sha256": "a8b30d62fcde31701c91a63fb37a63138aac79f762bc7c93b89fad0804dfcbfd",
       "bytes": 981
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/可瞄准光束.xml",
+      "sha256": "434093771fa1c2434afecdf2e95c2506ec64e1bb21b8a3ec96ffc876b52d96b7",
+      "bytes": 950
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/倒地恢复.xml",
@@ -485,13 +542,18 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
-      "sha256": "e911821bc811677d418bf1f01db1ce8c84d39521af77750b83350a9b1e9fd37c",
-      "bytes": 106880
+      "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3",
+      "bytes": 110367
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/横扫.xml",
-      "sha256": "3860c46205a8a4a13f613fdff58e1c9899eb073e6e7fd7b5e2b84667724ceb84",
-      "bytes": 67891
+      "sha256": "6ee1992595087899fe7144f36f782bfc9fd405521a0451652826d5be4bfa995f",
+      "bytes": 70149
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/波属性光束.xml",
+      "sha256": "0fd1f9f08b88283edf39e425c7f12bdc934d763e85e3beb436103e36a470cb70",
+      "bytes": 33635
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/站立.xml",
@@ -510,13 +572,23 @@
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/动作/重劈.xml",
-      "sha256": "536a12c8411753c23d0b5dc085e1a0d3e09e955437c3bcd3c1731324efa3f21d",
-      "bytes": 62749
+      "sha256": "5fa51459952935400fc2b13b77d0118955e90549e7778d46a7335a6184444404",
+      "bytes": 65102
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
-      "sha256": "bd8cfcd3fa0c8ed9b24c86b070b214683d396a2cccdd764b19e6c0addc09903a",
-      "bytes": 25046
+      "sha256": "c8ff185b3fe67a01ca028ae7b74690e67e0509e8cfbd34b03ffd65f33c49e25d",
+      "bytes": 32387
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
+      "sha256": "4c7ed818d1b7567776578511c250e0ed0e0516251d5b5ea13581116ad4d88a69",
+      "bytes": 1718284
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/机械爆裂/演出.xml",
+      "sha256": "7ece3cf366c10300a80c16b68412bb7328e914167758ee452ec361641b3cf782",
+      "bytes": 1198
     },
     {
       "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916.xml",
@@ -837,8 +909,8 @@
   "projectFiles": [
     {
       "path": "DOMDocument.xml",
-      "sha256": "65b284ce39758d3e2683ed82a70747a618b8af942d10d1b83c1cd3687aa4abd8",
-      "bytes": 14776
+      "sha256": "2358adfefa5238d615a03f7e6cc709104e4e27da27fd836681425e9555be54ac",
+      "bytes": 15613
     },
     {
       "path": "Codex大刀机器人素材.xfl",
@@ -855,5 +927,53 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 7,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0652.mp3",
+        "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0904.mp3",
+        "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0907_c56b689a20.wav",
+        "sha256": "1f2dd5e941606c234478c96380196e99ac71eb80494336acea50f3cae544b613"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0908.mp3",
+        "sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0911.mp3",
+        "sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0915.mp3",
+        "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1009.mp3",
+        "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

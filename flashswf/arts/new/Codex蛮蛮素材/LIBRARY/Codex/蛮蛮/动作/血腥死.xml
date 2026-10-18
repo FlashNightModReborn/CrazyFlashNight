@@ -3,6 +3,22 @@
   <timeline>
     <DOMTimeline name="血腥死">
       <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="20">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0303.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728" duration="67">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="结束回调" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" name="a0" labelType="name">

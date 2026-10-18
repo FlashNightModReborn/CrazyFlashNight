@@ -1,0 +1,1093 @@
+{
+  "schema": "cf6.combat-audio.delivery.v1",
+  "state": "candidate_executed",
+  "nativeRuns": [
+    {
+      "folder": "head-final-pass1/headbot-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6HeadbotAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest headbot: (\\d+) passed, 0 failed;"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf"
+      ],
+      "runId": "a69693a5303d46f0887244193fcd6f73",
+      "passedAssertions": 537,
+      "failedAssertions": 0,
+      "testSwfSha256": "99aa17d1df4fbc25bd7d7a37f635bd78d1db12fcc05801b0fc42498ffcc21fce",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "testedSha256": "F6CC21BD9E111BF332E65ED022C320832AD56D616310E9445A75EA35593142BD",
+          "currentSha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-bladebot.as.template",
+          "testedSha256": "44BA844C2B912BEFD56A36B842B61DB5DE79FBDA1C3BE87A7B9268E5522340B7",
+          "currentSha256": "3c43702de55969e3d9386a603310a2f401d36f957016b5d5ade96dbbe0319553"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+          "testedSha256": "8A9D77E4B24BF48131393ED30FCC6CEBD51D96D2A801E0325357DD283986A036",
+          "currentSha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "testedSha256": "8E73C1A5BEDA86FCB8CEB8B823B33F3F6B72CA2843AD157203FD9C76D9ECFF4E",
+          "currentSha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "testedSha256": "0EC2D31FD70EE3C4BA6E53096EDCA0AD48120C56809694F7090C03F419712DF8",
+          "currentSha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "testedSha256": "D092FED502DDB864272B68201F52E63AF724BC48121340421521686544C464D0",
+          "currentSha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "testedSha256": "CB451DD5382E54C0E521F129F7E2B5D1D574137C249355E92B509825C8A7F0B1",
+          "currentSha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "testedSha256": "7933E8AF76FD9794013F898F4FE8B8AB87EDDF7EAE7AF2CC432C8422C04B7555",
+          "currentSha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "testedSha256": "BE820F440AF5AB0A66959ACC7E7786A15F8BDE7E144A6B6A7899D666DF62E0C7",
+          "currentSha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "testedSha256": "3708EAED52650E1232D7193D4F13C8AA51CFF1CE69B5277F2273ED71B4F23F06",
+          "currentSha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-fixture-manifest.json",
+          "testedSha256": "2BB683BF7980FD822EA4EC0C438D0EB8CE700439BDD03B68687BCF55AF87DE1F",
+          "currentSha256": "2cdf8cba9f3bc5febbdafafaa4bb38bc70aae6590c54963bba0f84b9889df1a0"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-plan.json",
+          "testedSha256": "0D80D6DD35F87F2B94DCA1805B893983AD6F6B9F2F77BEF69A8CF115F11B981F",
+          "currentSha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "testedSha256": "4C13C6FD1CDB60DBA134BABAC2EB27B92517C57E9DE48615E12AE2A04EC05886",
+          "currentSha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "testedSha256": "1BA02C2D4EDA0A6C28F13866F2F387FABD02F36336267584868AB20DDBFC53ED",
+          "currentSha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "testedSha256": "71F741AC79CC916E42F77A5864C2EC56D95ADE5A3010E5D6DAC0FFE9EBC7DAE4",
+          "currentSha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "FF200A68083435A88E1300F2A960109802C23C82CAB445976CD3A682EB0674B1",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "testedSha256": "791BF2127D407D8EB71805D6651FCAE2B4E41C378E092E931E8133475FF83519",
+          "currentSha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "native-tests-pass2/elder-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6ElderAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest elder: (\\d+) passed, 0 failed;",
+        "^Cf6ElderCombatEffectsTest: (\\d+) passed, 0 failed"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf"
+      ],
+      "runId": "c67d8122083743809f39d95d6f84a5a0",
+      "passedAssertions": 873,
+      "failedAssertions": 0,
+      "testSwfSha256": "dda7d39cd5c2e11faf2f56ee9de0599868d423224d326cbd7a40e81e5ddd2f61",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "flashswf/arts/new/CodexWings素材.swf",
+          "testedSha256": "1F65F7AC2E8220400F941308B01CD8060A9FAB4DCFAE93FD7A73DF077B031B3B",
+          "currentSha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34"
+        },
+        {
+          "path": "flashswf/arts/new/Codex光头保安素材.swf",
+          "testedSha256": "77ECB62CFA752DFD4C25D293A7C44B36EB4836BBD8B2582DFC03EB3012B5C8CC",
+          "currentSha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "testedSha256": "F6CC21BD9E111BF332E65ED022C320832AD56D616310E9445A75EA35593142BD",
+          "currentSha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "testedSha256": "D36C25E751A536A85DEA0E2A9111276180493C016C986A3E9CB096E504187108",
+          "currentSha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403"
+        },
+        {
+          "path": "flashswf/arts/new/Codex特种兵素材.swf",
+          "testedSha256": "2A7B8DA4D5AA9BCF55F1DC0B417EBAF9F9EB4A90CA7B3BD9183380E429E2BA67",
+          "currentSha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088"
+        },
+        {
+          "path": "scripts/test-runners/cf6-audio/AudioFixture.as",
+          "testedSha256": "EAC49F475B45FECF289D5B96E401586D8642554E932AFD82E3F4F71953B053B0",
+          "currentSha256": "53fb5ad71b101cd809798636bb565a5575baa787323af1a66103934f5d8dc262"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "92736FFFA0BB8ED8C736C39089333D24CAA0A35A4D3BC96269030DEBEE86F926",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+          "testedSha256": "8A9D77E4B24BF48131393ED30FCC6CEBD51D96D2A801E0325357DD283986A036",
+          "currentSha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "testedSha256": "6B04DB8D5F704103B7FFE8D3B53599EB56C57F05DCC58D7B9AF23400F75EB6FD",
+          "currentSha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/build-test-fixture.py",
+          "testedSha256": "4412AC4CE4D81369251EF3A8E3C0108E0014DABE16B8D5BC69260C302B18C92F",
+          "currentSha256": "dcd02324ee78bd97a93e47be33d75f7327130062223e74c89ee8fcc556252926"
+        },
+        {
+          "path": "tools/cf6-audio/build.py",
+          "testedSha256": "8AB42A6514A5FE2124B4BFC27046259E3A3CCDABF9D8D1FDD452E830C93E5208",
+          "currentSha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "testedSha256": "61339258FC570F8B807E6D43CD21D8E0CCBABA8FE4A5414EDD7A7BC4C6FC20E0",
+          "currentSha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "testedSha256": "8C8D42292417E79AEF3DA10D8DB444EA40C2297D1BF9ECFB99CB9088FD446FFF",
+          "currentSha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "testedSha256": "CB451DD5382E54C0E521F129F7E2B5D1D574137C249355E92B509825C8A7F0B1",
+          "currentSha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "testedSha256": "772B7F74911045FF2FE4559A04483945641F1936E122FFA67CD9B2A3F0E77619",
+          "currentSha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "testedSha256": "D85065DB8C8723C913D17471D906ECB50B9DA663A1F2BFEFC99A448EF61B5F25",
+          "currentSha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "testedSha256": "492D73CAB3C9A42E6B7323093741E86B5C9F6B9643F6FB564A0A81D9B48F2D0D",
+          "currentSha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "testedSha256": "4138BF497080FCF9385D4863D058784B1C02314E28F16E5A3A93C86DDE0C579D",
+          "currentSha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "testedSha256": "5C3E22D22C232F00485D93A40A0F8BA6F3D5E75F733565743ADDC155D183329E",
+          "currentSha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "testedSha256": "62BABF688375B38C8E6A4342569541B271050D190061D67D56E4C5111D33FB26",
+          "currentSha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "testedSha256": "BF8098143F3017B05B579211C785252ADC99A86ABF27CDA9A79EC8ACD8CBF9D2",
+          "currentSha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "D38FD6A32EFE062393F9946F027299DAA71859E252EE27A9DCA1238E399D0A1E",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "testedSha256": "36FA84547EBE8E4877FC3ED26845AFE578AB70EA315F1F724320C2C2953ECD77",
+          "currentSha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "blade-final-pass1/bladebot-asset",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6BladebotAssetTest: (\\d+) passed, 0 failed;",
+        "^Cf6RobotCombatTest bladebot: (\\d+) passed, 0 failed;"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ],
+      "runId": "5c843180d0ff4d148723a8062cf2e81c",
+      "passedAssertions": 515,
+      "failedAssertions": 0,
+      "testSwfSha256": "6476ca604c65ab37312cdcad2e851ad63975784061abd3994a544a277486d4ac",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "EFF00696434A4C0F65E4D420E96AFE217031A9740E1F67E4BCC25BCB687AE470",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "aim-final/player-aim",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6PlayerAimTest: (\\d+) passed, 0 failed; 62 player-source cases; baseline=false"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf",
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ],
+      "runId": "004973dd36b446a49b38968a6c49359d",
+      "passedAssertions": 896,
+      "failedAssertions": 0,
+      "testSwfSha256": "c9b82cb54b830efb6bcaeb510e85cdb04d1e59d0051b964527cf82c0f6a5f122",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "EFF00696434A4C0F65E4D420E96AFE217031A9740E1F67E4BCC25BCB687AE470",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "audio-legacy-final/audio",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6AudioTest: (\\d+) passed, 0 failed; 78 actual sound routes; libraries=8"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf",
+        "flashswf/arts/new/Codex老头素材.swf",
+        "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "flashswf/arts/new/Codex蛮蛮素材.swf",
+        "flashswf/arts/new/CodexWings素材.swf",
+        "flashswf/arts/new/Codex特种兵素材.swf",
+        "flashswf/arts/new/Codex光头保安素材.swf",
+        "flashswf/arts/new/Antigravity专用素材.swf"
+      ],
+      "runId": "2fc59b57c0fb407da01fb69ebba029f6",
+      "passedAssertions": 328,
+      "failedAssertions": 0,
+      "testSwfSha256": "7c03c9c535819c36cec827dde2b028fe0472778e719201044cb5a43dcf881394",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "audio-legacy-final/legacy",
+      "kind": "behavior",
+      "patterns": [
+        "^Cf6AudioTest: (\\d+) passed, 0 failed; 8 actual sound routes; libraries=4"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/素材库-诺亚新敌人.swf",
+        "flashswf/arts/new/Codex专用素材.swf"
+      ],
+      "runId": "1917e373fcae4fd3a4f44165bbda608f",
+      "passedAssertions": 31,
+      "failedAssertions": 0,
+      "testSwfSha256": "60119f8165499705813dc49470cd9acbc8068a3182f184fac5d9df75000cbc4f",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "head-final-pass1/headbot-render",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大头机器人素材.swf"
+      ],
+      "runId": "a941599719e645de8cb6940ce9082d4e",
+      "passedAssertions": 48,
+      "failedAssertions": 0,
+      "testSwfSha256": "86396c97e51b055a97432de53a0bf135738b687226e8496e9819cc97b298b93b",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "testedSha256": "F6CC21BD9E111BF332E65ED022C320832AD56D616310E9445A75EA35593142BD",
+          "currentSha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-bladebot.as.template",
+          "testedSha256": "44BA844C2B912BEFD56A36B842B61DB5DE79FBDA1C3BE87A7B9268E5522340B7",
+          "currentSha256": "3c43702de55969e3d9386a603310a2f401d36f957016b5d5ade96dbbe0319553"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+          "testedSha256": "8A9D77E4B24BF48131393ED30FCC6CEBD51D96D2A801E0325357DD283986A036",
+          "currentSha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "testedSha256": "8E73C1A5BEDA86FCB8CEB8B823B33F3F6B72CA2843AD157203FD9C76D9ECFF4E",
+          "currentSha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "testedSha256": "0EC2D31FD70EE3C4BA6E53096EDCA0AD48120C56809694F7090C03F419712DF8",
+          "currentSha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "testedSha256": "D092FED502DDB864272B68201F52E63AF724BC48121340421521686544C464D0",
+          "currentSha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "testedSha256": "CB451DD5382E54C0E521F129F7E2B5D1D574137C249355E92B509825C8A7F0B1",
+          "currentSha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "testedSha256": "7933E8AF76FD9794013F898F4FE8B8AB87EDDF7EAE7AF2CC432C8422C04B7555",
+          "currentSha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "testedSha256": "BE820F440AF5AB0A66959ACC7E7786A15F8BDE7E144A6B6A7899D666DF62E0C7",
+          "currentSha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "testedSha256": "3708EAED52650E1232D7193D4F13C8AA51CFF1CE69B5277F2273ED71B4F23F06",
+          "currentSha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-fixture-manifest.json",
+          "testedSha256": "2BB683BF7980FD822EA4EC0C438D0EB8CE700439BDD03B68687BCF55AF87DE1F",
+          "currentSha256": "2cdf8cba9f3bc5febbdafafaa4bb38bc70aae6590c54963bba0f84b9889df1a0"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-plan.json",
+          "testedSha256": "0D80D6DD35F87F2B94DCA1805B893983AD6F6B9F2F77BEF69A8CF115F11B981F",
+          "currentSha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "testedSha256": "4C13C6FD1CDB60DBA134BABAC2EB27B92517C57E9DE48615E12AE2A04EC05886",
+          "currentSha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "testedSha256": "1BA02C2D4EDA0A6C28F13866F2F387FABD02F36336267584868AB20DDBFC53ED",
+          "currentSha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "testedSha256": "71F741AC79CC916E42F77A5864C2EC56D95ADE5A3010E5D6DAC0FFE9EBC7DAE4",
+          "currentSha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "FF200A68083435A88E1300F2A960109802C23C82CAB445976CD3A682EB0674B1",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "testedSha256": "791BF2127D407D8EB71805D6651FCAE2B4E41C378E092E931E8133475FF83519",
+          "currentSha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "death-render-pass2/elder",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex老头素材.swf"
+      ],
+      "runId": "0c367d50c2a54d64af9c4e6341168b66",
+      "passedAssertions": 34,
+      "failedAssertions": 0,
+      "testSwfSha256": "77c5e15045c010d04c389f2afa7a587df10dcda46f3f041feb02c5a06afdf071",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "flashswf/arts/new/Codex大刀机器人素材.swf",
+          "testedSha256": "F6CC21BD9E111BF332E65ED022C320832AD56D616310E9445A75EA35593142BD",
+          "currentSha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0"
+        },
+        {
+          "path": "flashswf/arts/new/Codex大头机器人素材.swf",
+          "testedSha256": "D36C25E751A536A85DEA0E2A9111276180493C016C986A3E9CB096E504187108",
+          "currentSha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403"
+        },
+        {
+          "path": "scripts/test-runners/cf6-robot-death-render/TestLoader-bladebot.as.template",
+          "testedSha256": "44BA844C2B912BEFD56A36B842B61DB5DE79FBDA1C3BE87A7B9268E5522340B7",
+          "currentSha256": "3c43702de55969e3d9386a603310a2f401d36f957016b5d5ade96dbbe0319553"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6BladebotAssetTest.as",
+          "testedSha256": "8A9D77E4B24BF48131393ED30FCC6CEBD51D96D2A801E0325357DD283986A036",
+          "currentSha256": "18cc71db0fd4a8a88c7591553823c03f38edbffb4d1fa15b3da47fdd514297b2"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6RobotDeathRenderTest.as",
+          "testedSha256": "81303CAA02065D996E41B6651B65385D9FEBE017D272099C9EF3FB65FFE20164",
+          "currentSha256": "1e26e93c5c0487af7fdd555fff8f825bda1be3b597b565b608ca906de900f2f5"
+        },
+        {
+          "path": "tools/cf6-audio/assets.json",
+          "testedSha256": "8E73C1A5BEDA86FCB8CEB8B823B33F3F6B72CA2843AD157203FD9C76D9ECFF4E",
+          "currentSha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+        },
+        {
+          "path": "tools/cf6-audio/cues.json",
+          "testedSha256": "0EC2D31FD70EE3C4BA6E53096EDCA0AD48120C56809694F7090C03F419712DF8",
+          "currentSha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "testedSha256": "D092FED502DDB864272B68201F52E63AF724BC48121340421521686544C464D0",
+          "currentSha256": "2d1466f6efb24780b4feed31b4dac595f55de5bb4aafc6492ee87366a2b34d64"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/build.py",
+          "testedSha256": "CB451DD5382E54C0E521F129F7E2B5D1D574137C249355E92B509825C8A7F0B1",
+          "currentSha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+        },
+        {
+          "path": "tools/cf6-bladebot-assets/native-manifest.json",
+          "testedSha256": "7933E8AF76FD9794013F898F4FE8B8AB87EDDF7EAE7AF2CC432C8422C04B7555",
+          "currentSha256": "7c74bd73de2d3a8a886e9224110e4f2a7205494b9d84ce7204234d8c6eae0897"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "testedSha256": "BE820F440AF5AB0A66959ACC7E7786A15F8BDE7E144A6B6A7899D666DF62E0C7",
+          "currentSha256": "a89addb29881543a956656f75cd8d1df90a0574758c772cb8c30e0c2021d8422"
+        },
+        {
+          "path": "tools/cf6-guard-assets/native-manifest.json",
+          "testedSha256": "3708EAED52650E1232D7193D4F13C8AA51CFF1CE69B5277F2273ED71B4F23F06",
+          "currentSha256": "376da00f12071bc616c74c34cbfd268e83eedc3e27799b90fdec5d5b62c59197"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/build.py",
+          "testedSha256": "4138BF497080FCF9385D4863D058784B1C02314E28F16E5A3A93C86DDE0C579D",
+          "currentSha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-fixture-manifest.json",
+          "testedSha256": "2BB683BF7980FD822EA4EC0C438D0EB8CE700439BDD03B68687BCF55AF87DE1F",
+          "currentSha256": "2cdf8cba9f3bc5febbdafafaa4bb38bc70aae6590c54963bba0f84b9889df1a0"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/death-render-plan.json",
+          "testedSha256": "0D80D6DD35F87F2B94DCA1805B893983AD6F6B9F2F77BEF69A8CF115F11B981F",
+          "currentSha256": "9ee28e83262a769527bc2d5f37c93115417f0b6fae27d677ed109bf31643ff3b"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/native-manifest.json",
+          "testedSha256": "2D44A524ED52510B2FFA36314AFF1F2DD6F3D0F8D518E7747DA58765A3E0618F",
+          "currentSha256": "6fc6ddf1991ff8809f46d43331aa065fae3c2ddf3cf4860ef70cca3f0d6a99db"
+        },
+        {
+          "path": "tools/cf6-manman-assets/native-manifest.json",
+          "testedSha256": "1BA02C2D4EDA0A6C28F13866F2F387FABD02F36336267584868AB20DDBFC53ED",
+          "currentSha256": "6faa3d1dc594b7b2d0814dac40b452c3bc2bc0eee7fa0bdff624b1cc83b4be92"
+        },
+        {
+          "path": "tools/cf6-soldier-assets/native-manifest.json",
+          "testedSha256": "71F741AC79CC916E42F77A5864C2EC56D95ADE5A3010E5D6DAC0FFE9EBC7DAE4",
+          "currentSha256": "0e941492ff0eccc37bed9676368f5166cae07d0ee554dc993d93efb3f3550d8d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "FF200A68083435A88E1300F2A960109802C23C82CAB445976CD3A682EB0674B1",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        },
+        {
+          "path": "tools/cf6-zombie-assets/native-manifest.json",
+          "testedSha256": "791BF2127D407D8EB71805D6651FCAE2B4E41C378E092E931E8133475FF83519",
+          "currentSha256": "4ce88ae9c54072d805e4f6f3526f2c2b41785f14eb45c4a9049deb4c327b4977"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    },
+    {
+      "folder": "blade-final-pass1/bladebot-render",
+      "kind": "render",
+      "patterns": [
+        "^Cf6RobotDeathRenderTest: (\\d+) passed, 0 failed; 8 draw points"
+      ],
+      "executedConsumers": [
+        "flashswf/arts/new/Codex大刀机器人素材.swf"
+      ],
+      "runId": "2b883643305c4182bce50baac8d809e1",
+      "passedAssertions": 34,
+      "failedAssertions": 0,
+      "testSwfSha256": "9a1e264d962ad57a5d38e96d206a059c9336e0afb985caa695d765779534078f",
+      "bindingsStableDuringRun": true,
+      "postRunDifferences": [
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6AudioTest.as",
+          "testedSha256": "D0F7E66862B84FBBE2055A8A995E5E359AE15BD4641DF3FA6A19CC6A34690C8C",
+          "currentSha256": "f120994d320baad667b8e7c87a3e781b385f53aa4f6e00f6987d4895afbff89d"
+        },
+        {
+          "path": "tools/cf6-wings-assets/build.py",
+          "testedSha256": "C58972F03CC7D9F7B50E088DA0E973442E9112CE52F98B944E61424CE3683ACE",
+          "currentSha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+        },
+        {
+          "path": "tools/cf6-wings-assets/native-manifest.json",
+          "testedSha256": "EFF00696434A4C0F65E4D420E96AFE217031A9740E1F67E4BCC25BCB687AE470",
+          "currentSha256": "cc46604d9407470f33ceee79780c3ea3d3aa52fa1934aabaa7bf554a09e76386"
+        }
+      ],
+      "sourceBoundary": "The original before/after snapshots and test binary are retained. Actual loaded consumer SWFs must match current bytes. Later changes to other consumers, metadata or capture-only inputs are listed and are not upgraded to re-execution."
+    }
+  ],
+  "builds": [
+    {
+      "family": "headbot",
+      "folder": "build-pass4/headbot",
+      "consumer": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "sha256": "ec3488e6233a6e5620afd101d7a0c7f18fd812457647ad075da5a3d525ec5403",
+      "bytes": 235709
+    },
+    {
+      "family": "elder",
+      "folder": "build-pass2/elder",
+      "consumer": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "adfd0e7a1187b49f8e6f8647e2e1204b52c771ad3fea319b96cc62543e8a61f8",
+      "bytes": 399889
+    },
+    {
+      "family": "bladebot",
+      "folder": "build-pass5/bladebot",
+      "consumer": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "sha256": "38689a02fbcebdcb8ae8902535bba9841795732efac5e2da61dc5cf57f7e50e0",
+      "bytes": 86270
+    },
+    {
+      "family": "manman",
+      "folder": "build-pass1/manman",
+      "consumer": "flashswf/arts/new/Codex蛮蛮素材.swf",
+      "sha256": "3d28f4b784ce7bb2b79bed4c9936679cccdf443ab4b7b5bd5aca1795063ea8c3",
+      "bytes": 86613
+    },
+    {
+      "family": "wings",
+      "folder": "build-pass3/wings",
+      "consumer": "flashswf/arts/new/CodexWings素材.swf",
+      "sha256": "1491f87589f98302a4dd12b15717db79c6f32190fab73811b5ec8cad4e6c6d34",
+      "bytes": 97610
+    },
+    {
+      "family": "soldier",
+      "folder": "build-pass3/soldier",
+      "consumer": "flashswf/arts/new/Codex特种兵素材.swf",
+      "sha256": "b800da9ef9b37d63de82b4dae3e4bda8b40771951e425093c97b103be7a4a088",
+      "bytes": 100202
+    },
+    {
+      "family": "guard",
+      "folder": "build-pass3/guard",
+      "consumer": "flashswf/arts/new/Codex光头保安素材.swf",
+      "sha256": "7f074aff6c2fe44dd206cf6af788363ab6bd1ba598d0dc97f9a4d95c5bf65621",
+      "bytes": 189659
+    },
+    {
+      "family": "zombie",
+      "folder": "build-pass1/zombie",
+      "consumer": "flashswf/arts/new/Antigravity专用素材.swf",
+      "sha256": "8166bc4a17e541876bd76092bcd4a5fd4e603a8bca8a8376589540861bcb98da",
+      "bytes": 113124
+    },
+    {
+      "family": "legacy-agent",
+      "folder": "build-pass8/legacy-agent",
+      "consumer": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+      "sha256": "d8088f76a8ffa08c9c8e8a4d54ca9752fce8d696d475945b388ccaca7618adc6",
+      "bytes": 1659399
+    }
+  ],
+  "behaviorAssertions": 3180,
+  "renderAssertions": 116,
+  "nativeImages": 24,
+  "arenaRuns": [
+    {
+      "label": "arena/headbot",
+      "experimentId": "cf6-headbot-combat-audio-20261017",
+      "planFolder": "arena-headbot",
+      "expectedRows": 18,
+      "versionScope": "before final fragment rendering correction; behavior DoAction bodies equal to final, but not final image qualification",
+      "rows": 18,
+      "finished": 17,
+      "timeouts": 1,
+      "candidateWins": 13,
+      "candidateLosses": 3,
+      "draws": 1,
+      "experimentQualified": true,
+      "runtimeIdentities": [
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        }
+      ],
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "label": "arena/bladebot",
+      "experimentId": "cf6-bladebot-combat-audio-20261017",
+      "planFolder": "arena-bladebot",
+      "expectedRows": 24,
+      "versionScope": "final published consumer version",
+      "rows": 24,
+      "finished": 24,
+      "timeouts": 0,
+      "candidateWins": 12,
+      "candidateLosses": 12,
+      "draws": 0,
+      "experimentQualified": true,
+      "runtimeIdentities": [
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        }
+      ],
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "label": "arena/elder",
+      "experimentId": "cf6-elder-combat-audio-20261017",
+      "planFolder": "arena-elder",
+      "expectedRows": 36,
+      "versionScope": "final published consumer version",
+      "rows": 36,
+      "finished": 36,
+      "timeouts": 0,
+      "candidateWins": 0,
+      "candidateLosses": 36,
+      "draws": 0,
+      "experimentQualified": true,
+      "runtimeIdentities": [
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        }
+      ],
+      "saveProtectionAndCleanupVerified": true
+    },
+    {
+      "label": "arena/headbot-final",
+      "experimentId": "cf6-headbot-final-combat-audio-20261017",
+      "planFolder": "arena-headbot-final",
+      "expectedRows": 6,
+      "versionScope": "final published consumer version",
+      "rows": 6,
+      "finished": 6,
+      "timeouts": 0,
+      "candidateWins": 4,
+      "candidateLosses": 2,
+      "draws": 0,
+      "experimentQualified": true,
+      "runtimeIdentities": [
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        },
+        {
+          "runtimeMode": "isolated_candidate",
+          "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+          "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+          "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+          "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+          "verified": true
+        }
+      ],
+      "saveProtectionAndCleanupVerified": true
+    }
+  ],
+  "totalArenaRows": 84,
+  "sourceSnapshotScope": "Current asset sources, supplied artwork, generators, edited XFL, selected validation inputs and actual SWFs. Host runtime identity remains bound by each isolated-candidate receipt; this is not a full repository or formal producer bundle.",
+  "audioAudit": "audio-audit.json",
+  "arenaSummary": "arena-summary.json",
+  "frozenCurrentSourceFiles": 3441,
+  "qualification": {
+    "newMechanicsNativeBehavior": true,
+    "nativeImageAgentReview": true,
+    "nativeEndpointListening": false,
+    "humanAestheticAcceptance": false,
+    "balanceCalibrationComplete": false,
+    "formalRuntimePromotion": false,
+    "standardEntryVerified": false
+  },
+  "constraints": {
+    "allNewSoundCalls": "_root.播放音效",
+    "newEmbeddedSoundTracks": 0,
+    "cf6ConsumerEmbeddedStartSounds": 0,
+    "unrelatedExistingLibrarySoundTracksRetained": true,
+    "realPlayerSaveWrites": false,
+    "commitOrPush": false
+  },
+  "retainedFailures": "All attempts, render failures, duplicate-voice failures, stale fixture checks, negative arena rows and recovery receipts are preserved under attempts and arena folders."
+}

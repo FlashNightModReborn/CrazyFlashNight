@@ -1,0 +1,93 @@
+{
+  "ok": true,
+  "recordedAtUtc": "2026-10-18T09:26:14.073128+00:00",
+  "baseBefore": "937e1815465a5c1c01376b1a947787c0e1b9de8f",
+  "baseAfter": "3dd6ca8a1afef1f2479beb7a5b94c08c9a1289c7",
+  "fastForwardOnly": true,
+  "changedFiles": [
+    {
+      "path": "docs/AI对话内嵌插话-交接与契约fixture-2026-10-18.md",
+      "beforeGitBlobSha256": null,
+      "afterGitBlobSha256": "74d374b349d25888e6fa1fd6aafb5943bb3537f37980727ac144f6ba375698ea",
+      "currentWorkingSha256": "374f0c326016584d39fb83b971708cfbb3de8740a7120588ad073f713b37518a"
+    },
+    {
+      "path": "docs/AI对话内嵌插话-开发计划-2026-10-18.md",
+      "beforeGitBlobSha256": null,
+      "afterGitBlobSha256": "8447a949f8c4d8e02b2aeaea17e7ae296ed5c473fc70b0b6a1db61df6c25a729",
+      "currentWorkingSha256": "92ec6cd5cefbbb6cea29bcad4ca20f38b6d6a4e6bb808c120c42cc1e11bda21f"
+    },
+    {
+      "path": "docs/AI对话内嵌插话-需求与协议-2026-10-18.md",
+      "beforeGitBlobSha256": null,
+      "afterGitBlobSha256": "712883d35120b4c8ca73401315b181a83813d8d6a6cd78f62c84434aff7ce3e8",
+      "currentWorkingSha256": "cff1dcedb3f7260657d51dabf700a4ce54f62e0162922b792911f8a59b0146da"
+    },
+    {
+      "path": "launcher/contracts/ragchat.v1.json",
+      "beforeGitBlobSha256": "78a259444360413a3885231a3680afea9277ab0981936a3cb264b1f06ff65f68",
+      "afterGitBlobSha256": "dc82f0cc81b065571d76ba5cfcc521b35a1f8d79173d787c1706972904772155",
+      "currentWorkingSha256": "1d5cddbd5b3797102f1db8dd0e9e5a8bd82d99760fd7d147aa09a88fd30c7027"
+    },
+    {
+      "path": "launcher/src/Guardian/LauncherCommandRouter.cs",
+      "beforeGitBlobSha256": "91e5457b663f2ad2b560ed89b5c2536bcd2a43f4bc1583b0f10e2acf677efa31",
+      "afterGitBlobSha256": "283fe454ffd56f2da8e940c4764803f00c776b9174c48e38738ad8a4932ae008",
+      "currentWorkingSha256": "8d49dbc45e3c9edbeac75add1d9df61816e65a1b5ee58585adf890e45ef4b325"
+    },
+    {
+      "path": "launcher/src/Program.cs",
+      "beforeGitBlobSha256": "ec3cd43f2731243ea94ff05fae4d9b906660fdb300224e973c54ae5dfea02785",
+      "afterGitBlobSha256": "6681856d008342a33c39ea2fe77b2be4d01a42d4d0141cf049470d1e3443b381",
+      "currentWorkingSha256": "dd79503ccdb82b262040c5b2aaacdbce8d9a649d09cbfead6cdec818741f3891"
+    },
+    {
+      "path": "launcher/src/RagTerminal/RagTerminalService.cs",
+      "beforeGitBlobSha256": "37676c43a16fae05ab7a7933ba77c235a82e6ea97146c3b05961eae1e6724d98",
+      "afterGitBlobSha256": "294d6e4e8058ffd35fa6efb8cca65b30a4db27559be28282aa8ae4330dfa62e6",
+      "currentWorkingSha256": "5d6d80b2cde2e0d96bf7b753517c54bd65492474e79dfd3bd337a58738f1bc7e"
+    },
+    {
+      "path": "launcher/tests/Guardian/LauncherCommandRouterTests.cs",
+      "beforeGitBlobSha256": "56366ef4af3820fee4c6fe753a3c7993c5d9b3a9fbd532bc5fe144a7c4ca7ce1",
+      "afterGitBlobSha256": "b93fa35e4125737333340130c4d56e335b5b896e8eae36849ba3c48cc182d30d",
+      "currentWorkingSha256": "f8ef4744284d50214735f462e2fe0734f683710f5f38a18f34c4598200a689c7"
+    },
+    {
+      "path": "launcher/tests/RagTerminal/RagTerminalServiceTests.cs",
+      "beforeGitBlobSha256": "ea9832917d5c38e01207cc0a7620698fd4057ae7da74ce029da1ef03da5f4e8d",
+      "afterGitBlobSha256": "51a5c5d356501e6fa4f095a9ccebe9c64fc33f9e428b13e60a58ce000e2162cd",
+      "currentWorkingSha256": "1596471f9d2dcf4a4cfbd89e5228cfa45121421993698a4445001acca93a01ab"
+    },
+    {
+      "path": "launcher/web/modules/tablet.js",
+      "beforeGitBlobSha256": "e59dd8b4ac9fdc8d8492b751f7567ac436c981a218a555c4cf60596349419abf",
+      "afterGitBlobSha256": "46d0ecbc90ca92f9f003e438a2341441ba6dab39353cb772d240e64b2f914165",
+      "currentWorkingSha256": "17d2ddd8dfc978c6d38c66ad5a22213de71686d80eba99efa71349547c25a002"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/neur/Server/ServerManager.as",
+      "beforeGitBlobSha256": "6fca1cd3d5db823c80b749efd9b0b6d1e5bdb4d6f1028faa0fac16aa3c3a51c8",
+      "afterGitBlobSha256": "1a6c508af7a1b1e296f7fa455bff150779c8420ea5b744be87d498fd59901e6a",
+      "currentWorkingSha256": "3066d303ccb6def21a3b2ae24945f435b14de21e7579a209b18e25f78e723285"
+    },
+    {
+      "path": "scripts/通信/通信_aka_Agent联动.as",
+      "beforeGitBlobSha256": "cbaa10162013bb063947cd04fcb9c1b06dd6b6171e658d46ca2cd4c574e51761",
+      "afterGitBlobSha256": "85b0c172539a2bd4c2dcf4f42a8325a24106103d05a29459a84201a11b03165e",
+      "currentWorkingSha256": "092396aa0a577a2632c91cbe3e4a71784dba934e2bdf998fd8bc12f1ab9dbb88"
+    }
+  ],
+  "arenaBoundInputsUnchanged": 17,
+  "priorNativeDirectBindingsUnchanged": 146,
+  "existingNativeEmbeddedSharedClass": {
+    "testSwfSha256": "c6a24306e0a6c16ea486faf235ff82a4b91cb413d6f27d27baad815022879912",
+    "compiledClasses": 401,
+    "containsServerManager": true
+  },
+  "refreshAllFourNativeSuites": true,
+  "newNativeBindingCount": 148,
+  "currentC5LoaderSha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401",
+  "formalRuntimePromoted": false,
+  "boundary": "Upstream terminal availability explicitly changed source only, with no new Host candidate or asLoader publication. Arena worker files, candidate binaries, data and the frozen C5 loader remain unchanged. Because the focused test SWF embeds the modified ServerManager class, all four final native suites will be freshly compiled after this integration rather than claiming the earlier focused suite covers the merged source. The new native binding list includes both changed AS2 sources."
+}

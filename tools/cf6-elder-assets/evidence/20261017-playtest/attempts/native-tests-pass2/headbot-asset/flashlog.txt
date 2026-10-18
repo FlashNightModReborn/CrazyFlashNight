@@ -1,0 +1,19 @@
+FocusedTestRunId cf6-headbot Start: 8654040f05f04319b5654b3cbf923743
+[CF6_CORPSE_DIAGNOSTIC] tick=34 bodyFrame=27 id=2 settled=false step=function handler=function x=3.6 y=60.45 ground=60.45 running=true vx=-0.818970607952695,-5.2835972472094,0,-0.949886694792401,-4.40409574937075,-3.37144438847119 vy=0,3.79947628510679,-0.267559150711944,0,4.74070648062875,-0.168745665339565 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[CF6_CORPSE_DIAGNOSTIC] tick=60 bodyFrame=48 id=2 settled=false step=function handler=function x=2.3 y=60.45 ground=60.45 running=true vx=0,0,0,0,0,0 vy=0,0,0,0,-0.211221539669807,0 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[CF6_CORPSE_DIAGNOSTIC] tick=119 bodyFrame=58 id=2 settled=false step=function handler=function x=2.3 y=60.45 ground=60.45 running=true vx=0,0,0,0,0,0 vy=0,0,-0.267559150711944,0,0,0 scope=/__headbotLibrary/headbotCase7/man/尸体碎片
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 7
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 7
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 10
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 10
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 11
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 11
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 19
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 19
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 22
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 22
+[TEST_FAIL] Cf6HeadbotAssetTest: death retirement once 23
+[TEST_FAIL] Cf6HeadbotAssetTest: settled corpse stamped exactly once 23
+[TEST_FAIL] Cf6HeadbotAssetTest: all completed fragment instances released
+Cf6HeadbotAssetTest: 368 passed, 13 failed; 24 actual timeline cases
+FocusedTestRunId cf6-headbot Complete: 8654040f05f04319b5654b3cbf923743

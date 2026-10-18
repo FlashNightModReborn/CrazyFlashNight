@@ -1,0 +1,224 @@
+{
+  "schema": "cf6.playtest-feedback.v1",
+  "state": "candidate_executed",
+  "executionScope": "isolated Flash TestLoader resources and production-class fixtures",
+  "asLoaderState": "compiled",
+  "formalRuntimePromoted": false,
+  "standardEntryVerified": false,
+  "humanAcceptance": false,
+  "newFullCombatMatrixExecuted": false,
+  "targetNetHpExchangePercent": [
+    50,
+    80
+  ],
+  "balanceCalibrationComplete": false,
+  "builds": [
+    {
+      "name": "headbot",
+      "exitCode": 0,
+      "swf": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "time": "2026-10-17T08:54:40.2198456+08:00",
+      "sha256": "A087E4B44FDE4E4FB7C5434A2AC1855F93AC075B2B2AF6E68B762F8B00924EB9",
+      "bytes": 133478,
+      "target": "flashswf/arts/new/Codex大头机器人素材/Codex大头机器人素材.xfl",
+      "evidence": "build-pass7/headbot"
+    },
+    {
+      "name": "elder",
+      "exitCode": 0,
+      "swf": "flashswf/arts/new/Codex老头素材.swf",
+      "time": "2026-10-17T08:54:47.8082517+08:00",
+      "sha256": "0FEEE79A4CA52DD846D7512F97303DE26D64FE252B430D6FCF741876196FDF42",
+      "bytes": 362385,
+      "target": "flashswf/arts/new/Codex老头素材/Codex老头素材.xfl",
+      "evidence": "build-pass7/elder"
+    },
+    {
+      "name": "bladebot",
+      "exitCode": 0,
+      "swf": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "time": "2026-10-17T08:18:19.8236347+08:00",
+      "sha256": "963CD8383EDFF068891C1D766B6880D02999BEB4BD114A12E49B9FF2FB4765A2",
+      "bytes": 50191,
+      "target": "flashswf/arts/new/Codex大刀机器人素材/Codex大刀机器人素材.xfl",
+      "evidence": "build-pass5/bladebot"
+    },
+    {
+      "name": "asLoader",
+      "exitCode": 0,
+      "swf": "scripts/asLoader.swf",
+      "time": "2026-10-17T08:34:33.9251225+08:00",
+      "sha256": "7F0FF06C53D46CF7786CA766AD9EBA1CF5A0DA21BC6EC1FA1B149739B4B09850",
+      "bytes": 6001972,
+      "target": "publish",
+      "evidence": "build-pass6/asLoader"
+    }
+  ],
+  "tests": [
+    {
+      "folder": "native-tests-pass6/elder-asset",
+      "pattern": "Cf6ElderAssetTest: 792 passed, 0 failed; 42 actual timeline cases; 13 phase cases",
+      "additionalPatterns": [
+        "Cf6ElderCombatEffectsTest: 31 passed, 0 failed"
+      ],
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [
+        {
+          "path": "scripts/test-runners/cf6-elder-render/TestLoader-capture.as.template",
+          "testedSnapshotSha256": "57c27fb81951523a4e7d09dc841150cfe2837cfc88a930235d9c731377125537",
+          "currentSha256": "7aadb2761209b2d68c031927aee8d38cb396abd5995cc3b173d9a2a9417b69ef",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as",
+          "testedSnapshotSha256": "069c3f77f7fd45fedfab793fe686cc4d0acae99659378225f56bfd92ed579114",
+          "currentSha256": "f411d5eda552953bd0bfb46390b8136654943f27a7b0490d312b85f6c1be5582",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/decode-native-capture.py",
+          "testedSnapshotSha256": "2416b8de7b298989cb3887cc6fcda19217a40d2494801ca6605c771dd0ea6dde",
+          "currentSha256": "f86f89e8bbaefd98e3f91fb8f0716bf9897b09d53acb028a7945b10f5eb5e182",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        }
+      ],
+      "runId": "3cc3ac31028547ac871483d9f19f51c7",
+      "domain": "cf6-elder",
+      "traceSha256": "cfe02e55bebe1fc63924ed403b8d30ec1884b0183b1db6206ad3eadc37500f6e",
+      "testSwfSha256": "e7a41a0c3094fae4722011e4e86f561394066498d79aa8f1da2663b062e6bff6"
+    },
+    {
+      "folder": "native-tests-pass6/headbot-asset",
+      "pattern": "Cf6HeadbotAssetTest: 390 passed, 0 failed; 24 actual timeline cases",
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [
+        {
+          "path": "scripts/test-runners/cf6-elder-render/TestLoader-capture.as.template",
+          "testedSnapshotSha256": "57c27fb81951523a4e7d09dc841150cfe2837cfc88a930235d9c731377125537",
+          "currentSha256": "7aadb2761209b2d68c031927aee8d38cb396abd5995cc3b173d9a2a9417b69ef",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as",
+          "testedSnapshotSha256": "069c3f77f7fd45fedfab793fe686cc4d0acae99659378225f56bfd92ed579114",
+          "currentSha256": "f411d5eda552953bd0bfb46390b8136654943f27a7b0490d312b85f6c1be5582",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/decode-native-capture.py",
+          "testedSnapshotSha256": "2416b8de7b298989cb3887cc6fcda19217a40d2494801ca6605c771dd0ea6dde",
+          "currentSha256": "f86f89e8bbaefd98e3f91fb8f0716bf9897b09d53acb028a7945b10f5eb5e182",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        }
+      ],
+      "runId": "1f31175407944367943e6bdcbd91e6e6",
+      "domain": "cf6-headbot",
+      "traceSha256": "78dc6e2e621eda4b98a4830b82407ecb91615008621c016f74700a514d055e73",
+      "testSwfSha256": "313edae179af7c98095f6bdc137498718f05f95c39b662690e8f64a25f86f157"
+    },
+    {
+      "folder": "native-tests-pass6/player-aim",
+      "pattern": "Cf6PlayerAimTest: 334 passed, 0 failed; 32",
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [
+        {
+          "path": "scripts/test-runners/cf6-elder-render/TestLoader-capture.as.template",
+          "testedSnapshotSha256": "57c27fb81951523a4e7d09dc841150cfe2837cfc88a930235d9c731377125537",
+          "currentSha256": "7aadb2761209b2d68c031927aee8d38cb396abd5995cc3b173d9a2a9417b69ef",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as",
+          "testedSnapshotSha256": "069c3f77f7fd45fedfab793fe686cc4d0acae99659378225f56bfd92ed579114",
+          "currentSha256": "f411d5eda552953bd0bfb46390b8136654943f27a7b0490d312b85f6c1be5582",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        },
+        {
+          "path": "tools/cf6-headbot-assets/decode-native-capture.py",
+          "testedSnapshotSha256": "2416b8de7b298989cb3887cc6fcda19217a40d2494801ca6605c771dd0ea6dde",
+          "currentSha256": "f86f89e8bbaefd98e3f91fb8f0716bf9897b09d53acb028a7945b10f5eb5e182",
+          "reason": "capture-only class absent from this TestLoader, or offline pixel decoder; runtime and executed test sources unchanged"
+        }
+      ],
+      "runId": "5e74c547bb5a49979e6845b35469322e",
+      "domain": "cf6-player-aim",
+      "traceSha256": "5cab154d61083b08095144410fc404f4917a0e36722aea89404039cf7dafa9e9",
+      "testSwfSha256": "cca1fed86bb4bdeccc162103e3311b212cd109db6f3b434ba0548fd54ca09c3a"
+    },
+    {
+      "folder": "native-tests-pass5/bladebot-asset",
+      "pattern": "Cf6BladebotAssetTest: 409 passed, 0 failed",
+      "perRunSourceBindingsCaptured": false,
+      "runId": "bb86344a593e47108c9c4d2bbb2828d1",
+      "domain": "cf6-bladebot",
+      "traceSha256": "7631560821e9539ba1b6a0a4d5f1af0dd61002e5f2a66cb8c4cab5e41be70eeb",
+      "testSwfSha256": "f6df21456ca7cbe4b5ff00799ff2a3527ea7f7087e3403fc7fa00d27f5cbed88"
+    },
+    {
+      "folder": "render-pass3/headbot",
+      "pattern": "Cf6HeadbotRenderTest: \\d+ passed, 0 failed; 2 draw points",
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [],
+      "runId": "23e45baf033f4490914a2fdf698583a2",
+      "domain": "cf6-headbot-render",
+      "traceSha256": "2c380ef4b5a7e2ac1b56a9b6ff7b74a9e7d76e1efefc7d1e6fb7be8dade4a5ed",
+      "testSwfSha256": "5fc99583384453023c80c405910fc513bf85d8aa23597455dc520b54df4ee28e"
+    },
+    {
+      "folder": "render-pass3/elder",
+      "pattern": "Cf6ElderRenderTest: \\d+ passed, 0 failed; 25 draw points",
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [],
+      "runId": "a9d3518a6bd34daa81f8158bafcd7480",
+      "domain": "cf6-elder-render",
+      "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+      "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+    },
+    {
+      "folder": "render-pass4/bladebot",
+      "pattern": "Cf6BladebotBeamRenderTest: \\d+ passed, 0 failed; 32 draw points",
+      "perRunSourceBindingsCaptured": true,
+      "postRunCaptureOnlyChanges": [],
+      "runId": "41831b2a2b5d4712a1f454a095bd8b61",
+      "domain": "cf6-bladebot-beam-render",
+      "traceSha256": "09751c82ff0e10a494944973befda963289d749458a0033e259f297791e9e2ac",
+      "testSwfSha256": "36ac241aa52115bdc79d5ea5c2c181601a7ed929769430fb31b8dbd81ae951e4"
+    }
+  ],
+  "sourceFiles": 378,
+  "changes": [
+    "Headbot beam adds 18 windup frames with growing charge glow; contacts at frames 21 and 29.",
+    "Headbot uses six prefab parts and Elder robot uses fifteen parts through the existing fragment animator; grounded corpse stamping, pause, unload, scene replacement and stale callbacks checked.",
+    "Human Elder fires piercing rounds toward the locked player body center; Bladebot turns its beam art and collision together. Existing depth thresholds remain unchanged.",
+    "Elder melee actual hits grant a short-lived low-strength high-capacity shield. Kicks declare crumble; slam declares slay and horizontal knockback, then selects a beam combo.",
+    "Primer beam grants a 25 percent decaying vulnerability for 180 effective frames without altering Titanium-171.",
+    "Charged heavy beam has native charge glow, threefold visual thickness, a 96 pixel contact width and threefold wave damage. It is authorized only by a live vulnerability on the same locked target; expiry or replacement cancels it.",
+    "Final behavior checks total 1956 assertions. Render evidence distinguishes the cancelled 807-point Elder sweep from the completed 25 selected native frames."
+  ],
+  "failedAttemptsRetained": true,
+  "oldSealedPackagesModified": false,
+  "limitations": [
+    "Actual player input, aesthetic and feel acceptance remains human.",
+    "Older R15 36-match statistics do not qualify the new two-beam kit.",
+    "Point trajectory fixture is narrower than a rendered piercing bullet; it is not a full projectile-factory lifecycle test."
+  ],
+  "renderCoverage": {
+    "headbot": {
+      "firstSweepDrawPoints": 204,
+      "firstSweepPassed": 611,
+      "firstSweepFailed": 2,
+      "failureScope": "Full-capture bounds on beam frames 29 and 30 only",
+      "finalFramingProbeDrawPoints": 2,
+      "fullSweepAllPassClaimed": false
+    },
+    "elder": {
+      "selectedDrawPoints": 25,
+      "full807PointSweep": "cancelled, not passed"
+    },
+    "bladebot": {
+      "drawPoints": 32,
+      "captureContext": "Neutral beam angle; player aim and matching visible/collision transforms verified by the separate player-source suite"
+    }
+  },
+  "humanAcceptanceState": "pending"
+}

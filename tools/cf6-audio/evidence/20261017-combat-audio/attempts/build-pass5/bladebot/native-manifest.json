@@ -1,0 +1,979 @@
+{
+  "schema": "cf6-bladebot.native-import.v1",
+  "owner": "flashswf/arts/new/Codex大刀机器人素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6大刀机器人-R2",
+  "nativeSymbolCount": 116,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/vector.py",
+      "sha256": "81ae4a78b716c1dabf7681cb8394cdf9d6e1596f6ee8df178712cba4cc40f068"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    }
+  ],
+  "parts": [
+    {
+      "id": 890,
+      "shapes": 13,
+      "segments": 126,
+      "masks": 1
+    },
+    {
+      "id": 891,
+      "shapes": 5,
+      "segments": 59,
+      "masks": 1
+    },
+    {
+      "id": 892,
+      "shapes": 40,
+      "segments": 395,
+      "masks": 1
+    },
+    {
+      "id": 893,
+      "shapes": 6,
+      "segments": 77,
+      "masks": 1
+    },
+    {
+      "id": 894,
+      "shapes": 13,
+      "segments": 127,
+      "masks": 1
+    },
+    {
+      "id": 895,
+      "shapes": 14,
+      "segments": 161,
+      "masks": 1
+    },
+    {
+      "id": 896,
+      "shapes": 8,
+      "segments": 166,
+      "masks": 1
+    },
+    {
+      "id": 897,
+      "shapes": 9,
+      "segments": 128,
+      "masks": 1
+    },
+    {
+      "id": 898,
+      "shapes": 64,
+      "segments": 697,
+      "masks": 1
+    },
+    {
+      "id": 899,
+      "shapes": 27,
+      "segments": 317,
+      "masks": 2
+    },
+    {
+      "id": 900,
+      "shapes": 12,
+      "segments": 126,
+      "masks": 1
+    },
+    {
+      "id": 916,
+      "shapes": 217,
+      "segments": 2503,
+      "masks": 5
+    },
+    {
+      "id": 917,
+      "shapes": 5,
+      "segments": 117,
+      "masks": 5
+    },
+    {
+      "id": 918,
+      "shapes": 5,
+      "segments": 116,
+      "masks": 5
+    },
+    {
+      "id": 919,
+      "shapes": 5,
+      "segments": 117,
+      "masks": 5
+    },
+    {
+      "id": 920,
+      "shapes": 5,
+      "segments": 127,
+      "masks": 5
+    },
+    {
+      "id": 921,
+      "shapes": 5,
+      "segments": 144,
+      "masks": 5
+    },
+    {
+      "id": 922,
+      "shapes": 5,
+      "segments": 127,
+      "masks": 5
+    },
+    {
+      "id": 923,
+      "shapes": 5,
+      "segments": 130,
+      "masks": 5
+    },
+    {
+      "id": 903,
+      "shapes": 1,
+      "segments": 8,
+      "masks": 0
+    },
+    {
+      "id": 905,
+      "shapes": 1,
+      "segments": 4,
+      "masks": 0
+    },
+    {
+      "id": 909,
+      "shapes": 1,
+      "segments": 3,
+      "masks": 0
+    }
+  ],
+  "actions": {
+    "cleave": {
+      "id": 910,
+      "state": "空手攻击",
+      "hits": [
+        20,
+        22
+      ],
+      "hitboxSourceFrames": {
+        "22": 20
+      },
+      "power": 2.4
+    },
+    "sweep": {
+      "id": 912,
+      "state": "近战",
+      "hits": [
+        19,
+        22,
+        25,
+        28,
+        31,
+        34
+      ],
+      "power": 1.0
+    },
+    "beam": {
+      "id": 906,
+      "state": "激光束",
+      "hits": [
+        11
+      ],
+      "power": 1.0,
+      "damageType": "魔法",
+      "magicAttribute": "波"
+    }
+  },
+  "groundShift": -44.03251647949219,
+  "sourceOffsets": {
+    "906": [
+      4.75,
+      -62.05
+    ],
+    "901": [
+      22.5,
+      -76.55
+    ],
+    "902": [
+      21.5,
+      -80.7
+    ],
+    "910": [
+      26.5,
+      -53.5
+    ],
+    "912": [
+      21.5,
+      -79.55
+    ],
+    "913": [
+      8.95,
+      -59.95
+    ],
+    "924": [
+      7,
+      -61.0
+    ]
+  },
+  "restoredOriginalAttack": 906,
+  "sharedDeathEffects": [
+    "火花",
+    "小烟雾"
+  ],
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 113.xml",
+      "sha256": "782c3dd9b5c4f3ac77363c5853192e5708fe6379b495c0f72898650e6941e47e",
+      "bytes": 883
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 15.xml",
+      "sha256": "066ffab9cb552591cea687abd96f4b6ca8f98539fa4e3535a9d88285ccf4addc",
+      "bytes": 1057
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 16.xml",
+      "sha256": "eaa41e50492ae743ea6d62e867b9e53f81e92caeaa58324016cf2d86014171c5",
+      "bytes": 1111
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 18.xml",
+      "sha256": "28999181dfac893b8df4f6c6b5c4eecf8a05c87cad69e7ddc6f080b03488091f",
+      "bytes": 1093
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 19.xml",
+      "sha256": "c5a082d25ee5bee89a55ba3dc95eac0529e3f95f10f68a475a8cf452c9b6ecfb",
+      "bytes": 986
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 195.xml",
+      "sha256": "32eee01f764190991a508d1b700347e8ca29d7eb0b6a76f8486d6e0514b6076c",
+      "bytes": 1571
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 2.xml",
+      "sha256": "0ac6684f38c506f65f97dfa00d411d8c357ae32fbd69df8a410eab070f471b90",
+      "bytes": 2501
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 21.xml",
+      "sha256": "07e72504e757b0aebb891712e363e1493351376f06913b92e8d5e318b88ae1bf",
+      "bytes": 1063
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 23.xml",
+      "sha256": "b4024a4128637ba76430cd56eeb4fe3b91ee614d984a7ac7a0d1b453570a12c3",
+      "bytes": 1017
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 24.xml",
+      "sha256": "da1de5d9d5117d7bdfbaeb6b3d1351cf69cdfc67770cb2a85dc631058c69ce4b",
+      "bytes": 881
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 26.xml",
+      "sha256": "84027a789c311c0e1f2dd6da065ff88146345ef76efdd565a848073641d450b3",
+      "bytes": 4945
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 32.xml",
+      "sha256": "cae5fe57ff8a260e647f875f4166dd8ae987bdcda284fbd68e71d7dbaf067d12",
+      "bytes": 6422
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/Symbol 99.xml",
+      "sha256": "0cd6418a8f3520fa1efa4282d17badf5a4d14985c16d97dc1dca0b8d10e3688e",
+      "bytes": 1762
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/CF7/思考标签.xml",
+      "sha256": "a83fd8804a3bac0facaa20de84f5ca071e61b7d3ca2dfa9c7349e283512840ff",
+      "bytes": 1238
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/890.xml",
+      "sha256": "0f62a5fad557ef471bd007df3676e1b7ad4ba7df7a5d8ae1e0d48d45b30c5e25",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/890-遮罩0.xml",
+      "sha256": "4935d95f78c890f97bc7412a534e841ccae898f2d054c646c3a173f9a0bc93e1",
+      "bytes": 13784
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/891.xml",
+      "sha256": "bd5a44e2b0b3f2003b41cd03843467a4dfd4789a9b7687c3a2607c25a17c9978",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/891-遮罩0.xml",
+      "sha256": "9a5b691fddf2d2eec4dac1b9f7ee64d0378cd5b7465a4430e88073785c3a1513",
+      "bytes": 6327
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/892.xml",
+      "sha256": "6c696dc437facb9a679de895360e36622b8bb26f36b604addd11610157c38725",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/892-遮罩0.xml",
+      "sha256": "9846f211abb54f98c36c54b87ee05ee009d694034aeda34057a3e635643e0ca9",
+      "bytes": 43456
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/893.xml",
+      "sha256": "489502d031df740310503966d9cb4d404d66a33e525723e7b5526de9d4106235",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/893-遮罩0.xml",
+      "sha256": "cd6b4cc258afcba6cf9ca937ca31783cd88796c2284fd16d9d19ba47e35971b5",
+      "bytes": 7965
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/894.xml",
+      "sha256": "678b7d7c752acf3e473d517670538d3d475e51af1dca3755c5018190dba55ea3",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/894-遮罩0.xml",
+      "sha256": "6d81cc4c2b4228e3eae72c6813e7f7f4161102ecebcd39bf5a3f898b0f175191",
+      "bytes": 13781
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/895.xml",
+      "sha256": "ee5ebd889d12920d5bd04643a083b7e543102e6bf840bd0d0e192e2696a62678",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/895-遮罩0.xml",
+      "sha256": "0acc2ee2277bed1fecb8ffa7338d92718f6d4a8a9df14347db7b72d891b5e337",
+      "bytes": 16125
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/896.xml",
+      "sha256": "e30e9e50f61a8be0a865e35cd43a22c0fc0c2cfb952132ee5b40c44cf602cfb7",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/896-遮罩0.xml",
+      "sha256": "21e5ea411be3093c247ab1c9e74622298bcae875903b96af969cf8b2ff54ba08",
+      "bytes": 11007
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/897.xml",
+      "sha256": "b07b96a7650f3eb30b8cafc9d836910b9b90b58e3a1614e160b628045ee7c505",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/897-遮罩0.xml",
+      "sha256": "00888fbf38ddd8d48ba86606e368cdfcc2fb70e42cf4588045fd7c1217b7a40e",
+      "bytes": 10813
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/898.xml",
+      "sha256": "2ca8aa6690873c435a7de6fd3f310829e62ea9f01be67adc41f34f092e4f7800",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/898-遮罩0.xml",
+      "sha256": "dfff6dd3debe3735a42c86b7fd3b1b843b5156926e67bd16c05f7124e7e09dc6",
+      "bytes": 69790
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/899.xml",
+      "sha256": "f8b1086d6340a986523c0f1e0eaac5c1463b0f5e066e4080163b498aa531e622",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/899-遮罩0.xml",
+      "sha256": "9b4a1d99c93458f3aed1c87ef41e3bb2818e7078701f608ac32cb341f99fb73e",
+      "bytes": 2630
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/899-遮罩1.xml",
+      "sha256": "68c350009745c57fd0d17a1d2cf59ae912f727018aaf23f9cf64a98020df6c93",
+      "bytes": 24379
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/900.xml",
+      "sha256": "4a1b4d4f2b03f4d233bd44b3f73a59634c7e25c0815ade140527198b3a9a0119",
+      "bytes": 977
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/900-遮罩0.xml",
+      "sha256": "2da408759fb234b5bfe0d801a4117a2619bc6f25a2ace6cc1493c075c9944613",
+      "bytes": 13640
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/903.xml",
+      "sha256": "26e54d0c6b339db8bea19a297a002e9fa08a628f0574ff1772701f9865478f0e",
+      "bytes": 1407
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/905.xml",
+      "sha256": "22f41dee3b76ca8e3ad95dcb45ef722a0e141adce2c55fc718722cbbd8d0d1b1",
+      "bytes": 1424
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/909.xml",
+      "sha256": "a8b30d62fcde31701c91a63fb37a63138aac79f762bc7c93b89fad0804dfcbfd",
+      "bytes": 981
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/分件/可瞄准光束.xml",
+      "sha256": "434093771fa1c2434afecdf2e95c2506ec64e1bb21b8a3ec96ffc876b52d96b7",
+      "bytes": 950
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/倒地恢复.xml",
+      "sha256": "2a809320366e2ad2fdd4d658af9e36f27e61fea45730d46ab3e3edaae463827c",
+      "bytes": 12586
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/击飞姿势.xml",
+      "sha256": "6f242102fcd0fdc21806ae7f5a832e947a2a30d99f69ba680f6924d9025cdf0f",
+      "bytes": 11913
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/机械碎裂.xml",
+      "sha256": "0595e8be1f53bdf1dff978d44e0afb9668b1ca0bab06af1e1796efc6173de7c3",
+      "bytes": 110367
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/横扫.xml",
+      "sha256": "6ee1992595087899fe7144f36f782bfc9fd405521a0451652826d5be4bfa995f",
+      "bytes": 70149
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/波属性光束.xml",
+      "sha256": "0fd1f9f08b88283edf39e425c7f12bdc934d763e85e3beb436103e36a470cb70",
+      "bytes": 33635
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/站立.xml",
+      "sha256": "5f0f95bd02d66d69ca3290c0700e8dd568a69d21a0338ae2feb2546c3085bc83",
+      "bytes": 38598
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/行走.xml",
+      "sha256": "509e58a95fdc964cb26040a3e239a4e150a341a4a52f49f84ca4fd75c0e4f0e5",
+      "bytes": 30905
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/被击.xml",
+      "sha256": "78866b6deaca15132ca5ff50b09ac7d85bc77b0150f581fa4b0ac048fd9c13d8",
+      "bytes": 60253
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/动作/重劈.xml",
+      "sha256": "5fa51459952935400fc2b13b77d0118955e90549e7778d46a7335a6184444404",
+      "bytes": 65102
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/敌人-CF6大刀机器人.xml",
+      "sha256": "c8ff185b3fe67a01ca028ae7b74690e67e0509e8cfbd34b03ffd65f33c49e25d",
+      "bytes": 32387
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
+      "sha256": "4c7ed818d1b7567776578511c250e0ed0e0516251d5b5ea13581116ad4d88a69",
+      "bytes": 1718284
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/机械爆裂/演出.xml",
+      "sha256": "7ece3cf366c10300a80c16b68412bb7328e914167758ee452ec361641b3cf782",
+      "bytes": 1198
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916.xml",
+      "sha256": "e462547516763843023626ac03faa4063aadb63060c824185d5672fe5789cf05",
+      "bytes": 3244
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩0.xml",
+      "sha256": "a3af85e67d1c994321ce22df1b497188b00f4f86872963ad6ac2d9b159463c65",
+      "bytes": 1974
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩1.xml",
+      "sha256": "b0e569d772f780d06fd83d2c2610236234c64a2257bef684141a4f633fb64eca",
+      "bytes": 1930
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩2.xml",
+      "sha256": "571e9fbc250422a9a8701e56672f9d8778baec616e2bd2e2855f278f58e0470a",
+      "bytes": 1886
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩3.xml",
+      "sha256": "ae0c29cae8abc15c93bbe07bfad1d024ea5be7ff7dc251e98039c4daec394844",
+      "bytes": 2173
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/916-遮罩4.xml",
+      "sha256": "bdd9abd62445e08c8f71a613fdd74d94ae11cbbcb5e4d6a18f02cef8b9ec702f",
+      "bytes": 2044
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917.xml",
+      "sha256": "6b18452577502a32c0d97bace944e1241ee8122e62597bd6c74f584212b6e485",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩0.xml",
+      "sha256": "43f3cf85e41611afb02f643bfffe98e7439ab5afbe0e71bf9ebb4c3afd010a08",
+      "bytes": 2176
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩1.xml",
+      "sha256": "7dcc1211d16e5a17d69cced07ec2ddc825b74eb2a5bcbe9cbd68df6402353df7",
+      "bytes": 2076
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩2.xml",
+      "sha256": "aec4879c10f50efc014ad4d046dd71d0a4d53a87916eed5ea646877ecbed67f6",
+      "bytes": 1883
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩3.xml",
+      "sha256": "2df735ecf48869e2d8f57753a8d1d3c0f361807f72534055c9eacc5d8263c01a",
+      "bytes": 1949
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/917-遮罩4.xml",
+      "sha256": "86f977b73d82383fd79ffd5a15230663fc7eb4b6ab9387d32559741df745a69d",
+      "bytes": 1981
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918.xml",
+      "sha256": "12b94d5011aae1ade7ff9801fa3d84e09d3600371f4abe9779f884d15ea3a32d",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩0.xml",
+      "sha256": "b8bdf393244f1ec31f6e2145d1e61a8e4bdce06a63112854299c58153b781d98",
+      "bytes": 2072
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩1.xml",
+      "sha256": "3e1c66e4f375bf002db961ff844c66aee99a46700db98d3e8e16aa1ef87a87c3",
+      "bytes": 1901
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩2.xml",
+      "sha256": "3de8916b3a6961ed0cab65522f641e26502054ffded4cfc3e294f44acd276d2b",
+      "bytes": 2141
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩3.xml",
+      "sha256": "51dd82e593cf5db770cd4c602c5f3de786ff621d135808f10d84df6f5d9d779c",
+      "bytes": 1970
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/918-遮罩4.xml",
+      "sha256": "981d85052f6a698c0d5fe3a4ec071113f65de5f5090ed72259bd082c90978d02",
+      "bytes": 1961
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919.xml",
+      "sha256": "903cca0bde43aba96cc2dab5ac700fb535032a4ba53de8e329814903c71cf92a",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩0.xml",
+      "sha256": "efbb8bb6bd04a05077ccb26ece4a6b5214571551bdd4c6e97bdfba91bf24d08e",
+      "bytes": 2163
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩1.xml",
+      "sha256": "d5d140f60a2df5fd56f794eff5cca199a49d05096c565d076e400b4b022258ec",
+      "bytes": 1887
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩2.xml",
+      "sha256": "a598f1a36f7835c33095ad0cdb800204cc876bb8da5c79e81a1296f5edc13bf2",
+      "bytes": 1975
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩3.xml",
+      "sha256": "12197fe0b8c60673e8d7aa6f049e37991e5b26ee76d0548f348ce492ae41bcfd",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/919-遮罩4.xml",
+      "sha256": "b81a1a88dfabe5acaee531f5ee14e52536b47508d044b47bf09d48f51d44d24f",
+      "bytes": 2068
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920.xml",
+      "sha256": "fd2d663abe63fc4e12c23c9a1c0e5df3c0cf77ec3f1ffc46fbd9dee7271a4091",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩0.xml",
+      "sha256": "95fd67326357812bb040fb0a4cecb923f1ae29a4e141fe382f70ac310bddb48f",
+      "bytes": 2182
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩1.xml",
+      "sha256": "be1d850b35db3287dfeba5ae9171976ac47b167cce168a74bcda21ac32850087",
+      "bytes": 1967
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩2.xml",
+      "sha256": "65c7e65384f1ef375f4cf5d48e20f453c6958fc68453440fc0e0d63086607a12",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩3.xml",
+      "sha256": "2ec14054826e278517b9a892eab0af6b5ba972b4188bae6b9c88f69c4c8332c9",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/920-遮罩4.xml",
+      "sha256": "4b34431c70c97d96953afe565e30af8183ec1698002d05798b01091e4fbca516",
+      "bytes": 2093
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921.xml",
+      "sha256": "6d91fd60c8832b416a419c355c9861e45bdd2a9e180b5695694a6262a8a8e79c",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩0.xml",
+      "sha256": "0c6126da37800c825fe248a7a85828f66de4a38be9624e739f3736a28e4f71a5",
+      "bytes": 1974
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩1.xml",
+      "sha256": "189511b7e1a4ad2bb965a96652c14d5fa52d23bc4857a5ece4257ce50926a313",
+      "bytes": 2198
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩2.xml",
+      "sha256": "966efa04ea2c64adb3eef1e4344d3a6626fa3bbdb41e872cb9d3c73cc1e1d620",
+      "bytes": 2065
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩3.xml",
+      "sha256": "d6e1abe604275353345c4f42c980f1c7269f934a1dc5b16584857608abade932",
+      "bytes": 2080
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/921-遮罩4.xml",
+      "sha256": "938b775c2dbd87292403e39efcb9e4df2db4acd534403af5bb4c13bec4242b50",
+      "bytes": 1993
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922.xml",
+      "sha256": "42744d61f13e61dd06ad16aff6025f911cf83e17242555f1f9d0de49df4c617e",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩0.xml",
+      "sha256": "4129dadd5c02c82da620fcccf7b72d60f33b9cd7e2ac24243372ea963361563b",
+      "bytes": 2189
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩1.xml",
+      "sha256": "0e99fadebb4a014a643dff650a238c28369fa1efe4db74ecf8fb8a7d003854d6",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩2.xml",
+      "sha256": "013b417b874731e3ea44fe76172f62c1aa76d08677f2a65e83603d028290553d",
+      "bytes": 1967
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩3.xml",
+      "sha256": "326c4a57b57425c6b9e5544a5b58144f6b4ab248e5ab1b37564e154822505e91",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/922-遮罩4.xml",
+      "sha256": "6446de4b01bedbf0ba7596c1c9df9dd9b8d1120cb9ca6f85f1beb74c95102f74",
+      "bytes": 2102
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923.xml",
+      "sha256": "de8784cb116e54b1a2cf1c3cc329c62400c342cfa62d118da55f957127a3aea8",
+      "bytes": 2697
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩0.xml",
+      "sha256": "53cc9be10fddbcf179f0272ef7c3bb67ca49bbeb20f3efb5c52d64d0b65ff790",
+      "bytes": 1986
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩1.xml",
+      "sha256": "8f2cc3b4e0370426d5079ba0bf369d02eee148dd159dba17b6a99a96d44ca3f9",
+      "bytes": 1973
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩2.xml",
+      "sha256": "b210bb34ca6cbb99042612882a8002334cc950663ebb59ee419038c7f041ccc0",
+      "bytes": 1974
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩3.xml",
+      "sha256": "9c0ff2b37e6aa08460a268b9eafa212a1173c91b66169839c3eaff887674e56f",
+      "bytes": 2197
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/死亡碎片/923-遮罩4.xml",
+      "sha256": "e830765329129f787ba063a165dfe04a6cc990a2fa35664b60b5525fcb497eed",
+      "bytes": 2091
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376.xml",
+      "sha256": "b0eb82b3c3bc96420dce452b3ad12ca11a21250b3cf751f793ae5c5f063d3b95",
+      "bytes": 5439
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩0.xml",
+      "sha256": "986c2d4de3282c987250aafa4fc14e6ca0471151a3c0d103fce5eeda30f0e5c9",
+      "bytes": 14462
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩1.xml",
+      "sha256": "8013d6a55807bb2fd1dc894ec13a9b4c8eb137252ca31ea6c92dc90c446562a8",
+      "bytes": 6350
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩10.xml",
+      "sha256": "0f7f121b958bfafec5d699082680b5a1b9e5b99a39dbd21a4dc78eba5790ddfe",
+      "bytes": 24532
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩11.xml",
+      "sha256": "e5e41e9eb9ec1dc792a9815b002045775d3b1c003120a54bcb6c0fec3d7c80e6",
+      "bytes": 13906
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩2.xml",
+      "sha256": "2ae792b20e03eb5478d702a51a4250f4ea4b077c19151ec243451d829b61c7a7",
+      "bytes": 42937
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩3.xml",
+      "sha256": "0d69f1977bd42c489e6f64c1cd21f66336c2d9421eaa7c71e5a5ed99061de6b5",
+      "bytes": 8121
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩4.xml",
+      "sha256": "77c225efb182bc2a35c424d89dcf48b0d61eb4627c25a2838e30cb51602652bf",
+      "bytes": 14155
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩5.xml",
+      "sha256": "b128cb7dfb25e99853d7032ab7d840107305e93087eadf564a62aa3acd2525a5",
+      "bytes": 16491
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩6.xml",
+      "sha256": "8a01ecf42e812244b6a5d87cf9c7d41af29d8e6ea5f1d96fd4a586a1b51d9922",
+      "bytes": 11428
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩7.xml",
+      "sha256": "8f7aa37f68bf660fe6edd3571ee4c0e285f328491bebe7553bca562bc845ec48",
+      "bytes": 11060
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩8.xml",
+      "sha256": "9c716831fb7784df75f5736da59f3448ea16a6a9d9d4eda88d17ca9a5186b07b",
+      "bytes": 70656
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/碎片图集/207ad0e4be8a5376-遮罩9.xml",
+      "sha256": "a2c6e25cb3528b522cd9be26c043fc89c475eca1192f5781baab292b85bbee2c",
+      "bytes": 2685
+    },
+    {
+      "path": "LIBRARY/Codex/大刀机器人/行为驱动.xml",
+      "sha256": "3523b334999d8a8cf5cc86e681e97e34358541c1c2d4f2db147cd8e967f8988c",
+      "bytes": 666
+    },
+    {
+      "path": "LIBRARY/Codex大刀机器人素材.xml",
+      "sha256": "edfa82af38a73a7cf5b876b071bac95e93a748aa92387916a8c41fb000573542",
+      "bytes": 1192
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "2358adfefa5238d615a03f7e6cc709104e4e27da27fd836681425e9555be54ac",
+      "bytes": 15613
+    },
+    {
+      "path": "Codex大刀机器人素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "c9101a70cce529b64e4aba65f4ad4e33e1421ec1dbde826a6484726d761e15b0",
+      "bytes": 8019
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 7,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0652.mp3",
+        "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0904.mp3",
+        "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0907_c56b689a20.wav",
+        "sha256": "1f2dd5e941606c234478c96380196e99ac71eb80494336acea50f3cae544b613"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0908.mp3",
+        "sha256": "05cba5c6c7fae33b176a7be367d75181c24260f7deb6491de6b42686ea95f0cf"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0911.mp3",
+        "sha256": "134e5fc78980f4c1adac074b5b1dc87ba533ecbc90bae684992284b2e112cff6"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0915.mp3",
+        "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1009.mp3",
+        "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "ff3d01e660d251272bcbf4f5cda5c7b7583db0c3ee0128de6368748fae609ac7"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "9a5263f6a01a02a9c587beb6d1e81a47e43df45c01aacac98eb883d38f5f3f5f"
+      }
+    ]
+  }
+}

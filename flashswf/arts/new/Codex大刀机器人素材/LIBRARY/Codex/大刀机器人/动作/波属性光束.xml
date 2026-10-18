@@ -1,0 +1,755 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/大刀机器人/动作/波属性光束" itemID="6af00000-4cf6046e">
+  <timeline>
+    <DOMTimeline name="波属性光束">
+      <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0904.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="21">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="攻击生命周期" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.bladebotBeginAttack(this,"beam");stop();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="29">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.bladebotFinishAttack(this);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="身体内部攻击时钟" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/行为驱动" name="bladebotBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent._parent.bladebotBodyTick(_parent);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="真实近战判定" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/CF7/Symbol 195" name="攻击点">
+                  <matrix>
+                    <Matrix a="24.762" d="1.28" tx="309.425" ty="-31.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){ bladebotToken=_parent.bladebotToken;bladebotHitFrame=_parent._currentframe;_parent._parent.bladebotStrike(_parent,this,1.0); }]]></script>
+                  </Actionscript>
+                  <color>
+                    <Color alphaMultiplier="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="11" keyMode="9728" duration="20">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_19" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="10">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/可瞄准光束" symbolType="movie clip" loop="loop" name="bladebotBeamVisual">
+                  <matrix>
+                    <Matrix tx="16.5" ty="-15.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){_parent._parent.bladebotAimPart(this);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="12" keyMode="9728" duration="19">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_18" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.125" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="3" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.25" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.375" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.5" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.625" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="7" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.75" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="8" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.875" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.933594" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="14" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.867188" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="15" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.800781" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.734375" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.667969" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.601562" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.535156" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.464844" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="21" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.398438" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.332031" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="23" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.265625" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="24" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.199219" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="25" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.132812" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0.066406" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="27" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/903" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix tx="7.1" ty="-30.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="1" redOffset="0" greenMultiplier="1" greenOffset="0" blueMultiplier="1" blueOffset="0" alphaMultiplier="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_17" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.165802" b="-0.248581" c="0.248581" d="0.165802" tx="-14.15" ty="-4.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_16" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.281219" b="-0.100494" c="0.100494" d="0.281219" tx="-24.15" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_15" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/900" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.23999" b="0.179367" c="-0.179367" d="0.23999" tx="11.65" ty="11.85"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_14" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/899" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.188568" b="-0.231705" c="0.231705" d="0.188568" tx="81.2" ty="-48.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_13" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/898" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-10.15" ty="9.4"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_12" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/897" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.159561" b="-0.251465" c="0.251465" d="-0.159561" tx="30.95" ty="-8.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_11" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/896" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.23674" b="-0.156876" c="0.156876" d="0.23674" tx="15.45" ty="-32.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_10" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/895" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.295883" b="-0.046265" c="0.04628" d="0.295868" tx="55.8" ty="-26.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_9" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.299988" d="0.299988" tx="-45.6" ty="44"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_8" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.085403" b="0.287109" c="-0.287109" d="-0.085403" tx="-6.55" ty="56.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_7" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/894" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.269073" b="0.132492" c="-0.132492" d="0.269073" tx="-86.7" ty="29.75"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_6" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/893" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.114548" b="0.277008" c="-0.277008" d="-0.114548" tx="-48.85" ty="45.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_5" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/892" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.5" d="0.5" tx="43.3" ty="62.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_4" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284988" d="0.284988" tx="38.8" ty="38.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_3" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.276306" b="-0.068695" c="0.068695" d="0.276306" tx="69.8" ty="12.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_2" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/891" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.284988" d="0.284988" tx="2.8" ty="26.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="原始深度_1" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="31">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/分件/890" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.234268" b="-0.161514" c="0.161514" d="0.234268" tx="32.2" ty="-2.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

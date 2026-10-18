@@ -1,0 +1,1044 @@
+diff --git a/.gitignore b/.gitignore
+index 432f1eea61..028a141ff6 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -91,6 +91,7 @@ flashswf/arts/things0.html
+ .claude/scheduled_tasks.lock
+ # WorkBuddy 会话记忆属于本机状态；持久决策与工具分别归 docs/ 和 tools/。
+ /.workbuddy-ai/
++/.workbuddy
+ scripts/TestLoader.as
+ scripts/testloader_options.txt
+ scripts/compile_output.txt
+diff --git a/docs/AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md b/docs/AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md
+index 46ad89d973..f9ca3e1e77 100644
+--- a/docs/AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md
++++ b/docs/AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md
+@@ -27,7 +27,7 @@
+ - 每阶段结束都是一个**可交付、可回退**的状态：阶段一上线后即使后续阶段不做，游戏内聊天已完整可用（数据行为＝现状：共享任务、全局 NPC 状态）。
+ - 阶段二→三→四严格按序：bind 载荷是三者共同地基；对话联动依赖按存档状态（三）与任务事件（二）。
+ - 每阶段涉及的仓：阶段一＝BACK+WEB+GAME；阶段二＝BACK+GAME(+WEB)；阶段三＝BACK(+WEB)；阶段四＝BACK+GAME；阶段五＝GAME+BACK。
+-- **不在阶段链上的独立待办**（各自单独授权，与阶段进度解耦）：第 6 节＝终端设置面板回归修复（WEB + BACK 两仓，**已于 2026-10-09 施工完成，2026-10-11 随阶段一实机验收通过**）；第 7 节＝Agent 任务「回接取 NPC 领奖」两段式配对设计（BACK 仓为主 + GAME 仓 Host 一处），依赖阶段二的任务写入链路已可用，但**不依赖**阶段三/四；第 8 节＝提示词信息供给（NPC 场景块＋传话/问候选人指引＋选关类关卡怪物信息，用户 2026-10-11 提出、同日调研与口径校准完成），**同日已施工完成**（前置注册表与四步拼接全部落地，含同日补充完善；BACK 全量测试 305 项全绿，见 §8.6），**2026-10-12 第三批追加**（同阵营与提及名单行补所在场景、关卡描述进候选行、已完成委托块改三段结构，BACK `2968554`／448 项全绿，见 §3.6）亦已落地，与阶段二~四无依赖；第 9 节＝佣兵档案配置分叉（standalone 玩家自写 / embedded 读档只读），用户 2026-10-11 提出、同日入档、**同日获授权施工完成**（三仓源码级落地，同批完成存档投影扩展与主线阶段自动推导、当前场景注入提示词；BACK 全量测试 372 项全绿，见 §9.4），与阶段三/四/五无依赖（所依赖的阶段二绑定链路已可用）；第 10 节＝任务进行中的信息供给两项（用户 2026-10-12 深夜真机走查后提出，**仅登记，暂不施工**）。
++- **不在阶段链上的独立待办**（各自单独授权，与阶段进度解耦）：第 6 节＝终端设置面板回归修复（WEB + BACK 两仓，**已于 2026-10-09 施工完成，2026-10-11 随阶段一实机验收通过**）；第 7 节＝Agent 任务「回接取 NPC 领奖」两段式配对（BACK 仓为主 + GAME 仓 Host 一处），依赖阶段二的任务写入链路已可用，但**不依赖**阶段三/四，**已于 2026-10-17 两仓施工完成，当前状态＝开发完毕、待验证**（施工结果与验证边界见 §7.6）；第 8 节＝提示词信息供给（NPC 场景块＋传话/问候选人指引＋选关类关卡怪物信息，用户 2026-10-11 提出、同日调研与口径校准完成），**同日已施工完成**（前置注册表与四步拼接全部落地，含同日补充完善；BACK 全量测试 305 项全绿，见 §8.6），**2026-10-12 第三批追加**（同阵营与提及名单行补所在场景、关卡描述进候选行、已完成委托块改三段结构，BACK `2968554`／448 项全绿，见 §3.6）亦已落地，与阶段二~四无依赖；第 9 节＝佣兵档案配置分叉（standalone 玩家自写 / embedded 读档只读），用户 2026-10-11 提出、同日入档、**同日获授权施工完成**（三仓源码级落地，同批完成存档投影扩展与主线阶段自动推导、当前场景注入提示词；BACK 全量测试 372 项全绿，见 §9.4），与阶段三/四/五无依赖（所依赖的阶段二绑定链路已可用）；第 10 节＝任务进行中的信息供给两项（用户 2026-10-12 深夜真机走查后提出，**仅登记，暂不施工**）。
+ 
+ ### 0.2 全阶段施工通则
+ 
+@@ -511,6 +511,8 @@ data/rag/agent_saves/<slotKey>/
+ **G4-7（AS2 增读任务文本覆盖层）源码已施工（2026-10-17）**，但仍处 `compiled` 之前的源码态；
+ G4-1 的 AS2 发送侧同样如此——`asLoader.swf` 未重编（按作者裁定攒着做），
+ 故两处在现役构建里仍不生效，重编后即通。
++**（2026-10-17 第二批）**：G4-5 对话覆盖层热失效按两向闭环施工（AS2 源码 + Host 命令/失效/回执 + Host 单测），
++G4-7 的 Host 侧读取链（`AgentSaveTextOverrideSource`）同批补齐；两者仍需 `asLoader.swf` 重编才进游戏。
+ 口径修订见 §4.7，验证清单见 §4.6。
+ 
+ **目标**：完成 Agent 任务 → 对话完善 Agent 产出按存档覆盖条目 → 游戏对话查询合并生效。
+@@ -659,6 +661,9 @@ G4-1 的 AS2 发送侧同样如此——`asLoader.swf` 未重编（按作者裁
+   （后者整 key 覆盖；任一层缺失/解析失败保留上一层，两层都没有时直接用基础数据）。
+   证据级别＝源码＋静态检查（UTF-8 BOM、`git diff --check`）；**未重编 `asLoader.swf`、未运行 TestLoader、未进游戏验证**，
+   游戏内零效果，须单独授权重编。
++- **（2026-10-17 回写）**：上面「② G4-5 热失效未做，只留了 `Invalidate()` 钩子」已被本批施工覆盖——
++  G4-5 走两向两命令闭环（AS2 `rag_dialogue_changed` → Host `Invalidate()` + `agentDialogueChanged` → AS2 当前场景重绑），
++  G4-7 的 Host 源也已补齐；细节见 §4.1 对应条目与 §4.3 方向表。`asLoader.swf` 仍未重编（独立授权路径）。
+ 
+ ### 4.1 GAME 步骤（事件链先行，因 BACK 依赖事件格式）
+ 
+@@ -675,8 +680,21 @@ G4-1 的 AS2 发送侧同样如此——`asLoader.swf` 未重编（按作者裁
+ - **G4-3 对话查询带槽位**：`关卡系统_lsy_地图元件.as:395-413` 的 `DataQueryService.query("npc_dialogue", …)` 载荷加 `savePath:_root.savePath`；`DataQueryTask.cs:74-99` 接收并按 §4.2-G4-4 合并。
+ - **G4-4 覆盖合并（Host）**：新 `launcher/src/Data/AgentDialogueOverrides.cs`：读 **`data/rag/agent_saves/<savePath>/dialogue_overrides.json`**（缺文件＝空集），在 base 查询结果后应用：`replace`（按 base `Dialogue@id` 整节点替换 SubDialogue 列表）与 `append`（新增 Dialogue 节点，id 段 `agent_*`，取号规则见 §2.0.3）。缓存：`DataCache` **不动 base 缓存**；覆盖层单独按 `(savePath, 文件版本)` 缓存。
+   **前置改动（§2.0.4 已核实）**：`DialogueGroup`（`XmlDataLoader.cs:13-17`）需加组 id 字段并在 `XmlDataLoader` 里读出 `<Dialogue id>` 属性（照抄同文件已有的 `subElem.GetAttribute("id")` 写法），否则无从定位要替换哪一组。**AS2 零改动**——`QueryNpcDialogue` 的返回结构（`result.Add(g.SubDialogues)`）逐字不变，且 AS2 侧两套对话装配（`_root.加载并配置NPC对话`、`NpcDialogueLoader`）均已核实为**无生产调用方的死代码**。
+-- **G4-5 热失效**：`通信_aka_Agent联动.as` 轮询扩展读 `dialogue_version`（与 `task_publish_version` 同一文件同一次读取，版本变化即发新 gameCommand `agentDialogueChanged`）→ Host 使覆盖层缓存失效。base XML 永不改写、永不热更（维持重启生效现状）。
+-  **⚠ 已知边界（§2.0.6-2，须先定口径）**：AS2 的对话绑定是一次性的（`关卡系统_lsy_地图元件.as:390` `if (目标.默认对话 == null)` 才查询，结果存 MC 上），所以覆盖层失效后**当前场景里已初始化的 NPC 不会自动拿到新对话**，下次 NPC 初始化（重进场景/读档）才生效。本阶段建议接受该口径；若要立即生效需加显式重绑（清 `默认对话` 与 `NPC对话已绑定` 后重查），须单独评估遍历成本与「玩家正在对话中被换掉文本」的竞态。
++- **G4-5 热失效**：**两向两命令闭环**（2026-10-17 施工，源码级）——
++  ① AS2 `通信_aka_Agent联动.as` 的 `轮询同步状态` 在同一次 LoadVars 读取里解析 `task_publish_version`
++  与 `dialogue_version`（首次读取只建立两条基线；槽位变化重置 dialogue 基线；发送失败不推进基线，下一轮轮询重试）；
++  ② `dialogue_version` 与基线不同 → **AS2→Host** 发 `rag_dialogue_changed`（`{savePath, dialogueVersion}`，
++  query 语义，与 `rag_bind_refresh`/`rag_task_completed` 同族，不改游戏状态、不等应答）；
++  ③ Host（`LauncherCommandRouter.HandleRagDialogueChanged`）校验载荷白名单与 `AgentSaveContext.CurrentSlotKey`，
++  命中则 `AgentDialogueOverrides.Invalidate()`，再用 **Host→AS2** gameCommand `agentDialogueChanged`
++  回一个 `{savePath, dialogueVersion}`；
++  ④ AS2 `_root.gameCommands["agentDialogueChanged"]` → `_root.agent.处理对话覆盖层变更` → `刷新已绑定NPC对话`
++  重绑当前场景已登记的 NPC（`_root.查询并绑定NPC默认对话` 的强制刷新分支：保留旧数组直到新结果成功返回，
++  请求代际丢弃旧响应，busy+pending 合并连续版本变化）。
++  base XML 永不改写、永不热更；`DataCache` 绝不触碰，只清覆盖层缓存。
++  **⚠ 残留边界**：Host 回执丢失时当前场景保持旧对话，直到下一次 `dialogue_version` 变化或 NPC 重新初始化；
++  战斗地图跳过轮询（回非战斗图自然追平）；对话进行中触发刷新只影响下一次点击（已显示文本不替换）。
++  **证据级别＝源码＋静态检查（UTF-8 BOM、`git diff --check`、命令名字符串）；`asLoader.swf` 未重编，游戏内未生效。**
+ - **G4-6 `.gitignore`**：**无需新增**——阶段二 G2-4 已按用户裁定整目录 ignore `data/rag/agent_saves/`，对话覆盖层就在该目录下。
+ - **G4-7 任务文本覆盖层增读（AS2，2026-10-13 按 §4.0.6 用户裁定新增；须 Flash CS6 重编，单独授权）**：
+   读 **`data/rag/agent_saves/<savePath>/task_text_overrides.json`**（格式见 §附 B-6），
+@@ -691,7 +709,12 @@ G4-1 的 AS2 发送侧同样如此——`asLoader.swf` 未重编（按作者裁
+   `TaskTextLoader.applyOverlay` 改为串行两层——先 `agent_text.json`，再 `task_text_overrides.json`
+   （后者按 key 整份覆盖），每层缺失/解析失败都保留上一层，回调恰好一次；两层都不存在时直接用基础数据
+   （无终端生成任务文本的存档行为不变）。证据级别＝源码＋静态检查；**`asLoader.swf` 未重编**（须 Flash CS6 单独授权），
+-  故本项在现役构建里尚未生效。Host 侧 `AgentSaveTextOverrideSource` 另一条链路仍未实现，不在本次 AS2 范围。
++  故本项在现役构建里尚未生效。
++  **✅ Host 侧已施工（2026-10-17）**：`MapTaskCatalog.AgentSaveTextOverrideSource(slotKey)` 已加，
++  `MapRuntimeContent.ReloadTasks` 的 `extraTextSources` 固定为 `agent_text.json` → `task_text_overrides.json`
++  （后写赢，顺序不可调换）；文件缺失静默跳过、存在但损坏沿用既有 fail-closed。
++  证据级别＝源码＋Host 单测（`MapAuthoringContentTests`／`MapDomainSessionTests` 新增用例）；
++  **该 Host 链只影响宿主/地图任务目录，游戏内完整生效仍需 AS2 侧 `asLoader.swf` 重编。**
+ 
+ ### 4.2 BACK 步骤
+ 
+@@ -713,8 +736,16 @@ G4-1 的 AS2 发送侧同样如此——`asLoader.swf` 未重编（按作者裁
+ 
+ 新增：`agentTaskCompleted`（AS2→Host→exe，query）与 `agentDialogueChanged`（Host→AS2 gameCommand）两行闭环登记（§附 A）。
+ **（2026-10-16）**：`agentTaskCompleted` 已登记进 `launcher/contracts/ragchat.v1.json`（新 `taskCompleted` 块）
+-与 `TaskRegistry`（task 名 `rag_task_completed`，`json_sync`／`AS2->C#`／`httpCallable=false`），施工细节见 §4.8；
+-`agentDialogueChanged` 仍随 G4-5 未做（§4.0.8 已记：只留了 `Invalidate()` 钩子）。
++与 `TaskRegistry`（task 名 `rag_task_completed`，`json_sync`／`AS2->C#`／`httpCallable=false`），施工细节见 §4.8。
++**（2026-10-17 闭口径）**：G4-5 按「两向两命令」落地，方向不得混读——
++
++| 方向 | 名字 | 传输 | 载荷 |
++|---|---|---|---|
++| AS2→Host | `rag_dialogue_changed` | `json_sync`／`AS2->C#`／`httpCallable=false` | `{savePath, dialogueVersion}` |
++| Host→AS2 | `agentDialogueChanged` | gameCommand（`_root.gameCommands` 注册表） | `{savePath, dialogueVersion}` |
++
++两行都已登记进 `launcher/contracts/ragchat.v1.json` 的新 `dialogueChanged` 块（`as2ToHost` / `hostToAs2`）；
++**不得**把 `_root.gameCommands["agentDialogueChanged"]` 当成 AS2→Host 命令使用（那是 Host→AS2 注册表）。
+ `launcher/README.md` 的注册表是**面板级**一行（`ragchat`），不为单个 task 加行，与 `rag_bind_refresh` 同处理。
+ 
+ ### 4.4 顺序说明
+@@ -752,7 +783,20 @@ G4-1/G4-3（AS2 改动）与 B4-1 可并行；G4-2 依赖 B4-1 路由存在；G4
+       `{"slot_key":"save1","task_id":213501,"npc":"Andy Law"}` 与后端解析结果逐字段对齐，
+       以及未绑定槽位走真处理器时 200＋`accepted=False`＋`job_id=""`（不触碰委派存储）。
+ - [ ] AS2 编译门：G4-1 的 AS2 发送侧**已改源码但 `asLoader.swf` 未重编**（2026-10-16，按作者裁定攒着做），
+-      G4-7 未施工；两者都需 Flash CS6 GUI 重编并取本轮新鲜 `0/0` 证据（单独授权）
++      G4-5（双版本轮询 / `agentDialogueChanged` 接收 / 当前场景重绑）与 G4-7（文本覆盖层读取）同样如此；
++      三者都需 Flash CS6 GUI 重编并取本轮新鲜 `0/0` 证据（单独授权）
++- [ ] **G4-5 对话热失效**（2026-10-17，按证据级别分开记，不合并升级）：
++      源码＝已完成（AS2 `轮询同步状态` 双版本 + `发送对话覆盖层变更` + `gameCommands["agentDialogueChanged"]`
++      + `_root.查询并绑定NPC默认对话`/`刷新已绑定NPC对话`；Host `rag_dialogue_changed` 注册 + 白名单 + 槽位校验
++      + `AgentDialogueOverrides.Invalidate()` + `agentDialogueChanged` 回执）；
++      Host 测试＝定向 `RAGCHAT_DialogueChanged_*` 五例 + `RagDialogueChanged_IsSyncSocketOnlyMetadata` 全绿；
++      候选构建＝`dotnet build launcher/tests` 0 错误（既有 115 警告不属本批）；
++      实际运行＝未做（`asLoader.swf` 未重编，AS2 侧组件不在现役构建里）；
++      游戏内复验＝未做（重编后按六条：绑定存档→后端改 `dialogue_overrides.json` 并 bump `dialogue_version`
++      →不重进场景再点同一 NPC→对话进行中触发刷新→换槽位/重进不串槽→战斗图跳过轮询、回城追平）
++- [ ] **G4-7 Host 侧（任务文本覆盖层源）**（2026-10-17）：源码＋Host 单测已过
++      （`TextOverrideSourceLoadsAfterAgentTextAndFailsClosed`、`TaskSyncReadsAgentSaveOverlayScopedBySavePath`
++      的覆盖层变化清单）；**游戏内生效仍取决于 AS2 `asLoader.swf` 重编**，Host 单侧绿不代表游戏内已验证
+ - [x] **BACK 数据层真实数据冒烟（2026-10-13）**：四种范围筛选与编号唯一、已完成任务被排除、
+       `task_recent` 与 `task_all` 同选取 recent、关键词只在未选范围里搜且受 30 组上限、
+       三个写入动作（改日常组 / 改任务文本 / 新增 `agent_*` 组）落盘后二次读取合并视图正确、
+@@ -923,7 +967,9 @@ BACK 全量 **558 项全绿**（新增 9 例跨仓线格式锁，锁的是 Host
+ 
+ ---
+ 
+-## 7. 待开发设计：Agent 任务的「回接取 NPC 领奖」两段式配对（用户提出 2026-10-08，调研已完成，未授权施工）
++## 7. Agent 任务的「回接取 NPC 领奖」两段式配对（用户提出 2026-10-08；2026-10-17 两仓施工完成，**状态＝开发完毕、待验证**，见 §7.6）
++
++以下 §7.1–§7.5 是施工前的调研与设计原文，保留作施工依据与口径参照；实际落地结果、四个缺口的最终解法与尚未验证的部分一律以 §7.6 为准。
+ 
+ ### 7.1 用户裁定与目标形态
+ 
+@@ -981,7 +1027,32 @@ BACK 全量 **558 项全绿**（新增 9 例跨仓线格式锁，锁的是 Host
+ 
+ **与阶段四的边界**：本节只管**任务数据结构与自动接取**，不涉及阶段四的对话覆盖层（`data/rag/agent_saves/<slotKey>/dialogue_overrides.json`、`dialogue_version`、`agentTaskCompleted`/`agentDialogueChanged` 合同），两者不重叠、可独立施工。
+ 
+-**状态**：设计调研完成、结论为可行（且比预期省——对话连播无需新机制）；**未授权施工，本节不改任何代码**。施工前需先定两件事：① 配对字段的最终名字（命名冻结范围）；② 缺口三采用「中间任务豁免」还是「配对整体校验」。GAME 仓侧改动涉及 Host C#，需按通则重编并同步静态门；BACK 侧改动需重跑 `python -m pytest tests/`（当前基线 197 全过）。
++**状态**：见下一节 §7.6。施工已于 2026-10-17 在两仓完成，当前**开发完毕、待验证**。
++
++### 7.6 施工结果与验证边界（2026-10-17，状态＝开发完毕、待验证）
++
++**提交归属**：BACK 仓 `9dff15b`（两段式配对主改：`schemas.py`／`handlers.py`／`task_tools.py`／`orchestrator/prompts.py`／`orchestrator/turn.py`，新增 `tests/agent_tools/test_task_pairing.py` 27 项与 `tests/orchestrator/test_confirm_pairing.py` 20 项）、`7e5178c`（confirm 提示词按 NPC 关系分版，同一 NPC 时零回访字段）、`12a913b`（补真实模型单步复验记录）。GAME 仓 `26b69b7228`（`launcher/src/Data/MapNpcTaskProjection.cs` 消费配对字段＋`launcher/tests/Tasks/MapDomainSessionTests.cs` 用例）。
++
++**§7.3 四个缺口的最终解法**：
++
++- **缺口一（自动接链是死的）**：定名 `next_task_id`，只在**任务一**记录上写，`chain` 保持裸串「委托」——不给 chain 编号，因此不触碰 `task_chains_progress`，也不存在 `task_chains[链名][序号]` 互相覆盖。宿主按显式字段生成 `autoAccept[finishedId] = {nextTaskId, allowed}` 并覆盖同任务的 chain 派生条目；无该字段时行为不变，字段畸形或目标任务缺失则跳过不崩。AS2 零改动（`requestAutoAcceptAfterFinish` 本来就按 `autoAccept` + `allowed` + `taskAvailable` 工作）。
++- **缺口二（任务二可被越级接取）**：任务二 `get_requirements = [任务一 id]`，并且是在 `min(id, 77)` clamp **之后**单独赋值——Agent 任务 id 在 20 万段，若经过 clamp 会被压成 77、前置条件直接消失。
++- **缺口三（固定 `经验值#1000` 过不了 V7）**：采用「配对整体校验」而非中间任务豁免。`validate_task_draft` 仍只对草稿真实奖励跑一次（真实奖励全部落在任务二），任务一的 `经验值#1000` 在写入时合成、**永不进 V7**；V7 阈值与校验规则本身未改动。
++- **缺口四（原子写两条）**：先快照 `agent_text.json` 与 `agent_tasks.json` → 写 text → 写 tasks → **单次** bump `task_publish_version`；任一步抛异常按快照回滚（原文件不存在则删除）并重抛，不留半套配对。id 边界：`id1 > 300000` 零写入直接抛错，`id1 == 300000`（`id2` 越界）按单任务写、真实奖励全部留在该任务并记 warning。
++
++**§7.4 的打回重试也已落地**：新增纯函数 `validate_confirm_dialogues` 做可机器判定的说话人校验（四组对话逐场核对角色，玩家一律 `$PC`）；confirm 最多两次模型调用，只在「解析成功但校验不过」时重试一次并带上原文与逐条 `field/message/fix_hint`，调用异常或解析失败不重试直接模板兜底；两级降级保证 `return_for_reward` 最终为 false 时回访两组对话被清空。对话重写标记只挂任务一（委派按任务记录的 `get_npc` 认定权威发布 NPC，挂任务二会在最终领奖时去改 B 的对话）。
++
++**已取得的证据（不升级）**：BACK 侧新增 47 项单测＋全量 `python -m pytest tests/` 通过；真实模型单步复验一次（`glm-5.3-flash`，confirm 生成 `return_for_reward=true`、四组对话说话人全部合规、回访描述由模型产出而非模板；同一份参数交 writer 落临时目录，得到两条连续任务、8 个文本键、`next_task_id` 只在任务一、任务二前置 `[200001]`）。GAME 侧只到源码与测试用例提交。
++
++**待验证清单**（本节状态停在「待验证」的原因）：
++
++1. 宿主新增的 `MapDomainSessionTests` 用例未在本轮构建后执行；且现役宿主二进制早于这笔消费改动，**因此当前运行的游戏里任务二不会被自动接取**。
++2. 游戏侧部署的后端 exe 也早于上述三笔提交，**因此游戏内终端现在还发不出配对任务**。两项都要等产物重建后才能开始体验验证。
++3. 真机旅程未复验：传话类草稿选择「回 A 领奖」→ 送达 B 完成（B 的完成对话与 A 的接取对话在同一次点击里连播）→ 自动接任务二 → 回 A 交付并只拿到任务二上那一份真实奖励。顺带核 §7.2 的已知瑕疵（连播追加时阅读位置被重置回第一条）——该瑕疵主线同样存在，体验明显再单开处理。
++4. 反向不回归：不启用开关时与现有单任务路径逐字一致（一条记录、4 个文本键、无 `next_task_id`、无任何新的空字段）；未完成任务一时，在任意地图都不该能从 B 处接到任务二。
++5. 满包、中途关闭、换档与重启等交付边界，随终端链路回归清单一并跑，不在本节单独结论。
++
++**遗留口径冲突（需在后端仓改掉，本文不代改）**：BACK 仓 `docs/v3-developer/实施手记.md` 的 §0.U.8 末尾仍留有一行「GAME Host 未消费 `next_task_id`」，与同节 §0.U.3 及本仓 `26b69b7228` 的事实相互矛盾，属更早批次的残留表述。
+ 
+ ---
+ 
+@@ -1171,6 +1242,7 @@ Host 白名单 `LauncherCommandRouter.TryParseRagChatProjection`（`launcher/src
+ | 投影刷新（读档/存档落盘/任务完成，复用 bind 端点） | `RagTerminalService.BindAsync`（幂等） | 读档完成点 / `SaveManager` flush 落点 / 任务完成落点（发送方） | exe bind 响应 | 写 exe 内存态 |
+ | `agentTaskCompleted`（阶段四，**2026-10-16 已施工**）；task 名 `rag_task_completed` | `LauncherCommandRouter.HandleRagTaskCompleted` → `RagTerminalService.NotifyTaskCompletedAsync` | `通信_鸡蛋_任务系统.as` 的 `_root.提交任务完成状态` → `通信_aka_Agent联动.as` 的 `_root.agent.推送任务完成`（发送方） | exe 幂等受理（恒 200＋`accepted`，Host 只留痕） | query（不改游戏状态） |
+ | `agentDialogueChanged`（阶段四，Host→AS2 gameCommand） | 覆盖层缓存失效 | `_root.gameCommands["agentDialogueChanged"]` | — | query |
++| `dialogue`（阶段四，**AS2→Host**；task 名 `rag_dialogue_changed`，2026-10-17 施工） | `LauncherCommandRouter.HandleRagDialogueChanged`（白名单 `TryParseRagDialogueChanged` + 槽位校验 → `AgentDialogueOverrides.Invalidate()` → 回 gameCommand `agentDialogueChanged`） | `通信_aka_Agent联动.as` 的 `轮询同步状态` → `_root.agent.发送对话覆盖层变更`（发送方）；接收方见上一行 | Host 回 gameCommand（best-effort 单次；失败只记日志） | query |
+ 
+ 身份与边界：面板 envelope 沿用 `{type:"panel",panel,domain,cmd,callId,panelInstanceId,payload}` exact 实例合同；bind/unbind 不经 Web DOM，Web 侧不持有任何写游戏能力；iframe 页面只与 exe 通信，不经 `Bridge` 发业务命令。
+ 
+diff --git a/launcher/contracts/ragchat.v1.json b/launcher/contracts/ragchat.v1.json
+index 8ace505400..26b878a3a3 100644
+--- a/launcher/contracts/ragchat.v1.json
++++ b/launcher/contracts/ragchat.v1.json
+@@ -57,6 +57,23 @@
+     "hostForward": "RagTerminalService.NotifyTaskCompletedAsync -> POST http://127.0.0.1:7077/api/integration/task-completed with {slot_key, task_id, npc}",
+     "semantics": "query; changes no game state and awaits no reply. Best-effort: single POST with no retry (the terminal owns idempotency per (slot_key, task_id)), never launches the exe, exe offline silently skipped, malformed payload / unwired service / post failure all log-only and never toast back to AS2. Response is always 200 with {ok, accepted, detail, job_id}; accepted=false is normal (slot mismatch, no rewrite marker, rate limit) and the Host only logs it"
+   },
++  "dialogueChanged": {
++    "versionSignal": "data/rag/sync_state.json 的 dialogue_version（与 task_publish_version 同一把写锁、同一文件，缺键按 0）",
++    "as2ToHost": {
++      "task": "rag_dialogue_changed",
++      "transport": "json_sync, AS2->C#, httpCallable=false, fire-and-forget",
++      "payload": "{savePath: string, dialogueVersion: integer} — Host 白名单 TryParseRagDialogueChanged 未知键整包拒收；dialogueVersion 必须是非负整数",
++      "sendPoint": "通信_aka_Agent联动.as 轮询同步状态：同一次 LoadVars 读取解析两个版本，dialogue_version 与基线不同即发一次；首次读取只建立基线，槽位变化重置基线，发送失败不推进基线、下一轮 7 秒轮询重试",
++      "hostEffect": "savePath 必须等于 AgentSaveContext.CurrentSlotKey，否则忽略并记日志；命中后只调 AgentDialogueOverrides.Invalidate()（base XML 与 DataCache 一律不动）"
++    },
++    "hostToAs2": {
++      "gameCommand": "agentDialogueChanged",
++      "transport": "gameCommand（Host->AS2 cmd），best-effort 单次，发送失败只记日志",
++      "payload": "{savePath: string, dialogueVersion: integer}",
++      "handler": "_root.gameCommands[\"agentDialogueChanged\"] → _root.agent.处理对话覆盖层变更 → _root.agent.刷新已绑定NPC对话（只遍历登记表；不重载 base XML、不清 DataCache）",
++      "semantics": "query；不改游戏状态。回执丢失时当前场景保持旧对话，直到下一次 dialogue_version 变化或 NPC 重新初始化"
++    }
++  },
+   "webCommands": {},
+   "hostClose": {
+     "message": "{type:'panel',cmd:'close',panel:'ragchat'}",
+diff --git a/launcher/src/Bus/TaskRegistry.cs b/launcher/src/Bus/TaskRegistry.cs
+index 6ef43da033..c7e81d29d7 100644
+--- a/launcher/src/Bus/TaskRegistry.cs
++++ b/launcher/src/Bus/TaskRegistry.cs
+@@ -829,6 +829,17 @@ namespace CF7Launcher.Bus
+                     commandRouter.HandleRagTaskCompleted(callbackPayload ?? msg);
+                     return null;
+                 });
++
++                // AS2 → C# 对话覆盖层变更信号（G4-5）：后端改写 dialogue_overrides.json 并 bump
++                // sync_state.json 的 dialogue_version 后，Host 使覆盖层缓存失效，再用
++                // gameCommand agentDialogueChanged 让 AS2 重绑当前场景已绑定的 NPC 对话。
++                // query 语义：不改游戏状态、不计应答；载荷畸形/槽位不符一律只留痕。
++                router.RegisterSync("rag_dialogue_changed", delegate(JObject msg)
++                {
++                    JObject callbackPayload = msg["payload"] as JObject;
++                    commandRouter.HandleRagDialogueChanged(callbackPayload ?? msg);
++                    return null;
++                });
+             }
+ 
+             // 存档 shadow 备份
+@@ -986,6 +997,7 @@ namespace CF7Launcher.Bus
+             first = AppendTask(sb, "panel_request",  "json_sync", "AS2->C#", false, first);
+             first = AppendTask(sb, "rag_bind_refresh","json_sync", "AS2->C#", false, first);
+             first = AppendTask(sb, "rag_task_completed","json_sync", "AS2->C#", false, first);
++            first = AppendTask(sb, "rag_dialogue_changed","json_sync", "AS2->C#", false, first);
+             first = AppendTask(sb, "archive",        "json_async","AS2<->C#",true,  first);
+             first = AppendTask(sb, "bench_sync",     "json_sync", "AS2<->C#",false, first);
+             first = AppendTask(sb, "bench_async",    "json_async","AS2<->C#",false, first);
+diff --git a/launcher/src/Data/MapRuntimeContent.cs b/launcher/src/Data/MapRuntimeContent.cs
+index d1523bd434..fb9ff59a27 100644
+--- a/launcher/src/Data/MapRuntimeContent.cs
++++ b/launcher/src/Data/MapRuntimeContent.cs
+@@ -49,13 +49,19 @@ namespace CF7Launcher.Data
+             Bootstrap = BuildBootstrap();
+         }
+         /// <summary>只重建任务目录层。地图定义与世界源沿用本实例，作者保存地图后仍须重启才切换。校验失败直接抛出，调用方保留旧内容。
+-        /// slotKey 非空时同批增读该存档的任务覆盖层（data/rag/agent_saves/&lt;slotKey&gt;/）；两个文件缺失＝该存档无增量。</summary>
++        /// slotKey 非空时同批增读该存档的任务覆盖层（data/rag/agent_saves/&lt;slotKey&gt;/）；文件缺失＝该存档无增量。
++        /// 文本源顺序固定：agent_text.json 在前、task_text_overrides.json 在后——同 key 后者整份覆盖前者（后写赢），不可调换。</summary>
+         public MapRuntimeContent ReloadTasks(string root, string slotKey = null)
+         {
+             var catalog = string.IsNullOrEmpty(slotKey)
+                 ? MapTaskCatalog.Load(root)
+                 : MapTaskCatalog.Load(root, null,
+-                    new[] { MapTaskCatalog.AgentSaveTaskSource(slotKey) }, new[] { MapTaskCatalog.AgentSaveTextSource(slotKey) });
++                    new[] { MapTaskCatalog.AgentSaveTaskSource(slotKey) },
++                    new[]
++                    {
++                        MapTaskCatalog.AgentSaveTextSource(slotKey),
++                        MapTaskCatalog.AgentSaveTextOverrideSource(slotKey)
++                    });
+             catalog.ValidateBindings(Definition);
+             return new MapRuntimeContent(this, catalog);
+         }
+diff --git a/launcher/src/Data/MapTaskCatalog.cs b/launcher/src/Data/MapTaskCatalog.cs
+index c8c4b02aa4..2f1db5422b 100644
+--- a/launcher/src/Data/MapTaskCatalog.cs
++++ b/launcher/src/Data/MapTaskCatalog.cs
+@@ -93,6 +93,9 @@ namespace CF7Launcher.Data
+         /// <summary>按存档任务覆盖层落点（data/rag/agent_saves/&lt;slotKey&gt;/）的两个源文件相对路径，与后端写盘同名。</summary>
+         public static string AgentSaveTaskSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_tasks.json";
+         public static string AgentSaveTextSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/agent_text.json";
++        /// <summary>任务文本覆盖层（G4-7）：后端按存档写出的 key 级整份覆盖。必须排在 agent_text.json 之后读取，
++        /// 同 key 后写赢；这个顺序是覆盖语义的唯一保证。</summary>
++        public static string AgentSaveTextOverrideSource(string slotKey) => "data/rag/agent_saves/" + slotKey + "/task_text_overrides.json";
+         /// <summary>逐文件比对任务源字节，返回变化清单（含 list.xml 与基建目录）。热重载据此只让游戏侧重读真正变化的文件。</summary>
+         public static List<string> ChangedSources(MapTaskCatalog before, MapTaskCatalog after)
+         {
+diff --git a/launcher/src/Guardian/LauncherCommandRouter.cs b/launcher/src/Guardian/LauncherCommandRouter.cs
+index 15d968b0b8..afe9226f62 100644
+--- a/launcher/src/Guardian/LauncherCommandRouter.cs
++++ b/launcher/src/Guardian/LauncherCommandRouter.cs
+@@ -4927,6 +4927,42 @@ namespace CF7Launcher.Guardian
+             service.NotifyTaskCompletedInBackground(slotKey, taskId, npc);
+         }
+ 
++        /// <summary>rag_dialogue_changed（G4-5）：后端改写对话覆盖层并 bump dialogue_version 后的热失效信号。
++        /// 只清 <see cref="Data.AgentDialogueOverrides"/> 的覆盖层缓存（base XML / DataCache 一律不动），
++        /// 再用 gameCommand agentDialogueChanged 通知 AS2 重绑当前场景已绑定的 NPC。
++        /// 载荷畸形、绑定槽位不符或回执发不出去都只在 Host 侧留痕，绝不回 toast 打断游戏。</summary>
++        internal void HandleRagDialogueChanged(JObject data)
++        {
++            string slotKey;
++            int dialogueVersion;
++            string rejectReason;
++            if (!TryParseRagDialogueChanged(data, out slotKey, out dialogueVersion, out rejectReason))
++            {
++                LogManager.Log("[Router] rag_dialogue_changed rejected reason=" + rejectReason);
++                return;
++            }
++            // 槽位必须与当前绑定一致：旧槽位的迟到消息不能清掉当前槽位的覆盖层缓存。
++            string boundSlot = RagTerminal.AgentSaveContext.CurrentSlotKey;
++            if (string.IsNullOrEmpty(boundSlot)
++                || !string.Equals(boundSlot, slotKey, StringComparison.Ordinal))
++            {
++                LogManager.Log("[Router] rag_dialogue_changed ignored: slot_mismatch bound="
++                    + (boundSlot ?? "<null>") + " payload=" + slotKey);
++                return;
++            }
++            // 该操作只是清一个进程级字典，命令处理线程直接做即可，不排后台任务。
++            Data.AgentDialogueOverrides.Invalidate();
++            bool delivered = TrySendGameCommand("agentDialogueChanged",
++                "\"savePath\":\"" + EscapeJsonString(slotKey) + "\",\"dialogueVersion\":"
++                + dialogueVersion.ToString(System.Globalization.CultureInfo.InvariantCulture));
++            if (!delivered)
++            {
++                // AS2 侧按「回执丢失＝当前场景保持旧对话」处理，不重试轰炸。
++                LogManager.Log("[Router] rag_dialogue_changed ack undelivered slot=" + slotKey
++                    + " version=" + dialogueVersion);
++            }
++        }
++
+         /// <summary>完成事件载荷白名单：savePath 必填非空字符串、taskId 必填正整数、
+         /// npc 可选字符串（缺省空串——终端以任务记录里的 get_npc 为权威，本字段只作兜底）；
+         /// 未知键整包拒收。委托 id 区间闸在 AS2 发送侧，Host 只做形状校验、不复制该常量。
+@@ -4982,6 +5018,48 @@ namespace CF7Launcher.Guardian
+             return true;
+         }
+ 
++        /// <summary>对话覆盖层变更信号载荷白名单：savePath 必填非空字符串（与 rag_task_completed 同口径，
++        /// 由调用方拿它与绑定槽位精确比对）、dialogueVersion 必填非负整数（Integer 与整值 Float 都收，
++        /// 与 taskId 同口径）；未知键整包拒收。</summary>
++        internal static bool TryParseRagDialogueChanged(JObject data, out string slotKey,
++            out int dialogueVersion, out string rejectReason)
++        {
++            slotKey = null; dialogueVersion = 0; rejectReason = null;
++            if (data == null) { rejectReason = "missing_payload"; return false; }
++            foreach (JProperty property in data.Properties())
++            {
++                if (property.Name != "savePath" && property.Name != "dialogueVersion")
++                {
++                    rejectReason = "unknown_field:" + property.Name;
++                    return false;
++                }
++            }
++            JToken savePath = data["savePath"];
++            if (savePath == null || savePath.Type != JTokenType.String
++                || string.IsNullOrEmpty(savePath.Value<string>()))
++            {
++                rejectReason = "savePath_invalid";
++                return false;
++            }
++            slotKey = savePath.Value<string>();
++            JToken versionToken = data["dialogueVersion"];
++            if (versionToken == null
++                || (versionToken.Type != JTokenType.Integer && versionToken.Type != JTokenType.Float))
++            {
++                rejectReason = "dialogueVersion_invalid";
++                return false;
++            }
++            double rawVersion = versionToken.Value<double>();
++            if (!double.IsFinite(rawVersion) || Math.Floor(rawVersion) != rawVersion
++                || rawVersion < 0 || rawVersion > int.MaxValue)
++            {
++                rejectReason = "dialogueVersion_out_of_range";
++                return false;
++            }
++            dialogueVersion = (int)rawVersion;
++            return true;
++        }
++
+         private void CompleteRagChatOpen(RagTerminal.RagTerminalService service, string slotKey,
+             JObject character, JObject progress, JObject scene, JObject player,
+             string source, string baselinePanel, Action<Action> marshal)
+@@ -6592,6 +6670,14 @@ namespace CF7Launcher.Guardian
+             return _socketServer.TrySend(payload);
+         }
+ 
++        private bool TrySendGameCommand(string action, string extraJsonFields)
++        {
++            string payload = "{\"task\":\"cmd\",\"action\":\"" + action + "\"," + extraJsonFields + "}\0";
++            if (_gameCommandSenderOverride != null) return _gameCommandSenderOverride(payload);
++            if (_socketServer == null || !_socketServer.IsClientReady) return false;
++            return _socketServer.TrySend(payload);
++        }
++
+         private bool TrySendMaterialPanelOpenCommand(
+             string openRequestId)
+         {
+diff --git a/launcher/tests/Bus/TaskRegistryStatusTests.cs b/launcher/tests/Bus/TaskRegistryStatusTests.cs
+index fa372e3857..7f72a73bf5 100644
+--- a/launcher/tests/Bus/TaskRegistryStatusTests.cs
++++ b/launcher/tests/Bus/TaskRegistryStatusTests.cs
+@@ -131,6 +131,23 @@ namespace CF7Launcher.Tests.Bus
+             Assert.False(TaskRegistry.IsHttpCallable("rag_task_completed"));
+         }
+ 
++        [Fact]
++        public void RagDialogueChanged_IsSyncSocketOnlyMetadata()
++        {
++            JObject changed = null;
++            var status = JObject.Parse(
++                TaskRegistry.ToStatusJson(true, 3000, 3001));
++            foreach (JObject task in (JArray)status["tasks"])
++                if ((string)task["name"] == "rag_dialogue_changed")
++                    changed = task;
++
++            Assert.NotNull(changed);
++            Assert.Equal("json_sync", (string)changed["transport"]);
++            Assert.Equal("AS2->C#", (string)changed["direction"]);
++            Assert.False((bool)changed["httpCallable"]);
++            Assert.False(TaskRegistry.IsHttpCallable("rag_dialogue_changed"));
++        }
++
+         [Fact]
+         public void WorkbenchOpenRequestId_IsAcceptedOnlyForExactNativeBuildTuple()
+         {
+diff --git a/launcher/tests/Guardian/LauncherCommandRouterTests.cs b/launcher/tests/Guardian/LauncherCommandRouterTests.cs
+index fb9524b7b8..0d885f6270 100644
+--- a/launcher/tests/Guardian/LauncherCommandRouterTests.cs
++++ b/launcher/tests/Guardian/LauncherCommandRouterTests.cs
+@@ -1,8 +1,10 @@
+ using System;
+ using System.Collections.Generic;
++using System.IO;
+ using System.Linq;
+ using System.Threading;
+ using System.Windows.Forms;
++using CF7Launcher.Data;
+ using CF7Launcher.Guardian;
+ using CF7Launcher.RagTerminal;
+ using CF7Launcher.Tasks;
+@@ -9501,6 +9503,211 @@ namespace CF7Launcher.Tests.Guardian
+             Assert.Equal("taskId_out_of_range", rejectReason);
+         }
+ 
++        [Fact]
++        public void RAGCHAT_DialogueChanged_InvalidatesOverlayCacheAndAcksExactFields()
++        {
++            Capture c = new Capture();
++            LauncherCommandRouter r = MakeRouter(c);
++            using var harnessR = new HostHarness(r);
++            var commands = new List<JObject>();
++            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
++            string root = Path.Combine(Path.GetTempPath(), "cf7-dialogue-changed-" + Guid.NewGuid().ToString("N"));
++            Directory.CreateDirectory(Path.Combine(root, "data", "rag", "agent_saves", "slotA"));
++            try
++            {
++                AgentSaveContext.Set("slotA");
++                File.WriteAllText(Path.Combine(root, "data", "rag", "agent_saves", "slotA",
++                    AgentDialogueOverrides.OverlayFileName), "{overrides:[]}");
++                // 先让覆盖层缓存里真的留一条 (root, slotA) 解析结果：缓存命中是进程级状态，只能这样观测失效。
++                new AgentDialogueOverrides(root).Apply("slotA",
++                    new Dictionary<string, List<DialogueGroup>> { ["某人"] = new List<DialogueGroup>() });
++                Assert.Equal(1, AgentDialogueOverrides.CachedSlotCount);
++
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3}"));
++
++                Assert.Equal(0, AgentDialogueOverrides.CachedSlotCount);
++                JObject wire = Assert.Single(commands);
++                Assert.Equal("cmd", wire.Value<string>("task"));
++                Assert.Equal("agentDialogueChanged", wire.Value<string>("action"));
++                Assert.Equal("slotA", wire.Value<string>("savePath"));
++                Assert.Equal(3, wire.Value<int>("dialogueVersion"));
++                Assert.False(harnessR.Host.IsPanelOpen);   // 热失效不动任何面板
++            }
++            finally
++            {
++                AgentSaveContext.Clear();
++                AgentDialogueOverrides.Invalidate();
++                try { Directory.Delete(root, true); }
++                catch (IOException) { }
++                catch (UnauthorizedAccessException) { }
++            }
++        }
++
++        [Fact]
++        public void RAGCHAT_DialogueChanged_SlotMismatchOrUnboundSendsNothing()
++        {
++            Capture c = new Capture();
++            LauncherCommandRouter r = MakeRouter(c);
++            using var harnessR = new HostHarness(r);
++            var commands = new List<JObject>();
++            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
++            try
++            {
++                AgentSaveContext.Clear();
++                // 未绑定槽位：不认任何覆盖层信号（standalone 行为不变）。
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3}"));
++                AgentSaveContext.Set("slotB");
++                // 旧槽位的迟到消息不能清当前槽位的覆盖层缓存，也不回执。
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":4}"));
++                Assert.Empty(commands);
++            }
++            finally
++            {
++                AgentSaveContext.Clear();
++                AgentDialogueOverrides.Invalidate();
++            }
++        }
++
++        [Fact]
++        public void RAGCHAT_DialogueChanged_MalformedPayloadStaysSilent()
++        {
++            Capture c = new Capture();
++            LauncherCommandRouter r = MakeRouter(c);
++            using var harnessR = new HostHarness(r);
++            var commands = new List<JObject>();
++            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
++            try
++            {
++                AgentSaveContext.Set("slotA");
++                r.HandleRagDialogueChanged(null);
++                r.HandleRagDialogueChanged(JObject.Parse("{\"dialogueVersion\":3}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"\",\"dialogueVersion\":3}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":123,\"dialogueVersion\":3}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\"}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":\"3\"}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":-1}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3.5}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":1e30}"));
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":3,\"extra\":1}"));
++                // 信封未拆（payload 还在外层）属畸形载荷：注册委托必须先把 payload 取出来。
++                r.HandleRagDialogueChanged(JObject.Parse(
++                    "{\"payload\":{\"savePath\":\"slotA\",\"dialogueVersion\":3}}"));
++                Assert.Empty(commands);
++                Assert.False(harnessR.Host.IsPanelOpen);
++            }
++            finally
++            {
++                AgentSaveContext.Clear();
++            }
++        }
++
++        [Fact]
++        public void RAGCHAT_DialogueChanged_AckUndeliveredOnlyLogsAndNeverThrows()
++        {
++            Capture c = new Capture();
++            LauncherCommandRouter r = MakeRouter(c);   // 没有 socketServer，也没设 sender override
++            using var harnessR = new HostHarness(r);
++            var logs = new List<string>();
++            LogManager.SetSink(logs.Add);
++            try
++            {
++                AgentSaveContext.Set("slotA");
++                r.HandleRagDialogueChanged(JObject.Parse("{\"savePath\":\"slotA\",\"dialogueVersion\":5}"));
++                Assert.Contains(logs, line => line.Contains("ack undelivered"));
++                Assert.False(harnessR.Host.IsPanelOpen);
++            }
++            finally
++            {
++                LogManager.ResetSink();
++                AgentSaveContext.Clear();
++            }
++        }
++
++        [Fact]
++        public void RAGCHAT_DialogueChanged_PayloadEnvelopeIsUnwrappedBeforeRouting()
++        {
++            Capture c = new Capture();
++            LauncherCommandRouter r = MakeRouter(c);
++            using var harnessR = new HostHarness(r);
++            var commands = new List<JObject>();
++            r.SetGameCommandSenderForTests(value => { commands.Add(ParseWire(value)); return true; });
++            try
++            {
++                AgentSaveContext.Set("slotA");
++                // 与 TaskRegistry 注册委托同构：msg["payload"] 先取出，取不到才退回 msg。
++                var router = new CF7Launcher.Bus.MessageRouter();
++                router.RegisterSync("rag_dialogue_changed", delegate(JObject msg)
++                {
++                    JObject callbackPayload = msg["payload"] as JObject;
++                    r.HandleRagDialogueChanged(callbackPayload ?? msg);
++                    return null;
++                });
++                router.ProcessMessage(
++                    "{\"task\":\"rag_dialogue_changed\",\"payload\":{\"savePath\":\"slotA\",\"dialogueVersion\":7}}",
++                    null);
++
++                JObject wire = Assert.Single(commands);
++                Assert.Equal("agentDialogueChanged", wire.Value<string>("action"));
++                Assert.Equal(7, wire.Value<int>("dialogueVersion"));
++                Assert.False(harnessR.Host.IsPanelOpen);
++            }
++            finally
++            {
++                AgentSaveContext.Clear();
++                AgentDialogueOverrides.Invalidate();
++            }
++        }
++
++        [Fact]
++        public void RAGCHAT_DialogueChanged_PayloadWhitelist()
++        {
++            string slotKey;
++            int dialogueVersion;
++            string rejectReason;
++
++            Assert.True(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":0}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("save1", slotKey);
++            Assert.Equal(0, dialogueVersion);
++            Assert.Null(rejectReason);
++
++            // 整值 Float 与 taskId 同口径；小数、负数、越界一律拒收。
++            Assert.True(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":12.0}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal(12, dialogueVersion);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":1.5}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("dialogueVersion_out_of_range", rejectReason);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":-1}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("dialogueVersion_out_of_range", rejectReason);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(null,
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("missing_payload", rejectReason);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"dialogueVersion\":3}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("savePath_invalid", rejectReason);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":\"3\"}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("dialogueVersion_invalid", rejectReason);
++
++            Assert.False(LauncherCommandRouter.TryParseRagDialogueChanged(
++                JObject.Parse("{\"savePath\":\"save1\",\"dialogueVersion\":3,\"npc\":\"甲\"}"),
++                out slotKey, out dialogueVersion, out rejectReason));
++            Assert.Equal("unknown_field:npc", rejectReason);
++        }
++
+         [Fact]
+         public void RAGCHAT_ServiceNotWired_ToastsUnavailable()
+         {
+diff --git a/launcher/tests/Tasks/MapAuthoringContentTests.cs b/launcher/tests/Tasks/MapAuthoringContentTests.cs
+index cf6c7ec33d..ab4c0734eb 100644
+--- a/launcher/tests/Tasks/MapAuthoringContentTests.cs
++++ b/launcher/tests/Tasks/MapAuthoringContentTests.cs
+@@ -249,6 +249,49 @@ namespace CF7Launcher.Tests.Tasks
+             Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { source, source }, null));
+             Assert.Throws<InvalidDataException>(() => MapTaskCatalog.Load(root, null, new[] { "data/rag/agent_saves/../secret/agent_tasks.json" }, null));
+         }
++        [Fact]
++        public void TextOverrideSourceLoadsAfterAgentTextAndFailsClosed()
++        {
++            var baseline = MapTaskCatalog.Load(root);
++            string agentText = MapTaskCatalog.AgentSaveTextSource("slotA");
++            string overrideText = MapTaskCatalog.AgentSaveTextOverrideSource("slotA");
++            Assert.Equal("data/rag/agent_saves/slotA/task_text_overrides.json", overrideText);
++
++            // 覆盖层文件缺失：与现状逐字一致（摘要不变，也不进 SourceBytes）。
++            var missing = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
++            Assert.Equal(baseline.Digest, missing.Digest);
++            Assert.DoesNotContain(overrideText, missing.SourceBytes.Keys);
++
++            // 只有 agent_text.json：行为与现状一致。
++            Put(agentText, "{\"$K\":\"终端文本\"}");
++            var textOnly = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
++            Assert.Equal("终端文本", (string)textOnly.Texts["$K"]);
++
++            // 只有 task_text_overrides.json：也能单独加载。
++            File.Delete(PathFor(agentText));
++            Put(overrideText, "{\"$K\":\"覆盖层文本\"}");
++            var overrideOnly = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
++            Assert.Equal("覆盖层文本", (string)overrideOnly.Texts["$K"]);
++
++            // 两个都在且同 key：排在后面的覆盖层整份赢；未被覆盖的 key 保留增量的值。
++            Put(agentText, "{\"$K\":\"终端文本\",\"$ONLY\":\"仅在增量\"}");
++            var both = MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText });
++            Assert.Equal("覆盖层文本", (string)both.Texts["$K"]);
++            Assert.Equal("仅在增量", (string)both.Texts["$ONLY"]);
++            // 顺序反过来就失去覆盖语义——MapRuntimeContent 的固定顺序是唯一保证。
++            var reversed = MapTaskCatalog.Load(root, null, null, new[] { overrideText, agentText });
++            Assert.Equal("终端文本", (string)reversed.Texts["$K"]);
++
++            // 变化清单覆盖新源：只改覆盖层就只列它。
++            Put(overrideText, "{\"$K\":\"覆盖层文本·改\"}");
++            Assert.Equal(new[] { overrideText },
++                MapTaskCatalog.ChangedSources(both, MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText })));
++
++            // 覆盖层损坏沿用既有 fail-closed：整次加载失败，不静默吞掉。
++            Put(overrideText, "{\"$K\":");
++            Assert.ThrowsAny<Newtonsoft.Json.JsonException>(
++                () => MapTaskCatalog.Load(root, null, null, new[] { agentText, overrideText }));
++        }
+         public void Dispose()
+         {
+             string expected = Path.Combine(Path.GetTempPath(), "cf7-map-content-test-");
+diff --git a/launcher/tests/Tasks/MapDomainSessionTests.cs b/launcher/tests/Tasks/MapDomainSessionTests.cs
+index 6178bed402..5f84d5a564 100644
+--- a/launcher/tests/Tasks/MapDomainSessionTests.cs
++++ b/launcher/tests/Tasks/MapDomainSessionTests.cs
+@@ -117,6 +117,14 @@ namespace CF7Launcher.Tests.Tasks
+             Assert.DoesNotContain("200001", ((JArray)switched["result"]["bootstrap"]["taskIds"]).Select(x => (string)x));
+             Assert.Equal(new[] { "data/rag/agent_saves/slotA/agent_tasks.json", "data/rag/agent_saves/slotA/agent_text.json" },
+                 ((JArray)switched["result"]["changedFiles"]).Select(x => (string)x).ToArray());
++            // 任务文本覆盖层（G4-7）走同一条链：新槽第一次出现覆盖层即进变化清单，且只列该文件。
++            string slotBOverlay = Path.Combine(root, "data", "rag", "agent_saves", "slotB");
++            Directory.CreateDirectory(slotBOverlay);
++            File.WriteAllText(Path.Combine(slotBOverlay, "task_text_overrides.json"), "{\"$AGENT_T1\":\"覆盖文本\"}");
++            var overrideSync = domain.Process(JObject.Parse("{version:2,op:'task_sync',savePath:'slotB'}"), 1, () => true);
++            Assert.True(overrideSync["result"].Value<bool>("changed"));
++            Assert.Equal(new[] { "data/rag/agent_saves/slotB/task_text_overrides.json" },
++                ((JArray)overrideSync["result"]["changedFiles"]).Select(x => (string)x).ToArray());
+         }
+         [Fact]
+         public void TaskSyncTreatsNonSlotSavePathAsNoOverlayAndRejectsNonString()
+diff --git a/scripts/通信/通信_aka_Agent联动.as b/scripts/通信/通信_aka_Agent联动.as
+index 4534b3a129..c6463ce8f8 100644
+--- a/scripts/通信/通信_aka_Agent联动.as
++++ b/scripts/通信/通信_aka_Agent联动.as
+@@ -1,8 +1,19 @@
+-﻿// Agent 联动：不调用 _root.服务器；data/rag/sync_state.json 的 task_publish_version 与 _root.agent.last_task_publish_version（初始 0）比较，非战斗图轮询热更。
++﻿// Agent 联动：不调用 _root.服务器；data/rag/sync_state.json 的 task_publish_version 与
++// _root.agent.last_task_publish_version（初始 0）比较，非战斗图轮询热更。
++// 同一份 raw 还解析 dialogue_version（后端改写对话覆盖层后 bump）：变化时经
++// rag_dialogue_changed 通知 Host 失效覆盖层缓存，Host 回 gameCommand agentDialogueChanged
++// 让当前场景已绑定的 NPC 重绑对话。base XML / DataCache 永不清除。
+ 
+ _root.agent = {};
+ _root.agent.npc_state_db_exists = false;
+ _root.agent.last_task_publish_version = null;
++// 对话覆盖层版本基线：null＝本次槽位还没取过基线；槽位变化会重新置 null。
++_root.agent.last_dialogue_version = null;
++_root.agent.dialogue_version_slot = null;
++// 当前场景已绑定的 NPC 登记表（进程级）：热失效只遍历它，不遍历 _root / 全地图 MC。
++_root.agent.dialogue_npcs = [];
++_root.agent.dialogue_refresh_busy = false;
++_root.agent.dialogue_refresh_pending = false;
+ _root.agent.sync_poll_busy = false;
+ _root.agent.sync_apply_busy = false;
+ // 宿主已换任务内容而游戏侧重载未落地时为 true；下一轮无条件整目录重载补齐。
+@@ -12,6 +23,7 @@ _root.agent.REL_SYNC_STATE = "data/rag/sync_state.json";
+ _root.agent.REL_NPC_STATE_DB = "data/rag/npc_state_db.json";
+ _root.agent.REL_LAUNCH_BAT = "data/rag/launch_cfn_rag.bat";
+ _root.agent.KEY_TASK_PUBLISH_VERSION = "task_publish_version";
++_root.agent.KEY_DIALOGUE_VERSION = "dialogue_version";
+ // 槽位目录同步（G2-3②）：已对齐槽位与防重入。null＝从未对齐。
+ _root.agent.slot_catalog_aligned = null;
+ _root.agent.slot_catalog_busy = false;
+@@ -20,7 +32,9 @@ _root.agent.slot_catalog_busy = false;
+ _root.agent.AGENT_TASK_ID_MIN = 200001;
+ _root.agent.AGENT_TASK_ID_MAX = 300000;
+ 
+-_root.agent.读取任务发布版本号 = function(raw:String):Number {
++// 通用版本号读取：同一份 sync_state.json raw 按 key 取值。缺键/非数字一律按 0，
++// 旧格式（没有 dialogue_version）因此不会每轮都被当成变化。
++_root.agent.读取同步版本号 = function(raw:String, key:String):Number {
+     if (raw == undefined || raw.length == 0) {
+         return 0;
+     }
+@@ -29,8 +43,8 @@ _root.agent.读取任务发布版本号 = function(raw:String):Number {
+     if (obj == undefined || obj == null || typeof obj != "object") {
+         return 0;
+     }
+-    var v = obj[_root.agent.KEY_TASK_PUBLISH_VERSION];
+-    if (v == undefined) {
++    var v = obj[key];
++    if (v == undefined || v == null) {
+         return 0;
+     }
+     var n:Number = Number(v);
+@@ -40,6 +54,10 @@ _root.agent.读取任务发布版本号 = function(raw:String):Number {
+     return n;
+ };
+ 
++_root.agent.读取任务发布版本号 = function(raw:String):Number {
++    return _root.agent.读取同步版本号(raw, _root.agent.KEY_TASK_PUBLISH_VERSION);
++};
++
+ _root.agent.检测npc状态库文件 = function():Void {
+     PathManager.initialize(null);
+     if (!PathManager.isEnvironmentValid()) {
+@@ -111,24 +129,41 @@ _root.agent.轮询同步状态 = function():Void {
+     var r:Object = _root.agent;
+     lv.onData = function(raw:String):Void {
+         r.sync_poll_busy = false;
+-        if (raw == undefined || raw.length == 0) {
+-            r.last_task_publish_version = 0;
+-            return;
++        // 槽位变化（读档/换档）：旧槽位的版本号不能带到新槽位，对话版本基线作废，
++        // 下一次成功读取重新取基线。任务版本基线沿用既有语义（不在此重置）。
++        var currentSlot:String = (_root.savePath == undefined || _root.savePath == null)
++            ? "" : String(_root.savePath);
++        if (r.dialogue_version_slot !== currentSlot) {
++            r.dialogue_version_slot = currentSlot;
++            r.last_dialogue_version = null;
+         }
+-        var fileVer:Number = r.读取任务发布版本号(raw);
+-        if (isNaN(fileVer)) {
++        if (raw == undefined || raw.length == 0) {
+             r.last_task_publish_version = 0;
++            r.last_dialogue_version = 0;
+             return;
+         }
++        // 同一次读取解析两个版本：task 没变不能挡住 dialogue。
++        var fileVer:Number = r.读取同步版本号(raw, r.KEY_TASK_PUBLISH_VERSION);
++        var dialogueVer:Number = r.读取同步版本号(raw, r.KEY_DIALOGUE_VERSION);
+         if (r.last_task_publish_version == null) {
++            // 首次成功读取：两个版本都只作基线，不触发任何事件。
+             r.last_task_publish_version = fileVer;
++            r.last_dialogue_version = dialogueVer;
+             return;
+         }
+-        if (fileVer == r.last_task_publish_version) {
+-            return;
++        if (fileVer != r.last_task_publish_version) {
++            _root.发布消息("正在接收终端任务数据……");
++            _root.agent.同步任务热更新(fileVer);
++        }
++        if (r.last_dialogue_version == null) {
++            r.last_dialogue_version = dialogueVer;
++        } else if (dialogueVer != r.last_dialogue_version) {
++            // 数值与基线不同即触发一次（文件刷新/重建导致回退也照发），发送成功才推进基线，
++            // 断线时下一轮 7 秒轮询自然重试。best-effort：不弹任何提示，只 trace。
++            if (_root.agent.发送对话覆盖层变更(dialogueVer)) {
++                r.last_dialogue_version = dialogueVer;
++            }
+         }
+-        _root.发布消息("正在接收终端任务数据……");
+-        _root.agent.同步任务热更新(fileVer);
+     };
+     lv.load(fullPath);
+ };
+@@ -608,6 +643,90 @@ _root.agent.任务发布NPC = function(taskId:String):String {
+     return String(taskData.get_npc);
+ };
+ 
++// G4-5：dialogue_version 变化 → AS2→Host 的轻量命令（query 语义，与 rag_bind_refresh /
++// rag_task_completed 同族）：不改游戏状态、不等 exe 应答、不等 Host 回执。
++// 通道不可用（server 未就绪 / 断线 / 空槽位）返回 false，调用方不推进版本基线，下一轮轮询重试。
++_root.agent.发送对话覆盖层变更 = function(dialogueVersion:Number):Boolean {
++    if (_root.server == undefined || _root.server == null) return false;
++    if (typeof _root.server.sendTaskToNode != "function") return false;
++    if (_root.server.isSocketConnected !== true) return false;
++    var savePath:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
++    if (savePath == "") return false;
++    var ver:Number = Number(dialogueVersion);
++    if (!isFinite(ver)) ver = 0;
++    var sent:Boolean = _root.server.sendTaskToNode("rag_dialogue_changed",
++        {savePath: savePath, dialogueVersion: ver}, null);
++    if (sent !== true) {
++        trace("[Agent] rag_dialogue_changed 发送失败，下一轮轮询重试。");
++        return false;
++    }
++    return true;
++};
++
++// 当前场景 NPC 登记表：只收真正走过 _root.查询并绑定NPC默认对话 的 NPC（佣兵不走这条绑定）。
++// 查询发起时就登记，首次查询失败也能在下一次覆盖层变化时重试。
++_root.agent.登记对话NPC = function(npc:MovieClip):Void {
++    if (npc == undefined || npc == null) return;
++    var list:Array = _root.agent.dialogue_npcs;
++    if (!(list instanceof Array)) {
++        list = [];
++        _root.agent.dialogue_npcs = list;
++    }
++    for (var i:Number = 0; i < list.length; i++) {
++        if (list[i] === npc) return;
++    }
++    list.push(npc);
++};
++
++// 覆盖层热失效后的当前场景重绑：只遍历登记表，不遍历 _root / 全地图；
++// 场景切换后旧 MC 的 _parent 失效，靠这里的清理逻辑剔除（不依赖手写 remove 钩子）。
++// busy + pending 合并连续版本变化；每个 NPC 的请求代际保证旧响应不会覆盖新响应。
++_root.agent.刷新已绑定NPC对话 = function():Void {
++    var r:Object = _root.agent;
++    if (typeof _root.查询并绑定NPC默认对话 != "function") return;
++    if (r.dialogue_refresh_busy == true) {
++        r.dialogue_refresh_pending = true;
++        return;
++    }
++    r.dialogue_refresh_busy = true;
++    var list:Array = r.dialogue_npcs;
++    var alive:Array = [];
++    var targets:Array = [];
++    if (list instanceof Array) {
++        for (var i:Number = 0; i < list.length; i++) {
++            var npc:MovieClip = list[i];
++            if (npc == undefined || npc == null) continue;
++            if (npc._parent == null) continue;
++            alive.push(npc);
++            if (npc.NPC对话已绑定 === true || npc.__对话查询在途 === true) {
++                targets.push(npc);
++            }
++        }
++    }
++    r.dialogue_npcs = alive;
++    for (var j:Number = 0; j < targets.length; j++) {
++        _root.查询并绑定NPC默认对话(targets[j], true);
++    }
++    r.dialogue_refresh_busy = false;
++    if (r.dialogue_refresh_pending == true) {
++        r.dialogue_refresh_pending = false;
++        _root.agent.刷新已绑定NPC对话();
++    }
++};
++
++// Host→AS2 回执处理：只做当前场景重绑——不重载 base XML、不清 DataCache、不改任务数据。
++// savePath 为空视为同槽位（Host 已按绑定槽位校验过）；不一致＝旧槽位的迟到消息，直接忽略。
++_root.agent.处理对话覆盖层变更 = function(params:Object):Void {
++    var incoming:String = (params == undefined || params.savePath == undefined || params.savePath == null)
++        ? "" : String(params.savePath);
++    var current:String = (_root.savePath == undefined || _root.savePath == null) ? "" : String(_root.savePath);
++    if (incoming != "" && incoming !== current) {
++        trace("[Agent] 忽略旧槽位的对话覆盖层变更回执：" + incoming + " 当前：" + current);
++        return;
++    }
++    _root.agent.刷新已绑定NPC对话();
++};
++
+ // G2-3②：换槽位后的任务目录对齐。宿主按新 savePath 重读覆盖层并回变化清单，
+ // 游戏侧只重载真正变化的文件（silent=true 不弹提示、不推进任务发布版本号）。
+ // 失败 trace-only；下一轮 7 秒轮询的对齐检查会重试，task_reload_owed 防止
+@@ -745,4 +864,12 @@ _root.gameCommands["openRagTerminal"] = function(params:Object):Void {
+     }
+ };
+ 
++// G4-5 回执：Host 已让覆盖层缓存失效（dialogue_version 变化 → rag_dialogue_changed），
++// 本命令让当前场景已绑定的 NPC 重绑对话。两向两命令：AS2→Host 是 rag_dialogue_changed，
++// Host→AS2 是本 gameCommand（不要把它当成 AS2→Host 命令用）。
++// 边界：回执丢失时当前场景会保持旧对话，直到下一次覆盖层版本变化或 NPC 重新初始化。
++_root.gameCommands["agentDialogueChanged"] = function(params:Object):Void {
++    _root.agent.处理对话覆盖层变更(params);
++};
++
+ _root.agent.检测npc状态库文件();
+diff --git a/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as b/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
+index 5a45e903ae..e809a38259 100644
+--- a/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
++++ b/scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as
+@@ -325,6 +325,68 @@ _root.地图元件.地图元件破碎动画 = function(scope:MovieClip, fragment
+     }
+ };
+ 
++// NPC 默认对话的查询与绑定（初始绑定与覆盖层热失效后的重绑共用同一条路径）。
++// 非强制：已有默认对话直接返回；首次绑定先用 [] 占位，防止同一个 NPC 重复发查询。
++// 强制刷新：不动旧数组、不动 NPC对话已绑定，直到新结果成功返回——对话按钮不会短暂失效。
++// 请求代际：每次发起前自增，回调先比对代际，旧响应不可能覆盖新响应。
++_root.查询并绑定NPC默认对话 = function(目标:MovieClip, 强制刷新:Boolean):Void {
++    // 回调工厂：MC 引用、请求代际、对话键都用形参保存。CS6 会把普通局部变量放进寄存器，
++    // 异步回调按变量名读取时会丢（MapPanelService.makeResponse 同一前例）。
++    function 构建回调(ref:MovieClip, 请求代际:Number, 对话键:String):Function {
++        return function(response:Object):Void {
++            if (ref._parent == null) return;  // MC 已销毁
++            if (ref.__对话请求代际 !== 请求代际) return;  // 旧响应：丢弃，不覆盖新响应
++            ref.__对话查询在途 = false;
++            if (response != undefined && response != null && response.success) {
++                var assembled:Array = [];
++                if (response.result != null && response.result.length > 0) {
++                    for (var i:Number = 0; i < response.result.length; i++) {
++                        assembled[i] = _root.组装单次对话(response.result[i]);
++                    }
++                }
++                if (assembled.length > 0) {
++                    // 原子替换数组：只影响下一次点击，已经显示在对话框里的文本不动。
++                    ref.默认对话 = assembled;
++                    ref.NPC对话已绑定 = true;
++                } else if (ref.默认对话 == null || ref.默认对话.length == 0) {
++                    // 空结果绝不覆盖已有的非空对话；占位空数组保持并置绑定成功。
++                    ref.默认对话 = [];
++                    ref.NPC对话已绑定 = true;
++                }
++                return;
++            }
++            // 失败：重绑保留旧对话；没有已落地对话时把占位 [] 还原成 null，允许后续重试。
++            if (ref.NPC对话已绑定 !== true
++                    && (ref.默认对话 == null || ref.默认对话.length == 0)) {
++                ref.默认对话 = null;
++            }
++            _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", 对话键,
++                "error:", (response == null) ? "empty_response" : response.error);
++        };
++    }
++    if (目标 == undefined || 目标 == null) return;
++    if (!强制刷新 && 目标.默认对话 != null) return;
++    var npcNameStr:String = (目标.NPC对话名 == undefined || 目标.NPC对话名 == null)
++        ? String(目标.名字) : String(目标.NPC对话名);
++    if (npcNameStr == "" || npcNameStr == "undefined") return;
++    if (!强制刷新) {
++        目标.默认对话 = [];  // 占位
++    }
++    // 登记在发起时完成：首次查询失败也能在下一次覆盖层变化时被重试。
++    if (_root.agent != undefined && typeof _root.agent.登记对话NPC == "function") {
++        _root.agent.登记对话NPC(目标);
++    }
++    var previousGen:Number = Number(目标.__对话请求代际);
++    var gen:Number = isNaN(previousGen) ? 1 : previousGen + 1;
++    目标.__对话请求代际 = gen;
++    目标.__对话查询在途 = true;
++    org.flashNight.neur.Server.DataQueryService.query(
++        "npc_dialogue",
++        {key: npcNameStr, taskProgress: _root.主线任务进度},
++        构建回调(目标, gen, npcNameStr)
++    );
++};
++
+ // NPC
+ //_root.初始化NPC(this);
+ _root.初始化NPC = function(目标) {
+@@ -385,34 +447,9 @@ _root.初始化NPC = function(目标) {
+     目标.NPC商店检索名 = npcShopName;
+     目标.NPC技能检索名 = npcSkillName;
+ 
+-    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）
++    // 对话绑定：通过 Launcher 查询（Launcher 是唯一数据源）；热失效重绑走同一个函数。
+     // 注意：AS2 中 _name 作局部变量名会引发编译器冲突
+-    if (目标.默认对话 == null) {
+-        var npcNameStr:String = npcDialogueName;
+-        if (npcNameStr != undefined && npcNameStr != null && npcNameStr.length > 0) {
+-            目标.默认对话 = [];  // 占位
+-            var npcRef:MovieClip = 目标;
+-            org.flashNight.neur.Server.DataQueryService.query(
+-                "npc_dialogue",
+-                {key: npcNameStr, taskProgress: _root.主线任务进度},
+-                function(response:Object):Void {
+-                    if (npcRef._parent == null) return;  // MC 已销毁
+-                    if (response.success) {
+-                        if (response.result != null && response.result.length > 0) {
+-                            var assembled:Array = [];
+-                            for (var i:Number = 0; i < response.result.length; i++) {
+-                                assembled[i] = _root.组装单次对话(response.result[i]);
+-                            }
+-                            npcRef.默认对话 = assembled;
+-                        }
+-                        npcRef.NPC对话已绑定 = true;
+-                    } else {
+-                        _root.服务器.发布服务器消息("[初始化NPC] 查询失败:", npcNameStr, "error:", response.error);
+-                    }
+-                }
+-            );
+-        }
+-    }
++    _root.查询并绑定NPC默认对话(目标, false);
+ 
+         // _root.服务器.发布服务器消息("NPC默认对话: " + ObjectUtil.stringify(目标.默认对话));
+     if (目标.物品栏 == null)

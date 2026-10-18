@@ -1,0 +1,104 @@
+﻿import org.flashNight.arki.component.Buff.BuffManager;
+import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
+import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
+import org.flashNight.arki.component.Damage.*;
+import org.flashNight.arki.component.Shield.*;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletQueueProcessor;
+import org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry;
+import org.flashNight.naki.RandomNumberEngine.PinkNoiseEngine;
+
+/** Real emitted action declarations pass through settlement, BuffManager and shield implementations. */
+class org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest {
+    private static var samples:Object;
+    private static var passed:Number,failed:Number,serial:Number;
+    private static function check(ok:Boolean,label:String):Void {
+        if(ok)passed++;else{failed++;trace("[TEST_FAIL] Cf6ElderCombatEffectsTest: "+label);}
+    }
+    private static function near(a:Number,b:Number):Boolean {return Math.abs(a-b)<0.00001;}
+    public static function reset():Void {samples={};passed=failed=serial=0;}
+    public static function capture(action:String,data:Object,actor:MovieClip):Void {
+        if(samples[action]==undefined)samples[action]={data:data,actor:actor};
+    }
+    private static function target():MovieClip {
+        var t:MovieClip=_root.cf6MakePlayerTarget(_root.gameworld,"effectTarget"+(++serial),175);
+        t.buffManager=new BuffManager(t,{});t.createEmptyMovieClip("man",2);
+        return t;
+    }
+    private static function bullet(action:String):Object {
+        var result:Object={};for(var key:String in samples[action].data)result[key]=samples[action].data[key];
+        result.固伤=0;result.flags=256;result.hitCount=0;result.damageManager=DamageManagerFactory.resolveForBullet(result);
+        return result;
+    }
+    private static function settle(data:Object,actor:MovieClip,t:MovieClip,miss:Boolean):Object {
+        actor.dispatcher={publish:function():Void {}};
+        var queue:Object=BulletQueueProcessor;
+        // Suppress only number rendering; calculation, actual-hit classification and callbacks are production.
+        var impact:Object=DamageResult.getIMPACT();var display:Function=impact.triggerDisplay;
+        impact.triggerDisplay=function(x:Number,y:Number,name:String):Void {};
+        var context:Object={bullet:data,shooter:actor,Damage:DamageCalculator,flags:256,meleeMask:768};
+        var result:Object=queue.settleHit(context,t,{overlapCenter:{x:t._x,y:t._y}},1,miss?"MISS":"未躲闪",true);
+        impact.triggerDisplay=display;
+        return result;
+    }
+    public static function runAllTests():Boolean {
+        DamageManagerFactory.init();PinkNoiseEngine.getInstance();
+        check(samples.beam!=undefined && samples.kicks!=undefined && samples.slam!=undefined && samples.heavyBeam!=undefined,"all four emitted robot actions captured");
+        if(failed>0)return false;
+        var actor:MovieClip=samples.kicks.actor;
+        actor.shield=AdaptiveShield.createDormant("melee-reward-fixture");actor.shield.setOwner(actor);
+        var foreign:Shield=Shield.createTemporary(7,1,300,"foreign");actor.shield.addShield(foreign);
+        var t:MovieClip=target(),data:Object=bullet("kicks"),before:Number=t.hp;
+        settle(data,actor,t,true);
+        check(t.hp==before && t.hp满血值==100000 && actor.shield.getShieldCount()==1,"MISS neither crumbles nor rewards shield");
+        settle(data,actor,t,false);
+        check(t.hp满血值==99500 && t.hp<before && t.损伤值>=500 && before-t.hp>=500,"actual punch uses 0.5 percent paired crumble");
+        var first:Number=actor.elderMeleeShield,shield:IShield=actor.shield.getShieldById(first);
+        check(first>=0 && near(shield.getCapacity(),200) && near(shield.getStrength(),5),"actual melee earns low-strength high-capacity shield");
+        settle(data,actor,t,false);
+        check(actor.elderMeleeShield==first && actor.shield.getShieldCount()==2,"same contact cannot stack reward across targets");
+        data=bullet("kicks");settle(data,actor,t,false);
+        check(actor.elderMeleeShield!=first && actor.shield.getShieldById(first)==null && actor.shield.getShieldCount()==2
+            && actor.shield.getShieldById(foreign.getId())!=null,"new contact refreshes only owned shield");
+        first=actor.elderMeleeShield;actor.shield.update(59);
+        check(actor.shield.getShieldById(first)!=null,"shield lives through 59 frames");actor.shield.update(1);
+        check(actor.shield.getShieldById(first)==null && actor.shield.getShieldById(foreign.getId())!=null,"shield expires at 60 without deleting foreign shield");
+        var identity:Object=actor.elderIdentity;actor.elderIdentity={};data=bullet("kicks");settle(data,actor,t,false);
+        check(actor.shield.getShieldCount()==1,"stale shooter identity cannot reward replacement");actor.elderIdentity=identity;
+        t.removeMovieClip();
+
+        t=target();data=bullet("beam");actor=samples.beam.actor;before=t.hp;
+        settle(data,actor,t,true);
+        check(t.hp==before && t.buffManager.getBuffById(ElderBeamVulnerability.ID)==null,"missed red beam gives no vulnerability");
+        settle(data,actor,t,false);
+        check(t.hp<before && data.伤害类型=="魔法" && data.魔法伤害属性=="波" && data.子弹威力==100,"primer keeps authored wave damage");
+        check(near(t.damageTakenMultiplier,1.25) && near(t.ti61CrumbleTakenMultiplier,1.25),"primer raises damage and crumble by 25 percent");
+        t.buffManager.update(90);check(near(t.damageTakenMultiplier,1.125),"six-second vulnerability decays linearly at midpoint");
+        ElderBeamVulnerability.applyToTarget(t,{peak:0.25,durationFrames:180});ElderBeamVulnerability.applyToTarget(t,{peak:0.25,durationFrames:180});
+        check(near(t.damageTakenMultiplier,1.25),"multiple casters and repeat hits refresh without stacking");
+        t.损伤值=0;var crumble:Object={击溃:0.5,子弹威力:100,additionalEffectDamage:0};
+        CrumbleDamageHandle.instance.handleBulletDamage(crumble,{},t,{},DamageResult.getIMPACT());
+        check(t.hp满血值==99375 && t.损伤值==625,"marked target takes enhanced real crumble");
+        t.buffManager.update(180);check(near(t.damageTakenMultiplier,1) && near(t.ti61CrumbleTakenMultiplier,1),"expiry restores both multipliers");
+        check(!ElderBeamVulnerability.applyToTarget(t,{peak:0.26,durationFrames:180})
+            && !ElderBeamVulnerability.applyToTarget(t,{peak:0.25,durationFrames:30}),"invalid effect contracts rejected");
+        check(!BulletHitEffectRegistry.apply(bullet("beam"),actor,t,{dodgeStatus:"HIT",scatterModelEnabled:true,actualScatterUsed:2,scatterMissCount:2}),"all-MISS scatter cannot apply mark");
+        ElderBeamVulnerability.applyToTarget(t,{peak:0.25,durationFrames:180});t.hp=0;t.buffManager.update(1);
+        check(t.buffManager.getBuffById(ElderBeamVulnerability.ID)==null && near(t.damageTakenMultiplier,1),"death removes mark");
+        t.hp=t.hp满血值=100000;
+        check(FireControlVulnerability.applyToTarget(t,{peak:0.75,durationFrames:30}) && near(t.damageTakenMultiplier,1.75),"Titanium 171 retains independent 75-percent one-second contract");
+        t.buffManager.update(30);check(near(t.damageTakenMultiplier,1),"Titanium 171 still expires at 30 frames");
+        t.removeMovieClip();
+
+        t=target();actor=samples.slam.actor;actor.shield=AdaptiveShield.createDormant("slam-shield");actor.shield.setOwner(actor);
+        data=bullet("slam");settle(data,actor,t,false);
+        check(data.斩杀==10 && data.水平击退速度==24 && data.垂直击退速度==0,"slam declares execute and grounded strong knockback");
+        check(actor.elderCombo.target==t._name && actor.elderCombo.identity===t.__elderActionIdentity,"only actual slam hit arms target-bound beam combo");
+        var killed:MovieClip=target();killed.hp=5000;data=bullet("slam");settle(data,actor,killed,false);
+        check(killed.hp==0,"real execute handler finishes a target below ten percent");killed.removeMovieClip();t.removeMovieClip();
+
+        t=target();actor=samples.heavyBeam.actor;data=bullet("heavyBeam");before=t.hp;settle(data,actor,t,false);
+        check(data.子弹威力==300 && data.伤害类型=="魔法" && data.魔法伤害属性=="波" && t.hp<before,"heavy beam retains threefold wave power");
+        check(t.buffManager.getBuffById(ElderBeamVulnerability.ID)==null,"heavy beam cannot grant its own prerequisite");t.removeMovieClip();
+        trace("Cf6ElderCombatEffectsTest: "+passed+" passed, "+failed+" failed");return failed==0;
+    }
+}

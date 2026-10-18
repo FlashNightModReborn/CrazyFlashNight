@@ -1,0 +1,13 @@
+{
+  "recordedAtUtc": "2026-10-18T10:09:57.6492264Z",
+  "firstAttempt": "db77fa21d2d84799becf5f5a3cc6eda7",
+  "failure": "Test player control has no fresh idle acknowledgement; recovery stays blocked.",
+  "lateReceiptSha256": "9768C9A0EC5BD1D8BC6C6CFB0AA042E180007244ABD8F828EDAE8A493B3E6494",
+  "triggerState": "Ready",
+  "controlInstructionAbsent": true,
+  "editorPid": 20176,
+  "editorStartUtc": "2026-10-17T14:06:44.6668016Z",
+  "runnerSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+  "lateReceiptIsNotAcceptedRecovery": true,
+  "nextAction": "Fresh canonical StopTestPlayers transaction after the original instruction was consumed and the trigger returned idle; no marker removed."
+}

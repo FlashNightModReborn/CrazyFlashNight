@@ -1,0 +1,1200 @@
+[
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "assignmentId": "assignment-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "attemptId": "attempt-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "batchId": "cf6-cal-r10-elder-20261017-exusiai-l30-w1",
+    "manifestHash": "sha256:db8cfb6b8536bdf45f2c722f0f64a403a2518b3edb6ee664f2cc0396194c83b5",
+    "caseId": "level30-blue",
+    "caseHash": "sha256:0c8b88f590f34d138337f7f97e0d05f9776258ca2c6febd2745e0fd29de9d2b8",
+    "runId": "level30-blue-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "red",
+    "startedAt": "2026-10-17T15:06:41.2411091Z",
+    "completedAt": "2026-10-17T15:07:16.1607017Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 1.0,
+    "spawnedUnits": [
+      {
+        "side": "blue",
+        "unit": "敌人-CF6老头机器人",
+        "from": "兵种471",
+        "name": "斗兽标定_blue_level30_blue_r001_0__elderbot",
+        "frame": 288
+      }
+    ],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种471",
+        "level": 30,
+        "name": "斗兽标定_blue_level30_blue_r001_0",
+        "x": 570,
+        "y": 430
+      },
+      {
+        "side": "blue",
+        "index": null,
+        "unit": "敌人-CF6老头机器人",
+        "level": 30,
+        "name": "斗兽标定_blue_level30_blue_r001_0__elderbot",
+        "x": null,
+        "y": null
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种361",
+        "level": 30,
+        "name": "斗兽标定_red_level30_blue_r001_0",
+        "x": 1220,
+        "y": 430
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 30,
+      "rivalUnitId": 361,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "elder-30",
+        "petId": -1,
+        "identifier": "敌人-CF6老头人形",
+        "resolvedType": "敌人-CF6老头人形",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 12158.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "exusiai-30",
+        "petId": -1,
+        "identifier": "敌人-EXUSIAI指挥官",
+        "resolvedType": "敌人-EXUSIAI指挥官",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 40169.0,
+        "remainHp": 30218.0,
+        "hpPermille": 752,
+        "alive": true
+      }
+    ],
+    "frames": 995.0,
+    "durationMs": 33166.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种471",
+          "sourceId": "elder-30",
+          "name": "斗兽标定_blue_level30_blue_r001_0",
+          "observed": false,
+          "state": null
+        },
+        {
+          "unit": "敌人-CF6老头机器人",
+          "sourceId": "",
+          "name": "斗兽标定_blue_level30_blue_r001_0__elderbot",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种361",
+          "sourceId": "exusiai-30",
+          "name": "斗兽标定_red_level30_blue_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 12158.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 12158.0,
+      "startCount": 2.0
+    },
+    "red": {
+      "maxHp": 40169.0,
+      "remainHp": 30218.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 40169.0,
+      "startCount": 1.0
+    },
+    "errors": []
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "assignmentId": "assignment-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "attemptId": "attempt-7ef9a2a5c5874485a7f8e7296e0204b8",
+    "batchId": "cf6-cal-r10-elder-20261017-exusiai-l30-w1",
+    "manifestHash": "sha256:db8cfb6b8536bdf45f2c722f0f64a403a2518b3edb6ee664f2cc0396194c83b5",
+    "caseId": "level30-red",
+    "caseHash": "sha256:7ed1d3b0ba26ea3fe5c7c1e95f4053961853e2a1619f7990b0bed84ff80220ba",
+    "runId": "level30-red-r001",
+    "repeatIndex": 1,
+    "status": "finished",
+    "winner": "blue",
+    "startedAt": "2026-10-17T15:07:16.1638262Z",
+    "completedAt": "2026-10-17T15:07:51.9139505Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54.0,
+    "phaseSpawnCount": 1.0,
+    "spawnedUnits": [
+      {
+        "side": "red",
+        "unit": "敌人-CF6老头机器人",
+        "from": "兵种471",
+        "name": "斗兽标定_red_level30_red_r001_0__elderbot",
+        "frame": 314
+      }
+    ],
+    "blueSpawnPositions": [
+      {
+        "side": "blue",
+        "index": 0,
+        "unit": "兵种361",
+        "level": 30,
+        "name": "斗兽标定_blue_level30_red_r001_0",
+        "x": 570,
+        "y": 430
+      }
+    ],
+    "redSpawnPositions": [
+      {
+        "side": "red",
+        "index": 0,
+        "unit": "兵种471",
+        "level": 30,
+        "name": "斗兽标定_red_level30_red_r001_0",
+        "x": 1220,
+        "y": 430
+      },
+      {
+        "side": "red",
+        "index": null,
+        "unit": "敌人-CF6老头机器人",
+        "level": 30,
+        "name": "斗兽标定_red_level30_red_r001_0__elderbot",
+        "x": null,
+        "y": null
+      }
+    ],
+    "formationAudit": {
+      "blue": {
+        "count": 1,
+        "minX": 570,
+        "maxX": 570,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      },
+      "red": {
+        "count": 1,
+        "minX": 1220,
+        "maxX": 1220,
+        "minY": 430,
+        "maxY": 430,
+        "xRange": 0,
+        "yRange": 0,
+        "distinctX": 1,
+        "distinctY": 1
+      }
+    },
+    "authorityContext": {
+      "candidateSide": "red",
+      "candidateUnitId": 471,
+      "level": 30,
+      "rivalUnitId": 361,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [
+      {
+        "sourceId": "exusiai-30",
+        "petId": -1,
+        "identifier": "敌人-EXUSIAI指挥官",
+        "resolvedType": "敌人-EXUSIAI指挥官",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 40169.0,
+        "remainHp": 27628.0,
+        "hpPermille": 688,
+        "alive": true
+      }
+    ],
+    "redUnitResults": [
+      {
+        "sourceId": "elder-30",
+        "petId": -1,
+        "identifier": "敌人-CF6老头人形",
+        "resolvedType": "敌人-CF6老头人形",
+        "level": 30,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 12158.0,
+        "remainHp": 0.0,
+        "hpPermille": 0,
+        "alive": false
+      }
+    ],
+    "frames": 1066.0,
+    "durationMs": 35700.0,
+    "spawnDistance": 650.0,
+    "blueX": 570.0,
+    "redX": 1220.0,
+    "skillStateAudit": {
+      "blue": [
+        {
+          "unit": "兵种361",
+          "sourceId": "exusiai-30",
+          "name": "斗兽标定_blue_level30_red_r001_0",
+          "observed": false,
+          "state": null
+        }
+      ],
+      "red": [
+        {
+          "unit": "兵种471",
+          "sourceId": "elder-30",
+          "name": "斗兽标定_red_level30_red_r001_0",
+          "observed": false,
+          "state": null
+        },
+        {
+          "unit": "敌人-CF6老头机器人",
+          "sourceId": "",
+          "name": "斗兽标定_red_level30_red_r001_0__elderbot",
+          "observed": false,
+          "state": null
+        }
+      ]
+    },
+    "presentationAudit": {
+      "qualityAtStart": "LOW",
+      "qualityApplied": "LOW",
+      "atStart": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      },
+      "atEnd": {
+        "observed": true,
+        "qualityApplied": "LOW",
+        "performanceLevel": 1,
+        "lastAppliedSoftU": 1,
+        "appliedCommand": 3,
+        "sceneEpoch": 3,
+        "paused": false,
+        "frameRate": 30
+      }
+    },
+    "blue": {
+      "maxHp": 40169.0,
+      "remainHp": 27628.0,
+      "aliveCount": 1.0,
+      "startMaxHp": 40169.0,
+      "startCount": 1.0
+    },
+    "red": {
+      "maxHp": 12158.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 12158.0,
+      "startCount": 2.0
+    },
+    "errors": []
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-c5545d64eb8746d4903bade8d522dce8",
+    "assignmentId": "assignment-c5545d64eb8746d4903bade8d522dce8",
+    "attemptId": "attempt-c5545d64eb8746d4903bade8d522dce8",
+    "batchId": "cf6-cal-r10-elder-20261017-exusiai-l60-w1",
+    "manifestHash": "sha256:3be087bb9bff45b2e0b0f4dc73ff33633ce504bd0afe092e45c5a699f560e420",
+    "caseId": "level60-blue",
+    "caseHash": "sha256:32372ac27f17fe6ec2a363828d815487a61c1d516a6ff83640faf5fddb170316",
+    "runId": "level60-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T15:08:53.4753748Z",
+    "completedAt": "2026-10-17T15:15:23.4807960Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 60,
+      "rivalUnitId": 361,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-f96d5342fb3443068df907f454da0b0e",
+    "assignmentId": "assignment-f96d5342fb3443068df907f454da0b0e",
+    "attemptId": "attempt-f96d5342fb3443068df907f454da0b0e",
+    "batchId": "cf6-cal-r10-elder-20261017-exusiai-l99-w1",
+    "manifestHash": "sha256:9b566a3889682c390f555843e1b1f7f7c2d403e1cbd8df98b85ca35b5e03f5f8",
+    "caseId": "level99-blue",
+    "caseHash": "sha256:963679af619fba17deb2d1cb771f9a2fa453eaed6871a91a788523e21ebd4798",
+    "runId": "level99-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T15:16:28.9830921Z",
+    "completedAt": "2026-10-17T15:22:59.0004716Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 99,
+      "rivalUnitId": 361,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-fdd9e3040d43411fa3d1005cbd2d8d5c",
+    "assignmentId": "assignment-fdd9e3040d43411fa3d1005cbd2d8d5c",
+    "attemptId": "attempt-fdd9e3040d43411fa3d1005cbd2d8d5c",
+    "batchId": "cf6-cal-r10-elder-20261017-beastking-l30-w1",
+    "manifestHash": "sha256:abfd6591d0b0b059f38af144bc7ba664b35d8da0f7ac18a1baa0c6225edc3a4a",
+    "caseId": "level30-blue",
+    "caseHash": "sha256:6374587f1ab043920470778d66bdc7f73b95172e262c158baec07843f7551896",
+    "runId": "level30-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T15:24:00.0544845Z",
+    "completedAt": "2026-10-17T15:30:30.0648208Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 30,
+      "rivalUnitId": 78,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-dcfc12ebddbe43d7bfef8bf9afcf1b3a",
+    "assignmentId": "assignment-dcfc12ebddbe43d7bfef8bf9afcf1b3a",
+    "attemptId": "attempt-dcfc12ebddbe43d7bfef8bf9afcf1b3a",
+    "batchId": "cf6-cal-r10-elder-20261017-beastking-l60-w1",
+    "manifestHash": "sha256:12dd1d51b102ddf081b63d1a79ea2b35ad7567689a1d4d6e2229585566d6dcf6",
+    "caseId": "level60-blue",
+    "caseHash": "sha256:807fba151ddff049724b90dbf287c7f809950dd1884350aea4e9b45c37891458",
+    "runId": "level60-blue-r001",
+    "repeatIndex": 1,
+    "status": "bridge_lost",
+    "winner": "none",
+    "startedAt": "2026-10-17T15:31:28.8310438Z",
+    "completedAt": "2026-10-17T15:37:58.8464700Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 60,
+      "rivalUnitId": 78,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "bridge_lost",
+        "message": "Host transport deadline elapsed before AS2 arena calibration response"
+      }
+    ]
+  },
+  {
+    "schema": "arena-calibration.result.v1",
+    "workerId": "elder-w1",
+    "sessionEpoch": "session-0da23e8f0da44ecfb57d3e9081b7f1ca",
+    "assignmentId": "assignment-0da23e8f0da44ecfb57d3e9081b7f1ca",
+    "attemptId": "attempt-0da23e8f0da44ecfb57d3e9081b7f1ca",
+    "batchId": "cf6-cal-r10-elder-20261017-beastking-l99-w1",
+    "manifestHash": "sha256:f7b5b2221183efcb09208b3eb0caea7ef09f96b0517d92578db95411dd991a42",
+    "caseId": "level99-blue",
+    "caseHash": "sha256:aa5ca836903f17caaecb2ef102382df3807b9670df5fe3d2c7ec2c98214f3cda",
+    "runId": "level99-blue-r001",
+    "repeatIndex": 1,
+    "status": "aborted",
+    "winner": "none",
+    "startedAt": "2026-10-17T15:38:57.4292047Z",
+    "completedAt": "2026-10-17T15:40:37.4388571Z",
+    "requestedSpawnDistance": 650,
+    "blueFormation": "line",
+    "redFormation": "line",
+    "formationSpacing": 54,
+    "phaseSpawnCount": 0,
+    "spawnedUnits": [],
+    "blueSpawnPositions": [],
+    "redSpawnPositions": [],
+    "formationAudit": {},
+    "authorityContext": {
+      "candidateSide": "blue",
+      "candidateUnitId": 471,
+      "level": 99,
+      "rivalUnitId": 78,
+      "sourceBindings": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "sha256": "4a64dc376d94205a81ee7fc90e5e0501c9e451ebdeeb7f20e5a3d3e13396f47a"
+        },
+        {
+          "path": "flashswf/arts/things-new.swf",
+          "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+        },
+        {
+          "path": "flashswf/arts/things5.swf",
+          "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+        },
+        {
+          "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+          "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "sha256": "2e2b3de9c85b429975722ab96e45e13c08144d74225c11099d3668b06df5c43e"
+        },
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+        },
+        {
+          "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+          "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+        },
+        {
+          "path": "data/enemy_properties/天网.xml",
+          "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+        },
+        {
+          "path": "data/units/units.json",
+          "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+        },
+        {
+          "path": "data/items/asset_source_map.xml",
+          "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+        },
+        {
+          "path": "launcher/web/modules/arena-unit-catalog.js",
+          "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "sha256": "8e7b193a056130894c13c5c28670951f48462fc68ebe76654ee4fefc1bf6d65b"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderTransform.as",
+          "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build.py",
+          "sha256": "6f7fbe47708cba37d3af74d09feb58989b409d386cfb1f1ebfc2326acdd18be4"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "sha256": "4b337c4f35d5f13aa9bd9076bc5cd3582c249c24ba6289b7e6f762ad87850943"
+        },
+        {
+          "path": "tools/cf6-elder-assets/balance-inputs.json",
+          "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+          "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+        }
+      ],
+      "stage": 8,
+      "successorTier": 20,
+      "successorUnitId": 472,
+      "targetPosition": "significant_threat_without_victory",
+      "tier": 9,
+      "variant": "two-phase"
+    },
+    "blueUnitResults": [],
+    "redUnitResults": [],
+    "frames": null,
+    "durationMs": null,
+    "blue": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "red": {
+      "maxHp": 0.0,
+      "remainHp": 0.0,
+      "aliveCount": 0.0,
+      "startMaxHp": 0.0,
+      "startCount": 0.0
+    },
+    "errors": [
+      {
+        "code": "aborted",
+        "message": "batch aborted"
+      }
+    ]
+  }
+]

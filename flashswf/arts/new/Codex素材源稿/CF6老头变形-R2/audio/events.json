@@ -1,0 +1,58 @@
+{
+  "fps": 30,
+  "frameCount": 283,
+  "events": [
+    {
+      "frame": 2,
+      "timeSeconds": 0.03333333333333333,
+      "symbol": 1993,
+      "file": "sound-1993.mp3",
+      "sampleRate": 11025,
+      "sourceMp3SeekSamples": 1661,
+      "sourceSoundSampleCount": 49279,
+      "trimDecodedSamples": [
+        1661,
+        50940
+      ],
+      "delayAt44100Samples": 1470
+    },
+    {
+      "frame": 81,
+      "timeSeconds": 2.6666666666666665,
+      "symbol": 2004,
+      "file": "sound-2004.mp3",
+      "sampleRate": 11025,
+      "sourceMp3SeekSamples": 1661,
+      "sourceSoundSampleCount": 63868,
+      "trimDecodedSamples": [
+        1661,
+        65529
+      ],
+      "delayAt44100Samples": 117600
+    },
+    {
+      "frame": 255,
+      "timeSeconds": 8.466666666666667,
+      "symbol": 2007,
+      "file": "sound-2007.mp3",
+      "sampleRate": 11025,
+      "sourceMp3SeekSamples": 1661,
+      "sourceSoundSampleCount": 16309,
+      "trimDecodedSamples": [
+        1661,
+        17970
+      ],
+      "delayAt44100Samples": 373380
+    }
+  ],
+  "backgroundMusicCue": {
+    "rootLabel": "a21",
+    "name": "music01",
+    "audioIncluded": true,
+    "note": "Recovered from verified same-SWF DefineSound1110. Music player state and volume not simulated.",
+    "symbol": 1110,
+    "file": "music01-1110.mp3",
+    "previewMixed": false
+  },
+  "audioTailPolicy": "Original MP3 files retained unmodified. Preview mix honors each DefineSound MP3SeekSamples1661 and exact SoundSampleCount; full content tail survives scene end separately."
+}

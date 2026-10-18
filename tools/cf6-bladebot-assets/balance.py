@@ -1,4 +1,4 @@
-"""Register the stage-8 tier-9 melee miniboss through the authoritative monster formula."""
+"""Register the stage-8 tier-9 blade / wave-beam miniboss through the authoritative monster formula."""
 from pathlib import Path
 import argparse
 import copy
@@ -24,8 +24,8 @@ FLAG_KEYS = {'阶段': 'stage', '速度系数': 'speedFactor', '攻速系数': '
 
 def expected():
     source = E.parse(ROOT / 'data/enemy_properties/诺亚新敌人.xml').getroot().find(SOURCE)
-    flags = {'阶段': 8, '档次系数': 9, '速度系数': 3, '攻速系数': 3,
-             '攻击倍率': 1.7, '段数系数': 2.5, '霸体系数': 2.5, '成长系数': 1,
+    flags = {'阶段': 8, '档次系数': 9, '速度系数': 3, '攻速系数': 4,
+             '攻击倍率': 1.8, '段数系数': 2, '霸体系数': 2.5, '成长系数': 1,
              '高攻低血防系数': 0.75, '高防低血系数': 8}
     inputs = {FLAG_KEYS[key]: value for key, value in flags.items()}
     expression = "import {computeMonsterRow} from './tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts';console.log(JSON.stringify(computeMonsterRow(" + json.dumps(inputs) + ")));"
@@ -55,13 +55,15 @@ def expected():
                'observedBasis': {
                    'rulebook': 'tools/cf7-balance-tool/docs/monster-flag-rulebook.md',
                    'speedMean': 72.5,
-                   'attackFirstHitFrames': [20, 19],
-                   'attackLastHitFrames': [22, 34],
-                   'attackTotalFrames': [37, 49],
-                   'windupMean': 18.5, 'tailMean': 15,
-                   'tempoTailFactor': 0.2, 'weightedTempo': 21.5,
-                   'physicalMultipliers': [2.4, 1],
-                   'effectiveMeleeSegments': [2, 3],
+                   'attackFirstHitFrames': [20, 19, 11],
+                   'attackLastHitFrames': [22, 34, 11],
+                   'attackTotalFrames': [37, 49, 31],
+                   'windupMean': 47/3, 'tailMean': 50/3,
+                   'tempoTailFactor': 0.2, 'weightedTempo': 19,
+                   'powerMultipliers': [2.4, 1, 1], 'damageTypeFactors': [1, 1, 2],
+                   'effectiveMeleeSegments': [2, 3, 1],
+                   'cleaveHorizontalKnockback':24,'cleaveVerticalKnockback':0,
+                   'beamRange':[250,600],'beamCooldown':90,'comboWindow':45,
                    'sweepDirections': {'front': 3, 'back': 3},
                    'hitRecoveryFrames': [8, 7],
                    'knockdownAndDownBothDelegate': True,

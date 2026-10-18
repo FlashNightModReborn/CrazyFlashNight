@@ -11,6 +11,81 @@ using Newtonsoft.Json.Linq;
 using Xunit;
 namespace CF7Launcher.Tests.Guardian {
     public class WorldCompositorTests {
+        private static object TransitionPaint(WorldCompositorController controller) =>
+            typeof(WorldCompositorController).GetField("_transitionPaintRequest",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller);
+        private static double TransitionPaintAfter(object request) =>
+            (double)request.GetType().GetField("After",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(request);
+        private static bool RecordTransitionPaint(WorldCompositorController controller,object request,double painted) =>
+            (bool)typeof(WorldCompositorController).GetMethod("RecordTransitionPaint",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(controller,new[]{request,(object)painted});
+        private static void SetTransitionScene(WorldCompositorController controller,long scene,bool ready=true) {
+            var payload=Payload(); payload["scene"]=scene; payload["ready"]=ready;
+            Assert.True(WorldLightingFrame.TryParse(payload,out var frame)); SetRenderField(controller,"_frame",frame);
+        }
+        private static void RecordTransitionGrade(WorldCompositorController controller,long scene,double now) =>
+            typeof(WorldCompositorController).GetMethod("RecordTransitionGrade",BindingFlags.NonPublic|BindingFlags.Instance).Invoke(controller,new object[]{scene,now});
+        [Fact] public void InitialGradeDoesNotIssueAnUnrequestedStartupRepaint() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,2); RecordTransitionGrade(controller,2,100);
+            Assert.Null(TransitionPaint(controller));
+        }
+        [Fact] public void ExplicitRevealStillRequiresASecondPaintAfterItsGradeSubmission() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3);
+            var first=TransitionPaint(controller); double now=TransitionPaintAfter(first)+10;
+            Assert.True(RecordTransitionPaint(controller,first,now));
+            RecordTransitionGrade(controller,3,now+1);
+            var second=TransitionPaint(controller); Assert.NotNull(second); Assert.NotSame(first,second);
+            Assert.Equal(now+1,TransitionPaintAfter(second));
+        }
+        [Fact] public void ResetDoesNotCarryRevealPaintAuthorityIntoANewSource() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3); controller.ResetSource();
+            SetTransitionScene(controller,3); RecordTransitionGrade(controller,3,100);
+            Assert.Null(TransitionPaint(controller));
+        }
+        [Fact] public void StaticRevealRequestsPaintWithoutGrantingPresentationFromItsAcknowledgment() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3);
+            var request=TransitionPaint(controller); Assert.NotNull(request);
+            double painted=TransitionPaintAfter(request)+10;
+            Assert.True(RecordTransitionPaint(controller,request,painted));
+            Assert.Null(TransitionPaint(controller));
+            Assert.Equal(painted,(double)typeof(WorldCompositorController).GetField("_requiredFrameMs",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller));
+            Assert.Equal(0L,(long)typeof(WorldCompositorController).GetField("_transitionPresentedScene",BindingFlags.NonPublic|BindingFlags.Instance).GetValue(controller));
+        }
+        [Fact] public void LatePaintCannotAcknowledgeANewerRevealForTheSameScene() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3); var old=TransitionPaint(controller);
+            controller.RequireFreshTransitionFrame(3); var current=TransitionPaint(controller);
+            Assert.NotSame(old,current);
+            Assert.False(RecordTransitionPaint(controller,old,TransitionPaintAfter(current)+10));
+            Assert.Same(current,TransitionPaint(controller));
+            Assert.True(RecordTransitionPaint(controller,current,TransitionPaintAfter(current)+20));
+        }
+        [Theory] [InlineData(4,true)] [InlineData(3,false)]
+        public void PaintForAReplacedOrUnreadySceneCannotAdvanceTheFence(long scene,bool ready) {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3); var old=TransitionPaint(controller);
+            SetTransitionScene(controller,scene,ready);
+            Assert.False(RecordTransitionPaint(controller,old,TransitionPaintAfter(old)+10));
+            Assert.Same(old,TransitionPaint(controller));
+        }
+        [Fact] public void SourceResetCancelsAQueuedTransitionRepaint() {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3); var old=TransitionPaint(controller);
+            controller.ResetSource(); SetTransitionScene(controller,3);
+            Assert.Null(TransitionPaint(controller));
+            Assert.False(RecordTransitionPaint(controller,old,TransitionPaintAfter(old)+10));
+        }
+        [Theory] [InlineData(double.NaN)] [InlineData(double.PositiveInfinity)] [InlineData(double.NegativeInfinity)] [InlineData(-1)]
+        public void InvalidRepaintAcknowledgmentFailsInsteadOfAdvancingTheFence(double invalid) {
+            using var owner=new Form(); using var controller=RenderController(owner);
+            SetTransitionScene(controller,3); controller.RequireFreshTransitionFrame(3); var request=TransitionPaint(controller);
+            var error=Assert.Throws<TargetInvocationException>(()=>RecordTransitionPaint(controller,request,invalid));
+            Assert.IsType<InvalidOperationException>(error.InnerException);
+            Assert.Same(request,TransitionPaint(controller));
+        }
+
         [Fact] public void CaptureFrameRejectsUnknownExtentRatherThanGuessingAnOrigin()
         {
             var visible=new Rectangle(0,0,1920,1020);

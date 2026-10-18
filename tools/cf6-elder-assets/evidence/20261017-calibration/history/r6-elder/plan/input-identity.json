@@ -1,0 +1,104 @@
+{
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "bdb142d418700b659e59ccd2af2554686059582110a5fffcbcae9645b6207046"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/things5.swf",
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    },
+    {
+      "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+      "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "31a993c9534d170d35d21e74caea8a73eb10b68a8a0bfa8d2b614cfe4c5a0752"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "2025bf797bfe9fa0ec13470f48af1c5ab2128191bb790974149cfa24f785a83a"
+    },
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "data/enemy_properties/天网.xml",
+      "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "7a0624fd28109a79120c8da3089ea80cb0aac522dc1033bb7f9238bf2053719c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "dc3785593da97f2c489293100abe3b0a2ba93985beed771299d6f6d659c80288"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "1f93dd59a6843283bef9051baf5dc261a14575904ed0bb5c6aa2f861503bcffb"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "sha256": "087d919fef061350b959f2541a6a8c1045eb38d3f20bc1da75aeb303920d6cd0"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    },
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+      "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+      "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1"
+    }
+  ],
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "repeat": 3,
+  "timeoutFrames": 5400,
+  "variant": "two-phase",
+  "rivals": [
+    "beastking",
+    "exusiai"
+  ],
+  "expectedRows": 36,
+  "performanceQualification": false
+}

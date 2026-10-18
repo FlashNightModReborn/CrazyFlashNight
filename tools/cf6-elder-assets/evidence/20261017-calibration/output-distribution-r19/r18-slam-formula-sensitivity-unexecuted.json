@@ -1,0 +1,202 @@
+{
+  "status": "read_only_formula_sensitivity; unexecuted_variants; no production files changed",
+  "oldFlags": {
+    "阶段": 8.0,
+    "档次系数": 20.0,
+    "成长系数": 1.0,
+    "攻速系数": 2.0,
+    "攻击倍率": 5.375,
+    "段数系数": 1.3220721,
+    "速度系数": 2.0,
+    "高攻低血防系数": 2.0,
+    "霸体系数": 3.2,
+    "高防低血系数": 34.0
+  },
+  "oldPanel": {
+    "最小经验值": 11882,
+    "最大经验值": 31703,
+    "hp_min": 10001,
+    "hp_max": 20459,
+    "空手攻击力_min": 564,
+    "空手攻击力_max": 1488,
+    "基本防御力_min": 4590,
+    "基本防御力_max": 6160
+  },
+  "variants": [
+    {
+      "slamPower": 10,
+      "flags": {
+        "阶段": 8.0,
+        "档次系数": 20.0,
+        "成长系数": 1.0,
+        "攻速系数": 2.0,
+        "攻击倍率": 4.875,
+        "段数系数": 1.3220721,
+        "速度系数": 2.0,
+        "高攻低血防系数": 2.0,
+        "霸体系数": 3.2,
+        "高防低血系数": 34.0
+      },
+      "panel": {
+        "最小经验值": 11882,
+        "最大经验值": 31703,
+        "hp_min": 10001,
+        "hp_max": 20459,
+        "空手攻击力_min": 622,
+        "空手攻击力_max": 1637,
+        "基本防御力_min": 4590,
+        "基本防御力_max": 6160
+      },
+      "directRatios": {
+        "空手攻击力_min": {
+          "baseAttackRatio": 1.1028368794326242,
+          "slamRawPowerRatio": 0.9190307328605202,
+          "beamAndHeavyRawPowerRatio": 1.1028368794326242
+        },
+        "空手攻击力_max": {
+          "baseAttackRatio": 1.1001344086021505,
+          "slamRawPowerRatio": 0.9167786738351253,
+          "beamAndHeavyRawPowerRatio": 1.1001344086021505
+        }
+      }
+    },
+    {
+      "slamPower": 8,
+      "flags": {
+        "阶段": 8.0,
+        "档次系数": 20.0,
+        "成长系数": 1.0,
+        "攻速系数": 2.0,
+        "攻击倍率": 4.375,
+        "段数系数": 1.3220721,
+        "速度系数": 2.0,
+        "高攻低血防系数": 2.0,
+        "霸体系数": 3.2,
+        "高防低血系数": 34.0
+      },
+      "panel": {
+        "最小经验值": 11882,
+        "最大经验值": 31703,
+        "hp_min": 10001,
+        "hp_max": 20459,
+        "空手攻击力_min": 692,
+        "空手攻击力_max": 1820,
+        "基本防御力_min": 4590,
+        "基本防御力_max": 6160
+      },
+      "directRatios": {
+        "空手攻击力_min": {
+          "baseAttackRatio": 1.2269503546099292,
+          "slamRawPowerRatio": 0.8179669030732861,
+          "beamAndHeavyRawPowerRatio": 1.2269503546099292
+        },
+        "空手攻击力_max": {
+          "baseAttackRatio": 1.2231182795698925,
+          "slamRawPowerRatio": 0.8154121863799283,
+          "beamAndHeavyRawPowerRatio": 1.2231182795698925
+        }
+      }
+    },
+    {
+      "slamPower": 6,
+      "flags": {
+        "阶段": 8.0,
+        "档次系数": 20.0,
+        "成长系数": 1.0,
+        "攻速系数": 2.0,
+        "攻击倍率": 3.875,
+        "段数系数": 1.3220721,
+        "速度系数": 2.0,
+        "高攻低血防系数": 2.0,
+        "霸体系数": 3.2,
+        "高防低血系数": 34.0
+      },
+      "panel": {
+        "最小经验值": 11882,
+        "最大经验值": 31703,
+        "hp_min": 10001,
+        "hp_max": 20459,
+        "空手攻击力_min": 781,
+        "空手攻击力_max": 2049,
+        "基本防御力_min": 4590,
+        "基本防御力_max": 6160
+      },
+      "directRatios": {
+        "空手攻击力_min": {
+          "baseAttackRatio": 1.3847517730496455,
+          "slamRawPowerRatio": 0.6923758865248227,
+          "beamAndHeavyRawPowerRatio": 1.3847517730496455
+        },
+        "空手攻击力_max": {
+          "baseAttackRatio": 1.377016129032258,
+          "slamRawPowerRatio": 0.688508064516129,
+          "beamAndHeavyRawPowerRatio": 1.377016129032258
+        }
+      }
+    },
+    {
+      "slamPower": 4,
+      "flags": {
+        "阶段": 8.0,
+        "档次系数": 20.0,
+        "成长系数": 1.0,
+        "攻速系数": 2.0,
+        "攻击倍率": 3.375,
+        "段数系数": 1.3220721,
+        "速度系数": 2.0,
+        "高攻低血防系数": 2.0,
+        "霸体系数": 3.2,
+        "高防低血系数": 34.0
+      },
+      "panel": {
+        "最小经验值": 11882,
+        "最大经验值": 31703,
+        "hp_min": 10001,
+        "hp_max": 20459,
+        "空手攻击力_min": 896,
+        "空手攻击力_max": 2347,
+        "基本防御力_min": 4590,
+        "基本防御力_max": 6160
+      },
+      "directRatios": {
+        "空手攻击力_min": {
+          "baseAttackRatio": 1.5886524822695036,
+          "slamRawPowerRatio": 0.5295508274231678,
+          "beamAndHeavyRawPowerRatio": 1.5886524822695036
+        },
+        "空手攻击力_max": {
+          "baseAttackRatio": 1.5772849462365592,
+          "slamRawPowerRatio": 0.5257616487455198,
+          "beamAndHeavyRawPowerRatio": 1.5772849462365592
+        }
+      }
+    }
+  ],
+  "sourceBindings": [
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "sha256": "7a2a7c3bd7dd2d9ae376585b0199fd1002a17b5b4f27b631b8b5d4b48e55c21c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "sha256": "29fec8230664f294b7fd8fcba0ef05e4a0358c05253cf206f817e1beaab31758"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "f6bbfcd08128d32620f379c0c8dc0579579004323f84c0627cae5afbbd35e889"
+    },
+    {
+      "path": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+      "sha256": "ecacf243e9cfff1d51d3c05ccad544bb4c407511944d42a32bd1f61eae7e6cba"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "cf2164bcfa70070432df2a20b0766fe700c935b5621913d755910476cb8f3333"
+    }
+  ],
+  "boundary": "Changing one action multiplier also regenerates base attack and attack-derived shield strength. These exact formula calculations do not predict arena outcomes or establish acceptance."
+}

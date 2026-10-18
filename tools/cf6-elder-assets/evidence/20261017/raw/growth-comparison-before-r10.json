@@ -1,0 +1,97 @@
+{
+  "scope": "Alternative formula estimates only; all flags except robot growth fixed to R9",
+  "rows": [
+    {
+      "growthFactor": 0.9,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14471,
+          "atk": 3554,
+          "def": 6250
+        },
+        {
+          "level": 60,
+          "hp": 18953,
+          "atk": 4998,
+          "def": 6871
+        },
+        {
+          "level": 99,
+          "hp": 24780,
+          "atk": 6874,
+          "def": 7679
+        }
+      ]
+    },
+    {
+      "growthFactor": 1,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14472,
+          "atk": 3556,
+          "def": 6320
+        },
+        {
+          "level": 60,
+          "hp": 19356,
+          "atk": 5154,
+          "def": 7240
+        },
+        {
+          "level": 99,
+          "hp": 25705,
+          "atk": 7231,
+          "def": 8437
+        }
+      ]
+    },
+    {
+      "growthFactor": 1.1,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14467,
+          "atk": 3557,
+          "def": 6397
+        },
+        {
+          "level": 60,
+          "hp": 19692,
+          "atk": 5288,
+          "def": 7591
+        },
+        {
+          "level": 99,
+          "hp": 26484,
+          "atk": 7538,
+          "def": 9144
+        }
+      ]
+    },
+    {
+      "growthFactor": 1.2,
+      "levels": [
+        {
+          "level": 30,
+          "hp": 14453,
+          "atk": 3557,
+          "def": 6478
+        },
+        {
+          "level": 60,
+          "hp": 19967,
+          "atk": 5403,
+          "def": 7926
+        },
+        {
+          "level": 99,
+          "hp": 27136,
+          "atk": 7803,
+          "def": 9808
+        }
+      ]
+    }
+  ]
+}

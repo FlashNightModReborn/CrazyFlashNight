@@ -19,10 +19,10 @@ $focusedRun = @{
         'scripts\类定义\org\flashNight\arki\weather\WorldLightingBridge.as'
     )
     ExpectedTracePatterns = @(
-        '(?m)^ArenaWorkerProtocolTest Tests Passed: 52\r?$'
+        '(?m)^ArenaWorkerProtocolTest Tests Passed: 55\r?$'
         '(?m)^ArenaWorkerProtocolTest Tests Failed: 0\r?$'
     )
-    SuccessSummary = 'Arena Worker 实际入口、冻结身份、迟到回包、派生单位登记与专用揭幕准入 52/52'
+    SuccessSummary = 'Arena Worker 实际入口、冻结身份、迟到回包、派生单位登记与专用揭幕准入 55/55'
     TimeoutSeconds = $TimeoutSeconds
     SkipCompile = $SkipCompile
 }

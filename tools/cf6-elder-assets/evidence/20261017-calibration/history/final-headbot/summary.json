@@ -1,0 +1,303 @@
+{
+  "experiment": "cf6-cal-final-headbot-20261017",
+  "reportSha256": "65ea4af495b86aabd2c767f40c9ef84d819818a158bd7767951cbbc6c4ad96de",
+  "qualified": true,
+  "groups": [
+    {
+      "rival": 286,
+      "level": 30,
+      "n": 6,
+      "wins": 6,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.024262318061818097,
+      "frames": [
+        1996.0,
+        3181.0
+      ],
+      "in50to80": 0
+    },
+    {
+      "rival": 286,
+      "level": 60,
+      "n": 6,
+      "wins": 6,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.37361570150843504,
+      "frames": [
+        1912.0,
+        2412.0
+      ],
+      "in50to80": 0
+    },
+    {
+      "rival": 286,
+      "level": 99,
+      "n": 6,
+      "wins": 6,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.2733947066854552,
+      "frames": [
+        1992.0,
+        2592.0
+      ],
+      "in50to80": 0
+    }
+  ],
+  "runs": [
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2384.0,
+      "remaining": 0.4159755157348784,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-blue-r002",
+      "level": 30,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 3181.0,
+      "remaining": 0.024262318061818097,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-blue-r003",
+      "level": 30,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 1996.0,
+      "remaining": 0.5181996589024134,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2213.0,
+      "remaining": 0.46339041655958696,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-red-r002",
+      "level": 30,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2245.0,
+      "remaining": 0.33038572062705884,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-red-r003",
+      "level": 30,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2229.0,
+      "remaining": 0.4184753405135154,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-blue-r001",
+      "level": 60,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 1964.0,
+      "remaining": 0.48173587506461363,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-blue-r002",
+      "level": 60,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2412.0,
+      "remaining": 0.37361570150843504,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-blue-r003",
+      "level": 60,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 1977.0,
+      "remaining": 0.5915869112325934,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-red-r001",
+      "level": 60,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2172.0,
+      "remaining": 0.4344073557745023,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-red-r002",
+      "level": 60,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 1912.0,
+      "remaining": 0.4928964145298476,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level60-red-r003",
+      "level": 60,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2068.0,
+      "remaining": 0.500830187497063,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2592.0,
+      "remaining": 0.3025808609449449,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-blue-r002",
+      "level": 99,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 1992.0,
+      "remaining": 0.5156019541509258,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-blue-r003",
+      "level": 99,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2441.0,
+      "remaining": 0.3448385522614746,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2529.0,
+      "remaining": 0.37427144274897056,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-red-r002",
+      "level": 99,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2497.0,
+      "remaining": 0.2733947066854552,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-red-r003",
+      "level": 99,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2331.0,
+      "remaining": 0.4188374885541805,
+      "netLoss": 1.0,
+      "phases": 0.0
+    }
+  ]
+}

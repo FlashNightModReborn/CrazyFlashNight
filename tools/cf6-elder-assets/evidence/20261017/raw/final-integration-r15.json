@@ -1,0 +1,71 @@
+{
+  "units": [
+    {
+      "unit": "headbot",
+      "evidence": "tools/cf6-headbot-assets/evidence/20261017-knockback",
+      "sealedIntegrityVerified": true,
+      "identicalBoundInputs": [
+        "flashswf/arts/new/Codex大头机器人素材.swf",
+        "flashswf/arts/things-new.swf",
+        "flashswf/arts/new/素材库-诺亚新敌人.swf",
+        "scripts/asLoader.swf",
+        "data/enemy_properties/诺亚新敌人.xml",
+        "data/units/units.json",
+        "data/items/asset_source_map.xml",
+        "launcher/web/modules/arena-unit-catalog.js",
+        "tools/cf6-headbot-assets/HeadbotAI.as",
+        "tools/cf6-headbot-assets/build.py",
+        "tools/cf6-headbot-assets/native-manifest.json",
+        "tools/cf6-headbot-assets/balance-inputs.json"
+      ],
+      "semanticExceptions": [
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "oldFileSha256": "7da1af02e7cec5053dc55213fcd6f1672d9ba6c0421d423d8cfdd72040fed29a",
+          "currentFileSha256": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277",
+          "unitSubtreeUnchanged": "敌人-CF6大头机器人",
+          "canonicalSubtreeSha256": "3847fec34d8b6231b66e5fa01d237b206823b95883c0f4d6b898bc0e62396112",
+          "changedSubtrees": [
+            "敌人-CF6老头人形",
+            "敌人-CF6老头机器人"
+          ]
+        }
+      ],
+      "scope": "Does not relabel the prior complete dataset as current; only unit-specific data equivalence and unchanged other bound inputs are asserted."
+    },
+    {
+      "unit": "bladebot",
+      "evidence": "tools/cf6-bladebot-assets/evidence/20261017-wave",
+      "sealedIntegrityVerified": true,
+      "identicalBoundInputs": [
+        "flashswf/arts/new/Codex大刀机器人素材.swf",
+        "flashswf/arts/things-new.swf",
+        "flashswf/arts/new/素材库-诺亚新敌人.swf",
+        "scripts/asLoader.swf",
+        "data/enemy_properties/诺亚新敌人.xml",
+        "data/units/units.json",
+        "data/items/asset_source_map.xml",
+        "launcher/web/modules/arena-unit-catalog.js",
+        "tools/cf6-bladebot-assets/BladebotAI.as",
+        "tools/cf6-bladebot-assets/build.py",
+        "tools/cf6-bladebot-assets/native-manifest.json",
+        "tools/cf6-bladebot-assets/balance-inputs.json",
+        "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as"
+      ],
+      "semanticExceptions": [
+        {
+          "path": "data/enemy_properties/CF6重制敌人.xml",
+          "oldFileSha256": "7da1af02e7cec5053dc55213fcd6f1672d9ba6c0421d423d8cfdd72040fed29a",
+          "currentFileSha256": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277",
+          "unitSubtreeUnchanged": "敌人-CF6大刀机器人",
+          "canonicalSubtreeSha256": "3c783040a69c1ca6d492615ea006de338f4cbddda51cac7054e8a647ce3cde4a",
+          "changedSubtrees": [
+            "敌人-CF6老头人形",
+            "敌人-CF6老头机器人"
+          ]
+        }
+      ],
+      "scope": "Does not relabel the prior complete dataset as current; only unit-specific data equivalence and unchanged other bound inputs are asserted."
+    }
+  ]
+}

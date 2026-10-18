@@ -1,0 +1,8 @@
+
+> cf7-balance-tool@0.1.0 typecheck
+> tsc -b packages/core packages/xml-io packages/cli --pretty false && npm run typecheck --workspace @cf7-balance-tool/web
+
+
+> @cf7-balance-tool/web@0.1.0 typecheck
+> tsc -p tsconfig.json --pretty false && tsc -p tsconfig.electron.json --pretty false
+

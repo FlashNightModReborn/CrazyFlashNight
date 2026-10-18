@@ -1,0 +1,25 @@
+{
+  "recordedAtUtc": "2026-10-18T08:48:00.161254+00:00",
+  "userScope": "目前瓶颈如何，如果实在困难就重点保60-100这个范围，低等级不考虑",
+  "acceptedLevels": [
+    60,
+    80,
+    100
+  ],
+  "lowLevelAcceptanceRequired": false,
+  "fullMatrixRows": 36,
+  "sourceChanges": [
+    "tools/cf6-elder-assets/ElderAI.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+    "tools/cf6-elder-assets/arena-plan.js",
+    "tools/cf6-elder-assets/README.md"
+  ],
+  "onlyCombatParameterChanged": "reactivePulseMissingRatio:0.003125/3 -> 0.000625/3",
+  "actualPeriodicMissingHpRatio": 0.00015625,
+  "periodicMaximumInitialHpRatio": 0.00015625,
+  "forcedConversionUnchanged": 0.3,
+  "rangeDamagePanelsAndGeometryUnchanged": true,
+  "compiled": false,
+  "nativeQualificationPending": true,
+  "fullMatrixExecuted": false
+}

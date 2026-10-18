@@ -1,0 +1,23 @@
+{
+  "resource": "flashswf/arts/new/Codex大刀机器人素材.swf",
+  "resourceSha256": "963cd8383edff068891c1d766b6880d02999beb4bd114a12e49b9ff2fb4765a2",
+  "images": [
+    {
+      "image": "beam-left.png",
+      "sha256": "1d9e0f0ca9eedf7edf913fb4d9eccbdd6df2e42ec88d582e184891c23f387e2d",
+      "nativeAttempt": "render-pass4/bladebot",
+      "nativeRunId": "41831b2a2b5d4712a1f454a095bd8b61",
+      "traceSha256": "09751c82ff0e10a494944973befda963289d749458a0033e259f297791e9e2ac",
+      "testSwfSha256": "36ac241aa52115bdc79d5ea5c2c181601a7ed929769430fb31b8dbd81ae951e4"
+    },
+    {
+      "image": "beam-right.png",
+      "sha256": "972969d3b9db1d0d27f43662f4d2c01bcd4e6011dda976c6e079ce3584cc3143",
+      "nativeAttempt": "render-pass4/bladebot",
+      "nativeRunId": "41831b2a2b5d4712a1f454a095bd8b61",
+      "traceSha256": "09751c82ff0e10a494944973befda963289d749458a0033e259f297791e9e2ac",
+      "testSwfSha256": "36ac241aa52115bdc79d5ea5c2c181601a7ed929769430fb31b8dbd81ae951e4"
+    }
+  ],
+  "policy": "Copied original native pixels. Headbot retains the first capture of unaffected frames and replaces the two formerly clipped frames with the successful focused framing run. A failed whole-suite result is not upgraded."
+}

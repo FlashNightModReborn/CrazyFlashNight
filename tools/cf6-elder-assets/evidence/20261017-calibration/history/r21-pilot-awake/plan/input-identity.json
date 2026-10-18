@@ -1,0 +1,96 @@
+{
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "781c950e721c386f6bdbd8aa6bec93d72cc4bbcd34d6886fb53b2bca22ee894d"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/things5.swf",
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    },
+    {
+      "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+      "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "sha256": "d876c20b9de4cb889f28f2749175fdf74ff42440263bec6a1124fe8a2e519380"
+    },
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "data/enemy_properties/天网.xml",
+      "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "79024eb7274d9fac3716e1a043340d117245e5d56209f93f84e857df52de22cc"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "sha256": "de53e94da1875124b1811dcf963f4509d6f1f2101ea42cf9956689b4725bfbac"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "282e872e1e1bd5d3a54827c0d7f645eabccc5a69f2080ea34863c8d8da007e50"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "bf828bd7e853af311ec2647776182ccc81db336e560d726bac448f4eb18986e6"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "c959a0d2b4550bff2130004092e286e1e9b41cd99321eb4521710d85d44512d1"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "sha256": "3973088f7c198a0fb188ee32868903e58d3f467047ee0ec100b585e433c0949b"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    }
+  ],
+  "runtimeIdentities": [
+    {
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "coreSha256": "CD107FD8FD296164047746BB222DB70F1549C5553C1ECFFFC82B4C79B7B0E6E1",
+      "buildIdentity": "E0C12C51B3E0488D4BB26FA6F4087B1A0CA074CDEDC577B37F86C32A91B590D9",
+      "payloadClosure": "AE639985B8AE2029BFFEAF46FC1633C56E833DB6E62A6ABB58A9C135F3CDCCB4",
+      "installRoot": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4"
+    }
+  ],
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "repeat": 1,
+  "timeoutFrames": 5400,
+  "variant": "two-phase",
+  "rivals": [
+    "beastking",
+    "exusiai"
+  ],
+  "expectedRows": 12,
+  "performanceQualification": false
+}

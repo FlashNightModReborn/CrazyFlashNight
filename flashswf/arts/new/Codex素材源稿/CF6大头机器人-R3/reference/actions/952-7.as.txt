@@ -1,0 +1,12 @@
+onClipEvent(enterFrame){
+   var §\x01§ = 307;
+   var §\x0f§ = 1;
+   var myPoint = {x:0,y:0};
+   this.localToGlobal(myPoint);
+   xx = myPoint.x;
+   yy = myPoint.y;
+   if(_root.gameworld.地图.hitTest(xx,yy,true))
+   {
+      _parent._y += 2 * _parent.y速度;
+   }
+}

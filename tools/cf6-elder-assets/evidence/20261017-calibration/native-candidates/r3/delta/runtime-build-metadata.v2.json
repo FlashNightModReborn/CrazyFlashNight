@@ -1,0 +1,24 @@
+{
+    "schema":  "cf7-runtime-candidate-metadata.v2",
+    "builderLabel":  "local-dev",
+    "artifactSourceHash":  "5FF0D1E7B10F9B66C3542E7A1F7328670F04FD003FD48BE0E90C62943612039A",
+    "producerRecipeHash":  "7C5820B822B89FCC1F782350398A5FBD710F18A4695F4B5D4EFAE1CD156DD07D",
+    "toolchainLockHash":  "DFA769829F9740196DEF63351A00AAC309E50A2CA0A768759334EB2A2161DD36",
+    "policyHash":  "B9416DB0B2E8498DA4DD9E55725F95DC2ADF43A96A7F4AEC813802534C8BD08B",
+    "buildIdentityHash":  "C0E19F5672D89DA0A04088F9420F6EA982119F4128CBFDA7DB02108F5845367C",
+    "payloadClosureHash":  "0DC42B15346307E4D470B3C7044C65A26A47BF55DA04065F3142288415F49A90",
+    "stageSeconds":  {
+                         "environmentGate":  0.716,
+                         "identityBefore":  2.839,
+                         "miniaudio":  46.118,
+                         "solParser":  23.075,
+                         "bootstrap":  3.549,
+                         "worldCompositor":  36.942,
+                         "dotnetPublish":  28.535,
+                         "assemble":  13.318,
+                         "identityAfter":  2.838,
+                         "bootstrapVerify":  1.347
+                     },
+    "totalSeconds":  159.286,
+    "createdAtUtc":  "2026-10-17T15:22:05.8256701Z"
+}

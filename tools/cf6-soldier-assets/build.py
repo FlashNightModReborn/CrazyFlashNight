@@ -41,6 +41,7 @@ def module(name, path):
     return result
 
 
+audio = module('cf6_audio_native',ROOT/'tools/cf6-audio/build.py')
 common = module('soldier_common', ROOT / 'tools/cf6-manman-assets/build.py')
 vector = module('soldier_vector', HERE / 'vector.py')
 native = common.native
@@ -334,6 +335,7 @@ def import_assets():
             if target.exists() and sha(target)!=row['sha256']:
                 raise ValueError('Obsolete symbol archive differs')
             target.write_bytes(source.read_bytes())
+    audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs = common.write_workspace(symbols,root_name)
     # CS6 lazily resolves off-stage export dependencies. An exported root absent
     # from the stage closure compiled its child movies as one-frame placeholders.
@@ -365,6 +367,7 @@ def import_assets():
         'weaponSource':'Existing long-gun equipment and shared cadet pool; external primary wins',
         'weaponHolderPath':'man.枪.枪.装扮','outputs':outputs,
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
+    manifest['audio']=audio_receipt
     (HERE/'native-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n',encoding='utf8',newline='\n')
     common.mount_shared_library()
     print(json.dumps({'symbols':len(outputs),'linkage':LINKAGE},ensure_ascii=False))
@@ -374,6 +377,7 @@ def check():
     common.verify_input()
     verify_shield_input()
     manifest = json.loads((HERE/'native-manifest.json').read_text(encoding='utf8'))
+    audio.check(manifest,OWNER)
     errors = native.workspace_identity_failures(manifest)
     if manifest['buildInputs'] != build_inputs():
         errors.append('Generator inputs changed; guarded regeneration required')

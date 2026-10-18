@@ -1,0 +1,2544 @@
+{
+  "files": [
+    {
+      "path": "agentsDoc/game-design.md",
+      "bytes": 13523,
+      "sha256": "5486dd630753f30e3988b1f5782887e4cb10e876e14f005a62a47bc311d06e20"
+    },
+    {
+      "path": "agentsDoc/testing-details.md",
+      "bytes": 308712,
+      "sha256": "0dbc4609ca942b37aea6c7680b817888ef8407a5ad22a849a371f51950086c1e"
+    },
+    {
+      "path": "data/enemy_properties/CF6重制敌人.xml",
+      "bytes": 17979,
+      "sha256": "6ab31eeaeba4d2010cc4efa2994f12c980f9bf3bec9f7a1e116f07817b402277"
+    },
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "bytes": 56740,
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "data/enemy_properties/天网.xml",
+      "bytes": 23022,
+      "sha256": "37639ad43a8a1ed968b633181132e87bb98e66d6565131a00188c4ff9cfa7ccb"
+    },
+    {
+      "path": "data/enemy_properties/诺亚新敌人.xml",
+      "bytes": 16672,
+      "sha256": "d339f0a4de759cce186fe98dbdf8f1f966cacf1fa5bd803714d9d41ea331321b"
+    },
+    {
+      "path": "data/items/asset_source_map.xml",
+      "bytes": 863920,
+      "sha256": "493a827672392f3c7e5dd07345c7f9728c668bb0021e1d5ebcc9f328b31c3e7c"
+    },
+    {
+      "path": "data/units/units.json",
+      "bytes": 153802,
+      "sha256": "13859cd4c7192857be1c2fe568fea34f213386d832012529cc2de0105044d868"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/R7眼窝差异.txt",
+      "bytes": 649,
+      "sha256": "baf71f116aa771a13cea55dc8a7e330fe3163fe927f85c739f1811c7126781bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/README-R7.txt",
+      "bytes": 640,
+      "sha256": "2581d3229046ce3b282f56a8e7e8b9f58c52eba51c2f9f6ae08e873640b81ef1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/archive-origin.json",
+      "bytes": 26861,
+      "sha256": "5b56f23d8986f034cfda86ed8143ba10cb115eed64bea6b4e55a0968d666f714"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/954.svg",
+      "bytes": 7057,
+      "sha256": "a053bfe89f818430bf8bb2eecf8249aecef8adc09ab5b3ec4770e45f5298888b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/955.svg",
+      "bytes": 8869,
+      "sha256": "25cc1b0fa41e3c34572676d9b3e12a78d14deecbe70735db5c12ae52a4642ff5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/956.svg",
+      "bytes": 8159,
+      "sha256": "8aec1e5601ea4a5d1136ec4583f9fd485d1473eeff94b00b318013338366f8d5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/957.svg",
+      "bytes": 10854,
+      "sha256": "633e3f0b189a870f702d41fc6261ec30378c6374ef71515f2107b1e54578bf1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/958.svg",
+      "bytes": 17448,
+      "sha256": "9f332c02abcd37f0b8b93b419a56494ec820d5be9e82b0dca6e9156e35d57c78"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/959.svg",
+      "bytes": 14489,
+      "sha256": "415e14158c2246ee96a7e6525e41ee20d3d1c92009821b8f718e7430a88d9da6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/960.svg",
+      "bytes": 7222,
+      "sha256": "346c5867f413392bcfa15708240166e5ffe5f0f5e0f03e9a8f98855e4e622d62"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/961.svg",
+      "bytes": 9256,
+      "sha256": "0de4eeeccf6d8f14cf1a10412a9b0066cd2e5d1e195a39e80170200c9b1307e9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/962.svg",
+      "bytes": 30916,
+      "sha256": "dadea049332eb3dd956ae34e06bec4578491e8f25850aa039d52b68c6f288685"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/963.svg",
+      "bytes": 27628,
+      "sha256": "4f119904581719f09eb0f7acabd49c98c4bc85cc05cdb0e560d1ebe025c51099"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/965.svg",
+      "bytes": 15227,
+      "sha256": "fdc32d0fc31d3b8ee49e0986f7a25119d144a0d56c99df8f3e67ecd98d0a17e3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/parts/966.svg",
+      "bytes": 8606,
+      "sha256": "ac157397dc9eedcdc5f9575b47ff558270166926dd00b599a4ad47e071fb573c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/qa/cold-rebuild-report.json",
+      "bytes": 237,
+      "sha256": "ec79fd13ba1e8dbe5c13b9349d81a9ee574f2519cade8fa0a949bfca9caed234"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/qa/expected-rebuild-hashes.json",
+      "bytes": 2831,
+      "sha256": "57ab22267152545d0ebaeee16c5b4cdf23bdd025045939364a9a3b1589adc682"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/qa/frozen-part-sha256.json",
+      "bytes": 1501,
+      "sha256": "b3ccfcda17f222e1ebcdddb1b163bbaca9d52fd63eea1da1eda7d67de0f7f214"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/qa/r7-eye-scope.json",
+      "bytes": 468,
+      "sha256": "ecd1be470109093fce9ea1ecc4f7487418f151235e714a6f66e80769beb671ba"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/qa/r7-head-only.json",
+      "bytes": 1501,
+      "sha256": "b3ccfcda17f222e1ebcdddb1b163bbaca9d52fd63eea1da1eda7d67de0f7f214"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/keyposes.json",
+      "bytes": 6387,
+      "sha256": "27094ba52c7d323fd83a0909ddecdeba775543fe472988713c8195f385e02a98"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/manifest.json",
+      "bytes": 18293,
+      "sha256": "97340008585e756eb48c8a2fddc95a63d2ce802885589a8dcee6edcf238e6e4f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/part-identity.json",
+      "bytes": 3828,
+      "sha256": "67b01b5d3be00cca50297d05b17d7077de06925d25287aa0cf34c555107c620c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shape-manifest.json",
+      "bytes": 156170,
+      "sha256": "27f0b61887e3acdb6f6b5877d0b67666b7a51411694faf64266a0fefe18b7e1e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/100.svg",
+      "bytes": 382,
+      "sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/101.svg",
+      "bytes": 526,
+      "sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/102.svg",
+      "bytes": 534,
+      "sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/103.svg",
+      "bytes": 468,
+      "sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/104.svg",
+      "bytes": 366,
+      "sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/105.svg",
+      "bytes": 502,
+      "sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/106.svg",
+      "bytes": 497,
+      "sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/107.svg",
+      "bytes": 513,
+      "sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/108.svg",
+      "bytes": 499,
+      "sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/109.svg",
+      "bytes": 631,
+      "sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/110.svg",
+      "bytes": 436,
+      "sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/111.svg",
+      "bytes": 427,
+      "sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/112.svg",
+      "bytes": 444,
+      "sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/113.svg",
+      "bytes": 329,
+      "sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/114.svg",
+      "bytes": 434,
+      "sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/123.svg",
+      "bytes": 17988,
+      "sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/125.svg",
+      "bytes": 22144,
+      "sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/127.svg",
+      "bytes": 31275,
+      "sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/129.svg",
+      "bytes": 42647,
+      "sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/131.svg",
+      "bytes": 44207,
+      "sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/133.svg",
+      "bytes": 37219,
+      "sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/135.svg",
+      "bytes": 7589,
+      "sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/137.svg",
+      "bytes": 12138,
+      "sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/139.svg",
+      "bytes": 19342,
+      "sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/141.svg",
+      "bytes": 6118,
+      "sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/143.svg",
+      "bytes": 4462,
+      "sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/145.svg",
+      "bytes": 13965,
+      "sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/147.svg",
+      "bytes": 32862,
+      "sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/149.svg",
+      "bytes": 56989,
+      "sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/151.svg",
+      "bytes": 57768,
+      "sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/152.svg",
+      "bytes": 916,
+      "sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/153.svg",
+      "bytes": 2739,
+      "sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/154.svg",
+      "bytes": 3943,
+      "sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/155.svg",
+      "bytes": 5180,
+      "sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/156.svg",
+      "bytes": 4474,
+      "sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/157.svg",
+      "bytes": 2210,
+      "sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/158.svg",
+      "bytes": 1716,
+      "sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/159.svg",
+      "bytes": 989,
+      "sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/160.svg",
+      "bytes": 3523,
+      "sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/161.svg",
+      "bytes": 12039,
+      "sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/162.svg",
+      "bytes": 10661,
+      "sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/163.svg",
+      "bytes": 6757,
+      "sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/164.svg",
+      "bytes": 3142,
+      "sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/165.svg",
+      "bytes": 1131,
+      "sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/166.svg",
+      "bytes": 3073,
+      "sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/167.svg",
+      "bytes": 5228,
+      "sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/168.svg",
+      "bytes": 7302,
+      "sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/169.svg",
+      "bytes": 5723,
+      "sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/170.svg",
+      "bytes": 5663,
+      "sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/171.svg",
+      "bytes": 1886,
+      "sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/172.svg",
+      "bytes": 1696,
+      "sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/173.svg",
+      "bytes": 1610,
+      "sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/174.svg",
+      "bytes": 1533,
+      "sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/175.svg",
+      "bytes": 1449,
+      "sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/176.svg",
+      "bytes": 1300,
+      "sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/177.svg",
+      "bytes": 1132,
+      "sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/178.svg",
+      "bytes": 826,
+      "sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/277.svg",
+      "bytes": 212,
+      "sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/280.svg",
+      "bytes": 294,
+      "sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/484.svg",
+      "bytes": 208880,
+      "sha256": "4e8309bb6b074871ae1ad2f6954b7c3e2e4443364aed6075c62397bfb42c8bb8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/503.svg",
+      "bytes": 3049,
+      "sha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/504.svg",
+      "bytes": 3032,
+      "sha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/505.svg",
+      "bytes": 3009,
+      "sha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/95.svg",
+      "bytes": 753,
+      "sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/954.svg",
+      "bytes": 234298,
+      "sha256": "878c9f622d633a9c97de95f1b4b6e194e4c0829528792d16856ce388c7140dd0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/955.svg",
+      "bytes": 234580,
+      "sha256": "a9e964a7497f74d8ef89d99a34d364d2eb8bb99f798de4f81a5b654e242dbb03"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/956.svg",
+      "bytes": 234482,
+      "sha256": "b99349d0fce242a45fcde78d61f3e60ceed03a4a0a88c7f96d391e2203653871"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/957.svg",
+      "bytes": 234493,
+      "sha256": "367ffadfca2967f60454d35c43a09c9fc1706eb3e41f8218d605e2e22dbf7446"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/958.svg",
+      "bytes": 235516,
+      "sha256": "24f9878daac126b04249327e40320267815ece0edf9062a665c85c357ba05076"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/959.svg",
+      "bytes": 235079,
+      "sha256": "24d8c3beea2f307ad9bf76ae4914b322d74841c39d8be739840b73730951b58a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/96.svg",
+      "bytes": 506,
+      "sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/960.svg",
+      "bytes": 234353,
+      "sha256": "850753ab4c19c4ba6e81652d155bdf9c16a06555147d7894c927147b780821a7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/961.svg",
+      "bytes": 234405,
+      "sha256": "0399cdbe947726a32811f54dcaaa04b2d4740d01ab5da17beb27483e15691fd3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/962.svg",
+      "bytes": 235456,
+      "sha256": "f61adfd7a5403148a055b75ec7feba81b0b6aa487c186a6af2ca25b2ccb0a12f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/963.svg",
+      "bytes": 235830,
+      "sha256": "dec512ed1da20d8ff0eea20223ee45a06047824dfcb2619920dce22a9d6a31a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/965.svg",
+      "bytes": 43173,
+      "sha256": "a46876f52dbde1d43eb89673447f2839126089c43e98f13160c3e2202635a2d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/966.svg",
+      "bytes": 234541,
+      "sha256": "4cb5a35aedddbf45f247eaf4bd727412bac2cbedb74adffd8cfd2aabad81a814"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/97.svg",
+      "bytes": 432,
+      "sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/98.svg",
+      "bytes": 445,
+      "sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/shapes/99.svg",
+      "bytes": 408,
+      "sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/source-checksums.json",
+      "bytes": 984,
+      "sha256": "ad7a2c9ab1da382f8a2093654dce01cf20e3c4ed76983671482b02fe89f5ed7a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/reference/timelines.json",
+      "bytes": 1161137,
+      "sha256": "7917b0ebabd7075ce651c9a2bac5781debcd20c925ce3c54f63ba4001ef72cf3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/source/assemble.py",
+      "bytes": 9579,
+      "sha256": "c3d2e670f56d2dd17bac5dececba5a3f274993cce7b7ed94432c187971c5cc78"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/source/compare_r7.py",
+      "bytes": 1327,
+      "sha256": "d35e63f847eb31622855def2cc638d0ccbf7de1db239ff44eb11b0580e530a4b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/source/rebuild.py",
+      "bytes": 563,
+      "sha256": "95eba8772ffaf427d7d01bd73ae6655c2145d74e6845cc05a1f1fbab20263216"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/source/refine_eye_r7.py",
+      "bytes": 3010,
+      "sha256": "face780d6d7840e73f0966233fda7576882d8b4205c4a5b2814e588ecfac4d3e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/README.txt",
+      "bytes": 2738,
+      "sha256": "9cfcc18b7d1e4a69435091a5b957420a41cda13127d8369bb98ffa9f361c5db3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/archive-origin.json",
+      "bytes": 24865,
+      "sha256": "de2a1d5a3f5f7b927f10078cffe98c289e5334d14f7595ffc92e3be111b4d3ed"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/audio/events.json",
+      "bytes": 1537,
+      "sha256": "6a3c7233c4d01b59c4701b3ebc9724fa5d6a5b2775329694076bf32457e20b3e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/audio/music01-1110.mp3",
+      "bytes": 3526740,
+      "sha256": "244c97f15033fcd82376881d8547cca1d2fbe2c3c1fe46d686afad98493c9f3e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/audio/sound-1993.mp3",
+      "bytes": 9360,
+      "sha256": "cdedfbb22d1ec01c30cd4b8a3b74cfa6e0caefef0183079bc4013b3258c2974e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/audio/sound-2004.mp3",
+      "bytes": 11856,
+      "sha256": "b9a69d1ca2591513dc75b91fcbc3d8cabb938e8c7848a6b628ec9a0b2340b0de"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/audio/sound-2007.mp3",
+      "bytes": 3432,
+      "sha256": "fff8d688a284e542191dcbef4471d7beda36fa9a6125ed554aafc13493b7bdbc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/954.svg",
+      "bytes": 7057,
+      "sha256": "a053bfe89f818430bf8bb2eecf8249aecef8adc09ab5b3ec4770e45f5298888b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/955.svg",
+      "bytes": 7462,
+      "sha256": "1034cc8a006d3b84958994e1d3bd1f40eac256fc376ee6f34f72787abd9f621c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/956.svg",
+      "bytes": 8159,
+      "sha256": "8aec1e5601ea4a5d1136ec4583f9fd485d1473eeff94b00b318013338366f8d5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/957.svg",
+      "bytes": 10854,
+      "sha256": "633e3f0b189a870f702d41fc6261ec30378c6374ef71515f2107b1e54578bf1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/958.svg",
+      "bytes": 17448,
+      "sha256": "9f332c02abcd37f0b8b93b419a56494ec820d5be9e82b0dca6e9156e35d57c78"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/959.svg",
+      "bytes": 12108,
+      "sha256": "b7bc08e5e863bbf112b029db180bbbe6f5da03d0f073dba3f8f5152c15624bdd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/960.svg",
+      "bytes": 7222,
+      "sha256": "346c5867f413392bcfa15708240166e5ffe5f0f5e0f03e9a8f98855e4e622d62"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/961.svg",
+      "bytes": 7283,
+      "sha256": "85770b0a8f90a435031ec3cbed359b946bb95541962ede5f604c62a799e0f2c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/962.svg",
+      "bytes": 15880,
+      "sha256": "bc6fd90b23791becfd2db0a7b4fc31aa235ed8e1620b25348746fcd63d439612"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/963.svg",
+      "bytes": 27306,
+      "sha256": "f954b6f7005c3b9cfcdddc32ac125d7c84e44e7c601cd20674f39e52414fc83d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/human/966.svg",
+      "bytes": 6977,
+      "sha256": "3cfcce8230bb20888e1c555c1cb2746630222032a718ce24e8f250af531ec394"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/977.svg",
+      "bytes": 573997,
+      "sha256": "b0aecb992993257a7c9dd05642c8bd5c26c80b3b33a1793cfc6b0ae18b4719c1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/978.svg",
+      "bytes": 574822,
+      "sha256": "52ff11bd34a765b56e6326dfd8eb027999e626a9b2bd68f3f56cd186ea0b58cb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/979.svg",
+      "bytes": 574156,
+      "sha256": "a32fdec046ccc7cff4f2c216e94b1d4737dc8afaba6b58ac7a4b9842fc397fe3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/980.svg",
+      "bytes": 574186,
+      "sha256": "977520657a05130423fc230849bc13363ce483f09e39e32a08138be785348fcb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/981.svg",
+      "bytes": 574137,
+      "sha256": "6fb803c74cdd1b8b93cbf4f2f358872114c294e91613853bc81c360351b6bee7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/982.svg",
+      "bytes": 574045,
+      "sha256": "0b642b3e73729aaa6ee0c9a1d9f3284c345afc3fee1b45044d1d17802ca7787b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/983.svg",
+      "bytes": 574438,
+      "sha256": "fcdb038330e2b7366737d7f441e3e4345be947e3a358154ca5ff3b425a46973e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/984.svg",
+      "bytes": 574025,
+      "sha256": "d57c8c3e253c5cfe9b62b9861ddd700633b0661301cc7b3aaeb151719b35e3c7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/985.svg",
+      "bytes": 574022,
+      "sha256": "e9b1197928f658b52f695f10a7ab85cb0806c700b9c38e526c03bda188bf917d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/986.svg",
+      "bytes": 574170,
+      "sha256": "f98b13e104c6e5d31ef4faf4e5de27eb3245cafaa46c6a7db6c0399523525a0b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/987.svg",
+      "bytes": 574992,
+      "sha256": "71a97a02775d43970fba9bb0e5a983578005efbe5429b1edc57657af26cfe4a8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/988.svg",
+      "bytes": 575087,
+      "sha256": "52d8ffc28175f88a8dcf5cf6ef4922b73fd8d81835da3a5dd1be5e83c38ff2a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/parts/robot/989.svg",
+      "bytes": 574253,
+      "sha256": "6a6f399c2845c128057185fa326bb8ac9eac0fdbde7f3730b2f06f22357311db"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/qa/audio-video-check.json",
+      "bytes": 425,
+      "sha256": "43c070bcb277274e38604da83c1a3878fd017380c85971b5b917ec0adf10b5e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/qa/final-r2-material-reference-check.json",
+      "bytes": 6912,
+      "sha256": "dadb0b5a6533038148fc106402cf8f8325519cdb8fb1727a69af65ee2ff4d56c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/qa/frame-records.json",
+      "bytes": 2661306,
+      "sha256": "8e8641925fe4cad4eddad9a4d18cb6c4223f5bcb2f178f829af9f73258da4df2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/qa/full-scene-check.json",
+      "bytes": 160763,
+      "sha256": "d2e54cf7b28005b3a91c26d76cba475efeb1a828d60f422eeab55ae997fd1106"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/qa/package-checksums.json",
+      "bytes": 10214,
+      "sha256": "41d4531efaf6b076849cd238dffec1594e69993e683f95d862a07505a6e261f6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/frozen-body-sources.json",
+      "bytes": 6944,
+      "sha256": "a691b2d824be7d62a25b942dd232b688e3945986b4aea05b7b41a0a330cfab37"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/media-mapping.json",
+      "bytes": 1610,
+      "sha256": "7e5a82f44d7cf5580b372ef4ef4965d05aabac338b5ffd2a16b1b804b9d8fe48"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/music01-provenance.json",
+      "bytes": 536,
+      "sha256": "e5da0a88e602c9ad28e2c94e40fd40cd3429e328390e23b642d3e206b56f3ab0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/scene-trace.json",
+      "bytes": 3616,
+      "sha256": "fd3c289fbc06085847c17773bb14dcfb1f50740e834ee8f55d791600c3331456"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shape-manifest.json",
+      "bytes": 131906,
+      "sha256": "a0e9a2a62b53737d704add6be55f7050b2c6178f5829f0f23b4d862c6d864682"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/152.svg",
+      "bytes": 916,
+      "sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/153.svg",
+      "bytes": 2739,
+      "sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/154.svg",
+      "bytes": 3943,
+      "sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/155.svg",
+      "bytes": 5180,
+      "sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/156.svg",
+      "bytes": 4474,
+      "sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/157.svg",
+      "bytes": 2210,
+      "sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/158.svg",
+      "bytes": 1716,
+      "sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/159.svg",
+      "bytes": 989,
+      "sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/160.svg",
+      "bytes": 3523,
+      "sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/161.svg",
+      "bytes": 12039,
+      "sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/162.svg",
+      "bytes": 10661,
+      "sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/163.svg",
+      "bytes": 6757,
+      "sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/164.svg",
+      "bytes": 3142,
+      "sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/165.svg",
+      "bytes": 1131,
+      "sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1994.svg",
+      "bytes": 2452,
+      "sha256": "f25ef5d42482d7284ddf2d3f13e29c7f7fe5b6f9872aa9cc32d6c2702120e779"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1995.svg",
+      "bytes": 1858,
+      "sha256": "32a4eb34e3f2161b9797228c88e9cb69cf32c33668a1837799b97b8fea9e44b3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1996.svg",
+      "bytes": 1520,
+      "sha256": "ce855fd712a4cecca94f5d73ff637ab1c8561419d90d1be97418e2cc1aa4af0a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1997.svg",
+      "bytes": 490,
+      "sha256": "80cb7549a66558028f875c258b2816270d5f8793fb9ba665e54a928200dd63fb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1998.svg",
+      "bytes": 1898,
+      "sha256": "c22bf1c81e7482cba7b8f8969baf172ea47d6b9f0e1e826361bd3dc863dd4e93"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/1999.svg",
+      "bytes": 4191,
+      "sha256": "70234e2f467aa522792aa3b3c051afacfd5a178f34da3b4ddcf675d4b606415a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/2000.svg",
+      "bytes": 6138,
+      "sha256": "fa9e89d622afa3f3265f28d58549755604aed60add0762d56fc06424341de0c2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/2001.svg",
+      "bytes": 6307,
+      "sha256": "96c5285726d6629e2f955058aa8be7e9879c645c92eb651de42266bcecae5893"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/2002.svg",
+      "bytes": 3618,
+      "sha256": "35142ce8d994d00fef46c276971874e5ade465077dffefe01ed8dbf762a75621"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/2003.svg",
+      "bytes": 1148,
+      "sha256": "65226d33b2e2679731a1976d8150fbd0751c05b3a7730a228cb29620478d02d4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/2006.svg",
+      "bytes": 107886,
+      "sha256": "be6605fb7b5adcf298694b5d66d59f64e36dd233a0dfcb0dc26802c6a9081bac"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/86.svg",
+      "bytes": 248,
+      "sha256": "d9832337435c76abb5bfe309c6e31ebe41c2abab859c4389b2a0ac20b6aa6b75"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/954.svg",
+      "bytes": 234298,
+      "sha256": "878c9f622d633a9c97de95f1b4b6e194e4c0829528792d16856ce388c7140dd0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/955.svg",
+      "bytes": 234580,
+      "sha256": "a9e964a7497f74d8ef89d99a34d364d2eb8bb99f798de4f81a5b654e242dbb03"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/956.svg",
+      "bytes": 234482,
+      "sha256": "b99349d0fce242a45fcde78d61f3e60ceed03a4a0a88c7f96d391e2203653871"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/957.svg",
+      "bytes": 234493,
+      "sha256": "367ffadfca2967f60454d35c43a09c9fc1706eb3e41f8218d605e2e22dbf7446"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/958.svg",
+      "bytes": 235516,
+      "sha256": "24f9878daac126b04249327e40320267815ece0edf9062a665c85c357ba05076"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/959.svg",
+      "bytes": 235079,
+      "sha256": "24d8c3beea2f307ad9bf76ae4914b322d74841c39d8be739840b73730951b58a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/960.svg",
+      "bytes": 234353,
+      "sha256": "850753ab4c19c4ba6e81652d155bdf9c16a06555147d7894c927147b780821a7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/961.svg",
+      "bytes": 234405,
+      "sha256": "0399cdbe947726a32811f54dcaaa04b2d4740d01ab5da17beb27483e15691fd3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/962.svg",
+      "bytes": 235456,
+      "sha256": "f61adfd7a5403148a055b75ec7feba81b0b6aa487c186a6af2ca25b2ccb0a12f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/963.svg",
+      "bytes": 235830,
+      "sha256": "dec512ed1da20d8ff0eea20223ee45a06047824dfcb2619920dce22a9d6a31a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/966.svg",
+      "bytes": 234541,
+      "sha256": "4cb5a35aedddbf45f247eaf4bd727412bac2cbedb74adffd8cfd2aabad81a814"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/977.svg",
+      "bytes": 400535,
+      "sha256": "10bb51a4d7db88c8ae6a83c742b9137b995c9f38d2d7c1ec72a3f9dbb83b1ca8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/978.svg",
+      "bytes": 401360,
+      "sha256": "bc91a9e96bb94da2ae2caef28c26c549a8ee7e90894d64d9825d431d589db4f4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/979.svg",
+      "bytes": 400694,
+      "sha256": "47ebd0510863491ed027e731da90ab76f960f80c311214f5d48a1c3ffe43ab05"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/980.svg",
+      "bytes": 400724,
+      "sha256": "35f5a387675cdad7986a58de0a13375f289cd4405d8a4e52d5034b0260556c24"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/981.svg",
+      "bytes": 400675,
+      "sha256": "77d5ad189f827f946f4b59135b47e33dae6a58f6a2931f224f245fd722db650e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/982.svg",
+      "bytes": 400583,
+      "sha256": "466320c01c51796daade291e473a3bae3f7cfd9be1c29c46ca57f267b9b62eb9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/983.svg",
+      "bytes": 400976,
+      "sha256": "415c2693dac2b9a0ac0bb4ba7b077d9dc6fd85ee03e4eba9264f334cd50ad3e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/984.svg",
+      "bytes": 400563,
+      "sha256": "6f4d23031c789179f19fd138d8f3507d2c98448fee428990af0b60649a2fd002"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/985.svg",
+      "bytes": 400560,
+      "sha256": "e7b353e50941b9bb17e846be4b7fa4efa0929fd91b4c9682575d30802bd66dbf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/986.svg",
+      "bytes": 400708,
+      "sha256": "b184a59b20958efeca8fb02c95d7720f3f9ae2da5273ceb0b30ecbd870a53559"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/987.svg",
+      "bytes": 401530,
+      "sha256": "026f9dd0e4a811a2cc8fde7c165d3fdd0fe2e197c676b8036bdde21ebe037baf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/988.svg",
+      "bytes": 401625,
+      "sha256": "7b6bc911397cae225746d7ebed8ce9d146da25e8e4b1c64e331193f21ffee397"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shapes/989.svg",
+      "bytes": 400791,
+      "sha256": "fcb6ee714a850b2b70620aed5811926472717a1d604cc3ce7d0aa372198a2952"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/shared-158-provenance.json",
+      "bytes": 435,
+      "sha256": "e607f4d41ef2e719d2d534691b7931005cec91bfb2240190ff497f96bbda07c5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/sound-decode-provenance.json",
+      "bytes": 598,
+      "sha256": "631a88083acf6ec8b0bde58b6c05b6d5e37813c2bf07dfb6b2986b1beb5769d5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/timeline-2008.json",
+      "bytes": 397595,
+      "sha256": "b479f003dbec04a8d188432bef1057070611bf168817b773dbb28a3e15a5ff47"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/timelines.json",
+      "bytes": 581720,
+      "sha256": "99495209fad2ac9743971ecd43099672363c1b4add8addf976fad03cf9e6cf35"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/reference/verified-summary.json",
+      "bytes": 1448,
+      "sha256": "39aeb69ddefe7c92ca21f858b19e0849b85a95f4a28ed0468fb41e086072fbd0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/assemble.py",
+      "bytes": 6307,
+      "sha256": "ec6fab6d18d89be1c4f3cdb16f101ea2480e2c329707cd6e900b4026df1ae2bc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/package.py",
+      "bytes": 1123,
+      "sha256": "6febb8b8ebe41aa2ffe32d7e0375cc21ed9b96b69c6dc056be1289fe360a2461"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/package_reviews.py",
+      "bytes": 1037,
+      "sha256": "68c8771eecfc21f6f6f1b02db66a5e5fb253c97e031e9e1b2a2a5ba2ba57388a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/previews.py",
+      "bytes": 3925,
+      "sha256": "7f549dbd0ffa495a7bdeeb75722b37a2b7fdb8be1b2f46862ad92808d8a2f5e2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/rebuild.py",
+      "bytes": 474,
+      "sha256": "96aa11ab5b5f615bf069a38639af52fb97737b563617356ff068910d2e7911ae"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/source/verify.py",
+      "bytes": 2513,
+      "sha256": "a7677436e96c9e9cc0a43835eb0c42fb1ebffa558c9e2bf5684a9242847ca480"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/README.txt",
+      "bytes": 392,
+      "sha256": "99071499c812a5429c2143da69dbad50050c34719df576a64f494ae6ac313355"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/archive-origin.json",
+      "bytes": 32644,
+      "sha256": "0a01e01d6dc1d4aa447f8740d7110942cf9f93da845e30425c92b1e76f3e3a93"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/977.svg",
+      "bytes": 598471,
+      "sha256": "b0639fa3bf17fe003c73c7c1481c8cbba8c68c7e7d82b76104bd15423e888df2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/978.svg",
+      "bytes": 599296,
+      "sha256": "a8904ff0a8c9ddbef28d2ced416b5c0567c11ff3b5277ac0935e432388b30703"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/979.svg",
+      "bytes": 598630,
+      "sha256": "798b860347a2fbf015f8524b26e6d847eccffee511471f1c5a51e40ff9c22920"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/980.svg",
+      "bytes": 598660,
+      "sha256": "5b8b65a907a812a6f7926322d7e0716c585975548ba08351ca9cd343277b9c06"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/981.svg",
+      "bytes": 598611,
+      "sha256": "5585ec72fc55f089a6ed45b814973e6b8d751de1ea282e740c07605023532f49"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/982.svg",
+      "bytes": 598519,
+      "sha256": "482afc292311195f9dabe29e0745a9d11925af5d6dea3b6fdacb532f1f81604d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/983.svg",
+      "bytes": 598912,
+      "sha256": "33c813662dceec2346ba4fb5eed9ccca9fa3ca9b73cde9d194e6e4d667f9e052"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/984.svg",
+      "bytes": 598499,
+      "sha256": "234c3aefcbcc34adf8695d0de15fe0c94b22fc60c925b48d49a539ec39cae580"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/985.svg",
+      "bytes": 598496,
+      "sha256": "ea2dc2e7a0bd7a7be3470278ba0a135e03cbe5671c06a3407cfbbf3b92b11ccb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/986.svg",
+      "bytes": 598644,
+      "sha256": "ba8dedf9433259e00a173c8ed3c2344ab9c9f3f63e2f96d4d5c23760c04e4fc7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/987.svg",
+      "bytes": 599466,
+      "sha256": "ee5df70a3b5baa825fe1206f438b4c10d9196eda66787ceaafe7bcd05e8d1c11"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/988.svg",
+      "bytes": 599561,
+      "sha256": "45303b8e180f08b3019e5e36eaae5e1f7a25eaf9dda2b9fa29cd167137c58d12"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/parts/989.svg",
+      "bytes": 598727,
+      "sha256": "808ea704cfe739f62cdfe09b8111fcc897c76bd53efe1fcf7717ffe0f1a7e572"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/qa/frame-coverage.json",
+      "bytes": 8715,
+      "sha256": "7479bbbd860c2a6e29e3eb3f12a61226ee4211f265711dc96d1f054ad8c21d61"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/qa/frozen-local-sha256.json",
+      "bytes": 3316,
+      "sha256": "86a3935f9158e51915a3c0c2ea623c2c2e75351eaad18573c2d00202b6f6ca76"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/qa/r7-local-validation.json",
+      "bytes": 2363,
+      "sha256": "a49161053e77736620fbd0595778b0d0d636f2ececea78b21f77d8503476785b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/qa/本轮修复与剩余差异.txt",
+      "bytes": 647,
+      "sha256": "eee7681066d54aab980b6933074e3f6501b6a514d97062e24d561239f29bac8b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/control-evidence.json",
+      "bytes": 49070,
+      "sha256": "2239da69ee98e7d285e4a96e13a578a8abfab49d96b7aafd57e5205ef5d1ecca"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/death-and-special-audit.json",
+      "bytes": 3318,
+      "sha256": "e4f0433a566f7bc106c3427b99b93b3f8393530ebddd05c82d896472fb069e10"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/failures.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/keyposes.json",
+      "bytes": 29042,
+      "sha256": "0ba1fb0614962ac69823d0a1f1f8e148cb60487e33ad5fed2bc8c448f2ce4dc4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/manifest.json",
+      "bytes": 21464,
+      "sha256": "c5d8681ddeeed48a0ae2091e93b27b5968e4f3e9488a1df987111fda9c6822cb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/part-identity.json",
+      "bytes": 3881,
+      "sha256": "90a094c470edef211f44e23da3f142ce59c893e721a6b5ea38e8e58744575920"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/preview-checks.json",
+      "bytes": 13936,
+      "sha256": "8aa865708f1ee95a26a1ca54cecaafb18c79ba1b97caf426949418b317390f9c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/reuse-map.json",
+      "bytes": 6451,
+      "sha256": "1adc6b11d45881090c59a1348dba196ca10bb3147a8493a94b362d51733b1487"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shape-manifest.json",
+      "bytes": 217528,
+      "sha256": "3155bafbe252e5399d266a89532209bd042457f217e30d92dba70f7dcd7d80b6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/100.svg",
+      "bytes": 382,
+      "sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1000.svg",
+      "bytes": 2723,
+      "sha256": "93b4e006ba698d3f87d52b6ca6b8f0c2ac2b33120d0f177e047db7d987a7d14e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1001.svg",
+      "bytes": 5484,
+      "sha256": "fe669bbc7178e9cf840bb526bc0e687ed07977cd2e08e5103ca1f4b3187f7bc3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1002.svg",
+      "bytes": 10715,
+      "sha256": "d0cfcf78618fed3fc6d3ce442cebde28517a06a67475994d1c35c7f92028141a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1003.svg",
+      "bytes": 17094,
+      "sha256": "c62329b00e9a87f7bf705aadd705de154ad64b9c21e8979f8efa6cb18c5e5362"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1004.svg",
+      "bytes": 8170,
+      "sha256": "70ae0826f340209339577f112ad112e937b4020544d7e23c253ef03fcc0ed82e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1005.svg",
+      "bytes": 4505,
+      "sha256": "060fee9b36892dde5dcc0396f38cdeded17743dbda07a28458b3583057096983"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/1006.svg",
+      "bytes": 2113,
+      "sha256": "af83219db571bc5ff0c17560ec131aaf97d79ed073a12da3d0944638b05e26f7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/101.svg",
+      "bytes": 526,
+      "sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/102.svg",
+      "bytes": 534,
+      "sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/103.svg",
+      "bytes": 468,
+      "sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/104.svg",
+      "bytes": 366,
+      "sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/105.svg",
+      "bytes": 502,
+      "sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/106.svg",
+      "bytes": 497,
+      "sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/107.svg",
+      "bytes": 513,
+      "sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/108.svg",
+      "bytes": 499,
+      "sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/109.svg",
+      "bytes": 631,
+      "sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/110.svg",
+      "bytes": 436,
+      "sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/111.svg",
+      "bytes": 427,
+      "sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/112.svg",
+      "bytes": 444,
+      "sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/113.svg",
+      "bytes": 329,
+      "sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/114.svg",
+      "bytes": 434,
+      "sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/123.svg",
+      "bytes": 17988,
+      "sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/125.svg",
+      "bytes": 22144,
+      "sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/127.svg",
+      "bytes": 31275,
+      "sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/129.svg",
+      "bytes": 42647,
+      "sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/131.svg",
+      "bytes": 44207,
+      "sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/133.svg",
+      "bytes": 37219,
+      "sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/135.svg",
+      "bytes": 7589,
+      "sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/137.svg",
+      "bytes": 12138,
+      "sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/139.svg",
+      "bytes": 19342,
+      "sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/141.svg",
+      "bytes": 6118,
+      "sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/143.svg",
+      "bytes": 4462,
+      "sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/145.svg",
+      "bytes": 13965,
+      "sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/147.svg",
+      "bytes": 32862,
+      "sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/149.svg",
+      "bytes": 56989,
+      "sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/151.svg",
+      "bytes": 57768,
+      "sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/152.svg",
+      "bytes": 916,
+      "sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/153.svg",
+      "bytes": 2739,
+      "sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/154.svg",
+      "bytes": 3943,
+      "sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/155.svg",
+      "bytes": 5180,
+      "sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/156.svg",
+      "bytes": 4474,
+      "sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/157.svg",
+      "bytes": 2210,
+      "sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/158.svg",
+      "bytes": 1716,
+      "sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/159.svg",
+      "bytes": 989,
+      "sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/160.svg",
+      "bytes": 3523,
+      "sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/161.svg",
+      "bytes": 12039,
+      "sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/162.svg",
+      "bytes": 10661,
+      "sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/163.svg",
+      "bytes": 6757,
+      "sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/164.svg",
+      "bytes": 3142,
+      "sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/165.svg",
+      "bytes": 1131,
+      "sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/166.svg",
+      "bytes": 3073,
+      "sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/167.svg",
+      "bytes": 5228,
+      "sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/168.svg",
+      "bytes": 7302,
+      "sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/169.svg",
+      "bytes": 5723,
+      "sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/170.svg",
+      "bytes": 5663,
+      "sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/171.svg",
+      "bytes": 1886,
+      "sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/172.svg",
+      "bytes": 1696,
+      "sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/173.svg",
+      "bytes": 1610,
+      "sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/174.svg",
+      "bytes": 1533,
+      "sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/175.svg",
+      "bytes": 1449,
+      "sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/176.svg",
+      "bytes": 1300,
+      "sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/177.svg",
+      "bytes": 1132,
+      "sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/178.svg",
+      "bytes": 826,
+      "sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/277.svg",
+      "bytes": 212,
+      "sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/280.svg",
+      "bytes": 294,
+      "sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/364.svg",
+      "bytes": 920,
+      "sha256": "5132377e9e78cd37478153261597d70baa90869e0e2628e552cfd7b6961af735"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/366.svg",
+      "bytes": 1992,
+      "sha256": "caa7d430169ccabe9127ffc50caf640be1c7b2dfd47d85119c93466bb2f59f7c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/368.svg",
+      "bytes": 3052,
+      "sha256": "ebe9a934143e8ba0a003f958908bbf5552185e2273f899618cd0140f3cfbf4a5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/370.svg",
+      "bytes": 3456,
+      "sha256": "28688105a48336c5678d7e12b775b961c03053e2f160a0e1ebd221c5369620d3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/372.svg",
+      "bytes": 3880,
+      "sha256": "71b15f5ee8e406ce442cd3451a04fef0624445e249be95a6f4d390ddee914f00"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/374.svg",
+      "bytes": 4168,
+      "sha256": "6326c4abb8dec4115c3fc6aafe66e5b032ef676adda3943bf33d0c15301727b1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/376.svg",
+      "bytes": 4448,
+      "sha256": "b2c5126929922a45cd10e6d9534bf758964df626e3c469e89bc3a6cafffc964d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/378.svg",
+      "bytes": 4488,
+      "sha256": "3f86e2309e47dbe09afa26b0eae72f10eb7de7966f05498bc4dc7ee4d195c806"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/380.svg",
+      "bytes": 4628,
+      "sha256": "9eebff99120c302a8c8ff529d1db101dde98c451a28066f9f9628276a9ca414e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/382.svg",
+      "bytes": 4404,
+      "sha256": "6046abb32a9b39d3b1230aadbc4269e482c520e733de38bde0f45437f5bf20a1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/384.svg",
+      "bytes": 4136,
+      "sha256": "e8cda694c6c0a6df01d74982b619ca85bd5ce4c1ca687fecde577c3591969fb7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/386.svg",
+      "bytes": 3836,
+      "sha256": "8e7028e329bb66cf6800a2c5716a20e7c396080a2e059f842f9b7841a8477ac8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/388.svg",
+      "bytes": 2964,
+      "sha256": "4bce9366fd13a10c34186a4c1b91c0aec75dd457cbac3278e1575de4e763498d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/390.svg",
+      "bytes": 2284,
+      "sha256": "4884cf63085a82d13a7f3f176878e6b996c3bcbbb6732d47e05721b205900107"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/903.svg",
+      "bytes": 681,
+      "sha256": "026704d42789f3f19a521145f2b6145bbcb94e0454bd09c231a2c7faa66150ba"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/95.svg",
+      "bytes": 753,
+      "sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/96.svg",
+      "bytes": 506,
+      "sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/97.svg",
+      "bytes": 432,
+      "sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/977.svg",
+      "bytes": 400535,
+      "sha256": "10bb51a4d7db88c8ae6a83c742b9137b995c9f38d2d7c1ec72a3f9dbb83b1ca8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/978.svg",
+      "bytes": 401360,
+      "sha256": "bc91a9e96bb94da2ae2caef28c26c549a8ee7e90894d64d9825d431d589db4f4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/979.svg",
+      "bytes": 400694,
+      "sha256": "47ebd0510863491ed027e731da90ab76f960f80c311214f5d48a1c3ffe43ab05"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/98.svg",
+      "bytes": 445,
+      "sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/980.svg",
+      "bytes": 400724,
+      "sha256": "35f5a387675cdad7986a58de0a13375f289cd4405d8a4e52d5034b0260556c24"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/981.svg",
+      "bytes": 400675,
+      "sha256": "77d5ad189f827f946f4b59135b47e33dae6a58f6a2931f224f245fd722db650e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/982.svg",
+      "bytes": 400583,
+      "sha256": "466320c01c51796daade291e473a3bae3f7cfd9be1c29c46ca57f267b9b62eb9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/983.svg",
+      "bytes": 400976,
+      "sha256": "415c2693dac2b9a0ac0bb4ba7b077d9dc6fd85ee03e4eba9264f334cd50ad3e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/984.svg",
+      "bytes": 400563,
+      "sha256": "6f4d23031c789179f19fd138d8f3507d2c98448fee428990af0b60649a2fd002"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/985.svg",
+      "bytes": 400560,
+      "sha256": "e7b353e50941b9bb17e846be4b7fa4efa0929fd91b4c9682575d30802bd66dbf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/986.svg",
+      "bytes": 400708,
+      "sha256": "b184a59b20958efeca8fb02c95d7720f3f9ae2da5273ceb0b30ecbd870a53559"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/987.svg",
+      "bytes": 401530,
+      "sha256": "026f9dd0e4a811a2cc8fde7c165d3fdd0fe2e197c676b8036bdde21ebe037baf"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/988.svg",
+      "bytes": 401625,
+      "sha256": "7b6bc911397cae225746d7ebed8ce9d146da25e8e4b1c64e331193f21ffee397"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/989.svg",
+      "bytes": 400791,
+      "sha256": "fcb6ee714a850b2b70620aed5811926472717a1d604cc3ce7d0aa372198a2952"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/99.svg",
+      "bytes": 408,
+      "sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/993.svg",
+      "bytes": 649,
+      "sha256": "9ef800b51d25be0ff13378854c30f37b1f1f05227498e5025c0f755c787e4593"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/996.svg",
+      "bytes": 284,
+      "sha256": "866342835dd3691002866855eadacba46696cfa4b47fe35f3ea95094f5ed2132"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/shapes/999.svg",
+      "bytes": 245,
+      "sha256": "24972ec88aa89b518bff86b788c2d39f76615c5ef12d13204ec3aec611283ff5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/source-checksums.json",
+      "bytes": 984,
+      "sha256": "cb19aa1a4dfed28a2aade995f58343bc622c6d233d2adf04fe57fe22a1f9d981"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/reference/timelines.json",
+      "bytes": 1579885,
+      "sha256": "99bf7bcd6950c1ec89a628539d609bad7970fc7e8e406388337ed1ef3367cbdb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/art-manifest.json",
+      "bytes": 642,
+      "sha256": "48216c60458020f4cb0ffd10cedc4ad6773748deb15e81ea9b66940524f896aa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/assemble.py",
+      "bytes": 10099,
+      "sha256": "a757432a07de836bac5dc6658255bb0878fdce4fb40d18fffc6fe5f5727ece1d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/build_art.py",
+      "bytes": 47791,
+      "sha256": "e7193b5b022ceeaf170e6816bed083b2eca4f87b459c53d5c7cf8e295bcb174c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/compare_r7.py",
+      "bytes": 2369,
+      "sha256": "3f59692b52785e3d93f11060f280ac786f1c289a4b6a66bc464429b28b3713b9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/source/rebuild_local.py",
+      "bytes": 280,
+      "sha256": "256a5d084d25d561c50744a25028e28720971645840eaeac68733ba1ba3f1843"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "bytes": 356937,
+      "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/Codex老头素材.xfl",
+      "bytes": 10,
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/DOMDocument.xml",
+      "bytes": 10362,
+      "sha256": "9ed033889a992813201bb49a2926171afbcd184717fc52dae0917e0e1d11dbb3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 113.xml",
+      "bytes": 865,
+      "sha256": "81c89a2af3bf1a72ad91574f3c9dccc9efcefd86645b8ec904df464dfd92ee43"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 15.xml",
+      "bytes": 1048,
+      "sha256": "784304676f8b73ca28d355fdd2f8eb19b0fba594690bc8a965e0068816dccd6f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 16.xml",
+      "bytes": 1102,
+      "sha256": "a844c2c350151926e0a1a18cb33d96f460423700c1532a2d7de97bf04327e171"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 18.xml",
+      "bytes": 1084,
+      "sha256": "0db3bca34c4039e30e4e30fd7ada627826e3882bee8e03af9d431db9994416bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 19.xml",
+      "bytes": 968,
+      "sha256": "c991517b61566002246cdb7bd79b9dce07bad11e716449a38f9b9bd9d4be6de8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 195.xml",
+      "bytes": 1553,
+      "sha256": "5f3221980ce77304cd936a8f72684e63bf01a31052c89b3504dcfb91caa948ed"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 2.xml",
+      "bytes": 1508,
+      "sha256": "4eb667c81764b6437af90017e0499753619ccbd9d5cffdb96d46ecb41cb7f01f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 21.xml",
+      "bytes": 1054,
+      "sha256": "ce530e5e73fa382ebb5df00d91cf4bda5f5bffc7894bfdba6cf04987c3e37ff8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 23.xml",
+      "bytes": 1008,
+      "sha256": "3575ca77af6a7058e18baab9fe438ab89db5371d37fe09067c05864bfe1b095f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 24.xml",
+      "bytes": 863,
+      "sha256": "255e310fc2cda41fb1e5635d23acc816d035aa8271912865d1a5fa10aed454d8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 26.xml",
+      "bytes": 4909,
+      "sha256": "d89116051e05b43c110dd51296781919fa3f643a9d3b3df525fe0f5c72d43e3d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 32.xml",
+      "bytes": 6404,
+      "sha256": "84a401612b6d9f863280735a124d87ff1b138f2fdbfa44b01812d93190df0368"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/Symbol 99.xml",
+      "bytes": 1753,
+      "sha256": "7bb85f0aae743faa897ffc1d1921592389c90cf317880857a1499fe42b92df66"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/CF7/思考标签.xml",
+      "bytes": 1220,
+      "sha256": "1673b33ce211b45111b367e69c8062d06743d401945407a22a0bf0a446925ef9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/967.xml",
+      "bytes": 36324,
+      "sha256": "b61d62dda61384c9b46600224d79c4bdbb468a40a5680c79079866c7b99db3aa"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/968.xml",
+      "bytes": 62027,
+      "sha256": "79c92170bbae25be737b0c97fbe44f49765f2fe572b9d4ef86867c93a478b02f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/970.xml",
+      "bytes": 104052,
+      "sha256": "91e246a6783f991d503aa74a670773075a4c7866470420d1f9f2428f90017f7e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/972.xml",
+      "bytes": 72132,
+      "sha256": "ed0177f23ea746fe756fde562d6c1dd9f86e2754eb78d05be24ffa9a1a59f455"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/973.xml",
+      "bytes": 79793,
+      "sha256": "96b6e84a029da947523978d26dd941c4bfb5ae1cae39e5b74bac5d0147503742"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/974.xml",
+      "bytes": 111821,
+      "sha256": "36f4db61512b15fd2e67da647fd6dde663ed992275c7ae16e88cdf5dd3dae097"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/human/动作/击飞姿势.xml",
+      "bytes": 13586,
+      "sha256": "9fc03bfc019f4b6301ea48832d8b7002bf36e531a4d6bdda4a40a5e0895ffeae"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1007.xml",
+      "bytes": 60688,
+      "sha256": "a15c42af54d184db5041ed8c27648b3a8e3258628246f6790c893ad545700290"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1008.xml",
+      "bytes": 51759,
+      "sha256": "e802c4bfc163c8c1c27cf431bf7c9908bcf1104cf8b03592c70810d87b58fc67"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/1010.xml",
+      "bytes": 13355,
+      "sha256": "dfee83ce8cb4e3ed4fec073caf2b0575652d3e3319008c17578733f05d1de7d9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/990.xml",
+      "bytes": 34338,
+      "sha256": "bc9475a083a3f9b82c9a6c6fa786b82ee53e0bb36e742bab7878d33c78426f20"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/991.xml",
+      "bytes": 54134,
+      "sha256": "3c65809391d1596d3d3e6a2db5b4d07e5b93566d9d8970fe1bd7fefad4c3f1e7"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/994.xml",
+      "bytes": 55572,
+      "sha256": "9626bc226164c53218e4495f91189ddf49fb2bc85a1229c59f8f321649564251"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/robot/动作/997.xml",
+      "bytes": 79712,
+      "sha256": "68b0a89bf9bfc1a0fe2e19e3d4e31cb0d8db0d227e4319c2d8e2d22841d48910"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/两形态共享入口.xml",
+      "bytes": 1365,
+      "sha256": "c78ce3307ac6ae2ee00d2d7d2a1dd9d6be2180f4fe947b5cd4b90a35b9e5160d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/484.xml",
+      "bytes": 2605,
+      "sha256": "83bba9b07bc6ea5513c305d322d8e4da80d05cf39be28a6f57a7c55d4b3c7b5a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/954.xml",
+      "bytes": 23371,
+      "sha256": "48c9cc2daaa337e981694321dc7808b10a6c8a119997f3d5d34550247bbcdbcb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/955.xml",
+      "bytes": 25194,
+      "sha256": "f89db882ac57bab74a5ca1434068cd3155c9c5fb2c0edbafd7c2bbb81f182ca8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/956.xml",
+      "bytes": 28354,
+      "sha256": "8c3a8938ad89e869591b9ee8939546d2beede77b51c79a514b487ef5830fab5f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/957.xml",
+      "bytes": 53508,
+      "sha256": "6fe9c9ddd4090bd433c2efee8e7e4da8dd874d0ba5a9a683b313879e10c4d4dd"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/958.xml",
+      "bytes": 185495,
+      "sha256": "a3bd1a3d906c8422488db43e5d0e6e9c48421287c8476c5e77b7f39f7fba3375"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/959.xml",
+      "bytes": 131622,
+      "sha256": "58005d8617fbb7dbdc134d4f76db68132c15b369a77f90acf90ca3e294f3b99d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/960.xml",
+      "bytes": 23137,
+      "sha256": "5d2531b45becc1d2ae737fe5a889339c6336dfc4754ac68dfcbf3fe1a29e3a9d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/961.xml",
+      "bytes": 46298,
+      "sha256": "d7bde95cefbc0a47484a2858e9f9ac296616d7721e9551fb5c9f32e27d8ab992"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/962.xml",
+      "bytes": 180179,
+      "sha256": "de694ae6c55d32d2bbad379bcec31002fa2137aa9350391221b8110e61bfd851"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/963.xml",
+      "bytes": 179386,
+      "sha256": "08618a42d7fb7e53dfac990595231116cbfc09e16892f3ba17182aaac16aec39"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/965.xml",
+      "bytes": 115050,
+      "sha256": "a008996805ba0bbb73dd128e6830c290b80e0976c701afef0f84cbd4e34ef4f3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/966.xml",
+      "bytes": 24074,
+      "sha256": "d30ecdd93da27b11409e7c14872efb8b4aba5cdb4aee3b7b9f0fde2cbb812141"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/977.xml",
+      "bytes": 29306,
+      "sha256": "5715748c4abde4ad898d53795b72c8bb2efc387d4857fd5386f0ecc2f62ab65e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/978.xml",
+      "bytes": 308435,
+      "sha256": "102d4503aef5d5fc3ad7fb2ddd588bb451f3f4c007b88e9780fd9076e4ea9ab0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/979.xml",
+      "bytes": 67350,
+      "sha256": "88893c79dd6c3a8a8672965dd88b9f67f56d1a4107d700674d79d8b8f0921362"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/980.xml",
+      "bytes": 81209,
+      "sha256": "3a648ed461e742b53b8c5c511af18b47521f14d948477854c474aa37fa59b1db"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/981.xml",
+      "bytes": 52857,
+      "sha256": "c1af37f2f428a6c86093a20ffbe45b3bafec79c715257e6cb7ecef25912ec01a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/982.xml",
+      "bytes": 53073,
+      "sha256": "fd64629572efc74a5fe167b1e17db4f45819bef6e62a84d402799717c1f53425"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/983.xml",
+      "bytes": 88629,
+      "sha256": "2b7d7ddc81711a6cfc15d5b1ff20370493a5d531a1dcecfe28f0df256350ec09"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/984.xml",
+      "bytes": 21686,
+      "sha256": "43027ca69919552117480d86c026af8cfe1081a9dd0dc28ed174f9d93c6e7469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/985.xml",
+      "bytes": 31690,
+      "sha256": "94f263a31a022a64a7d8af4ae29fa759599eed6391d3cf1d5481d19efe4804b8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/986.xml",
+      "bytes": 148335,
+      "sha256": "e44f347da57fa3d39b203064138115ecafc4ea6baf0bc8052443124dfff32292"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/987.xml",
+      "bytes": 273117,
+      "sha256": "f9537bbaececc4966ef481ac32420959008e0afcc1dfffc038cc0daf4c848e90"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/988.xml",
+      "bytes": 278041,
+      "sha256": "d85603b0f3edc76a5674761057651cc87b1df99e752b298efcae0cb26b4ed593"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/分件/989.xml",
+      "bytes": 151294,
+      "sha256": "37927e4e9d3eac28815aacccf8d1228f1709fb83f0260d85fae3a6761a68c783"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1000.xml",
+      "bytes": 3296,
+      "sha256": "c7bde319f97a429778efabf1ccbc195b018656e2139652cf9e6a6f6e2ed1d891"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1001.xml",
+      "bytes": 5818,
+      "sha256": "fddb40ceedc68a3ee2f597305064cabe48d68941daae38f3195140b19422e532"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1002.xml",
+      "bytes": 10686,
+      "sha256": "207607ac88dc44235f2f3d8ef2189774ec550c9fc4e952facea0fd1da2643273"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1003.xml",
+      "bytes": 17147,
+      "sha256": "4fa3617723c93a0819d7fa45f34ec74286ee1e0f5b08202ede1a7dfe8b32ce8c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1004.xml",
+      "bytes": 9005,
+      "sha256": "0b82d41f1f909dad710415d6a58dca71e96cc5fe17928384e2a6e8393990522f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1005.xml",
+      "bytes": 5606,
+      "sha256": "5fcbf06d2a318eeab4a317cc32989c126d39a161d5991f9d60adc4f883333afc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1006.xml",
+      "bytes": 3007,
+      "sha256": "e05d3687b0eb18718368ec439ab2eeb8763cd856fc5b8b80db7834866dae34a9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1994.xml",
+      "bytes": 3227,
+      "sha256": "3a99137ec269099e133a2ae306af6da7fd5d9e3f27c80c1e529df5dec3c0771a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1995.xml",
+      "bytes": 2655,
+      "sha256": "1a42d0ea2171b10b2704fb065a68f590f4a593cdcc6be017580acfc942099a56"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1996.xml",
+      "bytes": 2376,
+      "sha256": "c8e4a030568f97ba5e5111125aa17bc180f2083f952dda8503b26a1931c978f8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1997.xml",
+      "bytes": 1267,
+      "sha256": "a4fcb1471d82e8489704fe3cb19e94728520bf4e01f7ea24de964db5d96d6ec5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1998.xml",
+      "bytes": 2773,
+      "sha256": "e794260a9d5c49503033a35893cf73ab6bac85232a044737c3540cc7e4fec8d2"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/1999.xml",
+      "bytes": 5121,
+      "sha256": "b85c2a6fd61eed02032c6b8d5319108d901c82217ffbd839d7d4ed567df2a138"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/2000.xml",
+      "bytes": 7381,
+      "sha256": "6ec0ba532c9ec47051b9696dadab05e0a29a866d7989614c486370a43545c7a3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/2001.xml",
+      "bytes": 7618,
+      "sha256": "a403f02e022522650f471775e0cbe01257a80c0842abf65c85d0589aa659b1bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/2002.xml",
+      "bytes": 4628,
+      "sha256": "3fdc5a044c36200de649de5e0e8916cb7b5ee8e389be14f515c82d886f4ddf3e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/2003.xml",
+      "bytes": 2021,
+      "sha256": "420d03a9b9edaf719e0c0567be2445229a1bf4ad0ec43c54e09da012726feb32"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/903.xml",
+      "bytes": 1404,
+      "sha256": "c37742ae71972d3f62a705c59c29e183119c3d103003d9762ce551f7e9b27338"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/993.xml",
+      "bytes": 1416,
+      "sha256": "3b9fbc00c6273e56d5e7de5a911b195c0e74a94dc924154a55163b9e60e791da"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/996.xml",
+      "bytes": 988,
+      "sha256": "5906da2eb3992c92adb5ec3404113d80899c18297c4e8e943560854b77c7fa4b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/原始特效/999.xml",
+      "bytes": 977,
+      "sha256": "88591f56672b2bf31a3c77007d77ce4816884faa5adb99f81a526c6962ca8638"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/变身/角色演出.xml",
+      "bytes": 146942,
+      "sha256": "2dc28bf1158b35d7e45ef1f7f5243a65a24e28fd517d6db11a89758784853ea3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/接地阴影.xml",
+      "bytes": 1656,
+      "sha256": "3eba623e1acf8b5a15736553c9bba08fff29e8aab97bf990aed3e0d059d66d6d"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+      "bytes": 38641,
+      "sha256": "95bc482d15ec5412528c6de37d9f746a7fed44d639fc4fbad9ec6d5c5df64f5c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+      "bytes": 33125,
+      "sha256": "ac3340566fd7947f1f7f388eed18eed14958e63aaa80e92cabfc182f9b8ffd9c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/行为驱动.xml",
+      "bytes": 657,
+      "sha256": "5ccb2ce72b167a7862640d180d1b651ba02462eed9c483d818e2c34e46c0a962"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex老头素材.xml",
+      "bytes": 1143,
+      "sha256": "b66230b1ac1c17cefe829e56f12cbd3d1b665db59e4b31f12c34d24be376b08e"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/MobileSettings.xml",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "flashswf/arts/new/Codex老头素材/PublishSettings.xml",
+      "bytes": 7911,
+      "sha256": "09eaf347a875977f2c7b8b22d82028ad9b086c2b944b325ee3f9e9a21957d731"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "bytes": 7911,
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/new/偷吃屑鱼坟头贡品.swf",
+      "bytes": 1105962,
+      "sha256": "5c3b65d40ab8ac7de5700b44df2475139260e895870f780e3b5eddb40df70639"
+    },
+    {
+      "path": "flashswf/arts/things-new.swf",
+      "bytes": 113918,
+      "sha256": "0eeb0fe6eac14980a84fe6270ec193478aed1b3348556291a3e2b9a2d30b57f9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "bytes": 817,
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "bytes": 1017,
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "bytes": 1071,
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "bytes": 1053,
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "bytes": 920,
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "bytes": 1530,
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "bytes": 1477,
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "bytes": 1023,
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "bytes": 977,
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "bytes": 815,
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "bytes": 4827,
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "bytes": 6368,
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "bytes": 1722,
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "bytes": 1172,
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "flashswf/arts/things5.swf",
+      "bytes": 3189011,
+      "sha256": "3dd416785b4efa7f2a4423fc830e39171caaa021d025243db469ffcf93dac75f"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "bytes": 108463,
+      "sha256": "d40778144f21450e4b59f089afec1478adedd34d47d532e0c3582bc1720bdda5"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "bytes": 5998714,
+      "sha256": "b3fc7521bacf6eeace4b479755e2d6f77de6af487f93e2f0d9a2493e20b67461"
+    },
+    {
+      "path": "scripts/run-cf6-elder-asset-tests.ps1",
+      "bytes": 870,
+      "sha256": "5b156152826a046781e3c32d3ab4429544f1f917f299779bbf7fbc3ce2672b68"
+    },
+    {
+      "path": "scripts/run-cf6-elder-render-tests.ps1",
+      "bytes": 1099,
+      "sha256": "42f748428c4b6400be5a8d9a8dae32ee910b599b00e21382f52e2c4e23f4cd35"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder-render/TestLoader-capture.as.template",
+      "bytes": 726,
+      "sha256": "2141c2980d1bbed6bdb142cebe95025bda3a1471c8a24af995dda9bcb13173f4"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder-render/TestLoader-probe.as.template",
+      "bytes": 535,
+      "sha256": "e26442943f587266a9506c6c0fa22b9cca83d5d7ce79f8d260f4b38526c5ae7c"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder-render/TestLoader.as.template",
+      "bytes": 423,
+      "sha256": "96bf8e73cb82387fd63b4ed30988a12f029d11b4a2610b861dec7f53826d927e"
+    },
+    {
+      "path": "scripts/test-runners/cf6-elder/TestLoader.as.template",
+      "bytes": 426,
+      "sha256": "b8ce773501e80a0abf2fa0cc8dfcca3ba0ed84ff8fc695ac033db973c6211956"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/DamageResult.as",
+      "bytes": 23064,
+      "sha256": "9aedd8f983cc4a1985219d2759c6b5fd36e4643f7a87dde4def0896c754e45fb"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/UniversalDamageHandle.as",
+      "bytes": 7297,
+      "sha256": "c640dad081bcf5fa538abd081ec8a9c0262625433318e542e70e235b219c9852"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/StatHandler/ImpactHandler.as",
+      "bytes": 12043,
+      "sha256": "32c8e8ed8ff6097c76bbb5e2ebb9cbaeacde7a75c23618b7cb70719c58fef173"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "bytes": 27026,
+      "sha256": "b8d07f24319cab99b9389cc3e675f4bf17ebe67c755dbe46b73ec6d60aaf7bc5"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderRenderTest.as",
+      "bytes": 9561,
+      "sha256": "9818de4c3b4adfd158ce75d8dc2253a6b76a953d2b4151018d82cd4f967cdbdf"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitComponent/Status/ImpactStateHandler.as",
+      "bytes": 12980,
+      "sha256": "9f2fd1285dcc2f1e3c08de78b20d67dcdd9a3b84f5a2cc0161f4d1e29ada89a0"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_aka_玩家模板迁移.as",
+      "bytes": 130726,
+      "sha256": "71240e9a13cba00e85f0314e2c45c9a70d31954d6128183a0fd5375794972fc4"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "bytes": 36824,
+      "sha256": "ce1385ebf3fc3a424b9e56f271f22b25f0a6d8c78656a310e517fccd72dabbb0"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "bytes": 7833,
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/balance.py",
+      "bytes": 8742,
+      "sha256": "73ced2035b06da169b87b3e4c4d36b3d63d27d8b2dffeb840225ff141d12b910"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "bytes": 15703,
+      "sha256": "82e7217f78abb1a944b0a5ebce600cd07167c320bd865e7254a0d8c4632218c4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "bytes": 5160,
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/README.md",
+      "bytes": 15634,
+      "sha256": "63d1fad33291063d6fd6d0a06d58003dd743d0fbe8b55056e898e112b202709d"
+    },
+    {
+      "path": "tools/cf6-elder-assets/arena-plan.js",
+      "bytes": 7204,
+      "sha256": "4e8b97ad58f3cc6c0563934a3e0fe85a1af8368e5ad461c39786471c7094ed5f"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance-inputs.json",
+      "bytes": 4518,
+      "sha256": "daed03fba6d3d59c566bba36a12858a0a4886f5e950b7c8a5237720049dbb68d"
+    },
+    {
+      "path": "tools/cf6-elder-assets/balance.py",
+      "bytes": 6826,
+      "sha256": "c2c0f31b8aa1cb983a5fc15b628a3238732d065158be72e02e2e6c581a75db42"
+    },
+    {
+      "path": "tools/cf6-elder-assets/bayonet.svg",
+      "bytes": 1019,
+      "sha256": "4b691c409008d77635e4659b08e10f1748149fe74f806f7701830ed406d27fbf"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "bytes": 20352,
+      "sha256": "5db3726dbb6c66cf7bb8b36945fc895648eaf2d45f346dd753f1993a4e91aa1b"
+    },
+    {
+      "path": "tools/cf6-elder-assets/decode-native-capture.py",
+      "bytes": 4829,
+      "sha256": "17b20d0a8d029a9bc093eadcab5196fa3eabe5386df1efebfeb714cd9c23dea4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "bytes": 35228,
+      "sha256": "a4ef8aaf7fee5a89821b2b5745f91f016f990c70f4bf39bf57915839fde1f56c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/register.py",
+      "bytes": 2172,
+      "sha256": "587a4f8e0e704a2bc05dbe10d8425904e796d202addbc72a86dfc4c10384949c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/verify.py",
+      "bytes": 5298,
+      "sha256": "92e852b579626a98e80457ffc540ebeee3936f785c4dc5be2c709dd220ea170f"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "bytes": 3549,
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "bytes": 6220,
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "bytes": 4043,
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/vector.py",
+      "bytes": 2467,
+      "sha256": "524283301a2d8ddb0cd2c017c73771e5065f3ef83a1efd80c00c72573502ef03"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "bytes": 21471,
+      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "bytes": 3101,
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "bytes": 58657,
+      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-census.json",
+      "bytes": 16520,
+      "sha256": "f299babbfd45c7fb9890d141db9ccba3cb672006974f1eee6e100af3d5a73b66"
+    },
+    {
+      "path": "tools/cf7-balance-tool/data/monster-flag-ledger.json",
+      "bytes": 55169,
+      "sha256": "bad4cbfac7c8e87ec24d8f5ca9dff678a3cf623ed2029fb4befb7fb7cb00081d"
+    },
+    {
+      "path": "tools/cf7-balance-tool/docs/monster-flag-rulebook.md",
+      "bytes": 122642,
+      "sha256": "e7086e0ff6913e34235273fbe8ffd696de114f62455e126ef78efe3189df5b6f"
+    },
+    {
+      "path": "tools/cf7-balance-tool/package-lock.json",
+      "bytes": 128736,
+      "sha256": "e773bd8677a88c226f20422f7e758d99325b4f3dc7a552d269b9c4f00d0b687c"
+    },
+    {
+      "path": "tools/cf7-balance-tool/package.json",
+      "bytes": 3125,
+      "sha256": "b1a90e56c13284c81613269e9c36a73ae07632f747edf9d44f5457f3e073374c"
+    },
+    {
+      "path": "tools/cf7-balance-tool/packages/core/package.json",
+      "bytes": 485,
+      "sha256": "638191b059cf79589071009a707de3f83af11198cdadb376e6e7c306f23db009"
+    },
+    {
+      "path": "tools/cf7-balance-tool/packages/core/src/formulas/monsters.ts",
+      "bytes": 3346,
+      "sha256": "ecacf243e9cfff1d51d3c05ccad544bb4c407511944d42a32bd1f61eae7e6cba"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "bytes": 17500,
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "bytes": 18850,
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    }
+  ]
+}

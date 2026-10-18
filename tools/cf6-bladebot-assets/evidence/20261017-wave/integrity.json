@@ -1,0 +1,1501 @@
+{
+  "files": [
+    {
+      "path": "frozen-inputs.zip",
+      "bytes": 4023265,
+      "sha256": "8311e0db0e5b574d07afa4358183bd8ecf9607425d67a075457e7cd92a4106ea"
+    },
+    {
+      "path": "frozen-inputs.zip.index.json",
+      "bytes": 46472,
+      "sha256": "09748d1151181ab3a461d33fccf053af7961cc24ea27e1b2d28a2f81f53800e7"
+    },
+    {
+      "path": "lossless-mapping.json",
+      "bytes": 181301,
+      "sha256": "e9d7a1105ab4eeb1a9333afedd8a29152a98cca0b2e0e9e45c94ccfe00ab39e5"
+    },
+    {
+      "path": "summary.json",
+      "bytes": 11928,
+      "sha256": "51aa26c0f2c8e93da1ea45f869480a1acdfb074c878633ebba198a95f35a7458"
+    },
+    {
+      "path": "native/image-provenance.json",
+      "bytes": 3015,
+      "sha256": "ef110ddea9b449b1f0603c1667d4ce9ad47f285d060abd07e8a0ca4783cc3905"
+    },
+    {
+      "path": "raw/asLoader-before-knockback.swf",
+      "bytes": 5998712,
+      "sha256": "7168f7ab37172cd20c91b6e043b6d4ddabee8c14df32f4d6b9b0f65e4ab010de"
+    },
+    {
+      "path": "raw/asLoader-knockback-publish-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/asLoader-knockback-publish.log",
+      "bytes": 1263,
+      "sha256": "ba7bfa03d0df527c3c3732f19e01eb00793b7fb029346dfae5acea8d56783255"
+    },
+    {
+      "path": "raw/asLoader-knockback.swf",
+      "bytes": 5998714,
+      "sha256": "b3fc7521bacf6eeace4b479755e2d6f77de6af487f93e2f0d9a2493e20b67461"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-pre-stop.log",
+      "bytes": 228,
+      "sha256": "a01ca83e6f5ec5c7cf6e5bf58d437eed557c5c44b9a96cec2f9cb2a14e7f34fa"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-source.as",
+      "bytes": 7551,
+      "sha256": "5f81cb113b014d0198711c5124074d1021fee25fe3cf1ff34f993444d2af2057"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-TestLoader.swf",
+      "bytes": 6894,
+      "sha256": "3a210afd17d5943e2d826b0c42027632cf1f6e0281cec32a8118249c91d83197"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-trace.txt",
+      "bytes": 731347,
+      "sha256": "6e07f5e6f5e8fa6c1bd6d058f05e2aad289c71b876c4184a4b719e314dddf0e0"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2.log",
+      "bytes": 2688,
+      "sha256": "28845ce1022e91f108e4e0c0d904f99eb5f45e0a54352aca78d67403ef2a8f48"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-stop.log",
+      "bytes": 228,
+      "sha256": "57b310f1fad34939a9b22b8513a8e1f00030f31776330af4cf8f628b8f4be3d2"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-TestLoader.swf",
+      "bytes": 6934,
+      "sha256": "529a9cee2c252c76ebde2a7790d18e733c4971f691c9733cd98f81164a33363d"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-trace.txt",
+      "bytes": 696430,
+      "sha256": "3d1145760aa6bed45cc3a049f44452f04b58ef89314fa9e70292ce9cb0c637ae"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3.log",
+      "bytes": 2228,
+      "sha256": "c90fb703f55df5ad624595c5bbc863f9f178d418a278b970e202ee1b09766864"
+    },
+    {
+      "path": "raw/blade-beam-render-r1-source.as",
+      "bytes": 6135,
+      "sha256": "f7da29c59a63f7c584844bb848a4a2ba35a31bacd76417654374e7c12691da2c"
+    },
+    {
+      "path": "raw/blade-beam-render-r1-stop.log",
+      "bytes": 228,
+      "sha256": "93c0929bd66d7adc9d3b00241f27de2e3d1095bb2725ae18314ebb350e07ee3c"
+    },
+    {
+      "path": "raw/blade-beam-render-r1.log",
+      "bytes": 3254,
+      "sha256": "6ff9682249e6486560b90462b00ebd1f135d12afecd9205be8bd03a73225582e"
+    },
+    {
+      "path": "raw/blade-beam-render-r2-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-beam-render-r2-source.as",
+      "bytes": 5773,
+      "sha256": "c27f02c4fbce6ff5de0a187bddd3b14df240bef345a15886427b3056e316bcb0"
+    },
+    {
+      "path": "raw/blade-beam-render-r2-TestLoader.swf",
+      "bytes": 6252,
+      "sha256": "b8f257c5cf13d71ae1632f1bfcf5a8e6a40f6a4242ee1178860375437f05c93a"
+    },
+    {
+      "path": "raw/blade-beam-render-r2-trace.txt",
+      "bytes": 2885,
+      "sha256": "a913fed2e8b98e9252978232b5c00142e4160663e9fd8c032c527231a6b47e81"
+    },
+    {
+      "path": "raw/blade-beam-render-r2.log",
+      "bytes": 3089,
+      "sha256": "f520195fa43f4e80e0e4f4cce5c9e875e33a0725a09000b3608b38c6f1f8b651"
+    },
+    {
+      "path": "raw/blade-before-wave.json",
+      "bytes": 103556,
+      "sha256": "aea27e6390f3a24f9eaaa73dddb353a9a41de27a31cea3e7035f21fbeebfc09a"
+    },
+    {
+      "path": "raw/blade-before-wave.zip.gz.part001",
+      "bytes": 8000000,
+      "sha256": "6ea207935925f116bbdd0f10394ae1478e0460bb6c739c65b4330442464237c3"
+    },
+    {
+      "path": "raw/blade-before-wave.zip.gz.part002",
+      "bytes": 1269296,
+      "sha256": "fd906a6afe0841f3f1f9e90d1414777f02560931c9e0674b69fbd5ef99888187"
+    },
+    {
+      "path": "raw/blade-build-wave-r1.log",
+      "bytes": 107,
+      "sha256": "7417717e7613b3500c58fdd1c52325d5941bb161f5eb52e95875f5f606f23273"
+    },
+    {
+      "path": "raw/blade-build-wave-r2.log",
+      "bytes": 107,
+      "sha256": "7417717e7613b3500c58fdd1c52325d5941bb161f5eb52e95875f5f606f23273"
+    },
+    {
+      "path": "raw/blade-build-wave-r3.log",
+      "bytes": 107,
+      "sha256": "7417717e7613b3500c58fdd1c52325d5941bb161f5eb52e95875f5f606f23273"
+    },
+    {
+      "path": "raw/blade-build-wave-r4.log",
+      "bytes": 107,
+      "sha256": "7417717e7613b3500c58fdd1c52325d5941bb161f5eb52e95875f5f606f23273"
+    },
+    {
+      "path": "raw/blade-capture-r1-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-capture-r1-source.as",
+      "bytes": 26698,
+      "sha256": "ae523703cbc57826948915565e8c8d5819b0d5298e4fefdfbffe3f29f4c57666"
+    },
+    {
+      "path": "raw/blade-capture-r1-TestLoader.swf",
+      "bytes": 1003792,
+      "sha256": "4ee1afa9e290a96ca7661658abc2b8fa976345ce311b71d6afe52df90d2c98db"
+    },
+    {
+      "path": "raw/blade-capture-r1-trace.txt",
+      "bytes": 3175295,
+      "sha256": "402ef142dfd8034672e41fc1e8656c42bfeff2d630746f47c1944f37c3064e56"
+    },
+    {
+      "path": "raw/blade-capture-r1.log",
+      "bytes": 2574,
+      "sha256": "918cc33e45ab4ac8cc82fe560e68c91922bf764361ef99f62349a14112fbd698"
+    },
+    {
+      "path": "raw/blade-matrix-final-w1-bootstrap.log",
+      "bytes": 278389,
+      "sha256": "dc25126ad80e454662039a2e8bbb7ce9e042906b61f1be83b8e6a1f3639c023b"
+    },
+    {
+      "path": "raw/blade-matrix-final-w1-launcher.log",
+      "bytes": 939361,
+      "sha256": "b8a09a91169c8ef724a49f0fafabeee8e6287bdbf859f1249068bc436e4b60db"
+    },
+    {
+      "path": "raw/blade-matrix-final-w1-launcher.log.1",
+      "bytes": 2097504,
+      "sha256": "1039225d9092a0480bbfb59873b68ceaa3317028e1575b22999fb92346b9d55b"
+    },
+    {
+      "path": "raw/blade-matrix-final-w2-bootstrap.log",
+      "bytes": 257556,
+      "sha256": "5097f6efaf70ca80149a2ad96bd8a8e38909d2b849be366ca92369ebe6971e3a"
+    },
+    {
+      "path": "raw/blade-matrix-final-w2-launcher.log",
+      "bytes": 999224,
+      "sha256": "6ec8e078fd28c2557cb4752f2b5420ebaf203a395862ceb77a6d9ffe6df8e71a"
+    },
+    {
+      "path": "raw/blade-matrix-final-w2-launcher.log.1",
+      "bytes": 2121659,
+      "sha256": "c388e883ef63965d38b7945961c03899975fb9afa489030f097654423cc66f7d"
+    },
+    {
+      "path": "raw/blade-pilot-final-w1-bootstrap.log",
+      "bytes": 214135,
+      "sha256": "b14f76d08b87b8fab61e783ab28331348e882d6161e6b82397b60c422d753b46"
+    },
+    {
+      "path": "raw/blade-pilot-final-w1-launcher.log",
+      "bytes": 842097,
+      "sha256": "980902dd0083d3ee306f0634951101c5d7c812a4d8b2e3d209b1f0cd71e24012"
+    },
+    {
+      "path": "raw/blade-pilot-final-w1-launcher.log.1",
+      "bytes": 2191223,
+      "sha256": "041b805ad548d7a8c46162b9eb5d8405f4b3737727068d5d0b2fd7fbc0db3f0b"
+    },
+    {
+      "path": "raw/blade-pilot-final-w2-bootstrap.log",
+      "bytes": 193106,
+      "sha256": "ff9a41144d3e4064e853ef87eb3d238671024655c2eb893e07ece6b1696b9d6c"
+    },
+    {
+      "path": "raw/blade-pilot-final-w2-launcher.log",
+      "bytes": 846166,
+      "sha256": "624f6531eee38d7230046afdd69c42c4f84fbed78b9c7704924b65ab05e061f4"
+    },
+    {
+      "path": "raw/blade-pilot-final-w2-launcher.log.1",
+      "bytes": 2255349,
+      "sha256": "f65376516b80162d8bd36c953cad27fdea713ad7dca1cb6b1f79ff0083661cae"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r1-stop.log",
+      "bytes": 228,
+      "sha256": "a3e9ab34c3b84dc21b51b608ead15cde820075d0245d1dcd0efbede508b371e8"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r1.log",
+      "bytes": 2416,
+      "sha256": "08251e218f632a50786ef75c6e1bd4e812ee128dcdd2f46fdf7acd4f70406f86"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r2.log",
+      "bytes": 2418,
+      "sha256": "7c7ef7dd46c5b5d86b72d42693f857a098c063fd36d5b6015a0793f90335e66e"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r3-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r3-TestLoader.swf",
+      "bytes": 1003791,
+      "sha256": "e89cf5df6b1ca5176c3e3b90c7404d1cbce3edf8966afc428aa8c653f96b338c"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r3-trace.txt",
+      "bytes": 1749,
+      "sha256": "ac0030fcd036350d6aa0dd98e14aa108e79ae8a54c44045eaad6fc06c6b4fe51"
+    },
+    {
+      "path": "raw/blade-wave-behavior-r3.log",
+      "bytes": 2574,
+      "sha256": "a54e9c852b729c8eaf5b7896e10120df00f011bffe82d05a31cdc96bc89a7ab4"
+    },
+    {
+      "path": "raw/blade-wave-matrix-config.json",
+      "bytes": 1178,
+      "sha256": "56eb5ee6e9de8927bd19c8989eef556d7bc1c620f46af14ad970006704ff3036"
+    },
+    {
+      "path": "raw/blade-wave-matrix-run.log",
+      "bytes": 280,
+      "sha256": "09afeb0b5ff206324a86f93479b1729f7aee64d78f39ad82e0374bdbcdde3aac"
+    },
+    {
+      "path": "raw/blade-wave-pilot-config.json",
+      "bytes": 1158,
+      "sha256": "bcd1620cab41e0302262510f4723ba0b22f39172deed1f15153df7246b83d25a"
+    },
+    {
+      "path": "raw/blade-wave-pilot-run.log",
+      "bytes": 279,
+      "sha256": "77ca9dcee75eac00fd29e07f9cf24418cf0e5e797545e8fd397fe87687c3ac97"
+    },
+    {
+      "path": "raw/blade-wave-publish-r1-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-wave-publish-r1.log",
+      "bytes": 1354,
+      "sha256": "848d4e9f4314710b2eb4da2fee5c862e7302f6f4ae5a3ee74d688a614bd38027"
+    },
+    {
+      "path": "raw/blade-wave-publish-r1.swf",
+      "bytes": 49625,
+      "sha256": "dae74869d9fa83316d765027a1312e81cf943add94ee074e1909c18a12345b24"
+    },
+    {
+      "path": "raw/blade-wave-publish-r2-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/blade-wave-publish-r2.log",
+      "bytes": 1354,
+      "sha256": "9b7ad861760cae1843848c9516d35434921e9977bb4461ee414b2733b454e354"
+    },
+    {
+      "path": "raw/blade-wave-publish-r2.swf",
+      "bytes": 49625,
+      "sha256": "470cbafeccb5482c527fec4089db53fed67a1a184d51be2ca25364983510b1a3"
+    },
+    {
+      "path": "raw/blade-wave-r1-failed-source.zip",
+      "bytes": 27677,
+      "sha256": "fb9e8a733bf88481f5e2af5be0b4534b710f28796fabff4fc127cd813fab6d6f"
+    },
+    {
+      "path": "raw/blade-wave-verify-r2.log",
+      "bytes": 951,
+      "sha256": "3723ff2647e09bf7a394b7c5b61a9facfa68a9f9ca45e637da9e7560a7ce7f16"
+    },
+    {
+      "path": "raw/bom-r6.log",
+      "bytes": 49,
+      "sha256": "ce194b16741bf639fdddd039da45f2e654dce0d0c7484610c155df62b362bd01"
+    },
+    {
+      "path": "raw/enemy-knockback-before.as",
+      "bytes": 36819,
+      "sha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88"
+    },
+    {
+      "path": "raw/enemy-knockback-change.json",
+      "bytes": 537,
+      "sha256": "f69c2da0e6f0dab537da51105ce07302180e30a0229c473637a8af393adc24ae"
+    },
+    {
+      "path": "raw/knockback-fixture-fragment.json",
+      "bytes": 254,
+      "sha256": "9181742cb42b29f352d828028c5c5aa0fe179be4a6396e8f0298ea277d59dcb5"
+    },
+    {
+      "path": "raw/knockback-scope-baseline-source.json",
+      "bytes": 302,
+      "sha256": "37463b990b4dc6e54363f0a0a13f877ee132e96ac324d5d015ef6d539d1d557a"
+    },
+    {
+      "path": "raw/knockback-scope-baseline.log",
+      "bytes": 3045,
+      "sha256": "b9dde96093675d92dcdd6a42746ff9634083fba4ed10851ded866b01fd87672c"
+    },
+    {
+      "path": "raw/knockback-scope-fixed-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/knockback-scope-fixed-source.json",
+      "bytes": 254,
+      "sha256": "9181742cb42b29f352d828028c5c5aa0fe179be4a6396e8f0298ea277d59dcb5"
+    },
+    {
+      "path": "raw/knockback-scope-fixed-TestLoader.swf",
+      "bytes": 5173,
+      "sha256": "12da054d9e35ccf359ef4761df5fd5f2b11a9b8d6ee66f6d10ed70d1ea98d15b"
+    },
+    {
+      "path": "raw/knockback-scope-fixed-trace.txt",
+      "bytes": 336,
+      "sha256": "cb22e20b26b0e58622e9e65dba701fafe573939dc0128b6d21340d9b644b0a92"
+    },
+    {
+      "path": "raw/knockback-scope-fixed.log",
+      "bytes": 2638,
+      "sha256": "e9e759012ab45c52a14cb2e87219407c9352ea880f2849eb59bba453e8d3e544"
+    },
+    {
+      "path": "raw/production-class-audit-r6.json",
+      "bytes": 174,
+      "sha256": "b365315f9f0b050996dcbfdde0a080c9baa3c75c39134dafdd97e5f602f4278f"
+    },
+    {
+      "path": "raw/wings-post-knockback-r2-errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/wings-post-knockback-r2-stop.log",
+      "bytes": 228,
+      "sha256": "8bf3084f48f3f9b21b073b0372dcc2e1218328b1beda878eace5550fbbced86e"
+    },
+    {
+      "path": "raw/wings-post-knockback-r2-TestLoader.swf",
+      "bytes": 12169,
+      "sha256": "0300dd397a222e9755ab798a449272c4344674a98f4f7ffb7cd7620481acd112"
+    },
+    {
+      "path": "raw/wings-post-knockback-r2-trace.txt",
+      "bytes": 459,
+      "sha256": "87aa750284d85925682c8b98845a2d3aeeb29fba0765739becb120faaf6c705e"
+    },
+    {
+      "path": "raw/wings-post-knockback-r2.log",
+      "bytes": 2193,
+      "sha256": "c14d9fa2080b41f0961cc042c25f31985b5357127b4c14547384e276b6f3b552"
+    },
+    {
+      "path": "raw/wings-post-knockback.log",
+      "bytes": 1118,
+      "sha256": "59de8164c57fa6ab97af5ab557d359f7df211ec1bec14300e163c7f80cdda322"
+    },
+    {
+      "path": "raw/xml-roundtrip-r6.json",
+      "bytes": 117,
+      "sha256": "1e005a46fbfe4f880541c82b910c929931fa75b8bec351e6a5c4091f712a255e"
+    },
+    {
+      "path": "matrix/coordinator/execution-started.json",
+      "bytes": 149,
+      "sha256": "b7e91c24d852dcab54d7f974d6c6ccb1426ddee3f4748d9a5bfb0b1d307f3bd7"
+    },
+    {
+      "path": "matrix/coordinator/expected-receipts.json",
+      "bytes": 7252,
+      "sha256": "661f18af74035e3c80d8911a0983403604ecd664758b400084e1333e30ccbac0"
+    },
+    {
+      "path": "matrix/coordinator/experiment-report.json",
+      "bytes": 19584,
+      "sha256": "b0862ce794ee7ce34910ef72c82c2850ab8542ad4a6c09b4096d457eecd95f9b"
+    },
+    {
+      "path": "matrix/coordinator/frozen-plan.json",
+      "bytes": 354006,
+      "sha256": "7b64662316109c436bef7e1e2529d4328ff6493ab8b542a81d7e17c851ba02e6"
+    },
+    {
+      "path": "matrix/coordinator/measurement-plan.json",
+      "bytes": 6729,
+      "sha256": "98941e3739e38a5efffedb72e0a4281dcf296a8533da7c4a49c81061b6e57932"
+    },
+    {
+      "path": "matrix/coordinator/measurement.json",
+      "bytes": 113145,
+      "sha256": "588a776fb98ebf61d072be8944365f79aae1a4b32c03d8d9c7a0a0624e035475"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level30-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "13e60315c8387ceb8c8fd2e41e83d94dd2bd67865bfda8b258393415be4dd28b"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level30-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "a260f7f4513152e202a5e064ac382de1012f9e2d55941688d2d3ea8ea2b876af"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level60-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "254a0ffd7be44914018ed5852e20c2129a16b4ac4c955e0577ade942239ad803"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level60-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "2f8c67f3e238cc979b2a386799cb3389780117fa8cc9ea8e8d9819bd8b305443"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level99-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "fd54c9569c66296e88d3c8bde98458040a8041b603a88afe267a486b09214d1b"
+    },
+    {
+      "path": "matrix/plan/arkclaw-level99-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "dcd3ff98890e6fcc9bd35ab99848b3aff800f614f5bf52f976e47e6c3896a3ae"
+    },
+    {
+      "path": "matrix/plan/blackiron-level30-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "3a9929a2a91352cab79437c81e1a6f3f5f6d710b5963e4bbc01ed97b0f757ac2"
+    },
+    {
+      "path": "matrix/plan/blackiron-level30-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "e57ac1d95d41219037c61ee30db180c20bbeb5fb4b01083f2eca7bcc1cf31f85"
+    },
+    {
+      "path": "matrix/plan/blackiron-level60-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "8a888655cb03f337dbe42d5c8e6640573ac2779ee3ac3fe1b4d3c04cd5127bda"
+    },
+    {
+      "path": "matrix/plan/blackiron-level60-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "8d48cbf5e7ba06e06546db663484b5e9cccc3150be539be7f96a81f25ff9bbfc"
+    },
+    {
+      "path": "matrix/plan/blackiron-level99-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "6b41b80fab8b6bfebf94c86d415c5a1faa04dd0c40b1cb6732ce6db710296200"
+    },
+    {
+      "path": "matrix/plan/blackiron-level99-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "5fd1a3e225056bc5b026f89ad7a7107dd3285ba471981caa64e0807abd5c6668"
+    },
+    {
+      "path": "matrix/plan/experiment-plan.json",
+      "bytes": 310645,
+      "sha256": "54e605112df4eb03d7caf42c0d35588abbae2b7742a097265590d7a66a2c6d15"
+    },
+    {
+      "path": "matrix/plan/input-identity.json",
+      "bytes": 3687,
+      "sha256": "82e7bfb5d3a2f34190a5aff405319888b5a2518826843bb1ab21a3b133d4c532"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "e543c1906da7169951cf78d5757c96bb0673ee95c06eb5126fbd728768ae3eee"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/manifest.json",
+      "bytes": 4100,
+      "sha256": "13e60315c8387ceb8c8fd2e41e83d94dd2bd67865bfda8b258393415be4dd28b"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/shard-receipt.json",
+      "bytes": 762742,
+      "sha256": "e13d9cde901896e9a44fd680193febbbed735899add0b3022aedf88bcad3c119"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w1/worker-attempt/raw/9f1beb8eb77b889a16207c92258f29654053470fd337f10219bbb0023b174e2a.jsonl",
+      "bytes": 9588,
+      "sha256": "9f1beb8eb77b889a16207c92258f29654053470fd337f10219bbb0023b174e2a"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "d6e23f5441249752039d6a072c4fab4a997070a865e11de41f8cfa8197a9c0d2"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/manifest.json",
+      "bytes": 4097,
+      "sha256": "a260f7f4513152e202a5e064ac382de1012f9e2d55941688d2d3ea8ea2b876af"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/shard-receipt.json",
+      "bytes": 763239,
+      "sha256": "5fabc542412cc8fcfa1219c6aaa0c4d299f8a38cd1dc3d71553cb0e39b484403"
+    },
+    {
+      "path": "matrix/arkclaw-level30-w2/worker-attempt/raw/f9205e8e94f2008e67bc2438e506122dc80d1c4db8b34b29ad9eac2a160ee90d.jsonl",
+      "bytes": 9576,
+      "sha256": "f9205e8e94f2008e67bc2438e506122dc80d1c4db8b34b29ad9eac2a160ee90d"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "2d3c76c27528963bf6b759f8114c30c85d9c6905b6a8b8df98af405d76f9b1ac"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/manifest.json",
+      "bytes": 4100,
+      "sha256": "254a0ffd7be44914018ed5852e20c2129a16b4ac4c955e0577ade942239ad803"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/shard-receipt.json",
+      "bytes": 756392,
+      "sha256": "473a4bc32ec65628bf445f6478e4c7afb527bd3482a1013b2668bad308cadc75"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w1/worker-attempt/raw/618105e3e1274f98e432e1ac8d8246dee482b5818cbbcd400421b7c786b07f96.jsonl",
+      "bytes": 9588,
+      "sha256": "618105e3e1274f98e432e1ac8d8246dee482b5818cbbcd400421b7c786b07f96"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "97398f639e15bcfd338cb66edf57df2e2fcc955df9bc1a0fd1941f3bcae45287"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/manifest.json",
+      "bytes": 4097,
+      "sha256": "2f8c67f3e238cc979b2a386799cb3389780117fa8cc9ea8e8d9819bd8b305443"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/shard-receipt.json",
+      "bytes": 763318,
+      "sha256": "eefdd0da88ae7ed48b2a97762e2589b5e379df4c0d059c739f1290014ad7022d"
+    },
+    {
+      "path": "matrix/arkclaw-level60-w2/worker-attempt/raw/11c0fe004728dcb2f731490ced4f22a3a2e7c0b6c450c9ce15d88cf9c9ecccca.jsonl",
+      "bytes": 9576,
+      "sha256": "11c0fe004728dcb2f731490ced4f22a3a2e7c0b6c450c9ce15d88cf9c9ecccca"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "9329736efb23fdaad183e19a5b541d31a0d3aae96c48b2507d61bc7f1309c453"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/manifest.json",
+      "bytes": 4100,
+      "sha256": "fd54c9569c66296e88d3c8bde98458040a8041b603a88afe267a486b09214d1b"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/shard-receipt.json",
+      "bytes": 760669,
+      "sha256": "775c31149becd007d73241c9b8d9ec90493f276a2d74ecb29e669d2a64c19028"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w1/worker-attempt/raw/9a07fe3aef989fa1dc48a12810a00424eddeb21900f3e3592b9d6d47196233e3.jsonl",
+      "bytes": 9588,
+      "sha256": "9a07fe3aef989fa1dc48a12810a00424eddeb21900f3e3592b9d6d47196233e3"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "71b2e8dca87d674610eb7361ff0f0254ca82d25277fe8124b8dad545d877a330"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/manifest.json",
+      "bytes": 4097,
+      "sha256": "dcd3ff98890e6fcc9bd35ab99848b3aff800f614f5bf52f976e47e6c3896a3ae"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/shard-receipt.json",
+      "bytes": 778293,
+      "sha256": "bdb05570a978371e612be6b4b0115039041910f269c5a966e346b3b465652d5d"
+    },
+    {
+      "path": "matrix/arkclaw-level99-w2/worker-attempt/raw/4aaa736e2bc6386c65d9fd21390bdb2fd5566b0d0af8d0943c8d54237935bd8c.jsonl",
+      "bytes": 9576,
+      "sha256": "4aaa736e2bc6386c65d9fd21390bdb2fd5566b0d0af8d0943c8d54237935bd8c"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "5e4af18fd4d793e12742cb178ba3054d2eaf255bd0c275c279c25cc5e54c4607"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/manifest.json",
+      "bytes": 4102,
+      "sha256": "3a9929a2a91352cab79437c81e1a6f3f5f6d710b5963e4bbc01ed97b0f757ac2"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/shard-receipt.json",
+      "bytes": 773336,
+      "sha256": "c780a8a9fe584eb2727d6c058fd698b1176b429afc41f0fc6193a58041f48517"
+    },
+    {
+      "path": "matrix/blackiron-level30-w1/worker-attempt/raw/a83614c5d8ef114914488ffba98a909b50dc99c28edd03065acc9ea0aac396d4.jsonl",
+      "bytes": 9610,
+      "sha256": "a83614c5d8ef114914488ffba98a909b50dc99c28edd03065acc9ea0aac396d4"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "ac567b6fab57a3a1fb7ce809ec5591a409e61ad985219e48acb338cda7eeeaf5"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/manifest.json",
+      "bytes": 4099,
+      "sha256": "e57ac1d95d41219037c61ee30db180c20bbeb5fb4b01083f2eca7bcc1cf31f85"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/shard-receipt.json",
+      "bytes": 771905,
+      "sha256": "0bbe133634f6996d8cd6b4c53f9eaa18b9b46e2717c8f3d12cc63a6141b23fcc"
+    },
+    {
+      "path": "matrix/blackiron-level30-w2/worker-attempt/raw/39d87ca1371ee67b5621af044442e5205584aa481073d0bce3ad259fa165c575.jsonl",
+      "bytes": 9594,
+      "sha256": "39d87ca1371ee67b5621af044442e5205584aa481073d0bce3ad259fa165c575"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "7eb5c7c456fbe615dd38e90dbc9f3d6925cb68032b69ad9be14b88d3612dcd72"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/manifest.json",
+      "bytes": 4102,
+      "sha256": "8a888655cb03f337dbe42d5c8e6640573ac2779ee3ac3fe1b4d3c04cd5127bda"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/shard-receipt.json",
+      "bytes": 779717,
+      "sha256": "a26d6cb4c7bf4e700661daeb87c55035f3ac7c8bb3ef10010d78d19bd01ad2a8"
+    },
+    {
+      "path": "matrix/blackiron-level60-w1/worker-attempt/raw/90dadda9bef2674bef9bc693d2a46edda2be812c327c1f6fe8967145a5d46675.jsonl",
+      "bytes": 9614,
+      "sha256": "90dadda9bef2674bef9bc693d2a46edda2be812c327c1f6fe8967145a5d46675"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "d616ef35ddc58345bb4da76c401954fd1fb3d99bcb969f55417c0cb6e50f1ef2"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/manifest.json",
+      "bytes": 4099,
+      "sha256": "8d48cbf5e7ba06e06546db663484b5e9cccc3150be539be7f96a81f25ff9bbfc"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/shard-receipt.json",
+      "bytes": 782540,
+      "sha256": "4d0540aa101963baa0e0ea26c7fe5ddc8af5687da5c638cd4e2c169537426740"
+    },
+    {
+      "path": "matrix/blackiron-level60-w2/worker-attempt/raw/45457abe99fc8d05db69f7e8cedf6eb280987fbd9c333232ba714ac4fafe0e73.jsonl",
+      "bytes": 9598,
+      "sha256": "45457abe99fc8d05db69f7e8cedf6eb280987fbd9c333232ba714ac4fafe0e73"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "f032a5667c832da7dc83d09b2ebb40d59a59d5d5164cf208130d544fd1a6d8f0"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/manifest.json",
+      "bytes": 4102,
+      "sha256": "6b41b80fab8b6bfebf94c86d415c5a1faa04dd0c40b1cb6732ce6db710296200"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/shard-receipt.json",
+      "bytes": 816064,
+      "sha256": "f721dc667346016752456d6b5a811aea571dec8f04fa60abfd20d72680c4da37"
+    },
+    {
+      "path": "matrix/blackiron-level99-w1/worker-attempt/raw/fd6bdcde3d7b1c706e531355d5b84bc16e1d79c61426e326f2413469e975dd32.jsonl",
+      "bytes": 9611,
+      "sha256": "fd6bdcde3d7b1c706e531355d5b84bc16e1d79c61426e326f2413469e975dd32"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "da45d7870394c30e865d2d0de59eabc81f156a2ef433d9a62aecccdbfaa008eb"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/manifest.json",
+      "bytes": 4099,
+      "sha256": "5fd1a3e225056bc5b026f89ad7a7107dd3285ba471981caa64e0807abd5c6668"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/shard-receipt.json",
+      "bytes": 820765,
+      "sha256": "18e5d7a44b20c01aa956c81f6a30f21ebe5d0c2a73f156c910399993bdd6c56f"
+    },
+    {
+      "path": "matrix/blackiron-level99-w2/worker-attempt/raw/bede3686ed2b2af2270c20c144e8fd0f5357be56f795d9a0972ec768bb6aa3a0.jsonl",
+      "bytes": 9595,
+      "sha256": "bede3686ed2b2af2270c20c144e8fd0f5357be56f795d9a0972ec768bb6aa3a0"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level30-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "13e60315c8387ceb8c8fd2e41e83d94dd2bd67865bfda8b258393415be4dd28b"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level30-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "a260f7f4513152e202a5e064ac382de1012f9e2d55941688d2d3ea8ea2b876af"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level60-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "254a0ffd7be44914018ed5852e20c2129a16b4ac4c955e0577ade942239ad803"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level60-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "2f8c67f3e238cc979b2a386799cb3389780117fa8cc9ea8e8d9819bd8b305443"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level99-w1-manifest.json",
+      "bytes": 4100,
+      "sha256": "fd54c9569c66296e88d3c8bde98458040a8041b603a88afe267a486b09214d1b"
+    },
+    {
+      "path": "matrix/coordinator/inputs/arkclaw-level99-w2-manifest.json",
+      "bytes": 4097,
+      "sha256": "dcd3ff98890e6fcc9bd35ab99848b3aff800f614f5bf52f976e47e6c3896a3ae"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level30-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "3a9929a2a91352cab79437c81e1a6f3f5f6d710b5963e4bbc01ed97b0f757ac2"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level30-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "e57ac1d95d41219037c61ee30db180c20bbeb5fb4b01083f2eca7bcc1cf31f85"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level60-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "8a888655cb03f337dbe42d5c8e6640573ac2779ee3ac3fe1b4d3c04cd5127bda"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level60-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "8d48cbf5e7ba06e06546db663484b5e9cccc3150be539be7f96a81f25ff9bbfc"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level99-w1-manifest.json",
+      "bytes": 4102,
+      "sha256": "6b41b80fab8b6bfebf94c86d415c5a1faa04dd0c40b1cb6732ce6db710296200"
+    },
+    {
+      "path": "matrix/coordinator/inputs/blackiron-level99-w2-manifest.json",
+      "bytes": 4099,
+      "sha256": "5fd1a3e225056bc5b026f89ad7a7107dd3285ba471981caa64e0807abd5c6668"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level30/group-report.json",
+      "bytes": 2792,
+      "sha256": "c5c48d7369ab9ff0e21366f0c9488e161b0cc5c23cca3738dcfed6b3363a0673"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level30/save-before.json",
+      "bytes": 61969,
+      "sha256": "bb3ca5d66777b3951eb3a392a6d860d387c1539281b2230f1cd767a6b5992868"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level30/save-protection.json",
+      "bytes": 129653,
+      "sha256": "434609d831b569b1c99f3cb6de1a99ee5bacfa33e541ae33579690d085bbdf2e"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level60/group-report.json",
+      "bytes": 2792,
+      "sha256": "f7e8bf13438f74492ec870b054f3d89d8caaebbacc8f8cd60cd824f100b6dd85"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level60/save-before.json",
+      "bytes": 61969,
+      "sha256": "4d62ff13529efc22ff576684f284c434e5e864b096eb071a0ac7fbc1b229edce"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level60/save-protection.json",
+      "bytes": 129653,
+      "sha256": "ac2bddfc4ac32c87d895a6621a349ab07b85c0751c82c169d602da6b9ad2e86d"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level99/group-report.json",
+      "bytes": 2792,
+      "sha256": "0472a4ea3ca265733d7ee61134bf50aa19f954bc1f3b4fff4900df3a7293f3b3"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level99/save-before.json",
+      "bytes": 61969,
+      "sha256": "209a8fd9c914d7e93292ff3a3065bcef19d8f6caae19b5e15000d8d989d56c52"
+    },
+    {
+      "path": "matrix/coordinator/groups/arkclaw-level99/save-protection.json",
+      "bytes": 129653,
+      "sha256": "f72720ed9f373b8c4e4615978c4dbf4cae36df565bc7922c25f0d6e9ceb397bc"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level30/group-report.json",
+      "bytes": 2800,
+      "sha256": "315fc06eb7c0262e1ee20082fb1324e11ac01ee52e32d85ad8aae0c3bb8997b9"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level30/save-before.json",
+      "bytes": 61969,
+      "sha256": "eea19dcf23f16556efe019724e894b8b4bd4efbbabb1a43e6aafb65ca14e4b1a"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level30/save-protection.json",
+      "bytes": 129653,
+      "sha256": "3870958bc8a0db6c2bfa081b3d158f7ab486ed9b34ec664355e0568565744702"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level60/group-report.json",
+      "bytes": 2800,
+      "sha256": "b18bc8eb84185597eed213089155caca5aac2dc6ceea44c415f8503bfa9e6af4"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level60/save-before.json",
+      "bytes": 61969,
+      "sha256": "e4741ce5bb7fd2e9e23c549b68c5a9a755c6cb10ef3d099bb078711d4d21a09c"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level60/save-protection.json",
+      "bytes": 129653,
+      "sha256": "dd1aa10ccddde074c75593b94536d9ea4ba99adb731797454ca2748900ac71d9"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level99/group-report.json",
+      "bytes": 2800,
+      "sha256": "004b1944a532ce615bd2643ff0734bb2e85d0b7076be89221821002b6efcdaee"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level99/save-before.json",
+      "bytes": 61969,
+      "sha256": "77356e6334135c43b5102ecd5e522568e9444c5c193c9087c52ccd3a1b2ebf59"
+    },
+    {
+      "path": "matrix/coordinator/groups/blackiron-level99/save-protection.json",
+      "bytes": 129653,
+      "sha256": "e841391fa59cc2dda1e37761801b48ac98123b218bdf7b411a85cafa6b3495d5"
+    },
+    {
+      "path": "native/images/airborne-shadow.png",
+      "bytes": 45537,
+      "sha256": "f3b50976629ea8c43c13b1694673a41e7128990be4bb3d907d7ab02013ca825c"
+    },
+    {
+      "path": "native/images/beam-left.png",
+      "bytes": 72507,
+      "sha256": "1d9e0f0ca9eedf7edf913fb4d9eccbdd6df2e42ec88d582e184891c23f387e2d"
+    },
+    {
+      "path": "native/images/beam-right.png",
+      "bytes": 72041,
+      "sha256": "972969d3b9db1d0d27f43662f4d2c01bcd4e6011dda976c6e079ce3584cc3143"
+    },
+    {
+      "path": "native/images/cleave-impact.png",
+      "bytes": 65752,
+      "sha256": "28a221a1b7ad4d9fac7161707fc8c9bfd601cc510513d326fa61a84d0b2f2ba4"
+    },
+    {
+      "path": "native/images/death-fragments.png",
+      "bytes": 56877,
+      "sha256": "aaf5fcd84c89ab827d99a307ef76d720d36e4c1aa82b258d8972f99bee625038"
+    },
+    {
+      "path": "native/images/death-late.png",
+      "bytes": 55925,
+      "sha256": "7fcea5d28ea7a1987adca4e416435967d561fe686ebcb60cfccbd19425b70d51"
+    },
+    {
+      "path": "native/images/death-start.png",
+      "bytes": 66074,
+      "sha256": "cfaa08dc404325f432207e34f50b0d5e55a18270b6243b332f584b9c2a862fdb"
+    },
+    {
+      "path": "native/images/stand.png",
+      "bytes": 66147,
+      "sha256": "fc1ba016cef534a70068d657f9a28d48d13af47e4ef2e1ce6f5ebd05c5937265"
+    },
+    {
+      "path": "native/images/sweep-back.png",
+      "bytes": 62531,
+      "sha256": "970761e67b70bb92291e7d4cb02b7b77fe3f06c54108daef232c38038874b69d"
+    },
+    {
+      "path": "native/images/sweep-front.png",
+      "bytes": 63688,
+      "sha256": "ce0fade140c9f1152d8c6211effe2fa242efc8c100ac5a55474dfe4e55861171"
+    },
+    {
+      "path": "pilot/coordinator/execution-started.json",
+      "bytes": 149,
+      "sha256": "b4e6f3b905a41ab464ebdcad815d8ae663419791c83ca961b6c648d881ac239c"
+    },
+    {
+      "path": "pilot/coordinator/expected-receipts.json",
+      "bytes": 2496,
+      "sha256": "e1b8e900b5c59835aa56905e89a7e0c42395da9464678883984fcddfaf56e648"
+    },
+    {
+      "path": "pilot/coordinator/experiment-report.json",
+      "bytes": 7512,
+      "sha256": "984f8c883393f76174b6b9b282dc32ad0b5dbd9daca6e04193e55edeb6d04127"
+    },
+    {
+      "path": "pilot/coordinator/frozen-plan.json",
+      "bytes": 322736,
+      "sha256": "ef983fa5473f92a87c9c3b9e30036389138ebe423fe98eb7d9c3f2807657f41c"
+    },
+    {
+      "path": "pilot/coordinator/measurement-plan.json",
+      "bytes": 2293,
+      "sha256": "46dbad13dd3ca840e664f7cc7a1ccc411a47cc4fa56581e36445b833155dd927"
+    },
+    {
+      "path": "pilot/coordinator/measurement.json",
+      "bytes": 30783,
+      "sha256": "438ffd3c4ef6c7b1efcb268ca562daa01de5085a505fe90a73252630efb4b7da"
+    },
+    {
+      "path": "pilot/plan/arkclaw-level60-w1-manifest.json",
+      "bytes": 4099,
+      "sha256": "7d38688296fc395cf6c6bd8ce90f7dcf286436f7da3cfc2b1bd8ee8f5ba98004"
+    },
+    {
+      "path": "pilot/plan/arkclaw-level60-w2-manifest.json",
+      "bytes": 4096,
+      "sha256": "eeaf1f7446203d13b9a7cdda3e84d7ceb8f3f848c125a16d6f2615c08fefcb2d"
+    },
+    {
+      "path": "pilot/plan/blackiron-level60-w1-manifest.json",
+      "bytes": 4101,
+      "sha256": "931a4f194a1975a1949f01b801c2e32d14f3656df28be75039f584584c1dde1a"
+    },
+    {
+      "path": "pilot/plan/blackiron-level60-w2-manifest.json",
+      "bytes": 4098,
+      "sha256": "4edea40783c406cc73704571ed4aa55040f673e4680b02ae47c50598703da141"
+    },
+    {
+      "path": "pilot/plan/experiment-plan.json",
+      "bytes": 306724,
+      "sha256": "91f3b622e2a7b42a09e65d83d8aea770c745d0ddf250dd17642c2253368abd01"
+    },
+    {
+      "path": "pilot/plan/input-identity.json",
+      "bytes": 3670,
+      "sha256": "8055f49582857a301a2dca8925f21ff1d4f966f6a34042e87ff20bbb4a4e79f8"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "b0dfc218d744ad91594c7cf43092d09845cb73aa64e2cbc97c75c8962d3dd74e"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/manifest.json",
+      "bytes": 4099,
+      "sha256": "7d38688296fc395cf6c6bd8ce90f7dcf286436f7da3cfc2b1bd8ee8f5ba98004"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/shard-receipt.json",
+      "bytes": 727949,
+      "sha256": "712bebdcc0c0c0ab8e2bfa554814c3a11c88669159b2612245435f148d9a197b"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w1/worker-attempt/raw/70eeb4ad82b7dd68ec66d8cef83947cff512bc61cf550ec593f2120033ebe887.jsonl",
+      "bytes": 4793,
+      "sha256": "70eeb4ad82b7dd68ec66d8cef83947cff512bc61cf550ec593f2120033ebe887"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "c5eb5b6b861cd735ca039298114e9527e24b49001d17879b0474a84f5f94463a"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/manifest.json",
+      "bytes": 4096,
+      "sha256": "eeaf1f7446203d13b9a7cdda3e84d7ceb8f3f848c125a16d6f2615c08fefcb2d"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/shard-receipt.json",
+      "bytes": 732737,
+      "sha256": "0da75ad60ac6c46c834248ae6f86b7e25e123b6e8dd82eb3553229d3c300e26d"
+    },
+    {
+      "path": "pilot/arkclaw-level60-w2/worker-attempt/raw/c56015488bc62154d29d83d310e90e223a11afe0096dfc3f7f60d8e262209d0c.jsonl",
+      "bytes": 4787,
+      "sha256": "c56015488bc62154d29d83d310e90e223a11afe0096dfc3f7f60d8e262209d0c"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/launch.json",
+      "bytes": 872,
+      "sha256": "65caab59bed718a817dd6c3b65857f33f8824ca813215eea0773baa51acd7da8"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/manifest.json",
+      "bytes": 4101,
+      "sha256": "931a4f194a1975a1949f01b801c2e32d14f3656df28be75039f584584c1dde1a"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/shard-receipt.json",
+      "bytes": 734352,
+      "sha256": "0e8a4c4e88eb0c56057f27aa7e9c429dea06963595e746b2f4621b1b9d6ae167"
+    },
+    {
+      "path": "pilot/blackiron-level60-w1/worker-attempt/raw/d98d2280f333d69341f88761358289770120e58cf298b75a520b83b8e7c5126d.jsonl",
+      "bytes": 4806,
+      "sha256": "d98d2280f333d69341f88761358289770120e58cf298b75a520b83b8e7c5126d"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/host-stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/host-stdout.log",
+      "bytes": 37,
+      "sha256": "4c0071c9953694d28dd1f42fdbf433e3c166c4b2267d9afee2e2fbd5dd9b739c"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/launch.json",
+      "bytes": 877,
+      "sha256": "6d0a7f80cab4c92a8c7d9ebdaebef4f7626e334b7788a46c425d9491416c7628"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/manifest.json",
+      "bytes": 4098,
+      "sha256": "4edea40783c406cc73704571ed4aa55040f673e4680b02ae47c50598703da141"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/shard-receipt.json",
+      "bytes": 732736,
+      "sha256": "1b2162bdcc4c97b7949b907afc6831158e5992b2c9b66da36fb34592fa585140"
+    },
+    {
+      "path": "pilot/blackiron-level60-w2/worker-attempt/raw/33983f14398c2bfc8fca432522e8ab486058f2f93bbda35940ea59d6de256498.jsonl",
+      "bytes": 4798,
+      "sha256": "33983f14398c2bfc8fca432522e8ab486058f2f93bbda35940ea59d6de256498"
+    },
+    {
+      "path": "pilot/coordinator/inputs/arkclaw-level60-w1-manifest.json",
+      "bytes": 4099,
+      "sha256": "7d38688296fc395cf6c6bd8ce90f7dcf286436f7da3cfc2b1bd8ee8f5ba98004"
+    },
+    {
+      "path": "pilot/coordinator/inputs/arkclaw-level60-w2-manifest.json",
+      "bytes": 4096,
+      "sha256": "eeaf1f7446203d13b9a7cdda3e84d7ceb8f3f848c125a16d6f2615c08fefcb2d"
+    },
+    {
+      "path": "pilot/coordinator/inputs/blackiron-level60-w1-manifest.json",
+      "bytes": 4101,
+      "sha256": "931a4f194a1975a1949f01b801c2e32d14f3656df28be75039f584584c1dde1a"
+    },
+    {
+      "path": "pilot/coordinator/inputs/blackiron-level60-w2-manifest.json",
+      "bytes": 4098,
+      "sha256": "4edea40783c406cc73704571ed4aa55040f673e4680b02ae47c50598703da141"
+    },
+    {
+      "path": "pilot/coordinator/groups/arkclaw-level60/group-report.json",
+      "bytes": 2791,
+      "sha256": "5383a1e9743bf0acecdd18ea4b06679f3eb5d84e83c82bc0eb94d8e07f43e015"
+    },
+    {
+      "path": "pilot/coordinator/groups/arkclaw-level60/save-before.json",
+      "bytes": 57349,
+      "sha256": "ca57668a7c1a748b1837192a60a46bf19d00466cdeaa98a15c4c35a4441af656"
+    },
+    {
+      "path": "pilot/coordinator/groups/arkclaw-level60/save-protection.json",
+      "bytes": 120029,
+      "sha256": "10fbd268da441d16794805c1e704294e9c99c9bf69565a8d0f34fd49a36dc31d"
+    },
+    {
+      "path": "pilot/coordinator/groups/blackiron-level60/group-report.json",
+      "bytes": 2799,
+      "sha256": "843ca2884bf252024a9d39e9f527f03a895ecdcfc14f6a70ca12871e369fcc1b"
+    },
+    {
+      "path": "pilot/coordinator/groups/blackiron-level60/save-before.json",
+      "bytes": 57349,
+      "sha256": "a5e85e911af5d21cae127a0805429e8d51fd18353a657821de3e31b18bb50070"
+    },
+    {
+      "path": "pilot/coordinator/groups/blackiron-level60/save-protection.json",
+      "bytes": 120029,
+      "sha256": "cf8aec527bb1431d770177323562bd237a5bd9fec117b610a1fea76989e2a780"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-images/beam-left.png",
+      "bytes": 73444,
+      "sha256": "fa809bae5833495b3744f39e2f5ccddc0b3ada3105617b44b160812eb576e5f3"
+    },
+    {
+      "path": "raw/blade-beam-capture-r2-images/beam-right.png",
+      "bytes": 77812,
+      "sha256": "31aa559c7a9e0e3aa3d9fa5979b0a6afd277b7748fa167e8a82dd58148c19155"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-images/beam-left.png",
+      "bytes": 72507,
+      "sha256": "1d9e0f0ca9eedf7edf913fb4d9eccbdd6df2e42ec88d582e184891c23f387e2d"
+    },
+    {
+      "path": "raw/blade-beam-capture-r3-images/beam-right.png",
+      "bytes": 72041,
+      "sha256": "972969d3b9db1d0d27f43662f4d2c01bcd4e6011dda976c6e079ce3584cc3143"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/airborne-shadow.png",
+      "bytes": 45537,
+      "sha256": "f3b50976629ea8c43c13b1694673a41e7128990be4bb3d907d7ab02013ca825c"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/beam-left.png",
+      "bytes": 69774,
+      "sha256": "2459144d4b6be13fbd5ed7c42d0637536087cbab172f72c2f1b08159767f40dc"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/beam-right.png",
+      "bytes": 69906,
+      "sha256": "2295876d423843df8e81c5b6f4daae40b29a8210d0f767ba34baf26b9be0a610"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/cleave-impact.png",
+      "bytes": 65752,
+      "sha256": "28a221a1b7ad4d9fac7161707fc8c9bfd601cc510513d326fa61a84d0b2f2ba4"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/death-fragments.png",
+      "bytes": 56877,
+      "sha256": "aaf5fcd84c89ab827d99a307ef76d720d36e4c1aa82b258d8972f99bee625038"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/death-late.png",
+      "bytes": 55925,
+      "sha256": "7fcea5d28ea7a1987adca4e416435967d561fe686ebcb60cfccbd19425b70d51"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/death-start.png",
+      "bytes": 66074,
+      "sha256": "cfaa08dc404325f432207e34f50b0d5e55a18270b6243b332f584b9c2a862fdb"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/stand.png",
+      "bytes": 66147,
+      "sha256": "fc1ba016cef534a70068d657f9a28d48d13af47e4ef2e1ce6f5ebd05c5937265"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/sweep-back.png",
+      "bytes": 62531,
+      "sha256": "970761e67b70bb92291e7d4cb02b7b77fe3f06c54108daef232c38038874b69d"
+    },
+    {
+      "path": "raw/blade-capture-r1-images/sweep-front.png",
+      "bytes": 63688,
+      "sha256": "ce0fade140c9f1152d8c6211effe2fa242efc8c100ac5a55474dfe4e55861171"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/before.json",
+      "bytes": 2189,
+      "sha256": "b4473b21408b69cf72d9f1aa2aaa7229081f29e59b93ebcf0195d8c2e9f289cc"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/compiler_errors.txt",
+      "bytes": 27,
+      "sha256": "6d64657e843cfa06c243b6b51f8732c1b5910ebd29940aa7f6f9342b38034fd3"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/compile_output.txt",
+      "bytes": 94,
+      "sha256": "67b363da8ab7b07e1fa2e72316d90b24d9341a514913b46f40e05987284a3600"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/compile_state_uncertain.marker",
+      "bytes": 103,
+      "sha256": "0c17f4c6902da129ae0fce1c11815a2bbc5de2cd659ee5d65f47c45a8378a965"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/compile_target.cfg",
+      "bytes": 134,
+      "sha256": "b66fedb5758b3fd168940fd72f3a42c5e743a20ce63ded60008f8b60e8a9cb79"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/flashlog.txt",
+      "bytes": 2951579,
+      "sha256": "fab12d873ed3a66c93ccdbaba6c5cadf8f28d708b092fd65fee9546dc895d973"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/pending-retirement.json",
+      "bytes": 571,
+      "sha256": "be6b97b59f707a6a37d515849216634b8b94b66f9848d39d27a9e1365bb6425b"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/phase-0.receipt",
+      "bytes": 358,
+      "sha256": "e5f8e957fc05ce48bb74eae01024db581d24a39a62640f1aa9b3f81c7bc973f9"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/phase-1.receipt",
+      "bytes": 359,
+      "sha256": "d785ae72e57ec20dad9c2133bec34dcdb11520ea0a13b67c9ace6cb4ab1681ff"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/raw-after.txt",
+      "bytes": 2951579,
+      "sha256": "fab12d873ed3a66c93ccdbaba6c5cadf8f28d708b092fd65fee9546dc895d973"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/raw-before.txt",
+      "bytes": 2951579,
+      "sha256": "fab12d873ed3a66c93ccdbaba6c5cadf8f28d708b092fd65fee9546dc895d973"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/recovery.json",
+      "bytes": 1990,
+      "sha256": "7e7fcefe7ac427fd9ce2ea5458c9e5099c479cc07851bd3c474bf85276276441"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/stop-control-after-quiescence.log",
+      "bytes": 228,
+      "sha256": "3e5b2e1d93b00bfe527f2267f7cb1cc33dad11dee0dd82f309450b64761a950b"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/task-after.json",
+      "bytes": 81,
+      "sha256": "6c8233a370d5134aeaa56c2acf9a85d22f1d401f3beba18e2aea5ff54cfe0339"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/tasks-before.json",
+      "bytes": 131,
+      "sha256": "b4cdd1844c9504a39225ff14306917701fc073c73a8a4888a2910f40e30a8101"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/TestLoader.as",
+      "bytes": 89,
+      "sha256": "e38e2151bf619814a0ea65bf2b19d11d8f78a7704787c47c046666acee2f090b"
+    },
+    {
+      "path": "raw/wings-post-knockback-timeout/TestLoader.swf",
+      "bytes": 7556,
+      "sha256": "4e05ba76d2c842d16bd33cba6ad734406a5ba7e47f2c4470596ca5508d1b96eb"
+    }
+  ],
+  "fileCount": 299,
+  "totalBytes": 71811569
+}

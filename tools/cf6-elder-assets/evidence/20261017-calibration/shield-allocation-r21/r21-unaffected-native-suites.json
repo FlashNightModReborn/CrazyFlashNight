@@ -1,0 +1,48 @@
+{
+  "qualified": true,
+  "suites": [
+    {
+      "name": "audio",
+      "testSwfSha256": "cf45696854b4c1f352b48609ca1666b30f124951ce4ab816770e4d38a202abcc",
+      "compiledClasses": 1,
+      "unchangedCurrentBindings": 145,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    },
+    {
+      "name": "player-aim",
+      "testSwfSha256": "63334b5c7b44fe3f5b84d511307eaa7af83b0de77616cd1b95d0feebfb9b4291",
+      "compiledClasses": 400,
+      "unchangedCurrentBindings": 145,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    },
+    {
+      "name": "elder-render",
+      "testSwfSha256": "7f7374696c0647c8057860db7259cd192e56e0f142c4ec223ff1da38e7ce6ac1",
+      "compiledClasses": 397,
+      "unchangedCurrentBindings": 145,
+      "changedBindingsAbsentFromCompiledTest": [
+        "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as"
+      ],
+      "forbiddenClassesAbsent": [
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderAssetTest",
+        "org.flashNight.arki.unit.Action.Melee.Cf6ElderCombatEffectsTest"
+      ],
+      "qualified": true
+    }
+  ],
+  "boundary": "The first-cohort audio, player and rendering executions retain their actual frozen identities. Only one unrelated test fixture file changed afterwards; neither listed Elder test class is embedded in these test SWFs, and all their other bound inputs match current bytes."
+}

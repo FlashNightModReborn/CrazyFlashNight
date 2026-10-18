@@ -3,6 +3,37 @@
   <timeline>
     <DOMTimeline name="死亡">
       <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){if(this.cf6DeathVoicePlayed!==true){this.cf6DeathVoicePlayed=true;_root.播放音效(["CF6_1123.mp3", "CF6_1137.mp3", "CF6_1146.mp3", "CF6_1151.mp3", "CF6_1154.mp3", "CF6_1157.mp3"][random(6)]);}}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" duration="30">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="31" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){if(this.cf6DeathVoicePlayed!==true){this.cf6DeathVoicePlayed=true;_root.播放音效(["CF6_1123.mp3", "CF6_1137.mp3", "CF6_1146.mp3", "CF6_1151.mp3", "CF6_1154.mp3", "CF6_1157.mp3"][random(6)]);}}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="32" keyMode="9728" duration="45">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="77" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){if(this.cf6DeathVoicePlayed!==true){this.cf6DeathVoicePlayed=true;_root.播放音效(["CF6_1123.mp3", "CF6_1137.mp3", "CF6_1146.mp3", "CF6_1151.mp3", "CF6_1154.mp3", "CF6_1157.mp3"][random(6)]);}}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="78" keyMode="9728" duration="34">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="CF7生命周期" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" name="a0" labelType="name">

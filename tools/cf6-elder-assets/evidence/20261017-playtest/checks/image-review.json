@@ -1,0 +1,418 @@
+{
+  "reviewer": "assistant",
+  "reviewedNativeImages": 47,
+  "humanAcceptanceState": "pending",
+  "actors": [
+    {
+      "actor": "headbot",
+      "imageCount": 20,
+      "resource": "flashswf/arts/new/Codex大头机器人素材.swf",
+      "resourceSha256": "a087e4b44fde4e4fb7c5434a2ac1855f93ac075b2b2af6e68b762f8b00924eb9",
+      "images": [
+        {
+          "image": "beam-1.png",
+          "sha256": "6f535b3e1dc3cfc0df00b79565ef93687b56fdfceb6c5949419bea71ffa8949a",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "beam-12.png",
+          "sha256": "fd9c7a83f522eb005f77b5ab0b06ad1ece70ebab232557cc23f9bdea34433625",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "beam-18.png",
+          "sha256": "d8e67f9f5a230179237d3e1007ff8eecc95aff34fff50312ca4d666bbeed5f9d",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "beam-21.png",
+          "sha256": "51449bbcb0e316d88becc8fadf14d8ba717b37cdca5cea8bddb5882c696b62f4",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "beam-29.png",
+          "sha256": "4a314181f3f830ac409c17f4cffde4a5b4515b879146860931718a43fefa83fb",
+          "nativeAttempt": "render-pass3/headbot",
+          "nativeRunId": "23e45baf033f4490914a2fdf698583a2",
+          "traceSha256": "2c380ef4b5a7e2ac1b56a9b6ff7b74a9e7d76e1efefc7d1e6fb7be8dade4a5ed",
+          "testSwfSha256": "5fc99583384453023c80c405910fc513bf85d8aa23597455dc520b54df4ee28e"
+        },
+        {
+          "image": "beam-30.png",
+          "sha256": "4a314181f3f830ac409c17f4cffde4a5b4515b879146860931718a43fefa83fb",
+          "nativeAttempt": "render-pass3/headbot",
+          "nativeRunId": "23e45baf033f4490914a2fdf698583a2",
+          "traceSha256": "2c380ef4b5a7e2ac1b56a9b6ff7b74a9e7d76e1efefc7d1e6fb7be8dade4a5ed",
+          "testSwfSha256": "5fc99583384453023c80c405910fc513bf85d8aa23597455dc520b54df4ee28e"
+        },
+        {
+          "image": "beam-left-21.png",
+          "sha256": "43f0573df69bbbedc927cf757d355fa9435b09438413d80d62774f56454183bb",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-1.png",
+          "sha256": "0f0110ca585722ee1f0826e10f446bd33579da236e35ccc9d274d14940ad99d2",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-15.png",
+          "sha256": "00996281c26f77ae46914374841147fcfcaf8c908b3d7f4d1c478515bd0cff39",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-30.png",
+          "sha256": "65888bcf43d94e2ac06c229ea4d61d1011d1e901ae6e74515cfe896e240e843b",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-45.png",
+          "sha256": "681d0547ac8ff0b1499e8436e5ff894e27c2ca0edaadee455b8f5e71f60bc9a2",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-58.png",
+          "sha256": "681d0547ac8ff0b1499e8436e5ff894e27c2ca0edaadee455b8f5e71f60bc9a2",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "death-left-30.png",
+          "sha256": "4acf905bfddc72f37b1eaad7ba20d7b30401f46e4eeb3272a0e32076467b8921",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "hit-1.png",
+          "sha256": "9ecced21b777440f2085110e052616d7c147cf602bbb5ec40a9f4cc8278580cd",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "hit-7.png",
+          "sha256": "4fe1ab9357e8e20e896b0ca24e9919b06904cd77abe9944ae3ca347de41c136e",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "stand-1.png",
+          "sha256": "53a0c683e599c6c61b1f76ff6fe4975f3a67854c6b53ec722c4336226a96723b",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "stand-22.png",
+          "sha256": "cce3db3fc1c458d80fc071196ffec60668a9541219fc11a4be6d740e3412ec73",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "thrust-12.png",
+          "sha256": "2da8f04ce4d59802259b89fca397fe018251b18b94c4db5f04d16564ed1f9545",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "thrust-3.png",
+          "sha256": "4803bb83048d6ae009003f1ae6e15c4bf7b51236d708b65d4c5d79aad12dc768",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        },
+        {
+          "image": "thrust-left-12.png",
+          "sha256": "08f3fc7586c9cfaee556558435050d9be8da7e8c992014fff117035bb77d709e",
+          "nativeAttempt": "render-pass1/headbot",
+          "nativeRunId": "2af3f1e1b9944b71a2939c15ac5a4cb2",
+          "traceSha256": "4e040270bee5bbdabf681f4a86a1519d30a2e09cc36b45747c9caa91378c085e",
+          "testSwfSha256": "49bd7221556550194fedb1ca5782d615f59a9a49d2838d9660df076f6aafe1e2"
+        }
+      ]
+    },
+    {
+      "actor": "elder",
+      "imageCount": 25,
+      "resource": "flashswf/arts/new/Codex老头素材.swf",
+      "resourceSha256": "0feee79a4ca52dd846d7512f97303de26d64fe252b430d6fcf741876196fdf42",
+      "images": [
+        {
+          "image": "beam-29.png",
+          "sha256": "52547abc45e5087a291b65e9059b56a86830b08f12b519670588302e77b669c2",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "beam-left-29.png",
+          "sha256": "1791d7000450a6d77b7979cd6dea02b57ca6b3bbbb63e28f0e024c7e1c0e6bc1",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "burst-13.png",
+          "sha256": "acfcf7a64b66da5cb8eab4c1820bd71348c2f25be3aea0eac3063fc6e4ea5cdf",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "burst-left-13.png",
+          "sha256": "a9fa0d53be880cd5d9684f05cbe9df16e59391ad46dff3bab45b6d34cc3c280a",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-1.png",
+          "sha256": "b8d6bf68bb54bfee88629f77badf70aeb863f0ab0afe9ae74a5bf4b86b17afef",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-24.png",
+          "sha256": "f4f4cfd4603c65254accfb50eb816592f4eab2678f7edbdb42a798786065f989",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-52.png",
+          "sha256": "03cfbef6646cfe6d4c32d02d8861eba41cac1501336b10a9d6601e938ff96b97",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-53.png",
+          "sha256": "38a32eb0917a0293554930a3f323904afef3cff05da96b3a13237c9abac6ce12",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-88.png",
+          "sha256": "b2ea6b24abd437fbabe76e8135c0cbe340093535bdfa96b4d2fda82b0868fb75",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "heavy-beam-left-53.png",
+          "sha256": "4fcc48ee621c33b856d55b52917c4a66180ecf31f08a4f9c08fb3705a9ac1487",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "human-fall-31.png",
+          "sha256": "5610168acaef2dc61ba0ebab00c48bb5b75599350ff29514359997960b8f5098",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "human-stand-1.png",
+          "sha256": "0decde84695690d7586e965e2042dd7e2bf20fa42c82d5ff3d2dca2827e76e11",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "kicks-9.png",
+          "sha256": "a858bf8253756c25896587f7de93e5ac51d904966db77752a858239a031585b7",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-1.png",
+          "sha256": "268a8a23cb334f3109e3840ca12d19262a3ac746379ab10388903134778bf5d1",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-18.png",
+          "sha256": "7b8b44d8e3098d1f2e2dd2f221076836a9b3b4f1936aab99f51fe343eb3445c5",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-49.png",
+          "sha256": "8c6712ca48731a3dcc4367c191d2c3ab8e0abc04de1e1601a78e7434be4e0406",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-55.png",
+          "sha256": "815ab4e92787764dfa78ff2bf067ee1616dd68976b61c2aa68d7b39ecc327cae",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-80.png",
+          "sha256": "91bbc08addf130c378f8108255fb15666b3d114d17ee1a05e6b9f6c245d2e4a2",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-93.png",
+          "sha256": "8eb1dc0954e141e3165208313091c620fbf0874b0014baf5f6c2db9b83511391",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "phase-left-55.png",
+          "sha256": "287789d60bcc80e66a68827a763e353f5ca3422099aebd6b6cc7cb3eec7aa0fb",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "robot-death-111.png",
+          "sha256": "a50d0497d2ec2cf64ab2a48b806c76054f11d5f1fc70f7b8d23564a3558cc7e0",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "robot-death-32.png",
+          "sha256": "5575e07b959a36330e29d4d02c806e5bd54d8c16c2ea3f40418323197f450570",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "robot-stand-1.png",
+          "sha256": "d9202d3f43363e16a82b652e77af5dfe0bfb5f9cb5ca419bbd2b4a0f71cf7029",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "slam-37.png",
+          "sha256": "3421c57fe6d7e480a6212f74f1d52003c7686e9ba5733edcf582933863507a26",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        },
+        {
+          "image": "stab-7.png",
+          "sha256": "00a0255af16a8f47d7ab63aa1591cb4a699ba8e57e7e9cb2958886f7e3f837eb",
+          "nativeAttempt": "render-pass3/elder",
+          "nativeRunId": "a9d3518a6bd34daa81f8158bafcd7480",
+          "traceSha256": "c8fe5e982ad61f33f821a49bdd6b6caa5ad5c48809be352cc7850fc0ce08a40a",
+          "testSwfSha256": "6de8ef5379f0ad2a3c7cef4cb2cb98d989630f4a06a36145a4b9fc0c25aa85f4"
+        }
+      ]
+    },
+    {
+      "actor": "bladebot",
+      "imageCount": 2,
+      "resource": "flashswf/arts/new/Codex大刀机器人素材.swf",
+      "resourceSha256": "963cd8383edff068891c1d766b6880d02999beb4bd114a12e49b9ff2fb4765a2",
+      "images": [
+        {
+          "image": "beam-left.png",
+          "sha256": "1d9e0f0ca9eedf7edf913fb4d9eccbdd6df2e42ec88d582e184891c23f387e2d",
+          "nativeAttempt": "render-pass4/bladebot",
+          "nativeRunId": "41831b2a2b5d4712a1f454a095bd8b61",
+          "traceSha256": "09751c82ff0e10a494944973befda963289d749458a0033e259f297791e9e2ac",
+          "testSwfSha256": "36ac241aa52115bdc79d5ea5c2c181601a7ed929769430fb31b8dbd81ae951e4"
+        },
+        {
+          "image": "beam-right.png",
+          "sha256": "972969d3b9db1d0d27f43662f4d2c01bcd4e6011dda976c6e079ce3584cc3143",
+          "nativeAttempt": "render-pass4/bladebot",
+          "nativeRunId": "41831b2a2b5d4712a1f454a095bd8b61",
+          "traceSha256": "09751c82ff0e10a494944973befda963289d749458a0033e259f297791e9e2ac",
+          "testSwfSha256": "36ac241aa52115bdc79d5ea5c2c181601a7ed929769430fb31b8dbd81ae951e4"
+        }
+      ]
+    }
+  ],
+  "observations": [
+    "Headbot charge grows before either cyan beam; both corrected second-beam frames fit the capture. Late death frames contain separated falling or resting native parts.",
+    "Elder primer and heavy beam share the emitter center; heavy charge, threefold authored thickness, recovery pose, mirror, transition and final wreckage are present.",
+    "Bladebot native beam and full unit are visible in both directions without capture clipping. These images use a neutral beam angle; actual player aim and visual/collision rotation are checked by the separate 334-assertion suite."
+  ],
+  "limitations": [
+    "Static native keyframes do not establish animation feel, live input, full combat balance or standard-entry acceptance.",
+    "The render fixture does not perform the final map blit and retains its configured ground shadow; production death delegation, once-only layer-2 stamp request and cleanup are checked separately by the behavior fixtures.",
+    "Headbot images retain per-frame provenance across the initial capture and the successful two-frame framing repair. The failed full sweep is not upgraded."
+  ],
+  "previewPolicy": "Review sheets and the handoff comparison only compose native RGBA on a declared background and label/crop/scale the preview; source PNGs remain unchanged."
+}

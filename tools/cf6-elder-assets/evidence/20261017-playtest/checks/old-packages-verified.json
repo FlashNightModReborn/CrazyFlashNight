@@ -1,0 +1,62 @@
+{
+  "sealedEvidence": [
+    {
+      "directory": "tools/cf6-headbot-assets/evidence/20261016",
+      "filesVerified": 115,
+      "integritySha256": "6a3a677cf1963cf63ab603466c7c6d707af9be9026f8da964cb41ce4a1d0800f",
+      "result": "unchanged against sealed integrity manifest"
+    },
+    {
+      "directory": "tools/cf6-headbot-assets/evidence/20261016-wave",
+      "filesVerified": 108,
+      "integritySha256": "edd61db6673590c4570a9dd8d1e4ebecd6c24fb24a925cda9cb1360fe77cdd4c",
+      "result": "unchanged against sealed integrity manifest"
+    },
+    {
+      "directory": "tools/cf6-headbot-assets/evidence/20261017-knockback",
+      "filesVerified": 85,
+      "integritySha256": "87b042eb5ebb6f75cb77a4b3b70fe7440509105cbfa9b9912d47d8c971b9e785",
+      "result": "unchanged against sealed integrity manifest"
+    },
+    {
+      "directory": "tools/cf6-bladebot-assets/evidence/20261017-wave",
+      "filesVerified": 299,
+      "integritySha256": "26e3af72b20a1f64c10dc6a498e4513adfd23bb26d9c2953fdaaa6f743360e9c",
+      "result": "unchanged against sealed integrity manifest"
+    },
+    {
+      "directory": "tools/cf6-elder-assets/evidence/20261017",
+      "filesVerified": 1986,
+      "integritySha256": "18eb3e276d5662340e29c31de8116879683fcafe70230b91aebc9893f840e8ee",
+      "result": "unchanged against sealed integrity manifest"
+    }
+  ],
+  "originalSourceArchives": [
+    {
+      "directory": "flashswf/arts/new/Codex素材源稿/CF6大头机器人-R3",
+      "archiveSha256": "4f0b24fdfcfe722c027902d92a11b971dbaa6b430a65257c1a6585f82871c756",
+      "membersVerified": 109
+    },
+    {
+      "directory": "flashswf/arts/new/Codex素材源稿/CF6大刀机器人-R2",
+      "archiveSha256": "a689834247d252b500d0ecfdbd6ed75f1744b0e0a4f7f5ddd234eae40db7cb72",
+      "membersVerified": 38
+    },
+    {
+      "directory": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7",
+      "archiveSha256": "d4207dbe703a366601af730de641d397e305b308588710ab6544c44fa8010284",
+      "membersVerified": 109
+    },
+    {
+      "directory": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7",
+      "archiveSha256": "9b157cd04df3183eaa81dcb5e1720c5e77f2701d9b41811f970f337d107b4ab2",
+      "membersVerified": 136
+    },
+    {
+      "directory": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2",
+      "archiveSha256": "c32a7583ca7925e7c1596fcbecf8e131e44a5d79b6a2ecf2cec13548938f58e7",
+      "membersVerified": 101
+    }
+  ],
+  "passed": true
+}

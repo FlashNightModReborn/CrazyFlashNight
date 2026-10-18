@@ -1,0 +1,27 @@
+{
+  "registeredAtUtc": "2026-10-17T23:51:15.886201+00:00",
+  "expectedRows": 36,
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "rivals": [
+    78,
+    361
+  ],
+  "perSideRepeat": 3,
+  "perGroupMeanAndMedianNetHpLoss": [
+    0.5,
+    0.8
+  ],
+  "winsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "ownPhaseSpawnsPerFight": 1,
+  "netHpMethod": "Fixed full chain including unspawned beast successor; all rows retained.",
+  "executionQualificationRequired": true,
+  "continuousObservedDisplayRequired": true,
+  "displayLog": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\display-qualified-20261018-r2\\display-state.jsonl",
+  "nativeCandidate": "cf6-transition-paint-r4",
+  "formalPromotion": false
+}

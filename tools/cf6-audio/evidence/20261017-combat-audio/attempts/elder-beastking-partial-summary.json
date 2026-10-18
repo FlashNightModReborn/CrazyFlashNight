@@ -1,0 +1,35 @@
+{
+  "scope": "Completed Beast King subset; Exusiai still running. Net loss includes opponent healing.",
+  "groups": [
+    {
+      "level": 30,
+      "rows": 6,
+      "wins": 0,
+      "netHpLossMin": 0.14935421039692898,
+      "netHpLossMean": 0.27772735008793326,
+      "netHpLossMax": 0.4952629488852329,
+      "phaseExactlyOnce": true,
+      "target50to80": 0
+    },
+    {
+      "level": 60,
+      "rows": 6,
+      "wins": 0,
+      "netHpLossMin": 0.20260816768300727,
+      "netHpLossMean": 0.31932895118925053,
+      "netHpLossMax": 0.39765317705446,
+      "phaseExactlyOnce": true,
+      "target50to80": 0
+    },
+    {
+      "level": 99,
+      "rows": 6,
+      "wins": 0,
+      "netHpLossMin": 0.2776092808128293,
+      "netHpLossMean": 0.3279893467793911,
+      "netHpLossMax": 0.38359176555332297,
+      "phaseExactlyOnce": true,
+      "target50to80": 0
+    }
+  ]
+}

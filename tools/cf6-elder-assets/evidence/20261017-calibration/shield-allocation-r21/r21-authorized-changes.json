@@ -1,0 +1,28 @@
+{
+  "recordedAtUtc": "2026-10-18T08:06:31.045692+00:00",
+  "authorization": "Existing user authorization to tune shield strength, capacity/coverage and multipliers, plus approved 750-range trial.",
+  "changed": [
+    "tools/cf6-elder-assets/build.py",
+    "tools/cf6-elder-assets/ElderAI.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+    "tools/cf6-elder-assets/README.md"
+  ],
+  "evidence": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tools\\cf6-elder-assets\\evidence\\20261017-calibration\\history\\r20-pilot-awake\\phase-aware-summary.json",
+  "evidenceSha256": "d01b2accf0a121bff7c28318d3d1384990b2d422209ebacb2e5327ce6f38da01",
+  "meleeShieldCapacityScale": 0.5,
+  "beamShieldCapacityScale": 0.2,
+  "reactiveShieldCapacityScale": 0.75,
+  "slamPower": 18,
+  "attackMultiplierFlag": 6.875,
+  "shieldAttackScale": 1.2790697674418605,
+  "actualRobotAttackAtLevels30_60_99": [
+    813,
+    1184,
+    1666
+  ],
+  "robotAttackPanelRegenerationRequired": true,
+  "humanHpDefenseAndOtherUnitsChanged": false,
+  "rangeAndGeometryChanged": false,
+  "compiled": false
+}

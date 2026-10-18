@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/老头/机械爆裂/演出" itemID="6af00000-88310233" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="演出" currentFrame="5">
+      <layers>
+        <DOMLayer name="小爆炸" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="13" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材" symbolType="graphic" centerPoint3DX="2" centerPoint3DY="-16" loop="play once">
+                  <matrix>
+                    <Matrix a="1.29998779296875" d="1.29998779296875" tx="-6.15" ty="-13.8"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="6.25" y="-1.7"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

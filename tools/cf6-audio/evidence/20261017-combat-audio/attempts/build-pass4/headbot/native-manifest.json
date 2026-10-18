@@ -1,0 +1,1039 @@
+{
+  "schema": "cf6-headbot.native-import.v1",
+  "owner": "flashswf/arts/new/Codex大头机器人素材",
+  "approvedInput": "flashswf/arts/new/Codex素材源稿/CF6大头机器人-R3",
+  "nativeSymbolCount": 70,
+  "buildInputs": [
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "sha256": "efb0555dfdbbaa6c78a48a1e0138b6de8a85d95f908586dc242c18c8ba23afd9"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/vector.py",
+      "sha256": "524283301a2d8ddb0cd2c017c73771e5065f3ef83a1efd80c00c72573502ef03"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "sha256": "80b622fb1899d34c93ad4000f867d2f2dd9c4a6c31976226d347e2c2f37f758a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/CorpseFragments.as",
+      "sha256": "3c89a4879d4723df16ac7d72bef706c244cf406941d75df5cb2137f8b17711e0"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/corpse.py",
+      "sha256": "632123220a09764588f6872f158be2b158b09aa6b36544d93abe76af9995146c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/debris.py",
+      "sha256": "7d8f833580995b13703fff55aff9d2fd4f8d01f0894172ee386f8f8cb86f3f73"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    }
+  ],
+  "parts": [
+    {
+      "id": 926,
+      "shapes": 1,
+      "segments": 8,
+      "masks": 0
+    },
+    {
+      "id": 928,
+      "shapes": 37,
+      "segments": 7637,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 634,
+        "clipScopes": 7,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 3188
+    },
+    {
+      "id": 929,
+      "shapes": 361,
+      "segments": 48710,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 634,
+        "clipScopes": 7,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 15441
+    },
+    {
+      "id": 930,
+      "shapes": 26,
+      "segments": 4319,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 634,
+        "clipScopes": 7,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1711
+    },
+    {
+      "id": 931,
+      "shapes": 51,
+      "segments": 17716,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 634,
+        "clipScopes": 7,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 6803
+    },
+    {
+      "id": 932,
+      "shapes": 21,
+      "segments": 4375,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 634,
+        "clipScopes": 7,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1573
+    },
+    {
+      "id": 939,
+      "shapes": 5,
+      "segments": 15026,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5,
+        "clipScopes": 0,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 5263
+    },
+    {
+      "id": 940,
+      "shapes": 5,
+      "segments": 15763,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5,
+        "clipScopes": 0,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 5308
+    },
+    {
+      "id": 941,
+      "shapes": 380,
+      "segments": 42514,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 1273,
+        "clipScopes": 14,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 13867
+    },
+    {
+      "id": 942,
+      "shapes": 470,
+      "segments": 42185,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 2540,
+        "clipScopes": 28,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 13746
+    },
+    {
+      "id": 943,
+      "shapes": 464,
+      "segments": 41836,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 1905,
+        "clipScopes": 21,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 13619
+    },
+    {
+      "id": 944,
+      "shapes": 529,
+      "segments": 29369,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 12682,
+        "clipScopes": 140,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 8381
+    },
+    {
+      "id": 945,
+      "shapes": 143,
+      "segments": 6037,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5707,
+        "clipScopes": 63,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1644
+    },
+    {
+      "id": 946,
+      "shapes": 138,
+      "segments": 5637,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5073,
+        "clipScopes": 56,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1634
+    },
+    {
+      "id": 947,
+      "shapes": 137,
+      "segments": 5826,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5073,
+        "clipScopes": 56,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1597
+    },
+    {
+      "id": 948,
+      "shapes": 138,
+      "segments": 6014,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5073,
+        "clipScopes": 56,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1706
+    },
+    {
+      "id": 949,
+      "shapes": 137,
+      "segments": 5826,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5073,
+        "clipScopes": 56,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1597
+    },
+    {
+      "id": 950,
+      "shapes": 138,
+      "segments": 6160,
+      "masks": 0,
+      "offlineClip": {
+        "expandedPaints": 5073,
+        "clipScopes": 56,
+        "tolerance": 0.0025,
+        "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+      },
+      "removedExactGridVertices": 1774
+    },
+    {
+      "id": 903,
+      "shapes": 1,
+      "segments": 8,
+      "masks": 0
+    },
+    {
+      "id": 935,
+      "shapes": 1,
+      "segments": 4,
+      "masks": 0
+    },
+    {
+      "id": 929,
+      "kind": "nine-complementary-death-pieces",
+      "pieces": [
+        {
+          "piece": "Codex/大头机器人/躯干分裂/1",
+          "clip": [
+            -87.1,
+            -211.9,
+            -27.76666666666666,
+            -119.23333333333333
+          ],
+          "shapes": 35,
+          "segments": 3486,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1066
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/2",
+          "clip": [
+            -27.76666666666666,
+            -211.9,
+            31.566666666666677,
+            -119.23333333333333
+          ],
+          "shapes": 67,
+          "segments": 4141,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1226
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/3",
+          "clip": [
+            31.566666666666677,
+            -211.9,
+            90.9,
+            -119.23333333333333
+          ],
+          "shapes": 61,
+          "segments": 4310,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1199
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/4",
+          "clip": [
+            -87.1,
+            -119.23333333333333,
+            -27.76666666666666,
+            -26.566666666666663
+          ],
+          "shapes": 42,
+          "segments": 3495,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1023
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/5",
+          "clip": [
+            -27.76666666666666,
+            -119.23333333333333,
+            31.566666666666677,
+            -26.566666666666663
+          ],
+          "shapes": 102,
+          "segments": 6486,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1857
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/6",
+          "clip": [
+            31.566666666666677,
+            -119.23333333333333,
+            90.9,
+            -26.566666666666663
+          ],
+          "shapes": 111,
+          "segments": 6818,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1930
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/7",
+          "clip": [
+            -87.1,
+            -26.566666666666663,
+            -27.76666666666666,
+            66.1
+          ],
+          "shapes": 55,
+          "segments": 9074,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 2774
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/8",
+          "clip": [
+            -27.76666666666666,
+            -26.566666666666663,
+            31.566666666666677,
+            66.1
+          ],
+          "shapes": 75,
+          "segments": 5284,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 1631
+        },
+        {
+          "piece": "Codex/大头机器人/躯干分裂/9",
+          "clip": [
+            31.566666666666677,
+            -26.566666666666663,
+            90.9,
+            66.1
+          ],
+          "shapes": 61,
+          "segments": 7133,
+          "masks": 0,
+          "offlineClip": {
+            "expandedPaints": 634,
+            "clipScopes": 8,
+            "tolerance": 0.0025,
+            "method": "Windows WPF vector intersection; native fill contours and original paint matrices"
+          },
+          "removedExactGridVertices": 2372
+        }
+      ]
+    }
+  ],
+  "actions": {
+    "beam": {
+      "id": 936,
+      "state": "空手攻击",
+      "hits": [
+        21,
+        29
+      ],
+      "power": 1,
+      "damageType": "魔法",
+      "magicAttribute": "波"
+    },
+    "thrust": {
+      "id": 937,
+      "state": "近战",
+      "hits": [
+        3,
+        5,
+        8,
+        12
+      ],
+      "power": 1,
+      "damageType": "物理"
+    }
+  },
+  "groundShift": -0.33909454345703693,
+  "sourceOffsets": {
+    "933": [
+      18.3,
+      -108.45
+    ],
+    "936": [
+      4.75,
+      -62.05
+    ],
+    "937": [
+      26.5,
+      -53.5
+    ],
+    "938": [
+      8.95,
+      -59.95
+    ],
+    "951": [
+      7,
+      -60.15
+    ]
+  },
+  "sourceScales": {
+    "933": 1.0999908447265625,
+    "936": 1,
+    "937": 1,
+    "938": 1,
+    "951": 1
+  },
+  "sourceVisualFrames": 183,
+  "replacedOriginalControls": [
+    290,
+    299,
+    311,
+    360,
+    914
+  ],
+  "sharedDeathEffects": [
+    "火花",
+    "小烟雾"
+  ],
+  "outputs": [
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 113.xml",
+      "sha256": "93fe9bce113d62c5b86370a313f31159a77afe091521eb9c9ac7ceab0cbd4f63",
+      "bytes": 883
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 15.xml",
+      "sha256": "041fc9b319654ce8cc0aebfce31a58efa6fb4d6770e49290b609d782ff79fac7",
+      "bytes": 1057
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 16.xml",
+      "sha256": "d3dbf1172d719945f24a81416422d8655f04dd82a50c7fe95848c6c4c9a04b6d",
+      "bytes": 1111
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 18.xml",
+      "sha256": "448967e3d5685fe7836d7a336231d52693337c649c13c96ae51d82d9f2f05d39",
+      "bytes": 1093
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 19.xml",
+      "sha256": "369a4ae291cb93d376aea33c213737d12cea22147c205ae2f0b1e3234f19b3a0",
+      "bytes": 986
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 195.xml",
+      "sha256": "1b0de751bd1e9cf6e080591eb13637df568f068e6beedd121546852ab8717139",
+      "bytes": 1571
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 2.xml",
+      "sha256": "4e1084d3497554e6ec35971f61080c97ce3517f994546ad39b918d385154230a",
+      "bytes": 1517
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 21.xml",
+      "sha256": "f61f6c34eec767f72c45e4eb78608aeef77332940b8fd52971b3ab85352cb00a",
+      "bytes": 1063
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 23.xml",
+      "sha256": "c178a65358087f9f1c685c1dbe2a288f474d964cce6185eda12ebbf6fccd5d22",
+      "bytes": 1017
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 24.xml",
+      "sha256": "5127d9df861bfdf50993b1bb0d3de86961f5b5c8cf87d2ebc7f1851cbbaa23da",
+      "bytes": 881
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 26.xml",
+      "sha256": "49e04c04f8142e505cbd8c1a8e795491074f4fce4017c642987c5acd60b0ca97",
+      "bytes": 4945
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 32.xml",
+      "sha256": "dbac42d05d184c12dbcdd8882839683cfccdc55fef43374421a741337e141771",
+      "bytes": 6422
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/Symbol 99.xml",
+      "sha256": "745c87307814d8eef0ea5ddb985633ba9cf133f1b22a8b55da225dda6f7df851",
+      "bytes": 1762
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/CF7/思考标签.xml",
+      "sha256": "914f9723de7149e87bdaea72011e26f4953f519181f6bc95003ec47353dd13ce",
+      "bytes": 1238
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/903.xml",
+      "sha256": "c42f148b09cc3b3d016b08d4def82550f6e682f48ff9b7cd43ff11499eb73499",
+      "bytes": 1401
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/926.xml",
+      "sha256": "1d0213124c1b3962747abf8910f247ecdda9bbcb3ed5598a51db6165ebad2578",
+      "bytes": 1430
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/928.xml",
+      "sha256": "2738a8d8d2087ea353f5184f91d3fd08f1d710880cd8c0fab0adb08aaa2ead17",
+      "bytes": 67715
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/929.xml",
+      "sha256": "71384ac759d4c2a8c75cdd2a8876b3c65f7133e26c1dfc1ec61d97eb00d9de44",
+      "bytes": 578414
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/930.xml",
+      "sha256": "7ebf3864323f6e13455d9292a997f4dacc23fd32d2b5ed3bb5254284b683e853",
+      "bytes": 38843
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/931.xml",
+      "sha256": "d4a6d8bd954d0ca792f107f3dcea81b05cd07ad927325ae8f76836ddaf2a6555",
+      "bytes": 140921
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/932.xml",
+      "sha256": "3cb67e151d515d15208b83f6702486a695f6ceb3be8f507d36ec59c7f310dfc8",
+      "bytes": 39911
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/934.xml",
+      "sha256": "adbb01c1131172556e235f62bf459548a45bd72ec694fa647a529464099b2351",
+      "bytes": 949
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/935.xml",
+      "sha256": "ab6ad9aa49a588ee49e368759699b211a71943d999899f51a1407f74fe1f15b7",
+      "bytes": 1411
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/939.xml",
+      "sha256": "ca6aacaf060670cffa109a24138fc03c7496d33cfada9ffcd92df49253861401",
+      "bytes": 113837
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/分件/940.xml",
+      "sha256": "dceb92929456d078fdb6f34688f3c870749f17581417d4179dc435213e630c03",
+      "bytes": 122337
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/动作/伸缩冲击.xml",
+      "sha256": "f94178e4e092e73c3b2b5208f47a2e79c874937e3f3ec57e948db09e33e418b2",
+      "bytes": 18919
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/动作/双臂光束.xml",
+      "sha256": "7716ebe90ab364f8833c103baff02c2ab937afabc2aad90516abdc8870bc808c",
+      "bytes": 38008
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/动作/悬浮.xml",
+      "sha256": "f354c6f133d443feec1851895c9aa969a5a5d1729d0040643f04b524eabef018",
+      "bytes": 32251
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/动作/机械碎裂.xml",
+      "sha256": "44fd1ebec738ecc0f96113e4bbeaa3c310fdccfecbaddae1a75fa53dbf53c37e",
+      "bytes": 27760
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/动作/被击.xml",
+      "sha256": "d9194110dc1279183e76d59c217590a3334f6c8f0c4cbb5b11fcc6f3e614b9c3",
+      "bytes": 23995
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片.xml",
+      "sha256": "6a6a3581604b517d9ceb91c4c49f30e42d1115f4f07840abd0f02bacc5e3a3dc",
+      "bytes": 5911
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件1.xml",
+      "sha256": "fa2a727b1b5e4aff967ada37b6bbf29a9798f5da352ff8c655618fec6aafdf19",
+      "bytes": 993
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件10.xml",
+      "sha256": "fc6107926ee68b443f13c7f0f0bec6b47389021a0fcfcd90a21889b7d00ccf3a",
+      "bytes": 999
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件11.xml",
+      "sha256": "a6071aa573836a422ce6a01a9b121bd175e4074345f7eda203e5515df4def6d3",
+      "bytes": 993
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件12.xml",
+      "sha256": "d541ed1326b42ddd29aff6e9d3ccecaa63578c3f8495ca18139e56376f5a1f6a",
+      "bytes": 995
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件13.xml",
+      "sha256": "0ea416428a1472e3b498dec30319cabbc80810008fd6808f348218b04f411969",
+      "bytes": 995
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件14.xml",
+      "sha256": "331b0a37a79f058237dc2c8423548461a39c4f7e7c1cc9916e3f704dfd794684",
+      "bytes": 995
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件2.xml",
+      "sha256": "d3729aef5cc0dd18bdde0214877e5824c97f28936ba3b3bfc08f363f6835f428",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件3.xml",
+      "sha256": "695bbfc5f5524f6e4d427c58b167b1b8065c52aad06a56bc7a881f7ba59b8571",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件4.xml",
+      "sha256": "4f43527bb69b919f1620e14f5d9f9b93eb11adca0845f4f850012fad47161d5c",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件5.xml",
+      "sha256": "a072776afdd730cc5dd8ff098c0568b95241633aeb1dcbc2a2295e3b795c1a78",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件6.xml",
+      "sha256": "8c0f93af8dfb1a9ba3800e7be40441a5eb5959d220bb6ffae006ec859111db4c",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件7.xml",
+      "sha256": "d4ada70dcb31d413cb16e764c7a7ff0ce3dffe5a9a044a2c1c1fbeeb80015b9f",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件8.xml",
+      "sha256": "72c04d7f23ecb045bc03806fce7b25bc16bcbd48f37a46f51fb4aab32468b13d",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/尸体碎片/分件9.xml",
+      "sha256": "52cbbf5c65c111b63332ca6c9b8a59f3050334dce5f2512a499760837ef8bde2",
+      "bytes": 997
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/接地阴影.xml",
+      "sha256": "6e35ca6a70e98ff7dca73e9350eb6f967caa74b49da8435592a158bd9dbaf85a",
+      "bytes": 1670
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/敌人-CF6大头机器人.xml",
+      "sha256": "2f06bdfb9f8e165b80681d4b35f3caccb21d0f865fa9045c38dea91d268678c2",
+      "bytes": 33624
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/机械爆裂/5武器特效和子弹_爆炸狙击子弹_小火焰爆炸素材.xml",
+      "sha256": "e1b3245c7ab94ad87bdeaa65db3e8355eacde65df42d0e6553b9f98e56989b2d",
+      "bytes": 1718284
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/机械爆裂/演出.xml",
+      "sha256": "e5ef38e2aa215bea7a753cbbc5a783cd4692aa18558e48a5d4a177e5181bb12d",
+      "bytes": 1198
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/941.xml",
+      "sha256": "d58f8cb002da4f41cabf45e134260c28c245fb16586e0a8f0a2ee9f5e266de73",
+      "bytes": 547202
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/942.xml",
+      "sha256": "990aaa1363662ed22f5f18564b7e6d8c193f22db787c198e613fa5792533311b",
+      "bytes": 590486
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/943.xml",
+      "sha256": "669d56d00e49fde7e9ee4c8e1cd4219a6c72f76bd08da8a0379319c7b78a13cb",
+      "bytes": 583320
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/944.xml",
+      "sha256": "56dda03aff6192e7092050e15fa4c473d957a80af37522eb7b0828c641422a28",
+      "bytes": 556690
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/945.xml",
+      "sha256": "ea817f4388493a8aca2a6adfaebb0874511b573e0203d11d02802b9fb6d54345",
+      "bytes": 133457
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/946.xml",
+      "sha256": "7052aaf5c0e61d999047721ce26864f12a1b5bd625a6adc56dd62c0fc8e1f6f9",
+      "bytes": 125637
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/947.xml",
+      "sha256": "90a38ea46ec37503870484b17f72d048b02a47d06f130759abd9c1cc5092784c",
+      "bytes": 129079
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/948.xml",
+      "sha256": "b5c07a5945daa5dd8530333e17b4c6bf634d4fa6b582aa85e932fbc0ca39ca32",
+      "bytes": 130328
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/949.xml",
+      "sha256": "a678e24035fed37b4504cf93ded7589799164bbf6aaa802b40b72d84d51babe3",
+      "bytes": 129079
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/死亡碎片/950.xml",
+      "sha256": "9c1a56cd1ab745cf425c5d13d5247682b2f95d4dfbcc2416ded6ca143941965e",
+      "bytes": 131186
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/行为驱动.xml",
+      "sha256": "5b3de48aadea6c6f161af0d99d5c2030686ebf631cf96cf8d821b14a0649163d",
+      "bytes": 666
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/1.xml",
+      "sha256": "7d73db6782b5c9c70451bdb5e23ea86f77652db41ffdd779864d773b92b1ab49",
+      "bytes": 42652
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/2.xml",
+      "sha256": "1c8c2c00940348a4c3f9df090f879ba6d30edb86690863b8dce6c3242a2b4226",
+      "bytes": 64640
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/3.xml",
+      "sha256": "3262367fccd672e353728c0153845613c1105a68cbf089cc633ab943883fa109",
+      "bytes": 64746
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/4.xml",
+      "sha256": "d5d9646b7c089b5d32255e4e94f7c4eb39af8cf25eb7cb178fee33631300d93e",
+      "bytes": 48340
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/5.xml",
+      "sha256": "71538cd244af1f8bac3cb3b91c8def6799f33ae9ff143bf40e2d4aadf6ba627b",
+      "bytes": 102608
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/6.xml",
+      "sha256": "926da7081e20079fc4f3d8b40e97509f85de2a5cb4255cd0cc5fda6f7207115f",
+      "bytes": 112082
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/7.xml",
+      "sha256": "f5f78fec0fa83ab7d89452c3595d8be9510729ee7f32a8344dc7b972d7d2db78",
+      "bytes": 98194
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/8.xml",
+      "sha256": "b7bc4267a274ddb6c7a4b106cdb575b5cd6e07ebb987e23f267113d5f3e879e4",
+      "bytes": 80055
+    },
+    {
+      "path": "LIBRARY/Codex/大头机器人/躯干分裂/9.xml",
+      "sha256": "0d6b2a764f2d5f5e9b5a3926a2c7fe6a84d597d9490e37463b95c7e1eee2cf3a",
+      "bytes": 82635
+    },
+    {
+      "path": "LIBRARY/Codex大头机器人素材.xml",
+      "sha256": "2ab3beb12fa63a976557d3cd304a76b38df53f59d8dcfaad6c5bdc0c3076ed14",
+      "bytes": 1192
+    }
+  ],
+  "projectFiles": [
+    {
+      "path": "DOMDocument.xml",
+      "sha256": "9189979705dfc542c7c5817c3da649f5642a4e92534ec1b983bc20895d4ca421",
+      "bytes": 9898
+    },
+    {
+      "path": "Codex大头机器人素材.xfl",
+      "sha256": "1b60d9e4b9422b2ecbbd23e9eeb20b66ed6cefbe8646cf45e03d0c6a1a1c580c",
+      "bytes": 10
+    },
+    {
+      "path": "PublishSettings.xml",
+      "sha256": "3b81e38242a327cf3b1e3322b0f2aaf2724201f4f1acd155ee939e72cf22dbf9",
+      "bytes": 8019
+    },
+    {
+      "path": "MobileSettings.xml",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 4,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0904.mp3",
+        "sha256": "9f2689f23512fd0f2d1b8f0ec2f31e5c18f53da44413a1e6063fbf5f547f9fc5"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0907_ea2159328f.wav",
+        "sha256": "3b617c5c2a07411cc6ba4c0ad98c5f7af47d519ecbeb8a2a36931f33ba2e2bee"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0915.mp3",
+        "sha256": "e2643cc8830b0f36c57fa23e1b95675b351c853a29916f93ce5667d6bcef52db"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1009.mp3",
+        "sha256": "15c2809547a6ac47c8552e7b31d944d4302947f5373650fd698dc9400b298436"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "8e73c1a5beda86fcb8ceb8b823b33f3f6b72ca2843ad157203fd9c76d9ecff4e"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "0ec2d31fd70ee3c4ba6e53096edca0ad48120c56809694f7090c03f419712df8"
+      }
+    ]
+  }
+}

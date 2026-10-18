@@ -1,0 +1,606 @@
+[
+  {
+    "linkage": "敌人-诺亚克隆兽",
+    "source": "诺亚克隆兽/敌人-诺亚克隆兽",
+    "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+    "symbols": 44,
+    "calls": [
+      {
+        "symbol": "诺亚克隆兽/敌人-诺亚克隆兽",
+        "frame": 1,
+        "calls": [
+          "男_攻击呐喊_库 = [];",
+          "男_中招呐喊_库 = [];",
+          "男_击倒呐喊_库 = [];"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/死亡",
+        "frame": 2,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/死亡",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/死亡",
+        "frame": 51,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/击飞",
+        "frame": 6,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 10,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 13,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 6,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 5,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 1,
+        "calls": [
+          "子弹属性.声音 = \"\";",
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 8,
+        "calls": [
+          "_root.播放音效(\"克隆怪跳跃.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 70,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 92,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 9,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 61,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 101,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 17,
+        "calls": [
+          "_root.播放音效(\"克隆怪着陆.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼2.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/攻击动作",
+        "frame": 104,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼3.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/跑步",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "诺亚克隆兽/动画合集/跑步",
+        "frame": 13,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      }
+    ]
+  },
+  {
+    "linkage": "敌人-闪6特工",
+    "source": "闪6特工/Symbol 776",
+    "swf": "flashswf/arts/new/素材库-诺亚新敌人.swf",
+    "symbols": 35,
+    "calls": [
+      {
+        "symbol": "闪6特工/Symbol 776",
+        "frame": 1,
+        "calls": [
+          "女_攻击呐喊_库 = [\"01_kin_a_1-22.wav\",\"02_kin_a_2-22.wav\",\"03_kin_a_3-22.wav\",\"19_kin_nage-22.wav\"];",
+          "女_中招呐喊_库 = [\"05_kin_d_1-22.wav\",\"06_kin_d_2-22.wav\",\"07_kin_d_3-22.wav\",\"08_kin_d_4-22.wav\"];",
+          "女_击倒呐喊_库 = [\"女02.wav\",\"09_kin_d_f-22.wav\"];"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 20,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 23,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 26,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 29,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 38,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺2.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 7,
+        "calls": [
+          "_parent.攻击呐喊();"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 861",
+        "frame": 1,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 856",
+        "frame": 1,
+        "calls": [
+          "子弹属性.声音 = \"\";",
+          "子弹属性.声音 = \"shoot.wav\";"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 856",
+        "frame": 43,
+        "calls": [
+          "_root.播放音效(\"闪6女特工后空翻.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 856",
+        "frame": 71,
+        "calls": [
+          "_root.播放音效(\"闪6女特工劈砍.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/sprite 856",
+        "frame": 72,
+        "calls": [
+          "_root.播放音效(\"闪6女特工突刺.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/跑步",
+        "frame": 8,
+        "calls": [
+          "_root.播放音效(\"soundfootstep_female1.wav\");"
+        ]
+      },
+      {
+        "symbol": "闪6特工/MovieClip/跑步",
+        "frame": 20,
+        "calls": [
+          "_root.播放音效(\"soundfootstep_female.wav\");"
+        ]
+      }
+    ]
+  },
+  {
+    "linkage": "敌人-延寿克隆兽",
+    "source": "Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽",
+    "swf": "flashswf/arts/new/Codex专用素材.swf",
+    "symbols": 76,
+    "calls": [
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/敌人-延寿克隆兽",
+        "frame": 1,
+        "calls": [
+          "男_攻击呐喊_库 = [];",
+          "男_中招呐喊_库 = [];",
+          "男_击倒呐喊_库 = [];"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 2,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 51,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/击飞",
+        "frame": 6,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 10,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 13,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 6,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 5,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 1,
+        "calls": [
+          "子弹属性.声音 = \"\";",
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 8,
+        "calls": [
+          "_root.播放音效(\"克隆怪跳跃.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 70,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 92,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 9,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 61,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 101,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 17,
+        "calls": [
+          "_root.播放音效(\"克隆怪着陆.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 104,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼3.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/跑步",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/延寿型/原生/诺亚克隆兽/动画合集/跑步",
+        "frame": 13,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      }
+    ]
+  },
+  {
+    "linkage": "敌人-完全体克隆兽",
+    "source": "Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽",
+    "swf": "flashswf/arts/new/Codex专用素材.swf",
+    "symbols": 76,
+    "calls": [
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/敌人-完全体克隆兽",
+        "frame": 1,
+        "calls": [
+          "男_攻击呐喊_库 = [];",
+          "男_中招呐喊_库 = [];",
+          "男_击倒呐喊_库 = [];"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 2,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/死亡",
+        "frame": 51,
+        "calls": [
+          "_root.播放音效(\"soundheadexplode.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/击飞",
+        "frame": 6,
+        "calls": [
+          "_parent.击倒呐喊();"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 10,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 13,
+        "calls": [
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 6,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/普通攻击动作",
+        "frame": 5,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 1,
+        "calls": [
+          "子弹属性.声音 = \"\";",
+          "子弹属性.声音 = \"\";"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 8,
+        "calls": [
+          "_root.播放音效(\"克隆怪跳跃.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 70,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 92,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 9,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 61,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 101,
+        "calls": [
+          "_root.播放音效(\"克隆怪爪击2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 17,
+        "calls": [
+          "_root.播放音效(\"克隆怪着陆.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 53,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼2.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/攻击动作",
+        "frame": 104,
+        "calls": [
+          "_root.播放音效(\"克隆怪嘶吼3.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/跑步",
+        "frame": 4,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步1.wav\");"
+        ]
+      },
+      {
+        "symbol": "Codex/γECHO克隆兽/完全体/原生/诺亚克隆兽/动画合集/跑步",
+        "frame": 13,
+        "calls": [
+          "_root.播放音效(\"克隆怪脚步2.wav\");"
+        ]
+      }
+    ]
+  }
+]

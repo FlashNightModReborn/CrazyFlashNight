@@ -1,0 +1,12 @@
+{
+  "observedNativeDeltas": {
+    "normalizedAttack": 1.4210854715202e-14,
+    "hardStrength": 1.13686837721616e-13,
+    "beamStrength": 1.4210854715202e-14,
+    "softStrength": 1.77635683940025e-15
+  },
+  "testAbsoluteTolerance": 1e-05,
+  "changedFixtureFiles": 1,
+  "productionAndPublishedResourceUnchangedDuringRepair": true,
+  "scope": "Five equality expressions account for nine failures because the beam-level expression is exercised five times. The real leech/crumble boundary and depletion assertions remain in the passing suite."
+}

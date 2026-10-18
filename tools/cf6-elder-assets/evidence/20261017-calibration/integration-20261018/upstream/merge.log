@@ -1,0 +1,16 @@
+Updating 26b69b7228..68473abd27
+Fast-forward
+ .gitignore                                         |   1 +
+ .../AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md |  90 ++++++++-
+ launcher/contracts/ragchat.v1.json                 |  17 ++
+ launcher/src/Bus/TaskRegistry.cs                   |  12 ++
+ launcher/src/Data/MapRuntimeContent.cs             |  10 +-
+ launcher/src/Data/MapTaskCatalog.cs                |   3 +
+ launcher/src/Guardian/LauncherCommandRouter.cs     |  86 +++++++++
+ launcher/tests/Bus/TaskRegistryStatusTests.cs      |  17 ++
+ .../tests/Guardian/LauncherCommandRouterTests.cs   | 207 +++++++++++++++++++++
+ launcher/tests/Tasks/MapAuthoringContentTests.cs   |  43 +++++
+ launcher/tests/Tasks/MapDomainSessionTests.cs      |   8 +
+ scripts/通信/通信_aka_Agent联动.as                 | 153 +++++++++++++--
+ scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as     |  91 ++++++---
+ 13 files changed, 687 insertions(+), 51 deletions(-)

@@ -1,0 +1,1088 @@
+{
+  "ok": true,
+  "checks": [
+    {
+      "name": "headbot-verify",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-headbot-assets/verify.py"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:11.718514+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "bladebot-verify",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-bladebot-assets/verify.py"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:15.273538+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "guard-generated",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-guard-assets/build.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:17.917683+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "manman-generated",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-manman-assets/build.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:19.860080+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "soldier-generated",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-soldier-assets/build.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:21.761898+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "wings-generated",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-wings-assets/build.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:26.877524+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "zombie-generated",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-zombie-assets/build.py"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:28.296632+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "arena-catalog",
+      "command": [
+        "node",
+        "tools/derive-arena-unit-catalog.js",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:29.987744+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "audio-fixture",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-audio/build-test-fixture.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:56.555365+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "legacy-audio-fixture",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-audio/build-legacy-test-fixture.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:57.587870+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "playtest-fixture",
+      "command": [
+        "python",
+        "-X",
+        "utf8",
+        "-B",
+        "tools/cf6-elder-assets/build-playtest-fixture.py",
+        "--check"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:59.729753+00:00",
+      "exitCode": 0
+    },
+    {
+      "name": "production-class-ownership",
+      "command": [
+        "node",
+        "tools/audit-as2-class-embedding.js"
+      ],
+      "startedAtUtc": "2026-10-18T00:58:59.945799+00:00",
+      "exitCode": 0
+    }
+  ],
+  "inputBindings": [
+    {
+      "path": "tools/cf6-headbot-assets/native-manifest.json",
+      "sha256": "d27ec2d07151c7f097ffea5b20024b6de5ecb38071e5289eb5112331ca1c7d1a"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/build.py",
+      "sha256": "69b83ff8a2a0441a42274051f263506ee5eace85709defc470993dde6f8f4003"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/vector.py",
+      "sha256": "524283301a2d8ddb0cd2c017c73771e5065f3ef83a1efd80c00c72573502ef03"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "sha256": "554f0a0e463809d4e058022a3ed9093f863a03a03814a62041b044d68b6370ae"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/CorpseFragments.as",
+      "sha256": "3c89a4879d4723df16ac7d72bef706c244cf406941d75df5cb2137f8b17711e0"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/corpse.py",
+      "sha256": "632123220a09764588f6872f158be2b158b09aa6b36544d93abe76af9995146c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/debris.py",
+      "sha256": "7d8f833580995b13703fff55aff9d2fd4f8d01f0894172ee386f8f8cb86f3f73"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "e734ad5e123c6b1ac0c47600b7c3741681b9b775739d5e315da0de70b36a99a1"
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "sha256": "291e59d89e1275cccb728d572130433c9f61fbe8ad0a71ca6db0cf436b101447"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "9b827c975da1c9af17318636d9cb2c2434311baea36afeb618666b22c802d222"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/bayonet.svg",
+      "sha256": "4b691c409008d77635e4659b08e10f1748149fe74f806f7701830ed406d27fbf"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/corpse.py",
+      "sha256": "632123220a09764588f6872f158be2b158b09aa6b36544d93abe76af9995146c"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/CorpseFragments.as",
+      "sha256": "3c89a4879d4723df16ac7d72bef706c244cf406941d75df5cb2137f8b17711e0"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/vector.py",
+      "sha256": "524283301a2d8ddb0cd2c017c73771e5065f3ef83a1efd80c00c72573502ef03"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头人形-R7/archive-origin.json",
+      "sha256": "5b56f23d8986f034cfda86ed8143ba10cb115eed64bea6b4e55a0968d666f714"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头机器人-R7/archive-origin.json",
+      "sha256": "0a01e01d6dc1d4aa447f8740d7110942cf9f93da845e30425c92b1e76f3e3a93"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6老头变形-R2/archive-origin.json",
+      "sha256": "de2a1d5a3f5f7b927f10078cffe98c289e5334d14f7595ffc92e3be111b4d3ed"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/native-manifest.json",
+      "sha256": "4eaf0b689dfefb414fdf4deb273b33c31a4f0596b1c0f9cfaa1d5a464be1abf1"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/build.py",
+      "sha256": "ba181db9136cb80e0b7dd9d4d45faea7b773cbe3b5d84a15b4fe6a111f407add"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/vector.py",
+      "sha256": "81ae4a78b716c1dabf7681cb8394cdf9d6e1596f6ee8df178712cba4cc40f068"
+    },
+    {
+      "path": "tools/cf6-bladebot-assets/BladebotAI.as",
+      "sha256": "c1f421d8cdec61d1dcc68100da604cd380b5acc5ce426c2621558a40a7d7079c"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/robot_death.py",
+      "sha256": "9f3286aa128b560d2668576b125f922bbf7407970a3b6d55493ebb8b171ecc55"
+    },
+    {
+      "path": "tools/cf6-headbot-assets/RobotDeath.as",
+      "sha256": "dba46e224837bfefa75f6adee8a8d588a755884cb1b780583bae93af4a065893"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸.xml",
+      "sha256": "288eeff449a663239f0a1e75d9bf32a3ea22ce4e28bac3b38d3409448be3b031"
+    },
+    {
+      "path": "flashswf/arts/new/3XD的素材/LIBRARY/5武器特效和子弹/爆炸狙击子弹/小火焰爆炸素材.xml",
+      "sha256": "ebf28a70835ab8089ddc4ab3fe695ba9f50aba0140f99e957b245e2c9eefc70c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/native-manifest.json",
+      "sha256": "3893cda9663b0fe5f66a8aa714c9dd08f947603e039878298007061fc447715e"
+    },
+    {
+      "path": "tools/cf6-guard-assets/build.py",
+      "sha256": "1eae6c41ff669dae2228f829334eb73eb11942724f903097f77175a4b2f21124"
+    },
+    {
+      "path": "tools/cf6-guard-assets/vector.py",
+      "sha256": "e49d66ea57a8a58308d32b8734568b91427d26037a7265020d8d19d083f1776c"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clipped_vector.py",
+      "sha256": "b6c162fb7b183ad97527d7bef3fb3c66c3e9fb891b43ee1312b11073c5494079"
+    },
+    {
+      "path": "tools/cf6-guard-assets/clip-vectors.ps1",
+      "sha256": "7c4bb63a7005e35435ca440687b58a3c10f0219a0dfd73617cacc74e8e3665c9"
+    },
+    {
+      "path": "tools/cf6-guard-assets/transform.py",
+      "sha256": "b12e1ccb4639537858883b64179c7d48bba15d89ae51545e2db374596a74127f"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardAI.as",
+      "sha256": "f9a76c415b22deb1ee11bb63948ec2cebddf3db0d16d14f4118fea51bccd8c6e"
+    },
+    {
+      "path": "tools/cf6-guard-assets/GuardTransform.as",
+      "sha256": "8719ac286ff66efa3511ef9dda22866d859e535fa95692c0d5fde38d2f7ec7c2"
+    },
+    {
+      "path": "flashswf/arts/things切割/LIBRARY/长枪/SPAS12/枪-长枪-SPAS12.xml",
+      "sha256": "7bb2a3ad2c5757466520efe62424e431a84ccaf5d8b7c2579f9d943ad814214a"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "tools/gamma-echo-assets/native-manifest.json",
+      "sha256": "5fac5645b25923fcfa4ac30699f2477a2c9a75025f2d94aa234ce4471b2999bb"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/archive-origin.json",
+      "sha256": "6e444cd41dc2b47bbc6fcb6d45a8d7055635fbc6f7c55cc308a03f1b4e6d1ab6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂.xml",
+      "sha256": "a5d89565e276b6af18dd29a3b7660c45b2ea39ba17a5c417052436f5909f2804"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩0.xml",
+      "sha256": "0ac4ba0fcdd3b7474d8bfc69fdb27d45b8328f7d434f0905096c443620dbbe66"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/上臂-遮罩1.xml",
+      "sha256": "da624b1c9b07e3123fd6bf76d022455b576aa16598992b4a44d85845954a57c3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌.xml",
+      "sha256": "89d34b977ecdd8ee6e280171e8ca42277000903072e2e19962486bfca5994a28"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩0.xml",
+      "sha256": "46cbf7f50f2c7f4af6429cbf4a7fc1577d6164486d125ec4019bf7d99f8fbd46"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/下颌-遮罩1.xml",
+      "sha256": "e467418c8d65b69ddd2400f03d5cdb647067417b8bed6ded31b7ea1a25bdd248"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手.xml",
+      "sha256": "7aebaa8ed75496b5e4beb0f4ba1834443e0cc707000a6940503ff331d371fc07"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩0.xml",
+      "sha256": "05ecdfc83c1d8d49d1c52d73aef18cf10d3b50169dc47b8772bd2ddbd4066943"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/侧向爪手-遮罩1.xml",
+      "sha256": "9e077d6cdf1a342d7790555adaff14ee06f03ea7298c90712ba339a5b7874882"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一.xml",
+      "sha256": "b90d4702aca63db7d808e09eca5d9b99223b0a2e919c49574c790aa929cea5e6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩0.xml",
+      "sha256": "c6a94fde0a60a46703abd5680da5fc1ab598c9117a6abe1b7a2cd2e07328620b"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂一-遮罩1.xml",
+      "sha256": "5e1c4baa849d3a96c3a6239328bebb7115b76b5466a1d56565ca140c655cf574"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二.xml",
+      "sha256": "53e6a3d93db286f1bc1efb0e4cfba850ea85f6d15669395b3683bef4e5b033d1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩0.xml",
+      "sha256": "38fd9f6321223747f39883f61bb7c29d7c0df211f467a181045609feca0b1f9f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/前臂二-遮罩1.xml",
+      "sha256": "121574b031e86b48d4fc842bf24bb37a9bd724c7d78477b94c5d2455a87f913f"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿.xml",
+      "sha256": "6ab97c313258037a10dcd32b0b849ad0451493d522c1b08e622c5565074c22da"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩0.xml",
+      "sha256": "1d716903e6718ac02fc85de3f5ca05a20ec996075050849c65e823288d64df7c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/大腿-遮罩1.xml",
+      "sha256": "6fad64c037cbf0d25e19a079216f218bb5197ac8de3aa34005c27ac2a17edb97"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部.xml",
+      "sha256": "e7298608d823357aaaade3cd36ddb9f6640d0d503acc78390bc2b0eff2cf70f9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩0.xml",
+      "sha256": "4e427006517578926d22ec0522c989b1abd0280ce44fd527d9e62041fff3e086"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/头部-遮罩1.xml",
+      "sha256": "0703ef8752d3c817a411773b5160f90643f0f03372e4b4ce39e84d71c1213d81"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿.xml",
+      "sha256": "10a51741a1a8654227a41ff72e3e4ef0650d06aaeeaad713cbbc3f8b6a5401b5"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩0.xml",
+      "sha256": "1fbc59de763779a9b9e7b489201adda148a2caa4916b9b86e302e0702a8160ee"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/小腿-遮罩1.xml",
+      "sha256": "e6239d6c1ac6bf10cf712f51f3d112cab328a9521ca5f8c8ea1a736e1a532eb1"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手.xml",
+      "sha256": "9edf982f3d60ce5032ccfdeb8f7cca6965e6064e48dc6c4d1d95bef05ce74c7a"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩0.xml",
+      "sha256": "3737f16bd3ea27bfe8fef900f9ab7fdbd9d32f449577773ef11d41615359c849"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/正向爪手-遮罩1.xml",
+      "sha256": "687695f0d6bb76507c2459d35f76b7fdaadf1af8aa8a9632df846abbcb8e3353"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌.xml",
+      "sha256": "ec9a5d13820fda174afadbee813b03fc4f28f77383c4bc8ef0e26daf0cda4255"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩0.xml",
+      "sha256": "58f84d7c4af3907aa6d7feca85bf78b475f55700233178d3c3a7f85c3c3fc10c"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/脚掌-遮罩1.xml",
+      "sha256": "0436943439f06e4cc839d39903ede9ac38fbeecf4548da02ae36a114abbf72ef"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片.xml",
+      "sha256": "3c0f879d8bb70b21f1d77b4e7fefd7c449b438487a6ede028c714f0ab5b62fa9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩0.xml",
+      "sha256": "2c187428479422ad8d40b48b398b72b906d176f4d855062a746b7c581d5c8aa6"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/膝部尖刺护片-遮罩1.xml",
+      "sha256": "4ef34823c4b123cfc90be675a9872e7fb2c856c72fdcb6bfd67c0ad447950970"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干.xml",
+      "sha256": "203751266a3072aa33e98c63e84f469ce05cf9ace3e62ffcb8a33557967d97cc"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩0.xml",
+      "sha256": "f02214f2c26195e17bb4efe95f05dbf59b8964e1661cd8ad6d4ed5be86a3f9c9"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/躯干-遮罩1.xml",
+      "sha256": "582ba79fe267ac975fddffe12440b8dbb954674c61bc043c450e085767e9bbc4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩.xml",
+      "sha256": "06cd43a8f0ca44390adb4b21c0bbcce0d57fdb17d8e9f6bfe7093aa3b36beef8"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩0.xml",
+      "sha256": "893f42c16e4d209e53554c3974b8b640b33f9fda9318013ab7997e84c3885b63"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材/LIBRARY/Codex/γECHO克隆兽/完全体/分件/颈肩-遮罩1.xml",
+      "sha256": "cfce7e74c9f565df46c177b7e4ec4354ad5e49f019eabd81116191701c106b76"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/877.svg",
+      "sha256": "1fc22b83f948403a9a9f4b7a7710766d7721301253171e62cdb1b435beb9e7a3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/880.svg",
+      "sha256": "3ef4f078b41189e4de5917b4377a3fee9050ad9ea5941fbdfebfe17ffa3a9da4"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/882.svg",
+      "sha256": "51bf9d4e06a0dc699fd0d3b554c791b99470f1f710baaa992d069cc504dcbaa3"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/883.svg",
+      "sha256": "4355dccee263878514f4fb62e7e782258292dab880602548c587a1714a305861"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/884.svg",
+      "sha256": "5f19f3697ab7e7a0b8f9656c0c4b39574f4e1bf6886b56eebf0b724275260e77"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/885.svg",
+      "sha256": "90f8ac83c1d68f62ec3c83c7caf0b40b8e73eb579041dd0163fe5fae3b879d61"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6光头保安-变身-R2/transition-parts/886.svg",
+      "sha256": "af681e9a7d8d98e8ef5a626ce47c60e92eae4d79615f25e5baf552135f05f827"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    },
+    {
+      "path": "scripts/逻辑/战斗系统/战斗系统_fs_lsy_aka_重写子弹生成逻辑.as",
+      "sha256": "8eb98f2c839facc65c27e2f4e99ae8d616b6e0e86b283046ce280a056b992e2f"
+    },
+    {
+      "path": "tools/cf6-manman-assets/native-manifest.json",
+      "sha256": "6c4f68fc72eca602f0f9f8662eccd32b7b1bfe291aa1de69955bcf03824795b0"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-manman-assets/ManmanAI.as",
+      "sha256": "dfe70a8e7f4652e13a76e99ce34c5678c9a9db02145c593839fec25f4dd9d1a5"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/native-manifest.json",
+      "sha256": "ae4c8515ed00a777349be3ad8c86194d5b8feb8cd14f62ea069a31b0c668d35f"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/build.py",
+      "sha256": "b49aa11ded92adf8e49e027d7bcbc2bf5293e14e8f7b5a84b5ba0f14d451cc10"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/vector.py",
+      "sha256": "355d4e94c78c4cd955742d5a8a8f2c4bf25ab40a370d7bf377c6b118881cda1a"
+    },
+    {
+      "path": "tools/cf6-soldier-assets/SoldierAI.as",
+      "sha256": "46b02ef4eb607fe882ae2424b9dd07b29d4c5e5b703664049ef9ca4a4845c4f1"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 113.xml",
+      "sha256": "623ab34914086e1c036f477e4eb3e16ce27992df9ef308183be190c382310a24"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 15.xml",
+      "sha256": "476ac505b4ffa4a3f655d09efd2ce752d12d23b47692eb1271c92e68f0ac8346"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 16.xml",
+      "sha256": "de5b15d8f02d0e9f83467aede7eb3be612e251c5a8922c608c3ac8ce26fa03c6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 18.xml",
+      "sha256": "2963bec1e4ef03eda3a517bede89e834a2b72e29f41648928b4cabc1ab719a43"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 19.xml",
+      "sha256": "6072ada63295a444074ac435de9817b9a9a21d8a880f15964fa2e4de8e896b91"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 195.xml",
+      "sha256": "282c804f190123d9d71bdc89e5b8cf861b5d7001c10d1cc1c6e3099f3e815f28"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 2.xml",
+      "sha256": "5699a1c4ca9e55b12192d24665cb5703be7b5cab99a14c54ac1c75d5316218a9"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 21.xml",
+      "sha256": "6b82c27b161f2116832c5ac9acbc70733996505778b0e485e0529230aa8aecd0"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 23.xml",
+      "sha256": "ca922bc8d17a18a05bd77d08a274a232cf56e48a6ef32faeefa2135337c14ae6"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 24.xml",
+      "sha256": "59dd2f394a11a2afc498da784b930efba745446af5abd11df7498dfe781a18f3"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 26.xml",
+      "sha256": "f2155ba7fb866247cce8e8063c942c4c7c54f7a05c32b4e44830edc8c27d17ab"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 32.xml",
+      "sha256": "1a017560ee1c2f84e55588689820b2d8a085d9c1d338e9ba6b100c377f3f8524"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/Symbol 99.xml",
+      "sha256": "ba16e5cbdae946a7a5a7a525720b0a1bbcf1f7ce2c85446367d3784900cdc938"
+    },
+    {
+      "path": "flashswf/arts/things1/LIBRARY/思考标签.xml",
+      "sha256": "9833b24e504ee60b692adf948b4ebf433aabd855b48e33700b2dcb46ba681344"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角射击函数.as",
+      "sha256": "f372d4c59f32140b2de2312eb9ec82f748a034c379f28c8f9fcc17851b43d03e"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人特殊函数.as",
+      "sha256": "47322c07ba1c4e8d7dd1fce23affb15891d7c852f03a1c9cea30590f40e4e9da"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_装备引用配置.as",
+      "sha256": "5be48bc04b973e17310b9a4399d4d124655121431d04470647de3340fda29937"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_主角技能.as",
+      "sha256": "9f0e1437a6c0181e1332ba79da5ebf01df4ece9c2bf94746d8b346c96d3e6f47"
+    },
+    {
+      "path": "flashswf/arts/new/Codex素材源稿/CF6特种兵-持盾-R4/archive-origin.json",
+      "sha256": "cce7f100810401dc4b166bcffed736a1d07df61c9b6dc00d22808145afa88b47"
+    },
+    {
+      "path": "tools/cf6-wings-assets/native-manifest.json",
+      "sha256": "67cd79683df69aef4fa83836b3a82564a470023c4fc995711f232688342d25e9"
+    },
+    {
+      "path": "tools/cf6-wings-assets/build.py",
+      "sha256": "3cb8d9aa1a89b56fbdf054d03723e89451746407f51e152bd3e4be7ff06b5c83"
+    },
+    {
+      "path": "tools/cf6-wings-assets/vector.py",
+      "sha256": "1d96340091943eb11d0e1ad8f0ccb8abfc78086c764800fdac3a22d39125666e"
+    },
+    {
+      "path": "tools/cf6-wings-assets/WingsAI.as",
+      "sha256": "3cafb0f9a1628b77af1e5fac73db9401a2e37fcd35a9cbec97c9d71f8354f9c2"
+    },
+    {
+      "path": "tools/cf6-manman-assets/build.py",
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/build.py",
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
+    },
+    {
+      "path": "tools/gamma-echo-assets/build.py",
+      "sha256": "9431f4bcaf538ad7581c57517947ea6ad136bf4b051a8a67f59bcefac6f2f9fa"
+    },
+    {
+      "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
+    },
+    {
+      "path": "tools/asset-metrology/xfl_geometry.py",
+      "sha256": "b0a3aab95fc76d4a63c23c1be0b8c07ec561997760c8293d87ed43942b6a8469"
+    },
+    {
+      "path": "flashswf/arts/new/Codex黑仔素材/PublishSettings.xml",
+      "sha256": "45a790d6e095a04756ead2b0107aae0b5ad851ea95861db4cbaf14675d6d8bca"
+    },
+    {
+      "path": "tools/cf6-zombie-assets/native-manifest.json",
+      "sha256": "ca8c92fba18a0b10ac262b8c4516fbc5d949c3fa71638e17c9e8892a765a08b2"
+    }
+  ],
+  "bindingsUnchanged": true,
+  "elderVerification": "../verify-elder-r14.log",
+  "boundary": "Static generation, authored formulas and production SWF ownership checks; no game launch, source edits or runtime promotion."
+}

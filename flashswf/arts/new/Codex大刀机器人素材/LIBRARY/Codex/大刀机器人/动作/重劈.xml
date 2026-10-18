@@ -3,11 +3,45 @@
   <timeline>
     <DOMTimeline name="重劈">
       <layers>
+        <DOMLayer name="原生SFX调用" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0907_c56b689a20.wav");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="14">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0908.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" keyMode="9728" duration="2">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(!_root.暂停 && this===_parent.man){_root.播放音效("CF6_0652.mp3");}]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="17">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="攻击生命周期" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[_parent.bladebotBeginAttack(this,"cleave");]]></script>
+                <script><![CDATA[_parent.bladebotBeginAttack(this,"cleave");stop();]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -85,6 +119,25 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
+        <DOMLayer name="身体内部攻击时钟" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="37">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大刀机器人/行为驱动" name="bladebotBodyDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent._parent.bladebotBodyTick(_parent);}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
         <DOMLayer name="真实近战判定" color="#4FFF4F">
           <frames>
             <DOMFrame index="0" keyMode="9728" duration="19">
@@ -100,7 +153,7 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){ _parent._parent.bladebotStrike(_parent,this,2.4); }]]></script>
+                    <script><![CDATA[onClipEvent(load){ bladebotToken=_parent.bladebotToken;bladebotHitFrame=_parent._currentframe;_parent._parent.bladebotStrike(_parent,this,2.4); }]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>
@@ -121,7 +174,7 @@
                     <Point/>
                   </transformationPoint>
                   <Actionscript>
-                    <script><![CDATA[onClipEvent(load){ _parent._parent.bladebotStrike(_parent,this,2.4); }]]></script>
+                    <script><![CDATA[onClipEvent(load){ bladebotToken=_parent.bladebotToken;bladebotHitFrame=_parent._currentframe;_parent._parent.bladebotStrike(_parent,this,2.4); }]]></script>
                   </Actionscript>
                   <color>
                     <Color alphaMultiplier="0"/>

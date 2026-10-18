@@ -2,6 +2,7 @@
 import org.flashNight.arki.component.Buff.Effect.ToughnessVulnerabilityController;
 import org.flashNight.arki.component.Damage.DamageManagerFactory;
 import org.flashNight.arki.component.Buff.Effect.FireControlVulnerability;
+import org.flashNight.arki.component.Buff.Effect.ElderBeamVulnerability;
 
 /** 灰蛊声明式命中入口。普通子弹不调用本类，避免给热路径增加固定开销。 */
 class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
@@ -76,6 +77,7 @@ class org.flashNight.arki.bullet.BulletComponent.Queue.BulletHitEffectRegistry {
 
         var behavior:Object = bullet.hitBehavior;
         if (behavior.type == "titaniumFireControl") return FireControlVulnerability.applyToTarget(target, behavior);
+        if (behavior.type == "cf6ElderBeam") return ElderBeamVulnerability.applyToTarget(target, behavior);
         if (!isSupported(behavior)) return false;
         return ToughnessVulnerabilityController.applyToTarget(
             target, shooter, behavior, bullet

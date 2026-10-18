@@ -1,0 +1,102 @@
+{
+  "schema": "cf6-headbot.physical-baseline.v1",
+  "scope": "Original physical beam before the user requested stable wins over Arkclaw and permitted wave damage. Not acceptance of that later target.",
+  "baseCommit": "17561174fbc5ff04b90a29212e05491bbbcb8de6",
+  "sourceSwf": {
+    "sha256": "9f973a9610b08852f4f8ed0c2d71f0430ae6eaaa97e87c098473ce76aa01b7ed",
+    "bytes": 356380,
+    "bitmaps": 0
+  },
+  "stage": 7,
+  "tier": 16,
+  "unitId": 470,
+  "behavior": {
+    "runId": "c9bf2ab286a24686a72e4382500fb0d1",
+    "passed": 362,
+    "failed": 0,
+    "cases": 24
+  },
+  "fullCapture": {
+    "runId": "5a2bda04724d484da0ac261654f1c1ba",
+    "passed": 373,
+    "failed": 0,
+    "drawPoints": 186,
+    "originalFrames": 183,
+    "images": 16
+  },
+  "finalDefaultRender": {
+    "runId": "2587d2c6d04d462abbf23d6aad7d6fb9",
+    "passed": 373,
+    "failed": 0,
+    "drawPoints": 186
+  },
+  "fragment": {
+    "runId": "b7f5d5980470483fb7987dc9f116f75e",
+    "passed": 4,
+    "failed": 0,
+    "frame": 31,
+    "images": 1
+  },
+  "qualifiedCombat": true,
+  "opponent": "兵种465 / CF6大刀机器人",
+  "results": [
+    {
+      "caseId": "level40-blue",
+      "winner": "blue",
+      "durationMs": 66725.0,
+      "headbot": {
+        "sourceId": "headbot-40",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 40,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 99632.0,
+        "remainHp": 72084.0,
+        "hpPermille": 724,
+        "alive": true
+      }
+    },
+    {
+      "caseId": "level40-red",
+      "winner": "red",
+      "durationMs": 66723.0,
+      "headbot": {
+        "sourceId": "headbot-40",
+        "petId": -1,
+        "identifier": "敌人-CF6大头机器人",
+        "resolvedType": "敌人-CF6大头机器人",
+        "level": 40,
+        "strategicPromotions": [],
+        "strategicPromotionsValid": true,
+        "startMaxHp": 99632.0,
+        "remainHp": 73873.0,
+        "hpPermille": 741,
+        "alive": true
+      }
+    }
+  ],
+  "runtimeIdentity": {
+    "runtimeMode": "isolated_candidate",
+    "processPath": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\wings-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreSha256": "0B77B242CD101494C5B4944A13B8226D7B3FBBB93D078386D0F3E7A342980DE6",
+    "buildIdentity": "8EA4A84690A931791CAEB33952B7C7200AA5AA4A5141962085C5D049196C6212",
+    "payloadClosure": "20FE94FD57A50939F5DA7E00532D56B6A83250ED51714D8A976D148CD0ABA156",
+    "verified": true
+  },
+  "protectedSavesUnchanged": true,
+  "runtimeProcessesExited": true,
+  "numericTests": 877,
+  "productionOwnershipSwfs": 702,
+  "productionOwnershipErrors": 0,
+  "originalFailedBehaviorLibraryWasNotFrozen": true,
+  "failedBehaviorIsDiagnosticOnly": true,
+  "firstPixelExportTimedOutAndWasCancelled": true,
+  "compiled": true,
+  "candidateExecuted": true,
+  "runtimePromoted": false,
+  "committed": false,
+  "pushed": false,
+  "standardEntryVerified": false
+}

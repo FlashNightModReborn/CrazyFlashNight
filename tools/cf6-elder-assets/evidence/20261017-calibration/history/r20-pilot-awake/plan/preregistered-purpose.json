@@ -1,0 +1,29 @@
+{
+  "registeredAtUtc": "2026-10-18T07:38:59.928625+00:00",
+  "purpose": "Authorized 750 robot start range with matching 600-local-pixel visible/collision beam and halved shield capacity. All action timing, damage multipliers, initial HP/ATK/DEF panels and human range stay at R19.",
+  "expectedRows": 12,
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "rivals": [
+    78,
+    361
+  ],
+  "perSideRepeat": 1,
+  "fullMatrix": false,
+  "fullMatrixGroupMeanAndMedianNetHpLoss": [
+    0.5,
+    0.8
+  ],
+  "winsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "ownPhaseSpawnsPerFight": 1,
+  "netHpMethod": "Fixed full opponent chain including unspawned beast successor; every result retained.",
+  "maximumConcurrentGames": 1,
+  "displayLog": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\display-qualified-20261018-r7\\display-state.jsonl",
+  "perShardWallLimitMs": 900000,
+  "perFightTimeoutFrames": 5400,
+  "formalPromotion": false
+}

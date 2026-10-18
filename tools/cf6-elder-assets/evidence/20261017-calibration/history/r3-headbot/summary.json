@@ -1,0 +1,101 @@
+{
+  "experiment": "cf6-cal-r3-headbot-20261017",
+  "reportSha256": "5bbf17b8b7d39d095764250376900e1f9abfad376581af1c07ed4a73e084cc88",
+  "qualified": true,
+  "groups": [
+    {
+      "rival": 286,
+      "level": 30,
+      "n": 2,
+      "wins": 2,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.24914141532135597,
+      "frames": [
+        2489.0,
+        2624.0
+      ],
+      "in50to80": 0
+    },
+    {
+      "rival": 286,
+      "level": 99,
+      "n": 2,
+      "wins": 2,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.4408353940377561,
+      "frames": [
+        2301.0,
+        2341.0
+      ],
+      "in50to80": 0
+    }
+  ],
+  "runs": [
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2489.0,
+      "remaining": 0.24914141532135597,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2624.0,
+      "remaining": 0.29582038642151254,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2341.0,
+      "remaining": 0.4408353940377561,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 2301.0,
+      "remaining": 0.505622844484897,
+      "netLoss": 1.0,
+      "phases": 0.0
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema": "cf6-reboot-readiness-diagnosis.v1",
+  "time": "2026-10-17T13:49:29.415599+00:00",
+  "head": "46977734df67f2eadabe59831f95320a1a472a1b",
+  "experimentId": "cf6-cal-reboot-probe-20261017",
+  "experimentReportPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\arena-worker-experiments\\cf6-cal-reboot-probe-20261017\\experiment-report.json",
+  "runtimeCandidate": "C:/Users/fs/.codex/worktrees/cf6-head-final/CrazyFlashNight/tmp/runtime-candidates/v2/current-runtime-probe",
+  "asLoaderSha256": "a4d570781634203fec4b193c5303f00577d3bc81d07cc75234a5995a3d48afd5",
+  "observations": {
+    "scene": 3,
+    "lightingHandoff": "21:42:02.861",
+    "revealFrameRequired": "21:42:02.895",
+    "requiredFrameQpcMs": 256200.3,
+    "lastCapturedFrameQpcMs": 256205.9,
+    "capturedFramesHeld": 100,
+    "nativePresentedFramesAt214330": 2712,
+    "as2FpsAt214330": 30.3,
+    "cpuSamplesPercent": [
+      26,
+      39,
+      47
+    ]
+  },
+  "inference": "Static Flash scene stops producing WGC frames after the first reveal freshness fence; the subsequent grade freshness fence has no explicit repaint request. Resource pressure does not account for the reproduced stable AS2 and native presentation loops.",
+  "uiActionPerformed": false,
+  "uiDiagnostic": "Computer Use enumeration did not expose the isolated game as a targetable window; no activation, keys, or resize were attempted.",
+  "originalFailurePreserved": true,
+  "qualification": false
+}

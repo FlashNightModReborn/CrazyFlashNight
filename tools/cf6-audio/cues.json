@@ -1,0 +1,1146 @@
+{
+  "schema": "cf6.audio-cues.v1",
+  "sourceSwfSha256": "b52af10e2dda43332e0b2ffb9549d2fad474f298b9f6c67d848ffc33ff589b01",
+  "route": "_root.播放音效",
+  "embeddedSoundTracksAllowed": false,
+  "owners": {
+    "Codex大头机器人素材": {
+      "cues": [
+        {
+          "symbol": "Codex/大头机器人/动作/双臂光束",
+          "frame": 14,
+          "soundIds": [
+            904
+          ],
+          "statusBefore": "missing",
+          "source": [
+            936,
+            2
+          ],
+          "adaptation": "蓄力缩短六帧，音效仍比各自光束接触早一帧。"
+        },
+        {
+          "symbol": "Codex/大头机器人/动作/双臂光束",
+          "frame": 22,
+          "soundIds": [
+            904
+          ],
+          "statusBefore": "missing",
+          "source": [
+            936,
+            10
+          ],
+          "adaptation": "蓄力缩短六帧，音效仍比各自光束接触早一帧。"
+        },
+        {
+          "symbol": "Codex/大头机器人/动作/伸缩冲击",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            937,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 1006,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/大头机器人/动作/机械碎裂",
+          "frame": 2,
+          "soundIds": [
+            915
+          ],
+          "statusBefore": "missing",
+          "source": [
+            951,
+            2
+          ],
+          "adaptation": ""
+        }
+      ]
+    },
+    "Codex大刀机器人素材": {
+      "cues": [
+        {
+          "symbol": "Codex/大刀机器人/动作/波属性光束",
+          "frame": 10,
+          "soundIds": [
+            904
+          ],
+          "statusBefore": "missing",
+          "source": [
+            906,
+            10
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/重劈",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            910,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/重劈",
+          "frame": 17,
+          "soundIds": [
+            908
+          ],
+          "statusBefore": "missing",
+          "source": [
+            910,
+            17
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/重劈",
+          "frame": 20,
+          "soundIds": [
+            652
+          ],
+          "statusBefore": "missing",
+          "source": [
+            910,
+            20
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/横扫",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            912,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/横扫",
+          "frame": 9,
+          "soundIds": [
+            911
+          ],
+          "statusBefore": "missing",
+          "source": [
+            912,
+            9
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/大刀机器人/动作/机械碎裂",
+          "frame": 2,
+          "soundIds": [
+            915
+          ],
+          "statusBefore": "missing",
+          "source": [
+            924,
+            2
+          ],
+          "adaptation": ""
+        }
+      ]
+    },
+    "Codex老头素材": {
+      "cues": [
+        {
+          "symbol": "Codex/老头/human/动作/970",
+          "frame": 2,
+          "soundIds": [
+            969
+          ],
+          "statusBefore": "missing",
+          "source": [
+            970,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/human/动作/972",
+          "frame": 3,
+          "soundIds": [
+            971
+          ],
+          "statusBefore": "missing",
+          "source": [
+            972,
+            3
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/human/动作/972",
+          "frame": 10,
+          "soundIds": [
+            296
+          ],
+          "statusBefore": "missing",
+          "source": [
+            972,
+            10
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/human/动作/974",
+          "frame": 1,
+          "soundIds": [
+            1117,
+            1131
+          ],
+          "statusBefore": "missing",
+          "source": [
+            975,
+            70
+          ],
+          "adaptation": "原作根状态的倒地呼声，迁到对应身体入口。"
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/994",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/994",
+          "frame": 28,
+          "soundIds": [
+            992
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            28
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/997",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            997,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 0,
+              "left": 17873,
+              "right": 19959
+            },
+            {
+              "position44": 25653,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/997",
+          "frame": 8,
+          "soundIds": [
+            995
+          ],
+          "statusBefore": "missing",
+          "source": [
+            997,
+            8
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/997",
+          "frame": 25,
+          "soundIds": [
+            995
+          ],
+          "statusBefore": "missing",
+          "source": [
+            997,
+            25
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/1007",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1007,
+            2
+          ],
+          "adaptation": "",
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/1007",
+          "frame": 36,
+          "soundIds": [
+            998
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1007,
+            36
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/1010",
+          "frame": 2,
+          "soundIds": [
+            1009
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1010,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/1010",
+          "frame": 14,
+          "soundIds": [
+            915
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1010,
+            14
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/19940",
+          "frame": 2,
+          "soundIds": [
+            907
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            2
+          ],
+          "adaptation": "新增重束从蓄能开始播放原机械起手声。",
+          "envelope": [
+            {
+              "position44": 40743,
+              "left": 32768,
+              "right": 32768
+            },
+            {
+              "position44": 53821,
+              "left": 2085,
+              "right": 0
+            }
+          ]
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/19940",
+          "frame": 34,
+          "soundIds": [
+            992
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            28
+          ],
+          "adaptation": "额外蓄力六帧；四段持续射击每十二帧一段，声音各提前一帧。"
+        },
+        {
+          "symbol": "Codex/老头/变身/角色演出",
+          "frame": 2,
+          "soundIds": [
+            1993
+          ],
+          "statusBefore": "missing",
+          "source": [
+            2008,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/变身/角色演出",
+          "frame": 81,
+          "soundIds": [
+            2004
+          ],
+          "statusBefore": "missing",
+          "source": [
+            2008,
+            81
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/老头/变身/角色演出",
+          "frame": 92,
+          "soundIds": [
+            2007
+          ],
+          "statusBefore": "missing",
+          "source": [
+            2008,
+            255
+          ],
+          "adaptation": "283帧演出收束到93帧交接；末次爆裂提示放在交接前。"
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/19940",
+          "frame": 46,
+          "soundIds": [
+            992
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            28
+          ],
+          "adaptation": "额外蓄力六帧；四段持续射击每十二帧一段，声音各提前一帧。"
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/19940",
+          "frame": 58,
+          "soundIds": [
+            992
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            28
+          ],
+          "adaptation": "额外蓄力六帧；四段持续射击每十二帧一段，声音各提前一帧。"
+        },
+        {
+          "symbol": "Codex/老头/robot/动作/19940",
+          "frame": 70,
+          "soundIds": [
+            992
+          ],
+          "statusBefore": "missing",
+          "source": [
+            994,
+            28
+          ],
+          "adaptation": "额外蓄力六帧；四段持续射击每十二帧一段，声音各提前一帧。"
+        }
+      ]
+    },
+    "Codex蛮蛮素材": {
+      "cues": [
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1116",
+          "frame": 2,
+          "soundIds": [
+            649
+          ],
+          "statusBefore": "missing",
+          "source": [
+            653,
+            2
+          ],
+          "adaptation": "沿当前CF7招式的实际发力时点适配。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1116",
+          "frame": 13,
+          "soundIds": [
+            652
+          ],
+          "statusBefore": "missing",
+          "source": [
+            653,
+            16
+          ],
+          "adaptation": "沿当前CF7招式的实际发力时点适配。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1117",
+          "frame": 2,
+          "soundIds": [
+            654
+          ],
+          "statusBefore": "missing",
+          "source": [
+            656,
+            2
+          ],
+          "adaptation": "沿当前CF7招式的实际发力时点适配。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1117",
+          "frame": 13,
+          "soundIds": [
+            655
+          ],
+          "statusBefore": "missing",
+          "source": [
+            656,
+            13
+          ],
+          "adaptation": "沿当前CF7招式的实际发力时点适配。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1118",
+          "frame": 2,
+          "soundIds": [
+            658
+          ],
+          "statusBefore": "missing",
+          "source": [
+            659,
+            2
+          ],
+          "adaptation": "当前两种受击分支各保留一次原作声效。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1118",
+          "frame": 24,
+          "soundIds": [
+            658
+          ],
+          "statusBefore": "missing",
+          "source": [
+            659,
+            2
+          ],
+          "adaptation": "当前两种受击分支各保留一次原作声效。"
+        },
+        {
+          "symbol": "Codex/蛮蛮/动作/血腥死",
+          "frame": 21,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            691,
+            21
+          ],
+          "adaptation": ""
+        }
+      ],
+      "removeEmbedded": [
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1116",
+          "frame": 13,
+          "soundName": "音效/sound455.mp3"
+        },
+        {
+          "symbol": "Codex/蛮蛮/CF7/Symbol 1117",
+          "frame": 13,
+          "soundName": "音效/sound455.mp3"
+        }
+      ]
+    },
+    "Codex特种兵素材": {
+      "cues": [
+        {
+          "symbol": "Codex/特种兵/动作/匕首刺击",
+          "frame": 14,
+          "soundIds": [
+            513
+          ],
+          "statusBefore": "missing",
+          "source": [
+            517,
+            14
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/特种兵/动作/持盾匕首刺击",
+          "frame": 14,
+          "soundIds": [
+            513
+          ],
+          "statusBefore": "missing",
+          "source": [
+            573,
+            12
+          ],
+          "adaptation": "持盾当前伤害帧由正式武器动作统一到第14帧。"
+        },
+        {
+          "symbol": "Codex/特种兵/动作/破盾",
+          "frame": 2,
+          "soundIds": [
+            576
+          ],
+          "statusBefore": "missing",
+          "source": [
+            579,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/特种兵/动作/被投",
+          "frame": 2,
+          "soundIds": [
+            1121,
+            1135,
+            1144
+          ],
+          "statusBefore": "missing",
+          "source": [
+            519,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/特种兵/动作/击飞",
+          "frame": 1,
+          "soundIds": [
+            1121,
+            1135,
+            1144
+          ],
+          "statusBefore": "missing",
+          "source": [
+            559,
+            70
+          ],
+          "adaptation": "原作根状态的倒地呼声。"
+        },
+        {
+          "symbol": "Codex/特种兵/动作/倒地恢复",
+          "frame": 1,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            520,
+            19
+          ],
+          "adaptation": "适配CF7物理落地入口，不在空中提前播放落地声。"
+        },
+        {
+          "symbol": "Codex/特种兵/动作/死亡",
+          "frame": 1,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            559,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/特种兵/动作/死亡",
+          "frame": 59,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            559,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/特种兵/动作/死亡",
+          "frame": 105,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            559,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        }
+      ]
+    },
+    "Codex光头保安素材": {
+      "cues": [
+        {
+          "symbol": "Codex/光头保安/动作/变身",
+          "frame": 2,
+          "soundIds": [
+            879
+          ],
+          "statusBefore": "missing",
+          "source": [
+            887,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/光头保安/动作/变身",
+          "frame": 44,
+          "soundIds": [
+            881
+          ],
+          "statusBefore": "missing",
+          "source": [
+            887,
+            44
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/光头保安/动作/被投",
+          "frame": 2,
+          "soundIds": [
+            1121,
+            1135,
+            1144
+          ],
+          "statusBefore": "missing",
+          "source": [
+            598,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Codex/光头保安/动作/击飞",
+          "frame": 1,
+          "soundIds": [
+            1121,
+            1135,
+            1144
+          ],
+          "statusBefore": "missing",
+          "source": [
+            888,
+            70
+          ],
+          "adaptation": "原作根状态的倒地呼声。"
+        },
+        {
+          "symbol": "Codex/光头保安/动作/倒地恢复",
+          "frame": 1,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            875,
+            20
+          ],
+          "adaptation": "适配CF7物理落地入口。"
+        },
+        {
+          "symbol": "Codex/光头保安/动作/死亡",
+          "frame": 1,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            888,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/光头保安/动作/死亡",
+          "frame": 32,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            888,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/光头保安/动作/死亡",
+          "frame": 78,
+          "soundIds": [
+            1123,
+            1137,
+            1146,
+            1151,
+            1154,
+            1157
+          ],
+          "statusBefore": "missing",
+          "source": [
+            888,
+            77
+          ],
+          "adaptation": "当前三个死亡分支各一次原作死亡声。",
+          "once": true
+        }
+      ]
+    },
+    "CodexWings素材": {
+      "cues": [
+        {
+          "symbol": "Codex/Wings/CF7/闪6特工/MovieClip/sprite 861",
+          "frame": 7,
+          "soundIds": [
+            513
+          ],
+          "statusBefore": "missing",
+          "source": [
+            868,
+            7
+          ],
+          "adaptation": "原作第一段武器起手；保留现有其余五段斩击与后空翻音效。"
+        },
+        {
+          "symbol": "Codex/Wings/CF7/闪6特工/MovieClip/sprite 863",
+          "frame": 1,
+          "soundIds": [
+            1143,
+            1150
+          ],
+          "statusBefore": "missing",
+          "source": [
+            870,
+            2
+          ],
+          "adaptation": "击倒/投掷适配到CF7短起手。"
+        },
+        {
+          "symbol": "Codex/Wings/CF7/闪6特工/MovieClip/起身",
+          "frame": 1,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            871,
+            15
+          ],
+          "adaptation": "当前物理落地入口。"
+        },
+        {
+          "symbol": "Codex/Wings/动作/死亡",
+          "frame": 1,
+          "soundIds": [
+            1120,
+            1134
+          ],
+          "statusBefore": "missing",
+          "source": [
+            873,
+            77
+          ],
+          "adaptation": "三种原生死亡分支各一次。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/Wings/动作/死亡",
+          "frame": 59,
+          "soundIds": [
+            1120,
+            1134
+          ],
+          "statusBefore": "missing",
+          "source": [
+            873,
+            77
+          ],
+          "adaptation": "三种原生死亡分支各一次。",
+          "once": true
+        },
+        {
+          "symbol": "Codex/Wings/动作/死亡",
+          "frame": 96,
+          "soundIds": [
+            1120,
+            1134
+          ],
+          "statusBefore": "missing",
+          "source": [
+            873,
+            77
+          ],
+          "adaptation": "三种原生死亡分支各一次。",
+          "once": true
+        }
+      ]
+    },
+    "Antigravity专用素材": {
+      "cues": [
+        {
+          "symbol": "Antigravity/CF6普通男僵尸/动作/攻击",
+          "frame": 2,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            405,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Antigravity/CF6普通男僵尸/动作/被投",
+          "frame": 2,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            407,
+            2
+          ],
+          "adaptation": "两种当前被投姿势。"
+        },
+        {
+          "symbol": "Antigravity/CF6普通男僵尸/动作/被投",
+          "frame": 24,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            407,
+            2
+          ],
+          "adaptation": "两种当前被投姿势。"
+        },
+        {
+          "symbol": "Antigravity/CF6普通男僵尸/动作/倒地",
+          "frame": 1,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            408,
+            12
+          ],
+          "adaptation": "物理落地入口；保留已有僵尸死亡呼声。"
+        },
+        {
+          "symbol": "Antigravity/CF6女僵尸/动作/攻击",
+          "frame": 2,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1631,
+            2
+          ],
+          "adaptation": ""
+        },
+        {
+          "symbol": "Antigravity/CF6女僵尸/动作/被投",
+          "frame": 2,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1633,
+            2
+          ],
+          "adaptation": "两种当前被投姿势。"
+        },
+        {
+          "symbol": "Antigravity/CF6女僵尸/动作/被投",
+          "frame": 24,
+          "soundIds": [
+            288
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1633,
+            2
+          ],
+          "adaptation": "两种当前被投姿势。"
+        },
+        {
+          "symbol": "Antigravity/CF6女僵尸/动作/倒地",
+          "frame": 1,
+          "soundIds": [
+            303
+          ],
+          "statusBefore": "missing",
+          "source": [
+            1634,
+            12
+          ],
+          "adaptation": "物理落地入口；保留已有僵尸死亡呼声。"
+        }
+      ],
+      "replacements": [
+        {
+          "symbol": "Antigravity/CF6女僵尸/动作/击倒",
+          "old": "_root.播放音效(\"僵尸0\" + (random(6) + 1) + \".wav\");",
+          "soundIds": [
+            1143,
+            1150
+          ]
+        },
+        {
+          "symbol": "Antigravity/CF6女僵尸/敌人-CF6女僵尸",
+          "old": "_root.播放音效(\"僵尸0\" + (random(6) + 1) + \".wav\");",
+          "soundIds": [
+            1143,
+            1150
+          ]
+        }
+      ]
+    }
+  },
+  "runtimeCues": [
+    {
+      "owner": "Codex老头素材",
+      "source": [
+        1010,
+        30
+      ],
+      "soundId": 1009,
+      "at": "robot death frame 32",
+      "adaptation": "与碎裂和一次性亡语同步，顺延两帧。"
+    },
+    {
+      "owner": "Codex大头机器人素材",
+      "soundId": 1009,
+      "at": "death frame 19",
+      "adaptation": "新增机械爆裂"
+    },
+    {
+      "owner": "Codex大刀机器人素材",
+      "soundId": 1009,
+      "at": "death frame 32",
+      "adaptation": "新增机械爆裂，与原作首个破碎图集帧同步。"
+    },
+    {
+      "owner": "Codex老头素材",
+      "sound": "shoot.wav",
+      "at": "human burst actual emission",
+      "adaptation": "原作此场枪声音为无；当前穿刺枪新增既有CF7射击声。"
+    }
+  ]
+}

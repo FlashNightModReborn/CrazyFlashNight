@@ -1,0 +1,1138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/老头/敌人-CF6老头机器人" itemID="6af00000-3aa5daea" linkageExportForAS="true" linkageExportInFirstFrame="true" linkageIdentifier="敌人-CF6老头机器人">
+  <timeline>
+    <DOMTimeline name="敌人-CF6老头机器人">
+      <layers>
+        <DOMLayer name="状态标签" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728" name="空手站立" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" name="空手行走" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" name="空手跑" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="20" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" name="空手跳" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728" duration="7">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728" name="近战" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="38" keyMode="9728" duration="3">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" name="空手攻击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="42" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" name="重击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" name="蓄能重束" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="57" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" name="拾取" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="62" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" name="躲闪" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="72" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="81" keyMode="9728" name="被击" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="82" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="91" keyMode="9728" name="击倒" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="92" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728" name="倒地" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728" name="被投" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="112" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" name="血腥死" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="122" keyMode="9728" duration="19">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="141" keyMode="9728" name="变身" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="142" keyMode="9728" duration="9">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="151" keyMode="9728" name="消失" labelType="name">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="152" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="初始化与消失" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[x轴攻击范围=0;y轴攻击范围=30;x轴保持距离=340;攻击欲望=3;命中率=30;
+女_攻击呐喊_库=[];女_中招呐喊_库=[];女_击倒呐喊_库=[];
+初始化敌人模板=_root.初始化敌人模板;初始化敌人模板();
+elderForm="robot";
+elderActions={beam:{totalFrames:44,state:"空手攻击",hits:[29],power:3},kicks:{totalFrames:40,state:"近战",hits:[9,26],power:1},slam:{totalFrames:62,state:"重击",hits:[37],power:18},heavyBeam:{totalFrames:106,state:"蓄能重束",hits:[35,47,59,71],powers:[0.5,1,1.5,2]}};
+// 两个形态共用私有动作时钟；仇恨、碰撞、伤害和结算仍由 CF7 执行。
+elderClock=0;elderReadyAt=6;elderTargetName="";elderAttackOwner=null;
+elderAttackCount=0;elderHitCount=0;elderFxMask=0;elderIdentity={};
+elderCombatReported=false;elderReactiveShield=-1;elderReactiveState=null;
+elderCombatStats={decisionChecks:0,rangeOutsideChecks:0,burstStarts:0,burstContacts:0,stabStarts:0,stabContacts:0,
+    reactiveLostHp:0,reactiveForced:0,reactivePulses:0,reactiveGranted:0,reactiveAbsorbed:0,reactiveLeechHits:0,reactiveRageLeechHits:0,reactiveCrumbleHits:0,reactiveRageSources:{},
+    beamStarts:0,beamContacts:0,beamHits:0,beamHitPower:0,beamShieldSpent:0,beamShieldUnused:0,beamShieldSamples:0,heavyBeamStarts:0,heavyBeamContacts:0,heavyBeamHits:0,heavyBeamHitPower:0,slamHeavyStarts:0,kicksStarts:0,kicksContacts:0,slamStarts:0,slamContacts:0,kicksShieldGrants:0,slamShieldGrants:0,kicksShieldAbsorbed:0,slamShieldAbsorbed:0};
+elderAlignZ=false;elderApproachX=false;elderMovementTarget="";
+elderTuning={shootRange:elderForm=="human"?500:750,approachStopRange:elderForm=="human"?330:430,
+    laneRange:30,laneStopRange:10,reactionFrames:6,recoveryFrames:6,maximumTargetHeight:140,
+    closeRange:elderForm=="human"?175:190,slamRange:220,slamCooldown:120,
+    shieldAttackScale:55/43,meleeShieldCapacityScale:0.5,beamShieldCapacityScale:0.2,reactiveShieldCapacityScale:0.75,meleeShieldCapacity:0.1,meleeShieldStrengthLow:0.30,meleeShieldStrengthHigh:0.12,meleeShieldFramesLow:120,meleeShieldFramesHigh:60,
+    slamShieldCapacity:0.015,slamShieldStrength:10,slamShieldFrames:120,
+    reactiveLossStep:0.05,reactiveForcedConversion:0.4,reactiveCapacityLimit:0.10,reactiveStrength:10,
+    reactivePulseFrames:1,reactivePulseMissingRatio:0.000625/3,reactivePulseCapacityLimit:0.000625/3,reactiveDecayFrames:36,
+    beamShieldCapacityBase:1,beamShieldCapacityLimit:0.6,beamShieldLevelScale:20,beamShieldStrength:0.75,beamShieldStrengthCap:800};
+// 砸地倍率变化会由统一公式重算攻击；55/43 折算抵消其对各层盾强的附带变化，保留整数面板舍入后的微小差异。
+elderNextSlam=0;elderNextBeam=0;elderNextHeavyBeam=0;elderCombo=null;elderMeleeShield=-1;elderSlamShield=-1;elderBeamShield=-1;
+elderNextBurst=0;elderSlamHeavyWindow=null;elderBeamShieldSample=null;
+elderTuning.crossLaneRange=240;elderTuning.crossLaneMinX=220;elderTuning.crossLaneWaitPerPixel=1.5;
+elderTuning.beamCooldown=80;elderTuning.comboWindow=75;elderTuning.heavyBeamCooldown=600;
+elderTuning.slamHeavyWindow=180;
+// elderActions 由装配器从同一动作表生成；帧位与逐段倍率不在此另写一份。
+
+elderClearMovement=function():Void {
+    this.左行=this.右行=this.上行=this.下行=false;this.elderAlignZ=this.elderApproachX=false;
+};
+// 以本形态初始化满血值固定损血门槛；同一笔已观察 HP 下降只入账一次。
+// 命中后事件负责立即补盾，私有帧时钟负责周期补充；伤害与吸血结算仍由通用管线执行。
+elderReactiveHit=function(target:MovieClip,shooter:MovieClip,bullet:Object,collision:Object,result:Object):Void {
+    var actor:MovieClip=this.actor;
+    if(!this.active || target!==actor || actor.elderIdentity!==this.identity || actor.elderReactiveState!==this || _root.暂停)return;
+    if(!(actor.hp>0)){actor.elderClearReactiveShield();return;}
+    if(result!=null){
+        var stats:Object=actor.elderCombatStats;
+        if((result._efFlags&32)!=0){
+            stats.reactiveLeechHits++;
+            if(shooter.狂暴模式==1){
+                stats.reactiveRageLeechHits++;
+                var sourceKey:String="n:"+shooter._name,entry:Object=stats.reactiveRageSources[sourceKey];
+                if(entry==undefined){
+                    entry={name:shooter._name,hits:0,maxPower:0,firstClock:actor.elderClock,lastClock:actor.elderClock};
+                    stats.reactiveRageSources[sourceKey]=entry;
+                }
+                entry.hits++;entry.lastClock=actor.elderClock;entry.maxPower=Math.max(entry.maxPower,Number(bullet.子弹威力));
+            }
+        }
+        if(result._crumbleDamage>0)stats.reactiveCrumbleHits++;
+    }
+    actor.elderObserveReactiveHp();
+};
+elderReactiveAbsorb=function(layer:Object,amount:Number):Void {
+    var state:Object=layer.elderReactiveOwner,actor:MovieClip=state.actor;
+    if(state.active && actor.elderIdentity===state.identity && actor.elderReactiveState===state && amount>0)
+        actor.elderCombatStats.reactiveAbsorbed+=amount;
+};
+elderClearReactiveShield=function():Void {
+    var state:Object=this.elderReactiveState;
+    if(state!=null){
+        state.active=false;
+        state.dispatcher.unsubscribe("hit",state.callback,state);
+        this.elderReactiveState=null;
+    }
+    if(this.elderReactiveShield>=0){_root.护盾函数.移除护盾(this,this.elderReactiveShield);this.elderReactiveShield=-1;}
+};
+elderGrantReactiveShield=function(amount:Number):Void {
+    var state:Object=this.elderReactiveState,tune:Object=this.elderTuning;
+    if(state==null || !state.active || !(this.hp>0) || !(amount>0))return;
+    var old:Object=this.shield.getShieldById(this.elderReactiveShield);
+    var remaining:Number=old==null?0:old.getCapacity();
+    amount*=tune.reactiveShieldCapacityScale;
+    var capacity:Number=Math.min(state.baseHp*tune.reactiveCapacityLimit*tune.reactiveShieldCapacityScale,remaining+amount);
+    if(!(capacity>0))return;
+    if(this.elderReactiveShield>=0)_root.护盾函数.移除护盾(this,this.elderReactiveShield);
+    this.elderReactiveShield=_root.护盾函数.添加衰减护盾(this,capacity,
+        Math.max(1,this.空手攻击力*tune.shieldAttackScale*tune.reactiveStrength),capacity/tune.reactiveDecayFrames,"机械应激盾",{onHit:this.elderReactiveAbsorb});
+    if(this.elderReactiveShield>=0){
+        var layer:Object=this.shield.getShieldById(this.elderReactiveShield);layer.elderReactiveOwner=state;
+        this.elderCombatStats.reactiveGranted+=capacity-remaining;
+    }
+};
+elderObserveReactiveHp=function():Void {
+    var state:Object=this.elderReactiveState;
+    if(state==null || !state.active || _root.暂停)return;
+    var hp:Number=Number(this.hp);
+    if((hp-hp)!=0)return;
+    if(!(hp>0)){this.elderClearReactiveShield();return;}
+    var lost:Number=state.lastHp-hp;state.lastHp=hp;
+    if(!(lost>0))return;
+    this.elderCombatStats.reactiveLostHp+=lost;state.lossRemainder+=lost;
+    var steps:Number=Math.floor(state.lossRemainder/state.stepHp);
+    if(steps>0){
+        state.lossRemainder-=steps*state.stepHp;
+        this.elderCombatStats.reactiveForced+=steps;
+        this.elderGrantReactiveShield(steps*state.stepHp*this.elderTuning.reactiveForcedConversion);
+    }
+};
+elderUpdateReactiveShield=function():Void {
+    if(_root.暂停)return;
+    if(this.elderForm!="robot" || !(this.hp>0)){this.elderClearReactiveShield();return;}
+    var state:Object=this.elderReactiveState,tune:Object=this.elderTuning;
+    if(state==null){
+        var maximum:Number=Number(this.hp满血值),currentHp:Number=Number(this.hp);
+        if(!(maximum>0) || !isFinite(maximum) || (currentHp-currentHp)!=0 || this.shield==null || typeof this.dispatcher.subscribe!="function")return;
+        state={actor:this,identity:this.elderIdentity,dispatcher:this.dispatcher,callback:this.elderReactiveHit,active:true,
+            baseHp:maximum,lastHp:currentHp,stepHp:maximum*tune.reactiveLossStep,lossRemainder:0,
+            nextPulse:this.elderClock+tune.reactivePulseFrames};
+        this.elderReactiveState=state;
+        if(!state.dispatcher.subscribe("hit",state.callback,state)){state.active=false;this.elderReactiveState=null;return;}
+    }
+    this.elderObserveReactiveHp();
+    if(this.elderClock<state.nextPulse)return;
+    state.nextPulse=this.elderClock+tune.reactivePulseFrames;
+    var missing:Number=state.baseHp-this.hp;
+    var amount:Number=Math.min(state.baseHp*tune.reactivePulseCapacityLimit,missing*tune.reactivePulseMissingRatio);
+    if(amount>0){this.elderCombatStats.reactivePulses++;this.elderGrantReactiveShield(amount);}
+};
+
+// 按真实吸收回调计量；AdaptiveShield 的单盾扁平化不允许长期缓存层对象后读取数值。
+elderBeamShieldAbsorb=function(layer:Object,amount:Number):Void {
+    var sample:Object=layer.elderBeamAccounting,actor:MovieClip=sample.actor;
+    if(sample.active && actor.elderIdentity===sample.identity && actor.elderBeamShieldSample===sample && amount>0)
+        sample.absorbed+=amount;
+};
+// 替换、收招、到期或形态结束时只结清一次，不改变盾或伤害结算。
+elderRecordBeamShield=function():Void {
+    var sample:Object=this.elderBeamShieldSample;
+    if(sample==null)return;
+    var remaining:Number=Math.max(0,sample.capacity-sample.absorbed);
+    this.elderCombatStats.beamShieldSpent+=sample.absorbed;
+    sample.active=false;
+    this.elderCombatStats.beamShieldUnused+=remaining;
+    this.elderCombatStats.beamShieldSamples++;
+    this.elderBeamShieldSample=null;
+};
+elderCancelAttack=function():Void {
+    this.elderRecordBeamShield();
+    if(this.elderAttackOwner!=null){
+        if(this.elderAttackOwner.ownsRigid)this.刚体=this.elderAttackOwner.previousRigid;
+        if(this.elderAttackOwner.ownsImmune)this.免疫击退=this.elderAttackOwner.previousImmune;
+        this.elderAttackOwner.active=false;
+    }
+    this.elderAttackOwner=null;this.动作A=false;
+    if(!(this.hp>0)){this.elderSlamHeavyWindow=null;this.elderClearReactiveShield();}
+    if(this.elderBeamShield>=0){
+        _root.护盾函数.移除护盾(this,this.elderBeamShield);this.elderBeamShield=-1;
+    }
+    if(!(this.hp>0) && this.elderMeleeShield>=0){
+        _root.护盾函数.移除护盾(this,this.elderMeleeShield);this.elderMeleeShield=-1;
+    }
+    if(!(this.hp>0) && this.elderSlamShield>=0){
+        _root.护盾函数.移除护盾(this,this.elderSlamShield);this.elderSlamShield=-1;
+    }
+};
+// 每个形态结束时只记录一次出手诊断；接触计数不是实际命中或累计伤害。
+elderRageSourceSummary=function():String {
+    var sources:Object=this.elderCombatStats.reactiveRageSources,summary:String="";
+    for(var key:String in sources){
+        var entry:Object=sources[key];
+        summary+=(summary==""?"":"|")+entry.name+"@"+entry.hits+"@"+entry.maxPower+"@"+entry.firstClock+"-"+entry.lastClock;
+    }
+    return summary==""?"none":summary;
+};
+elderReportCombat=function():Void {
+    if(this.elderCombatReported)return;
+    this.elderCombatReported=true;this.elderRecordBeamShield();this.elderClearReactiveShield();
+    var target:MovieClip=_root.gameworld[this.攻击目标],stats:Object=this.elderCombatStats;
+    var message:String="[CF6_ELDER_COMBAT_END] unit="+this._name+" form="+this.elderForm+" level="+this.等级
+        +" clock="+this.elderClock+" starts="+this.elderAttackCount+" contacts="+this.elderHitCount
+        +" heavyBeam="+stats.heavyBeamStarts+"/"+stats.heavyBeamContacts+" heavyActual="+stats.heavyBeamHits+"/"+stats.heavyBeamHitPower+" slamHeavyStarts="+stats.slamHeavyStarts
+        +" beam="+stats.beamStarts+"/"+stats.beamContacts+" beamActual="+stats.beamHits+"/"+stats.beamHitPower
+        +" beamShield="+stats.beamShieldSpent+"/"+stats.beamShieldUnused+" shieldSamples="+stats.beamShieldSamples
+        +" decisions="+stats.decisionChecks+"/"+stats.rangeOutsideChecks+" startRange="+this.elderTuning.shootRange+" shieldScale="+this.elderTuning.meleeShieldCapacityScale+" beamScale="+this.elderTuning.beamShieldCapacityScale+" reactiveScale="+this.elderTuning.reactiveShieldCapacityScale+" pulseMissingRatio="+(this.elderTuning.reactivePulseMissingRatio*this.elderTuning.reactiveShieldCapacityScale)
+        +" reactive="+stats.reactiveForced+"/"+stats.reactivePulses+" reactiveHp="+stats.reactiveLostHp+"/"+stats.reactiveGranted+"/"+stats.reactiveAbsorbed
+        +" incomingLeech="+stats.reactiveLeechHits+" rageLeech="+stats.reactiveRageLeechHits+" rageSources="+this.elderRageSourceSummary()+" incomingCrumble="+stats.reactiveCrumbleHits+" kicks="+stats.kicksStarts+"/"+stats.kicksContacts
+        +" slam="+stats.slamStarts+"/"+stats.slamContacts+" kicksShield="+stats.kicksShieldGrants+" slamShield="+stats.slamShieldGrants
+        +" meleeShieldAbsorbed="+stats.kicksShieldAbsorbed+"/"+stats.slamShieldAbsorbed
+        +" burst="+stats.burstStarts+"/"+stats.burstContacts
+        +" stab="+stats.stabStarts+"/"+stats.stabContacts+" x="+this._x+" z="+this.Z轴坐标
+        +" target="+this.攻击目标+" targetHp="+target.hp+" targetX="+target._x+" targetZ="+target.Z轴坐标;
+    trace(message);
+    if(typeof _root.服务器.发布服务器消息=="function")_root.服务器.发布服务器消息(message);
+};
+状态改变=function(next:String):Void {
+    if(next=="消失")this.elderClearReactiveShield();
+    if(this.elderTransform!=null){
+        if(next!="消失")return;
+        this.elderTransform.active=false;
+        var child:MovieClip=this.elderTransform.child;
+        if(child.elderSpawnIdentity===this.elderTransform.spawnIdentity)child._visible=true;
+    }
+    if(this.hp<=0 && next!="消失"){
+        this.elderReportCombat();
+        if(this.elderForm=="human" && this.老头变身===true){this.elderStartTransform();return;}
+        next="血腥死";
+    }
+    if(this.elderForm=="robot" && (next=="击倒" || next=="倒地" || next=="被投" || next=="空手跳"))next="被击";
+    if(this.elderForm=="robot"){
+        this.浮空=this.倒地=false;this.垂直速度=0;
+        if(!isNaN(this.Z轴坐标))this._y=this.Z轴坐标;
+    }
+    if(this.状态==next)return;
+    this.elderCancelAttack();this.状态=next;this.gotoAndStop(next);
+};
+elderBeginAttack=function(body:MovieClip,action:String):Void {
+    this.elderCancelAttack();
+    var spec:Object=this.elderActions[action];
+    if(!(this.hp>0) || spec==undefined || this.状态!=spec.state){body.stop();return;}
+    var token:Object={};body.elderToken=token;
+    this.elderAttackOwner={token:token,active:true,state:spec.state,action:action,lastHitFrame:0,
+        spec:spec,target:this.攻击目标,previousRigid:this.刚体===true,ownsRigid:this.elderForm=="robot",
+        previousImmune:this.免疫击退===true,ownsImmune:action=="beam" || action=="heavyBeam"};
+    if(this.elderAttackOwner.ownsRigid)this.刚体=true;
+    if(this.elderAttackOwner.ownsImmune)this.免疫击退=true;
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(target.hp>0){
+        if(target.__elderActionIdentity==undefined)target.__elderActionIdentity={};
+        this.elderAttackOwner.targetIdentity=target.__elderActionIdentity;
+    }
+    if(action=="heavyBeam" && !this.elderHasHeavyPermission(target,spec.hits[spec.hits.length-1]+1)){this.elderCancelAttack();this.动画完毕();return;}
+    if(action=="burst"){
+        if(!this.elderLockBurstAim(body,target)){this.elderCancelAttack();this.动画完毕();return;}
+        this.elderNextBurst=this.elderClock+53+this.elderTuning.recoveryFrames
+            +Math.ceil(Math.max(0,this.elderAttackOwner.aimLaneDistance-this.elderTuning.laneRange)
+                *this.elderTuning.crossLaneWaitPerPixel);
+    }
+    if(action=="beam" || action=="heavyBeam"){
+        // 防护覆盖本次动作的蓄能、持续射击与收招；中断或结束仍只清理自身护盾。
+        var shieldLevel:Number=Number(this.等级);
+        if(isNaN(shieldLevel))trace("[CF6_ELDER_CONFIG_ERROR] invalid beam shield level="+this.等级);
+        else{
+            var levelFactor:Number=Math.max(1,Math.min(99,shieldLevel))/this.elderTuning.beamShieldLevelScale;
+            var capacity:Number=this.hp满血值*this.elderTuning.beamShieldCapacityScale*Math.min(this.elderTuning.beamShieldCapacityLimit,
+                this.elderTuning.beamShieldCapacityBase/(1+levelFactor*levelFactor));
+            this.elderBeamShield=_root.护盾函数.添加临时护盾(this,capacity,
+                Math.min(this.elderTuning.beamShieldStrengthCap,Math.max(1,this.空手攻击力*this.elderTuning.shieldAttackScale*this.elderTuning.beamShieldStrength)),spec.totalFrames,"机械蓄能盾",{onHit:this.elderBeamShieldAbsorb});
+            if(this.elderBeamShield>=0){
+                this.elderBeamShieldSample={actor:this,identity:this.elderIdentity,capacity:capacity,absorbed:0,active:true};
+                var beamLayer:Object=this.shield.getShieldById(this.elderBeamShield);beamLayer.elderBeamAccounting=this.elderBeamShieldSample;
+            }
+        }
+        this.elderNextBeam=this.elderClock+this.elderTuning.beamCooldown;
+    }
+    if(action=="heavyBeam"){
+        this.elderNextHeavyBeam=this.elderClock+this.elderTuning.heavyBeamCooldown;
+        if(!this.elderHasBeamMark(target,spec.hits[spec.hits.length-1]+1))this.elderCombatStats.slamHeavyStarts++;
+    }
+    this.elderCombo=null;
+    this.elderCombatStats[action+"Starts"]++;
+    this.elderAttackCount++;this.elderClearMovement();
+    if(action=="slam")this.elderNextSlam=this.elderClock+this.elderTuning.slamCooldown;
+};
+elderCanAct=function(body:MovieClip):Boolean {
+    var owner:Object=this.elderAttackOwner;
+    return !_root.暂停 && this.hp>0 && !this.硬直中 && owner!=null && owner.active
+        && this.man===body && body.elderToken===owner.token && this.状态==owner.state;
+};
+elderContactDue=function(frame:Number):Boolean {
+    var frames:Array=this.elderAttackOwner.spec.hits;
+    for(var i:Number=0;i<frames.length;i++)if(frames[i]==frame)return true;
+    return false;
+};
+elderStrike=function(body:MovieClip,point:MovieClip):Void {
+    if(!this.elderCanAct(body) || point._parent!==body || point.elderToken!==body.elderToken
+        || point.elderHitFrame!=body._currentframe || !this.elderContactDue(body._currentframe))return;
+    var owner:Object=this.elderAttackOwner,action:String=owner.action;
+    if(action=="heavyBeam" && !this.elderHeavyTargetValid(owner))return;
+    if(owner.lastHitFrame>=body._currentframe || (action!="burst" && point.area==null))return;
+    var p:Object={x:point._x,y:point._y};body.localToGlobal(p);
+    var globalY:Number=p.y;_root.gameworld.globalToLocal(p);
+    if(isNaN(p.x) || isNaN(p.y))return;
+    owner.lastHitFrame=body._currentframe;this.elderHitCount++;this.elderCombatStats[action+"Contacts"]++;
+    var bullet:Object;
+    if(action=="burst"){
+        bullet=_root.子弹属性初始化(point,"穿刺子弹",this);
+        bullet.角度偏移=owner.aimAngle;
+        bullet.速度X=owner.aimSpeedX;bullet.速度Y=owner.aimSpeedY;bullet.ZY比例=owner.aimZYRatio;
+        bullet.子弹速度=30;bullet.子弹散射度=0;bullet.发射效果="突击步枪枪火";
+        bullet.击中地图效果="火花";bullet.转换中间y=globalY;
+        bullet.区域定位area=undefined;
+    }else{
+        bullet={声音:"",霰弹值:1,子弹散射度:0,发射效果:"",子弹种类:"近战子弹",
+            子弹速度:0,击中地图效果:"",区域定位area:point.area};
+    }
+    var power:Number=owner.spec.power;
+    if(owner.spec.powers!=undefined){
+        for(var pulse:Number=0;pulse<owner.spec.hits.length;pulse++)
+            if(owner.spec.hits[pulse]==body._currentframe){power=owner.spec.powers[pulse];break;}
+    }
+    bullet.子弹威力=this.空手攻击力*power;bullet.Z轴攻击范围=30;
+    bullet.发射者=this._name;bullet.shootX=p.x;bullet.shootY=p.y;bullet.shootZ=this.Z轴坐标;
+    bullet.击倒率=action=="slam"?3:10;bullet.击中后子弹的效果="空手攻击火花";
+    bullet.水平击退速度=action=="slam"?18:3;bullet.垂直击退速度=0;
+    bullet.伤害类型=(action=="beam" || action=="heavyBeam")?"魔法":"物理";
+    bullet.魔法伤害属性=(action=="beam" || action=="heavyBeam")?"波":undefined;
+    if(action=="beam")bullet.hitBehavior={type:"cf6ElderBeam",peak:0.25,durationFrames:180};
+    if(action=="beam" || action=="heavyBeam"){
+        // 仅记录正式结算确认的真实命中；统计不反写伤害或改变后续选招。
+        bullet.elderShooterIdentity=this.elderIdentity;bullet.elderBeamAction=action;bullet.elderBeamPower=power;
+        bullet.击中时触发函数=function():Void {
+            if(this.elderBeamContactRecorded===true)return;
+            this.elderBeamContactRecorded=true;
+            var shooter:MovieClip=_root.gameworld[this.发射者];
+            if(!(shooter.hp>0) || shooter.elderIdentity!==this.elderShooterIdentity)return;
+            shooter.elderCombatStats[this.elderBeamAction+"Hits"]++;
+            shooter.elderCombatStats[this.elderBeamAction+"HitPower"]+=this.elderBeamPower;
+        };
+    }
+    if(this.elderForm=="robot" && (action=="kicks" || action=="slam")){
+        bullet.击溃=action=="kicks"?0.5:0;bullet.斩杀=action=="slam"?10:0;
+        bullet.elderShooterIdentity=this.elderIdentity;bullet.elderMeleeAction=action;
+        bullet.击中时触发函数=function():Void {
+            if(this.elderRewardSpent===true)return;
+            this.elderRewardSpent=true;
+            var shooter:MovieClip=_root.gameworld[this.发射者];
+            if(!(shooter.hp>0) || shooter.elderIdentity!==this.elderShooterIdentity)return;
+            shooter.elderRewardMelee(this.hitTarget,this.elderMeleeAction);
+        };
+    }
+    if(action=="burst")_root.播放音效("shoot.wav");
+    var emitted:MovieClip=_root.子弹区域shoot传递(bullet);
+    if(action=="burst" && owner.aimSpeedX!=undefined && emitted!=null){
+        emitted.cf6LaneVX=emitted.xmov=owner.aimSpeedX;
+        emitted.cf6LaneVY=emitted.ymov=owner.aimSpeedY;emitted.cf6LaneVZ=owner.aimSpeedZ;
+        emitted.updateMovement=this.elderCrossLaneMovement;
+    }
+};
+// 仅这轮跨行弹丸使用线性纵深。保存起点，避免绝对 Y 的零点改变轨迹或提前触地。
+// 函数只读弹丸自身字段，射手死亡后也不会追踪或引用已卸载的角色。
+elderCrossLaneMovement=function(bullet:MovieClip):Void {
+    bullet._x+=bullet.cf6LaneVX;bullet._y+=bullet.cf6LaneVY;bullet.Z轴坐标+=bullet.cf6LaneVZ;
+};
+// 红束资格只读取既有易伤；重束本身不施加或续期该标记。
+elderHasBeamMark=function(target:MovieClip,minimumFrames:Number):Boolean {
+    if(!(target.hp>0) || target.buffManager==null)return false;
+    var buff:Object=target.buffManager.getBuffById("cf6Elder:beam");
+    if(buff==null || buff.isDestroyed())return false;
+    var timer:Object=buff.getPrimaryTimer();
+    if(timer==null)return false;
+    var remaining:Number=timer.getRemaining();
+    return remaining>0 && (minimumFrames==undefined || remaining>=minimumFrames);
+};
+// 真实砸地命中只为同一目标实例开放短时连射资格，不施加易伤。
+elderHasSlamHeavyWindow=function(target:MovieClip,minimumFrames:Number):Boolean {
+    var window:Object=this.elderSlamHeavyWindow;
+    if(window==null)return false;
+    var remaining:Number=window.expires-this.elderClock;
+    if(!(this.hp>0) || !(target.hp>0) || target._parent!==this._parent
+        || target._name!=window.target || this.攻击目标!=window.target
+        || target.__elderActionIdentity!==window.identity || !(remaining>0)){
+        this.elderSlamHeavyWindow=null;return false;
+    }
+    return minimumFrames==undefined || remaining>=minimumFrames;
+};
+elderHasHeavyPermission=function(target:MovieClip,minimumFrames:Number):Boolean {
+    return this.elderHasSlamHeavyWindow(target,minimumFrames) || this.elderHasBeamMark(target,minimumFrames);
+};
+elderHeavyTargetValid=function(owner:Object):Boolean {
+    var target:MovieClip=_root.gameworld[owner.target];
+    return owner.targetIdentity!=undefined && target._parent===this._parent
+        && target.__elderActionIdentity===owner.targetIdentity && this.elderHasHeavyPermission(target);
+};
+
+// 同排保留原来的躯干瞄准；跨行沿用瞄准速度接口，并为本弹保存线性纵深，整轮不追踪。
+elderLockBurstAim=function(body:MovieClip,target:MovieClip):Boolean {
+    var owner:Object=this.elderAttackOwner;owner.aimAngle=0;owner.aimLaneDistance=0;
+    if(!(target.hp>0) || target.area==null)return true;
+    owner.aimLaneDistance=Math.abs(target.Z轴坐标-this.Z轴坐标);
+    if(isNaN(owner.aimLaneDistance))return false;
+    var bounds:Object=target.area.getBounds(_root.gameworld);
+    if(!(bounds.xMax>bounds.xMin) || !(bounds.yMax>bounds.yMin))return owner.aimLaneDistance<=this.elderTuning.laneRange;
+    var muzzle:Object={x:103,y:-57.95};body.localToGlobal(muzzle);_root.gameworld.globalToLocal(muzzle);
+    if(owner.aimLaneDistance>this.elderTuning.laneRange){
+        var centerY:Number=(bounds.yMin+bounds.yMax)/2;
+        var crossX:Number=(bounds.xMin+bounds.xMax)/2-muzzle.x,crossY:Number=centerY-muzzle.y;
+        if(!(Math.abs(crossX)>1) || isNaN(crossY))return false;
+        var speedX:Number=crossX>0?30:-30,speedY:Number=speedX*crossY/crossX;
+        if(Math.abs(speedY)>30){speedY=speedY>0?30:-30;speedX=speedY*crossX/crossY;}
+        owner.aimSpeedX=speedX;owner.aimSpeedY=speedY;
+        owner.aimSpeedZ=(target.Z轴坐标-this.Z轴坐标)*speedX/crossX;
+        // 工厂先据速度确定真实朝向；返回后、首次运动前安装上面的单位私有策略。
+        owner.aimZYRatio=1;
+        owner.aimAngle=Math.atan2(crossY,Math.abs(crossX))*180/Math.PI;
+        return true;
+    }
+    var aimY:Number=(bounds.yMin+bounds.yMax)/2+this.Z轴坐标-target.Z轴坐标;
+    var distance:Number=Math.abs((bounds.xMin+bounds.xMax)/2-muzzle.x);
+    if(isNaN(aimY) || !(distance>1))return true;
+    owner.aimAngle=Math.max(-45,Math.min(45,Math.atan2(aimY-muzzle.y,distance)*180/Math.PI));
+    return true;
+};
+// 只由正常伤害管线的真实命中钩子调用。每发只奖励一次，两种命中盾各自替换刷新。
+elderMeleeShieldAbsorb=function(layer:Object,amount:Number):Void {
+    var sample:Object=layer.elderMeleeAccounting,actor:MovieClip=sample.actor;
+    if(actor.elderIdentity!==sample.identity || !(amount>0))return;
+    var currentId:Number=sample.action=="slam"?actor.elderSlamShield:actor.elderMeleeShield;
+    if(currentId!=layer.getId())return;
+    actor.elderCombatStats[sample.action+"ShieldAbsorbed"]+=amount;
+};
+elderRewardMelee=function(target:MovieClip,action:String):Void {
+    if(!(this.hp>0) || this.elderForm!="robot" || (action!="kicks" && action!="slam"))return;
+    var level:Number=Number(this.等级);
+    if(isNaN(level)){trace("[CF6_ELDER_CONFIG_ERROR] invalid melee shield level="+this.等级);return;}
+    if(action=="slam"){
+        // 硬盾独立管理；后续连打不能把它换成软盾，也不能替它续期。
+        if(this.elderSlamShield>=0)_root.护盾函数.移除护盾(this,this.elderSlamShield);
+        this.elderSlamShield=_root.护盾函数.添加临时护盾(this,this.hp满血值*this.elderTuning.slamShieldCapacity*this.elderTuning.meleeShieldCapacityScale,
+            Math.max(1,this.空手攻击力*this.elderTuning.shieldAttackScale*this.elderTuning.slamShieldStrength),this.elderTuning.slamShieldFrames,"机械砸地盾",{onHit:this.elderMeleeShieldAbsorb});
+        if(this.elderSlamShield>=0)this.elderCombatStats.slamShieldGrants++;
+    }else{
+        var levelProgress:Number=(Math.max(1,Math.min(99,level))-1)/98;
+        var strengthRate:Number=this.elderTuning.meleeShieldStrengthLow
+            +(this.elderTuning.meleeShieldStrengthHigh-this.elderTuning.meleeShieldStrengthLow)*levelProgress;
+        var shieldFrames:Number=Math.round(this.elderTuning.meleeShieldFramesLow
+            +(this.elderTuning.meleeShieldFramesHigh-this.elderTuning.meleeShieldFramesLow)*levelProgress);
+        if(this.elderMeleeShield>=0)_root.护盾函数.移除护盾(this,this.elderMeleeShield);
+        this.elderMeleeShield=_root.护盾函数.添加临时护盾(this,this.hp满血值*this.elderTuning.meleeShieldCapacity*this.elderTuning.meleeShieldCapacityScale,
+            Math.max(1,this.空手攻击力*this.elderTuning.shieldAttackScale*strengthRate),shieldFrames,"机械反击盾",{onHit:this.elderMeleeShieldAbsorb});
+        if(this.elderMeleeShield>=0)this.elderCombatStats.kicksShieldGrants++;
+    }
+    var grantedId:Number=action=="slam"?this.elderSlamShield:this.elderMeleeShield;
+    if(grantedId>=0){
+        var grantedLayer:Object=this.shield.getShieldById(grantedId);
+        grantedLayer.elderMeleeAccounting={actor:this,identity:this.elderIdentity,action:action};
+    }
+    if(action=="slam" && target.hp>0 && target._parent===this._parent){
+        if(target.__elderActionIdentity==undefined)target.__elderActionIdentity={};
+        this.elderSlamHeavyWindow={target:target._name,identity:target.__elderActionIdentity,
+            expires:this.elderClock+this.elderTuning.slamHeavyWindow};
+        this.elderCombo={target:target._name,identity:target.__elderActionIdentity,
+            expires:this.elderClock+this.elderTuning.comboWindow};
+        this.elderNextBeam=Math.min(this.elderNextBeam,this.elderClock+20);
+    }
+};
+elderComboReady=function(target:MovieClip,dx:Number,dz:Number,height:Number):Boolean {
+    var combo:Object=this.elderCombo;
+    if(combo==null)return false;
+    if(!(target.hp>0) || target._parent!==this._parent || target._name!=combo.target
+        || target.__elderActionIdentity!==combo.identity || this.elderClock>combo.expires){this.elderCombo=null;return false;}
+    return dx>=120 && dx<=this.elderTuning.shootRange && dz<this.elderTuning.laneRange
+        && height<=this.elderTuning.maximumTargetHeight && this.elderClock>=this.elderNextBeam
+        && this.elderClock>=this.elderReadyAt;
+};
+
+elderFinishAttack=function(body:MovieClip):Void {
+    if(!this.elderCanAct(body))return;
+    this.elderCancelAttack();this.elderReadyAt=this.elderClock+this.elderTuning.recoveryFrames;
+    this.动画完毕();
+};
+elderDeathFx=function(bit:Number):Void {
+    if((this.elderFxMask&bit)!=0)return;
+    this.elderFxMask|=bit;
+    _root.效果("火花",this._x,this._y-80,this._xscale*1.4);
+    _root.效果("小烟雾",this._x,this._y-80,this._xscale*1.4);
+};
+// 蓄能前段可缓慢对齐同一目标；普通束提前六帧、重束提前二十四帧锁定，并保持至持续射击结束。
+elderTrackBeam=function(body:MovieClip):Void {
+    if(!this.elderCanAct(body))return;
+    var owner:Object=this.elderAttackOwner;
+    if((owner.action!="beam" && owner.action!="heavyBeam")
+        || body._currentframe>=owner.spec.hits[0]-(owner.action=="heavyBeam"?24:6))return;
+    var target:MovieClip=_root.gameworld[owner.target];
+    if(!(target.hp>0) || target._parent!==this._parent || owner.targetIdentity==undefined
+        || target.__elderActionIdentity!==owner.targetIdentity)return;
+    var dx:Number=target._x-this._x,dz:Number=target.Z轴坐标-this.Z轴坐标;
+    if(isNaN(dx) || isNaN(dz))return;
+    if(dx<0)this.方向改变("左");else if(dx>0)this.方向改变("右");
+    if(Math.abs(dz)>1 && this.行走Y速度>0)this.移动(dz<0?"上":"下",Math.min(3,Math.min(this.行走Y速度,Math.abs(dz))));
+};
+// man 内驱动在标准 death 子元件清理后继续负责尸体与阶段交接。
+elderBodyTick=function(body:MovieClip):Void {
+    if(_root.暂停 || this.man!==body || body.elderMode==undefined)return;
+    if(body.elderMode=="phase"){this.elderTransformTick(body);return;}
+    if(body.elderMode=="death"){
+        if(this.elderForm=="robot" && !this.cf6RobotDeathTick(body))return;
+        if(body._currentframe<body._totalframes)body.nextFrame();
+        else if(this.elderForm=="robot")this.cf6FinishCorpse(body);
+        return;
+    }
+    if(!(this.hp>0) || this.硬直中)return;
+    if(body.elderMode=="attack"){
+        if(!this.elderCanAct(body))return;
+        var owner:Object=this.elderAttackOwner,frame:Number=body._currentframe;
+        if(owner.action=="heavyBeam" && !this.elderHeavyTargetValid(owner)){
+            this.elderCancelAttack();this.动画完毕();return;
+        }
+        this.elderTrackBeam(body);
+        if(owner.ownsRigid && owner.action!="beam" && owner.action!="heavyBeam" && frame>owner.spec.hits[owner.spec.hits.length-1]){
+            this.刚体=owner.previousRigid;owner.ownsRigid=false;
+        }
+        if(owner.ownsImmune && frame>owner.spec.hits[owner.spec.hits.length-1]){
+            this.免疫击退=owner.previousImmune;owner.ownsImmune=false;
+        }
+        if(this.elderContactDue(frame) && owner.lastHitFrame<frame){
+            this.elderStrike(body,body.攻击点);
+            if(owner.lastHitFrame<frame)return;
+        }
+        if((owner.action=="stab" && frame>7 && frame<17)
+            || (owner.action=="kicks" && ((frame>3 && frame<9) || (frame>20 && frame<26)))){
+            var target:MovieClip=_root.gameworld[owner.target];
+            var dx:Number=target._x-this._x;
+            if(target.hp>0 && Math.abs(dx)>90 && Math.abs(target.Z轴坐标-this.Z轴坐标)<30
+                && ((this.方向=="右" && dx>0) || (this.方向=="左" && dx<0)))
+                this.移动(this.方向,Math.min(8,Math.abs(dx)-90));
+        }
+    }
+    if(body._currentframe==body._totalframes)body.gotoAndStop(1);else body.nextFrame();
+};
+// 对明确的高波抗目标接近使用实体攻击；不按单位 ID 特判。
+elderWantsClose=function(target:MovieClip):Boolean {
+    var resistance:Number=Number(target.魔法抗性.波);
+    return this.elderForm=="robot" && ((!isNaN(resistance) && resistance>=75)
+        || this.elderClock<this.elderNextBeam || this.elderHasBeamMark(target));
+};
+elderChooseAttack=function(dx:Number,dz:Number,height:Number,preferClose:Boolean):String {
+    var tune:Object=this.elderTuning;
+    if(this.elderForm=="robot"){
+        var stats:Object=this.elderCombatStats;stats.decisionChecks++;
+        if(dx>tune.shootRange)stats.rangeOutsideChecks++;
+    }
+    if(isNaN(dx) || isNaN(dz) || isNaN(height) || dx<0 || dz<0
+        || height>tune.maximumTargetHeight || this.elderClock<this.elderReadyAt)return "none";
+    if(this.elderForm=="human"){
+        if(dz<=tune.laneRange && dx<=tune.closeRange && height<=80)return "stab";
+        return dx<=tune.shootRange && dz<=tune.crossLaneRange && this.elderClock>=this.elderNextBurst
+            && (dz<=tune.laneRange || dx>=tune.crossLaneMinX)?"burst":"none";
+    }
+    if(dz>tune.laneRange)return "none";
+    if(dx<=tune.slamRange && height<=65 && this.elderClock>=this.elderNextSlam)return "slam";
+    if(dx<=tune.closeRange && height<=100)return "kicks";
+    if(dx<=tune.shootRange && this.elderClock>=this.elderNextHeavyBeam
+        && this.elderHasHeavyPermission(_root.gameworld[this.攻击目标],this.elderActions.heavyBeam.hits[this.elderActions.heavyBeam.hits.length-1]+1))return "heavyBeam";
+    return dx<=tune.shootRange && this.elderClock>=this.elderNextBeam?"beam":"none";
+};
+elderTick=function():Void {
+    if(_root.暂停 || this.elderTransform!=null)return;
+    this.elderClock++;
+    if(this.elderForm=="robot"){
+        this.浮空=this.倒地=false;this.垂直速度=0;
+        if(!isNaN(this.Z轴坐标))this._y=this.Z轴坐标;
+    }
+    if(!isNaN(this.hp) && this.hp<=0){
+        this.elderReportCombat();this.elderCancelAttack();
+        if(!this._killed && typeof(_root.敌人函数.标准击杀)=="function")_root.敌人函数.标准击杀(this);
+        else if(this.状态!="血腥死" && this.状态!="消失")this.状态改变("血腥死");
+        return;
+    }
+    if(this.elderForm=="robot")this.elderUpdateReactiveShield();
+    var owner:Object=this.elderAttackOwner;
+    if(owner!=null){
+        if(this.状态!=owner.state || this.man.elderToken!==owner.token)this.elderCancelAttack();
+        return;
+    }
+    if(!(this.hp>0) || this.硬直中 || this.浮空 || this.倒地)return;
+    if(_root.控制目标==this._name && _root.控制目标全自动==false)return;
+    if(this.状态!="空手站立" && this.状态!="空手行走" && this.状态!="空手跑")return;
+    if((this.elderClock&3)!=0)return;
+    this.x轴攻击范围=0;this.y轴攻击范围=this.elderTuning.laneRange;
+    this.x轴保持距离=this.elderTuning.approachStopRange;
+    if(this.unitAI.data!=null){this.unitAI.data.xrange=0;this.unitAI.data.zrange=this.y轴攻击范围;this.unitAI.data.xdistance=this.x轴保持距离;}
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(!(target.hp>0) || target===this || target.area==null){this.elderClearMovement();return;}
+    var dx:Number=target._x-this._x,dz:Number=target.Z轴坐标-this.Z轴坐标;
+    var height:Number=target.Z轴坐标-target._y;
+    if(target.浮空高度>0)height+=target.浮空高度;
+    if(this.elderTargetName!=target._name){this.elderTargetName=target._name;this.elderReadyAt=this.elderClock+this.elderTuning.reactionFrames;}
+    var action:String=this.elderComboReady(target,Math.abs(dx),Math.abs(dz),height)?
+        (this.elderClock>=this.elderNextHeavyBeam && this.elderHasHeavyPermission(target,this.elderActions.heavyBeam.hits[this.elderActions.heavyBeam.hits.length-1]+1)?"heavyBeam":"beam"):
+        this.elderChooseAttack(Math.abs(dx),Math.abs(dz),height,this.elderWantsClose(target));
+    if(action=="none"){this.elderUpdateMovement();return;}
+    this.elderClearMovement();
+    if(dx<0)this.方向改变("左");else if(dx>0)this.方向改变("右");
+    this.状态改变(this.elderActions[action].state);
+};
+elderUpdateMovement=function():Void {
+    this.左行=this.右行=this.上行=this.下行=false;
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    if(!(target.hp>0) || target===this || target.area==null){this.elderClearMovement();return;}
+    var dx:Number=target._x-this._x,dz:Number=target.Z轴坐标-this.Z轴坐标;
+    if(isNaN(dx) || isNaN(dz)){this.elderClearMovement();return;}
+    if(this.elderMovementTarget!=target._name){this.elderAlignZ=this.elderApproachX=false;this.elderMovementTarget=target._name;}
+    var tune:Object=this.elderTuning,ax:Number=Math.abs(dx),az:Number=Math.abs(dz);
+    if(az>tune.laneRange)this.elderAlignZ=true;else if(az<=tune.laneStopRange)this.elderAlignZ=false;
+    var preferClose:Boolean=this.elderWantsClose(target);
+    var approachRange:Number=preferClose?tune.closeRange:tune.shootRange;
+    var stopRange:Number=preferClose?110:tune.approachStopRange;
+    if(ax>approachRange)this.elderApproachX=true;else if(ax<=stopRange)this.elderApproachX=false;
+    this.上行=this.elderAlignZ && dz<0;this.下行=this.elderAlignZ && dz>0;
+    this.左行=this.elderApproachX && dx<0;this.右行=this.elderApproachX && dx>0;
+};
+行走=function():Void {
+    if(_root.暂停)return;
+    if(_root.控制目标==this._name && _root.控制目标全自动==false){_root.敌人函数.行走.call(this);return;}
+    if(!(this.hp>0) || this.浮空 || this.倒地 || this.硬直中 || this.elderAttackOwner!=null){this.elderClearMovement();return;}
+    if(this.状态!="空手站立" && this.状态!="空手行走" && this.状态!="空手跑")return;
+    this.elderUpdateMovement();
+    var target:MovieClip=_root.gameworld[this.攻击目标];
+    var movingX:Boolean=this.左行 || this.右行,movingZ:Boolean=this.上行 || this.下行;
+    var running:Boolean=movingX && Math.abs(target._x-this._x)>this.elderTuning.shootRange;
+    if(movingX){
+        var direction:String=this.右行?"右":"左";this.方向改变(direction);
+        var speedX:Number=running?this.跑X速度:this.行走X速度;
+        this.移动(direction,Math.min(speedX,Math.max(0,Math.abs(target._x-this._x)-(this.elderWantsClose(target)?110:this.elderTuning.approachStopRange))));
+    }
+    if(movingZ){
+        var speedZ:Number=running?this.跑Y速度:this.行走Y速度;
+        this.移动(this.下行?"下":"上",Math.min(speedZ,Math.max(0,Math.abs(target.Z轴坐标-this.Z轴坐标)-this.elderTuning.laneStopRange)));
+    }
+    this.状态改变(movingX || movingZ?(running?"空手跑":"空手行走"):"空手站立");
+};
+
+// 两种机械尸体共用的小型表现适配。碎片仍由地图破碎动画计算，伤害和击杀保持原入口。
+cf6StartCorpseFragments=function(scope:MovieClip,count:Number):Void {
+    if(scope.cf6Started===true)return;scope.cf6Started=true;
+    var ground:Object={x:0,y:0};this.localToGlobal(ground);scope.globalToLocal(ground);
+    var world:MovieClip=_root.gameworld;
+    if(world.__cf6CorpseWorldIdentity==undefined)world.__cf6CorpseWorldIdentity={};
+    scope.cf6WorldIdentity=world.__cf6CorpseWorldIdentity;
+    // 静止阈值覆盖落地后单帧重力反弹，避免不同碎片交替微弹而永不结束。
+    scope.cf6AnimationId=_root.地图元件.地图元件破碎动画(scope,"碎片",{fragmentCount:count,
+        groundY:ground.y,gravity:1.5,bounce:0.22,friction:0.65,stopThresholdBase:1.25,baseVelocityX:2,velocityXRange:5,
+        velocityYMin:3,velocityYMax:7,rotationRange:12,collisionProbability:0,enableDebug:false});
+    var fragmentIdentity:Object={};scope.cf6Identity=fragmentIdentity;
+    var ownedAnimationId:Number=scope.cf6AnimationId;
+    scope.cf6EngineStep=scope.onEnterFrame;
+    scope.cf6Settled=false;
+    scope.onUnload=function():Void {
+        _root.地图元件.停止地图元件破碎动画(ownedAnimationId);
+        if(this.cf6Identity!==fragmentIdentity)return;
+        delete this.cf6EngineStep;
+    };
+    if(!(scope.cf6AnimationId>=0) || typeof scope.cf6EngineStep!="function"){
+        trace("[CF6_CORPSE_ERROR] fragment engine unavailable "+this._name);return;
+    }
+    scope.onEnterFrame=function():Void {
+        if(this.cf6Identity!==fragmentIdentity || this.cf6Settled===true)return;
+        if(_root.gameworld.__cf6CorpseWorldIdentity!==this.cf6WorldIdentity){
+            _root.地图元件.停止地图元件破碎动画(ownedAnimationId);
+            delete this.cf6EngineStep;delete this.onEnterFrame;return;
+        }
+        if(_root.暂停)return;
+        this.cf6EngineStep.call(this);
+        if(!_root.地图元件.地图元件破碎动画运行中(ownedAnimationId)){
+            this.cf6Settled=true;delete this.cf6EngineStep;delete this.onEnterFrame;
+        }
+    };
+};
+cf6FinishCorpse=function(body:MovieClip):Void {
+    if(body!==this.man || this.hp>0 || _root.暂停 || body.cf6CorpseFinished===true)return;
+    if(body.尸体碎片==null || body.尸体碎片.cf6Settled!==true)return;
+    body.cf6CorpseFinished=true;
+    if(body.headbotShadow!=null)body.headbotShadow._visible=false;
+    if(body.elderShadow!=null)body.elderShadow._visible=false;
+    this.死亡检测();
+};
+
+// 三种 CF6 机器人共用一次性亡语；视觉是私有矢量，声音走原生 SFX，伤害走正常子弹管线。
+cf6RobotDeathIdentity={};cf6RobotDeathSpent=false;
+cf6ArmRobotDeath=function(body:MovieClip,burstFrame:Number):Void {
+    var world:MovieClip=_root.gameworld;
+    if(world.__cf6RobotDeathWorldIdentity==undefined)world.__cf6RobotDeathWorldIdentity={};
+    body.cf6RobotDeathIdentity=this.cf6RobotDeathIdentity;
+    body.cf6RobotDeathWorldIdentity=world.__cf6RobotDeathWorldIdentity;
+    body.cf6RobotDeathBurstFrame=burstFrame;
+};
+cf6RobotDeathTick=function(body:MovieClip):Boolean {
+    if(_root.暂停 || body!==this.man || this._parent!==_root.gameworld
+        || body.cf6RobotDeathIdentity!==this.cf6RobotDeathIdentity
+        || body.cf6RobotDeathWorldIdentity!==_root.gameworld.__cf6RobotDeathWorldIdentity)return false;
+    if(body._currentframe!=body.cf6RobotDeathBurstFrame || this.cf6RobotDeathSpent===true)return true;
+    // 只画死亡姿态的预览不获得伤害授权。
+    if(isNaN(this.hp) || this.hp>0)return true;
+    var point:MovieClip=body.cf6DeathPoint;
+    if(point.area==null || point._parent!==body || point.cf6RobotDeathIdentity!==this.cf6RobotDeathIdentity)return false;
+    this.cf6RobotDeathSpent=true;
+    var p:Object={x:point._x,y:point._y};body.localToGlobal(p);_root.gameworld.globalToLocal(p);
+    _root.播放音效("CF6_1009.mp3");
+    _root.子弹区域shoot传递({声音:"",霰弹值:1,子弹散射度:0,发射效果:"",子弹种类:"近战子弹",
+        子弹威力:this.空手攻击力*2,子弹速度:0,Z轴攻击范围:80,击中地图效果:"",
+        发射者:this._name,shootX:p.x,shootY:p.y,shootZ:this.Z轴坐标,击倒率:3,
+        击中后子弹的效果:"火花",水平击退速度:8,垂直击退速度:0,
+        区域定位area:point.area,伤害类型:"物理",cf6DeathBurst:true});
+    return true;
+};
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.swapDepths(this._y);]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728" duration="149">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="151" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[hp=0;elderCancelAttack();]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="152" keyMode="9728" duration="4">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="私有行为" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="121">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/行为驱动" name="elderDriver">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){_parent.elderTick();}onClipEvent(unload){if(typeof _parent.elderReportCombat=="function")_parent.elderReportCombat();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="35">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="文字信息" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="151">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/CF7/Symbol 32" name="人物文字信息">
+                  <matrix>
+                    <Matrix ty="-205"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="151" keyMode="9728" duration="5">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="受击包围盒" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="121">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/CF7/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix a="3.2" d="7.2" tx="-40" ty="-184"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="35">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="通用仇恨驱动" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/CF7/思考标签">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="127">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="行走" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="29">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/行为驱动" name="控制块">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame){if(!_root.暂停)_parent.行走();}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="127">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="动作" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="9">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/990" name="man">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-83.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/991" name="man">
+                  <matrix>
+                    <Matrix tx="31.6" ty="-87.2625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="19" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/991" name="man">
+                  <matrix>
+                    <Matrix tx="31.6" ty="-87.2625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="29" keyMode="9728" duration="8">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1008" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="37" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/997" name="man">
+                  <matrix>
+                    <Matrix tx="26.5" ty="-64.9125"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="41" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/994" name="man">
+                  <matrix>
+                    <Matrix tx="4.75" ty="-73.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="51" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1007" name="man">
+                  <matrix>
+                    <Matrix tx="21.5" ty="-90.9625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="56" keyMode="9728" duration="5">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/19940" name="man">
+                  <matrix>
+                    <Matrix tx="4.75" ty="-73.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="61" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/990" name="man">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-83.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="71" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/990" name="man">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-83.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="81" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1008" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){gotoAndStop("a"+random(2));}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="91" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1008" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1008" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="111" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1008" name="man">
+                  <matrix>
+                    <Matrix tx="8.95" ty="-71.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="121" keyMode="9728" duration="20">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/1010" name="man">
+                  <matrix>
+                    <Matrix tx="1.5" ty="-81.3625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="141" keyMode="9728" duration="10">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/老头/robot/动作/990" name="man">
+                  <matrix>
+                    <Matrix tx="8.5" ty="-83.4625"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="151" keyMode="9728" duration="5">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

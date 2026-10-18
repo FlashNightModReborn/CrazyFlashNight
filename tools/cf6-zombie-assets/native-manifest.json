@@ -173,18 +173,18 @@
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/动作/倒地.xml",
-      "sha256": "2189cf23c7c9c2a4840bac54b7304d6902f90643a3ee854dec59bda1998f9bfe",
-      "bytes": 85511
+      "sha256": "ccb6690e4285da197aa0f73970d1b493334cc97d135618c2e0d8f78c50c472d6",
+      "bytes": 86019
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/动作/击倒.xml",
-      "sha256": "af0e0e644f5c67f31ee850fdffebfbbc0f57c6a4442c3ae0d61e92a03b323a56",
-      "bytes": 15270
+      "sha256": "76c347035c17bd8c96734b7711ed422d292d4128ed092e5ba602966d88d245b8",
+      "bytes": 15277
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/动作/攻击.xml",
-      "sha256": "ba7c1a0755b7df7dc0a953d0214cc30dedd45940d914ff3f8b919b19468d0a21",
-      "bytes": 77971
+      "sha256": "8ba0812668179bf7a8187219bc5570baf3b74d1acef4367c1e6b672714f614b8",
+      "bytes": 78577
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/动作/站立.xml",
@@ -208,13 +208,13 @@
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/动作/被投.xml",
-      "sha256": "463783aa04f83e3e10a1f7bc1d0442493d38d1039de4838957a9e82c88ddc235",
-      "bytes": 88791
+      "sha256": "7aad99e9b1183a9da2aa834fb7f27e36c058349b62b786a1d1505a5f0716b87f",
+      "bytes": 89790
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/敌人-CF6女僵尸.xml",
-      "sha256": "cc16d2a60b89a72f9d5240f25821ce37f7a89058afde5471ab7d86da8854f222",
-      "bytes": 18304
+      "sha256": "f55b98648db7207fa3d5cd568f943fc71d08e891f507a5da3adc036145ab27e7",
+      "bytes": 18311
     },
     {
       "path": "LIBRARY/Antigravity/CF6女僵尸/碎尸/1635.xml",
@@ -743,8 +743,8 @@
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/动作/倒地.xml",
-      "sha256": "d0fe8f7469184977a1f8edd0bfc6587263a341c089138a9ef34a1cb6dfaa286c",
-      "bytes": 108067
+      "sha256": "30e7c3a250da0d5047d9aceb2a35022018fea911f08625a0fbe037b690a4ebd7",
+      "bytes": 108575
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/动作/击倒.xml",
@@ -753,8 +753,8 @@
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/动作/攻击.xml",
-      "sha256": "42e3b3e7be2fb781fb9cfa7ae8732bb1f72d9e841d08e0c30e0f8d8365e1da04",
-      "bytes": 58114
+      "sha256": "b6fc5581a1429f882ee233241c466390a107a6cac664ff7373aade89f03f5373",
+      "bytes": 58720
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/动作/站立.xml",
@@ -778,8 +778,8 @@
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/动作/被投.xml",
-      "sha256": "da495c9b61cc8e2f13cd58ded7195c37d8cd317969896fa5d9e18d1ddbbc918d",
-      "bytes": 78272
+      "sha256": "29f2df6e85865d1f152af25fb76cfac5c94959457b68ee5921bc6c41076cef88",
+      "bytes": 79271
     },
     {
       "path": "LIBRARY/Antigravity/CF6普通男僵尸/敌人-CF6普通男僵尸.xml",
@@ -1918,5 +1918,41 @@
       "sha256": "0646578ff563f2450725fb4d5e8b5d340b3988e4de389233b251bba303595982",
       "bytes": 8188
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 8,
+    "voiceReplacements": 2,
+    "removedEmbeddedTracks": 0,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0288.mp3",
+        "sha256": "096ea1022c8566a857fbc60384fa9cc24b06c54253aeb5f73d964f44aa2ead4b"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1143.mp3",
+        "sha256": "2477c631a0de2c617ee75c2437ae13dbc3cf29399b27618d6bb39b9a6fbb31f7"
+      },
+      {
+        "path": "sounds/export/人物/CF6_1150.mp3",
+        "sha256": "5b1c6498ad759aef9a6a45d09add4cbac080ff3028891eec8d1e3ad921a1776e"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

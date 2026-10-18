@@ -1,0 +1,8 @@
+{
+  "source": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+  "beforeSha256": "788dcee6bd79971c869dc023f2fd1638bfa8cbe9853b704b01752382fd7a6c88",
+  "afterSha256": "ce1385ebf3fc3a424b9e56f271f22b25f0a6d8c78656a310e517fccd72dabbb0",
+  "oldAsLoaderSha256": "7168f7ab37172cd20c91b6e043b6d4ddabee8c14df32f4d6b9b0f65e4ab010de",
+  "change": "Use the impacted target own friction instead of lexical root property",
+  "scope": "One expression in shared enemy knockback; exact native baseline failed 5 of 7 checks"
+}

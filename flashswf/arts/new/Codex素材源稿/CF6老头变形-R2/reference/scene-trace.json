@@ -1,0 +1,237 @@
+[
+  {
+    "root_frame": 1,
+    "label": "DLC"
+  },
+  {
+    "root_frame": 6,
+    "label": "logo"
+  },
+  {
+    "root_frame": 12,
+    "label": "函数集"
+  },
+  {
+    "root_frame": 22,
+    "label": "游戏封面"
+  },
+  {
+    "root_frame": 24,
+    "label": "about"
+  },
+  {
+    "root_frame": 26,
+    "label": "help"
+  },
+  {
+    "root_frame": 28,
+    "label": "set"
+  },
+  {
+    "root_frame": 37,
+    "label": "s1"
+  },
+  {
+    "root_frame": 39,
+    "label": "s2"
+  },
+  {
+    "root_frame": 41,
+    "label": "s3"
+  },
+  {
+    "root_frame": 43,
+    "label": "s4"
+  },
+  {
+    "root_frame": 45,
+    "label": "s5"
+  },
+  {
+    "root_frame": 47,
+    "label": "s6"
+  },
+  {
+    "root_frame": 49,
+    "label": "s7"
+  },
+  {
+    "root_frame": 58,
+    "label": "教学关"
+  },
+  {
+    "root_frame": 66,
+    "label": "a1"
+  },
+  {
+    "root_frame": 73,
+    "label": "a2"
+  },
+  {
+    "root_frame": 78,
+    "label": "a3"
+  },
+  {
+    "root_frame": 82,
+    "label": "a4"
+  },
+  {
+    "root_frame": 86,
+    "label": "a5"
+  },
+  {
+    "root_frame": 92,
+    "label": "a6"
+  },
+  {
+    "root_frame": 104,
+    "label": "a7"
+  },
+  {
+    "root_frame": 108,
+    "label": "a8"
+  },
+  {
+    "root_frame": 116,
+    "label": "a9"
+  },
+  {
+    "root_frame": 131,
+    "label": "a10"
+  },
+  {
+    "root_frame": 138,
+    "label": "a11"
+  },
+  {
+    "root_frame": 143,
+    "label": "a12"
+  },
+  {
+    "root_frame": 148,
+    "label": "a13"
+  },
+  {
+    "root_frame": 152,
+    "label": "a14"
+  },
+  {
+    "root_frame": 157,
+    "label": "a15"
+  },
+  {
+    "root_frame": 162,
+    "label": "a16"
+  },
+  {
+    "root_frame": 169,
+    "label": "a17"
+  },
+  {
+    "root_frame": 178,
+    "label": "a18"
+  },
+  {
+    "root_frame": 183,
+    "label": "a19"
+  },
+  {
+    "root_frame": 188,
+    "label": "a20"
+  },
+  {
+    "root_frame": 188,
+    "placed": 1992,
+    "offset": 16164070
+  },
+  {
+    "root_frame": 193,
+    "label": "a21"
+  },
+  {
+    "root_frame": 193,
+    "placed": 2008,
+    "offset": 16239645
+  },
+  {
+    "root_frame": 198,
+    "label": "a22"
+  },
+  {
+    "root_frame": 198,
+    "placed": 2011,
+    "offset": 16254172
+  },
+  {
+    "root_frame": 211,
+    "label": "end"
+  },
+  {
+    "owner": 0,
+    "frame": 188,
+    "tag": 12,
+    "offset": 16142134,
+    "length": 72,
+    "hex": "960700005f726f6f74001c96170000e99fb3e4b990e5beaae78eafe692ade694bee599a8004e961d0000e5beaae78eafe692ade694bee99fb3e4b99000006d757369633033004f00",
+    "strings": [
+      "_root",
+      "音乐循环播放器",
+      "循环播放音乐",
+      "music03"
+    ]
+  },
+  {
+    "owner": 0,
+    "frame": 193,
+    "tag": 12,
+    "offset": 16167137,
+    "length": 72,
+    "hex": "960700005f726f6f74001c96170000e99fb3e4b990e5beaae78eafe692ade694bee599a8004e961d0000e5beaae78eafe692ade694bee99fb3e4b99000006d757369633031004f00",
+    "strings": [
+      "_root",
+      "音乐循环播放器",
+      "循环播放音乐",
+      "music01"
+    ]
+  },
+  {
+    "owner": 2008,
+    "frame": 2,
+    "tag": 15,
+    "offset": 16231142,
+    "length": 3,
+    "hex": "c90700",
+    "soundId": 1993
+  },
+  {
+    "owner": 2008,
+    "frame": 81,
+    "tag": 15,
+    "offset": 16236433,
+    "length": 3,
+    "hex": "d40700",
+    "soundId": 2004
+  },
+  {
+    "owner": 2008,
+    "frame": 255,
+    "tag": 15,
+    "offset": 16239520,
+    "length": 3,
+    "hex": "d70700",
+    "soundId": 2007
+  },
+  {
+    "owner": 2008,
+    "frame": 283,
+    "tag": 12,
+    "offset": 16239585,
+    "length": 50,
+    "hex": "960b0000e79baee6a087e5b8a7001c960c000701000000005f726f6f74001c960d0000676f746f416e6453746f7000521700",
+    "strings": [
+      "目标帧",
+      "_root",
+      "gotoAndStop"
+    ]
+  }
+]

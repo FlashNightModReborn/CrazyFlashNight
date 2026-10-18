@@ -1,0 +1,44 @@
+{
+  "registeredAtUtc": "2026-10-18T08:57:54.308939+00:00",
+  "userScope": "重点保60-100这个范围，低等级不考虑",
+  "purpose": "First R22 arena execution is the full thirty-six-row matrix under the newly authorized high-level profile. R21 exploratory observations remain historical.",
+  "firstArenaExecutionOfVariant": true,
+  "precedingPilotExperiment": "cf6-cal-r21-pilot-20261018",
+  "expectedRows": 36,
+  "expectedLevels": [
+    60,
+    80,
+    100
+  ],
+  "levels": [
+    60,
+    80,
+    100
+  ],
+  "rivals": [
+    78,
+    361
+  ],
+  "perSideRepeat": 3,
+  "requiredNaturalLosses": 36,
+  "winsAllowed": 0,
+  "drawsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "fullMatrixGroupMeanAndMedianNetHpLoss": [
+    0.5,
+    0.8
+  ],
+  "ownPhaseSpawnsPerFight": 1,
+  "netHpMethod": "Fixed full opponent chain including unspawned Beast successor; every outcome retained.",
+  "maximumConcurrentGames": 1,
+  "groups": 18,
+  "rowsPerGroup": 2,
+  "perFightTimeoutFrames": 5400,
+  "perShardWallLimitMs": 900000,
+  "displayLog": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\display-qualified-20261018-r8\\display-state.jsonl",
+  "nativeCandidate": "cf6-transition-paint-r4",
+  "focusedNativePassed": 1080,
+  "audioPlayerAimAndRenderCurrentVariantPending": true,
+  "priorExploratorySummarySha256": "a21783013cd2992a1f8ac582c1d684dbbea2a814510e5997254d976a48ff063c",
+  "formalPromotion": false
+}

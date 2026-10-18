@@ -10,6 +10,7 @@ with zero bitmaps (no DOMBitmapInstance, no BitmapFill) and zero duplicate limb/
 import argparse
 import copy
 import hashlib
+import importlib.util
 import io
 import json
 import pathlib
@@ -20,6 +21,9 @@ from lxml import etree as E
 
 ROOT = pathlib.Path(__file__).resolve().parents[2]
 HERE = pathlib.Path(__file__).resolve().parent
+_audio_spec=importlib.util.spec_from_file_location('cf6_audio_native',ROOT/'tools/cf6-audio/build.py')
+audio=importlib.util.module_from_spec(_audio_spec)
+_audio_spec.loader.exec_module(audio)
 ARCHIVE = ROOT / 'flashswf/arts/new/Antigravity素材源稿'
 MALE_ARCHIVE = ARCHIVE / 'CF6普通男僵尸-R5'
 FEMALE_ARCHIVE = ARCHIVE / 'CF6女僵尸-R2'
@@ -1301,6 +1305,7 @@ def import_assets(force: bool = False):
     combined = {**shared, **male_symbols, **female_symbols}
     # Generation can take time; recheck before the first write to the native workspace.
     guard_overwrite_allowed(force=force)
+    audio_receipt=audio.apply(combined,OWNER,make_sparse_layer)
     rows = write_workspace(combined, [male_report['root'], female_report['root']])
     ensure_things_new_fla()
 
@@ -1317,6 +1322,7 @@ def import_assets(force: bool = False):
             for rel in PROJECT_FILES
         ],
     }
+    manifest['audio']=audio_receipt
     (HERE / 'native-manifest.json').write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     print(json.dumps({
         'importedSymbols': len(rows),
@@ -1406,6 +1412,7 @@ def _layer_bbox(root_el):
 
 def check():
     manifest = json.loads((HERE / 'native-manifest.json').read_text(encoding='utf-8'))
+    audio.check(manifest,OWNER)
     failures = workspace_identity_failures(manifest)
     mask_symbols_checked = 0
     for entry in manifest['outputs']:

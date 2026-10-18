@@ -1,0 +1,75 @@
+{
+  "status": "source_threshold_analysis; not a new arena or native execution",
+  "experiment": "cf6-cal-r14-full-20261018",
+  "observedGroups": [
+    "beastking-level30",
+    "beastking-level60"
+  ],
+  "sourceBindings": [
+    {
+      "path": "data/enemy_properties/原版敌人 2013-2016.xml",
+      "sha256": "7142b6d13fa357758f6c527b10f4314fee90e5d7e37e620be4cde45652dc6ece"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/敌人-方舟兽王.xml",
+      "sha256": "e5faffe047fd4c3988f25f9fd4c0253863dad44d6ee391b6532c6af5b6e83d7a"
+    },
+    {
+      "path": "flashswf/arts/things5/LIBRARY/Symbol 2033.xml",
+      "sha256": "924e84e94a6a535e5687566f96f3c1d7b77d4ad31a7d91868fa946e96731c07f"
+    },
+    {
+      "path": "scripts/引擎/引擎_lsy_常数.as",
+      "sha256": "a7ed5dcfc7ca5f0afe186bf605087f03c450ad6c57cc4d6d8395d29c2998e872"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/merc/ArenaCalibrationService.as",
+      "sha256": "22a8d6aff5adbe463ca3d318ec47f0c99d0bd145d6be9c490176f90ef9787979"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/LifeStealDamageHandle.as",
+      "sha256": "b465474d79415b7b9e99b3bb48bb851380e5c7941d13348e0fd7fe9c882bf95f"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/component/Damage/CrumbleDamageHandle.as",
+      "sha256": "731ba9cf7a31ca8c66ec611317ef2f96f1de9b6339417dd907950e9fcff2ffbe"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "9b827c975da1c9af17318636d9cb2c2434311baea36afeb618666b22c802d222"
+    }
+  ],
+  "diagnosticIndexSha256": "c4d8e551abea7636910cd3bfca316c7fc592a01a3b338ea443be27c810589289",
+  "difficulty": {
+    "value": 1,
+    "basis": "Cold-start default, calibration passes no difficulty override, and observed initial rival HP matches the unscaled level formula in canonical phase analysis; not a direct global-variable trace."
+  },
+  "rageHeavy": {
+    "maxAttackField": 850.0,
+    "rageMultiplier": 7.0,
+    "heavyMultiplier": 1.5,
+    "rawPower": 8925.0
+  },
+  "currentSlamShieldRate": 6.0,
+  "observedPhaseStarts": [
+    {
+      "level": 30,
+      "maxHp": 15318,
+      "attack": 1033,
+      "shieldStrength": 6198.0,
+      "blocksRageHeavy": false
+    },
+    {
+      "level": 60,
+      "maxHp": 20636,
+      "attack": 1503,
+      "shieldStrength": 9018.0,
+      "blocksRageHeavy": true
+    }
+  ],
+  "boundary": "This establishes the generic raw-power gate and the observed actor statistics. It does not prove how often rage-heavy contacts occurred or that raising this shield alone will meet the full balance target."
+}

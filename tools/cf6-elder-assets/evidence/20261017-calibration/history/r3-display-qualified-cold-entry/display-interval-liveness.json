@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "maximumGapSeconds": 15.260409,
+  "maximumAllowedGapSeconds": 30,
+  "boundary": "This verifies observer-loop liveness in addition to the state notification interval. Heartbeats are not new display-state observations. Future combat collection rejects a liveness gap over 30 seconds."
+}

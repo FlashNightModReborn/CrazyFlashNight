@@ -1,0 +1,29 @@
+{
+  "registeredAtUtc": "2026-10-18T08:17:19.011987+00:00",
+  "purpose": "Redistribute output through the unchanged canonical formula: slam multiplier 8 to 18, attack multiplier flag 6.875, actual level 30/60/99 attack 813/1184/1666. Normal/heavy written powers remain unchanged, so actual wave output falls about 36 percent while slam rises about 45 percent. Independent capacity budgets: melee 0.5, beam 0.2, reactive 0.75 relative to R19; shield attack normalization 55/43 keeps hardness within 1.4 percent of R20. Keep approved 750 range, visible/collision geometry, durations, HP/DEF, human form and other units unchanged.",
+  "expectedRows": 12,
+  "levels": [
+    30,
+    60,
+    99
+  ],
+  "rivals": [
+    78,
+    361
+  ],
+  "perSideRepeat": 1,
+  "fullMatrix": false,
+  "fullMatrixGroupMeanAndMedianNetHpLoss": [
+    0.5,
+    0.8
+  ],
+  "winsAllowed": 0,
+  "timeoutsAllowed": 0,
+  "ownPhaseSpawnsPerFight": 1,
+  "netHpMethod": "Fixed full opponent chain including unspawned Beast successor; every result retained.",
+  "maximumConcurrentGames": 1,
+  "displayLog": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\cf6-combat-calibration-20261017\\display-qualified-20261018-r7\\display-state.jsonl",
+  "perShardWallLimitMs": 900000,
+  "perFightTimeoutFrames": 5400,
+  "formalPromotion": false
+}

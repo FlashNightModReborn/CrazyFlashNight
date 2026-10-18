@@ -1,0 +1,754 @@
+{
+  "workers": [
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "beforeSha256": "d15c6778237384db72be2351a50097dc9995115d0118ab1695d6d834e9d86bee",
+          "sha256": "9d6002d4b6512c23c8a8006da2d612be45a7664f084cf553e7a58c7ebb58c32d"
+        },
+        {
+          "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+          "beforeSha256": "98d94274dcd636ef5e1f64e98dd3aef2a4d1a127c39e97bed0c66dbeacda98a2",
+          "sha256": "c65d1990c8345d5a720fbc6aea9ed407e4eb77de3564fcdc23f7153a458be4cf"
+        },
+        {
+          "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+          "beforeSha256": "9a48e08e8d24e3974924fa02becdfe80c7840c0c3dbb7f73a121bcbd9afc798c",
+          "sha256": "c163a02ea2fa773a51e88e6eb1f63e4a6650abf210b021bcfacfd74be06286fb"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "beforeSha256": "c3efc175d6129707ef586cc0dbb68adfbdeac740426bedb63778a39ba330527c",
+          "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "beforeSha256": "9d49ec7964ac01771be24678a2a07e7646cfc5acc9dc6f1843e329542499b8fc",
+          "sha256": "3c26ea9f614383639fb48784339ef01567a6fb366a207b35a63a5a8b37068a03"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "beforeSha256": "1fe7af27a05b45d06315ab5f8b431a21fac5ac031c1bd59e914b601b5b319185",
+          "sha256": "4ecc9e4d30a89458f975917feba82456c7f978db77ad2605d449b336cec1622d"
+        },
+        {
+          "path": "tools/cf6-elder-assets/README.md",
+          "beforeSha256": "8ba3d7db81187f86d305907d3a8e224e98800cc35ca0ee6dd72b6ddd7fbb576b",
+          "sha256": "00fe1bf308eac34d847157bb2799a2acdd95605149d1c04c68e7a479e30bb8a8"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build-playtest-fixture.py",
+          "beforeSha256": "9ffb56930ffe5fdeb6d52edf5ec16cc0f88bd9c729b5f4dd9492c949adf2997a",
+          "sha256": "b2bc2e8fb585bf8d7e9c3b5eb761016458bf04c508beeaf0c105bc2847b33124"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "beforeSha256": "5d89f9c7103345835506cb2649a7e363101bb73b1a0a383bc02aa89eb1e9762e",
+          "sha256": "34654566d0647dcd2235404b12889a60d301da9194e8c048da17810cdad8fd3c"
+        },
+        {
+          "path": "data/inputCommand/cold_arms_weapon.xml",
+          "beforeSha256": null,
+          "sha256": "06fbdac6be8c8b85c068250c986ec9f61430e9275084cafebf812549b78c0c91"
+        },
+        {
+          "path": "data/inputCommand/list.xml",
+          "beforeSha256": "2617e89629aecb429ad498d1c8c6d078f2f6f509daa8f4f7b461717bf692f90a",
+          "sha256": "6702f5d3edd9f839f84ec6ceb43a5116da5170767c4a299413e4289ecdc853c0"
+        },
+        {
+          "path": "flashswf/arts/things0.swf",
+          "beforeSha256": "35e862be83466eea6902c9980703c12584a9545bccd7bd04829fa12d657ad7cb",
+          "sha256": "82d7a3381e9b03d06ce37d575d843a2f53a251ef46d68be686540800e1faad61"
+        },
+        {
+          "path": "flashswf/arts/things0/DOMDocument.xml",
+          "beforeSha256": "9a17f6959efb451de3de2c6a470a6b6a98533ac0638db85e269d8bf3b1d832f3",
+          "sha256": "85ce55abc6e7e6610b41c19ad741b46ef6cec74cf33f0f821e0dc053fd5e62de"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/Codex/Ti61-血剑战技/战技容器-猩红天秤.xml",
+          "beforeSha256": "6dcf1e673ff3a84eaab1087786b3bbed6dc33822da90d71ebd03bacd272ef162",
+          "sha256": "d343076e6c26190e304761fcaa2b2bd5d17ffffe90be45aa279d8469ead5a280"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/sprite/兵器攻击.xml",
+          "beforeSha256": "1080740bd18401b2cd4ee10a2ce361cb06a9b37256266b6505e0e4537340dbd7",
+          "sha256": "cc3a85b626537ebb79d0af3aa0b54553ff7d082db07a2fd14fea4b262a1c3783"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/兵器攻击.xml",
+          "beforeSha256": "6ea36e8844788beb91bc650e1d2e87e84a6851724d866bf35bc8d4217e2bb48b",
+          "sha256": "05873305ccacf27b6b587e8c840d71b4971fe34eed543efe656920ee1698c836"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml",
+          "beforeSha256": "e34c1ad6673346886cb66cdefecc41b3b54c0f0fcf0fe89939b4fb687be5113f",
+          "sha256": "81bc9b1ff5c407bef3a27c83da006a974c6edbf52d1b1afa3da1ff258da73295"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml",
+          "beforeSha256": "ba7acbea26c94848786b39600d166465bf45f33b06c2b438f087c4c01c7a97d5",
+          "sha256": "388617626d6c1250380992f5c3f800a2e2139cc03a5a7d9ecede66ec87b70d96"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml",
+          "beforeSha256": "b2bbba86a817a3c863d4c2652b4f0b4764309b3a0a1234576dcdb77a18946899",
+          "sha256": "8200f20a7c75f6a3f19e68686af797c49333aadcdf56c9be5b9943a3b670df3f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml",
+          "beforeSha256": "986e43abe79f0bb4d894156b9f416ff4b4f5172126512018a39131c89100f450",
+          "sha256": "6b8856e3427a4d1603f9fa03c33525d7d9e69b7567d17b973b20195bb1f597a8"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml",
+          "beforeSha256": "88fc02e18c0632142fc54e9420060730e038f0bb17f2eade714ef3dcd58f9ae8",
+          "sha256": "a912d50a1bb610db0b6b78cfb187e708cc938592ced0b3ce2714daa8bacf2c74"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml",
+          "beforeSha256": "2a3b5a57e76ebe55e41716e8667e8cfbf78efba9326e2dd8f6b298aa3f0fe776",
+          "sha256": "33500d05ed7ed4441da19ce52691bf6bee2b54f7b31f6851eb692bd812a530f1"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml",
+          "beforeSha256": "dd35a8be0ec8fec5cfd0c9048b1883c88dc06bd9a11c700e435b285ca3feb868",
+          "sha256": "1d9e28bdc02f03b17a54cf92730025dbba526ff6233eb91823fda118f54542cd"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml",
+          "beforeSha256": "48877f78e97de1541e77af6e1714d31cae25367dd981aaf7f571c92fbfafb378",
+          "sha256": "a9da070131c4e5b787aed7ae91b6f494b4a2192bf270a5ac9300e94012bc3efc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml",
+          "beforeSha256": "0a2a016fee05b95f3c8e76090c9417f0b3536997663ef4107f1abc8e9decead3",
+          "sha256": "1de9ecffa65f68c743df4c3386e80c71ffb03e2d3be80e20830ca9823bff8c12"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml",
+          "beforeSha256": "8f0b06d114bd1f4df0a1ae2c47c1668b3d1d7085c48bf1e09f5f5c7644f27c6a",
+          "sha256": "093275a7684ae79b42c22cdbb6fd576880dacba741018f465775ecbaa1c36a7f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml",
+          "beforeSha256": "c38d57bceffc61a374e7ca59a2fe6a272227cbe2ba45bd527304df9930b048ff",
+          "sha256": "17106bdebc2232d8690286d79d2bef880005861131146bf6240e97d4f67f7c99"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml",
+          "beforeSha256": "52b30e59d1b0b02ec7844ab00683c1a2679ff921ef382b8a93b0017e1aa12d40",
+          "sha256": "f5147b0b3c9f787294fe0004bd72f82e2dc768a068c14f4f640a14905d03a4cc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml",
+          "beforeSha256": "4a6cf558bae639673079060314dda27a1fa45c1750c2f5f772f33c92e2eb04b6",
+          "sha256": "127ddf484e0b7097598d403c8e0a53335cb09635e1fcd9b261d5a201fb95fa8d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml",
+          "beforeSha256": "723cac89bf4cbdd8ede7f7d674f035fe3175ec01a26b8dd408f7a874fe92a0f8",
+          "sha256": "200e8fe683125ddba58edd3e7e6c417b4b5698a4d38f48000872e29272b8bb08"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml",
+          "beforeSha256": "e7275fdfd0f59059db027ab6d3844d88364e7db846170adc43df89e1274d01ab",
+          "sha256": "ff0c6787868c2f900feb98f9217e0749b4d0e431d1a86fd8079add28b4a4aa82"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml",
+          "beforeSha256": "8a66b9f92ca4a217f28880c105a436e7d94d7cab242293aeba993be48c762379",
+          "sha256": "b2a9bfb00a51ac1c35d082a365ca4509c746f3e1d526754018c3e363668bc5c0"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招.xml",
+          "beforeSha256": "baa8c76b5b3ec42ef73d00bf4b965aadb376decf70ea344271a0829fcf543b73",
+          "sha256": "40caef2d80d5af002bbfcfe650f0253c6c521a6aadf2e478e80f7ad3acd3d0b6"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml",
+          "beforeSha256": "cb2c8d0d6885de7d3adfea93bfdff6f5245ec188f40794f154aba551072a2a0a",
+          "sha256": "dda4fca40444b585af4732bfe393794536b108ff3b87c49251ea44ec8d64bdc9"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/！兵器攻击容器-长枪原动作.xml",
+          "beforeSha256": "33d263a6069554d84cafe1e98b07311df1a6b482f62326025e45a157d337418b",
+          "sha256": "7a2ba1ed3a3f36f5a9c14c69a35305ccd16ff1903c86c4d2db41f11d30d1bae1"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Eternal Maximum Drive.xml",
+          "beforeSha256": "3d78d8bc46d6720b9ce1be9ee91a0339c239fcd133e9d83be79a6a8febce3dbc",
+          "sha256": "6022928a0d420b6081c25dfce989f1e57a97d7f0463f234bfa13dc2dc63cb210"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Excalibur.xml",
+          "beforeSha256": "445b377dc623af5b18f02b21ef366e2511523f9ed15be2766deabe6191669091",
+          "sha256": "9a37317ac31f9c3ee871483c9d1b1bea7dac7f6c7763185f845158ed3345a768"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Overdrive.xml",
+          "beforeSha256": "67971e46fe0f152963182ebfc096a711112c4c01f7ddecc714e2daa127e3dadd",
+          "sha256": "7e2b8a4b6f75e8c56c7491c7f7988d1190bc1fb5260d1d45e63e37ab8fe5304d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-一文字落雷.xml",
+          "beforeSha256": "2731ef7cbffde75f8ba94315745b0839cdee3e81d08097330ae73c2355fb614d",
+          "sha256": "3b077329a1dfb83509c5f3facadc08ec991eb51f86fc103f5292734bac1a058f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-凶斩.xml",
+          "beforeSha256": "bc240d695288177cdf04660e508c85d5a6afa192e381f34261b6cffcd82323fb",
+          "sha256": "9bd1b130d43c6a03ed56ca79a25868532b935e35fea1176fb3bed5105d848140"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-刀剑乱舞.xml",
+          "beforeSha256": "c9664f7105875b5ea630bd0ba8bce0c111e05116e94f8b79f97ccf45d9d2c8ce",
+          "sha256": "83f61d2b90ee0ec7349bcaa2c0b4fe4519f3366480e68608a97b5514294089ca"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-回旋斩击.xml",
+          "beforeSha256": "0d6a14b3f07e9011d293389a03f254fcc3af2f88f4783c7edd2a9d4733ddd3fc",
+          "sha256": "4a415bf1f5889aefb7fb403b5f246a5c9b3b96bdb9d8263f9c04739e76e7d0fe"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-回旋裂地.xml",
+          "beforeSha256": "5edc67a0008047238c7cab00b6cab0deabc3afd9ac20254103cc10bd7ca335f8",
+          "sha256": "eb1eb2dccc580081871a7653f50c08c9df2147cec5b81670319abb1046d6a28c"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-地狱斩绝.xml",
+          "beforeSha256": "66f904c1ab40bf5ca6ba0d6ba73af23e0320423938af2a9d825575b4a9fe6199",
+          "sha256": "59ea7587e701185b0b818ca75fe99d7cbc4a6abcf6b95a799fb5a86e23c11a99"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-地狱穿心剑.xml",
+          "beforeSha256": "310b992b6d17f181b27f4f8e973a019eaa6311421872a6bead878bd28c89189c",
+          "sha256": "fec9c39726f1fecd3d33212d73535954d397dd2abf5a38f53fcb06074cc7e583"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-居合次元斩.xml",
+          "beforeSha256": "cad98d284b5f9c99b06f9a10116cb13fa6c98d201c4cc9186fa5edb193095225",
+          "sha256": "a0c392a71ffddd4f2d821c7f5d12919fb24fcc13495db00f89aee472b15a60bc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-弧光斩.xml",
+          "beforeSha256": "fe9a79e0fe1ced299872e32c632cd015c74b5ac45929827768122b8da68620ba",
+          "sha256": "1e775b16ee5469446ba9ae7472671c5036f33b98b39b3a1f398bebdce44e75fc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-战技小跳.xml",
+          "beforeSha256": "bed6446c28dd7cbffb718686599cf33b17b8e771ec812dc1f96ab6003aced712",
+          "sha256": "a6a49a2c659ca708df742f8f73bfc99fff4caff64f22a06949b71b28fb25c5f4"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-撼地烈狱.xml",
+          "beforeSha256": "41efd4302b5e05af47393b5397ff7e23c5703db1a4b0aa3712d240754c10733e",
+          "sha256": "5c8e385c8a912fc02181b803d2f36880b78b9f6c2b640d044e1b72fdeaef45b8"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-深冲利刺.xml",
+          "beforeSha256": "6307501a70ccf5429093a64a6d0e20e6d8edb15fa2ab1561586e9fd4a8d683cb",
+          "sha256": "719b202ebaca94673631286d142f26a7abfa1705e920684cd8fe1bc101e91ccb"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-漆黑凶斩.xml",
+          "beforeSha256": "d71640b67683ef5d1b6db81fdfe260c90153109bb7dbdf74ca1504d45057cc44",
+          "sha256": "cc0df59cf8ae43ee95ab94725c2ff5842ee2809a363b445981862d7d2da4743f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-狼跳.xml",
+          "beforeSha256": "39b3c6964e749e5e8cce683771b23e5fdfc00e195f4028d007da5ef9664826a4",
+          "sha256": "0f3fff7455eb1f8f8f6142451960d30da6ae8bb52fb248a827402178fd73a0aa"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-猩红凶斩.xml",
+          "beforeSha256": "163bb7773658c102424d06484cce3edbff81805b44a7e7e5740b2ee60b879100",
+          "sha256": "d3405be57b7f6ce061a8c45c276a61e2be1a0242b03cba7cb5159a956df6416a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-瞬步斩.xml",
+          "beforeSha256": "edcc3c3ca7a576cd8090f7d07352a2f438c1c4131be8e926baf91aab46d23bcc",
+          "sha256": "33e99a45739566e6da4d835ba3e72e39291d51ce526bf91cc6cb28e6dff1ea17"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-破坏殆尽.xml",
+          "beforeSha256": "d574748b2e742572967c78461baa3478e408173687a82a073ab94cb5d483dc60",
+          "sha256": "354a52b3a8fbda8ddbec2d9e27993bfd29feff83ab10f2f9fd79d0853deb97f3"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-辉光剑气.xml",
+          "beforeSha256": "7a84c166132d99af939204c279d1f8c23cf20bfab23fae0864a21f7fcd3db4b7",
+          "sha256": "0e64ad652866d43b2faf0ac04059a15357844197f8c528ce6752c337a1860e61"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-追踪五连.xml",
+          "beforeSha256": "c4e71a03e820a96f08b5c5530ea9b9aef8d45d13a2f951e0a0e21f98f1fa3deb",
+          "sha256": "927f95905f55c1eeb09c600599b0830bb838f36bdc73af0f876394cd269d7177"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-重力操作.xml",
+          "beforeSha256": "e47657c982073585c3fc2bb6eb965bb4cb91ec59428dfd835a75f1ca5949d169",
+          "sha256": "8fe7d05f577774fbb906bb03cb8ed173c8bf7945e6b79de84c98c4a4257eb8d2"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-雷鸣感召.xml",
+          "beforeSha256": "0bd44e8382c9b526946295bc89dae8b8d8acb74fa2918fdd335d3bdec986bc65",
+          "sha256": "c7c321c6af7b45e81aecdf4398df94f314bc08710deeaa8d8b973704f44e27e2"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-黑刀斩术.xml",
+          "beforeSha256": "a2bd3e4ef2e791f4261d7c47929ee3d95df507e1748997939df1b21560e6f99b",
+          "sha256": "44a5e0fabaeae0f83dea797f2d08bf4e931705424c4308303668358b31c3b4a7"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/！战技容器-逆暴雨.xml",
+          "beforeSha256": "29ff95b97a5ee57d347fb4bbd935174f6d21d7d52624af18e612b61faca13d3f",
+          "sha256": "781a5a3cc37b986f748f105beb2d05d8e3122515f89d15e45d0a03ebcb1ffe8d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-六连.xml",
+          "beforeSha256": "0d482e988e3908969b190927fff5e977e648911ce9db4e309305032e9a083fd7",
+          "sha256": "8c86fb1a7c51e8b6749b4305b2a708fd25f05bab47223c3acb77b272782d7631"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-凶斩.xml",
+          "beforeSha256": "35330dba68a5d2bd3a0b312e9dfe8fd35c6479f81f2b7260422b3a30f7336818",
+          "sha256": "30a7de5c5d424ee7d546683684be50dd3b7cc36c6bf9fca30b8af6e483765c1a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-拔刀术.xml",
+          "beforeSha256": "7044528e7afcf051bdfb4a3c8e9e3d4e84de536d25ddc1825daad796c148d9f1",
+          "sha256": "3ba3e13c46671353270f34ff0e8187e9e84c751dd14c6ea0197e129ac396ba20"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-火舞旋风.xml",
+          "beforeSha256": "0e291b31db38df24505d8843ab97e356da7ded1446083914c94f521af6c4a9e0",
+          "sha256": "24e318bb6987f5c6617958e15373d51198d284c505794fe513189381f1ab5610"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-瞬步斩.xml",
+          "beforeSha256": "d717084528d695ba92b998719f20a1ac75c1cffaa36dfd901cb004cef9d9f215",
+          "sha256": "3c35b6f142e387eb5295cdb989bc74f78fd2dccd899d3879f23bdd1be784bc2a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-迅斩.xml",
+          "beforeSha256": "c4fc25a83f2137a7bd56fc313e5653534d24d3a990afcab6625ca1267fd568f7",
+          "sha256": "3d3c75d945045e70ea424280948ce0dbac79b0db4969e8e9bbba3ea08486aeec"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-龙斩.xml",
+          "beforeSha256": "2bef1c25f500be66022380900d7c473dda77c84ecf0eb8125e9b5388d6a294d9",
+          "sha256": "260910d10e4a3dc4713993b869ae6aff1a7fafaccb71997ba5d778e096b9c900"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/空手攻击容器/空手攻击容器-后撤步.xml",
+          "beforeSha256": "eb789dcc300be0d7afb65e1b964de77f843e992d657fd93fa746ddadee12b7db",
+          "sha256": "8c7a363a692448b5a77687a29b2e2cd99c68a08994d3816b418f15d48f8af623"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/空手攻击容器/空手攻击容器-诛杀步.xml",
+          "beforeSha256": "24eb78dba0900edd70a2657074ec49d8737f7240061d4ba7196c43f3a0ec0566",
+          "sha256": "aacec3342a3c78bf22ab0ecf9e5657f7ee50f468a832567513e3609b2c6ce450"
+        },
+        {
+          "path": "flashswf/arts/things0/META-INF/metadata.xml",
+          "beforeSha256": "9cd201f7f083476b7cbed46f28710e5fa749e5034405d806a965a629455406db",
+          "sha256": "1c3dc3c477e218e82583888f9ee620403c0bda3c83fe827e92d7135fa56d1640"
+        },
+        {
+          "path": "flashswf/arts/things0/bin/SymDepend.cache",
+          "beforeSha256": "421f1ca68e488498b5803398eead19c64aafc4703cd19eae27d15fee5f576dbc",
+          "sha256": "a7a0d95136d728692df006ca4b9b57da3a5932a51b22af80609490d0eff8617c"
+        },
+        {
+          "path": "flashswf/gk-1-s.swf",
+          "beforeSha256": "c6e70a3789b40c06082d20c99bad73bfd77f49928c448064662ae4a26059808d",
+          "sha256": "dfce304f1dd20f32395d5521711b77c8b5cba36a87321635fcd94209de804ea8"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_雾人_兵器搓招指令.as",
+          "beforeSha256": "edfe40a8d7310097235a81d1764aba981cf284ca019fc1d30edaaef3cee87467",
+          "sha256": "4733bee53abb6da1c677d8369b49537d2fb32f02651dced6b7a08b3e6a210413"
+        }
+      ]
+    },
+    {
+      "root": "C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight",
+      "changes": [
+        {
+          "path": "flashswf/arts/new/Codex老头素材.swf",
+          "beforeSha256": "d15c6778237384db72be2351a50097dc9995115d0118ab1695d6d834e9d86bee",
+          "sha256": "9d6002d4b6512c23c8a8006da2d612be45a7664f084cf553e7a58c7ebb58c32d"
+        },
+        {
+          "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头人形.xml",
+          "beforeSha256": "98d94274dcd636ef5e1f64e98dd3aef2a4d1a127c39e97bed0c66dbeacda98a2",
+          "sha256": "c65d1990c8345d5a720fbc6aea9ed407e4eb77de3564fcdc23f7153a458be4cf"
+        },
+        {
+          "path": "flashswf/arts/new/Codex老头素材/LIBRARY/Codex/老头/敌人-CF6老头机器人.xml",
+          "beforeSha256": "9a48e08e8d24e3974924fa02becdfe80c7840c0c3dbb7f73a121bcbd9afc798c",
+          "sha256": "c163a02ea2fa773a51e88e6eb1f63e4a6650abf210b021bcfacfd74be06286fb"
+        },
+        {
+          "path": "scripts/asLoader.swf",
+          "beforeSha256": "c3efc175d6129707ef586cc0dbb68adfbdeac740426bedb63778a39ba330527c",
+          "sha256": "183b648fdfa7966e99128c772049405a198241a809dacc50842bf9ef1924f467"
+        },
+        {
+          "path": "tools/cf6-audio/test-fixture-manifest.json",
+          "beforeSha256": "9d49ec7964ac01771be24678a2a07e7646cfc5acc9dc6f1843e329542499b8fc",
+          "sha256": "3c26ea9f614383639fb48784339ef01567a6fb366a207b35a63a5a8b37068a03"
+        },
+        {
+          "path": "tools/cf6-elder-assets/ElderAI.as",
+          "beforeSha256": "1fe7af27a05b45d06315ab5f8b431a21fac5ac031c1bd59e914b601b5b319185",
+          "sha256": "4ecc9e4d30a89458f975917feba82456c7f978db77ad2605d449b336cec1622d"
+        },
+        {
+          "path": "tools/cf6-elder-assets/README.md",
+          "beforeSha256": "8ba3d7db81187f86d305907d3a8e224e98800cc35ca0ee6dd72b6ddd7fbb576b",
+          "sha256": "00fe1bf308eac34d847157bb2799a2acdd95605149d1c04c68e7a479e30bb8a8"
+        },
+        {
+          "path": "tools/cf6-elder-assets/build-playtest-fixture.py",
+          "beforeSha256": "9ffb56930ffe5fdeb6d52edf5ec16cc0f88bd9c729b5f4dd9492c949adf2997a",
+          "sha256": "b2bc2e8fb585bf8d7e9c3b5eb761016458bf04c508beeaf0c105bc2847b33124"
+        },
+        {
+          "path": "tools/cf6-elder-assets/native-manifest.json",
+          "beforeSha256": "5d89f9c7103345835506cb2649a7e363101bb73b1a0a383bc02aa89eb1e9762e",
+          "sha256": "34654566d0647dcd2235404b12889a60d301da9194e8c048da17810cdad8fd3c"
+        },
+        {
+          "path": "data/inputCommand/cold_arms_weapon.xml",
+          "beforeSha256": null,
+          "sha256": "06fbdac6be8c8b85c068250c986ec9f61430e9275084cafebf812549b78c0c91"
+        },
+        {
+          "path": "data/inputCommand/list.xml",
+          "beforeSha256": "2617e89629aecb429ad498d1c8c6d078f2f6f509daa8f4f7b461717bf692f90a",
+          "sha256": "6702f5d3edd9f839f84ec6ceb43a5116da5170767c4a299413e4289ecdc853c0"
+        },
+        {
+          "path": "flashswf/arts/things0.swf",
+          "beforeSha256": "35e862be83466eea6902c9980703c12584a9545bccd7bd04829fa12d657ad7cb",
+          "sha256": "82d7a3381e9b03d06ce37d575d843a2f53a251ef46d68be686540800e1faad61"
+        },
+        {
+          "path": "flashswf/arts/things0/DOMDocument.xml",
+          "beforeSha256": "9a17f6959efb451de3de2c6a470a6b6a98533ac0638db85e269d8bf3b1d832f3",
+          "sha256": "85ce55abc6e7e6610b41c19ad741b46ef6cec74cf33f0f821e0dc053fd5e62de"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/Codex/Ti61-血剑战技/战技容器-猩红天秤.xml",
+          "beforeSha256": "6dcf1e673ff3a84eaab1087786b3bbed6dc33822da90d71ebd03bacd272ef162",
+          "sha256": "d343076e6c26190e304761fcaa2b2bd5d17ffffe90be45aa279d8469ead5a280"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/sprite/兵器攻击.xml",
+          "beforeSha256": "1080740bd18401b2cd4ee10a2ce361cb06a9b37256266b6505e0e4537340dbd7",
+          "sha256": "cc3a85b626537ebb79d0af3aa0b54553ff7d082db07a2fd14fea4b262a1c3783"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/兵器攻击.xml",
+          "beforeSha256": "6ea36e8844788beb91bc650e1d2e87e84a6851724d866bf35bc8d4217e2bb48b",
+          "sha256": "05873305ccacf27b6b587e8c840d71b4971fe34eed543efe656920ee1698c836"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml",
+          "beforeSha256": "e34c1ad6673346886cb66cdefecc41b3b54c0f0fcf0fe89939b4fb687be5113f",
+          "sha256": "81bc9b1ff5c407bef3a27c83da006a974c6edbf52d1b1afa3da1ff258da73295"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml",
+          "beforeSha256": "ba7acbea26c94848786b39600d166465bf45f33b06c2b438f087c4c01c7a97d5",
+          "sha256": "388617626d6c1250380992f5c3f800a2e2139cc03a5a7d9ecede66ec87b70d96"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml",
+          "beforeSha256": "b2bbba86a817a3c863d4c2652b4f0b4764309b3a0a1234576dcdb77a18946899",
+          "sha256": "8200f20a7c75f6a3f19e68686af797c49333aadcdf56c9be5b9943a3b670df3f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml",
+          "beforeSha256": "986e43abe79f0bb4d894156b9f416ff4b4f5172126512018a39131c89100f450",
+          "sha256": "6b8856e3427a4d1603f9fa03c33525d7d9e69b7567d17b973b20195bb1f597a8"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml",
+          "beforeSha256": "88fc02e18c0632142fc54e9420060730e038f0bb17f2eade714ef3dcd58f9ae8",
+          "sha256": "a912d50a1bb610db0b6b78cfb187e708cc938592ced0b3ce2714daa8bacf2c74"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml",
+          "beforeSha256": "2a3b5a57e76ebe55e41716e8667e8cfbf78efba9326e2dd8f6b298aa3f0fe776",
+          "sha256": "33500d05ed7ed4441da19ce52691bf6bee2b54f7b31f6851eb692bd812a530f1"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml",
+          "beforeSha256": "dd35a8be0ec8fec5cfd0c9048b1883c88dc06bd9a11c700e435b285ca3feb868",
+          "sha256": "1d9e28bdc02f03b17a54cf92730025dbba526ff6233eb91823fda118f54542cd"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml",
+          "beforeSha256": "48877f78e97de1541e77af6e1714d31cae25367dd981aaf7f571c92fbfafb378",
+          "sha256": "a9da070131c4e5b787aed7ae91b6f494b4a2192bf270a5ac9300e94012bc3efc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml",
+          "beforeSha256": "0a2a016fee05b95f3c8e76090c9417f0b3536997663ef4107f1abc8e9decead3",
+          "sha256": "1de9ecffa65f68c743df4c3386e80c71ffb03e2d3be80e20830ca9823bff8c12"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml",
+          "beforeSha256": "8f0b06d114bd1f4df0a1ae2c47c1668b3d1d7085c48bf1e09f5f5c7644f27c6a",
+          "sha256": "093275a7684ae79b42c22cdbb6fd576880dacba741018f465775ecbaa1c36a7f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml",
+          "beforeSha256": "c38d57bceffc61a374e7ca59a2fe6a272227cbe2ba45bd527304df9930b048ff",
+          "sha256": "17106bdebc2232d8690286d79d2bef880005861131146bf6240e97d4f67f7c99"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml",
+          "beforeSha256": "52b30e59d1b0b02ec7844ab00683c1a2679ff921ef382b8a93b0017e1aa12d40",
+          "sha256": "f5147b0b3c9f787294fe0004bd72f82e2dc768a068c14f4f640a14905d03a4cc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml",
+          "beforeSha256": "4a6cf558bae639673079060314dda27a1fa45c1750c2f5f772f33c92e2eb04b6",
+          "sha256": "127ddf484e0b7097598d403c8e0a53335cb09635e1fcd9b261d5a201fb95fa8d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml",
+          "beforeSha256": "723cac89bf4cbdd8ede7f7d674f035fe3175ec01a26b8dd408f7a874fe92a0f8",
+          "sha256": "200e8fe683125ddba58edd3e7e6c417b4b5698a4d38f48000872e29272b8bb08"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml",
+          "beforeSha256": "e7275fdfd0f59059db027ab6d3844d88364e7db846170adc43df89e1274d01ab",
+          "sha256": "ff0c6787868c2f900feb98f9217e0749b4d0e431d1a86fd8079add28b4a4aa82"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml",
+          "beforeSha256": "8a66b9f92ca4a217f28880c105a436e7d94d7cab242293aeba993be48c762379",
+          "sha256": "b2a9bfb00a51ac1c35d082a365ca4509c746f3e1d526754018c3e363668bc5c0"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招.xml",
+          "beforeSha256": "baa8c76b5b3ec42ef73d00bf4b965aadb376decf70ea344271a0829fcf543b73",
+          "sha256": "40caef2d80d5af002bbfcfe650f0253c6c521a6aadf2e478e80f7ad3acd3d0b6"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml",
+          "beforeSha256": "cb2c8d0d6885de7d3adfea93bfdff6f5245ec188f40794f154aba551072a2a0a",
+          "sha256": "dda4fca40444b585af4732bfe393794536b108ff3b87c49251ea44ec8d64bdc9"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/兵器攻击容器/！兵器攻击容器-长枪原动作.xml",
+          "beforeSha256": "33d263a6069554d84cafe1e98b07311df1a6b482f62326025e45a157d337418b",
+          "sha256": "7a2ba1ed3a3f36f5a9c14c69a35305ccd16ff1903c86c4d2db41f11d30d1bae1"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Eternal Maximum Drive.xml",
+          "beforeSha256": "3d78d8bc46d6720b9ce1be9ee91a0339c239fcd133e9d83be79a6a8febce3dbc",
+          "sha256": "6022928a0d420b6081c25dfce989f1e57a97d7f0463f234bfa13dc2dc63cb210"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Excalibur.xml",
+          "beforeSha256": "445b377dc623af5b18f02b21ef366e2511523f9ed15be2766deabe6191669091",
+          "sha256": "9a37317ac31f9c3ee871483c9d1b1bea7dac7f6c7763185f845158ed3345a768"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-Overdrive.xml",
+          "beforeSha256": "67971e46fe0f152963182ebfc096a711112c4c01f7ddecc714e2daa127e3dadd",
+          "sha256": "7e2b8a4b6f75e8c56c7491c7f7988d1190bc1fb5260d1d45e63e37ab8fe5304d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-一文字落雷.xml",
+          "beforeSha256": "2731ef7cbffde75f8ba94315745b0839cdee3e81d08097330ae73c2355fb614d",
+          "sha256": "3b077329a1dfb83509c5f3facadc08ec991eb51f86fc103f5292734bac1a058f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-凶斩.xml",
+          "beforeSha256": "bc240d695288177cdf04660e508c85d5a6afa192e381f34261b6cffcd82323fb",
+          "sha256": "9bd1b130d43c6a03ed56ca79a25868532b935e35fea1176fb3bed5105d848140"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-刀剑乱舞.xml",
+          "beforeSha256": "c9664f7105875b5ea630bd0ba8bce0c111e05116e94f8b79f97ccf45d9d2c8ce",
+          "sha256": "83f61d2b90ee0ec7349bcaa2c0b4fe4519f3366480e68608a97b5514294089ca"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-回旋斩击.xml",
+          "beforeSha256": "0d6a14b3f07e9011d293389a03f254fcc3af2f88f4783c7edd2a9d4733ddd3fc",
+          "sha256": "4a415bf1f5889aefb7fb403b5f246a5c9b3b96bdb9d8263f9c04739e76e7d0fe"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-回旋裂地.xml",
+          "beforeSha256": "5edc67a0008047238c7cab00b6cab0deabc3afd9ac20254103cc10bd7ca335f8",
+          "sha256": "eb1eb2dccc580081871a7653f50c08c9df2147cec5b81670319abb1046d6a28c"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-地狱斩绝.xml",
+          "beforeSha256": "66f904c1ab40bf5ca6ba0d6ba73af23e0320423938af2a9d825575b4a9fe6199",
+          "sha256": "59ea7587e701185b0b818ca75fe99d7cbc4a6abcf6b95a799fb5a86e23c11a99"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-地狱穿心剑.xml",
+          "beforeSha256": "310b992b6d17f181b27f4f8e973a019eaa6311421872a6bead878bd28c89189c",
+          "sha256": "fec9c39726f1fecd3d33212d73535954d397dd2abf5a38f53fcb06074cc7e583"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-居合次元斩.xml",
+          "beforeSha256": "cad98d284b5f9c99b06f9a10116cb13fa6c98d201c4cc9186fa5edb193095225",
+          "sha256": "a0c392a71ffddd4f2d821c7f5d12919fb24fcc13495db00f89aee472b15a60bc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-弧光斩.xml",
+          "beforeSha256": "fe9a79e0fe1ced299872e32c632cd015c74b5ac45929827768122b8da68620ba",
+          "sha256": "1e775b16ee5469446ba9ae7472671c5036f33b98b39b3a1f398bebdce44e75fc"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-战技小跳.xml",
+          "beforeSha256": "bed6446c28dd7cbffb718686599cf33b17b8e771ec812dc1f96ab6003aced712",
+          "sha256": "a6a49a2c659ca708df742f8f73bfc99fff4caff64f22a06949b71b28fb25c5f4"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-撼地烈狱.xml",
+          "beforeSha256": "41efd4302b5e05af47393b5397ff7e23c5703db1a4b0aa3712d240754c10733e",
+          "sha256": "5c8e385c8a912fc02181b803d2f36880b78b9f6c2b640d044e1b72fdeaef45b8"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-深冲利刺.xml",
+          "beforeSha256": "6307501a70ccf5429093a64a6d0e20e6d8edb15fa2ab1561586e9fd4a8d683cb",
+          "sha256": "719b202ebaca94673631286d142f26a7abfa1705e920684cd8fe1bc101e91ccb"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-漆黑凶斩.xml",
+          "beforeSha256": "d71640b67683ef5d1b6db81fdfe260c90153109bb7dbdf74ca1504d45057cc44",
+          "sha256": "cc0df59cf8ae43ee95ab94725c2ff5842ee2809a363b445981862d7d2da4743f"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-狼跳.xml",
+          "beforeSha256": "39b3c6964e749e5e8cce683771b23e5fdfc00e195f4028d007da5ef9664826a4",
+          "sha256": "0f3fff7455eb1f8f8f6142451960d30da6ae8bb52fb248a827402178fd73a0aa"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-猩红凶斩.xml",
+          "beforeSha256": "163bb7773658c102424d06484cce3edbff81805b44a7e7e5740b2ee60b879100",
+          "sha256": "d3405be57b7f6ce061a8c45c276a61e2be1a0242b03cba7cb5159a956df6416a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-瞬步斩.xml",
+          "beforeSha256": "edcc3c3ca7a576cd8090f7d07352a2f438c1c4131be8e926baf91aab46d23bcc",
+          "sha256": "33e99a45739566e6da4d835ba3e72e39291d51ce526bf91cc6cb28e6dff1ea17"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-破坏殆尽.xml",
+          "beforeSha256": "d574748b2e742572967c78461baa3478e408173687a82a073ab94cb5d483dc60",
+          "sha256": "354a52b3a8fbda8ddbec2d9e27993bfd29feff83ab10f2f9fd79d0853deb97f3"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-辉光剑气.xml",
+          "beforeSha256": "7a84c166132d99af939204c279d1f8c23cf20bfab23fae0864a21f7fcd3db4b7",
+          "sha256": "0e64ad652866d43b2faf0ac04059a15357844197f8c528ce6752c337a1860e61"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-追踪五连.xml",
+          "beforeSha256": "c4e71a03e820a96f08b5c5530ea9b9aef8d45d13a2f951e0a0e21f98f1fa3deb",
+          "sha256": "927f95905f55c1eeb09c600599b0830bb838f36bdc73af0f876394cd269d7177"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-重力操作.xml",
+          "beforeSha256": "e47657c982073585c3fc2bb6eb965bb4cb91ec59428dfd835a75f1ca5949d169",
+          "sha256": "8fe7d05f577774fbb906bb03cb8ed173c8bf7945e6b79de84c98c4a4257eb8d2"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-雷鸣感召.xml",
+          "beforeSha256": "0bd44e8382c9b526946295bc89dae8b8d8acb74fa2918fdd335d3bdec986bc65",
+          "sha256": "c7c321c6af7b45e81aecdf4398df94f314bc08710deeaa8d8b973704f44e27e2"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/战技容器-黑刀斩术.xml",
+          "beforeSha256": "a2bd3e4ef2e791f4261d7c47929ee3d95df507e1748997939df1b21560e6f99b",
+          "sha256": "44a5e0fabaeae0f83dea797f2d08bf4e931705424c4308303668358b31c3b4a7"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/战技容器/！战技容器-逆暴雨.xml",
+          "beforeSha256": "29ff95b97a5ee57d347fb4bbd935174f6d21d7d52624af18e612b61faca13d3f",
+          "sha256": "781a5a3cc37b986f748f105beb2d05d8e3122515f89d15e45d0a03ebcb1ffe8d"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-六连.xml",
+          "beforeSha256": "0d482e988e3908969b190927fff5e977e648911ce9db4e309305032e9a083fd7",
+          "sha256": "8c86fb1a7c51e8b6749b4305b2a708fd25f05bab47223c3acb77b272782d7631"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-凶斩.xml",
+          "beforeSha256": "35330dba68a5d2bd3a0b312e9dfe8fd35c6479f81f2b7260422b3a30f7336818",
+          "sha256": "30a7de5c5d424ee7d546683684be50dd3b7cc36c6bf9fca30b8af6e483765c1a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-拔刀术.xml",
+          "beforeSha256": "7044528e7afcf051bdfb4a3c8e9e3d4e84de536d25ddc1825daad796c148d9f1",
+          "sha256": "3ba3e13c46671353270f34ff0e8187e9e84c751dd14c6ea0197e129ac396ba20"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-火舞旋风.xml",
+          "beforeSha256": "0e291b31db38df24505d8843ab97e356da7ded1446083914c94f521af6c4a9e0",
+          "sha256": "24e318bb6987f5c6617958e15373d51198d284c505794fe513189381f1ab5610"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-瞬步斩.xml",
+          "beforeSha256": "d717084528d695ba92b998719f20a1ac75c1cffaa36dfd901cb004cef9d9f215",
+          "sha256": "3c35b6f142e387eb5295cdb989bc74f78fd2dccd899d3879f23bdd1be784bc2a"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-迅斩.xml",
+          "beforeSha256": "c4fc25a83f2137a7bd56fc313e5653534d24d3a990afcab6625ca1267fd568f7",
+          "sha256": "3d3c75d945045e70ea424280948ce0dbac79b0db4969e8e9bbba3ea08486aeec"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/技能容器/技能容器-龙斩.xml",
+          "beforeSha256": "2bef1c25f500be66022380900d7c473dda77c84ecf0eb8125e9b5388d6a294d9",
+          "sha256": "260910d10e4a3dc4713993b869ae6aff1a7fafaccb71997ba5d778e096b9c900"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/空手攻击容器/空手攻击容器-后撤步.xml",
+          "beforeSha256": "eb789dcc300be0d7afb65e1b964de77f843e992d657fd93fa746ddadee12b7db",
+          "sha256": "8c7a363a692448b5a77687a29b2e2cd99c68a08994d3816b418f15d48f8af623"
+        },
+        {
+          "path": "flashswf/arts/things0/LIBRARY/容器/空手攻击容器/空手攻击容器-诛杀步.xml",
+          "beforeSha256": "24eb78dba0900edd70a2657074ec49d8737f7240061d4ba7196c43f3a0ec0566",
+          "sha256": "aacec3342a3c78bf22ab0ecf9e5657f7ee50f468a832567513e3609b2c6ce450"
+        },
+        {
+          "path": "flashswf/arts/things0/META-INF/metadata.xml",
+          "beforeSha256": "9cd201f7f083476b7cbed46f28710e5fa749e5034405d806a965a629455406db",
+          "sha256": "1c3dc3c477e218e82583888f9ee620403c0bda3c83fe827e92d7135fa56d1640"
+        },
+        {
+          "path": "flashswf/arts/things0/bin/SymDepend.cache",
+          "beforeSha256": "421f1ca68e488498b5803398eead19c64aafc4703cd19eae27d15fee5f576dbc",
+          "sha256": "a7a0d95136d728692df006ca4b9b57da3a5932a51b22af80609490d0eff8617c"
+        },
+        {
+          "path": "flashswf/gk-1-s.swf",
+          "beforeSha256": "c6e70a3789b40c06082d20c99bad73bfd77f49928c448064662ae4a26059808d",
+          "sha256": "dfce304f1dd20f32395d5521711b77c8b5cba36a87321635fcd94209de804ea8"
+        },
+        {
+          "path": "scripts/逻辑/单位函数/单位函数_雾人_兵器搓招指令.as",
+          "beforeSha256": "edfe40a8d7310097235a81d1764aba981cf284ca019fc1d30edaaef3cee87467",
+          "sha256": "4733bee53abb6da1c677d8369b49537d2fb32f02651dced6b7a08b3e6a210413"
+        }
+      ]
+    }
+  ]
+}

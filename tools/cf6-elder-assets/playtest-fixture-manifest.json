@@ -1,0 +1,47 @@
+{
+  "sources": [
+    {
+      "path": "scripts/逻辑/关卡系统/关卡系统_lsy_地图元件.as",
+      "sha256": "0a2deffd0a29a0a38b46d2268c9aa64835e22c0459be3e75602d820999f21191"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_fs_护盾函数.as",
+      "sha256": "3e33b12eae554c708eb9a8d920b55abc880fd47cc3d3b180cb899d8d0fd338b2"
+    },
+    {
+      "path": "flashswf/arts/things0/LIBRARY/主角-男.xml",
+      "sha256": "b1a01afafa4a799ea3d634f38b9e82e6b0e59a8d8627c418741c14602ccce7dd"
+    },
+    {
+      "path": "flashswf/arts/things0/LIBRARY/主角肢体素材/Symbol 6.xml",
+      "sha256": "52dc69bad21b48a1aeffb20366e614d000d23ad6ac631304780b3b2c78edd204"
+    },
+    {
+      "path": "flashswf/arts/things0/LIBRARY/shape/Symbol 5.xml",
+      "sha256": "4c409acb733dba0a600711c10e464e2cea94f6a20530c1b3d6c38a4c21208fb4"
+    },
+    {
+      "path": "scripts/逻辑/单位函数/单位函数_lsy_敌人模板迁移.as",
+      "sha256": "a213be1bfe7b094c6fdbaf173afe2ff36da71038838f7a82189ab23f3388aef0"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitUtil.as",
+      "sha256": "1a7ff8f8d04653033c9a43c22cc8b4f6525f3f33cafbde74bb8da229026b1292"
+    }
+  ],
+  "playerAreaMatrix": [
+    2.11715698242188,
+    0.0,
+    0.0,
+    5.48248291015625,
+    -26.45,
+    -126.5
+  ],
+  "shapePixels": [
+    0,
+    0,
+    25,
+    25
+  ],
+  "scale": "production UnitUtil.getHeightPercentage"
+}

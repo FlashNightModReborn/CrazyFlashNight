@@ -444,6 +444,8 @@ Native 绘制变更检查 `NativeGuidanceVisualTests` 的实际像素、原场�
 
 显示就绪修正（最后核对代码基线：commit `b98b6303aa409e76086e50f24cb1cfed00408204` 加 2026-10-14 工作区）增加 `SceneTransitionResumeTests`。AS2 suite 覆盖背景未完成、成功烘焙先于原容器卸载、真实帧边界、错误目标、同路径新 ticket、世界身份替换、加载失败/同步拒绝/期限及迟到回调；Host 覆盖新揭幕捕获围栏、保留关闭画面、等待期间重复 close、foreign scene、新过场取代和唯一焦点尾部；浏览器验证报告在 exact Host close 前保留且 inert，旧/foreign close 不隐藏新视图。上述夹具不等于实际 Flash 背景加载或游戏物理像素验收。
 
+静态空场揭幕追加 `WorldCompositorTests`：重绘回执本身不能授予呈现资格，同场景新请求、不同场景、未就绪状态和源重置均不得继承旧回执，非有限或早于请求的时间戳须失败。调色提交只有在同一场景已有明确新鲜帧请求时才追加重绘；无请求、其他场景和源重置后的调色都不得触发。实机检查须绑定实际 candidate，记录主动重绘、后续新捕获及真实揭幕的顺序；仅有 AS2 帧率、native Present 次数或机器重启不能证明捕获已推进。
+
 背景来源先运行 `node tools/generate-scene-transition-catalog.js --check`；AS2 运行 `scripts/run-scene-transition-tests.ps1`，时间轴/初始化交接另运行 `node tools/test-scene-transition-stage-entry.js` 执行生产第 17 帧和副本 admission 的公共控制流子集，该源码夹具不替代真实 AVM1 或游戏旅程。Host 定向 `SceneTransitionTaskTests`，Web 运行 `node tools/test-scene-transition.js`；并行报告追加 `node launcher/web/modules/loot/dev/run-harness.js`，核原完整 View/生产 CSS、预览零业务命令、covered 后既有 Loot/库存提前操作、exact 实例准入、原帮助/关闭和每请求只接通一次。加载结束须保持同一 DOM/Core/HWND、阅读状态和业务模型，仅更新就绪能力；不以四项状态复制替代共用页面。未知 claim/close、失败重试、场景编号变化及重复 hide 均须覆盖。共享合成窗口和世界指针路由变化追加 `launcher/tests/run_tests.ps1` 全量回归；实际合成使用 `tools/run-scene-transition-smoke.ps1 -OutputDirectory <新的 tmp 子目录> -CandidateRoot <隔离候选目录>`，先核完整性并绑定该候选 DLL，与 GUI 编译/其他窗口测试错开。
 
 结算预览须核大/小及非 16:9 窗口的首次显示、基地未就绪期间的同表面调整尺寸、关闭/双栏/底部操作位置；外层缩放只应用一次，不能只测比例为 1 的 1024×576。真实合成夹具分开记录 DOM 几何、屏幕像素和呈现回执；后台启动时可在初始 20 秒资格窗口内选中任务栏的 `U12 isolated composition probe`，未取得自身前台资格仍失败，不据 DOM 状态认定屏幕通过。窗口最小化恢复与实际游戏交接观感仍留人验。
@@ -1154,9 +1156,15 @@ u235 的远古诛神头/胸/腿/鞋由 4 个 unit-scoped virtual item 精确绑�
 
 ### 启动、Flash smoke 与离线专项工具（美术相关）
 
+本节 CF6 大刀／大头／老头增量最后核对代码基线：commit `46977734df67f2eadabe59831f95320a1a472a1b` 加 2026-10-17 强度校准工作区；其他素材条目沿用既有核对范围。
+
 - 蛮斧刽子手（CF6 蛮蛮）：`python -X utf8 -B tools/cf6-manman-assets/verify.py`、`scripts/run-cf6-manman-asset-tests.ps1`；包含左右死亡切换的同坐标尺寸回归，`-Capture` 固定比例保留父层矩阵。真实伤害与 AI 换边比较走隔离 Worker。装配、受击中断、捕获及实战边界见 [接入工具](../tools/cf6-manman-assets/README.md)。
 - Wings：`python -X utf8 -B tools/cf6-wings-assets/verify.py`、`scripts/run-cf6-wings-asset-tests.ps1`；左右真实动作覆盖枪口嵌套矩阵、后空翻静态姿势首帧、打断、三分支死亡、同尺度切换，以及根层影子的全状态、开关和接地。`-Capture` 输出身体八图加整单位影子图，`-ShadowCapture` 只输出影子图，默认等待 600 秒，仍要求唯一闭合 runId 与 Compiler 0/0。隔离 AI 换边与原版特工比较见 [接入工具](../tools/cf6-wings-assets/README.md)。
-- 大刀机器人原生装配与近战：`scripts/run-cf6-bladebot-asset-tests.ps1`；加 `-Capture` 导出固定取景的整单位图，覆盖刀孔、碎片、全状态接地影子与中断后不出刀。来源、受控生成及两组对手的实战边界见 [大刀机器人装配](../tools/cf6-bladebot-assets/README.md)。
+- 大刀机器人原生装配与波光束联动：`scripts/run-cf6-bladebot-asset-tests.ps1`；覆盖实际生产伤害／冲击／被击移动后，目标进入光束射程及抗击退目标不触发联动。加 `-Capture` 导出整单位图；新增光束逐帧绘制与双向捕获走 `scripts/run-cf6-bladebot-beam-render-tests.ps1`。共用被击移动作用域修改另跑 `scripts/run-cf6-knockback-scope-tests.ps1`，受影响单位的候选对战须重新绑定发布后的 asLoader。来源、复验范围与证据边界见 [大刀机器人装配](../tools/cf6-bladebot-assets/README.md)。
+- 大头机器人：`scripts/run-cf6-headbot-asset-tests.ps1` 与 `scripts/run-cf6-headbot-render-tests.ps1`；覆盖蓄光延迟、波／物理结算、短受击与浮空映射、动作 token、暂停恢复，以及真实地图碎片、标准尸体贴图与接地影子。绘制 `-Capture` 导出关键帧，`-Fragment` 单独捕获散开的碎片，`-Charge` 检查当前蓄光、双段光束与收招；行为测试另验证真实吸血、护盾刷新及跨受击存续。确定性装配、双阵营对战与原生图像入口见 [大头机器人装配](../tools/cf6-headbot-assets/README.md)。
+- CF6 音效补全：`scripts/run-cf6-audio-tests.ps1` 验证八库实际帧调用、自然死亡去重和暂停；`scripts/run-cf6-legacy-audio-tests.ps1` 验证三种旧克隆兽的缺失 WAV 恢复路由及旧女特工的起手／落地效果声。来源、静态审计、资源完整解码与原生听感的区别见 [CF6 音效](../tools/cf6-audio/README.md)。三机器人各自行为 suite 附带 `Cf6RobotCombatTest`，验证真实亡语伤害、击退、护盾、暂停／换场／迟到回调；死亡画面用 `scripts/run-cf6-robot-death-render-tests.ps1 -Family headbot|elder|bladebot`，每类八点，原生无损解码用 `tools/cf6-headbot-assets/decode-death-capture.py`。
+- 玩家高度与纵深：`tools/cf6-elder-assets/build-playtest-fixture.py --check` 逐字绑定主角男受击框、身高比例和生产适配函数；`scripts/run-cf6-player-aim-tests.ps1` 对实际老头／大刀 SWF 检查双向、三种身高、距离及起手后躲避；老头追加跨行子弹的实际移动、负坐标、30–240 纵深距离与按距离延长齐射间隔，以及持续重束的四段递增伤害、首段命中后真实玩家框横移避开后三段。不得以高大敌人的人工受击框替代玩家框。
+- 老头两阶段：`scripts/run-cf6-elder-asset-tests.ps1` 与 `scripts/run-cf6-elder-render-tests.ps1`；覆盖角色局部变形、后继只生成一次、实例／世界／初始化上下文、独立面板、光束锁定及临时刚体／抗击退恢复；附带真实命中结算的击溃／斩杀／盾奖励、易伤刷新与到期、碎片暂停和尸体收尾。砸地硬盾与连打软盾须各自刷新和到期，核对实际吸血／击溃的盾强门槛与容量耗尽后的恢复，包含本轮低等级面板对已核实狂暴重击威力的实际授盾回归。光束盾及两种近战命中盾的吸收诊断须经真实层的 `onHit` 回调累计；不得长期缓存单盾层对象再读取扁平化容量。核对单盾与叠盾、替换、到期、旧身份及重复采样，不改变护盾或重复计量。重束同时覆盖易伤资格及本人真实砸地命中的同目标窗口；后者不得额外施加易伤或绕过冷却，须验证 MISS、重复回调、死亡、换目标、同名替换、到期和最后完整连射的起手边界，并执行真实砸地结算后的完整四段时间轴。绘制默认覆盖全部原动作帧，`-Probe` 只作关键点复验，`-Capture` 选择并导出 25 张关键帧，`-Charge` 检查持续重束与普通束收招十二个关键点；四段持续动作须覆盖段间资格失效与末段后状态释放。图形未改时须绑定逐项等价证明才能引用旧捕获。两阶段候选对战的自然结算、威胁定位和人类观感分别验收，入口见 [老头装配](../tools/cf6-elder-assets/README.md)。 应激盾另核真实 HP 下降跨 5% 的即时授予、余量与多阈值上限、周期补充、快速衰减、治疗基线、暂停、旧身份及死亡清理，并以真实命中事件验证触发击与后续击的吸血顺序。
 - CF6 两阶段特种兵：`scripts/run-cf6-soldier-asset-tests.ps1`；顶层 RSL 宿主加载真实身体和玩家长枪，覆盖装备与弹药、移动稳定、匕首暴击斩杀、持盾减伤与受击火花、破盾续命、最终结算和全状态影子，包含独立于外框的四肢像素检查。装备与固定身体的边界、遮罩修复和隔离实战见 [特种兵装配](../tools/cf6-soldier-assets/README.md)。
 - 犀牛静态地图摆件：`python -X utf8 tools/rhino-map-assets/build.py --check`、三张 XFL 治理与显式 CS6 publish；车号、坐标与原生/实机边界见 [rhino-map-assets](../tools/rhino-map-assets/README.md)。
 - 武器分件动画：`python -X utf8 -B tools/weapon-animation/test_xfl_recoil.py`、`scripts/run-weapon-animation-tests.ps1`（机器钉死 AS2 37 项逻辑 + 15 项真实 XML/物品/素材与生产生命周期装卸集成）；原生逐帧矩阵、独立 SWF 导出与体验边界见 [动画工具](../tools/weapon-animation/README.md)。
@@ -1326,6 +1334,7 @@ Worker D1/D2 与流式成本增量按 `38f24d4bc9d6d7a63941425639409cd4a3643df2`
 
 **生产 JSONL 与完成门**：改战场参数 / 阵型 / 多阶段接管 / 污染清扫时，生产 JSONL 原始行（不得先 normalization 丢字段）必须包含 `spawnDistance`（Host synthetic timeout 可缺省）、`blueFormation`、`redFormation`、`formationSpacing`、`blueSpawnPositions` / `redSpawnPositions` / `formationAudit`、`authorityContext`、`phaseSpawnCount` / `spawnedUnits`、
 `blueUnitResults` / `redUnitResults` 并直接通过 schema；
+多阶段父实体查找须先在双方完整 roster 中核对实例名前缀与显式产生源，再使用最近死亡实体回退；不能让先遍历的一方用距离回退抢占另一方的明确身份。Worker protocol 回归覆盖红方明确身份优先于邻近蓝方尸体，以及无身份时跨双方选择最近父实体。强度分析须先核对阶段所属阵营和生成数量，错误归属、未知阵营或数量漂移直接拒绝，不将该行胜负纳入均值。
 污染场必须返回 schema-valid `contamination` 而不是有效胜负样本。最终 `complete_candidate` 必须机械拒绝总样本 `<30`、缺任一 side assignment、任一方向 error 非零、未完成 side-swap review、timeout provisional；两方向 `timeouts/samples/timeoutRate` 必须自洽，合并 timeout 必须同时不高于 snapshot stop condition 与 `5%`，`explained_long_timeout` 只补来源解释、不能绕过低 timeout 门。
 生产化先运行 `build-production-recommendation.js` 生成 exact bundle，检查 proposed catalog/dry-run/rollback/implementation closure；Host 只接受当前 authority session 的 `calibratedRosterId` 并重建规范 roster，Web 不得夹带 roster，生产目录不写 faction `benchLevel`；
 正式写入必须由人类批准精确 `bundleHash` 后运行 `apply-production-recommendation.js`，任何 base、Git revision、消费者闭包或验证漂移都 fail closed/回滚，不得把 bundle 生成等同于已启用、已构建 candidate 或已发布。

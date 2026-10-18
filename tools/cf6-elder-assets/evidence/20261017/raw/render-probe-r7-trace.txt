@@ -1,0 +1,12 @@
+FocusedTestRunId cf6-elder-render Start: ab9ca9340e47403e97bf0d38daef7d83
+[ELDER_NATIVE_BOUNDS] form=0 x=-60.7,60.65 y=-173.4,12.15
+[ELDER_NATIVE_BOUNDS] form=1 x=-60.7,72.15 y=-166.9,12.15
+[ELDER_RENDER_SAMPLE] key=human-stand-1 firstMs=15 repeatMs=14,15,15 boundsArea=32335
+[ELDER_RENDER_SAMPLE] key=robot-stand-1 firstMs=20 repeatMs=20,21,20 boundsArea=32754
+[ELDER_RENDER_SAMPLE] key=beam-29 firstMs=19 repeatMs=21,19,24 boundsArea=156492
+[CF6_ELDER_COMBAT_END] unit=human form=human level=40 clock=0 starts=0 contacts=0 beam=0/0 kicks=0/0 slam=0/0 burst=0/0 stab=0/0 x=0 z=0 target=无 targetHp=undefined targetX=undefined targetZ=undefined
+[ELDER_RENDER_SAMPLE] key=phase-55 firstMs=22 repeatMs=19,19,19 boundsArea=38528
+[ELDER_RENDER_SAMPLE] key=burst-left-13 firstMs=14 repeatMs=13,10,14 boundsArea=43875
+[ELDER_RENDER_SAMPLE] key=phase-left-55 firstMs=18 repeatMs=18,21,20 boundsArea=38528
+Cf6ElderRenderTest: 16 passed, 0 failed; 6 draw points
+FocusedTestRunId cf6-elder-render Complete: ab9ca9340e47403e97bf0d38daef7d83

@@ -1,0 +1,17 @@
+C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-bladebot-assets\arena-wave-plan.js:34
+  for(const row of sourceBindings)if(hash(path.join(projectRoot,row.path))!==row.sha256)throw Error("Worker input differs: "+row.path);
+                                                                                        ^
+
+Error: Worker input differs: flashswf/arts/new/Codex大刀机器人素材.swf
+    at C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-bladebot-assets\arena-wave-plan.js:34:95
+    at Array.map (<anonymous>)
+    at createPlan (C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-bladebot-assets\arena-wave-plan.js:30:31)
+    at Object.<anonymous> (C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\tools\cf6-bladebot-assets\arena-wave-plan.js:76:145)
+    at Module._compile (node:internal/modules/cjs/loader:1872:14)
+    at Object..js (node:internal/modules/cjs/loader:2003:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module._load (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+
+Node.js v24.19.0

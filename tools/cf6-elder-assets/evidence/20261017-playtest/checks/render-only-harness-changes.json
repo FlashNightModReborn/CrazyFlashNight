@@ -1,0 +1,42 @@
+{
+  "paths": [
+    "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6HeadbotRenderTest.as",
+    "tools/cf6-headbot-assets/decode-native-capture.py",
+    "scripts/test-runners/cf6-elder-render/TestLoader-capture.as.template"
+  ],
+  "reason": "First capture clipped the second headbot beam by about eight pixels; camera moves fifteen pixels left. Head capture uses the established chunked lossless row encoder and exact nonzero bounds to avoid costly output-panel row updates.",
+  "productionResourcesChanged": false,
+  "elderScope": {
+    "fullSweepAttempt": "render-pass1/elder",
+    "fullSweepStatus": "cancelled; no success claimed",
+    "captureKeys": [
+      "human-stand-1",
+      "burst-13",
+      "stab-7",
+      "human-fall-31",
+      "robot-stand-1",
+      "beam-29",
+      "kicks-9",
+      "slam-37",
+      "robot-death-32",
+      "robot-death-111",
+      "phase-1",
+      "phase-18",
+      "phase-49",
+      "phase-55",
+      "phase-80",
+      "phase-93",
+      "heavy-beam-1",
+      "heavy-beam-24",
+      "heavy-beam-52",
+      "heavy-beam-53",
+      "heavy-beam-88",
+      "burst-left-13",
+      "beam-left-29",
+      "phase-left-55",
+      "heavy-beam-left-53"
+    ],
+    "defaultFullSweepStillAvailable": true,
+    "gameResourcesChanged": false
+  }
+}

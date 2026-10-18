@@ -1,0 +1,23 @@
+{
+  "sourceSoundIds": [
+    1993,
+    2004,
+    2007
+  ],
+  "format": "SWF DefineSound MP3",
+  "sourceSampleRate": 11025,
+  "positiveSeekSamples": 1661,
+  "decoderProbe": "Raw extracted MP3 reports start_time=0 and no skip-samples side data on first packet; the SWF seek adjustment is applied explicitly.",
+  "effectiveSampleCounts": [
+    49279,
+    63868,
+    16309
+  ],
+  "effectiveStartsAt44100": [
+    1470,
+    117600,
+    373380
+  ],
+  "rawMp3FilesUnchanged": true,
+  "audioPreviewMix": "Three cues only, no simulated background player. Full sound tail separate from exact283-frame video."
+}

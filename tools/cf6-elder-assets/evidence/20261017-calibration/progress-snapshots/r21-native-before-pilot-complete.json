@@ -1,0 +1,85 @@
+{
+  "status": "native_verified; exploratory_pilot_running",
+  "robotStartRange": 750,
+  "humanStartRange": 500,
+  "localBeamLength": 600,
+  "slamPower": 18,
+  "normalBeamPower": 3,
+  "heavyBeamPowers": [
+    0.5,
+    1,
+    1.5,
+    2
+  ],
+  "attackMultiplierFlag": 6.875,
+  "robotBaseAttackPanel": [
+    442,
+    1172
+  ],
+  "actualAttackLevels30_60_99": [
+    813,
+    1184,
+    1666
+  ],
+  "shieldAttackScale": 1.2790697674418605,
+  "hardnessDeltaRatioBound": 0.014,
+  "meleeShieldCapacityScale": 0.5,
+  "beamShieldCapacityScale": 0.2,
+  "reactiveShieldCapacityScale": 0.75,
+  "actualForcedConversion": 0.3,
+  "actualReactiveCapacityLimit": 0.075,
+  "pulseFrames": 1,
+  "actualPulseMissingHpRatio": 0.00078125,
+  "actualPulseCapacityLimit": 0.00015625,
+  "actualPulseCeilingPer30ActiveFrames": 0.0046875,
+  "decayFramesWithoutRefresh": 36,
+  "humanHpDefenseOtherUnitsAndGeometryUnchanged": true,
+  "nativeSelectedChecks": 2669,
+  "selectedNativeCohorts": {
+    "native-r21-fixture-repair/elder-asset": [
+      [
+        "Cf6ElderAssetTest",
+        908
+      ],
+      [
+        "Cf6ElderCombatEffectsTest",
+        125
+      ],
+      [
+        "Cf6RobotCombatTest elder",
+        45
+      ]
+    ],
+    "native-r21-shield-allocation/audio": [
+      [
+        "Cf6AudioTest",
+        340
+      ]
+    ],
+    "native-r21-shield-allocation/player-aim": [
+      [
+        "Cf6PlayerAimTest",
+        1211
+      ]
+    ],
+    "native-r21-shield-allocation/elder-render": [
+      [
+        "Cf6ElderRenderTest",
+        40
+      ]
+    ]
+  },
+  "nativeImages": 12,
+  "playerSourceCases": 96,
+  "currentElderSwfSha256": "781c950e721c386f6bdbd8aa6bec93d72cc4bbcd34d6886fb53b2bca22ee894d",
+  "loaderSha256": "cc58fa63fec10d844e8c0d710a7337b54b013f610ac1624810b44d0f89bb8401",
+  "currentRegistrationIds": [
+    472,
+    473,
+    474
+  ],
+  "exploratoryPilot": "cf6-cal-r21-pilot-20261018",
+  "exploratoryPilotRows": 12,
+  "fullMatrixAccepted": false,
+  "boundary": "Native checks and preserved current images do not establish final strength, current Head full matrix, zero total Beast healing, formal promotion or human acceptance."
+}

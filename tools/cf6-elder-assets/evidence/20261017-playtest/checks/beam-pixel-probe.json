@@ -1,0 +1,24 @@
+{
+  "nativeCrossSections": [
+    {
+      "name": "beam-29",
+      "sha256": "52547abc45e5087a291b65e9059b56a86830b08f12b519670588302e77b669c2",
+      "crossSectionX": 850,
+      "alphaThreshold": 16,
+      "yMin": 194,
+      "yMax": 211,
+      "thicknessPixels": 18
+    },
+    {
+      "name": "heavy-beam-53",
+      "sha256": "38a32eb0917a0293554930a3f323904afef3cff05da96b3a13237c9abac6ce12",
+      "crossSectionX": 850,
+      "alphaThreshold": 16,
+      "yMin": 175,
+      "yMax": 230,
+      "thicknessPixels": 56
+    }
+  ],
+  "observedRatio": 3.111111111111111,
+  "scope": "Same native scale and camera, alpha threshold allows raster antialiasing; no image modification"
+}

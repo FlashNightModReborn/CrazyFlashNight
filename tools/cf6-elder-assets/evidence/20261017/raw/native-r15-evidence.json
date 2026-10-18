@@ -1,0 +1,52 @@
+{
+  "revision": "r15",
+  "proof": {
+    "behavior": {
+      "runId": "a78a0cd2de3c48619e2276a699400ea4",
+      "passed": 690,
+      "failed": 0,
+      "traceSha256": "e1e7c78319e9d112ad20ead4fd4d5ecf2c56d3e9ab2e23c7afc7b7f1d5ffeb8a"
+    },
+    "render-probe": {
+      "runId": "62441b6c95644811a82a41f9fbb52aa2",
+      "passed": 16,
+      "failed": 0,
+      "traceSha256": "068b43b0eb50bf0af9e1ca852d7491d31053e2dec8a1540d573f04cd9e77f81e"
+    }
+  },
+  "sourceBindings": [
+    {
+      "path": "flashswf/arts/new/Codex老头素材.swf",
+      "sha256": "becbb5a9fcb32f1bce3653d366e7429dd676bbba52e634e06bc18cbd12041b93"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "sha256": "82e7217f78abb1a944b0a5ebce600cd07167c320bd865e7254a0d8c4632218c4"
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderTransform.as",
+      "sha256": "f6818dda6c1ea4d200af22b977ddde4cea80c93efcab153216baebb7252b377c"
+    },
+    {
+      "path": "tools/cf6-elder-assets/native-manifest.json",
+      "sha256": "a4ef8aaf7fee5a89821b2b5745f91f016f990c70f4bf39bf57915839fde1f56c"
+    },
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderAssetTest.as",
+      "sha256": "b8d07f24319cab99b9389cc3e675f4bf17ebe67c755dbe46b73ec6d60aaf7bc5"
+    }
+  ],
+  "swfBytes": 356937,
+  "timelineCases": 34,
+  "phaseCases": 13,
+  "drawPoints": 6,
+  "equivalentGraphicsXmlFiles": 85,
+  "graphicsProof": "r15-art-equivalence.json",
+  "imagesRemainR6": true,
+  "beforeChange": {
+    "runId": "cdf3712b8cbf4474b74e01fffb35916b",
+    "passed": 684,
+    "failed": 6,
+    "scope": "Added beam-recovery behavior intentionally fails in old R12 SWF; old suite checks and damage calculation remain passing"
+  }
+}

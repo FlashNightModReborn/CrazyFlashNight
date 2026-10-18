@@ -1,0 +1,686 @@
+{
+  "experiment": "cf6-cal-r21-pilot-20261018",
+  "wholeExperimentFinal": true,
+  "rows": [
+    {
+      "group": "beastking-level30",
+      "runId": "level30-blue-r001",
+      "rival": 78,
+      "level": 30,
+      "side": "blue",
+      "status": "finished",
+      "frames": 1960.0,
+      "robotClock": 1335,
+      "rageLeech": 1,
+      "initialPhaseRageLeech": 1,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_red_level30_blue_r001_0",
+          "phase": "initial",
+          "hits": 1,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 1246,
+          "lastRobotClock": 1246
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        17,
+        1321
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        13192.0,
+        6409.81124999991,
+        4729.07300459921
+      ],
+      "beamAbsorbedUnused": [
+        4411.9130136077,
+        2186.61006331538
+      ],
+      "meleeSoftHardAbsorbed": [
+        332.56101831501,
+        574.425
+      ],
+      "selectorCallsAndOutOfRange": [
+        29,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        5.0,
+        15.0
+      ],
+      "heavyBeamHitsAndPower": [
+        7.0,
+        8.0
+      ],
+      "sourceArchiveSha256": "b32857dc998bd680e44d65eb5e0a8345b22b6961db2c82e22e7b7cb63160ee5b",
+      "sourceEntrySha256": "437f672f9f2fbce4f1ffec26a531803c4a5132fa60dc52f9940ef5251543e03b",
+      "lineNumber": 8466,
+      "resultSha256": "4a1caab7308f2b4f1a77bb0b57c081c9487b24f1060f023260cce8122c532cbf"
+    },
+    {
+      "group": "beastking-level30",
+      "runId": "level30-red-r001",
+      "rival": 78,
+      "level": 30,
+      "side": "red",
+      "status": "finished",
+      "frames": 2791.0,
+      "robotClock": 2080,
+      "rageLeech": 2,
+      "initialPhaseRageLeech": 2,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_blue_level30_red_r001_0",
+          "phase": "initial",
+          "hits": 2,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 1500,
+          "lastRobotClock": 1588
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        19,
+        2043
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        14847.0,
+        7960.62843749987,
+        5957.63093452556
+      ],
+      "beamAbsorbedUnused": [
+        5049.97332569313,
+        5309.71898199917
+      ],
+      "meleeSoftHardAbsorbed": [
+        315.986174772202,
+        919.08
+      ],
+      "selectorCallsAndOutOfRange": [
+        49,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        7.0,
+        21.0
+      ],
+      "heavyBeamHitsAndPower": [
+        9.0,
+        11.0
+      ],
+      "sourceArchiveSha256": "b32857dc998bd680e44d65eb5e0a8345b22b6961db2c82e22e7b7cb63160ee5b",
+      "sourceEntrySha256": "437f672f9f2fbce4f1ffec26a531803c4a5132fa60dc52f9940ef5251543e03b",
+      "lineNumber": 9067,
+      "resultSha256": "4a1caab7308f2b4f1a77bb0b57c081c9487b24f1060f023260cce8122c532cbf"
+    },
+    {
+      "group": "beastking-level60",
+      "runId": "level60-blue-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 2556.0,
+      "robotClock": 1761,
+      "rageLeech": 4,
+      "initialPhaseRageLeech": 4,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_red_level60_blue_r001_0",
+          "phase": "initial",
+          "hits": 4,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 1481,
+          "lastRobotClock": 1547
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        19,
+        1743
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        20597.0,
+        10961.7382812497,
+        7861.93854991764
+      ],
+      "beamAbsorbedUnused": [
+        2762.92424582435,
+        1760.75575417565
+      ],
+      "meleeSoftHardAbsorbed": [
+        0.0,
+        1541.61
+      ],
+      "selectorCallsAndOutOfRange": [
+        38,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        7.0,
+        21.0
+      ],
+      "heavyBeamHitsAndPower": [
+        10.0,
+        11.5
+      ],
+      "sourceArchiveSha256": "acef76f54a2a2633835f58e4d5c16ca8f1603866dc455add8a16f250ce8c1729",
+      "sourceEntrySha256": "d2582d2404725bcc41fc6bdb4114a59bf20053c8b916bb3bebe8bab5c69a5fed",
+      "lineNumber": 10268,
+      "resultSha256": "508ab4fa432b13df8c767f174c4385076101616d3c4204f7f034389e466d7bdc"
+    },
+    {
+      "group": "beastking-level60",
+      "runId": "level60-red-r001",
+      "rival": 78,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 4275.0,
+      "robotClock": 3682,
+      "rageLeech": 2,
+      "initialPhaseRageLeech": 2,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_blue_level60_red_r001_0",
+          "phase": "initial",
+          "hits": 2,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 2241,
+          "lastRobotClock": 2250
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        15,
+        3665
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        15958.0,
+        15827.1715624993,
+        10820.9684880649
+      ],
+      "beamAbsorbedUnused": [
+        3582.22090210903,
+        4193.85909789097
+      ],
+      "meleeSoftHardAbsorbed": [
+        1652.68287822821,
+        2078.1760711688
+      ],
+      "selectorCallsAndOutOfRange": [
+        80,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        11.0,
+        33.0
+      ],
+      "heavyBeamHitsAndPower": [
+        16.0,
+        20.0
+      ],
+      "sourceArchiveSha256": "acef76f54a2a2633835f58e4d5c16ca8f1603866dc455add8a16f250ce8c1729",
+      "sourceEntrySha256": "d2582d2404725bcc41fc6bdb4114a59bf20053c8b916bb3bebe8bab5c69a5fed",
+      "lineNumber": 11217,
+      "resultSha256": "508ab4fa432b13df8c767f174c4385076101616d3c4204f7f034389e466d7bdc"
+    },
+    {
+      "group": "beastking-level99",
+      "runId": "level99-blue-r001",
+      "rival": 78,
+      "level": 99,
+      "side": "blue",
+      "status": "finished",
+      "frames": 3891.0,
+      "robotClock": 3144,
+      "rageLeech": 3,
+      "initialPhaseRageLeech": 3,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_red_level99_blue_r001_0",
+          "phase": "initial",
+          "hits": 3,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 2283,
+          "lastRobotClock": 2391
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        19,
+        3139
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        27411.0,
+        19517.2915624997,
+        14022.5101932015
+      ],
+      "beamAbsorbedUnused": [
+        1839.55042168081,
+        1377.67926168356
+      ],
+      "meleeSoftHardAbsorbed": [
+        795.568243614447,
+        2670.12601707462
+      ],
+      "selectorCallsAndOutOfRange": [
+        56,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        8.0,
+        24.0
+      ],
+      "heavyBeamHitsAndPower": [
+        17.0,
+        21.0
+      ],
+      "sourceArchiveSha256": "4b45e94a06719f3888e4d77ac0efdc259c17c0c4008d85596b5c7bbfdd665896",
+      "sourceEntrySha256": "8fe83750cc326c15306eac52c1b8713b56053a9300274e3649642eae7767ed36",
+      "lineNumber": 1395,
+      "resultSha256": "393fa8f4964cbf058d1ce17d6f31a9753d7b92fdcc5ea716c416a5d5bc1fc9d5"
+    },
+    {
+      "group": "beastking-level99",
+      "runId": "level99-red-r001",
+      "rival": 78,
+      "level": 99,
+      "side": "red",
+      "status": "finished",
+      "frames": 3548.0,
+      "robotClock": 2798,
+      "rageLeech": 4,
+      "initialPhaseRageLeech": 4,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [
+        {
+          "name": "斗兽标定_blue_level99_red_r001_0",
+          "phase": "initial",
+          "hits": 4,
+          "maxRawPower": 5950.0,
+          "firstRobotClock": 2013,
+          "lastRobotClock": 2151
+        }
+      ],
+      "reactiveForcedAndPulses": [
+        19,
+        2785
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        27355.0,
+        17568.3528124998,
+        13013.322173348
+      ],
+      "beamAbsorbedUnused": [
+        1559.46592758231,
+        1448.22351462924
+      ],
+      "meleeSoftHardAbsorbed": [
+        1628.90228114842,
+        2560.42783448728
+      ],
+      "selectorCallsAndOutOfRange": [
+        50,
+        0
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        8.0,
+        24.0
+      ],
+      "heavyBeamHitsAndPower": [
+        15.0,
+        19.5
+      ],
+      "sourceArchiveSha256": "4b45e94a06719f3888e4d77ac0efdc259c17c0c4008d85596b5c7bbfdd665896",
+      "sourceEntrySha256": "8fe83750cc326c15306eac52c1b8713b56053a9300274e3649642eae7767ed36",
+      "lineNumber": 2162,
+      "resultSha256": "393fa8f4964cbf058d1ce17d6f31a9753d7b92fdcc5ea716c416a5d5bc1fc9d5"
+    },
+    {
+      "group": "exusiai-level30",
+      "runId": "level30-blue-r001",
+      "rival": 361,
+      "level": 30,
+      "side": "blue",
+      "status": "finished",
+      "frames": 884.0,
+      "robotClock": 612,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        557
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        15177.0,
+        5406.78953124996,
+        3730.07243638247
+      ],
+      "beamAbsorbedUnused": [
+        3717.52513090436,
+        1938.35179217256
+      ],
+      "meleeSoftHardAbsorbed": [
+        0.0,
+        0.0
+      ],
+      "selectorCallsAndOutOfRange": [
+        32,
+        10
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        5.0,
+        15.0
+      ],
+      "heavyBeamHitsAndPower": [
+        4.0,
+        5.0
+      ],
+      "sourceArchiveSha256": "d0a05e7e08dd1e1bcd88b54b362678363db46c4bb215f39a52ccc12b7ba87e08",
+      "sourceEntrySha256": "1ace387ae7273aa9bcda01aac50747863be2c451117db34a584752b511a3e572",
+      "lineNumber": 3010,
+      "resultSha256": "af6e9888c3b45e36e0dcd48011eba8e9bc0f35ef0e23a79a15a46118b8ad78d1"
+    },
+    {
+      "group": "exusiai-level30",
+      "runId": "level30-red-r001",
+      "rival": 361,
+      "level": 30,
+      "side": "red",
+      "status": "finished",
+      "frames": 988.0,
+      "robotClock": 420,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        413
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        14619.0,
+        5207.94343749997,
+        4193.44171926309
+      ],
+      "beamAbsorbedUnused": [
+        2815.13649211676,
+        1898.09427711401
+      ],
+      "meleeSoftHardAbsorbed": [
+        0.0,
+        0.0
+      ],
+      "selectorCallsAndOutOfRange": [
+        12,
+        1
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        4.0,
+        12.0
+      ],
+      "heavyBeamHitsAndPower": [
+        4.0,
+        5.0
+      ],
+      "sourceArchiveSha256": "d0a05e7e08dd1e1bcd88b54b362678363db46c4bb215f39a52ccc12b7ba87e08",
+      "sourceEntrySha256": "1ace387ae7273aa9bcda01aac50747863be2c451117db34a584752b511a3e572",
+      "lineNumber": 3237,
+      "resultSha256": "af6e9888c3b45e36e0dcd48011eba8e9bc0f35ef0e23a79a15a46118b8ad78d1"
+    },
+    {
+      "group": "exusiai-level60",
+      "runId": "level60-blue-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "blue",
+      "status": "finished",
+      "frames": 1189.0,
+      "robotClock": 916,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        883
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        20262.0,
+        8237.71109374987,
+        5733.96585885281
+      ],
+      "beamAbsorbedUnused": [
+        1650.88,
+        825.44
+      ],
+      "meleeSoftHardAbsorbed": [
+        159.540511549505,
+        309.54
+      ],
+      "selectorCallsAndOutOfRange": [
+        45,
+        13
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        5.0,
+        15.0
+      ],
+      "heavyBeamHitsAndPower": [
+        4.0,
+        5.0
+      ],
+      "sourceArchiveSha256": "a6c4d48454faf159bd256e621e04595e530825096ed2f4c4ff9eff956d2edbc7",
+      "sourceEntrySha256": "c5b41b97490cc5d2b220e09654caf90e30db24b81d15f300980bd9cce546c9d0",
+      "lineNumber": 4169,
+      "resultSha256": "6ce6d1f18f8d6607609382aa9f5093796a4400300663c06cce6217bbbf5d9b31"
+    },
+    {
+      "group": "exusiai-level60",
+      "runId": "level60-red-r001",
+      "rival": 361,
+      "level": 60,
+      "side": "red",
+      "status": "finished",
+      "frames": 1441.0,
+      "robotClock": 796,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        773
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        20130.0,
+        8167.75796874988,
+        5320.20127842005
+      ],
+      "beamAbsorbedUnused": [
+        2476.32,
+        825.44
+      ],
+      "meleeSoftHardAbsorbed": [
+        0.0,
+        309.54
+      ],
+      "selectorCallsAndOutOfRange": [
+        42,
+        17
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        6.0,
+        18.0
+      ],
+      "heavyBeamHitsAndPower": [
+        3.0,
+        3.0
+      ],
+      "sourceArchiveSha256": "a6c4d48454faf159bd256e621e04595e530825096ed2f4c4ff9eff956d2edbc7",
+      "sourceEntrySha256": "c5b41b97490cc5d2b220e09654caf90e30db24b81d15f300980bd9cce546c9d0",
+      "lineNumber": 4496,
+      "resultSha256": "6ce6d1f18f8d6607609382aa9f5093796a4400300663c06cce6217bbbf5d9b31"
+    },
+    {
+      "group": "exusiai-level99",
+      "runId": "level99-blue-r001",
+      "rival": 361,
+      "level": 99,
+      "side": "blue",
+      "status": "finished",
+      "frames": 1400.0,
+      "robotClock": 820,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        815
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        26808.0,
+        11111.1492187499,
+        8292.25745413306
+      ],
+      "beamAbsorbedUnused": [
+        864.19762768356,
+        432.09881384178
+      ],
+      "meleeSoftHardAbsorbed": [
+        1377.45,
+        0.0
+      ],
+      "selectorCallsAndOutOfRange": [
+        51,
+        1
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        5.0,
+        15.0
+      ],
+      "heavyBeamHitsAndPower": [
+        4.0,
+        5.0
+      ],
+      "sourceArchiveSha256": "06cf4b9064412160b4020f539e3fed005769279c0d075828f1e179b8d5e89472",
+      "sourceEntrySha256": "d34e54ec557cbd9059a30670d0f4eaa766671263c52beacadff11f2988df9080",
+      "lineNumber": 5468,
+      "resultSha256": "6dc94b767b553488c83a43b0fe5dced63d213eda8f90a5833e0ba408a06266e6"
+    },
+    {
+      "group": "exusiai-level99",
+      "runId": "level99-red-r001",
+      "rival": 361,
+      "level": 99,
+      "side": "red",
+      "status": "finished",
+      "frames": 741.0,
+      "robotClock": 474,
+      "rageLeech": 0,
+      "initialPhaseRageLeech": 0,
+      "successorPhaseRageLeech": 0,
+      "unknownPhaseRageLeech": 0,
+      "rageSources": [],
+      "reactiveForcedAndPulses": [
+        19,
+        406
+      ],
+      "reactiveObservedLostGrantedAbsorbed": [
+        27440.0,
+        9494.47828124995,
+        7725.72929982596
+      ],
+      "beamAbsorbedUnused": [
+        864.19762768356,
+        216.04940692089
+      ],
+      "meleeSoftHardAbsorbed": [
+        0.0,
+        0.0
+      ],
+      "selectorCallsAndOutOfRange": [
+        23,
+        15
+      ],
+      "observedStartRange": 750.0,
+      "observedShieldCapacityScale": 0.5,
+      "observedBeamShieldCapacityScale": 0.2,
+      "observedReactiveShieldCapacityScale": 0.75,
+      "normalBeamHitsAndPower": [
+        4.0,
+        12.0
+      ],
+      "heavyBeamHitsAndPower": [
+        4.0,
+        5.0
+      ],
+      "sourceArchiveSha256": "06cf4b9064412160b4020f539e3fed005769279c0d075828f1e179b8d5e89472",
+      "sourceEntrySha256": "d34e54ec557cbd9059a30670d0f4eaa766671263c52beacadff11f2988df9080",
+      "lineNumber": 5647,
+      "resultSha256": "6dc94b767b553488c83a43b0fe5dced63d213eda8f90a5833e0ba408a06266e6"
+    }
+  ],
+  "diagnosticsSha256": "2cfd2897728d1ac9a437f91f871d257eeda56ce4ea061c815bd9d299a744793d",
+  "boundary": "Read-only joins of observed nonlethal robot hit callbacks. A positive production lifesteal flag is an observed event, not a universal heal-amount probe. Lethal or pre-subscription events are not counted. Initial and successor identity are matched to actual arena spawn names; unknown identities remain unknown. This does not establish zero total healing or causality for outcome differences."
+}

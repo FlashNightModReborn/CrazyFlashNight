@@ -1,0 +1,1135 @@
+[2026-10-16 22:46:11.408] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:46:11.443] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 22:46:18.158] [core-startup] [INFO] core.environment pid=22388 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 22:46:18.182] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-65853d90055f4d399ac21f42b5895ca1\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-65853d90055f4d399ac21f42b5895ca1\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-65853d90055f4d399ac21f42b5895ca1\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1392038350848,"preparedFlashTemp":null}
+[2026-10-16 22:46:18.184] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 22:46:18.185] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 22:46:18.185] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 22:46:18.186] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 22:46:18.186] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 22:46:18.187] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 22:46:18.187] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 22:46:18.187] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 22:46:18.188] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 22:46:18.190] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:46:18.243] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 22:46:22.531] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 22:46:22.532] [core-startup] [INFO] config.load_start
+[2026-10-16 22:46:22.627] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 22:46:22.629] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:46:22.630] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 22:46:22.630] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 22:46:22.631] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:46:22.631] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 22:46:22.632] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 22:46:22.633] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 22:46:22.634] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 22:46:22.635] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 22:46:22.636] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 22:46:22.636] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:46:23.053] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 22:46:23.053] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:46:23.197] [core-startup] [INFO] steam.check_start
+[2026-10-16 22:46:23.226] [core-startup] [INFO] steam.check_ok
+[2026-10-16 22:46:23.237] [core-startup] [INFO] flash_trust.start
+[2026-10-16 22:46:23.310] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 22:46:23.490] [core-startup] [INFO] audio.init_start
+[2026-10-16 22:46:23.495] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 22:46:23.604] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 22:46:23.658] [core-startup] [INFO] socket.start_ok port=49398
+[2026-10-16 22:46:23.724] [core-startup] [INFO] http.start_ok port=31315
+[2026-10-16 22:46:24.780] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 22:46:29.423] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 22:46:29.510] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 22:46:30.951] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 22:46:30.991] [core-startup] [INFO] ports.write_ok {"httpPort":31315,"socketPort":49398,"pid":22388,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-65853d90055f4d399ac21f42b5895ca1","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 22:46:30.992] [core-startup] [INFO] bus.ready http=31315 socket=49398
+[2026-10-16 22:46:30.992] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 22:46:31.003] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 22:46:31.004] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 22:46:31.019] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:46:31.021] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:46:31.022] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:46:31.025] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 22:46:31.026] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 22:46:32.245] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 22:46:32.248] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 22:46:32.249] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 22:46:33.560] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 22:46:39.829] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 22:46:40.100] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 22:46:41.624] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 22:46:41.635] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 22:46:42.212] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 22:46:42.218] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 22:48:17.551] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 22:48:17.551] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=de0db8229593402b86aa3db30259d25d pendingSlot=cf7_agent_aw_65853d90055f4d399ac21f42b5895ca1
+[2026-10-16 22:48:17.733] [core-startup] [INFO] application.run_returned
+[2026-10-16 22:48:17.734] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 22:48:17.820] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 22:48:17.821] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 22:48:17.822] [core-startup] [INFO] core.main_exit
+[2026-10-16 22:49:35.611] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:49:35.635] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 22:49:39.511] [core-startup] [INFO] core.environment pid=31684 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 22:49:39.535] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-8f8a247662ff4a43af2564f0b551bf6d\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-8f8a247662ff4a43af2564f0b551bf6d\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-8f8a247662ff4a43af2564f0b551bf6d\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391965011968,"preparedFlashTemp":null}
+[2026-10-16 22:49:39.537] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 22:49:39.537] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 22:49:39.538] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 22:49:39.538] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 22:49:39.539] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 22:49:39.540] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 22:49:39.540] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 22:49:39.541] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 22:49:39.541] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 22:49:39.543] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:49:39.569] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 22:49:42.825] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 22:49:42.826] [core-startup] [INFO] config.load_start
+[2026-10-16 22:49:42.832] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 22:49:42.833] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:49:42.834] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 22:49:42.834] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 22:49:42.835] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:49:42.835] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 22:49:42.835] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 22:49:42.836] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 22:49:42.836] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 22:49:42.837] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 22:49:42.837] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 22:49:42.837] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:49:42.951] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 22:49:42.952] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:49:42.977] [core-startup] [INFO] steam.check_start
+[2026-10-16 22:49:42.987] [core-startup] [INFO] steam.check_ok
+[2026-10-16 22:49:42.987] [core-startup] [INFO] flash_trust.start
+[2026-10-16 22:49:43.010] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 22:49:43.067] [core-startup] [INFO] audio.init_start
+[2026-10-16 22:49:43.069] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 22:49:43.083] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 22:49:43.095] [core-startup] [INFO] socket.start_ok port=64384
+[2026-10-16 22:49:43.141] [core-startup] [INFO] http.start_ok port=44616
+[2026-10-16 22:49:43.663] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 22:49:45.526] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 22:49:45.636] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 22:49:47.065] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 22:49:47.093] [core-startup] [INFO] ports.write_ok {"httpPort":44616,"socketPort":64384,"pid":31684,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-8f8a247662ff4a43af2564f0b551bf6d","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 22:49:47.094] [core-startup] [INFO] bus.ready http=44616 socket=64384
+[2026-10-16 22:49:47.095] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 22:49:47.107] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 22:49:47.107] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 22:49:47.122] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:49:47.125] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:49:47.126] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:49:47.129] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 22:49:47.129] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 22:49:48.352] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 22:49:48.356] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 22:49:48.357] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 22:49:49.768] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 22:49:58.801] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 22:49:58.887] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 22:50:00.663] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 22:50:00.685] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 22:50:01.479] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 22:50:01.487] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 22:53:11.490] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 22:53:11.491] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=e95fde789c584aa5b737f086e3bb4ad7 pendingSlot=cf7_agent_aw_8f8a247662ff4a43af2564f0b551bf6d
+[2026-10-16 22:53:11.705] [core-startup] [INFO] application.run_returned
+[2026-10-16 22:53:11.705] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 22:53:11.816] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 22:53:11.817] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 22:53:11.818] [core-startup] [INFO] core.main_exit
+[2026-10-16 22:53:51.446] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:53:51.472] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 22:53:54.671] [core-startup] [INFO] core.environment pid=4224 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 22:53:54.686] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-333c5d2e394340d3aa4a1858a2f11453\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-333c5d2e394340d3aa4a1858a2f11453\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-333c5d2e394340d3aa4a1858a2f11453\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391648784384,"preparedFlashTemp":null}
+[2026-10-16 22:53:54.688] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 22:53:54.688] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 22:53:54.689] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 22:53:54.689] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 22:53:54.689] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 22:53:54.690] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 22:53:54.690] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 22:53:54.691] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 22:53:54.691] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 22:53:54.693] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:53:54.713] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 22:53:57.314] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 22:53:57.314] [core-startup] [INFO] config.load_start
+[2026-10-16 22:53:57.318] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 22:53:57.319] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:53:57.319] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 22:53:57.319] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 22:53:57.320] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:53:57.320] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 22:53:57.320] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 22:53:57.320] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 22:53:57.321] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 22:53:57.321] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 22:53:57.321] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 22:53:57.321] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:53:57.399] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 22:53:57.400] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:53:57.420] [core-startup] [INFO] steam.check_start
+[2026-10-16 22:53:57.430] [core-startup] [INFO] steam.check_ok
+[2026-10-16 22:53:57.430] [core-startup] [INFO] flash_trust.start
+[2026-10-16 22:53:57.444] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 22:53:57.490] [core-startup] [INFO] audio.init_start
+[2026-10-16 22:53:57.492] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 22:53:57.505] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 22:53:57.512] [core-startup] [INFO] socket.start_ok port=63534
+[2026-10-16 22:53:57.556] [core-startup] [INFO] http.start_ok port=31641
+[2026-10-16 22:53:57.841] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 22:53:59.026] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 22:53:59.126] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 22:54:00.178] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 22:54:00.203] [core-startup] [INFO] ports.write_ok {"httpPort":31641,"socketPort":63534,"pid":4224,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-333c5d2e394340d3aa4a1858a2f11453","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 22:54:00.203] [core-startup] [INFO] bus.ready http=31641 socket=63534
+[2026-10-16 22:54:00.204] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 22:54:00.213] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 22:54:00.214] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 22:54:00.225] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:54:00.227] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:54:00.228] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:54:00.230] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 22:54:00.230] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 22:54:01.414] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 22:54:01.417] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 22:54:01.419] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 22:54:03.833] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 22:54:08.659] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 22:54:08.700] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 22:54:10.102] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 22:54:10.111] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 22:54:10.579] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 22:54:10.582] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 22:56:58.860] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 22:56:58.861] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=5e470069d97c4db3b4ee32c7356d740d pendingSlot=cf7_agent_aw_333c5d2e394340d3aa4a1858a2f11453
+[2026-10-16 22:56:59.089] [core-startup] [INFO] application.run_returned
+[2026-10-16 22:56:59.090] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 22:56:59.163] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 22:56:59.165] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 22:56:59.166] [core-startup] [INFO] core.main_exit
+[2026-10-16 22:57:37.488] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:57:37.511] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 22:57:40.927] [core-startup] [INFO] core.environment pid=29632 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 22:57:40.951] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0dcf1a39218f459794464308dabba0fe\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0dcf1a39218f459794464308dabba0fe\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0dcf1a39218f459794464308dabba0fe\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391617527808,"preparedFlashTemp":null}
+[2026-10-16 22:57:40.957] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 22:57:40.958] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 22:57:40.958] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 22:57:40.959] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 22:57:40.959] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 22:57:40.959] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 22:57:40.960] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 22:57:40.960] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 22:57:40.960] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 22:57:40.962] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:57:40.982] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 22:57:43.595] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 22:57:43.595] [core-startup] [INFO] config.load_start
+[2026-10-16 22:57:43.599] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 22:57:43.600] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 22:57:43.600] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 22:57:43.600] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 22:57:43.601] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:57:43.601] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 22:57:43.601] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 22:57:43.602] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 22:57:43.602] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 22:57:43.603] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 22:57:43.603] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 22:57:43.604] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:57:43.733] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 22:57:43.733] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 22:57:43.757] [core-startup] [INFO] steam.check_start
+[2026-10-16 22:57:43.770] [core-startup] [INFO] steam.check_ok
+[2026-10-16 22:57:43.771] [core-startup] [INFO] flash_trust.start
+[2026-10-16 22:57:43.776] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 22:57:43.833] [core-startup] [INFO] audio.init_start
+[2026-10-16 22:57:43.836] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 22:57:43.851] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 22:57:43.861] [core-startup] [INFO] socket.start_ok port=62645
+[2026-10-16 22:57:43.908] [core-startup] [INFO] http.start_ok port=57069
+[2026-10-16 22:57:44.331] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 22:57:46.193] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 22:57:46.366] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 22:57:48.351] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 22:57:48.391] [core-startup] [INFO] ports.write_ok {"httpPort":57069,"socketPort":62645,"pid":29632,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-0dcf1a39218f459794464308dabba0fe","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 22:57:48.392] [core-startup] [INFO] bus.ready http=57069 socket=62645
+[2026-10-16 22:57:48.392] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 22:57:48.427] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 22:57:48.445] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 22:57:48.474] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 22:57:48.476] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:57:48.477] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 22:57:48.479] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 22:57:48.480] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 22:57:50.031] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 22:57:50.033] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 22:57:50.038] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 22:57:51.354] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 22:58:01.030] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 22:58:01.079] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 22:58:02.571] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 22:58:02.583] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 22:58:03.068] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 22:58:03.070] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 23:01:12.387] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 23:01:12.388] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=a9cff97c71c34682a609a3919b52c558 pendingSlot=cf7_agent_aw_0dcf1a39218f459794464308dabba0fe
+[2026-10-16 23:01:12.575] [core-startup] [INFO] application.run_returned
+[2026-10-16 23:01:12.575] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 23:01:12.631] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 23:01:12.633] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 23:01:12.633] [core-startup] [INFO] core.main_exit
+[2026-10-16 23:40:40.518] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 23:40:40.545] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 23:40:44.585] [core-startup] [INFO] core.environment pid=21984 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 23:40:44.608] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-35dd4d514aff445faad967c70ba39eb9\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-35dd4d514aff445faad967c70ba39eb9\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-35dd4d514aff445faad967c70ba39eb9\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391425007616,"preparedFlashTemp":null}
+[2026-10-16 23:40:44.610] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 23:40:44.611] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 23:40:44.611] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 23:40:44.612] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 23:40:44.612] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 23:40:44.613] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 23:40:44.613] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 23:40:44.614] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 23:40:44.614] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 23:40:44.615] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 23:40:44.640] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 23:40:47.531] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 23:40:47.532] [core-startup] [INFO] config.load_start
+[2026-10-16 23:40:47.539] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 23:40:47.540] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 23:40:47.541] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 23:40:47.541] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 23:40:47.542] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:40:47.543] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 23:40:47.543] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 23:40:47.544] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 23:40:47.544] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 23:40:47.545] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 23:40:47.545] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 23:40:47.546] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:40:47.670] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 23:40:47.671] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 23:40:47.697] [core-startup] [INFO] steam.check_start
+[2026-10-16 23:40:47.711] [core-startup] [INFO] steam.check_ok
+[2026-10-16 23:40:47.712] [core-startup] [INFO] flash_trust.start
+[2026-10-16 23:40:47.717] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 23:40:47.776] [core-startup] [INFO] audio.init_start
+[2026-10-16 23:40:47.779] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 23:40:47.795] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 23:40:47.807] [core-startup] [INFO] socket.start_ok port=56957
+[2026-10-16 23:40:47.856] [core-startup] [INFO] http.start_ok port=36450
+[2026-10-16 23:40:48.256] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 23:40:50.169] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 23:40:50.295] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 23:40:50.921] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 23:40:50.937] [core-startup] [INFO] ports.write_ok {"httpPort":36450,"socketPort":56957,"pid":21984,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-35dd4d514aff445faad967c70ba39eb9","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 23:40:50.937] [core-startup] [INFO] bus.ready http=36450 socket=56957
+[2026-10-16 23:40:50.938] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 23:40:50.943] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 23:40:50.944] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 23:40:51.532] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:40:51.534] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 23:40:51.535] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 23:40:51.537] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 23:40:51.538] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 23:40:53.304] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 23:40:53.328] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 23:40:53.331] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 23:40:54.898] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 23:41:00.847] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 23:41:00.885] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 23:41:02.865] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 23:41:02.877] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 23:41:03.716] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 23:41:03.720] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 23:46:00.788] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=192f80e707cf4a1c8c551082cf12ce42 pendingSlot=cf7_agent_aw_35dd4d514aff445faad967c70ba39eb9
+[2026-10-16 23:46:00.852] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 23:46:08.730] [core-startup] [INFO] application.run_returned
+[2026-10-16 23:46:08.731] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 23:46:08.785] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 23:46:08.786] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 23:46:08.786] [core-startup] [INFO] core.main_exit
+[2026-10-16 23:46:46.300] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 23:46:46.325] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-16 23:46:49.818] [core-startup] [INFO] core.environment pid=9492 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-16 23:46:49.841] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-38c2d10f19f744c2925a2bb3dbad595c\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-38c2d10f19f744c2925a2bb3dbad595c\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-38c2d10f19f744c2925a2bb3dbad595c\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391399137280,"preparedFlashTemp":null}
+[2026-10-16 23:46:49.844] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-16 23:46:49.845] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-16 23:46:49.845] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-16 23:46:49.846] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-16 23:46:49.847] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-16 23:46:49.847] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-16 23:46:49.848] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-16 23:46:49.848] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-16 23:46:49.849] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-16 23:46:49.851] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 23:46:49.880] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-16 23:46:52.505] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-16 23:46:52.506] [core-startup] [INFO] config.load_start
+[2026-10-16 23:46:52.509] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-16 23:46:52.510] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-16 23:46:52.510] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-16 23:46:52.511] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-16 23:46:52.511] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:46:52.511] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-16 23:46:52.512] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-16 23:46:52.512] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-16 23:46:52.512] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-16 23:46:52.513] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-16 23:46:52.513] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-16 23:46:52.513] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:46:52.602] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-16 23:46:52.603] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-16 23:46:52.621] [core-startup] [INFO] steam.check_start
+[2026-10-16 23:46:52.628] [core-startup] [INFO] steam.check_ok
+[2026-10-16 23:46:52.629] [core-startup] [INFO] flash_trust.start
+[2026-10-16 23:46:52.632] [core-startup] [INFO] flash_trust.ok
+[2026-10-16 23:46:52.672] [core-startup] [INFO] audio.init_start
+[2026-10-16 23:46:52.675] [core-startup] [INFO] audio.init_scheduled
+[2026-10-16 23:46:52.688] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-16 23:46:52.696] [core-startup] [INFO] socket.start_ok port=61788
+[2026-10-16 23:46:52.740] [core-startup] [INFO] http.start_ok port=48642
+[2026-10-16 23:46:53.055] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-16 23:46:54.418] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-16 23:46:54.524] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-16 23:46:55.861] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-16 23:46:55.894] [core-startup] [INFO] ports.write_ok {"httpPort":48642,"socketPort":61788,"pid":9492,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-38c2d10f19f744c2925a2bb3dbad595c","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-16 23:46:55.895] [core-startup] [INFO] bus.ready http=48642 socket=61788
+[2026-10-16 23:46:55.896] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-16 23:46:55.913] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-16 23:46:55.914] [core-startup] [INFO] bootstrap.ready
+[2026-10-16 23:46:55.927] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-16 23:46:55.929] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 23:46:55.930] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-16 23:46:55.932] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-16 23:46:55.933] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-16 23:46:57.513] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-16 23:46:57.514] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-16 23:46:57.516] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-16 23:46:59.779] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-16 23:47:05.081] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-16 23:47:05.117] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-16 23:47:06.626] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-16 23:47:06.638] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-16 23:47:09.505] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-16 23:47:09.510] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-16 23:52:04.203] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=063d6ce93567455bb9bfb8999bbc0526 pendingSlot=cf7_agent_aw_38c2d10f19f744c2925a2bb3dbad595c
+[2026-10-16 23:52:04.276] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-16 23:52:11.643] [core-startup] [INFO] application.run_returned
+[2026-10-16 23:52:11.643] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-16 23:52:11.705] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-16 23:52:11.706] [core-startup] [INFO] core.run_finally_complete
+[2026-10-16 23:52:11.706] [core-startup] [INFO] core.main_exit
+[2026-10-17 00:22:49.859] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:22:49.879] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 00:22:52.869] [core-startup] [INFO] core.environment pid=15464 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 00:22:52.892] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-1097f91b022644bd9f8c7649067c9230\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-1097f91b022644bd9f8c7649067c9230\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-1097f91b022644bd9f8c7649067c9230\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391369957376,"preparedFlashTemp":null}
+[2026-10-17 00:22:52.895] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 00:22:52.895] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 00:22:52.896] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 00:22:52.896] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 00:22:52.897] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 00:22:52.897] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 00:22:52.898] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 00:22:52.898] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 00:22:52.899] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 00:22:52.902] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:22:52.930] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 00:22:55.091] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 00:22:55.092] [core-startup] [INFO] config.load_start
+[2026-10-17 00:22:55.095] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 00:22:55.096] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:22:55.096] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 00:22:55.097] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 00:22:55.097] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:22:55.097] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 00:22:55.098] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 00:22:55.098] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 00:22:55.099] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 00:22:55.099] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 00:22:55.099] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 00:22:55.100] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:22:55.177] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 00:22:55.178] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:22:55.197] [core-startup] [INFO] steam.check_start
+[2026-10-17 00:22:55.206] [core-startup] [INFO] steam.check_ok
+[2026-10-17 00:22:55.206] [core-startup] [INFO] flash_trust.start
+[2026-10-17 00:22:55.210] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 00:22:55.246] [core-startup] [INFO] audio.init_start
+[2026-10-17 00:22:55.249] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 00:22:55.261] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 00:22:55.270] [core-startup] [INFO] socket.start_ok port=59717
+[2026-10-17 00:22:55.308] [core-startup] [INFO] http.start_ok port=33196
+[2026-10-17 00:22:55.623] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 00:22:57.095] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 00:22:57.183] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 00:22:58.540] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 00:22:58.601] [core-startup] [INFO] ports.write_ok {"httpPort":33196,"socketPort":59717,"pid":15464,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-1097f91b022644bd9f8c7649067c9230","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 00:22:58.602] [core-startup] [INFO] bus.ready http=33196 socket=59717
+[2026-10-17 00:22:58.603] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 00:22:58.624] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 00:22:58.625] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 00:22:58.643] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:22:58.646] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:22:58.646] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:22:58.649] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 00:22:58.649] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 00:23:00.221] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 00:23:00.223] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 00:23:00.227] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 00:23:01.307] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 00:23:11.320] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 00:23:11.364] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 00:23:12.831] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 00:23:12.840] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 00:23:13.422] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 00:23:13.428] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 00:28:09.798] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=a3b27119fc104246bda042210628b095 pendingSlot=cf7_agent_aw_1097f91b022644bd9f8c7649067c9230
+[2026-10-17 00:28:09.876] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 00:28:18.576] [core-startup] [INFO] application.run_returned
+[2026-10-17 00:28:18.576] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 00:28:18.682] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 00:28:18.683] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 00:28:18.684] [core-startup] [INFO] core.main_exit
+[2026-10-17 00:28:57.146] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:28:57.180] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 00:29:02.523] [core-startup] [INFO] core.environment pid=23644 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 00:29:02.549] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-aa06bac8611a4031b9cc484c7b7c74f2\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-aa06bac8611a4031b9cc484c7b7c74f2\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-aa06bac8611a4031b9cc484c7b7c74f2\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391352377344,"preparedFlashTemp":null}
+[2026-10-17 00:29:02.552] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 00:29:02.553] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 00:29:02.554] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 00:29:02.554] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 00:29:02.555] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 00:29:02.555] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 00:29:02.556] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 00:29:02.556] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 00:29:02.557] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 00:29:02.558] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:29:02.588] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 00:29:05.815] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 00:29:05.816] [core-startup] [INFO] config.load_start
+[2026-10-17 00:29:05.822] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 00:29:05.824] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:29:05.824] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 00:29:05.825] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 00:29:05.825] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:29:05.825] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 00:29:05.826] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 00:29:05.826] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 00:29:05.827] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 00:29:05.827] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 00:29:05.828] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 00:29:05.828] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:29:05.927] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 00:29:05.927] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:29:05.949] [core-startup] [INFO] steam.check_start
+[2026-10-17 00:29:05.959] [core-startup] [INFO] steam.check_ok
+[2026-10-17 00:29:05.959] [core-startup] [INFO] flash_trust.start
+[2026-10-17 00:29:05.965] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 00:29:06.016] [core-startup] [INFO] audio.init_start
+[2026-10-17 00:29:06.019] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 00:29:06.034] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 00:29:06.042] [core-startup] [INFO] socket.start_ok port=50314
+[2026-10-17 00:29:06.084] [core-startup] [INFO] http.start_ok port=41539
+[2026-10-17 00:29:06.406] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 00:29:08.125] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 00:29:08.253] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 00:29:09.646] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 00:29:09.685] [core-startup] [INFO] ports.write_ok {"httpPort":41539,"socketPort":50314,"pid":23644,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-aa06bac8611a4031b9cc484c7b7c74f2","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 00:29:09.686] [core-startup] [INFO] bus.ready http=41539 socket=50314
+[2026-10-17 00:29:09.686] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 00:29:09.699] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 00:29:09.700] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 00:29:09.712] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:29:09.714] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:29:09.715] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:29:09.716] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 00:29:09.717] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 00:29:10.582] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 00:29:10.583] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 00:29:10.584] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 00:29:12.343] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 00:29:21.716] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 00:29:21.805] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 00:29:23.884] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 00:29:23.899] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 00:29:24.645] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 00:29:24.648] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 00:31:19.245] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 00:31:19.246] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=d7a2002795f84c82b1eb077f140b5fd6 pendingSlot=cf7_agent_aw_aa06bac8611a4031b9cc484c7b7c74f2
+[2026-10-17 00:31:19.425] [core-startup] [INFO] application.run_returned
+[2026-10-17 00:31:19.425] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 00:31:19.473] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 00:31:19.475] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 00:31:19.475] [core-startup] [INFO] core.main_exit
+[2026-10-17 00:34:26.840] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:34:26.861] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 00:34:30.005] [core-startup] [INFO] core.environment pid=27152 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 00:34:30.021] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-bcaf0a657fd14357b13974f9ea8fe532\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-bcaf0a657fd14357b13974f9ea8fe532\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-bcaf0a657fd14357b13974f9ea8fe532\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391329079296,"preparedFlashTemp":null}
+[2026-10-17 00:34:30.023] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 00:34:30.023] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 00:34:30.023] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 00:34:30.024] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 00:34:30.024] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 00:34:30.024] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 00:34:30.025] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 00:34:30.025] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 00:34:30.025] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 00:34:30.027] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:34:30.047] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 00:34:32.837] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 00:34:32.838] [core-startup] [INFO] config.load_start
+[2026-10-17 00:34:32.845] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 00:34:32.846] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:34:32.847] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 00:34:32.847] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 00:34:32.848] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:34:32.848] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 00:34:32.849] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 00:34:32.850] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 00:34:32.850] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 00:34:32.851] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 00:34:32.851] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 00:34:32.852] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:34:32.966] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 00:34:32.967] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:34:32.994] [core-startup] [INFO] steam.check_start
+[2026-10-17 00:34:33.008] [core-startup] [INFO] steam.check_ok
+[2026-10-17 00:34:33.008] [core-startup] [INFO] flash_trust.start
+[2026-10-17 00:34:33.013] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 00:34:33.067] [core-startup] [INFO] audio.init_start
+[2026-10-17 00:34:33.070] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 00:34:33.087] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 00:34:33.099] [core-startup] [INFO] socket.start_ok port=57076
+[2026-10-17 00:34:33.147] [core-startup] [INFO] http.start_ok port=40883
+[2026-10-17 00:34:33.530] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 00:34:35.261] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 00:34:35.359] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 00:34:37.252] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 00:34:37.322] [core-startup] [INFO] ports.write_ok {"httpPort":40883,"socketPort":57076,"pid":27152,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-bcaf0a657fd14357b13974f9ea8fe532","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 00:34:37.327] [core-startup] [INFO] bus.ready http=40883 socket=57076
+[2026-10-17 00:34:37.329] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 00:34:37.395] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 00:34:37.397] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 00:34:37.424] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:34:37.427] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:34:37.427] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:34:37.430] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 00:34:37.431] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 00:34:39.177] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 00:34:39.179] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 00:34:39.179] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 00:34:40.479] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 00:34:51.249] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 00:34:51.295] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 00:34:52.581] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 00:34:52.593] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 00:34:53.170] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 00:34:53.176] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 00:37:31.603] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 00:37:31.604] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=ac183633e6b74d44a4ab6c990022e31b pendingSlot=cf7_agent_aw_bcaf0a657fd14357b13974f9ea8fe532
+[2026-10-17 00:37:31.821] [core-startup] [INFO] application.run_returned
+[2026-10-17 00:37:31.822] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 00:37:31.888] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 00:37:31.890] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 00:37:31.891] [core-startup] [INFO] core.main_exit
+[2026-10-17 00:48:28.624] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:48:28.652] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 00:48:32.282] [core-startup] [INFO] core.environment pid=15860 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 00:48:32.303] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4e505ad43399431a8e49f414ca56e2cf\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4e505ad43399431a8e49f414ca56e2cf\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4e505ad43399431a8e49f414ca56e2cf\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391343284224,"preparedFlashTemp":null}
+[2026-10-17 00:48:32.306] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 00:48:32.307] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 00:48:32.307] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 00:48:32.308] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 00:48:32.308] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 00:48:32.308] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 00:48:32.309] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 00:48:32.309] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 00:48:32.310] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 00:48:32.311] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:48:32.334] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 00:48:35.507] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 00:48:35.508] [core-startup] [INFO] config.load_start
+[2026-10-17 00:48:35.513] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 00:48:35.515] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:48:35.515] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 00:48:35.515] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 00:48:35.516] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:48:35.516] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 00:48:35.517] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 00:48:35.517] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 00:48:35.517] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 00:48:35.518] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 00:48:35.519] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 00:48:35.519] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:48:35.633] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 00:48:35.633] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:48:35.660] [core-startup] [INFO] steam.check_start
+[2026-10-17 00:48:35.675] [core-startup] [INFO] steam.check_ok
+[2026-10-17 00:48:35.675] [core-startup] [INFO] flash_trust.start
+[2026-10-17 00:48:35.679] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 00:48:35.732] [core-startup] [INFO] audio.init_start
+[2026-10-17 00:48:35.736] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 00:48:35.759] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 00:48:35.770] [core-startup] [INFO] socket.start_ok port=52758
+[2026-10-17 00:48:35.828] [core-startup] [INFO] http.start_ok port=26193
+[2026-10-17 00:48:36.259] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 00:48:38.398] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 00:48:38.558] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 00:48:40.978] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 00:48:41.027] [core-startup] [INFO] ports.write_ok {"httpPort":26193,"socketPort":52758,"pid":15860,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-4e505ad43399431a8e49f414ca56e2cf","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 00:48:41.027] [core-startup] [INFO] bus.ready http=26193 socket=52758
+[2026-10-17 00:48:41.028] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 00:48:41.052] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 00:48:41.053] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 00:48:41.094] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:48:41.097] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:48:41.098] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:48:41.106] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 00:48:41.107] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 00:48:41.828] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 00:48:41.835] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 00:48:41.838] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 00:48:45.320] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 00:48:55.995] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 00:48:56.036] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 00:48:57.423] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 00:48:57.436] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 00:48:58.074] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 00:48:58.080] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 00:51:27.543] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 00:51:27.544] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=a289f29197d04fa5ace1b6744752b3d4 pendingSlot=cf7_agent_aw_4e505ad43399431a8e49f414ca56e2cf
+[2026-10-17 00:51:27.902] [core-startup] [INFO] application.run_returned
+[2026-10-17 00:51:27.903] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 00:51:27.994] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 00:51:27.995] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 00:51:27.995] [core-startup] [INFO] core.main_exit
+[2026-10-17 00:51:59.690] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:51:59.713] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 00:52:02.804] [core-startup] [INFO] core.environment pid=26912 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 00:52:02.827] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-2c55c9db4eda4a14ba754b7ff4a9a7d1\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-2c55c9db4eda4a14ba754b7ff4a9a7d1\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-2c55c9db4eda4a14ba754b7ff4a9a7d1\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391327473664,"preparedFlashTemp":null}
+[2026-10-17 00:52:02.830] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 00:52:02.830] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 00:52:02.830] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 00:52:02.831] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 00:52:02.831] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 00:52:02.832] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 00:52:02.832] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 00:52:02.832] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 00:52:02.833] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 00:52:02.834] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:52:02.855] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 00:52:05.527] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 00:52:05.528] [core-startup] [INFO] config.load_start
+[2026-10-17 00:52:05.532] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 00:52:05.533] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 00:52:05.534] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 00:52:05.534] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 00:52:05.534] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:52:05.535] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 00:52:05.535] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 00:52:05.536] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 00:52:05.536] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 00:52:05.536] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 00:52:05.537] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 00:52:05.537] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:52:05.639] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 00:52:05.639] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 00:52:05.667] [core-startup] [INFO] steam.check_start
+[2026-10-17 00:52:05.677] [core-startup] [INFO] steam.check_ok
+[2026-10-17 00:52:05.677] [core-startup] [INFO] flash_trust.start
+[2026-10-17 00:52:05.681] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 00:52:05.727] [core-startup] [INFO] audio.init_start
+[2026-10-17 00:52:05.730] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 00:52:05.745] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 00:52:05.756] [core-startup] [INFO] socket.start_ok port=58865
+[2026-10-17 00:52:05.791] [core-startup] [INFO] http.start_ok port=50513
+[2026-10-17 00:52:06.090] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 00:52:07.412] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 00:52:07.499] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 00:52:08.605] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 00:52:08.629] [core-startup] [INFO] ports.write_ok {"httpPort":50513,"socketPort":58865,"pid":26912,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-2c55c9db4eda4a14ba754b7ff4a9a7d1","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 00:52:08.629] [core-startup] [INFO] bus.ready http=50513 socket=58865
+[2026-10-17 00:52:08.630] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 00:52:08.641] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 00:52:08.641] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 00:52:08.655] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 00:52:08.657] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:52:08.657] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 00:52:08.659] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 00:52:08.659] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 00:52:09.920] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 00:52:09.923] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 00:52:09.926] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 00:52:11.086] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 00:52:17.815] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 00:52:17.891] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 00:52:20.258] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 00:52:20.274] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 00:52:26.268] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 00:52:26.272] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 00:53:40.063] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 00:53:40.064] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=133de4bba58744788208b9dbebd0b8ba pendingSlot=cf7_agent_aw_2c55c9db4eda4a14ba754b7ff4a9a7d1
+[2026-10-17 00:53:40.321] [core-startup] [INFO] application.run_returned
+[2026-10-17 00:53:40.321] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 00:53:40.381] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 00:53:40.382] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 00:53:40.383] [core-startup] [INFO] core.main_exit
+[2026-10-17 01:10:47.248] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:10:47.268] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 01:10:50.841] [core-startup] [INFO] core.environment pid=4520 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 01:10:50.863] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4ea76440908c4288bb6921ef4049b280\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4ea76440908c4288bb6921ef4049b280\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-4ea76440908c4288bb6921ef4049b280\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391307382784,"preparedFlashTemp":null}
+[2026-10-17 01:10:50.866] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 01:10:50.866] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 01:10:50.867] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 01:10:50.867] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 01:10:50.868] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 01:10:50.868] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 01:10:50.869] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 01:10:50.869] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 01:10:50.869] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 01:10:50.871] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:10:50.895] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 01:10:54.070] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 01:10:54.072] [core-startup] [INFO] config.load_start
+[2026-10-17 01:10:54.076] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 01:10:54.077] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:10:54.078] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 01:10:54.078] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 01:10:54.079] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:10:54.079] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 01:10:54.079] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 01:10:54.080] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 01:10:54.080] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 01:10:54.081] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 01:10:54.081] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 01:10:54.081] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:10:54.177] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 01:10:54.177] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:10:54.197] [core-startup] [INFO] steam.check_start
+[2026-10-17 01:10:54.208] [core-startup] [INFO] steam.check_ok
+[2026-10-17 01:10:54.208] [core-startup] [INFO] flash_trust.start
+[2026-10-17 01:10:54.213] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 01:10:54.261] [core-startup] [INFO] audio.init_start
+[2026-10-17 01:10:54.264] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 01:10:54.279] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 01:10:54.290] [core-startup] [INFO] socket.start_ok port=55305
+[2026-10-17 01:10:54.337] [core-startup] [INFO] http.start_ok port=28925
+[2026-10-17 01:10:54.719] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 01:10:56.537] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 01:10:56.617] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 01:10:58.822] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 01:10:58.882] [core-startup] [INFO] ports.write_ok {"httpPort":28925,"socketPort":55305,"pid":4520,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-4ea76440908c4288bb6921ef4049b280","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 01:10:58.882] [core-startup] [INFO] bus.ready http=28925 socket=55305
+[2026-10-17 01:10:58.883] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 01:10:58.995] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 01:10:58.996] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 01:10:59.068] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:10:59.081] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:10:59.082] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:10:59.085] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 01:10:59.086] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 01:10:59.805] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 01:10:59.810] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 01:10:59.813] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 01:11:01.330] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 01:11:12.745] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 01:11:12.797] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 01:11:14.153] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 01:11:14.165] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 01:11:14.817] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 01:11:14.820] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 01:14:17.427] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 01:14:17.428] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=43374fc58cd949ccbd00ac95e7724195 pendingSlot=cf7_agent_aw_4ea76440908c4288bb6921ef4049b280
+[2026-10-17 01:14:17.671] [core-startup] [INFO] application.run_returned
+[2026-10-17 01:14:17.672] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 01:14:17.744] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 01:14:17.747] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 01:14:17.748] [core-startup] [INFO] core.main_exit
+[2026-10-17 01:14:55.449] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:14:55.471] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 01:14:58.895] [core-startup] [INFO] core.environment pid=32044 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 01:14:58.913] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0bac5922264f43009ab677f3a6ff0024\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0bac5922264f43009ab677f3a6ff0024\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-0bac5922264f43009ab677f3a6ff0024\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391193006080,"preparedFlashTemp":null}
+[2026-10-17 01:14:58.915] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 01:14:58.915] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 01:14:58.915] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 01:14:58.916] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 01:14:58.917] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 01:14:58.917] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 01:14:58.917] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 01:14:58.918] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 01:14:58.918] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 01:14:58.919] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:14:58.940] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 01:15:02.313] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 01:15:02.314] [core-startup] [INFO] config.load_start
+[2026-10-17 01:15:02.322] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 01:15:02.323] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:15:02.324] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 01:15:02.324] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 01:15:02.325] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:15:02.326] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 01:15:02.326] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 01:15:02.327] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 01:15:02.327] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 01:15:02.328] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 01:15:02.328] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 01:15:02.329] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:15:02.486] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 01:15:02.487] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:15:02.516] [core-startup] [INFO] steam.check_start
+[2026-10-17 01:15:02.531] [core-startup] [INFO] steam.check_ok
+[2026-10-17 01:15:02.532] [core-startup] [INFO] flash_trust.start
+[2026-10-17 01:15:02.538] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 01:15:02.616] [core-startup] [INFO] audio.init_start
+[2026-10-17 01:15:02.620] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 01:15:02.642] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 01:15:02.657] [core-startup] [INFO] socket.start_ok port=55054
+[2026-10-17 01:15:02.716] [core-startup] [INFO] http.start_ok port=25745
+[2026-10-17 01:15:03.168] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 01:15:04.839] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 01:15:04.967] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 01:15:06.408] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 01:15:06.479] [core-startup] [INFO] ports.write_ok {"httpPort":25745,"socketPort":55054,"pid":32044,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-0bac5922264f43009ab677f3a6ff0024","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 01:15:06.480] [core-startup] [INFO] bus.ready http=25745 socket=55054
+[2026-10-17 01:15:06.480] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 01:15:06.497] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 01:15:06.498] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 01:15:06.555] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:15:06.574] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:15:06.574] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:15:06.577] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 01:15:06.578] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 01:15:07.252] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 01:15:07.254] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 01:15:07.256] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 01:15:08.738] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 01:15:15.560] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 01:15:15.591] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 01:15:17.033] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 01:15:17.050] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 01:15:17.686] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 01:15:17.689] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 01:18:25.343] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 01:18:25.343] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=e37987473a9e4dd8979985d9025f6931 pendingSlot=cf7_agent_aw_0bac5922264f43009ab677f3a6ff0024
+[2026-10-17 01:18:25.581] [core-startup] [INFO] application.run_returned
+[2026-10-17 01:18:25.582] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 01:18:25.685] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 01:18:25.687] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 01:18:25.688] [core-startup] [INFO] core.main_exit
+[2026-10-17 01:19:13.287] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:19:13.316] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 01:19:17.035] [core-startup] [INFO] core.environment pid=28484 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 01:19:17.060] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-e1148620bafc42229b8582d835fd1285\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-e1148620bafc42229b8582d835fd1285\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-e1148620bafc42229b8582d835fd1285\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391034155008,"preparedFlashTemp":null}
+[2026-10-17 01:19:17.064] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 01:19:17.064] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 01:19:17.065] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 01:19:17.065] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 01:19:17.066] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 01:19:17.067] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 01:19:17.067] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 01:19:17.068] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 01:19:17.068] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 01:19:17.070] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:19:17.098] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 01:19:19.928] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 01:19:19.929] [core-startup] [INFO] config.load_start
+[2026-10-17 01:19:19.934] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 01:19:19.935] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:19:19.936] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 01:19:19.936] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 01:19:19.937] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:19:19.937] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 01:19:19.938] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 01:19:19.938] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 01:19:19.939] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 01:19:19.939] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 01:19:19.940] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 01:19:19.940] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:19:20.056] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 01:19:20.057] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:19:20.081] [core-startup] [INFO] steam.check_start
+[2026-10-17 01:19:20.093] [core-startup] [INFO] steam.check_ok
+[2026-10-17 01:19:20.094] [core-startup] [INFO] flash_trust.start
+[2026-10-17 01:19:20.098] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 01:19:20.153] [core-startup] [INFO] audio.init_start
+[2026-10-17 01:19:20.156] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 01:19:20.174] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 01:19:20.186] [core-startup] [INFO] socket.start_ok port=50616
+[2026-10-17 01:19:20.239] [core-startup] [INFO] http.start_ok port=29060
+[2026-10-17 01:19:20.600] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 01:19:22.547] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 01:19:22.642] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 01:19:24.428] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 01:19:24.504] [core-startup] [INFO] ports.write_ok {"httpPort":29060,"socketPort":50616,"pid":28484,"arenaWorker":true,"workerId":"headbot-w2","sessionEpoch":"session-e1148620bafc42229b8582d835fd1285","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 01:19:24.505] [core-startup] [INFO] bus.ready http=29060 socket=50616
+[2026-10-17 01:19:24.505] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 01:19:24.536] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 01:19:24.538] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 01:19:24.573] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:19:24.577] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:19:24.583] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:19:24.592] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 01:19:24.593] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 01:19:25.600] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 01:19:25.601] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 01:19:25.603] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 01:19:27.359] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 01:19:38.209] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 01:19:38.258] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 01:19:39.603] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 01:19:39.617] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 01:19:40.241] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 01:19:40.244] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 01:22:56.823] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 01:22:56.824] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=13d9ad2cb4c64a358e8ce305d00307f1 pendingSlot=cf7_agent_aw_e1148620bafc42229b8582d835fd1285
+[2026-10-17 01:22:57.077] [core-startup] [INFO] application.run_returned
+[2026-10-17 01:22:57.077] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 01:22:57.198] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 01:22:57.199] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 01:22:57.200] [core-startup] [INFO] core.main_exit
+[2026-10-17 01:24:08.947] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:24:08.974] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 01:24:12.224] [core-startup] [INFO] core.environment pid=26732 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 01:24:12.243] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-d46a0b0af98448e1885b9eac3cb5b3d2\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-d46a0b0af98448e1885b9eac3cb5b3d2\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-d46a0b0af98448e1885b9eac3cb5b3d2\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1391007444992,"preparedFlashTemp":null}
+[2026-10-17 01:24:12.246] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 01:24:12.247] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 01:24:12.247] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 01:24:12.248] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 01:24:12.248] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 01:24:12.249] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 01:24:12.249] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 01:24:12.250] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 01:24:12.250] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 01:24:12.254] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:24:12.282] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 01:24:15.336] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 01:24:15.337] [core-startup] [INFO] config.load_start
+[2026-10-17 01:24:15.344] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 01:24:15.346] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:24:15.346] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 01:24:15.347] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 01:24:15.347] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:24:15.348] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 01:24:15.348] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 01:24:15.349] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 01:24:15.349] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 01:24:15.350] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 01:24:15.350] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 01:24:15.351] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:24:15.454] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 01:24:15.454] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:24:15.478] [core-startup] [INFO] steam.check_start
+[2026-10-17 01:24:15.487] [core-startup] [INFO] steam.check_ok
+[2026-10-17 01:24:15.487] [core-startup] [INFO] flash_trust.start
+[2026-10-17 01:24:15.492] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 01:24:15.545] [core-startup] [INFO] audio.init_start
+[2026-10-17 01:24:15.548] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 01:24:15.564] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 01:24:15.572] [core-startup] [INFO] socket.start_ok port=51608
+[2026-10-17 01:24:15.618] [core-startup] [INFO] http.start_ok port=54771
+[2026-10-17 01:24:15.960] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 01:24:17.626] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 01:24:17.732] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 01:24:19.073] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 01:24:19.120] [core-startup] [INFO] ports.write_ok {"httpPort":54771,"socketPort":51608,"pid":26732,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-d46a0b0af98448e1885b9eac3cb5b3d2","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 01:24:19.121] [core-startup] [INFO] bus.ready http=54771 socket=51608
+[2026-10-17 01:24:19.122] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 01:24:19.150] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 01:24:19.152] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 01:24:19.173] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:24:19.183] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:24:19.185] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:24:19.189] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 01:24:19.191] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 01:24:19.847] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 01:24:19.849] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 01:24:19.851] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 01:24:21.199] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 01:24:29.725] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 01:24:29.757] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 01:24:31.535] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 01:24:31.551] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 01:24:32.316] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 01:24:32.319] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 01:27:08.376] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=e63c04419c4146f9bfe3ece3f350d622 pendingSlot=cf7_agent_aw_d46a0b0af98448e1885b9eac3cb5b3d2
+[2026-10-17 01:27:08.557] [core-startup] [INFO] application.run_returned
+[2026-10-17 01:27:08.558] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 01:27:08.637] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 01:27:08.639] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 01:27:08.639] [core-startup] [INFO] core.main_exit
+[2026-10-17 01:27:53.622] [core-startup] [INFO] core.main_enter projectRoot=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:27:53.657] [core-startup] [INFO] runtime_bundle_self_check_start mode=isolated_candidate
+[2026-10-17 01:27:57.453] [core-startup] [INFO] core.environment pid=24896 exe=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe baseDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ cwd=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight clr=.NET 10.0.8 os=Microsoft Windows 10.0.26200 process64=True os64=True busOnly=False forceWebViewFail=False args=2
+[2026-10-17 01:27:57.480] [core-startup] [INFO] flash.storage_environment {"processTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-6ef9c9548d3e4ec1bff8f04a4c614b6c\\temp","processTmp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-6ef9c9548d3e4ec1bff8f04a4c614b6c\\temp","effectiveHostTemp":"C:\\Users\\fs\\.codex\\worktrees\\headbot-combat2\\CrazyFlashNight\\tmp\\arena-worker\\session-6ef9c9548d3e4ec1bff8f04a4c614b6c\\temp\\","roamingAppData":"C:\\Users\\fs\\AppData\\Roaming","sharedObjectsRoot":"C:\\Users\\fs\\AppData\\Roaming\\Macromedia\\Flash Player\\#SharedObjects","plannedFlashTemp":"C:\\Users\\fs\\AppData\\Roaming\\CF7FlashNight\\flash-temp","storagePathRoot":"C:\\","networkPath":false,"storageAvailableBytes":1390989234176,"preparedFlashTemp":null}
+[2026-10-17 01:27:57.484] [core-startup] [INFO] file_probe:Core.dll ok size=6403584 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.dll
+[2026-10-17 01:27:57.485] [core-startup] [INFO] file_probe:Core.deps ok size=15866 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.deps.json
+[2026-10-17 01:27:57.485] [core-startup] [INFO] file_probe:Core.runtimeconfig ok size=554 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.runtimeconfig.json
+[2026-10-17 01:27:57.486] [core-startup] [INFO] file_probe:WebView2Loader ok size=161864 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\WebView2Loader.dll
+[2026-10-17 01:27:57.487] [core-startup] [INFO] file_probe:WebView2.Core ok size=649800 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\Microsoft.Web.WebView2.Core.dll
+[2026-10-17 01:27:57.488] [core-startup] [INFO] file_probe:ClearScriptV8.native ok size=22564752 mtime=2026-10-16 22:36:44 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\ClearScriptV8.win-x64.dll
+[2026-10-17 01:27:57.488] [core-startup] [INFO] file_probe:miniaudio ok size=1122816 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\miniaudio.dll
+[2026-10-17 01:27:57.489] [core-startup] [INFO] file_probe:sol_parser ok size=225280 mtime=2026-10-16 22:36:45 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\sol_parser.dll
+[2026-10-17 01:27:57.489] [core-startup] [INFO] core.run_start busOnly=False controlPlane=agent_runtime
+[2026-10-17 01:27:57.491] [core-startup] [INFO] launcher_log.early_ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:27:57.526] [core-startup] [INFO] font_catalog.configure ready
+[2026-10-17 01:28:00.910] [core-startup] [INFO] webview2.precheck_ok version=154.0.4258.53
+[2026-10-17 01:28:00.911] [core-startup] [INFO] config.load_start
+[2026-10-17 01:28:00.919] [core-startup] [INFO] config.load_ok preparationNavigationV1=True webView2DisableGpu=False webView2DeveloperMode=False gpuPreference=off
+[2026-10-17 01:28:00.920] [core-startup] [INFO] dir_probe:projectRoot ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight
+[2026-10-17 01:28:00.921] [core-startup] [INFO] file_probe:config.toml ok size=7345 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\config.toml
+[2026-10-17 01:28:00.921] [core-startup] [INFO] file_probe:crossdomain.xml ok size=82 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\crossdomain.xml
+[2026-10-17 01:28:00.922] [core-startup] [INFO] dir_probe:launcher.web ok path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:28:00.922] [core-startup] [INFO] file_probe:bootstrap.html ok size=11879 mtime=2026-10-16 22:31:26 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\bootstrap.html
+[2026-10-17 01:28:00.923] [core-startup] [INFO] file_probe:overlay.html ok size=4237 mtime=2026-10-16 22:31:29 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web\overlay.html
+[2026-10-17 01:28:00.923] [core-startup] [INFO] file_probe:map_definition ok size=190429 mtime=2026-10-16 22:29:34 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\data\map\map_definition.json
+[2026-10-17 01:28:00.924] [core-startup] [INFO] file_probe:save_schema ok size=31527 mtime=2026-10-16 22:31:11 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\data\save_schema.json
+[2026-10-17 01:28:00.925] [core-startup] [INFO] file_probe:FlashPlayer ok size=16408296 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\Adobe Flash Player 20.exe
+[2026-10-17 01:28:00.926] [core-startup] [INFO] file_probe:GameSWF ok size=207353 mtime=2026-10-16 22:29:33 path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\CRAZYFLASHER7MercenaryEmpire.swf
+[2026-10-17 01:28:00.926] [core-startup] [INFO] guardian.form_construct_start bootstrapWebDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:28:01.059] [core-startup] [INFO] guardian.form_construct_ok
+[2026-10-17 01:28:01.060] [core-startup] [INFO] launcher_log.ready path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\logs\launcher.log
+[2026-10-17 01:28:01.088] [core-startup] [INFO] steam.check_start
+[2026-10-17 01:28:01.104] [core-startup] [INFO] steam.check_ok
+[2026-10-17 01:28:01.104] [core-startup] [INFO] flash_trust.start
+[2026-10-17 01:28:01.111] [core-startup] [INFO] flash_trust.ok
+[2026-10-17 01:28:01.177] [core-startup] [INFO] audio.init_start
+[2026-10-17 01:28:01.181] [core-startup] [INFO] audio.init_scheduled
+[2026-10-17 01:28:01.199] [core-startup] [INFO] task.audio_v2_routes_registered
+[2026-10-17 01:28:01.215] [core-startup] [INFO] socket.start_ok port=57395
+[2026-10-17 01:28:01.275] [core-startup] [INFO] http.start_ok port=21887
+[2026-10-17 01:28:01.715] [core-startup] [INFO] webview2.runtime_check_ok version=154.0.4258.53
+[2026-10-17 01:28:03.455] [core-startup] [INFO] web_overlay.construct_start
+[2026-10-17 01:28:03.591] [core-startup] [INFO] web_overlay.construct_ok
+[2026-10-17 01:28:04.956] [core-startup] [INFO] task.registry_register_all_ok
+[2026-10-17 01:28:04.995] [core-startup] [INFO] ports.write_ok {"httpPort":21887,"socketPort":57395,"pid":24896,"arenaWorker":true,"workerId":"elder-w2","sessionEpoch":"session-6ef9c9548d3e4ec1bff8f04a4c614b6c","swfOrigin":"file:///C:/Users/fs/.codex/worktrees/headbot-combat2/CrazyFlashNight/CRAZYFLASHER7MercenaryEmpire.swf"}
+[2026-10-17 01:28:04.995] [core-startup] [INFO] bus.ready http=21887 socket=57395
+[2026-10-17 01:28:04.996] [core-startup] [WARN] hotkey_guard.missing C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\tmp\runtime-candidates\v2\wings-r1\runtime\CRAZYFLASHER7MercenaryEmpire.Core.exe
+[2026-10-17 01:28:05.006] [core-startup] [INFO] agent_runtime.disabled controlPlane=legacy_http_automation
+[2026-10-17 01:28:05.008] [core-startup] [INFO] bootstrap.ready
+[2026-10-17 01:28:05.023] [core-startup] [INFO] bootstrap.webview2.init_start webDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\web
+[2026-10-17 01:28:05.026] [core-startup] [INFO] bootstrap.webview2.user_data_writable path=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:28:05.027] [core-startup] [INFO] bootstrap.webview2.create_environment_start userDataDir=C:\Users\fs\.codex\worktrees\headbot-combat2\CrazyFlashNight\launcher\webview2_userdata
+[2026-10-17 01:28:05.029] [core-startup] [INFO] bootstrap.webview2.create_environment_ok
+[2026-10-17 01:28:05.030] [core-startup] [INFO] bootstrap.webview2.ensure_core_start
+[2026-10-17 01:28:06.516] [core-startup] [INFO] bootstrap.webview2.ensure_core_ok
+[2026-10-17 01:28:06.518] [core-startup] [INFO] bootstrap.webview2.navigate_start https://bootstrap.local/bootstrap.html
+[2026-10-17 01:28:06.519] [core-startup] [INFO] bootstrap.webview2.init_ok
+[2026-10-17 01:28:08.078] [core-startup] [INFO] bootstrap.webview2.navigation_completed success=True status=Unknown
+[2026-10-17 01:28:18.065] [core-startup] [INFO] launch.state Spawning silent=False
+[2026-10-17 01:28:18.110] [core-startup] [INFO] launch.state WaitingConnect silent=False
+[2026-10-17 01:28:19.914] [core-startup] [INFO] launch.state WaitingHandshake silent=False
+[2026-10-17 01:28:19.926] [core-startup] [INFO] launch.state Embedding silent=False
+[2026-10-17 01:28:20.710] [core-startup] [INFO] launch.state WaitingGameReady silent=False
+[2026-10-17 01:28:20.718] [core-startup] [INFO] launch.state Ready silent=False
+[2026-10-17 01:29:29.342] [core-startup] [INFO] launch.state Error silent=False msg=worker_flash_exited
+[2026-10-17 01:29:29.343] [core-startup] [ERROR] failure:launchflow_error:worker_flash_exited code=CF7-LAUNCH-FLOW-ERROR detail=state=Ready attemptId=40376846f46542119160a84ab3223ce8 pendingSlot=cf7_agent_aw_6ef9c9548d3e4ec1bff8f04a4c614b6c
+[2026-10-17 01:29:29.664] [core-startup] [INFO] application.run_returned
+[2026-10-17 01:29:29.665] [core-startup] [INFO] guardian.shutdown_start
+[2026-10-17 01:29:29.773] [core-startup] [INFO] guardian.shutdown_complete
+[2026-10-17 01:29:29.775] [core-startup] [INFO] core.run_finally_complete
+[2026-10-17 01:29:29.775] [core-startup] [INFO] core.main_exit

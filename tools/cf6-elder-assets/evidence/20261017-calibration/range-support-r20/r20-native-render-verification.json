@@ -1,0 +1,197 @@
+{
+  "ok": true,
+  "images": 12,
+  "selectedDrawPoints": 12,
+  "passedChecks": 40,
+  "runId": "838ead90231445e4b190806744fc8c49",
+  "traceSha256": "5fc072d4e41dddd5b179efc03f56df3b99d2e17b589687d4e11ba840b45ab5ee",
+  "currentElderSwfSha256": "cf0e735226737e39ba9a5692b15fafef90dfc37abf713528496a9e191e41fe36",
+  "files": [
+    {
+      "path": "native-r20-captures\\beam-29.png",
+      "bytes": 42653,
+      "sha256": "60a32b84287774ea8e4b08b2c70070439e7557aa335581810d29fa69a446779c",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        1050,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\beam-32.png",
+      "bytes": 47012,
+      "sha256": "014e3448611077e7aae6d57f4e87d9328b58061c5f3c37772559585a267e99c8",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        104,
+        366,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\beam-38.png",
+      "bytes": 40818,
+      "sha256": "00c812bdcb43b68cc22a65879d3fdd485216ef1c10bb5ccf77db3d12870f396c",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        348,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\beam-44.png",
+      "bytes": 40817,
+      "sha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        287,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-1.png",
+      "bytes": 41253,
+      "sha256": "7621a3c93fabc3b591f28459e57101b29d2608e14141f0fe94cbefc80b82d211",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        345,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-106.png",
+      "bytes": 40817,
+      "sha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        287,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-34.png",
+      "bytes": 50526,
+      "sha256": "cf483c212121bceed3b03eb063f23d1b9ed6fd055841586afab9cdeb8387e361",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        389,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-35.png",
+      "bytes": 42678,
+      "sha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        1050,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-47.png",
+      "bytes": 42678,
+      "sha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        1050,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-59.png",
+      "bytes": 42678,
+      "sha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        1050,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-71.png",
+      "bytes": 42678,
+      "sha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        127,
+        138,
+        1050,
+        345
+      ]
+    },
+    {
+      "path": "native-r20-captures\\heavy-beam-left-35.png",
+      "bytes": 42886,
+      "sha256": "4e9a61c68963d9cca054418870ef45aa16a06d42dd2143b5bbd513914add4b90",
+      "size": [
+        1100,
+        500
+      ],
+      "nontransparentBounds": [
+        50,
+        138,
+        973,
+        345
+      ]
+    }
+  ],
+  "viewedImages": [
+    "beam-29",
+    "heavy-beam-left-35"
+  ],
+  "visualInspection": "Viewed native normal-right and heavy-left captures: the extended beam remains joined to the muzzle, mirrored heavy pose is coherent, and neither beam end touches the capture border.",
+  "boundary": "Twelve current native selected captures, not the full declared 805-point scan. Human animation feel and gameplay acceptance remain separate."
+}

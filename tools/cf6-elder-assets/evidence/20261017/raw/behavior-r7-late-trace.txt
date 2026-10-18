@@ -1,0 +1,26 @@
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^[A-Za-z0-9][A-Za-z0-9._~-]{0,159}$
+compile called with arguments: ^sha256:[0-9a-f]{64}$
+compile called with arguments: ^lease[0-9]+$
+FocusedTestRunId cf6-elder Start: d9a4dde02fb54fa7a0d87b82ccf044a9
+[TEST_FAIL] Cf6ElderAssetTest: shadow follows world ground case 7
+[TEST_FAIL] Cf6ElderAssetTest: shadow follows world ground case 16
+[TEST_FAIL] Cf6ElderAssetTest: shadow follows world ground case 25
+[TEST_FAIL] Cf6ElderAssetTest: shadow follows world ground case 33
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase9 successor-name-conflict
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase6 spawn-returned-empty
+[CF6_ELDER_PHASE_READY] parent=phaseCase12 child=phaseCase12__elderbot level=30 maxHp=9999 hp=0 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase11 successor-context-mismatch
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase10 successor-identity-lost
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase8 successor-identity-lost
+[CF6_ELDER_PHASE_READY] parent=phaseCase5 child=phaseCase5__elderbot level=99 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase4 child=phaseCase4__elderbot level=60 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_PHASE_READY] parent=phaseCase3 child=phaseCase3__elderbot level=30 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase2 child=phaseCase2__elderbot level=99 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_PHASE_READY] parent=phaseCase1 child=phaseCase1__elderbot level=60 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=false
+[CF6_ELDER_PHASE_READY] parent=phaseCase0 child=phaseCase0__elderbot level=30 maxHp=9999 hp=9999 attack=undefined defense=undefined enemy=true
+[CF6_ELDER_TRANSFORM_ERROR] phaseCase7 successor-initialization-timeout
+Cf6ElderAssetTest: 646 passed, 4 failed; 34 actual timeline cases; 13 phase cases
+FocusedTestRunId cf6-elder Complete: d9a4dde02fb54fa7a0d87b82ccf044a9

@@ -1,0 +1,37 @@
+{
+  "checks": [
+    {
+      "path": "tools/cf6-headbot-assets/HeadbotAI.as",
+      "same": true
+    },
+    {
+      "path": "tools/cf6-elder-assets/ElderAI.as",
+      "same": true
+    },
+    {
+      "path": "tools/cf6-elder-assets/build.py",
+      "same": true
+    },
+    {
+      "path": "tools/cf6-elder-assets/analyze-arena.py",
+      "same": true
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "same": true
+    },
+    {
+      "path": "flashswf/arts/new/Codex\u5927\u5934\u673a\u5668\u4eba\u7d20\u6750.swf",
+      "same": true
+    },
+    {
+      "path": "flashswf/arts/new/Codex\u8001\u5934\u7d20\u6750.swf",
+      "same": true
+    },
+    {
+      "path": "scripts/TestLoader.as",
+      "same": true
+    }
+  ],
+  "head": "46977734df67f2eadabe59831f95320a1a472a1b"
+}

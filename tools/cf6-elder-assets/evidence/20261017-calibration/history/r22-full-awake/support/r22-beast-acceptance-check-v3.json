@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "checks": [
+    "Complete synthetic matrix accepts Beast observed rage even when net HP is below the previous interval",
+    "Run IDs may repeat across rivals and are joined with full fight identity",
+    "No observed rage and no successor fails",
+    "Unknown identity is rejected",
+    "Successor proves first-form defeat without falsely claiming observed rage",
+    "Beast win fails",
+    "Beast draw fails",
+    "Beast timeout fails",
+    "EXUSIAI mean outside interval fails",
+    "EXUSIAI median outside interval fails",
+    "Missing diagnostic rejected",
+    "Duplicate diagnostic rejected",
+    "Extra diagnostic rejected",
+    "Mismatched side rejected",
+    "Partial matrix cannot pass",
+    "Historical level profile cannot silently become current acceptance",
+    "Observed unique notifications qualify rage without any later rage hit",
+    "Notification missing identity rejected",
+    "Notification hash identity rejected",
+    "Notification duplicate identity rejected"
+  ],
+  "count": 20,
+  "fixtureKind": "Explicitly synthetic in-memory assessment cases; no historical battle rows relabeled or changed."
+}

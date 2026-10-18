@@ -1,0 +1,12 @@
+{
+  "output": "render-projector1",
+  "runs": [
+    {
+      "domain": "cf6-headbot-render",
+      "name": "headbot",
+      "pattern": "Cf6HeadbotRenderTest: \\d+ passed, 0 failed; 204 draw points",
+      "compiledSource": "render-stop2/TestLoader.as",
+      "reuseCompiledFrom": "render-pass2/headbot"
+    }
+  ]
+}

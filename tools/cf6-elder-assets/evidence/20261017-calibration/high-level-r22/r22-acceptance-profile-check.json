@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "legacyFullMatrixRows": 36,
+  "legacyDefaultResultsUnchanged": true,
+  "legacyMatrixCannotBeRelabeledAsNewProfile": true,
+  "newProfile": [
+    60,
+    80,
+    100
+  ],
+  "invalidProfilesRejected": [
+    [],
+    [
+      60,
+      80
+    ],
+    [
+      60,
+      60,
+      100
+    ],
+    [
+      60,
+      80,
+      101
+    ],
+    [
+      true,
+      80,
+      100
+    ]
+  ],
+  "legacyAnalyzerSha256": "cfcea9988cc328008ce1c8e97f02e3c5f110af105542350556ea52428bc6574d",
+  "currentAnalyzerSha256": "3ff7600c001cfb897eaa31da87a7743853e690fe9c29c46348222b13471c4861",
+  "sourceResultsSha256": "c6d5f38d65ee11a0b9b41fd50c06bbd7fd16499c4242dc17a77c17c201136eff",
+  "boundary": "Read-only analysis compatibility and profile-selection checks using preserved historical rows. No new fight was executed and no old result was replaced."
+}

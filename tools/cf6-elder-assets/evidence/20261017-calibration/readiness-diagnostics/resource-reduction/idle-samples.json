@@ -1,0 +1,235 @@
+[
+  {
+    "time": "2026-10-17T21:24:47.4046213+08:00",
+    "cpuPercent": 100,
+    "availableMemoryMiB": 15328,
+    "committedPercent": 63,
+    "pagesInputPerSec": 0,
+    "processes": [
+      {
+        "Name": "Microsoft.VisualStudio.Code.Server",
+        "IDProcess": 17268,
+        "PercentProcessorTime": 111,
+        "WorkingSetPrivate": 29585408,
+        "IODataBytesPersec": 1051624
+      },
+      {
+        "Name": "git#1",
+        "IDProcess": 35088,
+        "PercentProcessorTime": 97,
+        "WorkingSetPrivate": 17002496,
+        "IODataBytesPersec": 165461
+      },
+      {
+        "Name": "git#8",
+        "IDProcess": 2888,
+        "PercentProcessorTime": 97,
+        "WorkingSetPrivate": 2011136,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "git#5",
+        "IDProcess": 19972,
+        "PercentProcessorTime": 92,
+        "WorkingSetPrivate": 53288960,
+        "IODataBytesPersec": 1655588
+      },
+      {
+        "Name": "git#4",
+        "IDProcess": 20784,
+        "PercentProcessorTime": 92,
+        "WorkingSetPrivate": 52531200,
+        "IODataBytesPersec": 62470
+      },
+      {
+        "Name": "QQ",
+        "IDProcess": 7540,
+        "PercentProcessorTime": 87,
+        "WorkingSetPrivate": 267460608,
+        "IODataBytesPersec": 20458
+      }
+    ],
+    "disks": {
+      "Name": "0 C:",
+      "PercentDiskTime": 11,
+      "CurrentDiskQueueLength": 0,
+      "DiskBytesPersec": 14371528
+    },
+    "gpu": [
+      {
+        "Name": "pid_14172_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      },
+      {
+        "Name": "pid_1800_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      }
+    ]
+  },
+  {
+    "time": "2026-10-17T21:24:52.3784505+08:00",
+    "cpuPercent": 68,
+    "availableMemoryMiB": 15153,
+    "committedPercent": 64,
+    "pagesInputPerSec": 11,
+    "processes": [
+      {
+        "Name": "ChatGPT#5",
+        "IDProcess": 17136,
+        "PercentProcessorTime": 344,
+        "WorkingSetPrivate": 1028206592,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "QQ",
+        "IDProcess": 7540,
+        "PercentProcessorTime": 118,
+        "WorkingSetPrivate": 267612160,
+        "IODataBytesPersec": 786221
+      },
+      {
+        "Name": "Code#6",
+        "IDProcess": 19360,
+        "PercentProcessorTime": 98,
+        "WorkingSetPrivate": 632279040,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "Microsoft.VisualStudio.Code.ServiceHost",
+        "IDProcess": 32520,
+        "PercentProcessorTime": 98,
+        "WorkingSetPrivate": 29937664,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "git#3",
+        "IDProcess": 29996,
+        "PercentProcessorTime": 98,
+        "WorkingSetPrivate": 20795392,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "Microsoft.CodeAnalysis.LanguageServer",
+        "IDProcess": 4112,
+        "PercentProcessorTime": 88,
+        "WorkingSetPrivate": 56168448,
+        "IODataBytesPersec": 0
+      }
+    ],
+    "disks": {
+      "Name": "0 C:",
+      "PercentDiskTime": 1,
+      "CurrentDiskQueueLength": 5,
+      "DiskBytesPersec": 3374159
+    },
+    "gpu": [
+      {
+        "Name": "pid_4_luid_0x00000000_0x0000E2BA_phys_0_eng_3_engtype_Copy",
+        "UtilizationPercentage": 7
+      },
+      {
+        "Name": "pid_7604_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 5
+      },
+      {
+        "Name": "pid_7604_luid_0x00000000_0x0000E2BA_phys_0_eng_4_engtype_Copy",
+        "UtilizationPercentage": 5
+      },
+      {
+        "Name": "pid_1800_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 4
+      },
+      {
+        "Name": "pid_7604_luid_0x00000000_0x0000E2BA_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 2
+      },
+      {
+        "Name": "pid_14172_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      }
+    ]
+  },
+  {
+    "time": "2026-10-17T21:24:57.4069311+08:00",
+    "cpuPercent": 100,
+    "availableMemoryMiB": 14986,
+    "committedPercent": 65,
+    "pagesInputPerSec": 769,
+    "processes": [
+      {
+        "Name": "Microsoft.CodeAnalysis.LanguageServer",
+        "IDProcess": 4112,
+        "PercentProcessorTime": 100,
+        "WorkingSetPrivate": 60301312,
+        "IODataBytesPersec": 128016
+      },
+      {
+        "Name": "git#1",
+        "IDProcess": 35088,
+        "PercentProcessorTime": 90,
+        "WorkingSetPrivate": 17002496,
+        "IODataBytesPersec": 213740
+      },
+      {
+        "Name": "Microsoft.VisualStudio.Code.ServiceHost#1",
+        "IDProcess": 27064,
+        "PercentProcessorTime": 85,
+        "WorkingSetPrivate": 25370624,
+        "IODataBytesPersec": 0
+      },
+      {
+        "Name": "System",
+        "IDProcess": 4,
+        "PercentProcessorTime": 85,
+        "WorkingSetPrivate": 12288,
+        "IODataBytesPersec": 226313
+      },
+      {
+        "Name": "Code#6",
+        "IDProcess": 19360,
+        "PercentProcessorTime": 81,
+        "WorkingSetPrivate": 604721152,
+        "IODataBytesPersec": 2095558
+      },
+      {
+        "Name": "QQ",
+        "IDProcess": 7540,
+        "PercentProcessorTime": 76,
+        "WorkingSetPrivate": 267456512,
+        "IODataBytesPersec": 586891
+      }
+    ],
+    "disks": {
+      "Name": "0 C:",
+      "PercentDiskTime": 5,
+      "CurrentDiskQueueLength": 1,
+      "DiskBytesPersec": 3381142
+    },
+    "gpu": [
+      {
+        "Name": "pid_1800_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 7
+      },
+      {
+        "Name": "pid_24792_luid_0x00000000_0x0000E2BA_phys_0_eng_2_engtype_VideoDecode",
+        "UtilizationPercentage": 4
+      },
+      {
+        "Name": "pid_14172_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 2
+      },
+      {
+        "Name": "pid_24792_luid_0x00000000_0x0000E2BA_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      },
+      {
+        "Name": "pid_7604_luid_0x00000000_0x0000DFB1_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      },
+      {
+        "Name": "pid_7604_luid_0x00000000_0x0000E2BA_phys_0_eng_0_engtype_3D",
+        "UtilizationPercentage": 1
+      }
+    ]
+  }
+]

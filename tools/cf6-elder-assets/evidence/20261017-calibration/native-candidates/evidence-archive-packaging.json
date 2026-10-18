@@ -1,0 +1,97 @@
+{
+  "scope": "Repackage only unsealed historical candidate evidence. Producer directories and formal deployment bytes are unchanged. No release gate, descriptor or rule was modified.",
+  "archives": [
+    {
+      "candidate": "r1",
+      "originalPackagePath": "native-candidates/r1/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalBytes": 6410752,
+      "originalSha256": "d160465596bc942143c34cff12a1b9708455399e63ec861ba098103bf50f2ef9",
+      "archivePath": "native-candidates/r1/delta/runtime-core-evidence.zip",
+      "archiveSha256": "78d192d5cfba702c38944ae077208001734a8cf4a78f77bf7a74b3369409b8db",
+      "archiveEntry": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalMapping": {
+        "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r1\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "originalBytes": 6410752,
+        "originalSha256": "d160465596bc942143c34cff12a1b9708455399e63ec861ba098103bf50f2ef9",
+        "encoding": "identity",
+        "parts": [
+          {
+            "path": "native-candidates/r1/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+            "bytes": 6410752,
+            "sha256": "d160465596bc942143c34cff12a1b9708455399e63ec861ba098103bf50f2ef9"
+          }
+        ]
+      },
+      "byteExactRoundTrip": true
+    },
+    {
+      "candidate": "r2",
+      "originalPackagePath": "native-candidates/r2/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalBytes": 6411776,
+      "originalSha256": "05ce044ca7baed5ca6ce9c0427e0e8e86f065c264fcc88b5b4e701690d8bcbac",
+      "archivePath": "native-candidates/r2/delta/runtime-core-evidence.zip",
+      "archiveSha256": "95b87d69ec4c8a180c22b310750630c67896da49a08bf95d2c095b1b5022f978",
+      "archiveEntry": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalMapping": {
+        "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r2\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "originalBytes": 6411776,
+        "originalSha256": "05ce044ca7baed5ca6ce9c0427e0e8e86f065c264fcc88b5b4e701690d8bcbac",
+        "encoding": "identity",
+        "parts": [
+          {
+            "path": "native-candidates/r2/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+            "bytes": 6411776,
+            "sha256": "05ce044ca7baed5ca6ce9c0427e0e8e86f065c264fcc88b5b4e701690d8bcbac"
+          }
+        ]
+      },
+      "byteExactRoundTrip": true
+    },
+    {
+      "candidate": "r3",
+      "originalPackagePath": "native-candidates/r3/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalBytes": 6411776,
+      "originalSha256": "845912b808ec606503fde2c89559e3eafa8e4098c5d408b2139601201c95da89",
+      "archivePath": "native-candidates/r3/delta/runtime-core-evidence.zip",
+      "archiveSha256": "64b19d791ad2de5571814c7ac40aaa0846c65482024102206b99643c7260252d",
+      "archiveEntry": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalMapping": {
+        "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r3\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "originalBytes": 6411776,
+        "originalSha256": "845912b808ec606503fde2c89559e3eafa8e4098c5d408b2139601201c95da89",
+        "encoding": "identity",
+        "parts": [
+          {
+            "path": "native-candidates/r3/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+            "bytes": 6411776,
+            "sha256": "845912b808ec606503fde2c89559e3eafa8e4098c5d408b2139601201c95da89"
+          }
+        ]
+      },
+      "byteExactRoundTrip": true
+    },
+    {
+      "candidate": "r4",
+      "originalPackagePath": "native-candidates/r4/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalBytes": 6413312,
+      "originalSha256": "cd107fd8fd296164047746bb222db70f1549c5553c1ecfffc82b4c79b7b0e6e1",
+      "archivePath": "native-candidates/r4/delta/runtime-core-evidence.zip",
+      "archiveSha256": "d6dd01401b1df3d1fb2db778af98191d6e127bf7d4040482e3729f3d5a1099a1",
+      "archiveEntry": "runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+      "originalMapping": {
+        "source": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\cf6-transition-paint-r4\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "originalBytes": 6413312,
+        "originalSha256": "cd107fd8fd296164047746bb222db70f1549c5553c1ecfffc82b4c79b7b0e6e1",
+        "encoding": "identity",
+        "parts": [
+          {
+            "path": "native-candidates/r4/delta/runtime/CRAZYFLASHER7MercenaryEmpire.Core.dll",
+            "bytes": 6413312,
+            "sha256": "cd107fd8fd296164047746bb222db70f1549c5553c1ecfffc82b4c79b7b0e6e1"
+          }
+        ]
+      },
+      "byteExactRoundTrip": true
+    }
+  ]
+}

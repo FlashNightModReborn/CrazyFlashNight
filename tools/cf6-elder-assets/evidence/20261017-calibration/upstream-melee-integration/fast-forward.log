@@ -1,0 +1,70 @@
+Updating 68473abd27..1bdc3ccd73
+Fast-forward
+ data/inputCommand/cold_arms_weapon.xml             | 1065 ++++++++++++++++++++
+ data/inputCommand/list.xml                         |    1 +
+ flashswf/arts/things0.swf                          |  Bin 5394638 -> 5395101 bytes
+ flashswf/arts/things0/DOMDocument.xml              |   12 +-
+ .../Codex/Ti61-血剑战技/战技容器-猩红天秤.xml      |    1 +
+ flashswf/arts/things0/LIBRARY/sprite/兵器攻击.xml  |   75 +-
+ .../things0/LIBRARY/容器/兵器攻击容器/兵器攻击.xml |   11 +-
+ .../容器/兵器攻击容器/平A/兵器攻击容器-1连招.xml   |   11 +-
+ .../兵器攻击容器/平A/兵器攻击容器-刀剑1连招.xml    |   15 +-
+ .../兵器攻击容器/平A/兵器攻击容器-双刀1连招.xml    |   11 +-
+ .../兵器攻击容器/平A/兵器攻击容器-棍棒1连招.xml    |   11 +-
+ .../兵器攻击容器/平A/兵器攻击容器-狂野1连招.xml    |   13 +-
+ .../兵器攻击容器/平A/兵器攻击容器-疾影1连招.xml    |   23 +-
+ .../兵器攻击容器/平A/兵器攻击容器-直剑1连招.xml    |  395 ++++----
+ .../兵器攻击容器/平A/兵器攻击容器-短兵1连招.xml    |   13 +-
+ .../兵器攻击容器/平A/兵器攻击容器-短柄1连招.xml    |   11 +-
+ .../兵器攻击容器/平A/兵器攻击容器-迅捷1连招.xml    |   13 +-
+ .../兵器攻击容器/平A/兵器攻击容器-重斩1连招.xml    |   25 +-
+ .../兵器攻击容器/平A/兵器攻击容器-镰刀1连招.xml    |   13 +-
+ .../兵器攻击容器/平A/兵器攻击容器-长刀1连招.xml    |   13 +-
+ .../兵器攻击容器/平A/兵器攻击容器-长枪1连招.xml    |   23 +-
+ .../兵器攻击容器/平A/兵器攻击容器-长柄1连招.xml    |  579 +++++------
+ .../兵器攻击容器/平A/兵器攻击容器-长棍1连招.xml    |   41 +-
+ .../兵器攻击容器/平A/！兵器攻击容器-棍棒1连招.xml  |   11 +-
+ .../平A/！兵器攻击容器-棍棒1连招（屑鱼搓的）.xml   |   11 +-
+ .../兵器攻击容器/！兵器攻击容器-长枪原动作.xml     |   13 +-
+ .../战技容器/战技容器-Eternal Maximum Drive.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-Excalibur.xml   |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-Overdrive.xml   |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-一文字落雷.xml  |    1 +
+ .../LIBRARY/容器/战技容器/战技容器-凶斩.xml        |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-刀剑乱舞.xml    |    1 +
+ .../LIBRARY/容器/战技容器/战技容器-回旋斩击.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-回旋裂地.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-地狱斩绝.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-地狱穿心剑.xml  |    3 +-
+ .../LIBRARY/容器/战技容器/战技容器-居合次元斩.xml  |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-弧光斩.xml      |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-战技小跳.xml    |    9 +-
+ .../LIBRARY/容器/战技容器/战技容器-撼地烈狱.xml    |    3 +-
+ .../LIBRARY/容器/战技容器/战技容器-深冲利刺.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-漆黑凶斩.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-狼跳.xml        |    3 +-
+ .../LIBRARY/容器/战技容器/战技容器-猩红凶斩.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-瞬步斩.xml      |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-破坏殆尽.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-辉光剑气.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-追踪五连.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-重力操作.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-雷鸣感召.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/战技容器-黑刀斩术.xml    |    5 +-
+ .../LIBRARY/容器/战技容器/！战技容器-逆暴雨.xml    |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-六连.xml        |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-凶斩.xml        |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-拔刀术.xml      |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-火舞旋风.xml    |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-瞬步斩.xml      |    3 +-
+ .../LIBRARY/容器/技能容器/技能容器-迅斩.xml        |    5 +-
+ .../LIBRARY/容器/技能容器/技能容器-龙斩.xml        |    5 +-
+ .../容器/空手攻击容器/空手攻击容器-后撤步.xml      |   66 +-
+ .../容器/空手攻击容器/空手攻击容器-诛杀步.xml      |   70 +-
+ flashswf/arts/things0/META-INF/metadata.xml        |   12 +-
+ flashswf/arts/things0/bin/SymDepend.cache          |  Bin 166106 -> 166106 bytes
+ flashswf/gk-1-s.swf                                |  Bin 214 -> 198 bytes
+ scripts/asLoader.swf                               |  Bin 6080422 -> 6085125 bytes
+ .../逻辑/单位函数/单位函数_雾人_兵器搓招指令.as    |   15 +
+ 66 files changed, 1935 insertions(+), 791 deletions(-)
+ create mode 100644 data/inputCommand/cold_arms_weapon.xml

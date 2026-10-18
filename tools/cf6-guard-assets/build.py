@@ -33,6 +33,7 @@ def module(name,path):
     return result
 
 
+audio = module('cf6_audio_native',ROOT/'tools/cf6-audio/build.py')
 common=module('guard_common',ROOT/'tools/cf6-manman-assets/build.py')
 vector=module('guard_vector',HERE/'vector.py')
 transform=module('guard_transform',HERE/'transform.py')
@@ -288,6 +289,7 @@ def import_assets():
         destination.parent.mkdir(parents=True,exist_ok=True)
         if destination.exists():assert sha(destination)==row['sha256'];source.unlink()
         else:source.rename(destination)
+    audio_receipt=audio.apply(symbols,OWNER,native.make_sparse_layer)
     outputs=common.write_workspace(symbols,root_name)
     # CS6 otherwise emits one-frame placeholders for the second exported root's
     # shared bodies. An unreachable second anchor frame closes its dependencies.
@@ -309,6 +311,7 @@ def import_assets():
         'gun':{'source':GUN_SOURCE.relative_to(ROOT).as_posix(),'scale':0.6,'muzzle':[302.8,-34.05],
             'archivedBitmapReplaced':592,'equipmentConfigurable':False},'outputs':outputs,
         'projectFiles':[{'path':p,'sha256':sha(OWNER/p),'bytes':(OWNER/p).stat().st_size} for p in native.PROJECT_FILES]}
+    manifest['audio']=audio_receipt
     (HERE/'native-manifest.json').write_text(json.dumps(manifest,ensure_ascii=False,indent=2)+'\n','utf8',newline='\n')
     common.mount_shared_library()
     print(json.dumps({'symbols':len(outputs),'linkage':LINKAGE,'groundShift':shift},ensure_ascii=False))
@@ -318,6 +321,7 @@ def check():
     common.verify_input()
     transform.verify_archive()
     manifest=json.loads((HERE/'native-manifest.json').read_text('utf8'))
+    audio.check(manifest,OWNER)
     errors=native.workspace_identity_failures(manifest)
     if manifest['buildInputs']!=build_inputs():
         errors.append('Generator inputs changed; guarded regeneration required')

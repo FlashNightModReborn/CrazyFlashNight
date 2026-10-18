@@ -7402,5 +7402,47 @@
       "neck": "战斗专家军牌",
       "gender": "男"
     }
+  },
+  {
+    "id": 472,
+    "spritename": "敌人-CF6大头机器人",
+    "level": 40,
+    "name": "大头机器人",
+    "is_hostile": true,
+    "height": 185,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 473,
+    "spritename": "敌人-CF6老头人形",
+    "level": 50,
+    "name": "老头",
+    "is_hostile": true,
+    "height": 180,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
+  },
+  {
+    "id": 474,
+    "spritename": "敌人-CF6老头机器人",
+    "level": 50,
+    "name": "老头机器人",
+    "is_hostile": true,
+    "height": 190,
+    "data": {
+      "primary": null,
+      "secondary": null,
+      "secondary2": null,
+      "melee": null
+    }
   }
 ]

@@ -1,0 +1,34 @@
+{
+  "status": "fast-forward-completed; pending-CF6-registration-reallocation-and-merged-loader-publication-required",
+  "head": "937e1815465a5c1c01376b1a947787c0e1b9de8f",
+  "checks": [
+    {
+      "path": "data/units/units.json",
+      "exactWorkingBytes": false,
+      "lineEndingNormalizedEquality": true,
+      "gitIndexMatchesUpstreamObject": true,
+      "workingSha256": "d997af2d487da442456be280a4130e4c7802058f1e5c7bfe0b6d39e2aa116877",
+      "upstreamBlobSha256": "362283ef94e426929e8ad391588f36b4ac58897b1f65db84408d80fd907e336d"
+    },
+    {
+      "path": "launcher/web/modules/arena-unit-catalog.js",
+      "exactWorkingBytes": true,
+      "lineEndingNormalizedEquality": true,
+      "gitIndexMatchesUpstreamObject": true,
+      "workingSha256": "8450a46ad70baf2f89e1ce01c7ca7db722b37d197aa738b46cfdccf1453d7281",
+      "upstreamBlobSha256": "8450a46ad70baf2f89e1ce01c7ca7db722b37d197aa738b46cfdccf1453d7281"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "exactWorkingBytes": true,
+      "lineEndingNormalizedEquality": true,
+      "gitIndexMatchesUpstreamObject": true,
+      "workingSha256": "e08c0d567a8bd5db44a434fcb1a3d9a3170fe88aca73a539c95b8f3b8b9970bb",
+      "upstreamBlobSha256": "e08c0d567a8bd5db44a434fcb1a3d9a3170fe88aca73a539c95b8f3b8b9970bb"
+    }
+  ],
+  "indexEntriesOutsideUpstreamPreserved": 67205,
+  "firstPostMergeCheck": "Raw worktree-versus-Git-blob byte assertion rejected CRLF text checkout; semantic equality and exact Git objects were independently rechecked. The SWF remains byte-identical to its upstream blob.",
+  "originalWorkingAndStagedBytesPreserved": true,
+  "workerResourcesChanged": false
+}

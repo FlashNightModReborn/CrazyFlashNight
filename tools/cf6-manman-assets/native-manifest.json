@@ -6,7 +6,7 @@
   "buildInputs": [
     {
       "path": "tools/cf6-manman-assets/build.py",
-      "sha256": "79c1f580c08989fe5c337155b9cccf856ac395b0644eb7e4b1aac89b429627cb"
+      "sha256": "b05e9fc5926ca6436488afa3673fd23e0a672448e3a8308aaa54335bc009e75a"
     },
     {
       "path": "tools/cf6-manman-assets/ManmanAI.as",
@@ -14,7 +14,7 @@
     },
     {
       "path": "tools/cf6-zombie-assets/build.py",
-      "sha256": "1f871f1b952187fd56472e05c0fcd16643435f0cb4d9121431273d0f6d21bc47"
+      "sha256": "adfe79a3bef3b74a21f75d4749d2cca08013f87e9fd47dcd1e7b51a1fedbdfe9"
     },
     {
       "path": "tools/gamma-echo-assets/build.py",
@@ -22,7 +22,7 @@
     },
     {
       "path": "tools/tesla-map-assets/native_vector/svg_to_xfl_legacy.py",
-      "sha256": "ae2efc4bd94d64d3f8e218f2ed2b2906cbab9d4e2d701be6cef03d7887e1a2fd"
+      "sha256": "b356afef8b5b423ae758516ba6fd247bfe1418e149fce6b163c94fbaf7a59655"
     },
     {
       "path": "tools/asset-metrology/xfl_geometry.py",
@@ -193,18 +193,18 @@
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1116.xml",
-      "sha256": "906690329d0fafcc7630507d09845b7f7576ece801460bdb9f24faebacc3c67f",
-      "bytes": 89168
+      "sha256": "76d2ea9f3c53ed995ffe392026e57e791ab8d0c815b81bc5e6da6c0d4faaca4d",
+      "bytes": 90006
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1117.xml",
-      "sha256": "b3f9b5b15c10f057ba7295288270e96eb56577cb8367c56cd82960ad290384c3",
-      "bytes": 87382
+      "sha256": "02a63b75fe5476ab0a87e6d0226b30986edf9999de5e6aa09e9cc914eec57d1d",
+      "bytes": 88220
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1118.xml",
-      "sha256": "1f976c7e0b70486f0cd13fae52c4a085b25b3d4d4432df6590c75c96aac681ca",
-      "bytes": 25175
+      "sha256": "50904c8ec00e452cc1d210facc4f6f3d860b833061f5bb75cf9495b79bfd7716",
+      "bytes": 26174
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/CF7/Symbol 1119.xml",
@@ -513,8 +513,8 @@
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/动作/血腥死.xml",
-      "sha256": "12314059c140c27cc616d4ccf085e4af6f1d877eae99c2d2ef57f7845c0f4209",
-      "bytes": 105410
+      "sha256": "b49910e1ed7de2f071d78154540e0ca07656a71aa5a4fecaf68d4e63eee5b505",
+      "bytes": 106032
     },
     {
       "path": "LIBRARY/Codex/蛮蛮/敌人-CF6蛮蛮.xml",
@@ -708,5 +708,49 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
       "bytes": 0
     }
-  ]
+  ],
+  "audio": {
+    "route": "_root.播放音效",
+    "timelineCalls": 7,
+    "voiceReplacements": 0,
+    "removedEmbeddedTracks": 2,
+    "inputs": [
+      {
+        "path": "sounds/export/人物/CF6_0303.mp3",
+        "sha256": "08769443aebc6ede963ffe72a5553b363f3e99f7ec8891fbf8ec97c1461c1601"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0649.mp3",
+        "sha256": "0a2b30ea8b0cf5f2d1aa8877f683b47a8313049ed81a300f835b75f5158434ef"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0652.mp3",
+        "sha256": "2b5ded056294f3b5def34df1c5cc8ebaed2de4b9f53062c4fe49697dec7bee3f"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0654.mp3",
+        "sha256": "4056924fe03a5c7e7bf1000f2c3a84aee04a9d89c322fc4fcaf971e77ed41a95"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0655.mp3",
+        "sha256": "da49aa1b124683c0bcec694345290a887c38a2243b3ebab47544c314f2e874ad"
+      },
+      {
+        "path": "sounds/export/人物/CF6_0658.mp3",
+        "sha256": "f112cf394f404cde229b9ed5b0c42534e35311f20e42dd796ab0274dae2de511"
+      },
+      {
+        "path": "tools/cf6-audio/assets.json",
+        "sha256": "7b0d4d18135b3eb43d7145f2b7c71e8423f81dcdd87971763b2e0f4b446d1543"
+      },
+      {
+        "path": "tools/cf6-audio/build.py",
+        "sha256": "2cfe16d9b5ea45f3c5dbd8ec47499c5c989ec5fa8537b06dac919992cadfff44"
+      },
+      {
+        "path": "tools/cf6-audio/cues.json",
+        "sha256": "1d4f3f9e443f9651f93aa8d4484b113ed40c24cc20e0cbc44ae4ce952fca6ec0"
+      }
+    ]
+  }
 }

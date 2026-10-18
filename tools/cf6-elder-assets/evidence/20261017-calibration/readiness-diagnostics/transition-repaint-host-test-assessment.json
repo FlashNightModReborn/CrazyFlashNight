@@ -1,0 +1,1076 @@
+{
+  "schema": "cf6-transition-host-test-assessment.v1",
+  "overallPassed": false,
+  "unexpectedFailures": 0,
+  "focusedPassed": true,
+  "focusedCount": 141,
+  "focused": [
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"毒气\", expected: 4)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.DisconnectKeepsCurtainAndFencesOldPageGeneration",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.UnknownFieldsAndLongTipsAreRejected",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"version\", json: \"2\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidParallelProjectionCannotAdmitReport(field: \"reportHandoff\", value: \"\\\"false\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"type\", value: \"[]\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.ReadyHeartbeatsDoNotStarveCaptureFenceAndUseLatestTarget",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.SourceResetCancelsAQueuedTransitionRepaint",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.ReportIntentStillRejectsForeignFutureMalformedAndUncoveredMessages",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.DisconnectedSettlementBookshelfAndExclusivePresentationKeepTheirGuards(connected: True, retained: False, bookshelf: False, exclusive: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"requestId\", json: \"\\\"tr:01\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.DataOnlyVisualTuningChangesNativeParametersWithoutChangingFamily",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.DisconnectInvalidatesAlreadyQueuedSnapshot",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.SameHeightQualityOrEffectsChangeNeedsItsOwnFreshCapture(quality: \"LOW\", effects: 2)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.FreshCaptureWithAnotherAppliedHeightCannotCompleteTheTarget",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.InvalidRepaintAcknowledgmentFailsInsteadOfAdvancingTheFence(invalid: NaN)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.FullReportHandoffRequiresCurrentOpenAndSuccessfulVisualAckQueue",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.NewReadySceneAdaptsFromHeldGradeWithoutANeutralFrame",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.LoadingSceneKeepsLastGradeDespiteNeutralProvisionalPayload",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.InitialUnreadyStateIsNotTreatedAsAUsableGrade",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"requestId\", json: \"[]\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.CompletionCallbackCanReenterWithoutLosingTheNextFence",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"腐蚀\", expected: 5)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.InteractiveSurfaceCannotBorrowBackgroundAdmissionAndWorkerNeverRequestsActivation",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"materialSearch\", value: \"[]\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"鸿门宴\", expected: 8)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"lootContainerId\", value: \"\\\"old\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionResumeTests.RevealRequiresFreshFrameOncePerSceneAndNotPerHeartbeat",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidParallelProjectionCannotAdmitReport(field: \"version\", value: \"99999999999999999999999999999999\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"materialSearch\", value: \"\\\"line\\\\nnext\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"scene_transition_presented\", allowed: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.AtmosphereIsClosedAndMissingLegacyFieldMeansNoNativeOverlay",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.PaintMessageCannotCarryExtraAuthority",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.CloseDuringLoadingIsVisualOnlyAndNotRepeated",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"警报\", expected: 1)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SameReportIntentSurvivesDisplayAdvanceAndIsSentOnce(phase: \"loading\", verb: \"manageReport\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.WorkerStillRequiresReadyVisibleNonMinimizedAndConnected(admitted: True, visible: True, minimized: True, connected: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.PresentationStateIsReadOnlyAndBoundToCurrentVisibleReport",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SameReportIntentSurvivesDisplayAdvanceAndIsSentOnce(phase: \"loading\", verb: \"closeReport\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.LegacyCompositionOrderAndByteOffsetsArePreserved",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"panel\", allowed: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"runId\", value: \"\\\"run:old\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.ReportMustAlreadyHaveDurableOwnerAndClosedShape",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.LegacyNeutralMatrixIsIdentity",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidParallelProjectionCannotAdmitReport(field: \"report\", value: \"null\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.BackgroundAdmissionDoesNotCreateOrLoosenPresentationReceipts",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.CoveredReportCanBindRewardsBeforeTheSceneIsPrepared",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.InvalidRepaintAcknowledgmentFailsInsteadOfAdvancingTheFence(invalid: ∞)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionResumeTests.ForcedRetirementReleasesThePendingTailAndInput",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.NormalAndBorderlessCaptureFramesRetainTheirMeasuredOrigin",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionResumeTests.CloseRetainsViewAndOriginalTailUntilFreshWorldPresentation",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.StaticRevealRequestsPaintWithoutGrantingPresentationFromItsAcknowledgment",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.CompositionRewardIngressRequiresExactInstanceAndNarrowDomain(instance: \"loot.pending\", accepted: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.DisconnectedSettlementBookshelfAndExclusivePresentationKeepTheirGuards(connected: True, retained: False, bookshelf: True, exclusive: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPageRepliesNeverThrowOrNavigate",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.WorkerStillRequiresReadyVisibleNonMinimizedAndConnected(admitted: True, visible: False, minimized: False, connected: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"revision\", json: \"1.5\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"revision\", json: \"99999999999999999999999999\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.ReceiptRetriesOnlyVisualAckAndBindsIdentityRevision",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.OrdinaryImmediateModeChangesStillApplyWithoutSceneBuffer",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.LongSceneWaitIsDetectableAndHeartbeatsDoNotResetAge",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"chestSessionId\", value: \"\\\"old\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.WindowMoveOnePixelCaptureDriftDoesNotFreezeTheScene",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.LatePaintCannotAcknowledgeANewerRevealForTheSameScene",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"檀烟\", expected: 10)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"scrollTop\", value: \"1000001\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"version\", value: \"\\\"1\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"task\", allowed: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.DocumentOrTransportRecoveryCannotRepeatAutomaticRewardAdmission",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SameReportIntentSurvivesDisplayAdvanceAndIsSentOnce(phase: \"reveal\", verb: \"closeReport\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.AuthoritativeActionLockSurvivesPageRecreation",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.ReportIntentCannotUseDisplayAdvanceToReplayUnknownDelivery",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.PaintForAReplacedOrUnreadySceneCannotAdvanceTheFence(scene: 3, ready: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"tip\", json: \"{}\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SelectionIsImmutableAndBackgroundAllowlistIsExact",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SameReportIntentSurvivesDisplayAdvanceAndIsSentOnce(phase: \"reveal\", verb: \"manageReport\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.ExactHostClosureReturnsAnEarlyReportToTheLoadingCurtain",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.GrabAdmissionRequiresActiveCaptureAndEstablishedWorldViewport",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.DefinitiveHandoffRejectionAllowsCloseButDoesNotAutomaticallyReopen",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.PaintForAReplacedOrUnreadySceneCannotAdvanceTheFence(scene: 4, ready: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"containerEpoch\", value: \"999999999999999999999999999\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.CompositionRewardIngressRequiresExactInstanceAndNarrowDomain(instance: \"\", accepted: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"targetScene\", json: \"-1\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.CompositionRewardIngressRequiresExactInstanceAndNarrowDomain(instance: \"foreign\", accepted: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"scrollTop\", value: \"\\\"80\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"工业警报\", expected: 3)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.WorkerStillRequiresReadyVisibleNonMinimizedAndConnected(admitted: True, visible: True, minimized: False, connected: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SourceCannotRegressRevealedOrErrorPhase",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionResumeTests.NewCurtainRetiresPendingViewWithoutReplayingItsCloseTail",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.RewardAdmissionDoesNotLockTheLaterLoadingFailureActions",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"imageId\", json: \"\\\"../save.dat\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.SourceResetCancelsAPaintAlreadyInFlight",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.DisconnectedSettlementBookshelfAndExclusivePresentationKeepTheirGuards(connected: True, retained: True, bookshelf: False, exclusive: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"scrollTop\", value: \"-1\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"scene_transition_report_restore\", allowed: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.CropRejectsOutsideAndSupportsNegativeMonitorOrigin",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"version\", json: \"\\\"1\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"伏击\", expected: 7)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.RestoredPanelPaintKeepsExactAuthorityAndClosedPresentationShape",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"rightTab\", value: \"\\\"claim\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"phase\", json: \"\\\"ready\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"revision\", json: \"0\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"containerEpoch\", value: \"2\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.InvalidRepaintAcknowledgmentFailsInsteadOfAdvancingTheFence(invalid: -1)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.CaptureFrameRejectsUnknownExtentRatherThanGuessingAnOrigin",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.WeatherRequiresExplicitNativeOwnershipAndBoundedVisualState",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"imageId\", json: \"\\\"BLue\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.RepaintReturningAfterAnotherSelectionCannotCompleteTheNewTarget",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.PreparedProofDoesNotSurviveTargetSceneChange",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"custom\", expected: 11)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.ReportFieldsCannotAcquireBackgroundPermissionEvenWhenNull(field: \"reportVisible\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.ReportFieldsCannotAcquireBackgroundPermissionEvenWhenNull(field: \"reportHandoff\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionResumeTests.FrameFromAnotherSceneCannotReleaseClosedSettlement",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.UnknownOpenDeliveryKeepsBothPreviewActionsLocked",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.NewerSceneInvalidatesQueuedReadyTargetDuringCaptureStall",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.OnlyExplicitWorkerAdmitsTheObservedReportFreeVersionOneCurtain",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"scrollTop\", value: \"1.5\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.DisconnectedSettlementBookshelfAndExclusivePresentationKeepTheirGuards(connected: False, retained: False, bookshelf: False, exclusive: False)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"scene_transition_action\", allowed: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LostShowStillAcceptsTombstone",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.FullPanelPaintMatchesExactBoundDurableSettlementOnly",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.FrozenReportAndDismissalAreImmutableWithinTheReturn",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.UnknownActionDeliveryLocksAndNeverReplays",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.SourcePayloadIsFrozenBeforeUiDispatch",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateOrMalformedFullPanelPaintNeverReleasesCurtain(field: \"panelInstanceId\", value: \"\\\"loot:old\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.QueuedOldTransportCannotAdoptAfterDisconnect",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.LateRevisionAndRetiredIdentityCannotResurrect",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.IndependentEndpointForwardsOnlyTheClosedProjectionChannel(type: \"scene_transition_report_view\", allowed: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"医疗警报\", expected: 2)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"寒铁\", expected: 6)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.SameHeightQualityOrEffectsChangeNeedsItsOwnFreshCapture(quality: \"MEDIUM\", effects: 0)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.SnapshotRequiresNeutralSourceAndFiniteNumericParameters",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.EveryAtmospherePresetHasANativeLook(name: \"血月\", expected: 9)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.InvalidRepaintAcknowledgmentFailsInsteadOfAdvancingTheFence(invalid: -∞)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.WorkerStillRequiresReadyVisibleNonMinimizedAndConnected(admitted: False, visible: True, minimized: False, connected: True)",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidParallelProjectionCannotAdmitReport(field: \"reportVisible\", value: \"1\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"actionPending\", json: \"1\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.MalformedPresentationStateCannotChangeTheView(field: \"density\", value: \"\\\"other\\\"\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WorldCompositorTests.FullDesaturationUsesCrossChannelLuminance",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SceneTransitionPresentationPolicyTests.ReportFieldsCannotAcquireBackgroundPermissionEvenWhenNull(field: \"report\")",
+      "outcome": "Passed"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SceneTransitionTaskTests.InvalidSourceNeverGrantsDisplay(field: \"requestId\", json: \"\\\"tr:9007199254740992\\\"\")",
+      "outcome": "Passed"
+    }
+  ],
+  "counters": {
+    "total": "7502",
+    "executed": "7472",
+    "passed": "7352",
+    "failed": "120",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "failures": [
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreReportsFailureWhenInnerFocusIsNone",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.SuccessfulTryRevive_AdoptsCurrentAuthorityContract",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.BurstSamePositionClicksCorrelateFifoAndRetainAmbiguity",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge(failure: 1)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.WebOverlayRoute_RecognizesSettingsAsDedicatedDomain",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.IndependentFreshPeekCanChooseSecondUnclaimedCandidate",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ApplicationSwitchMustPreserveReadingPanel(panel: \"intelligence\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ImageOptionsRejectBadTypesAndRollbackFailedWrites(key: \"casEnabled\", value: False, original: True)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 7)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: True, replaceFlash: True)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_AcceptsCompatibilityHitNumberModes(mode: \"classic\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ActualHudWndProcExitMustKeepItsEntryCorrelation",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.QueuedOrdinaryCloseMustNotRetireNewExactInstance",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.DelayBeyondTwoSecondsStillCorrelatesAsStaleCandidate",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedApplySnapshotCannotBypassDurabilityContract(durable: True)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ImageOptionsRejectBadTypesAndRollbackFailedWrites(key: \"motionFeedbackEnabled\", value: True, original: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 8)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.OtherGuardianChildInSharedRootIsNotAccepted",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: \"wrong\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.HookDispatchAboveUint32UptimeUsesWrappingDomainNot64BitSubtraction",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HitNumberLedger_RejectsUnavailableOrNonExactPayload",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 6)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: null)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.FallbackThreadQueryRetiringTargetCannotAttach",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 1)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"deactivated\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.DetachFailureRetainsSpecificDiagnosticAndExactPair(throws: True)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.TailLosesPermissionWhenAnotherOwnerOrForeignForegroundArrives",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.DeliveryUnknownWrite_RequiresAuthorityReconcileWhilePreviewDoesNot",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus(detachResult: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedApplySnapshotCannotBypassDurabilityContract(durable: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ProjectedUndefinedKeyLabel_IsRejectedBeforeWebAdoption",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Snapshot_RequiresSchemaTwoAndAlwaysBoundedMigrationNotice",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.CloseAttachRevocationStillDetachesExactPair",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 2)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.OwnedWindowRebuildKeepsReceiverIdentityCapturedAtEntry",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.RestartClearsHistoryAndDisabledTraceInventsNothing",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.UserTakeoverGuardRejectsBeforeAnyOwnedWindowOperation",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SameThreadMouseActivateMustUseObservedCorrelationDomain",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.EligibilityCallbackCannotRetireTargetAndStillPermitFocus",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.UnmatchedReasonsDistinguishEmptyMismatchStaleResidueAndConsumed",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 4)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RescueControls_AreSingleClickExactVersionRequests",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.LegacyDuplicateSnapshot_IsForwardedSoWebCanRepairIt",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreToleratesSpuriousSetForegroundReturnFalse",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.InFlightWriteClearedByDetach_RequiresSnapshotAfterRebind",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.SetForegroundFailureNeverReportsSuccess",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadSentMouseMustNotPublishTrustedQueueAge",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 0)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.UpPhasePairsByReleasePointAndReportsMissingUp",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.FailedStaleStateAuthoritySnapshotRemainsOrdinaryUnappliedFailure",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffDoesNothingIfForegroundChangedSinceCapture",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.UnknownWriteLatch_SurvivesCloseAndRebindUntilValidSnapshot",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreReportsFailureWhenRootMatchesButInnerFocusIsWrong",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.SuccessfulAttachFollowedByEligibilityRevocationDetachesExactPair",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.GuardianIndicatorForegroundIsNotAccepted",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.StaleCloseMustNotFallThroughGenericInbound(instance: \"old\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"esc\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.WrappingTickDeltaCrossesUint32BoundaryAndFlagsImpossible",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.MalformedSuccessfulApply_IsRejectedBeforeWebAdoption",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 9)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SourceApiFailureCannotChangeBusinessInputOrPublishQueueAge(failure: 2)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ExactFlashRootCanSatisfyPinnedRestore",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.HookDispatchDelayIsRecordedOnEveryEdge",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ExceptionUnwindingRetainsTheEntrySample",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.TraceStartedDuringUntracedDispatchDoesNotInventEntryOrExit",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.DetachFailureRetainsSpecificDiagnosticAndExactPair(throws: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TryReviveSuccess_RejectsLegacyAndInvalidAuthorityShapes",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.UnrelatedOwnedWindowMustNotQualifyForGameRestore",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_SavesImmediately_NotifiesObserver_AndRollsBackOnFailure",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.EligibilityCallbackThrowAfterSuccessfulAttachStillDetachesExactPair",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: True, replaceFlash: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadMouseActivateUsesUnavailableQueueTimestamp",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ExecutionClaimRevokedDuringFirstAttemptPreventsFocusAndFallback",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 10)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TimedOutWrite_BlocksFurtherWritesUntilAuthoritativeSnapshot",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ApplicationSwitchMustPreserveReadingPanel(panel: \"help\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: \"stale\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.SameThreadSentMouseMustNotPublishTrustedQueueAge",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.NativeAndHudClaimsAreIndependentAxes",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.PublicRestoreSucceedsWhenRootAndInnerFocusBothHeld",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.CrossThreadOwnedTimeoutStopsSenderAndUnwindsWindowResources",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ExactInstanceAndClose_RetirePendingAndRestorePreviewThroughFlash",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.ReducedPresentation_IsStrictBooleanObservedAndRolledBackOnSaveFailure",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Apply_RequiresSchemaTwoAndAllThirtySixUniqueKeys_AndPerformanceZeroOrOne",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.ExactCloseExecutionControlRejectsAReplacement",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.MessageTimeOrderingRejectsPhysicallyImpossibleCandidate",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.NestedWndProcMustKeepEachEntrySample",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.ExpiredResourceGuardRejectsBeforeFinalSideEffect",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.ImpossibleHookIntervalIsMarkedAmbiguousNotInvented",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.LegalRetirementTailDoesNotRequireOldSurfaceActive",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.MessageTimeWrapAroundDoesNotBreakDelayMath",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffActivatesExactRootAndKeepsFocusInFlash",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffDoesNotReportSuccessWhenKeyboardFocusRemainsElsewhere",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"capture_lost\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.RingRetentionIsBoundedAndOverflowIsExplicitlyReported",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.CapturedOldTimerCannotDeliverOrClearNewClose",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.TraceStoppedDuringDispatchDoesNotCreateAnUnmatchedExit",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.InnerFocusOnFlashChildCountsAsHeld",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.ClosePermitHasOneRootAttemptAndTailUsesOnlyInnerFocusAfterSourceRetires",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Diagnostic.FocusTracePhysicalHistoryTests.OutOfTargetEdgesAreContextOnlyAndUnmatchedUpIsMarked",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.MissingExecutionClaimMakesNoFocusCalls",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 3)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.PendingCloseCannotBeRelabeledAsReplacementInstance",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.TutorialOptOut_IsHostLocalStrictBooleanAndSaveFailurePreservesAuthority",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: null)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.RetirementDuringAttachStillAttemptsDetachWithoutLaterFocus(detachResult: True)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_AcceptsCompatibilityHitNumberModes(mode: \"total\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HitNumberLedger_IsStrictLocalPagedQueryWithoutFlashTraffic",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.MalformedSuccessfulCancel_PreservesPartialRestoreAsUnknownWrite",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.SolIndependentWindowsTraceTests.RingResetDuringDispatchCannotPairExitWithAnotherTraceSession",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostDirectStaleCloseMustLeaveCurrentInstanceAlive(instance: \"wrong\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.BeforeHideHandoffNeverRetriesOrSetsFocusAfterLostActivation(activated: False, replaceFlash: False)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.WindowManagerFocusRestoreTests.TrackedHwndChangeDuringRestoreCannotSucceed",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.TransitionBackingMustRemainAnExactPresentationOwner",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.SnapshotIssuedBeforeAmbiguousWrite_CannotClearNewReconcileEpoch",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Guardian.CompositionRecheckTests.HostCloseReasonMustReachFinalEnvelope(reason: \"process_failed\")",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.HostSet_RejectsUnknownHitModeAndOutOfRangeOrFractionalLimit",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.RecheckFailureResponseShapeDoesNotThrowOrLoseUnknownWrite(shape: 5)",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    },
+    {
+      "name": "CF7Launcher.Tests.Tasks.SettingsTaskTests.Snapshot_RoutesFlatCommand_AndInjectsAuthoritativeHostPrefs",
+      "message": "System.TypeInitializationException : The type initializer for 'CF7Launcher.Tests.Guardian.FixtureResourceGuard' threw an exception.\r\n---- System.InvalidOperationException : Missing evidence root"
+    }
+  ],
+  "knownPrerequisiteReference": "docs/AI聊天终端-游戏内嵌集成-开发计划-2026-10-07.md:740-746",
+  "boundary": "120 existing ResourceCaseGuard tests require the separate acknowledged resource-window harness. The full run remains failed; this assessment only allows isolated diagnostic candidate construction, not qualification or formal promotion.",
+  "trxSha256": "065cff0b59c2676e35d1873ed5e20e845be2842fe671a011c722eb9c108094a7"
+}

@@ -1,0 +1,141 @@
+{
+  "ok": true,
+  "completedAtUtc": "2026-10-18T10:10:34.401551+00:00",
+  "freshSuites": [
+    {
+      "suite": "elder-asset",
+      "runId": "e8c54d11de7749078ff409e60b0ef65c",
+      "passed": 1080,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "currentBindings": 148,
+      "traceSha256": "7b65f3b66cd03de1212f2d7b94079a8915c486a1e94010373ab4bcc29098d3ea",
+      "testSwfSha256": "c027a3dd07ceedfbe3f3e3f1f5f95408d4de4f43f5ba473487d17d473fa4fb6e"
+    },
+    {
+      "suite": "audio",
+      "runId": "1ff0faf91bd8447289c128011c03b59d",
+      "passed": 340,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "currentBindings": 148,
+      "traceSha256": "791604ec03ce1ca212fff3dbe7694bf67ce2c048a08cf0bfc2040a66a540b9b9",
+      "testSwfSha256": "461d4103237f4bbfea964ba2ad1f2e38ee675da6b48026b48c47068cbcd15c7f"
+    },
+    {
+      "suite": "player-aim",
+      "runId": "95cfc64ac2a94df68fac450d45205b13",
+      "passed": 1211,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "currentBindings": 148,
+      "traceSha256": "cb545f718e15d723f5a25d7abefb740ac96389ec7baf023c20565270d17059e6",
+      "testSwfSha256": "ddc36ae9d41dbdf2f78a13a1c030f1d5a6f196b1b168d59aec38cf74a616b9a3"
+    },
+    {
+      "suite": "elder-render",
+      "runId": "8af4ecba17b4415d8993cde128cfb07d",
+      "passed": 40,
+      "failed": 0,
+      "compilerErrors": 0,
+      "compilerWarnings": 0,
+      "currentBindings": 148,
+      "traceSha256": "a01e2f7e8645cc42b1804c9a62b7b243aada34e7d60074c1af8f361a512e5131",
+      "testSwfSha256": "c7fbd67909961b25d778cee5d7f646f48b1d3f75b5b174c817bc381a65dffe0e"
+    }
+  ],
+  "passed": 2671,
+  "failed": 0,
+  "currentBindingsPerSuite": 148,
+  "selectedNativeImages": 12,
+  "pixelEquivalenceToR21": [
+    {
+      "image": "beam-29.png",
+      "pixelIdentical": true,
+      "currentSha256": "60a32b84287774ea8e4b08b2c70070439e7557aa335581810d29fa69a446779c",
+      "priorSha256": "60a32b84287774ea8e4b08b2c70070439e7557aa335581810d29fa69a446779c"
+    },
+    {
+      "image": "beam-32.png",
+      "pixelIdentical": true,
+      "currentSha256": "014e3448611077e7aae6d57f4e87d9328b58061c5f3c37772559585a267e99c8",
+      "priorSha256": "014e3448611077e7aae6d57f4e87d9328b58061c5f3c37772559585a267e99c8"
+    },
+    {
+      "image": "beam-38.png",
+      "pixelIdentical": true,
+      "currentSha256": "00c812bdcb43b68cc22a65879d3fdd485216ef1c10bb5ccf77db3d12870f396c",
+      "priorSha256": "00c812bdcb43b68cc22a65879d3fdd485216ef1c10bb5ccf77db3d12870f396c"
+    },
+    {
+      "image": "beam-44.png",
+      "pixelIdentical": true,
+      "currentSha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7",
+      "priorSha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7"
+    },
+    {
+      "image": "heavy-beam-1.png",
+      "pixelIdentical": true,
+      "currentSha256": "7621a3c93fabc3b591f28459e57101b29d2608e14141f0fe94cbefc80b82d211",
+      "priorSha256": "7621a3c93fabc3b591f28459e57101b29d2608e14141f0fe94cbefc80b82d211"
+    },
+    {
+      "image": "heavy-beam-106.png",
+      "pixelIdentical": true,
+      "currentSha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7",
+      "priorSha256": "fd2ab0bc67ad975c0a3831a10aae468e4ab143bbfe1410f09bf0773c2d8b4dd7"
+    },
+    {
+      "image": "heavy-beam-34.png",
+      "pixelIdentical": true,
+      "currentSha256": "cf483c212121bceed3b03eb063f23d1b9ed6fd055841586afab9cdeb8387e361",
+      "priorSha256": "cf483c212121bceed3b03eb063f23d1b9ed6fd055841586afab9cdeb8387e361"
+    },
+    {
+      "image": "heavy-beam-35.png",
+      "pixelIdentical": true,
+      "currentSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "priorSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f"
+    },
+    {
+      "image": "heavy-beam-47.png",
+      "pixelIdentical": true,
+      "currentSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "priorSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f"
+    },
+    {
+      "image": "heavy-beam-59.png",
+      "pixelIdentical": true,
+      "currentSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "priorSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f"
+    },
+    {
+      "image": "heavy-beam-71.png",
+      "pixelIdentical": true,
+      "currentSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f",
+      "priorSha256": "5f9c6114e744e4d82c0f77d3a010331bc8c736d01d87b634f29572c27e583a4f"
+    },
+    {
+      "image": "heavy-beam-left-35.png",
+      "pixelIdentical": true,
+      "currentSha256": "4e9a61c68963d9cca054418870ef45aa16a06d42dd2143b5bbd513914add4b90",
+      "priorSha256": "4e9a61c68963d9cca054418870ef45aa16a06d42dd2143b5bbd513914add4b90"
+    }
+  ],
+  "cleanup": {
+    "ok": true,
+    "originalRunnerSha256": "E38E2151BF619814A0EA65BF2B19D11D8F78A7704787C47C046666ACEE2F090B",
+    "pendingMarkersAbsent": true,
+    "controlReceipts": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\CrazyFlashNight\\tmp\\flash-testplayer-control\\4300bf9481794cc2b55a7660a8e4f9a0",
+    "editorPid": 20176,
+    "editorStartUtc": "2026-10-17T14:06:44.6668016Z",
+    "editorPreserved": true,
+    "time": "2026-10-18T18:10:03.8922068+08:00"
+  },
+  "initialCleanupTimedOut": true,
+  "cleanupRecoveryFreshlyConfirmed": true,
+  "boundary": "Four fresh real-CS6 suites after the upstream terminal source merge. The first post-suite player-close acknowledgement timed out; its failure and late close receipt are retained, and a new canonical control transaction confirmed closed=false in both phases without deleting a marker or ending the original editor. Earlier focused runs remain historical. Twelve selected draw points are not a full 805-frame scan or human acceptance. The arena C5 loader and R4 candidate are unchanged; this test build does not deploy the new terminal feature."
+}

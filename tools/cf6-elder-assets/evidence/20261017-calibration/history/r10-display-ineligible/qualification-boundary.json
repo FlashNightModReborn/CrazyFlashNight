@@ -1,0 +1,7 @@
+{
+  "qualified": false,
+  "strengthAccepted": false,
+  "reason": "Display state was observed off after cold-start capture failures. The batch was stopped through its owner protocol. No continuous eligible display interval covers this batch; retain the finished rows as diagnostics only.",
+  "finishedRows": 2,
+  "requiredNextStep": "Explicit authorization to keep the display awake and a new continuously observed eligible run."
+}

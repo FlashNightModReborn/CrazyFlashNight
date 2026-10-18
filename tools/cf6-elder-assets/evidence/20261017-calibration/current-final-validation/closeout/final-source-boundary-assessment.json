@@ -1,0 +1,24 @@
+{
+  "ok": true,
+  "recordedAtUtc": "2026-10-18T10:52:39.538333+00:00",
+  "strictGameplayAs2AndOriginalInputs": 1578,
+  "allFrozenSourceFiles": 2565,
+  "hostExistingLineEndingDifferences": 127,
+  "hostRawBlobAlsoMatchesTestedBytes": 108,
+  "hostMixedLineEndingsRequireFrozenOriginalForExactReplay": 19,
+  "productionFilesChangedForHostFormatPolicy": 0,
+  "batchAndIndividualActualGitFiltersCompared": 2565,
+  "batchAndIndividualResultsIdentical": true,
+  "sourceChecks": {
+    "preliminary-staged-source-with-host-verification.json": "d02b5b3907a7678ac7be3629105dbbc989173fc82634b8fe535f3e5ff5d5c890",
+    "preliminary-staged-source-with-host-batch-verification.json": "8c9c247597016a978c698040e10f165b04345dcc81ace34198efaa396ce13dab",
+    "staged-current-input-verification-final.json": "1de9245655a7874af0dc5857ffbf03a5b3963c014324c944ba3e104d551f7894",
+    "staged-current-input-verification-final-v2.json": "2b1048f06f0e5a907aea3ad30045fe5b9b74a65fcbbcf188dd2811027634f88a"
+  },
+  "verifierCorrections": [
+    "The original ignored TestLoader scratch file is a restoration binding, not committed test source.",
+    "Git filtered-batch headers report unfiltered blob size; NUL framing preserves actual converted bytes. Binary and custom-encoded files use individual calls.",
+    "One prior integrity-named record is a summary receipt with zero file entries, not a package file index; its original hash is still verified."
+  ],
+  "boundary": "The original strict Host checkout mismatch reports remain preserved. Exact Host-source replay uses the frozen archive. Existing checkout EOL differences are disclosed rather than represented as raw-byte equality, and no unrelated C# format rules or files were changed."
+}

@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/老头/分件/484" itemID="6aa00000-cfabdf1d" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="484">
+      <layers>
+        <DOMLayer name="R3原生矢量" color="#9A5E59">
+          <frames>
+            <DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <LinearGradient spreadMethod="pad">
+                        <matrix>
+                          <Matrix a="0.0219726562" b="0" c="0" d="0.137658144" tx="1.45" ty="-36.3391026"/>
+                        </matrix>
+                        <GradientEntry color="#3C4144" ratio="0"/>
+                        <GradientEntry color="#C7C9C6" ratio="0.25"/>
+                        <GradientEntry color="#F4F4E8" ratio="0.47"/>
+                        <GradientEntry color="#7D8284" ratio="0.5"/>
+                        <GradientEntry color="#BEC3C4" ratio="1"/>
+                      </LinearGradient>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="1" scaleMode="normal" caps="none" joints="miter">
+                        <fill>
+                          <SolidColor color="#35383A"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-51 -716[-66 -631 -116 -581[-121 -576 -131 -576|-151 444|-151 464[-251 494 -331 544[-292 605 -231 644[-184 656 -151 684[-254 2258 -88 3626[-77 3720 -51 3784[253 2518 192 884[189 804 189 724[278 633 389 564[300 504 189 464[219 265 191 104|189 84[222 -202 209 -536|209 -556[162 -598 150 -676|149 -696[88 -745 -51 -716" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#AFB6B7" alpha="0.45"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!0 -540|40 3600|260 420|-40 420|0 -540" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

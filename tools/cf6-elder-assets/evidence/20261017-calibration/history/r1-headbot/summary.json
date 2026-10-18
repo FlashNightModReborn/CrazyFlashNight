@@ -1,0 +1,101 @@
+{
+  "experiment": "cf6-cal-r1-headbot-20261017",
+  "reportSha256": "b3ab66d45636711f427756cdb88ccae671c5470bc7518bb80f45c0371d299d57",
+  "qualified": true,
+  "groups": [
+    {
+      "rival": 286,
+      "level": 30,
+      "n": 2,
+      "wins": 1,
+      "losses": 1,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 0.8009068971918007,
+        "mean": 0.9004534485959004,
+        "median": 0.9004534485959004,
+        "max": 1.0
+      },
+      "remainingMin": 0.0,
+      "frames": [
+        3055.0,
+        3425.0
+      ],
+      "in50to80": 0
+    },
+    {
+      "rival": 286,
+      "level": 99,
+      "n": 2,
+      "wins": 2,
+      "losses": 0,
+      "timeouts": 0,
+      "netLoss": {
+        "min": 1.0,
+        "mean": 1.0,
+        "median": 1.0,
+        "max": 1.0
+      },
+      "remainingMin": 0.2088539924663205,
+      "frames": [
+        3367.0,
+        3379.0
+      ],
+      "in50to80": 0
+    }
+  ],
+  "runs": [
+    {
+      "runId": "level30-blue-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 3425.0,
+      "remaining": 0.09254024250636637,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level30-red-r001",
+      "level": 30,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": false,
+      "lost": true,
+      "frames": 3055.0,
+      "remaining": 0.0,
+      "netLoss": 0.8009068971918007,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-blue-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "blue",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 3367.0,
+      "remaining": 0.2088539924663205,
+      "netLoss": 1.0,
+      "phases": 0.0
+    },
+    {
+      "runId": "level99-red-r001",
+      "level": 99,
+      "rival": 286,
+      "side": "red",
+      "status": "finished",
+      "won": true,
+      "lost": false,
+      "frames": 3379.0,
+      "remaining": 0.22728793021202867,
+      "netLoss": 1.0,
+      "phases": 0.0
+    }
+  ]
+}

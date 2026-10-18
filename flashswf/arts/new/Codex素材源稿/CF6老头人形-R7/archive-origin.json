@@ -1,0 +1,662 @@
+{
+  "schema": "cf6-authored-source.v1",
+  "archive": "07B-latest-local-source.zip",
+  "archiveSha256": "d4207dbe703a366601af730de641d397e305b308588710ab6544c44fa8010284",
+  "policy": "Frozen editable source; supplied Python is evidence only, never executed. Derived images remain in the original archive.",
+  "members": [
+    {
+      "path": "R7眼窝差异.txt",
+      "sha256": "baf71f116aa771a13cea55dc8a7e330fe3163fe927f85c739f1811c7126781bb",
+      "bytes": 649,
+      "archiveMember": "cf6-elder-r7-eye-local-source/R7眼窝差异.txt"
+    },
+    {
+      "path": "README-R7.txt",
+      "sha256": "2581d3229046ce3b282f56a8e7e8b9f58c52eba51c2f9f6ae08e873640b81ef1",
+      "bytes": 640,
+      "archiveMember": "cf6-elder-r7-eye-local-source/README-R7.txt"
+    },
+    {
+      "path": "parts/954.svg",
+      "sha256": "a053bfe89f818430bf8bb2eecf8249aecef8adc09ab5b3ec4770e45f5298888b",
+      "bytes": 7057,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/954.svg"
+    },
+    {
+      "path": "parts/955.svg",
+      "sha256": "25cc1b0fa41e3c34572676d9b3e12a78d14deecbe70735db5c12ae52a4642ff5",
+      "bytes": 8869,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/955.svg"
+    },
+    {
+      "path": "parts/956.svg",
+      "sha256": "8aec1e5601ea4a5d1136ec4583f9fd485d1473eeff94b00b318013338366f8d5",
+      "bytes": 8159,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/956.svg"
+    },
+    {
+      "path": "parts/957.svg",
+      "sha256": "633e3f0b189a870f702d41fc6261ec30378c6374ef71515f2107b1e54578bf1f",
+      "bytes": 10854,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/957.svg"
+    },
+    {
+      "path": "parts/958.svg",
+      "sha256": "9f332c02abcd37f0b8b93b419a56494ec820d5be9e82b0dca6e9156e35d57c78",
+      "bytes": 17448,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/958.svg"
+    },
+    {
+      "path": "parts/959.svg",
+      "sha256": "415e14158c2246ee96a7e6525e41ee20d3d1c92009821b8f718e7430a88d9da6",
+      "bytes": 14489,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/959.svg"
+    },
+    {
+      "path": "parts/960.svg",
+      "sha256": "346c5867f413392bcfa15708240166e5ffe5f0f5e0f03e9a8f98855e4e622d62",
+      "bytes": 7222,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/960.svg"
+    },
+    {
+      "path": "parts/961.svg",
+      "sha256": "0de4eeeccf6d8f14cf1a10412a9b0066cd2e5d1e195a39e80170200c9b1307e9",
+      "bytes": 9256,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/961.svg"
+    },
+    {
+      "path": "parts/962.svg",
+      "sha256": "dadea049332eb3dd956ae34e06bec4578491e8f25850aa039d52b68c6f288685",
+      "bytes": 30916,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/962.svg"
+    },
+    {
+      "path": "parts/963.svg",
+      "sha256": "4f119904581719f09eb0f7acabd49c98c4bc85cc05cdb0e560d1ebe025c51099",
+      "bytes": 27628,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/963.svg"
+    },
+    {
+      "path": "parts/965.svg",
+      "sha256": "fdc32d0fc31d3b8ee49e0986f7a25119d144a0d56c99df8f3e67ecd98d0a17e3",
+      "bytes": 15227,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/965.svg"
+    },
+    {
+      "path": "parts/966.svg",
+      "sha256": "ac157397dc9eedcdc5f9575b47ff558270166926dd00b599a4ad47e071fb573c",
+      "bytes": 8606,
+      "archiveMember": "cf6-elder-r7-eye-local-source/parts/966.svg"
+    },
+    {
+      "path": "qa/cold-rebuild-report.json",
+      "sha256": "ec79fd13ba1e8dbe5c13b9349d81a9ee574f2519cade8fa0a949bfca9caed234",
+      "bytes": 237,
+      "archiveMember": "cf6-elder-r7-eye-local-source/qa/cold-rebuild-report.json"
+    },
+    {
+      "path": "qa/expected-rebuild-hashes.json",
+      "sha256": "57ab22267152545d0ebaeee16c5b4cdf23bdd025045939364a9a3b1589adc682",
+      "bytes": 2831,
+      "archiveMember": "cf6-elder-r7-eye-local-source/qa/expected-rebuild-hashes.json"
+    },
+    {
+      "path": "qa/frozen-part-sha256.json",
+      "sha256": "b3ccfcda17f222e1ebcdddb1b163bbaca9d52fd63eea1da1eda7d67de0f7f214",
+      "bytes": 1501,
+      "archiveMember": "cf6-elder-r7-eye-local-source/qa/frozen-part-sha256.json"
+    },
+    {
+      "path": "qa/r7-eye-scope.json",
+      "sha256": "ecd1be470109093fce9ea1ecc4f7487418f151235e714a6f66e80769beb671ba",
+      "bytes": 468,
+      "archiveMember": "cf6-elder-r7-eye-local-source/qa/r7-eye-scope.json"
+    },
+    {
+      "path": "qa/r7-head-only.json",
+      "sha256": "b3ccfcda17f222e1ebcdddb1b163bbaca9d52fd63eea1da1eda7d67de0f7f214",
+      "bytes": 1501,
+      "archiveMember": "cf6-elder-r7-eye-local-source/qa/r7-head-only.json"
+    },
+    {
+      "path": "reference/keyposes.json",
+      "sha256": "27094ba52c7d323fd83a0909ddecdeba775543fe472988713c8195f385e02a98",
+      "bytes": 6387,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/keyposes.json"
+    },
+    {
+      "path": "reference/manifest.json",
+      "sha256": "97340008585e756eb48c8a2fddc95a63d2ce802885589a8dcee6edcf238e6e4f",
+      "bytes": 18293,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/manifest.json"
+    },
+    {
+      "path": "reference/part-identity.json",
+      "sha256": "67b01b5d3be00cca50297d05b17d7077de06925d25287aa0cf34c555107c620c",
+      "bytes": 3828,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/part-identity.json"
+    },
+    {
+      "path": "reference/shape-manifest.json",
+      "sha256": "27f0b61887e3acdb6f6b5877d0b67666b7a51411694faf64266a0fefe18b7e1e",
+      "bytes": 156170,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shape-manifest.json"
+    },
+    {
+      "path": "reference/shapes/100.svg",
+      "sha256": "0e910484883d0c3217df8588f33f4b15597cd2916eb03ed652bf233188936b71",
+      "bytes": 382,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/100.svg"
+    },
+    {
+      "path": "reference/shapes/101.svg",
+      "sha256": "0f9605180ca0f58457af7f8472885f5c09918b4236f279febce5362cf3ab723b",
+      "bytes": 526,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/101.svg"
+    },
+    {
+      "path": "reference/shapes/102.svg",
+      "sha256": "c240a6cfd5d8558518ae5bac067dae056fc82ac194802a13455c5f7590128fa6",
+      "bytes": 534,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/102.svg"
+    },
+    {
+      "path": "reference/shapes/103.svg",
+      "sha256": "384069777e22744559791efc0591567c706bf21a1f0b999ae22ae651381409e3",
+      "bytes": 468,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/103.svg"
+    },
+    {
+      "path": "reference/shapes/104.svg",
+      "sha256": "292cfadcdff4320b630d7c773e9a729f03c116a80a73df54387888a0e0c94966",
+      "bytes": 366,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/104.svg"
+    },
+    {
+      "path": "reference/shapes/105.svg",
+      "sha256": "0bfcc3ac13ac910afb00db366ec4d9c6d0278f715a42035abf329fc0274078d1",
+      "bytes": 502,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/105.svg"
+    },
+    {
+      "path": "reference/shapes/106.svg",
+      "sha256": "2747e15a274c9e65ac8834a2f5722fe354ef593ebe273192455db897c6462406",
+      "bytes": 497,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/106.svg"
+    },
+    {
+      "path": "reference/shapes/107.svg",
+      "sha256": "f02df7b6b32efecfcdeb9d964d594ccbb1105d4567e4b504d0d13a62ac7e7f15",
+      "bytes": 513,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/107.svg"
+    },
+    {
+      "path": "reference/shapes/108.svg",
+      "sha256": "6cba0dead2ffbed96563a413ca6fc6afe37bbbffab7537138f125818aede9173",
+      "bytes": 499,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/108.svg"
+    },
+    {
+      "path": "reference/shapes/109.svg",
+      "sha256": "79b98e4d2924585577a851351dc2b73dca05ba6076d25c54e4ef3e2f7d76fb9f",
+      "bytes": 631,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/109.svg"
+    },
+    {
+      "path": "reference/shapes/110.svg",
+      "sha256": "bcf7d4add14ebaeffbafd6d3e44c5d4dd2ae03fb9c8f890c6327c7571854cc5a",
+      "bytes": 436,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/110.svg"
+    },
+    {
+      "path": "reference/shapes/111.svg",
+      "sha256": "d2b8c4d41253b33e1b3b34b9ef1d957d6a6c4bc3688604907bc4721329f8360e",
+      "bytes": 427,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/111.svg"
+    },
+    {
+      "path": "reference/shapes/112.svg",
+      "sha256": "b704b117035f359b66cf0b9895b7be05ea5afadcde407295a827d0609bdf4733",
+      "bytes": 444,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/112.svg"
+    },
+    {
+      "path": "reference/shapes/113.svg",
+      "sha256": "e0dd83985beb1130bdbaf29cbdb1f0c60e3ea533c3f6111560bb2b1d6f79f810",
+      "bytes": 329,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/113.svg"
+    },
+    {
+      "path": "reference/shapes/114.svg",
+      "sha256": "e5d0756e3d148ea3abae740979a7df8c7bcf06c31c97f861e7a73ae98fd8f9fa",
+      "bytes": 434,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/114.svg"
+    },
+    {
+      "path": "reference/shapes/123.svg",
+      "sha256": "6df8ffcd39f89df40ac15296186ac6cee7a90faac2dbe88dda1135ce72275c3a",
+      "bytes": 17988,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/123.svg"
+    },
+    {
+      "path": "reference/shapes/125.svg",
+      "sha256": "150039038ad0952e58ad4e52040f9603ddce874c0b0912cd388a719c11cd5512",
+      "bytes": 22144,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/125.svg"
+    },
+    {
+      "path": "reference/shapes/127.svg",
+      "sha256": "202e21d85ef30f073231f060f19183950f6e38c97e565e41c70671c47627c7a9",
+      "bytes": 31275,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/127.svg"
+    },
+    {
+      "path": "reference/shapes/129.svg",
+      "sha256": "b901dfbbbf306d5acda0de5ad3e9eaf705ea4f4853843d00c347529865a59144",
+      "bytes": 42647,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/129.svg"
+    },
+    {
+      "path": "reference/shapes/131.svg",
+      "sha256": "130d3564d39c38c6a935234d54deee36382fd63d7bf6e6a9e7f5f303facd5840",
+      "bytes": 44207,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/131.svg"
+    },
+    {
+      "path": "reference/shapes/133.svg",
+      "sha256": "6aa6fcceeb64021349859bd0fa42ccfc70a07b29b3837657c6f9383c1c0b10c3",
+      "bytes": 37219,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/133.svg"
+    },
+    {
+      "path": "reference/shapes/135.svg",
+      "sha256": "c8c2cd1fe7730d9f1fe349692f920d7e961af88ec8b239178915ccb5706f462d",
+      "bytes": 7589,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/135.svg"
+    },
+    {
+      "path": "reference/shapes/137.svg",
+      "sha256": "fb994ace6f2105bc075ea9027788d5e73fbc25143cec1d1a24b0d8b55eb7aa96",
+      "bytes": 12138,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/137.svg"
+    },
+    {
+      "path": "reference/shapes/139.svg",
+      "sha256": "7258fbb749fda307d1494d0083f11e53af86ca768f36a1d9ba3773f815d8e8b7",
+      "bytes": 19342,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/139.svg"
+    },
+    {
+      "path": "reference/shapes/141.svg",
+      "sha256": "ee5dcaea9cc7baf7473a1897dec0cabc9268e3ebcb6b58c1544ed84e234013b3",
+      "bytes": 6118,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/141.svg"
+    },
+    {
+      "path": "reference/shapes/143.svg",
+      "sha256": "c40b815fbf14142e466a824bac65df3bdf4e22ffab2dec3b992e07dc2de1d1d9",
+      "bytes": 4462,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/143.svg"
+    },
+    {
+      "path": "reference/shapes/145.svg",
+      "sha256": "966391867de8656894528ea81f5473ddd9f1b334ad7c2ce58224b3ca9c9e45c9",
+      "bytes": 13965,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/145.svg"
+    },
+    {
+      "path": "reference/shapes/147.svg",
+      "sha256": "51678a40dce7ac8aedf47ab54aa8a2ab351e800306859a4bc498b6d6a5b65471",
+      "bytes": 32862,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/147.svg"
+    },
+    {
+      "path": "reference/shapes/149.svg",
+      "sha256": "349381f6fb9669be5340a3ee5834746c57ec2cf62b82c61ee1b937139c64dbb0",
+      "bytes": 56989,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/149.svg"
+    },
+    {
+      "path": "reference/shapes/151.svg",
+      "sha256": "b573ba1e01d15bf061248542525f0294d8c70aedc9faae671aed21caaa2593d8",
+      "bytes": 57768,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/151.svg"
+    },
+    {
+      "path": "reference/shapes/152.svg",
+      "sha256": "4a3887bd60f9429c1344d4a2bfbfad055d00d286085962f2257ac5721a022691",
+      "bytes": 916,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/152.svg"
+    },
+    {
+      "path": "reference/shapes/153.svg",
+      "sha256": "c569d49067c7d90056cdd31bf7b13b4aa61c432d6e80ed6276c2b6974a4ee021",
+      "bytes": 2739,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/153.svg"
+    },
+    {
+      "path": "reference/shapes/154.svg",
+      "sha256": "fc9f115b83c22bb94582de5ef0b5c1a2c790622c9209ea3ae04ddb5bc3f14ac0",
+      "bytes": 3943,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/154.svg"
+    },
+    {
+      "path": "reference/shapes/155.svg",
+      "sha256": "fa00e63e29deb66ccc45bce7d4e038cfd5189cd3ef7ee12231d0f2eb243e8e2c",
+      "bytes": 5180,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/155.svg"
+    },
+    {
+      "path": "reference/shapes/156.svg",
+      "sha256": "4828e44d48e8fc3ca8fb105d28e0ab19daa3e523886489bd9341e071b1d1d4d2",
+      "bytes": 4474,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/156.svg"
+    },
+    {
+      "path": "reference/shapes/157.svg",
+      "sha256": "a9893b544f53ee0079f93bc43a72bc2f67df0be2f461777d8c3c0243bf326999",
+      "bytes": 2210,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/157.svg"
+    },
+    {
+      "path": "reference/shapes/158.svg",
+      "sha256": "28b75d54c1016be296c145507e6853415c2e14ed569fabad4e66f69e5656e85e",
+      "bytes": 1716,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/158.svg"
+    },
+    {
+      "path": "reference/shapes/159.svg",
+      "sha256": "82f235cc569bb951696a1bd7d39984a83137eb5f66a400c9a3dbf27cb9d41d1f",
+      "bytes": 989,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/159.svg"
+    },
+    {
+      "path": "reference/shapes/160.svg",
+      "sha256": "a69f4a2672cdcfc202beb16d68e7231b27c2d4fda3601ef1b408d7f04c8da416",
+      "bytes": 3523,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/160.svg"
+    },
+    {
+      "path": "reference/shapes/161.svg",
+      "sha256": "df33abb0128b49fdaa21c904153994e0db86a82e637c80c7fa139ee250fec71f",
+      "bytes": 12039,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/161.svg"
+    },
+    {
+      "path": "reference/shapes/162.svg",
+      "sha256": "4f751529be0676acf1ffbdcf72f89935a14d489d8348cffedd83b174aa00abe4",
+      "bytes": 10661,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/162.svg"
+    },
+    {
+      "path": "reference/shapes/163.svg",
+      "sha256": "e595e74d219c46446db7becdfcafaf21e0e996e579088f2edef3fd1203406133",
+      "bytes": 6757,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/163.svg"
+    },
+    {
+      "path": "reference/shapes/164.svg",
+      "sha256": "5143d1cdda8b8f30cfcce0655ddc1007e3a34cf57c6caf23a0adaf4dae31a5c0",
+      "bytes": 3142,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/164.svg"
+    },
+    {
+      "path": "reference/shapes/165.svg",
+      "sha256": "ab2202634157d0fb4539386b7e513b12c9562a7ebbe95000d6af1a4dc3dce831",
+      "bytes": 1131,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/165.svg"
+    },
+    {
+      "path": "reference/shapes/166.svg",
+      "sha256": "ab86d2c5a6b2a36e4c0e9f92ec6b2db44af3da1d169fc3da2c2a607edf462171",
+      "bytes": 3073,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/166.svg"
+    },
+    {
+      "path": "reference/shapes/167.svg",
+      "sha256": "00206a35e600a74a237e34c647d8602a0608fcf2877e3767a0148b67b0ea773d",
+      "bytes": 5228,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/167.svg"
+    },
+    {
+      "path": "reference/shapes/168.svg",
+      "sha256": "11157675dc86ad12bbd5d835d399c338b3c16b4fc0c965e439a40f9aa01196cf",
+      "bytes": 7302,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/168.svg"
+    },
+    {
+      "path": "reference/shapes/169.svg",
+      "sha256": "36ea2b10b5f06212dfd72ae789c91c4e3754ce6b3201613ea98b682a14726faf",
+      "bytes": 5723,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/169.svg"
+    },
+    {
+      "path": "reference/shapes/170.svg",
+      "sha256": "c0822d1d561caa9bed729f5b69ebc21030d311680e626ae22ad96f06fdab2d44",
+      "bytes": 5663,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/170.svg"
+    },
+    {
+      "path": "reference/shapes/171.svg",
+      "sha256": "0ee483dc918a191e983d7d749fe2afd5c4492e4a79129ecc48a4b800319dfe83",
+      "bytes": 1886,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/171.svg"
+    },
+    {
+      "path": "reference/shapes/172.svg",
+      "sha256": "f31845c9a7a21b9a815a37042c1f74ce1b439bff2399d5e62727da97847ecacd",
+      "bytes": 1696,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/172.svg"
+    },
+    {
+      "path": "reference/shapes/173.svg",
+      "sha256": "4546813da552856a8cbb12ba4dd15c04849f95b4a8aed348fe8f24d0b528cc31",
+      "bytes": 1610,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/173.svg"
+    },
+    {
+      "path": "reference/shapes/174.svg",
+      "sha256": "d56654f4adf6cbf0d6efc6add7450696877520ce692d03d9d700c98378963d46",
+      "bytes": 1533,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/174.svg"
+    },
+    {
+      "path": "reference/shapes/175.svg",
+      "sha256": "82480b6c3c38ddccd894d6a5e133d57c99a4b88886636d62250b4dc1c02809e5",
+      "bytes": 1449,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/175.svg"
+    },
+    {
+      "path": "reference/shapes/176.svg",
+      "sha256": "96813577b8ff94b838ba132932c2c7bdbc35a9030991058dbb36d57e52e25721",
+      "bytes": 1300,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/176.svg"
+    },
+    {
+      "path": "reference/shapes/177.svg",
+      "sha256": "9b4e74e80ac39c82a1804f6ca2868e90b98fd1c2c6c1c872f909f4c9b5099415",
+      "bytes": 1132,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/177.svg"
+    },
+    {
+      "path": "reference/shapes/178.svg",
+      "sha256": "15da5009f9303442c9c19e35ee423e531b8bec1c3b43db2b45a8979f3469bb69",
+      "bytes": 826,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/178.svg"
+    },
+    {
+      "path": "reference/shapes/277.svg",
+      "sha256": "b78551cedf25731d992bae85f194ae3430435aacac9ebc1222efbbb41bfdf524",
+      "bytes": 212,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/277.svg"
+    },
+    {
+      "path": "reference/shapes/280.svg",
+      "sha256": "eac9b63aff377dbda38dae28268170434589eac691fa294f5b6a6f146fc36762",
+      "bytes": 294,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/280.svg"
+    },
+    {
+      "path": "reference/shapes/484.svg",
+      "sha256": "4e8309bb6b074871ae1ad2f6954b7c3e2e4443364aed6075c62397bfb42c8bb8",
+      "bytes": 208880,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/484.svg"
+    },
+    {
+      "path": "reference/shapes/503.svg",
+      "sha256": "0a172e399d93ad12b8b6637e33990e3b657db3ba25e46a0db702c32bc528db81",
+      "bytes": 3049,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/503.svg"
+    },
+    {
+      "path": "reference/shapes/504.svg",
+      "sha256": "51f5212df0d199b6215d469455485049614714a2a85123b7976082c0d71e34a8",
+      "bytes": 3032,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/504.svg"
+    },
+    {
+      "path": "reference/shapes/505.svg",
+      "sha256": "7b9599109b80e22a75ff5d81ff9e6119e529eae3ae6a1336ecafced3a038753d",
+      "bytes": 3009,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/505.svg"
+    },
+    {
+      "path": "reference/shapes/95.svg",
+      "sha256": "117c98ba28807afbf055537cbac97167f72be90e5b315cf06139a2dfe4a6671b",
+      "bytes": 753,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/95.svg"
+    },
+    {
+      "path": "reference/shapes/954.svg",
+      "sha256": "878c9f622d633a9c97de95f1b4b6e194e4c0829528792d16856ce388c7140dd0",
+      "bytes": 234298,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/954.svg"
+    },
+    {
+      "path": "reference/shapes/955.svg",
+      "sha256": "a9e964a7497f74d8ef89d99a34d364d2eb8bb99f798de4f81a5b654e242dbb03",
+      "bytes": 234580,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/955.svg"
+    },
+    {
+      "path": "reference/shapes/956.svg",
+      "sha256": "b99349d0fce242a45fcde78d61f3e60ceed03a4a0a88c7f96d391e2203653871",
+      "bytes": 234482,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/956.svg"
+    },
+    {
+      "path": "reference/shapes/957.svg",
+      "sha256": "367ffadfca2967f60454d35c43a09c9fc1706eb3e41f8218d605e2e22dbf7446",
+      "bytes": 234493,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/957.svg"
+    },
+    {
+      "path": "reference/shapes/958.svg",
+      "sha256": "24f9878daac126b04249327e40320267815ece0edf9062a665c85c357ba05076",
+      "bytes": 235516,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/958.svg"
+    },
+    {
+      "path": "reference/shapes/959.svg",
+      "sha256": "24d8c3beea2f307ad9bf76ae4914b322d74841c39d8be739840b73730951b58a",
+      "bytes": 235079,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/959.svg"
+    },
+    {
+      "path": "reference/shapes/96.svg",
+      "sha256": "28ac2c9a96a0abf20fcd3d6e4dc2e6ad66804c5b3ed15f97e3f05478a574631b",
+      "bytes": 506,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/96.svg"
+    },
+    {
+      "path": "reference/shapes/960.svg",
+      "sha256": "850753ab4c19c4ba6e81652d155bdf9c16a06555147d7894c927147b780821a7",
+      "bytes": 234353,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/960.svg"
+    },
+    {
+      "path": "reference/shapes/961.svg",
+      "sha256": "0399cdbe947726a32811f54dcaaa04b2d4740d01ab5da17beb27483e15691fd3",
+      "bytes": 234405,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/961.svg"
+    },
+    {
+      "path": "reference/shapes/962.svg",
+      "sha256": "f61adfd7a5403148a055b75ec7feba81b0b6aa487c186a6af2ca25b2ccb0a12f",
+      "bytes": 235456,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/962.svg"
+    },
+    {
+      "path": "reference/shapes/963.svg",
+      "sha256": "dec512ed1da20d8ff0eea20223ee45a06047824dfcb2619920dce22a9d6a31a5",
+      "bytes": 235830,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/963.svg"
+    },
+    {
+      "path": "reference/shapes/965.svg",
+      "sha256": "a46876f52dbde1d43eb89673447f2839126089c43e98f13160c3e2202635a2d9",
+      "bytes": 43173,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/965.svg"
+    },
+    {
+      "path": "reference/shapes/966.svg",
+      "sha256": "4cb5a35aedddbf45f247eaf4bd727412bac2cbedb74adffd8cfd2aabad81a814",
+      "bytes": 234541,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/966.svg"
+    },
+    {
+      "path": "reference/shapes/97.svg",
+      "sha256": "511a56a2bd53a125efbbf782d9bb19b2f1877964610b55aedfc0dfa0cd4bf635",
+      "bytes": 432,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/97.svg"
+    },
+    {
+      "path": "reference/shapes/98.svg",
+      "sha256": "276dacb2b3a158d273ea603a8a492b658342056ab960c7571299af5741752133",
+      "bytes": 445,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/98.svg"
+    },
+    {
+      "path": "reference/shapes/99.svg",
+      "sha256": "78568392bdfacfc2151cc22486b7e89246cd3d89b500d59335434413099a9668",
+      "bytes": 408,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/shapes/99.svg"
+    },
+    {
+      "path": "reference/source-checksums.json",
+      "sha256": "ad7a2c9ab1da382f8a2093654dce01cf20e3c4ed76983671482b02fe89f5ed7a",
+      "bytes": 984,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/source-checksums.json"
+    },
+    {
+      "path": "reference/timelines.json",
+      "sha256": "7917b0ebabd7075ce651c9a2bac5781debcd20c925ce3c54f63ba4001ef72cf3",
+      "bytes": 1161137,
+      "archiveMember": "cf6-elder-r7-eye-local-source/reference/timelines.json"
+    },
+    {
+      "path": "source/assemble.py",
+      "sha256": "c3d2e670f56d2dd17bac5dececba5a3f274993cce7b7ed94432c187971c5cc78",
+      "bytes": 9579,
+      "archiveMember": "cf6-elder-r7-eye-local-source/source/assemble.py"
+    },
+    {
+      "path": "source/compare_r7.py",
+      "sha256": "d35e63f847eb31622855def2cc638d0ccbf7de1db239ff44eb11b0580e530a4b",
+      "bytes": 1327,
+      "archiveMember": "cf6-elder-r7-eye-local-source/source/compare_r7.py"
+    },
+    {
+      "path": "source/rebuild.py",
+      "sha256": "95eba8772ffaf427d7d01bd73ae6655c2145d74e6845cc05a1f1fbab20263216",
+      "bytes": 563,
+      "archiveMember": "cf6-elder-r7-eye-local-source/source/rebuild.py"
+    },
+    {
+      "path": "source/refine_eye_r7.py",
+      "sha256": "face780d6d7840e73f0966233fda7576882d8b4205c4a5b2814e588ecfac4d3e",
+      "bytes": 3010,
+      "archiveMember": "cf6-elder-r7-eye-local-source/source/refine_eye_r7.py"
+    }
+  ]
+}

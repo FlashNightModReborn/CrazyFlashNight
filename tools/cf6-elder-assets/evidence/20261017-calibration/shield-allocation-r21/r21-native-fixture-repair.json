@@ -1,0 +1,14 @@
+{
+  "productionSourceChanged": false,
+  "resourceSwfChanged": false,
+  "currentElderSwfSha256": "781c950e721c386f6bdbd8aa6bec93d72cc4bbcd34d6886fb53b2bca22ee894d",
+  "changes": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6ElderCombatEffectsTest.as",
+      "beforeSha256": "302febe49017ed31de2a7ef4e4e60a67b3dcde8f625845a6dfe133f6d601ea5c",
+      "afterSha256": "078d16c187febf1d0810bd557db7cab9be5eb806aa84ccabff74d6c43d46eabe"
+    }
+  ],
+  "reason": "Five exact-equality expressions cover the nine failed checks. The new 55/43 inverse reference normalization has IEEE double residuals around 1e-13. Use the existing absolute 1e-5 near helper for computed strengths, keep actual exact-boundary leech/crumble behaviors and capacity arithmetic checks, and record native arithmetic deltas.",
+  "nativeRerunCompleted": false
+}

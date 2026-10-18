@@ -1,0 +1,37 @@
+{
+  "counts": {
+    "total": "7517",
+    "executed": "7487",
+    "passed": "7364",
+    "failed": "123",
+    "error": "0",
+    "timeout": "0",
+    "aborted": "0",
+    "inconclusive": "0",
+    "passedButRunAborted": "0",
+    "notRunnable": "0",
+    "notExecuted": "0",
+    "disconnected": "0",
+    "warning": "0",
+    "completed": "0",
+    "inProgress": "0",
+    "pending": "0"
+  },
+  "prerequisiteFailures": 120,
+  "otherFailures": [
+    {
+      "name": "CF7Launcher.Tests.Audio.AudioQualificationDiagnosticsV1Tests.RawJournal_IsNodeCanonicalForSmallDecimalsAndHashes",
+      "message": "System.InvalidOperationException : CF7_NODE_EXE is required for Audio v2 qualification tests."
+    },
+    {
+      "name": "CF7Launcher.Tests.Audio.AudioQualificationStimulusV1Tests.NodeOperatorCanonicalStimuli_RoundTripHost",
+      "message": "System.InvalidOperationException : CF7_NODE_EXE is required for Audio v2 qualification tests."
+    },
+    {
+      "name": "CF7Launcher.Tests.Audio.AudioQualificationDiagnosticsV1Tests.ObserverSnapshotBytes_RoundTripAndRejectCaseMismatch",
+      "message": "System.InvalidOperationException : CF7_NODE_EXE is required for Audio v2 qualification tests."
+    }
+  ],
+  "overallPassed": false,
+  "entryError": "Direct dotnet invocation bypassed the repository Node binding; PowerShell also stopped on native error output. Repeat through the canonical wrapper without rebuilding; preserve this failed attempt."
+}

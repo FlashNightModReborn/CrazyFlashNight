@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/大头机器人/接地阴影" itemID="6af00000-21e47ff9">
+  <timeline>
+    <DOMTimeline name="接地阴影">
+      <layers>
+        <DOMLayer name="接地更新" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[headbotGround={x:0,y:0};
+updateHeadbotShadow=function():Void {
+    var body:MovieClip=this._parent,unit:MovieClip=body._parent;
+    var visible:Boolean=_root.是否阴影==true;
+    if(this._visible!=visible) this._visible=visible;
+    if(isNaN(unit.Z轴坐标)) return;
+    var p:Object=this.headbotGround; p.x=unit._x; p.y=unit.Z轴坐标;
+    unit._parent.localToGlobal(p); body.globalToLocal(p);
+    if(this._x!=p.x) this._x=p.x; if(this._y!=p.y) this._y=p.y;
+    this._xscale=10999.908447265625/body._xscale;
+    this._yscale=3985.443115234375/body._yscale;
+};
+onEnterFrame=updateHeadbotShadow;updateHeadbotShadow();stop();]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/大头机器人/分件/926" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
