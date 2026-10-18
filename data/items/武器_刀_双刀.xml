@@ -470,4 +470,34 @@
         <auditRef>melee:烬灭裁决双刀</auditRef>
       </balance>
     </item>
+  <item>
+      <name>双匕首</name>
+      <displayname>双匕首</displayname>
+      <icon>匕首</icon>
+      <type>武器</type>
+      <use>刀</use>
+      <actiontype>双刀</actiontype>
+      <price>156000</price>
+      <skill>
+        <skillname>地狱斩绝</skillname>
+        <description>手持该武器时可以使用地狱斩绝。</description>
+        <cd>10000</cd>
+        <mp>50</mp>
+      </skill>
+      <description>将常见的军用匕首修复改装后的样式，更在性能上贴近其早期版本。由于刀刃较短，比起其他的武器更难掌握。</description>
+      <data>
+        <level>25</level>
+        <weight>2</weight>
+        <dressup>刀-匕首</dressup>
+        <dressup2>刀-匕首</dressup2>
+        <power>397</power>
+        <hp>0</hp>
+        <mp>0</mp>
+        <defence>0</defence>
+        <skillmultipliers>
+          <瞬步斩>3.5</瞬步斩>
+        </skillmultipliers>
+        <bladeCount>3</bladeCount>
+      </data>
+    </item>
 </root>

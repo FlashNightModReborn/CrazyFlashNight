@@ -1,6 +1,6 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通火箭弹" itemID="669d34c3-0000176f" linkageExportForAS="true" linkageIdentifier="普通火箭弹" lastModified="1752980967">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="子弹-炮弹与爆炸组/普通火箭弹" itemID="669d34c3-0000176f" linkageExportForAS="true" linkageIdentifier="普通火箭弹" lastModified="1792325388">
   <timeline>
-    <DOMTimeline name="普通火箭弹">
+    <DOMTimeline name="普通火箭弹" currentFrame="1">
       <layers>
         <DOMLayer name="Labels Layer" color="#B1EBC9">
           <frames>
@@ -12,7 +12,7 @@
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Script Layer" color="#BFDC2F">
+        <DOMLayer name="Script Layer" color="#BFDC2F" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" keyMode="9728">
               <elements/>
@@ -111,7 +111,7 @@ Z轴攻击范围 = 80;
             </DOMFrame>
           </frames>
         </DOMLayer>
-        <DOMLayer name="Layer 4" color="#8FED89" current="true" isSelected="true">
+        <DOMLayer name="Layer 4" color="#8FED89">
           <frames>
             <DOMFrame index="0" duration="2" keyMode="9728">
               <elements>
