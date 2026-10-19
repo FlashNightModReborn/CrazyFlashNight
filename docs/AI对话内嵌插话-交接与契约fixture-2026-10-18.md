@@ -473,10 +473,11 @@ data: {"dialogue_instance_id":"22222222-2222-4222-8222-222222222222","session_id
 
 ```json
 {"mute":false,"end":null,"edits":[
-  {"n":1,"kind":"edit","lines":[{"text":"这事我只跟你说一遍。","emotion":"普通"}]},
-  {"n":2,"kind":"remove"}
+  {"n":1,"kind":"edit","lines":[{"text":"这事我只跟你说一遍。","emotion":"普通"}]}
 ]}
 ```
+
+（`n=2 remove` 在 `end` 缺省的整组替换下没有可作用的对象，后端归一化时省略；Host 对带 remove 的旧形状也要兼容，播放结果相同。）
 
 **期望**
 
