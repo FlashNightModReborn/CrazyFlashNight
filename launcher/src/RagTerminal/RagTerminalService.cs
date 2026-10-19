@@ -40,6 +40,9 @@ namespace CF7Launcher.RagTerminal
         internal int RequestTimeoutMs { get; set; } = 5000;
         internal int ShutdownRequestTimeoutMs { get; set; } = 1500;
 
+        /// <summary>最近一次 EnsureReady 是否成功；插话输入据此决定“可输入/先启动终端”。</summary>
+        internal bool IsReady { get; private set; }
+
         internal RagTerminalService(
             string projectRoot,
             string exePathOverride,
@@ -90,13 +93,17 @@ namespace CF7Launcher.RagTerminal
             if (health != null)
             {
                 LogManager.Log("[RagTerminal] health ready mode=" + health.Value<string>("mode"));
+                IsReady = true;
                 return RagTerminalPrepareResult.Ok(null, health.Value<string>("mode"));
             }
 
             string exePath = ResolveExePath();
             if (exePath == null)
+            {
+                IsReady = false;
                 return RagTerminalPrepareResult.Fail("rag_exe_not_found",
                     "未找到通讯终端程序（CFN-RAG），请先启动一次通讯终端。");
+            }
 
             try
             {
@@ -106,6 +113,7 @@ namespace CF7Launcher.RagTerminal
             catch (Exception ex)
             {
                 LogManager.Log("[RagTerminal] start failed: " + ex.Message);
+                IsReady = false;
                 return RagTerminalPrepareResult.Fail("rag_start_failed", "通讯终端启动失败，请稍后重试。");
             }
 
@@ -117,10 +125,12 @@ namespace CF7Launcher.RagTerminal
                 if (health != null)
                 {
                     LogManager.Log("[RagTerminal] health ready after start elapsedMs=" + wait.ElapsedMilliseconds);
+                    IsReady = true;
                     return RagTerminalPrepareResult.Ok(null, health.Value<string>("mode"));
                 }
             }
             LogManager.Log("[RagTerminal] health timeout deadlineMs=" + ReadyDeadlineMs);
+            IsReady = false;
             return RagTerminalPrepareResult.Fail("rag_health_timeout",
                 "通讯终端后台服务未就绪，请稍后重试。");
         }
@@ -179,7 +189,19 @@ namespace CF7Launcher.RagTerminal
             });
         }
 
-        /// <summary>存档投影刷新的异步落点（G2-3②③④）：绝不拉花 exe，exe 不在线静默跳过；
+        /// <summary>
+        /// 读取页面设置与配置小窗共用的 LLM 连接配置。探测失败返回 null
+        /// （调用方按 fail-open 处理，不因旧 exe 没有该端点而卡住插话）。
+        /// </summary>
+        internal async Task<RagLlmConfig> GetLlmConfigAsync()
+        {
+            JObject response = await GetJsonAsync("/api/game/llm-config").ConfigureAwait(false);
+            if (response == null) return null;
+            return RagLlmConfig.FromJson(response);
+        }
+
+        /// <summary>存档投影刷新的异步落点（G2-3②③④）：绝不拉花 exe，exe 不在线静默跳过；</summary>
+
         /// 单次 POST，失败仅记日志（best-effort、幂等，复用 bind 端点）。</summary>
         internal void RefreshBindingInBackground(string slotKey,
             JObject character = null, JObject progress = null,
@@ -288,6 +310,7 @@ namespace CF7Launcher.RagTerminal
         {
             JObject response = PostJsonAsync("/api/integration/shutdown", "{}",
                 ShutdownRequestTimeoutMs).GetAwaiter().GetResult();
+            IsReady = false;
             if (response != null)
                 LogManager.Log("[RagTerminal] shutdown acknowledged status="
                     + response.Value<string>("status"));
@@ -360,6 +383,31 @@ namespace CF7Launcher.RagTerminal
             }
         }
 
+        private async Task<JObject> GetJsonAsync(string path, int timeoutMs = 0)
+        {
+            try
+            {
+                using (var cts = new CancellationTokenSource(
+                    timeoutMs > 0 ? timeoutMs : RequestTimeoutMs))
+                using (HttpResponseMessage response = await _http
+                    .GetAsync(LoopbackOrigin + path, cts.Token).ConfigureAwait(false))
+                {
+                    string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        LogManager.Log("[RagTerminal] get " + path + " status=" + (int)response.StatusCode);
+                        return null;
+                    }
+                    return JObject.Parse(body);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[RagTerminal] get " + path + " failed: " + ex.Message);
+                return null;
+            }
+        }
+
         private async Task<JObject> PostJsonAsync(string path, string json, int timeoutMs = 0)
         {
             try
@@ -389,6 +437,29 @@ namespace CF7Launcher.RagTerminal
         public void Dispose()
         {
             _http.Dispose();
+        }
+    }
+
+    /// <summary>页面设置与游戏内配置小窗共用的 LLM 连接配置（GET/POST /api/game/llm-config）。</summary>
+    internal sealed class RagLlmConfig
+    {
+        internal bool Configured;
+        internal string ApiKey = "";
+        internal string ApiBase = "";
+        internal string ModelName = "";
+        internal long UpdatedAt;
+
+        internal static RagLlmConfig FromJson(JObject json)
+        {
+            if (json == null) return null;
+            return new RagLlmConfig
+            {
+                Configured = json.Value<bool?>("configured") == true,
+                ApiKey = json.Value<string>("api_key") ?? "",
+                ApiBase = json.Value<string>("api_base") ?? "",
+                ModelName = json.Value<string>("model_name") ?? "",
+                UpdatedAt = json.Value<long?>("updated_at") ?? 0
+            };
         }
     }
 

@@ -141,7 +141,7 @@ namespace CF7Launcher.Guardian
 
         // 文字输入态（插话输入框持有焦点）：全局放行所有按键——既不吃游戏热键
         // (W/R/P/O/F/Q/Ctrl+*)，也不吃对话推进键与 Esc；IME 才能正常收字。
-        // 默认 false，只有 dialogueInterjectEnabled 打开后输入层才会置 true。
+        // 默认 false，输入框获得焦点时才置 true。
         private volatile bool _textInputActive;
         public bool TextInputActive { get { return _textInputActive; } }
         public void SetTextInputActive(bool active) { _textInputActive = active; }

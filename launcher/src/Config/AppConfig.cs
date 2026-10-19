@@ -73,14 +73,6 @@ namespace CF7Launcher.Config
         /// env: CF7_RAG_EXE。见《AI聊天终端-游戏内嵌集成-开发计划-2026-10-07》§1.4-G1-1。
         /// </summary>
         public string RagTerminalExePath { get; private set; }
-        /// <summary>
-        /// AI 对话内嵌插话特性开关（config.toml: dialogueInterjectEnabled，默认 false）。
-        /// false = 输入入口不出现、对话按键/点击/推进逻辑与现状逐字节一致；
-        /// true 才允许构造插话输入层并把焦点门接到 NativeDialogueTask。
-        /// 见 docs/AI对话内嵌插话-需求与协议-2026-10-18.md §7.1 / 开发计划 §10。
-        /// </summary>
-        public bool DialogueInterjectEnabled { get; private set; }
-
         private static readonly string DefaultFlashPlayer = "Adobe Flash Player 20.exe";
         private static readonly string DefaultSwf = "CRAZYFLASHER7MercenaryEmpire.swf";
 
@@ -108,7 +100,6 @@ namespace CF7Launcher.Config
             DiagFocusTrace = false;
             WebOverlayHotReload = false;
             RagTerminalExePath = "";
-            DialogueInterjectEnabled = false;
 
             string configPath = Path.Combine(projectRoot, "config.toml");
             if (File.Exists(configPath))
@@ -168,8 +159,6 @@ namespace CF7Launcher.Config
                         WebOverlayHotReload = ParseBool(val, false);
                     else if (string.Equals(key, "ragTerminalExePath", StringComparison.OrdinalIgnoreCase))
                         RagTerminalExePath = val;
-                    else if (string.Equals(key, "dialogueInterjectEnabled", StringComparison.OrdinalIgnoreCase))
-                        DialogueInterjectEnabled = ParseBool(val, false);
                 }
             }
 

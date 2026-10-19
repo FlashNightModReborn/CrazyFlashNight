@@ -441,15 +441,25 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>插话输入浮窗定位锚：面板外接框 + 当前版面缩放。无会话/无版面时 false。</summary>
         internal bool TryGetInterjectInputAnchor(out Rectangle panel, out float scale)
         {
+            Rectangle close;
+            return TryGetInterjectInputAnchor(out panel, out close, out scale);
+        }
+
+        /// <summary>插话输入浮窗定位锚：面板外接框、关闭钮命中区与当前版面缩放。
+        /// 输入条必须避开关闭钮，收起/展开都贴在其左侧。</summary>
+        internal bool TryGetInterjectInputAnchor(out Rectangle panel, out Rectangle close, out float scale)
+        {
             lock (_gate)
             {
                 panel = Rectangle.Empty;
+                close = Rectangle.Empty;
                 scale = 0f;
                 if (_frame == null || _suppressed || _disposed) return false;
                 Layout layout = ComputeLayoutLocked();
                 if (layout.Panel.Width <= 0 || layout.Panel.Height <= 0 || layout.Scale <= 0f)
                     return false;
                 panel = layout.Panel;
+                close = layout.Close;
                 scale = layout.Scale;
                 return true;
             }

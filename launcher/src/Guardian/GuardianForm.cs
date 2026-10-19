@@ -917,7 +917,7 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 插话输入框焦点同步（dialogueInterjectEnabled 打开时由输入层调用）：
+        /// 插话输入框焦点同步（exe 可用、输入层接线后调用）：
         /// true = 输入框持有焦点，低级钩子全局放行按键，游戏热键与对话推进键都不生效。
         /// </summary>
         public void SetTextInputActive(bool active)

@@ -1538,6 +1538,7 @@ namespace CF7Launcher.Guardian
             _hotReloadEnabled = hotReloadEnabled;
             _owner = owner;
             _anchor = anchor;
+            _webDir = webDir;
             _mapper = new FlashCoordinateMapper(anchor, 1024f, 576f);
             _webReady = false;
             _shown = false;
@@ -1764,6 +1765,19 @@ namespace CF7Launcher.Guardian
         }
 
         #region WebView2 初始化
+
+        /// <summary>
+        /// 聊天面板 iframe 所在的 WebView2 user data folder（构造参数，FixedWebViewRuntime
+        /// 内部再加 fixed-版本子目录）。游戏内配置小窗用同一目录，同 origin 共享 localStorage。
+        /// </summary>
+        internal string SharedUserDataFolder
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_webDir)) return null;
+                return Path.Combine(Path.GetDirectoryName(_webDir), "webview2_overlay_userdata");
+            }
+        }
 
         private async void InitWebView2Async(string webDir)
         {
@@ -3335,6 +3349,12 @@ namespace CF7Launcher.Guardian
             }
         }
 
+        /// <summary>配置浮窗复用与覆盖层完全相同的 WebView2 参数，确保同一 UDF 下共用浏览器进程与存储。</summary>
+        internal CoreWebView2EnvironmentOptions CreateSharedWebView2EnvironmentOptions()
+        {
+            return CreateWebView2EnvironmentOptions();
+        }
+
         private CoreWebView2EnvironmentOptions CreateWebView2EnvironmentOptions()
         {
             List<string> args = new List<string>();
@@ -3346,17 +3366,8 @@ namespace CF7Launcher.Guardian
             }
             if (!string.IsNullOrEmpty(_webView2AdditionalArgs))
                 args.Add(_webView2AdditionalArgs);
-
-            if (args.Count == 0)
-            {
-                LogManager.Log("[WebOverlay] WebView2 perf options: lowEffects="
-                    + _lowEffectsMode
-                    + " noCssAnimations=" + _disableCssAnimations
-                    + " noVisualizers=" + _disableVisualizers
-                    + " frameRateLimit=" + _frameRateLimit
-                    + " disableGpu=false");
-                return null;
-            }
+            // /config 浮窗与 ragchat iframe 需要共用 localStorage。
+            args.Add(FixedWebViewRuntime.StorageSharingBrowserArguments);
 
             string joined = string.Join(" ", args.ToArray());
             LogManager.Log("[WebOverlay] WebView2 perf options: lowEffects="

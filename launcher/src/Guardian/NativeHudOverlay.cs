@@ -33,7 +33,7 @@ namespace CF7Launcher.Guardian
         }
 
         /// <summary>
-        /// 插话输入浮窗前台探测：仅 dialogueInterjectEnabled 打开后由宿主注册
+        /// 插话输入浮窗前台探测：输入层接线后由宿主注册
         /// （返回 true 当且仅当那个输入窗是本进程当前的系统前台）。默认 null＝不生效。
         /// </summary>
         internal Func<bool> InterjectInputForegroundProbe;

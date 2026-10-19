@@ -45,9 +45,9 @@ namespace CF7Launcher.Tasks
         internal Action<long, Action> BookRetryScheduler;
         /// <summary>closing 重试时钟注入点（参照 widget TypingClock）。</summary>
         internal Func<long> BookRetryClock;
-        /// <summary>插话输入框是否持有焦点（特性开关 dialogueInterjectEnabled 打开后由输入层接线）。
+        /// <summary>插话输入框是否持有焦点（输入层接线后由宿主注册探针）。
         /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 不再被吞），
-        /// 且 widget 的 advance 输入被丢弃。默认 null = 关闭，既有行为不变。</summary>
+        /// 且 widget 的 advance 输入被丢弃。默认 null = 未接线，既有行为不变。</summary>
         internal Func<bool> InterjectInputFocused;
         /// <summary>任务插话上下文组装（P4）：(dialogueTaskId, dialogueKind) → {completed, upcoming}
         /// 或 null。只在 task_pre/task_post 组使用；未注册或返回 null 时任务插话 fail-closed
@@ -396,7 +396,7 @@ namespace CF7Launcher.Tasks
             }
             var session = new NativeDialogueBookSession(this, requestId, sceneId, mode,
                 advanceKey, lines, Interlocked.Read(ref _transportEpoch), dialogueKind,
-                dialogueTaskId);
+                dialogueTaskId, p["snapshot"] as JObject);
             session.RetryScheduler = BookRetryScheduler ?? ScheduleBookRetry;
             if (BookRetryClock != null) session.RetryClock = BookRetryClock;
             _bookSession = session;

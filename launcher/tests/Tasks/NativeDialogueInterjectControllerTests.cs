@@ -134,16 +134,22 @@ namespace CF7Launcher.Tests.Tasks
                 }
             }
 
-            internal Harness(bool inline = true)
+            /// <summary>当前终端是否在线（测试可切换，模拟 ensureReady 成功/失败）。</summary>
+            internal bool TerminalReady = true;
+
+            internal Harness(bool inline = true, Func<Task<bool>> ensureReady = null,
+                Func<Task<bool>> llmConfigured = null, bool terminalReady = true)
             {
+                TerminalReady = terminalReady;
                 Anchor = new Control { Size = new Size(1024, 576) };
                 Widget = new NativeDialogueWidget(Anchor);
                 Task = new NativeDialogueTask(Widget, a => a(),
                     wire => { Sent.Add(wire); return true; }, () => true);
                 Task.BookRetryScheduler = (ms, cb) => { };
                 Controller = new NativeDialogueInterjectController(
-                    Task, Widget, a => a(), null, () => Transport,
-                    () => "id-" + (++_ids), () => Now);
+                    Task, Widget, a => a(), ensureReady, () => Transport,
+                    () => "id-" + (++_ids), () => Now,
+                    terminalReady: () => TerminalReady, llmConfigured: llmConfigured);
                 Controller.WatchdogScheduler = (delay, callback) =>
                 {
                     WatchdogDelays.Add(delay);
@@ -1335,5 +1341,68 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(h.Controller.Submit(new string('字', 151)));
             Assert.True(h.Controller.Submit(new string('字', 150)));
         }
+
+        // ── 配置门：终端在线但模型 API 未配置 ─────────────────────────────
+
+        [Fact]
+        public void TerminalStartWithoutLlmConfigLocksUntilSaved()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                ensureReady: () => Task.FromResult(true),
+                llmConfigured: () => Task.FromResult(false),
+                terminalReady: false);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。", "有事说事。");
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+            Assert.Equal("请先启动聊天终端",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
+
+            h.TerminalReady = true;
+            h.Controller.RequestTerminalStart();
+
+            Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
+            Assert.Equal(1, dialogs);                       // 从插话处启动 → 自动弹配置小窗
+            Assert.Equal("请配置模型API",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
+            Assert.False(h.Controller.Submit("配置前不能发送"));
+
+            h.Controller.NotifyLlmConfigSaved();
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void TerminalStartWithConfiguredLlmUnlocksWithoutDialog()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                ensureReady: () => Task.FromResult(true),
+                llmConfigured: () => Task.FromResult(true),
+                terminalReady: false);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。");
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+
+            h.TerminalReady = true;
+            h.Controller.RequestTerminalStart();
+
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(0, dialogs);
+        }
+
+        [Fact]
+        public void AlreadyRunningTerminalWithoutConfigLocksWithoutAutoDialog()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                llmConfigured: () => Task.FromResult(false),
+                terminalReady: true);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。");
+
+            Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
+            Assert.Equal(0, dialogs);   // 非“从插话处启动”：只锁输入，不自动弹窗
+        }
+
     }
 }

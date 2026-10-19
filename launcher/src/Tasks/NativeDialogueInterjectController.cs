@@ -24,7 +24,13 @@ namespace CF7Launcher.Tasks
         Preparing = 3,
         /// <summary>任务模式禁言：显示但禁用“（NPC名）暂时不打算让你插话”（《协议》4.7 / F-09）。
         /// 整组锁，组结束/关闭后重置。</summary>
-        Muted = 4
+        Muted = 4,
+        /// <summary>聊天终端未启动：禁言样式 + “请先启动聊天终端”；按钮为“启动”，
+        /// 点击只拉起终端、不发送输入，就绪后解锁。</summary>
+        Offline = 5,
+        /// <summary>终端已就绪但模型 API 未配置：禁言样式 + “请配置模型API”；
+        /// 按钮为“配置”，点击打开配置小窗，保存后解锁。</summary>
+        NeedsConfig = 6
     }
 
     /// <summary>
@@ -124,6 +130,13 @@ namespace CF7Launcher.Tasks
         private readonly Action<Action> _dispatch;
         private readonly Func<Task<bool>> _ensureReady;
         private readonly Func<IDialogueInterjectTransport> _transportFactory;
+        private readonly Func<bool> _terminalReady;
+        private readonly Func<Task<bool>> _llmConfigured;
+        private bool _terminalStarting;
+        private bool _terminalStartFailed;
+        /// <summary>终端已就绪但模型 API 未配置：输入禁用，等配置小窗保存。</summary>
+        private bool _needsConfig;
+        private bool _configProbeInFlight;
         private readonly Func<string> _newId;
         private readonly Func<DateTime> _clock;
 
@@ -199,6 +212,9 @@ namespace CF7Launcher.Tasks
         /// <summary>输入可用状态变化（订阅方据此显示/隐藏/禁用输入框）。</summary>
         internal event Action<DialogueInterjectInputState> InputStateChanged;
 
+        /// <summary>从插话处启动终端后模型配置缺失：请宿主自动弹出配置小窗。</summary>
+        internal event Action ConfigRequired;
+
         /// <summary>诊断/测试观测：最近一次失败码（成功轮为空）。</summary>
         internal string LastFailure { get; private set; }
 
@@ -215,7 +231,9 @@ namespace CF7Launcher.Tasks
             Func<Task<bool>> ensureReady,
             Func<IDialogueInterjectTransport> transportFactory,
             Func<string> newId = null,
-            Func<DateTime> clock = null)
+            Func<DateTime> clock = null,
+            Func<bool> terminalReady = null,
+            Func<Task<bool>> llmConfigured = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
@@ -224,6 +242,8 @@ namespace CF7Launcher.Tasks
             _transportFactory = transportFactory ?? throw new ArgumentNullException(nameof(transportFactory));
             _newId = newId ?? (() => Guid.NewGuid().ToString("D"));
             _clock = clock ?? (() => DateTime.Now);
+            _terminalReady = terminalReady;
+            _llmConfigured = llmConfigured;
         }
 
         internal DialogueInterjectInputState InputState { get { return _inputState; } }
@@ -255,6 +275,8 @@ namespace CF7Launcher.Tasks
                     || string.Equals(session.DialogueKind, KindTaskPost, StringComparison.Ordinal));
             _taskContext = null;
             _muted = false;
+            _needsConfig = false;
+            _configProbeInFlight = false;
             _pendingPlan = null;
             _planApplied = false;
             _abandonedOriginalTail = false;
@@ -282,6 +304,8 @@ namespace CF7Launcher.Tasks
             session.Closing = OnSessionClosing;
             // 组刚开始还没有任何台词上屏：不能是 Ready（等 Begin 呈现第一句再开）。
             SetInputState(DialogueInterjectInputState.Hidden);
+            // 终端已经在线时也核对一次配置（不自动弹窗；输入条会显示“请配置模型API”）。
+            if (_terminalReady != null && _terminalReady()) ProbeLlmConfig(false);
         }
 
         private void OnSessionEnded(NativeDialogueBookSession session)
@@ -299,6 +323,8 @@ namespace CF7Launcher.Tasks
             _taskMode = false;
             _taskContext = null;
             _muted = false;
+            _needsConfig = false;
+            _configProbeInFlight = false;
             _pendingPlan = null;
             _planApplied = false;
             _abandonedOriginalTail = false;
@@ -323,6 +349,7 @@ namespace CF7Launcher.Tasks
             _turnActive = false;
             _preparing = false;
             _muted = false;
+            _needsConfig = false;
             _pendingPlan = null;
             _finalizePending = false;
             _resumeAfterFailure = false;
@@ -414,11 +441,11 @@ namespace CF7Launcher.Tasks
                 // 拆分前置段：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
                 SetInputState(line.SplitIntermediate
                     ? DialogueInterjectInputState.Locked
-                    : DialogueInterjectInputState.Ready);
+                    : ReadyOrMuted());
                 return;
             }
             // 原作台词：可输入（stage / 任务组已在 IsGroupAllowsInterject 拦掉）
-            SetInputState(DialogueInterjectInputState.Ready);
+            SetInputState(ReadyOrMuted());
         }
 
         /// <summary>打字完成（widget 每帧一次）：$PC 播完 → 放出排队的首句或进入等待。</summary>
@@ -709,29 +736,75 @@ namespace CF7Launcher.Tasks
             return _npcName ?? "";
         }
 
-        /// <summary>$PC 行：优先沿用本组原作里的 $PC 外观（风险 7 的保守处理），没有就无立绘。</summary>
+        /// <summary>$PC 行：优先复用本组原作的玩家行；没有时用 book 快照还原
+        /// 玩家名/头衔/纸娃娃立绘。两者都缺才退回无立绘，绝不把 "$PC" 原样上屏。</summary>
         private NativeDialogueBookSession.Line BuildPcLine(string text)
         {
+            string playerName = _session.PlayerName ?? "";
             NativeDialogueBookSession.Line template = null;
             for (int wire = 0; wire < _session.RowCount; wire++)
             {
                 NativeDialogueBookSession.Line row = _session.GetWireRow(wire);
-                if (row != null && string.Equals(row.Name, PcName, StringComparison.Ordinal)) template = row;
+                if (row == null) continue;
+                if ((playerName.Length > 0 && string.Equals(row.Name, playerName, StringComparison.Ordinal))
+                    || string.Equals(row.Name, PcName, StringComparison.Ordinal))
+                    template = row;
             }
-            return new NativeDialogueBookSession.Line
+            if (template != null)
             {
-                Name = PcName,
-                Title = template != null ? template.Title : "",
+                return new NativeDialogueBookSession.Line
+                {
+                    Name = string.Equals(template.Name, PcName, StringComparison.Ordinal)
+                        && playerName.Length > 0 ? playerName : template.Name,
+                    Title = string.Equals(template.Title, "$PC_TITLE", StringComparison.Ordinal)
+                        ? (_session.HeroTitle ?? "") : template.Title,
+                    Text = text,
+                    PortraitKey = template.PortraitKey,
+                    Expression = template.Expression,
+                    IsDoll = template.IsDoll,
+                    Appearance = template.Appearance,
+                    NormalizedAppearance = template.NormalizedAppearance,
+                    AppearanceIdentity = template.AppearanceIdentity,
+                    ImageAction = "keep",
+                    ImagePath = ""
+                };
+            }
+
+            var line = new NativeDialogueBookSession.Line
+            {
+                Name = playerName.Length > 0 ? playerName : PcName,
+                Title = _session.HeroTitle ?? "",
                 Text = text,
-                PortraitKey = template != null ? template.PortraitKey : "",
-                Expression = template != null ? template.Expression : DefaultEmotion,
-                IsDoll = template != null && template.IsDoll,
-                Appearance = template != null ? template.Appearance : null,
-                NormalizedAppearance = template != null ? template.NormalizedAppearance : null,
-                AppearanceIdentity = template != null ? template.AppearanceIdentity : "",
+                PortraitKey = playerName,
+                Expression = DefaultEmotion,
                 ImageAction = "keep",
                 ImagePath = ""
             };
+            JObject hero = _session.HeroPortrait;
+            if (hero != null)
+            {
+                string kind = hero.Value<string>("kind") ?? "";
+                string expression = hero.Value<string>("expression");
+                if (!string.IsNullOrEmpty(expression)) line.Expression = expression;
+                string key = hero.Value<string>("key");
+                if (!string.IsNullOrEmpty(key)) line.PortraitKey = key;
+                if (string.Equals(kind, "doll", StringComparison.Ordinal))
+                {
+                    JObject appearance = hero["appearance"] as JObject;
+                    JObject normalized = appearance != null
+                        ? CF7Launcher.Guardian.Dialogue.DialoguePortraitService
+                            .NormalizeAppearance(appearance)
+                        : null;
+                    if (normalized != null)
+                    {
+                        line.IsDoll = true;
+                        line.Appearance = appearance;
+                        line.NormalizedAppearance = normalized;
+                        line.AppearanceIdentity = normalized.ToString(Formatting.None);
+                    }
+                }
+            }
+            return line;
         }
 
         // ════════════════ 流与播放 ════════════════
@@ -906,26 +979,140 @@ namespace CF7Launcher.Tasks
 
         private DialogueInterjectInputState ReadyOrMuted()
         {
-            return _muted
-                ? DialogueInterjectInputState.Muted
-                : DialogueInterjectInputState.Ready;
+            if (_muted) return DialogueInterjectInputState.Muted;
+            if (TerminalOffline()) return DialogueInterjectInputState.Offline;
+            if (_needsConfig) return DialogueInterjectInputState.NeedsConfig;
+            return DialogueInterjectInputState.Ready;
         }
 
-        /// <summary>没有可放台词时的落点：禁言 &gt; 准备中 &gt; 等待。</summary>
+        private bool TerminalOffline()
+        {
+            return _terminalStarting || (_terminalReady != null && !_terminalReady());
+        }
+
+        /// <summary>没有可放台词时的落点：禁言 &gt; 终端未启动 &gt; 模型未配置 &gt; 准备中 &gt; 等待。</summary>
         private DialogueInterjectInputState IdleState()
         {
             if (_muted) return DialogueInterjectInputState.Muted;
+            if (TerminalOffline()) return DialogueInterjectInputState.Offline;
+            if (_needsConfig) return DialogueInterjectInputState.NeedsConfig;
             return _preparing
                 ? DialogueInterjectInputState.Preparing
                 : DialogueInterjectInputState.Locked;
         }
 
-        /// <summary>禁言提示文案（binder 显示用）：任务组才有名字，日常返回空。</summary>
+        /// <summary>收起条文案：禁言/终端未启动/模型未配置由这里给出。</summary>
         internal string PlaceholderFor(DialogueInterjectInputState state)
         {
+            if (state == DialogueInterjectInputState.Offline)
+                return _terminalStartFailed
+                    ? "聊天终端启动失败，点击重试" : "请先启动聊天终端";
+            if (state == DialogueInterjectInputState.NeedsConfig) return "请配置模型API";
             if (state != DialogueInterjectInputState.Muted) return null;
             string npc = string.IsNullOrEmpty(_npcName) ? "" : _npcName;
             return "（" + npc + "）暂时不打算让你插话";
+        }
+
+        /// <summary>玩家点击收起条“启动”：拉起终端并核对模型配置，不发送任何输入。</summary>
+        internal void RequestTerminalStart()
+        {
+            if (_terminalStarting || _ensureReady == null) return;
+            if (_session == null || _closing) return;
+            _terminalStarting = true;
+            _terminalStartFailed = false;
+            if (_inputState == DialogueInterjectInputState.Offline)
+            {
+                // 已在 Offline 时强制刷新一次提示文案（启动中视同可重试）。
+                _inputState = DialogueInterjectInputState.Hidden;
+                SetInputState(DialogueInterjectInputState.Offline);
+            }
+            TaskRunner(async () =>
+            {
+                bool ok = false;
+                bool configured = true;
+                try { ok = await _ensureReady().ConfigureAwait(false); }
+                catch (Exception ex) { LogManager.Log("[DialogueInterject] terminal start: " + ex.Message); }
+                if (ok && _llmConfigured != null)
+                {
+                    try { configured = await _llmConfigured().ConfigureAwait(false); }
+                    catch (Exception ex)
+                    {
+                        // 探测失败按已配置处理：不因配置端点异常把输入永久锁死。
+                        LogManager.Log("[DialogueInterject] llm config probe: " + ex.Message);
+                    }
+                }
+                Post(() =>
+                {
+                    _terminalStarting = false;
+                    _terminalStartFailed = !ok;
+                    if (_session == null || _closing) return;
+                    if (!ok)
+                    {
+                        _inputState = DialogueInterjectInputState.Hidden;
+                        SetInputState(DialogueInterjectInputState.Offline);
+                        return;
+                    }
+                    _needsConfig = !configured;
+                    if (_needsConfig)
+                    {
+                        if (_groupAllowsInterject && !_playerLinePlaying)
+                            SetInputState(ReadyOrMuted());
+                        RaiseConfigRequired();
+                        return;
+                    }
+                    SetInputState(ReadyOrMuted());
+                });
+            });
+        }
+
+        /// <summary>终端已在线时的配置核对（不弹窗）：缺配置则输入条显示“请配置模型API”。</summary>
+        private void ProbeLlmConfig(bool openDialogOnMissing)
+        {
+            if (_llmConfigured == null || _configProbeInFlight) return;
+            _configProbeInFlight = true;
+            TaskRunner(async () =>
+            {
+                bool configured = true;
+                try { configured = await _llmConfigured().ConfigureAwait(false); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[DialogueInterject] llm config probe: " + ex.Message);
+                }
+                Post(() =>
+                {
+                    _configProbeInFlight = false;
+                    if (_session == null || _closing) return;
+                    _needsConfig = !configured;
+                    if (TerminalOffline()) return;
+                    if (!_needsConfig)
+                    {
+                        if (_inputState == DialogueInterjectInputState.NeedsConfig)
+                            SetInputState(ReadyOrMuted());
+                        return;
+                    }
+                    if (_groupAllowsInterject && !_playerLinePlaying
+                        && _inputState != DialogueInterjectInputState.Muted)
+                        SetInputState(DialogueInterjectInputState.NeedsConfig);
+                    if (openDialogOnMissing) RaiseConfigRequired();
+                });
+            });
+        }
+
+        /// <summary>配置小窗保存成功：立即解锁本组输入（若正在播放玩家台词则不抢先显示）。</summary>
+        internal void NotifyLlmConfigSaved()
+        {
+            _needsConfig = false;
+            if (_session == null || _closing) return;
+            if (TerminalOffline() || _playerLinePlaying) return;
+            SetInputState(ReadyOrMuted());
+        }
+
+        private void RaiseConfigRequired()
+        {
+            Action handler = ConfigRequired;
+            if (handler == null) return;
+            try { handler(); }
+            catch (Exception ex) { LogManager.Log("[DialogueInterject] config dialog: " + ex.Message); }
         }
 
         /// <summary>plan 事件（协议 5.2）：先存；add 全部落完时一次性应用（§4.5）。</summary>
@@ -1227,11 +1414,9 @@ namespace CF7Launcher.Tasks
             {
                 _pcRevision = -1;           // 后续打字完成不再当 $PC
                 _aiLineShown = true;
-                SetInputState(_muted
-                    ? DialogueInterjectInputState.Muted
-                    : (line.IsSplitHead
-                        ? DialogueInterjectInputState.Locked
-                        : DialogueInterjectInputState.Ready));
+                SetInputState(line.IsSplitHead
+                    ? DialogueInterjectInputState.Locked
+                    : ReadyOrMuted());
             }
             return true;
         }

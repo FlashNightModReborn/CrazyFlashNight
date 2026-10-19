@@ -112,10 +112,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
     /// <c>WS_EX_LAYERED</c> + <c>UpdateLayeredWindow</c> 逐像素 alpha 窗口且带
     /// <c>WS_EX_NOACTIVATE</c>；这种窗口不合成子 HWND、也无法拿键盘焦点，
     /// TextBox/EDIT 放进去既画不出来也收不到 IME。因此输入层必须是独立的可激活窗口，
-    /// 由本类承载，位置由调用方按正文框屏幕矩形给出。
+    /// 由本类承载，位置由调用方按对话面板与关闭钮矩形给出。
     ///
-    /// 本类只做"输入 + 裁决 + 焦点广播"，不持有播放状态、不发请求；发送只经
-    /// <see cref="SendRequested"/> 交给上层。未接线的行为见交付说明（P0 未做游戏内验证）。
+    /// 交互形态与终端前端的动作框一致：收起态只有一个向上箭头按钮，点击展开输入面板；
+    /// 展开态箭头旋转 180°，再点收起。面板风格跟对话面板一致（深色头条 + 浅灰正文）。
     /// </summary>
     public sealed class DialogueInterjectInputOverlay : Form
     {
@@ -140,19 +140,55 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         private readonly DialogueInterjectInputModel _model = new DialogueInterjectInputModel();
         private readonly ComposingTextBox _textBox;
-        private readonly Label _counter;
-        private Color _border = Color.FromArgb(196, 168, 108);
-        private Color _back = Color.FromArgb(24, 22, 20);
-        private Color _fore = Color.FromArgb(236, 230, 214);
-        private Color _hint = Color.FromArgb(150, 144, 130);
+        private readonly ToolTip _toolTip;
+        private readonly Timer _chevronTimer;
+
+        // 与对话面板同一套视觉：深色头条、浅灰正文、红色装饰、青色辅助。
+        private Color _bodyBack = Color.FromArgb(229, 229, 229);
+        private Color _bodyFore = Color.FromArgb(24, 24, 24);
+        private Color _bodyDisabledBack = Color.FromArgb(214, 214, 214);
+        private Color _headerBack = Color.FromArgb(25, 25, 25);
+        private Color _headerFore = Color.FromArgb(245, 245, 245);
+        private Color _accent = Color.FromArgb(204, 0, 0);
+        private Color _accentAlt = Color.FromArgb(0, 153, 204);
+        private Color _muted = Color.FromArgb(118, 118, 118);
+
         private string _placeholder = "说点什么…";
         private bool _textInputActive;
+        private bool _expanded;
+        private bool _startRequired;
+        private bool _configRequired;
+        private bool _chevronHover;
+        private bool _actionHover;
+        private float _chevronAngle;
+        private float _chevronTarget;
+        private DateTime _lastInteractionUtc;
+
+        private Rectangle _chevronRect = Rectangle.Empty;
+        private Rectangle _actionRect = Rectangle.Empty;
+        private float _uiScale;
+        private Font _inputFont;
+        private Font _smallFont;
+        private Font _headerFont;
+        private Font _actionFont;
 
         /// <summary>玩家发送：参数为已裁剪到 150 字的文本（调用方负责再去空白）。</summary>
         public event Action<string> SendRequested;
 
+        /// <summary>终端未启动时点击展开后的“启动”：只拉起聊天终端，不发送输入。</summary>
+        internal event Action StartRequested;
+
+        /// <summary>终端已启动但模型未配置时点击展开后的“配置”：打开配置小窗。</summary>
+        internal event Action ConfigRequested;
+
         /// <summary>焦点变化（true = 输入持有焦点）。调用方据此同步游戏热键放行。</summary>
         public event Action<bool> InputFocusChanged;
+
+        /// <summary>收起/展开切换后触发：宿主据此重新定位窗口。</summary>
+        internal event Action ExpandedChanged;
+
+        /// <summary>当前是否为展开输入面板；默认 false（关闭钮左侧的收起箭头）。</summary>
+        internal bool IsExpanded { get { return _expanded; } }
 
         public DialogueInterjectInputOverlay()
         {
@@ -160,37 +196,49 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             ShowInTaskbar = false;
             StartPosition = FormStartPosition.Manual;
             AutoScaleMode = AutoScaleMode.None;
-            BackColor = _back;
+            BackColor = _headerBack;
             DoubleBuffered = true;
             KeyPreview = true;
-            Padding = new Padding(8, 6, 8, 4);
+            Padding = new Padding(0);
 
             _textBox = new ComposingTextBox();
             _textBox.BorderStyle = BorderStyle.None;
-            _textBox.BackColor = _back;
-            _textBox.ForeColor = _fore;
-            _textBox.Font = new Font("Microsoft YaHei UI", 12f, FontStyle.Regular, GraphicsUnit.Pixel);
+            _textBox.BackColor = _bodyBack;
+            _textBox.ForeColor = _bodyFore;
+            _textBox.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Regular, GraphicsUnit.Pixel);
             _textBox.Multiline = false;
             _textBox.ShortcutsEnabled = true;
             _textBox.TabStop = true;
+            _textBox.Visible = false;
             _textBox.TextChanged += OnTextChanged;
             _textBox.KeyDown += OnKeyDown;
             _textBox.GotFocus += delegate { SetFocused(true); };
-            _textBox.LostFocus += delegate { SetFocused(false); };
+            _textBox.LostFocus += delegate
+            {
+                SetFocused(false);
+                if (IsDisposed || !IsHandleCreated) return;
+                BeginInvoke((Action)delegate
+                {
+                    if (IsDisposed || !_expanded || ContainsFocus) return;
+                    Collapse(false);   // 点到游戏画面后自动收回收起按钮
+                });
+            };
             _textBox.CompositionStateChanged += OnCompositionStateChanged;
+            _textBox.PlaceholderText = _placeholder;
             Controls.Add(_textBox);
 
-            _counter = new Label();
-            _counter.AutoSize = false;
-            _counter.TextAlign = ContentAlignment.MiddleRight;
-            _counter.ForeColor = _hint;
-            _counter.BackColor = _back;
-            _counter.Font = new Font("Microsoft YaHei UI", 10f, FontStyle.Regular, GraphicsUnit.Pixel);
-            _counter.Text = _model.CounterText;
-            Controls.Add(_counter);
-            LayoutCounter();
+            _toolTip = new ToolTip();
+            _toolTip.InitialDelay = 350;
+            _toolTip.ReshowDelay = 120;
+            _toolTip.SetToolTip(this, _placeholder);
 
-            Enter += delegate { _textBox.Focus(); };
+            _chevronTimer = new Timer();
+            _chevronTimer.Interval = 15;
+            _chevronTimer.Tick += OnChevronTick;
+
+            ApplyLayout();
+
+            Enter += delegate { if (_expanded && _model.Enabled) _textBox.Focus(); };
         }
 
         /// <summary>
@@ -217,6 +265,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// </summary>
         public void DismissToOwner()
         {
+            Collapse(false);
             ClearInput();
             SetFocused(false);
             Hide();
@@ -233,18 +282,108 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             }
         }
 
+        /// <summary>从收起箭头展开输入面板（保持文本，就绪时聚焦输入框）。</summary>
+        internal void Expand()
+        {
+            if (_expanded || !CanToggle || !Visible) return;
+            _expanded = true;
+            AnimateChevron(180f);
+            ApplyLayout();
+            NotifyExpandedChanged();
+            if (_model.Enabled)
+                BeginInvoke((Action)FocusInput);
+        }
+
+        /// <summary>回到收起箭头。returnFocus=true 时把焦点还给游戏。</summary>
+        internal void Collapse(bool returnFocus)
+        {
+            if (!_expanded) return;
+            _expanded = false;
+            _textBox.Visible = false;
+            AnimateChevron(0f);
+            ApplyLayout();
+            if (returnFocus)
+            {
+                SetFocused(false);
+                Form owner = Owner;
+                if (owner != null && !owner.IsDisposed)
+                {
+                    try { owner.Activate(); } catch { }
+                }
+            }
+            NotifyExpandedChanged();
+        }
+
+        private bool CanToggle
+        {
+            get { return _model.Enabled || _startRequired || _configRequired; }
+        }
+
+        private bool ActionEnabled
+        {
+            get { return _startRequired || _configRequired || _model.CanSend; }
+        }
+
+        private void NotifyExpandedChanged()
+        {
+            Action handler = ExpandedChanged;
+            if (handler == null) return;
+            try { handler(); }
+            catch { }
+        }
+
         /// <summary>本窗当前是否处于"文字输入态"（宿主据此同步 KeyboardHook）。</summary>
         public bool IsTextInputActive()
         {
             return _textInputActive;
         }
 
-        /// <summary>输入可用性（播放状态机给出）；禁用时灰显且 Enter 不发。</summary>
+        /// <summary>终端未启动：展开面板里显示“启动”，点击只拉起终端、不发送输入。</summary>
+        internal void SetStartRequired(bool value)
+        {
+            if (_startRequired == value) return;
+            _startRequired = value;
+            if (value) Collapse(false);
+            UpdateCursor();
+            UpdateToolTip();
+            Invalidate();
+        }
+
+        /// <summary>终端已启动但模型未配置：展开面板里显示“配置”，点击打开配置小窗。</summary>
+        internal void SetConfigRequired(bool value)
+        {
+            if (_configRequired == value) return;
+            _configRequired = value;
+            if (value) Collapse(false);
+            UpdateCursor();
+            UpdateToolTip();
+            Invalidate();
+        }
+
+        private void UpdateCursor()
+        {
+            bool clickable = _expanded
+                ? (_chevronHover || (_actionHover && ActionEnabled))
+                : (_chevronHover && CanToggle);
+            Cursor = clickable ? Cursors.Hand : Cursors.Default;
+        }
+
+        private void UpdateToolTip()
+        {
+            string text = _startRequired ? "请先启动聊天终端"
+                : (_configRequired ? "请配置模型API" : _placeholder);
+            _toolTip.SetToolTip(this, text);
+            _toolTip.SetToolTip(_textBox, text);
+        }
+
+        /// <summary>输入可用性（播放状态机给出）；禁用时灰显、自动收回收起按钮、Enter 不发。</summary>
         public void SetInputEnabled(bool value)
         {
             _model.Enabled = value;
             _textBox.ReadOnly = !value;
-            _textBox.BackColor = value ? _back : Color.FromArgb(38, 36, 33);
+            _textBox.BackColor = value ? _bodyBack : _bodyDisabledBack;
+            if (!value) Collapse(false);
+            UpdateCursor();
             Invalidate();
         }
 
@@ -260,25 +399,28 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             return _model.Focused;
         }
 
-        /// <summary>视觉：把对话框皮肤的正文颜色/边框色交给输入层，保持风格一致。</summary>
+        /// <summary>视觉：把对话框皮肤的颜色交给输入层，保持风格一致。</summary>
         public void ApplySkinColors(Color background, Color foreground, Color accent)
         {
-            _back = background;
-            _fore = foreground;
-            _border = accent;
-            _hint = Color.FromArgb(150, foreground);
-            BackColor = _back;
-            _textBox.BackColor = _back;
-            _textBox.ForeColor = _fore;
-            _counter.BackColor = _back;
-            _counter.ForeColor = _hint;
+            _bodyBack = background;
+            _bodyFore = foreground;
+            _accent = accent;
+            _bodyDisabledBack = Color.FromArgb(
+                Math.Max(0, background.R - 15),
+                Math.Max(0, background.G - 15),
+                Math.Max(0, background.B - 15));
+            BackColor = _headerBack;
+            _textBox.BackColor = _model.Enabled ? _bodyBack : _bodyDisabledBack;
+            _textBox.ForeColor = _bodyFore;
             Invalidate();
         }
 
-        /// <summary>提示文案（收缩态/禁用态由调用方切换）。</summary>
+        /// <summary>提示文案：收起按钮 Tooltip 与展开态输入框共用。</summary>
         public void SetPlaceholder(string text)
         {
             _placeholder = text ?? "";
+            _textBox.PlaceholderText = _placeholder;
+            UpdateToolTip();
             Invalidate();
         }
 
@@ -287,13 +429,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             _model.Clear();
             _textBox.Text = "";
-            _counter.Text = _model.CounterText;
         }
 
         /// <summary>聚焦输入框（展开时调用）。</summary>
         public void FocusInput()
         {
-            if (!Visible) return;
+            if (!Visible || !_expanded || !_model.Enabled) return;
             _textBox.Focus();
         }
 
@@ -337,7 +478,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _textBox.Text = _model.Text;
                 _textBox.SelectionStart = Math.Min(caret, _textBox.Text.Length);
             }
-            _counter.Text = _model.CounterText;
+            UpdateCursor();
+            Invalidate();
         }
 
         private void OnKeyDown(object sender, KeyEventArgs e)
@@ -348,8 +490,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 // 再补一次 ImmGetCompositionString 现场探针。
                 bool composing = _model.IsComposing || ProbeComposition(_textBox.Handle);
                 _model.IsComposing = composing;
-                DialogueInterjectKeyResult result = _model.HandleKey(
-                    e.KeyCode == Keys.Enter, e.KeyCode == Keys.Escape);
+                if (e.KeyCode == Keys.Escape)
+                {
+                    // 非组词态 Esc 只收起输入面板，不关闭对话（协议 7.1）。
+                    if (!composing)
+                    {
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        Collapse(true);
+                    }
+                    return;
+                }
+                DialogueInterjectKeyResult result = _model.HandleKey(true, false);
                 if (result != DialogueInterjectKeyResult.None)
                 {
                     e.Handled = true;
@@ -357,15 +509,38 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 }
                 if (result == DialogueInterjectKeyResult.Send)
                 {
-                    string text = _model.Text;
-                    ClearInput();
-                    Action<string> handler = SendRequested;
-                    if (handler != null)
-                    {
-                        try { handler(text); }
-                        catch { }
-                    }
+                    SendCurrentText();
                 }
+            }
+        }
+
+        private void PerformAction()
+        {
+            if (_startRequired)
+            {
+                Action handler = StartRequested;
+                if (handler != null) { try { handler(); } catch { } }
+                return;
+            }
+            if (_configRequired)
+            {
+                Action handler = ConfigRequested;
+                if (handler != null) { try { handler(); } catch { } }
+                return;
+            }
+            if (_model.CanSend) SendCurrentText();
+        }
+
+        private void SendCurrentText()
+        {
+            string text = _model.Text;
+            ClearInput();
+            Collapse(true);
+            Action<string> handler = SendRequested;
+            if (handler != null)
+            {
+                try { handler(text); }
+                catch { }
             }
         }
 
@@ -394,46 +569,358 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            using (Pen pen = new Pen(_border))
-                e.Graphics.DrawRectangle(pen, 0, 0, Width - 1, Height - 1);
-            if (_model.IsEmpty && !_model.Focused)
+            e.Graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (!_expanded)
             {
-                using (SolidBrush brush = new SolidBrush(_hint))
-                using (Font font = new Font(_textBox.Font.FontFamily, _textBox.Font.Size,
-                    FontStyle.Italic, GraphicsUnit.Pixel))
-                    e.Graphics.DrawString(_placeholder, font, brush, 10f, 7f);
+                PaintCollapsed(e.Graphics);
+                return;
+            }
+            PaintExpanded(e.Graphics);
+        }
+
+        /// <summary>收起态：一个与关闭钮同高的深色标签，中间是向上的箭头。</summary>
+        private void PaintCollapsed(Graphics g)
+        {
+            Rectangle r = ClientRectangle;
+            using (SolidBrush back = new SolidBrush(_headerBack))
+                g.FillRectangle(back, r);
+            using (Pen border = new Pen(Color.FromArgb(90, 255, 255, 255)))
+                g.DrawRectangle(border, 0, 0, r.Width - 1, r.Height - 1);
+            using (SolidBrush accent = new SolidBrush(CanToggle ? _accent : _muted))
+                g.FillRectangle(accent, 0, 0, Math.Max(2, (int)Math.Round(3 * _uiScale)), r.Height);
+
+            Color chevron = !CanToggle ? _muted
+                : (_chevronHover ? _accentAlt : _headerFore);
+            DrawChevron(g, r.Width / 2f, r.Height / 2f, chevron);
+
+            if (_startRequired || _configRequired)
+            {
+                float dot = Math.Max(4f, 6f * _uiScale);
+                using (SolidBrush warn = new SolidBrush(_accent))
+                    g.FillEllipse(warn, r.Width - dot - 3, 3, dot, dot);
             }
         }
 
-        /// <summary>Show() 不抢前台：输入框出现不该把焦点从游戏里抠走，点击后才激活。</summary>
+        /// <summary>展开态：深色头条 + 浅灰输入区 + 底部计数/操作/旋转箭头。</summary>
+        private void PaintExpanded(Graphics g)
+        {
+            int w = ClientSize.Width;
+            int h = ClientSize.Height;
+            int headerH = HeaderHeight;
+            int footerTop = h - FooterHeight;
+
+            using (SolidBrush body = new SolidBrush(_bodyBack))
+                g.FillRectangle(body, ClientRectangle);
+            using (SolidBrush header = new SolidBrush(_headerBack))
+                g.FillRectangle(header, 0, 0, w, headerH);
+            using (SolidBrush accent = new SolidBrush(_accent))
+                g.FillRectangle(accent, 0, 0, Math.Max(3, (int)Math.Round(4 * _uiScale)), headerH);
+            using (Pen cyan = new Pen(_accentAlt, Math.Max(1f, 1f * _uiScale)))
+            {
+                float y = headerH - Math.Max(1f, 1f * _uiScale);
+                g.DrawLine(cyan, 0, y, w, y);
+            }
+
+            int textLeft = (int)Math.Round(Pad + 6 * _uiScale);
+            TextRenderer.DrawText(g, "插话", _headerFont,
+                new Rectangle(textLeft, 0, Math.Max(20, w - textLeft - Pad), headerH),
+                _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+            // 输入框外框（TextBox 自身无边框）。
+            if (_textBox.Visible)
+            {
+                using (Pen field = new Pen(Color.FromArgb(165, 165, 165)))
+                    g.DrawRectangle(field, _textBox.Left - 1, _textBox.Top - 1,
+                        _textBox.Width + 1, _textBox.Height + 1);
+            }
+
+            using (Pen separator = new Pen(Color.FromArgb(190, 190, 190)))
+                g.DrawLine(separator, Pad, footerTop, w - Pad, footerTop);
+
+            Rectangle counterRect = new Rectangle(Pad, footerTop,
+                Math.Max(20, _actionRect.Left - Pad - 4), FooterHeight);
+            TextRenderer.DrawText(g, _model.CounterText, _smallFont, counterRect,
+                _muted, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+
+            if (!_actionRect.IsEmpty)
+            {
+                string label = _startRequired ? "启动" : (_configRequired ? "配置" : "发送");
+                Color accent = _configRequired ? _accent : (_startRequired ? _accentAlt : _headerBack);
+                PaintActionButton(g, _actionRect, label, ActionEnabled, accent);
+            }
+
+            Color chevron = !CanToggle ? _muted
+                : (_chevronHover ? _accentAlt : _headerBack);
+            DrawChevron(g, _chevronRect.Left + _chevronRect.Width / 2f,
+                _chevronRect.Top + _chevronRect.Height / 2f, chevron);
+
+            using (Pen border = new Pen(Color.FromArgb(80, 0, 0, 0)))
+                g.DrawRectangle(border, 0, 0, w - 1, h - 1);
+        }
+
+        private void PaintActionButton(Graphics g, Rectangle rect, string label,
+            bool enabled, Color accent)
+        {
+            Color back = _actionHover && enabled
+                ? Color.FromArgb(48, 48, 48) : Color.FromArgb(32, 32, 32);
+            using (SolidBrush fill = new SolidBrush(back))
+                g.FillRectangle(fill, rect);
+            using (Pen border = new Pen(enabled ? accent : Color.FromArgb(150, 150, 150)))
+                g.DrawRectangle(border, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            TextRenderer.DrawText(g, label, _actionFont, rect,
+                enabled ? _headerFore : _muted,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                | TextFormatFlags.NoPrefix);
+        }
+
+        /// <summary>0° = 向上箭头（收起态）；180° = 向下箭头（展开态）。</summary>
+        private void DrawChevron(Graphics g, float cx, float cy, Color color)
+        {
+            System.Drawing.Drawing2D.GraphicsState state = g.Save();
+            try
+            {
+                g.TranslateTransform(cx, cy);
+                g.RotateTransform(_chevronAngle);
+                float size = Math.Max(4.5f, Math.Min(8f, Height / 16f));
+                using (Pen pen = new Pen(color, Math.Max(1.7f, size * 0.36f)))
+                {
+                    pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
+                    pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                    g.DrawLines(pen, new PointF[]
+                    {
+                        new PointF(-size, size * 0.45f),
+                        new PointF(0f, -size * 0.55f),
+                        new PointF(size, size * 0.45f)
+                    });
+                }
+            }
+            finally
+            {
+                g.Restore(state);
+            }
+        }
+
+        private void AnimateChevron(float target)
+        {
+            _chevronTarget = target;
+            if (Math.Abs(_chevronAngle - target) < 0.5f)
+            {
+                _chevronAngle = target;
+                _chevronTimer.Stop();
+                Invalidate();
+                return;
+            }
+            _chevronTimer.Start();
+        }
+
+        private void OnChevronTick(object sender, EventArgs e)
+        {
+            float diff = _chevronTarget - _chevronAngle;
+            if (Math.Abs(diff) <= 18f)
+            {
+                _chevronAngle = _chevronTarget;
+                _chevronTimer.Stop();
+            }
+            else
+            {
+                _chevronAngle += Math.Sign(diff) * 18f;
+            }
+            Invalidate();
+        }
+
+        /// <summary>收起态整块是展开按钮；展开态只响应箭头、操作按钮与输入区。</summary>
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+            NoteInteraction();
+            if (e.Button != MouseButtons.Left) return;
+            if (!_expanded)
+            {
+                if (CanToggle) Expand();
+                return;
+            }
+            if (_chevronRect.Contains(e.Location))
+            {
+                Collapse(true);
+                return;
+            }
+            if (_actionRect.Contains(e.Location) && ActionEnabled)
+            {
+                PerformAction();
+                return;
+            }
+            if (_model.Enabled) FocusInput();
+        }
+
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+            bool chevronHover = _chevronRect.Contains(e.Location);
+            bool actionHover = _expanded && _actionRect.Contains(e.Location) && ActionEnabled;
+            if (chevronHover != _chevronHover || actionHover != _actionHover)
+            {
+                _chevronHover = chevronHover;
+                _actionHover = actionHover;
+                UpdateCursor();
+                Invalidate();
+            }
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseLeave(e);
+            if (_chevronHover || _actionHover)
+            {
+                _chevronHover = false;
+                _actionHover = false;
+                UpdateCursor();
+                Invalidate();
+            }
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            // WM_MOUSEACTIVATE 早于 owner 失活：提前记下交互，HUD 白名单才不会在点击瞬间隐藏对话。
+            if (m.Msg == 0x0021) NoteInteraction();
+            base.WndProc(ref m);
+        }
+
+        protected override void OnActivated(EventArgs e)
+        {
+            NoteInteraction();
+            base.OnActivated(e);
+        }
+
+        private void NoteInteraction()
+        {
+            _lastInteractionUtc = DateTime.UtcNow;
+        }
+
+        /// <summary>HUD 失活白名单判据：输入窗是本会话前台，或刚刚发生过点击/激活
+        /// （失活事件可能先于前台切换到达，用 1.5 秒窗口覆盖这个时序）。</summary>
+        internal bool ShouldKeepHudPresented()
+        {
+            if (!Visible) return false;
+            if (IsForegroundWindow()) return true;
+            return (DateTime.UtcNow - _lastInteractionUtc).TotalMilliseconds < 1500;
+        }
+
+        /// <summary>Show() 不抢前台：收起按钮出现不该把焦点从游戏里抠走，点击后才激活。</summary>
         protected override bool ShowWithoutActivation
         {
             get { return true; }
+        }
+
+        protected override CreateParams CreateParams
+        {
+            get
+            {
+                CreateParams cp = base.CreateParams;
+                cp.ClassStyle |= 0x00020000;   // CS_DROPSHADOW
+                return cp;
+            }
         }
 
         protected override void OnVisibleChanged(EventArgs e)
         {
             base.OnVisibleChanged(e);
             // 被直接 Hide（不经 DismissToOwner）时也要退出文字输入态，否则热键会一直放行。
-            if (!Visible) SetFocused(false);
+            if (!Visible)
+            {
+                SetFocused(false);
+                Collapse(false);
+            }
         }
 
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
-            LayoutCounter();
+            ApplyLayout();
         }
 
-        private void LayoutCounter()
+        private int HeaderHeight { get { return Math.Max(24, (int)Math.Round(28 * _uiScale)); } }
+        private int FooterHeight { get { return Math.Max(32, (int)Math.Round(40 * _uiScale)); } }
+        private int Pad { get { return Math.Max(7, (int)Math.Round(10 * _uiScale)); } }
+
+        /// <summary>收起态只排箭头按钮；展开态排头条、输入框、计数、操作与旋转箭头。</summary>
+        private void ApplyLayout()
         {
-            if (_counter == null) return;
-            const int counterW = 48;
-            int h = Math.Max(14, ClientSize.Height - 12);
-            _counter.Bounds = new Rectangle(Math.Max(0, ClientSize.Width - counterW - 6), 6, counterW, h);
-            if (_textBox != null)
-                _textBox.Bounds = new Rectangle(8, 6,
-                    Math.Max(10, ClientSize.Width - counterW - 20),
-                    Math.Max(14, ClientSize.Height - 12));
+            if (_textBox == null) return;
+            float ui = _expanded
+                ? Math.Max(1f, Math.Min(2.4f, ClientSize.Height / 150f))
+                : Math.Max(1f, Math.Min(2.4f, ClientSize.Width / 38f));
+            EnsureFonts(ui);
+
+            _textBox.Visible = _expanded;
+            if (!_expanded)
+            {
+                _chevronRect = ClientRectangle;
+                _actionRect = Rectangle.Empty;
+                BackColor = _headerBack;
+                UpdateCursor();
+                Invalidate();
+                return;
+            }
+
+            BackColor = _bodyBack;
+            int w = ClientSize.Width;
+            int h = ClientSize.Height;
+            int headerH = HeaderHeight;
+            int footerH = FooterHeight;
+            int pad = Pad;
+            int bodyTop = headerH + pad;
+            int bodyBottom = h - footerH - pad / 2;
+            int bodyH = Math.Max((int)Math.Round(22 * ui), bodyBottom - bodyTop);
+            int inputH = Math.Min((int)Math.Round(34 * ui), bodyH);
+            int inputY = bodyTop + Math.Max(0, (bodyH - inputH) / 2);
+            _textBox.Bounds = new Rectangle(pad, inputY, Math.Max(40, w - pad * 2), inputH);
+
+            int footerTop = h - footerH;
+            int chevronSize = Math.Max(28, (int)Math.Round(34 * ui));
+            int chevronY = footerTop + Math.Max(0, (footerH - chevronSize) / 2);
+            _chevronRect = new Rectangle(w - pad - chevronSize, chevronY,
+                chevronSize, chevronSize);
+
+            int actionW = Math.Max(54, (int)Math.Round(62 * ui));
+            int actionH = Math.Max(24, (int)Math.Round(30 * ui));
+            int actionX = _chevronRect.Left - Math.Max(4, (int)Math.Round(8 * ui)) - actionW;
+            _actionRect = new Rectangle(actionX, footerTop + Math.Max(0, (footerH - actionH) / 2),
+                actionW, actionH);
+
+            UpdateCursor();
+            Invalidate();
+        }
+
+        private void EnsureFonts(float ui)
+        {
+            if (_inputFont != null && Math.Abs(ui - _uiScale) < 0.04f) return;
+            _uiScale = ui;
+            Font oldInput = _inputFont, oldSmall = _smallFont,
+                oldHeader = _headerFont, oldAction = _actionFont;
+            _inputFont = new Font("Microsoft YaHei UI", 13f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _smallFont = new Font("Microsoft YaHei UI", 10.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _headerFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Bold, GraphicsUnit.Pixel);
+            _actionFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _textBox.Font = _inputFont;
+            if (oldInput != null) oldInput.Dispose();
+            if (oldSmall != null) oldSmall.Dispose();
+            if (oldHeader != null) oldHeader.Dispose();
+            if (oldAction != null) oldAction.Dispose();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _chevronTimer.Stop();
+                _chevronTimer.Dispose();
+                _toolTip.Dispose();
+                if (_inputFont != null) _inputFont.Dispose();
+                if (_smallFont != null) _smallFont.Dispose();
+                if (_headerFont != null) _headerFont.Dispose();
+                if (_actionFont != null) _actionFont.Dispose();
+            }
+            base.Dispose(disposing);
         }
 
         /// <summary>

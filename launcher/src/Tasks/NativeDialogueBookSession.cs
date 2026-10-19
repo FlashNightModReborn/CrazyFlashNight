@@ -56,6 +56,10 @@ namespace CF7Launcher.Tasks
         /// <summary>任务 id（task_pre/task_post 组才有，来自 book 可选字段 dialogueTaskId，协议 4.1）。
         /// 只由 book 报文决定；append 不改变；daily/stage 恒 null。</summary>
         internal readonly string DialogueTaskId;
+        /// <summary>book 报文里的玩家快照（source 组）；插话本地 $PC 行据此还原名称/头衔/立绘。</summary>
+        internal readonly string PlayerName;
+        internal readonly string HeroTitle;
+        internal readonly JObject HeroPortrait;
         /// <summary>会话创建时的连接代；跨代后在途重试发射前复查不通过。</summary>
         internal readonly long TransportEpoch;
 
@@ -84,7 +88,8 @@ namespace CF7Launcher.Tasks
 
         internal NativeDialogueBookSession(NativeDialogueTask task, string requestId,
             string sceneId, string mode, int advanceKey, Line[] lines, long transportEpoch,
-            string dialogueKind = null, string dialogueTaskId = null)
+            string dialogueKind = null, string dialogueTaskId = null,
+            JObject playerSnapshot = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             RequestId = requestId;
@@ -94,6 +99,12 @@ namespace CF7Launcher.Tasks
             // 日常/stage 即使报文带了 id 也忽略（协议 4.1：只有任务组使用任务 id）。
             DialogueTaskId = (DialogueKind == "task_pre" || DialogueKind == "task_post")
                 ? NormalizeDialogueTaskId(dialogueTaskId) : null;
+            PlayerName = playerSnapshot != null
+                ? (playerSnapshot.Value<string>("playerName") ?? "") : "";
+            HeroTitle = playerSnapshot != null
+                ? (playerSnapshot.Value<string>("heroTitle") ?? "") : "";
+            JObject hero = playerSnapshot != null ? playerSnapshot["heroPortrait"] as JObject : null;
+            HeroPortrait = hero != null ? (JObject)hero.DeepClone() : null;
             _advanceKey = advanceKey;
             _lines = lines ?? throw new ArgumentNullException(nameof(lines));
             for (int i = 0; i < _lines.Length; i++)
