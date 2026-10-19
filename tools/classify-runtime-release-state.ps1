@@ -647,7 +647,12 @@ function Get-Cf7IndexedReleaseBoundPaths {
 
 function Assert-Cf7NativeChangesReleaseBound([object[]]$Entries, $BaseProtection, $HeadProtection) {
     if ($null -eq $HeadProtection) { throw 'Protected head must retain a valid native change gate and runtime input descriptor.' }
+    # This read-only metadata CI is independent of the runtime producer/release inputs.
+    # Keep the exact-path exception local to informational audit modes: Protected mode,
+    # unknown workflows, native inputs, and deployment verification remain fail-closed.
     $gatedWrites = @($Entries | Where-Object {
+        -not ($Mode -in @('Audit', 'Development') -and
+            [string]$_.Path -ceq '.github/workflows/path-budget.yml') -and
         [string]$_.Status -ne 'D' -and (
             (Test-Cf7NativeGatePath -Path ([string]$_.Path) -Protection $BaseProtection) -or
             (Test-Cf7NativeGatePath -Path ([string]$_.Path) -Protection $HeadProtection)

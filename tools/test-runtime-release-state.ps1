@@ -356,6 +356,107 @@ try {
         Assert-Test ((Get-TestCalls $f).Count -eq 0) 'source-only audit must invoke zero payload or consensus verifiers'
     }
 
+    Run-Test 'Path budget CI policy closure binds the classifier regression tests' {
+        $inputs = [IO.File]::ReadAllText((Join-Path $repoRoot 'config\build\runtime-inputs.v2.json'), [Text.Encoding]::UTF8) | ConvertFrom-Json
+        Assert-Test (@($inputs.domains.policy.fixedFiles | Where-Object { [string]$_ -ceq 'tools/test-runtime-release-state.ps1' }).Count -eq 1) 'classifier tests must be bound as policy inputs'
+        foreach ($domain in @('artifactSource','producerRecipe','toolchainLock','policy')) {
+            Assert-Test (@($inputs.domains.$domain.fixedFiles | Where-Object { [string]$_ -ceq '.github/workflows/path-budget.yml' }).Count -eq 0) 'independent metadata CI must not be added to runtime release inputs'
+        }
+    }
+
+    Run-Test 'Path budget CI audit add modify delete stays source-ahead in informational modes' {
+        foreach ($mode in @('Audit','Development')) {
+            foreach ($operation in @('add','modify','delete')) {
+                $f = New-TestFixture v2
+                $path = '.github/workflows/path-budget.yml'
+                if ($operation -ne 'add') {
+                    $f.Base = Add-TestCommit $f $path 'name: baseline path budget'
+                }
+                if ($operation -eq 'delete') {
+                    [void](Invoke-TestGit $f.Root @('rm','--',$path))
+                    [void](Invoke-TestGit $f.Root @('commit','-m','delete metadata CI'))
+                } else {
+                    [void](Add-TestCommit $f $path 'name: updated path budget')
+                }
+                Set-TestControl $f -Integrity 1 -Strict 1 -Consensus 1
+                $result = Invoke-Classifier $f $mode $f.Base
+                Assert-Test ($result.ExitCode -eq 0 -and $result.Output -match 'state=source-ahead') "$mode/$operation`: $($result.Output)"
+                Assert-Test ($result.Output -match 'manifest=unread' -and $result.Output -match 'verifierCount=0') $result.Output
+                Assert-Test ((Get-TestCalls $f).Count -eq 0) "$mode/$operation invoked deployment verification"
+            }
+        }
+    }
+
+    Run-Test 'Path budget CI exception is exact and unavailable to Protected mode' {
+        foreach ($case in @(
+            @{Mode='Audit'; Path='.github/workflows/content.yml'},
+            @{Mode='Development'; Path='.github/workflows/content.yml'},
+            @{Mode='Audit'; Path='.github/workflows/Path-budget.yml'},
+            @{Mode='Protected'; Path='.github/workflows/path-budget.yml'}
+        )) {
+            $f = New-TestFixture v2
+            [void](Add-TestCommit $f $case.Path 'name: unrelated workflow')
+            $result = Invoke-Classifier $f $case.Mode $f.Base
+            Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'not bound by the indexed release descriptor') $result.Output
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unbound workflow must fail before verifiers'
+        }
+    }
+
+    Run-Test 'Path budget CI cannot hide an unbound native write' {
+        foreach ($mode in @('Audit','Development')) {
+            $f = New-TestFixture v2
+            [void](Add-TestFilesCommit $f ([ordered]@{
+                '.github/workflows/path-budget.yml'='name: path budget'
+                'foreign/Unbound.dll'='native write'
+            }))
+            $result = Invoke-Classifier $f $mode $f.Base
+            Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'not bound by the indexed release descriptor.*foreign/Unbound.dll') $result.Output
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unbound native write must fail before verifiers'
+        }
+    }
+
+    Run-Test 'Path budget CI cannot bypass deployment or forced readiness verification' {
+        foreach ($mode in @('Audit','Development')) {
+            foreach ($force in @($false,$true)) {
+                $f = New-TestFixture v2
+                $files = [ordered]@{'.github/workflows/path-budget.yml'='name: path budget'}
+                if (-not $force) { $files['runtime/core.bin']='changed runtime' }
+                [void](Add-TestFilesCommit $f $files)
+                Set-TestControl $f -Strict 2
+                $extra = if ($force) { @('-ForceDeploymentVerification') } else { @() }
+                $result = Invoke-Classifier $f $mode $f.Base -ExtraArguments $extra
+                Assert-Test ($result.ExitCode -ne 0) "$mode/force=$force bypassed strict verification"
+                Assert-Test ((Get-TestCalls $f) -join ',' -eq 'v2:integrity,v2:strict') $result.Output
+            }
+        }
+    }
+
+    Run-Test 'Path budget CI exception retains Git file mode safety' {
+        foreach ($mode in @('Audit','Development')) {
+            foreach ($gitMode in @('120000','160000')) {
+                $f = New-TestFixture v2
+                [void](Add-TestSpecialModeCommit $f '.github/workflows/path-budget.yml' $gitMode)
+                $result = Invoke-Classifier $f $mode $f.Base
+                Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'symlink, gitlink, executable, or non-regular') $result.Output
+                Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unsafe CI file mode must fail before verifiers'
+            }
+        }
+    }
+
+    Run-Test 'Path budget CI exception retains changed path component safety' {
+        foreach ($mode in @('Audit','Development')) {
+            $f = New-TestFixture v2
+            [void](Add-TestCommit $f '.github/workflows/path-budget.yml' 'name: path budget')
+            # Index the exact spelling; Windows git-add may canonicalize on-disk casing.
+            $oid = ([string](@(Invoke-TestGit $f.Root @('hash-object','source.txt')))[0]).Trim()
+            [void](Invoke-TestGit $f.Root @('update-index','--add','--cacheinfo',"100644,$oid,config/Build/spoof.json"))
+            [void](Invoke-TestGit $f.Root @('commit','-m','add case-colliding path metadata'))
+            $result = Invoke-Classifier $f $mode $f.Base
+            Assert-Test ($result.ExitCode -ne 0 -and $result.Output -match 'case-colliding path component') $result.Output
+            Assert-Test ((Get-TestCalls $f).Count -eq 0) 'unsafe changed path must fail before verifiers'
+        }
+    }
+
     Run-Test 'Audit deployment mutation enters byte and strict verification' {
         $f = New-TestFixture v2
         [void](Add-TestCommit $f 'runtime/core.bin' 'runtime-v2')
