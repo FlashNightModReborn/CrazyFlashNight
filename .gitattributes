@@ -269,3 +269,6 @@ launcher/app.manifest text eol=lf
 /scripts/逻辑/单位函数/单位函数_lsy_主角技能.as text eol=lf
 /tools/asset-metrology/xfl_geometry.py text eol=lf
 /scripts/类定义/org/flashNight/arki/unit/Action/Melee/Cf6GuardRenderTest.as -text
+
+# Phoenix assembly binds exact generator and manifest bytes on Windows checkouts.
+/tools/phoenix-phase-assets/** text eol=lf

@@ -1,0 +1,33 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/火凤转阶段/原稿/元件 6" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="元件 6" layerDepthEnabled="true">
+      <layers>
+        <DOMLayer name="图层_1" color="#00FFFF" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <fills>
+                    <FillStyle index="1">
+                      <RadialGradient>
+                        <matrix>
+                          <Matrix a="0.06243896484375" d="0.06243896484375" tx="50.5" ty="50.5"/>
+                        </matrix>
+                        <GradientEntry color="#F96708" alpha="0" ratio="0.419607843137255"/>
+                        <GradientEntry color="#FE6600" ratio="0.850980392156863"/>
+                        <GradientEntry color="#F96708" alpha="0" ratio="1"/>
+                      </RadialGradient>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!2020 1010S2[2020 1428 1723 1724!1723 1724[1428 2020 1010 2020!1010 2020[591 2020 295 1724!295 1724[0 1428 0 1010!0 1010[0 592 295 295!295 295[591 0 1010 0!1010 0[1428 0 1723 295!1723 295[2020 592 2020 1010"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -144,8 +144,12 @@ function Phoenix()
 }
 */
 
+根据等级初始数值 = function(ignored:Number):Void {
+    _root.敌人函数.根据等级初始数值.call(this, this.等级);
+};
 初始化敌人模板 = _root.初始化敌人模板;
-初始化敌人模板();]]></script>
+初始化敌人模板();
+_root.火凤阶段初始化(this);]]></script>
               </Actionscript>
               <elements/>
             </DOMFrame>
@@ -161,15 +165,7 @@ function Phoenix()
             </DOMFrame>
             <DOMFrame index="104" keyMode="9728">
               <Actionscript>
-                <script><![CDATA[if(this.已变身最后阶段){
-	this.变身控制块.temp_MovieFire.removeMovieClip();
-	this.火凤余烬.removeMovieClip();
-}else{
-	if(this.变身阶段 == 2){
-		this.已变身最后阶段 = true;
-	}
-	gotoAndStop("倒地");
-}
+                <script><![CDATA[this.火凤余烬.removeMovieClip();
 ]]></script>
               </Actionscript>
               <elements/>
@@ -183,74 +179,6 @@ function Phoenix()
 ]]></script>
               </Actionscript>
               <elements/>
-            </DOMFrame>
-          </frames>
-        </DOMLayer>
-        <DOMLayer name="变身图层" color="#9933CC" outline="true" useOutlineView="true" autoNamed="false">
-          <frames>
-            <DOMFrame index="0" duration="127" keyMode="9728">
-              <elements>
-                <DOMSymbolInstance libraryItemName="Symbol 17" name="变身控制块" centerPoint3DX="65.55" centerPoint3DY="-1.65">
-                  <matrix>
-                    <Matrix a="0.01446533203125" d="0.0158538818359375" tx="-85.95" ty="-153.15"/>
-                  </matrix>
-                  <transformationPoint>
-                    <Point/>
-                  </transformationPoint>
-                  <Actionscript>
-                    <script><![CDATA[onClipEvent(enterFrame){
-    if(_parent.已使用兴奋剂 != true)
-   {
-      if( _parent.宠物属性.涅槃重生 || (_parent.hp <= 1500 and _parent.hp > 0 and _parent.变身阶段 == 0))
-      {
-         //_parent.无敌 = true;
-         _root.效果("浴火重生",_parent._x,_parent._y,100);
-         _root.效果("火回旋",_parent._x,_parent._y,100);
-         _root.效果("火攻",_parent._x,_parent._y,100);
-         _parent.hp = _parent.hp满血值;
-         _parent.空手攻击力 *= 0.7;
-         _parent.行走X速度 *= 1.5;
-         _parent.行走Y速度 *= 1.5;
-         _parent.跑X速度 *= 1.5;
-         _parent.跑Y速度 *= 1.5;
-         _root.发布消息("燎原烈火……");
-         _parent.已使用兴奋剂 = true;
-         _parent.变身阶段 = 1;
-      }
-   }
-   else if(_parent.hp <= 1500 and _parent.hp > 0 and _parent.变身阶段 == 1)
-   {
-      //_parent.无敌 = true;
-      _root.效果("熔炎裂渊",_parent._x,_parent._y,100);
-      _root.效果("火回旋",_parent._x,_parent._y,100);
-      _root.效果("火攻",_parent._x,_parent._y,100);
-      _parent.hp满血值 = 1500;
-      _parent.hp = _parent.hp满血值;
-      _root.发布消息("涅槃重生……");
-      _parent.已使用兴奋剂 = true;
-      _parent.变身阶段 = 2;
-      this.temp_MovieFire = _parent.attachMovie("火凤余烬","火凤余烬",_parent.getNextHighestDepth(),{_xscale:100,_yscale:150});
-      this.temp_MovieFire.play();
-      this.temp_MovieFire.onEnterFrame = function()
-      {
-         if(this._currentFrame == this._totalFrames - 1)
-         {
-            this.gotoAndPlay(1);
-         }
-         if(_parent._parent.hp <= 0 and _parent._parent.变身阶段 == 2)
-         {
-            this.removeMovieClip();
-         }
-      };
-   }
-}
-]]></script>
-                  </Actionscript>
-                  <color>
-                    <Color alphaMultiplier="0"/>
-                  </color>
-                </DOMSymbolInstance>
-              </elements>
             </DOMFrame>
           </frames>
         </DOMLayer>
