@@ -1,5 +1,6 @@
 """Analyze frozen Elder arena rows without changing the original receipts."""
 from pathlib import Path
+from evidence_paths import validate_output
 import argparse
 import hashlib
 import json
@@ -132,6 +133,7 @@ def main():
     data = args.results.read_bytes()
     result = analyze(json.loads(data.decode('utf-8-sig')), args.source_root, args.expected_levels)
     result['input'] = {'path': str(args.results.resolve()), 'sha256': sha(data)}
+    validate_output(args.output)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open('x', encoding='utf8') as output:
         json.dump(result, output, ensure_ascii=False, indent=2)
