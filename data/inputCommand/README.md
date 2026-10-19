@@ -129,6 +129,7 @@ data/inputCommand/
 | SHIFT_FORWARD | Shift+→ | Shift+前 |
 | SHIFT_BACK | Shift+← | Shift+后 |
 | SHIFT_DOWN | Shift+↓ | Shift+下 |
+| SHIFT_UP_FORWARD | Shift+↑→ | Shift+上前（↑与→同时按住） |
 
 ---
 

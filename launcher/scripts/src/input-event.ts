@@ -30,9 +30,10 @@ namespace GameInput {
     export const EV_SHIFT_FORWARD      = 15;
     export const EV_SHIFT_BACK         = 16;
     export const EV_SHIFT_DOWN         = 17;
+    export const EV_SHIFT_UP_FORWARD   = 18;
 
     // 字母表大小（DFA 数组分配用）
-    export const ALPHABET_SIZE         = 18;
+    export const ALPHABET_SIZE         = 19;
 
     // 事件名称（调试 + 可视化提示）
     const _names: string[] = [
@@ -53,7 +54,8 @@ namespace GameInput {
         "Shift",   // SHIFT_HOLD
         "Shift+→", // SHIFT_FORWARD
         "Shift+←", // SHIFT_BACK
-        "Shift+↓"  // SHIFT_DOWN
+        "Shift+↓", // SHIFT_DOWN
+        "Shift+↑→" // SHIFT_UP_FORWARD
     ];
 
     export function eventName(id: number): string {

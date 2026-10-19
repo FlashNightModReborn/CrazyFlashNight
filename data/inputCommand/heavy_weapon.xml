@@ -120,11 +120,11 @@
             </Requirements>
         </Command>
 
-        <!-- 幻影剑舞: Shift前 + C，要求下劈 Lv4 -->
+        <!-- 幻影剑舞: Shift+↑+→ + A，要求下劈 Lv4 -->
         <Command name="幻影剑舞" action="幻影剑舞" priority="10">
             <Sequence>
-                <Event>SHIFT_FORWARD</Event>
-                <Event>C_PRESS</Event>
+                <Event>SHIFT_UP_FORWARD</Event>
+                <Event>A_PRESS</Event>
             </Sequence>
             <Tags>
                 <Tag>重武器</Tag>

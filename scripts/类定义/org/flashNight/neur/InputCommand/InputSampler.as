@@ -178,6 +178,9 @@ class org.flashNight.neur.InputCommand.InputSampler {
             if (down) {
                 events.push(InputEvent.SHIFT_DOWN);
             }
+            if (up && holdForward) {
+                events.push(InputEvent.SHIFT_UP_FORWARD);
+            }
         }
 
         // === 双击检测 ===
