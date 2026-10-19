@@ -4,6 +4,7 @@ const fs=require("fs"),path=require("path"),cp=require("child_process"),crypto=r
 const {normalizeManifest}=require("../arena-calibration/lib/arena-calibration-core");
 const {resolveExpectedRuntimeIdentity}=require("../lib/runtime-process-identity");
 const ROOT=path.resolve(__dirname,"../..");
+const {validateOutput}=require("./evidence-paths");
 const hash=p=>crypto.createHash("sha256").update(fs.readFileSync(p)).digest("hex");
 const write=(p,v)=>fs.writeFileSync(p,JSON.stringify(v,null,2)+"\n",{flag:"wx"});
 function createPlan(config){
@@ -42,7 +43,12 @@ function createPlan(config){
   if(identity.runtimeMode!=="isolated_candidate")throw Error("Isolated candidate required");
   for(const key of ["coreSha256","buildIdentity","payloadClosure"])if(identity[key]!==identities[0][key])throw Error("Worker binary payloads differ");
  }
- const output=path.resolve(config.outputDirectory);fs.mkdirSync(output,{recursive:true});const groups=[];
+ const output=path.resolve(config.outputDirectory);
+ // Validate every final output name before the first write. Resource/runtime gates above stay unchanged.
+ for(const rival of rivals)for(const level of levels)for(let wi=0;wi<workers.length;wi++)for(const suffix of ["","-blue","-red"])
+  validateOutput(path.join(output,rival+"-level"+level+"-w"+(wi+1)+suffix+"-manifest.json"),ROOT);
+ for(const member of ["experiment-plan.json","input-identity.json"])validateOutput(path.join(output,member),ROOT);
+ fs.mkdirSync(output,{recursive:true});const groups=[];
  for(const rival of rivals)for(const level of levels){
   const rivalId=rival==="beastking"?78:361;
   const assignments=workers.flatMap((worker,wi)=>{
