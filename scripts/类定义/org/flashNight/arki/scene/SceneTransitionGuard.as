@@ -50,8 +50,15 @@ class org.flashNight.arki.scene.SceneTransitionGuard {
     public static function rememberBaseSceneFrame(root:Object, scene:String):Void {
         if (scene.indexOf("基地场景-") == 0) root.__baseSceneFrame = Number(root._currentframe);
     }
+    /** One receipt per external navigation; observation only, never grants admission. */
+    public static function noteExternalNavigation(root:Object, scene:String, route:String, frame:Number):Void {
+        if (typeof root.server.sendServerMessage != "function") return;
+        root.server.sendServerMessage("[SceneEntryNavigation] route=" + route
+            + " from=" + Number(root._currentframe) + " target=" + frame + " scene=" + scene);
+    }
     public static function rememberSharedSceneFrame(root:Object, scene:String):Void {
         rememberBaseSceneFrame(root,scene);
+        if (scene.indexOf("地图-") == 0) root.__externalSceneFrame = Number(root._currentframe);
         if (scene === "wuxianguotu_1") {
             root.__leeBattleSceneFrame = Number(root._currentframe);
         }
@@ -149,9 +156,13 @@ class org.flashNight.arki.scene.SceneTransitionGuard {
         var completed:Boolean = completeLeeStage(root,manager,pending);
         _leeStageWatch.__leeStageLoadState = completed ? "initialized" : "rejected";
     }
-    /** 仅本次Lee临时槽可跳过重复入场的多帧加载段，其他战斗入口不变。 */
+    /** 非战斗场景复用实际装配帧；战斗快速重入仍只属于本次 Lee 临时槽。 */
     public static function observedSharedSceneFrame(root:Object, targetFrame:String):Number {
         if (targetFrame === "基地地图") return observedBaseSceneFrame(root,targetFrame);
+        if (targetFrame === "外部地图") {
+            return typeof root.__externalSceneFrame == "number" && root.__externalSceneFrame > 0
+                && root.gameworld == undefined ? root.__externalSceneFrame : 0;
+        }
         var run:Object = root._saveExt.bookRun;
         return targetFrame === "wuxianguotu_1" && run.bookId === "lee-trial"
             && run.outcome === "active" && run.slot === String(root.savePath)

@@ -1,0 +1,534 @@
+{
+  "schema": "cf7.external-scene-entry.qualification.v1",
+  "generatedAt": "2026-10-19T05:52:09.658552+00:00",
+  "state": "e2e_verified",
+  "deployment": "NOT_DEPLOYED",
+  "sourceBase": "106e6a90714305910a0e9edac420de46254a5921",
+  "worktree": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight",
+  "nativeCandidate": {
+    "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-e911492f2fda-08846e81b3-20261019t050858475z-0b08b3cc",
+    "buildIdentity": "E911492F2FDAE48E96B5B2210C664036F6A3728BAE23745B02D85A1DC895C879",
+    "payloadClosure": "E6D0FDB743A6D4DD31FDDDC3D20F3D3D932E7B3D83925623C6CCEC2FA9BD8AFA",
+    "coreDllSha256": "3EC22C3A8E82AD416A2235E820C69A4482FFA053EA4CB164D0CAB1ABC0E3D7B9",
+    "deployment": "NOT_DEPLOYED",
+    "integrityFiles": 43
+  },
+  "productionSourceSha256": {
+    "CRAZYFLASHER7MercenaryEmpire/DOMDocument.xml": "B9E7F372A5CB9F71D74D5A083C841C66D60842DD975FB59FC016B98B92A3B416",
+    "scripts/类定义/org/flashNight/arki/scene/SceneTransitionGuard.as": "4702A0E1CDCCFD0953296F30F24493E52B8EB418B6F230570F824BE45F213912",
+    "scripts/类定义/org/flashNight/arki/ui/SceneTransitionService.as": "68BFA89D90D893B8923F147E5BD022E3D2D5D59FC29B920103B7ED9683A01674",
+    "scripts/逻辑/关卡系统/关卡系统_lsy_场景转换.as": "DA4E508598E84240A9AE09687D482560030D4B07B250F8282DCE3766F85A5583"
+  },
+  "pairedCompile": {
+    "status": "paired_compile_verified",
+    "at": "2026-10-19T05:01:18.183287+00:00",
+    "sourceBase": "106e6a90714305910a0e9edac420de46254a5921",
+    "products": {
+      "main": {
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\CRAZYFLASHER7MercenaryEmpire.swf",
+        "bytes": 207353,
+        "sha256": "0495E0D9DA756A0FA2CFA62A9443522BDFC2D37F6BCD7ED1FC892EAF457C5F67",
+        "compiler": "0/0",
+        "receipt": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\compile-20261019T044727Z\\main\\receipt.json"
+      },
+      "asLoader": {
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\scripts\\asLoader.swf",
+        "bytes": 6119777,
+        "sha256": "C8528BCC1FF620205FF6259709B21BFCE22FA866E8EC3AECCBA80783A7FA5369",
+        "compiler": "0/0",
+        "receipt": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\compile-20261019T044727Z\\asLoader\\receipt.json"
+      }
+    },
+    "mainLabelZeroBased": 157,
+    "mainOtherTagsExceptLabelAndXmpUnchanged": true,
+    "fontAndArtTagsUnchanged": true,
+    "loaderClasses": 729,
+    "traceNote": "publish has no fresh suite trace by design; focused suites provide their separate fresh behavior trace"
+  },
+  "focusedFlash": {
+    "scene": {
+      "status": "PASS",
+      "runId": "823e64a36cca4dc0b5f760c81a338b2b",
+      "scene": 119,
+      "challenge": 7,
+      "compiler": "0/0",
+      "retry32K": 0
+    },
+    "lee": {
+      "status": "PASS",
+      "runId": "4bd84aa65aa24ab088cf8c67f7550589",
+      "checks": {
+        "EnemyActionRuntimeTest": 187,
+        "ControlledEnemyLifecycleTest": 60,
+        "LeeTrialTelemetryTest": 5,
+        "LeeAssaultRulesTest": 61,
+        "LeeSkillLoadoutTest": 21,
+        "BookComicServiceTest": 40,
+        "MapDomainBridgeTest": 78,
+        "SceneTransitionGuardHandoffTest": 20
+      },
+      "total": 472,
+      "compiler": "0/0",
+      "scope": "real AVM1 in-memory/asynchronous MovieClip fixtures; not full live Lee combat"
+    }
+  },
+  "live": {
+    "result": "passed_normal_ui",
+    "entryKind": "normal_bootstrap_ui",
+    "raw": {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506.json",
+      "sha256": "68AEF9C919BB0AA616FF2F5083F88EB562CC7086E6FFE48804E9835558E2E14B"
+    },
+    "journal": {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506-receipts.jsonl",
+      "sha256": "995F44EF6FADB800B9EA2B6960C65CCF7145CC78F9E609CACA8845B9F9F23163"
+    },
+    "input": "Sky native HUD/normal close plus explicitly authorized CDP Input.dispatchMouseEvent on exact owned candidate pages",
+    "physicalInputAttestation": false,
+    "trustedRunnerUsed": false,
+    "start": {
+      "schema": "cf7.scene-entry.normal-start.v1",
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-e911492f2fda-08846e81b3-20261019t050858475z-0b08b3cc\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "buildIdentity": "E911492F2FDAE48E96B5B2210C664036F6A3728BAE23745B02D85A1DC895C879",
+      "payloadClosure": "E6D0FDB743A6D4DD31FDDDC3D20F3D3D932E7B3D83925623C6CCEC2FA9BD8AFA",
+      "guardianPid": 8976,
+      "startedAt": "2026-10-19T05:42:18.2767611Z",
+      "observedAt": "2026-10-19T05:42:29.2309010Z",
+      "source": "canonical automation/start.ps1 + live MainModule path + fresh matching launcher_ports PID",
+      "scriptSha256": "C9F9455409232C3588887B651D55541FA2C9AF8E870F5FDA57C0BDD27AA7447C"
+    },
+    "shutdown": {
+      "schema": "cf7.scene-entry.normal-exit.v1",
+      "runtimeMode": "isolated_candidate",
+      "processPath": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\runtime-candidates\\v2\\c-e911492f2fda-08846e81b3-20261019t050858475z-0b08b3cc\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+      "buildIdentity": "E911492F2FDAE48E96B5B2210C664036F6A3728BAE23745B02D85A1DC895C879",
+      "payloadClosure": "E6D0FDB743A6D4DD31FDDDC3D20F3D3D932E7B3D83925623C6CCEC2FA9BD8AFA",
+      "guardianPid": 8976,
+      "startedAt": "2026-10-19T05:42:18.2767611Z",
+      "observedAt": "2026-10-19T05:42:29.2309010Z",
+      "source": "canonical automation/start.ps1 + live MainModule path + fresh matching launcher_ports PID",
+      "scriptSha256": "C9F9455409232C3588887B651D55541FA2C9AF8E870F5FDA57C0BDD27AA7447C",
+      "exitCode": 0,
+      "forced": false,
+      "finishedAt": "2026-10-19T05:48:44.4841447Z"
+    },
+    "legs": [
+      {
+        "label": "first-entry",
+        "scene": "地图-测试空间",
+        "route": "label",
+        "requestId": "tr:1",
+        "targetScene": 3,
+        "rootFrame": 158,
+        "status": "pass",
+        "hostBegin": "13:43:23.915 event=scene_transition_begin id=tr:1 image=Blue",
+        "hostRevealed": "13:43:27.186 event=scene_transition_revealed id=tr:1 scene=3",
+        "hostDurationMs": 3271,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 951027,
+          "line": "13:43:25.874 [LogBatch] onLoad=[type Function]&messages=[SceneEntryNavigation] route=label from=146 target=0 scene=地图-测试空间|[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:1 targetScene=3 rootFrame=158 scene=地图-测试空间|[SaveManager] shadow confirm: true&frame=1197"
+        }
+      },
+      {
+        "label": "external-hop",
+        "scene": "地图-军阀帐篷",
+        "route": "same_frame",
+        "requestId": "tr:2",
+        "targetScene": 4,
+        "rootFrame": 158,
+        "status": "pass",
+        "hostBegin": "13:44:04.549 event=scene_transition_begin id=tr:2 image=Blue",
+        "hostRevealed": "13:44:07.260 event=scene_transition_revealed id=tr:2 scene=4",
+        "hostDurationMs": 2711,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1030203,
+          "line": "13:44:05.788 [LogBatch] onLoad=[type Function]&messages=[SceneEntryNavigation] route=same_frame from=158 target=158 scene=地图-军阀帐篷|[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:2 targetScene=4 rootFrame=158 scene=地图-军阀帐篷|[SaveManager] shadow confirm: true&frame=2322"
+        }
+      },
+      {
+        "label": "same-frame-return",
+        "scene": "地图-测试空间",
+        "route": "same_frame",
+        "requestId": "tr:3",
+        "targetScene": 5,
+        "rootFrame": 158,
+        "status": "pass",
+        "hostBegin": "13:46:03.531 event=scene_transition_begin id=tr:3 image=Andy",
+        "hostRevealed": "13:46:05.964 event=scene_transition_revealed id=tr:3 scene=5",
+        "hostDurationMs": 2433,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1233727,
+          "line": "13:46:04.641 [LogBatch] onLoad=[type Function]&messages=[SceneEntryNavigation] route=same_frame from=158 target=158 scene=地图-测试空间|[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:3 targetScene=5 rootFrame=158 scene=地图-测试空间|[SaveManager] shadow confirm: true&frame=5751"
+        }
+      },
+      {
+        "label": "return-base",
+        "scene": "基地场景-基地门口",
+        "route": null,
+        "requestId": "tr:4",
+        "targetScene": 6,
+        "rootFrame": 146,
+        "status": "pass",
+        "hostBegin": "13:46:37.012 event=scene_transition_begin id=tr:4 image=Pig",
+        "hostRevealed": "13:46:39.935 event=scene_transition_revealed id=tr:4 scene=6",
+        "hostDurationMs": 2923,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1309978,
+          "line": "13:46:38.652 [LogBatch] onLoad=[type Function]&messages=[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:4 targetScene=6 rootFrame=146 scene=基地场景-基地门口|[SaveManager] shadow confirm: true&frame=6688"
+        }
+      },
+      {
+        "label": "repeat-entry",
+        "scene": "地图-测试空间",
+        "route": "remembered_frame",
+        "requestId": "tr:5",
+        "targetScene": 7,
+        "rootFrame": 158,
+        "status": "pass",
+        "hostBegin": "13:47:15.087 event=scene_transition_begin id=tr:5 image=武器",
+        "hostRevealed": "13:47:18.338 event=scene_transition_revealed id=tr:5 scene=7",
+        "hostDurationMs": 3251,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1415495,
+          "line": "13:47:16.926 [LogBatch] onLoad=[type Function]&messages=[SceneEntryNavigation] route=remembered_frame from=146 target=158 scene=地图-测试空间|[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:5 targetScene=7 rootFrame=158 scene=地图-测试空间|[SaveManager] shadow confirm: true&frame=7534"
+        }
+      },
+      {
+        "label": "return-base-2",
+        "scene": "基地场景-基地门口",
+        "route": null,
+        "requestId": "tr:6",
+        "targetScene": 8,
+        "rootFrame": 146,
+        "status": "pass",
+        "hostBegin": "13:47:37.954 event=scene_transition_begin id=tr:6 image=King",
+        "hostRevealed": "13:47:40.199 event=scene_transition_revealed id=tr:6 scene=8",
+        "hostDurationMs": 2245,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1474842,
+          "line": "13:47:39.107 [LogBatch] onLoad=[type Function]&messages=[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:6 targetScene=8 rootFrame=146 scene=基地场景-基地门口|[SaveManager] shadow confirm: true&frame=8134"
+        }
+      },
+      {
+        "label": "repeat-entry-2",
+        "scene": "地图-测试空间",
+        "route": "remembered_frame",
+        "requestId": "tr:7",
+        "targetScene": 9,
+        "rootFrame": 158,
+        "status": "pass",
+        "hostBegin": "13:48:01.443 event=scene_transition_begin id=tr:7 image=武器",
+        "hostRevealed": "13:48:03.978 event=scene_transition_revealed id=tr:7 scene=9",
+        "hostDurationMs": 2535,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1542665,
+          "line": "13:48:02.611 [LogBatch] onLoad=[type Function]&messages=[SceneEntryNavigation] route=remembered_frame from=146 target=158 scene=地图-测试空间|[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:7 targetScene=9 rootFrame=158 scene=地图-测试空间|[SaveManager] shadow confirm: true&frame=8743"
+        }
+      },
+      {
+        "label": "return-base-3",
+        "scene": "基地场景-基地门口",
+        "route": null,
+        "requestId": "tr:8",
+        "targetScene": 10,
+        "rootFrame": 146,
+        "status": "pass",
+        "hostBegin": "13:48:21.789 event=scene_transition_begin id=tr:8 image=TheGirl",
+        "hostRevealed": "13:48:24.560 event=scene_transition_revealed id=tr:8 scene=10",
+        "hostDurationMs": 2771,
+        "readyRecord": {
+          "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\logs\\launcher.log",
+          "identity": "3802884988:1125899909800181:1792387004174.0483",
+          "offset": 1597789,
+          "line": "13:48:23.101 [LogBatch] onLoad=[type Function]&messages=[SaveManager.saveAll] 角色=fs 等级=99 金钱=13023413 savePath=cf7_agent_equipment_tuning|[SaveManager.saveAll] flush=true version=3.0 tasks_to_do.len=21|[SaveManager] shadow gate: ok=true socket=true|[SceneEntryReady] request=tr:8 targetScene=10 rootFrame=146 scene=基地场景-基地门口|[SaveManager] shadow confirm: true&frame=9278"
+        }
+      }
+    ],
+    "orderedSequenceProof": {
+      "result": "pass",
+      "method": "re-evaluate every stored exact oracle against previous targetScene and unique request; lighting telemetry counter is only startup watermark",
+      "legs": [
+        {
+          "label": "first-entry",
+          "requestId": "tr:1",
+          "minimumScene": 2,
+          "targetScene": 3,
+          "rootFrame": 158,
+          "result": "pass"
+        },
+        {
+          "label": "external-hop",
+          "requestId": "tr:2",
+          "minimumScene": 3,
+          "targetScene": 4,
+          "rootFrame": 158,
+          "result": "pass"
+        },
+        {
+          "label": "same-frame-return",
+          "requestId": "tr:3",
+          "minimumScene": 4,
+          "targetScene": 5,
+          "rootFrame": 158,
+          "result": "pass"
+        },
+        {
+          "label": "return-base",
+          "requestId": "tr:4",
+          "minimumScene": 5,
+          "targetScene": 6,
+          "rootFrame": 146,
+          "result": "pass"
+        },
+        {
+          "label": "repeat-entry",
+          "requestId": "tr:5",
+          "minimumScene": 6,
+          "targetScene": 7,
+          "rootFrame": 158,
+          "result": "pass"
+        },
+        {
+          "label": "return-base-2",
+          "requestId": "tr:6",
+          "minimumScene": 7,
+          "targetScene": 8,
+          "rootFrame": 146,
+          "result": "pass"
+        },
+        {
+          "label": "repeat-entry-2",
+          "requestId": "tr:7",
+          "minimumScene": 8,
+          "targetScene": 9,
+          "rootFrame": 158,
+          "result": "pass"
+        },
+        {
+          "label": "return-base-3",
+          "requestId": "tr:8",
+          "minimumScene": 9,
+          "targetScene": 10,
+          "rootFrame": 146,
+          "result": "pass"
+        }
+      ]
+    },
+    "inputRefusal": {
+      "selector": ".map-filter-hotspot[data-filter-id=\"roof\"]",
+      "packetsSent": 0,
+      "cause": "map remembered faction page; roof control absent",
+      "recovery": [
+        {
+          "at": "2026-10-19T05:45:43.767Z",
+          "reason": "roof absent on remembered faction page; zero Input packets and no navigation pending; select visible base page as a new action",
+          "rejectedActionAt": "2026-10-19T05:44:35.982Z",
+          "tabs": [
+            {
+              "id": "base",
+              "label": "A兵团5",
+              "active": false,
+              "hidden": false,
+              "x": 18,
+              "y": 12,
+              "w": 83.75,
+              "h": 30.462499618530273,
+              "vw": 1280,
+              "vh": 720
+            },
+            {
+              "id": "faction",
+              "label": "堕落城/荒漠",
+              "active": true,
+              "hidden": false,
+              "x": 109.75,
+              "y": 12,
+              "w": 98.20000457763672,
+              "h": 30.462499618530273,
+              "vw": 1280,
+              "vh": 720
+            },
+            {
+              "id": "defense",
+              "label": "废城/禁区",
+              "active": false,
+              "hidden": false,
+              "x": 215.9499969482422,
+              "y": 12,
+              "w": 85.20000457763672,
+              "h": 30.462499618530273,
+              "vw": 1280,
+              "vh": 720
+            },
+            {
+              "id": "school",
+              "label": "学校1",
+              "active": false,
+              "hidden": false,
+              "x": 309.1499938964844,
+              "y": 12,
+              "w": 76.1500015258789,
+              "h": 30.462499618530273,
+              "vw": 1280,
+              "vh": 720
+            }
+          ]
+        }
+      ],
+      "navigationReplay": false
+    },
+    "postRun": {
+      "finalSlotSha256": "4C461A54CEB98B4599D64EE3D047D12F8A4406CE953FE8DBAA9BE2FAE4680C6F",
+      "otherSavesUnchanged": true,
+      "binariesUnchanged": true,
+      "programsUnchanged": true,
+      "sceneSourcesUnchanged": true,
+      "startupMetadataAfter": {
+        "sha256": "A480E02507082D870A1A1B3BC6100405BB08A7FE55622ED15E6EF598349541B2",
+        "version": 1,
+        "writtenAt": "2026-10-19T05:42:28Z"
+      }
+    },
+    "screenshots": [
+      {
+        "scene": "test-space",
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506-test-space.jpg",
+        "sha256": "5D59E936C5F10AA5E260790756F3F45BF9CFC444A020E901A8252B6EF0C2B0EB"
+      },
+      {
+        "scene": "warlord-tent",
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506-warlord-tent.jpg",
+        "sha256": "6EF0063E34B67BC3A3A54685DE0685E93050DFE4EDCC587345089C15E8208AF2"
+      },
+      {
+        "scene": "base-return",
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506-base-return.jpg",
+        "sha256": "8E833A60CFC1010DF4D7C7128CC1F90423F2C5AE84EBFC2A58F875B480F5E079"
+      },
+      {
+        "scene": "final-base",
+        "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388537506-final-base.jpg",
+        "sha256": "E2DEE7B7DA2F043999C9141CDC7336DC8E5478288B903A1EE371793063587C59"
+      }
+    ]
+  },
+  "verifiers": {
+    "liveSnapshot": {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\qualified-verifier-1792388537506-manifest.json",
+      "sha256": "D0CFB51E9EA6D9FAB9745C33D2021E4AC759CAD7CD7F8F0D705C2AF4F2825438"
+    },
+    "liveProgramSha256": {
+      "tools/external-scene-entry/run.js": "CFFFA23BBC48AD190BADC0B62D7F3C1200B1CB516A5F03AFC465697550B9B4BC",
+      "tools/external-scene-entry/ui-session.js": "3A6242E2A5BD97993212E399B0D18A42E44BB8FF222C5842A1C9886002B7661F",
+      "tools/external-scene-entry/oracle.js": "56742F8A26B8BD40F8DC33D3C087AE3FE64905F022895787A78D0198476F4B0F",
+      "tools/external-scene-entry/log-tracker.js": "49BD5A546FB5DED4F4CDA08457B65460327B9C6D3ED4D9EE4589DCBCCB6632D4",
+      "tools/external-scene-entry/identity.js": "2550065CAD7F884FE4A5BE077B6C46F3E43BDB1F777F3BCC150E62EC2B56C63A",
+      "tools/external-scene-entry/cdp-input.js": "78CA7B6624E41CA1BD605192551AE3FD55EDE0F35627BDED5EEF386DA9C1EEC7"
+    },
+    "postRunSource": {
+      "tools\\external-scene-entry\\cdp-input.js": "8D42EE869EFCCC4ECE284570B4AA2112223FC079F7DC3127C78FD64CFDE9ABC1",
+      "tools\\external-scene-entry\\identity.js": "2550065CAD7F884FE4A5BE077B6C46F3E43BDB1F777F3BCC150E62EC2B56C63A",
+      "tools\\external-scene-entry\\log-tracker.js": "49BD5A546FB5DED4F4CDA08457B65460327B9C6D3ED4D9EE4589DCBCCB6632D4",
+      "tools\\external-scene-entry\\oracle.js": "56742F8A26B8BD40F8DC33D3C087AE3FE64905F022895787A78D0198476F4B0F",
+      "tools\\external-scene-entry\\run.js": "CFFFA23BBC48AD190BADC0B62D7F3C1200B1CB516A5F03AFC465697550B9B4BC",
+      "tools\\external-scene-entry\\self-test.js": "8C812462BA1E787A5BBA1A6D3174E5FCD74F30DE40AC71C7E506A236387F6727",
+      "tools\\external-scene-entry\\ui-session.js": "2AAC81691044E2322D9CC5A1D2BC668CED852000CA7472322B49EA8AFF7EA52A"
+    },
+    "offlineEvidenceGuards": 59,
+    "offlineOrderedRevalidation": {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\final-ordered-revalidation.json",
+      "sha256": "FCBF1ED94CCA189F569EA7D7F20028E7B1EED51FC84BC22446A0E46983E604B9"
+    },
+    "scope": "post-run checker strengthening only; no game-source/SWF changes; offline replay is not another live run"
+  },
+  "fixture": {
+    "schema": "cf7.scene-entry.fixture-poststate.v1",
+    "at": "2026-10-19T05:49:33.361175+00:00",
+    "seedPath": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading\\CrazyFlashNight\\saves\\cf7_agent_a5_material_shop_run.json",
+    "seedSha256": "F0F1F5D787FB9DADB484EE1B53CE854965556644E25D9AAE0DEFDCA60DFBFB09",
+    "targetPath": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\saves\\cf7_agent_equipment_tuning.json",
+    "targetSha256": "4C461A54CEB98B4599D64EE3D047D12F8A4406CE953FE8DBAA9BE2FAE4680C6F",
+    "rawDifferences": [
+      "/lastSaved",
+      "/others/物品来源缓存/discoveredEnemies",
+      "/others/物品来源缓存/discoveredQuests",
+      "/others/物品来源缓存/discoveredStages"
+    ],
+    "normalizedDifferences": [],
+    "normalizationOnlyInMemory": "lastSaved removed; four registered source-cache arrays sorted with multiplicity preserved",
+    "restoredOrReplayed": false
+  },
+  "preservedEarlierAttempts": [
+    {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792386958242.json",
+      "sha256": "BE51467C5E477AE2B46306AC66B43E43B3EAF6DA030085CF72F364197D5512D6"
+    },
+    {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388324049.json",
+      "sha256": "C5C39549D83EAD9B81F77987EA8D3D772323EBA2D25A25A37C00F42752B75868"
+    },
+    {
+      "path": "C:\\Users\\fs\\.codex\\worktrees\\test-space-loading-final\\CrazyFlashNight\\tmp\\external-scene-entry\\e2e-ui-1792388420210.json",
+      "sha256": "007F3E25680A10F63A06EF59B60997BFEADB919A25C8A3980B0AE3F6224F7EAB"
+    }
+  ],
+  "boundaries": [
+    "original incident not reproduced on healthy old baseline; exact field cause unknown",
+    "no GPU/WGC or label causality claim",
+    "full live Lee combat not exercised",
+    "human visual/control acceptance outstanding",
+    "not integrated into main or deployed"
+  ],
+  "coordination": {
+    "mainHead": "106e6a90714305910a0e9edac420de46254a5921",
+    "mainGitStatus": "clean",
+    "cs6CommandsBinding": "main, restored byte-exact",
+    "ownCandidateExited": true,
+    "heartbeat": "PAUSED"
+  },
+  "runtimeMode": "isolated_candidate",
+  "qualificationAuthorization": {
+    "scope": "isolated patch, source reconciliation, real CS6 compile and isolated regression; explicit CDP real button permission",
+    "prohibited": [
+      "main working-tree integration",
+      "commit",
+      "push",
+      "tag",
+      "formal publication",
+      "real player slots",
+      "messages to other chats"
+    ]
+  },
+  "recordedQualificationBranchLabel": "codex/test-space-loading-final",
+  "qualificationBranchNote": "sourceBase and hashes identify the qualified files; the descriptive branch label was not a Git branch assertion. Final worktree was detached at delivery preflight; the named integration branch was created afterward.",
+  "delivery": {
+    "authorizedAt": "2026-10-19T06:12:19.413466+00:00",
+    "humanAcceptance": "可行，测试有效，可以提交推送",
+    "scope": "integrate scoped source and the qualified main/asLoader SWF pair into main and push; no other tasks",
+    "integrationBranch": "codex/test-space-loading-final",
+    "binaryDeliveryKind": "tracked Flash SWF pair",
+    "nativeRuntimeReleaseRequired": false,
+    "reason": "no native artifact/producer/deployment input changed by this patch; fixed native payload closure and Core DLL match current formal runtime",
+    "formalNativePayloadClosure": "E6D0FDB743A6D4DD31FDDDC3D20F3D3D932E7B3D83925623C6CCEC2FA9BD8AFA",
+    "candidateNativePayloadClosure": "E6D0FDB743A6D4DD31FDDDC3D20F3D3D932E7B3D83925623C6CCEC2FA9BD8AFA",
+    "formalNativeBuildIdentity": "09C7C9FC2853DCD71271964B4BB0974C4C9CA09511831B5942813DC55976F275",
+    "coreDllSha256": "3EC22C3A8E82AD416A2235E820C69A4482FFA053EA4CB164D0CAB1ABC0E3D7B9",
+    "fullLeeCombatAccepted": false,
+    "originalIncidentCauseConfirmed": false
+  }
+}

@@ -225,12 +225,18 @@ class org.flashNight.arki.ui.SceneTransitionService {
         if (s.worldReady && (s.readyIdentity !== identity || s.targetScene != WorldLightingBridge.sceneNumber())) {
             s.worldPresented = false; s.revision++;
         }
+        var newReady:Boolean = !s.worldReady || s.readyIdentity !== identity;
         if (!s.worldReady) org.flashNight.dev.PanelTiming.finish("transition.scene_ready",s.timingStarted,_sequence);
         s.worldReady = true;
         s.readyWorld = world;
         s.readyIdentity = identity;
         s.arrivalToken = token;
         s.targetScene = WorldLightingBridge.sceneNumber();
+        if (newReady && typeof _root.server.sendServerMessage == "function") {
+            _root.server.sendServerMessage("[SceneEntryReady] request=" + s.requestId
+                + " targetScene=" + s.targetScene + " rootFrame=" + Number(_root._currentframe)
+                + " scene=" + String(world.场景名));
+        }
         requestReveal();
     }
 

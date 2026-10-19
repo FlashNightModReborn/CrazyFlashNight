@@ -36,8 +36,42 @@ class org.flashNight.arki.ui.SceneTransitionServiceTest {
             gotoAndStop:function(frame:Number):Void {this._currentframe=frame;if(frame==37)SceneTransitionService.failed(this);},
             淡出跳转帧:function(frame:String,token:String):Void {counters.retries++;}};
     }
+    private static function testExternalSceneFrames():Void {
+        var host:Object = {_currentframe:37,_saveExt:{bookRun:{}},savePath:"fixture"};
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"外部地图")==0,
+            "unobserved external placement cannot grant direct mounting");
+        org.flashNight.arki.scene.SceneTransitionGuard.rememberSharedSceneFrame(host,"地图-测试空间");
+        check(host.__externalSceneFrame===37,"external initialization records its actual root frame");
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"外部地图")==37,
+            "cleared external world can reuse its observed placement");
+        host.gameworld={};
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"外部地图")==0,
+            "live external world cannot grant duplicate mounting");
+        host.gameworld=undefined; host._currentframe=51;
+        org.flashNight.arki.scene.SceneTransitionGuard.rememberSharedSceneFrame(host,"基地场景-基地门口");
+        check(host.__baseSceneFrame===51,"base initialization retains its own placement");
+        check(host.__externalSceneFrame===37,"base initialization cannot replace the external placement");
+        host._currentframe=61;
+        org.flashNight.arki.scene.SceneTransitionGuard.rememberSharedSceneFrame(host,"wuxianguotu_1");
+        check(host.__externalSceneFrame===37,"battle initialization cannot replace the external placement");
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"wuxianguotu_1")==0,
+            "ordinary battle entry does not gain the Lee shortcut");
+        host._saveExt.bookRun={bookId:"lee-trial",outcome:"active",slot:"fixture"};
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"wuxianguotu_1")==61,
+            "active exact Lee slot retains its observed battle placement");
+        host._saveExt.bookRun.slot="foreign";
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"wuxianguotu_1")==0,
+            "foreign Lee slot cannot gain battle reentry");
+        host.__externalSceneFrame=0;
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"外部地图")==0,
+            "zero external placement is rejected");
+        host.__externalSceneFrame="37";
+        check(org.flashNight.arki.scene.SceneTransitionGuard.observedSharedSceneFrame(host,"外部地图")==0,
+            "text external placement is rejected");
+    }
     public static function runAllTests():Void {
         passed=0; failed=0; sent=[]; released=[];
+        testExternalSceneFrames();
         EventBus.getInstance().subscribe("SceneTransitionReleased",onReleased,SceneTransitionServiceTest);
         var old:Object = {fade:_root.淡出动画,world:_root.gameworld,data:_root.加载背景列表,
             stages:_root.初期关卡列表,flag:_root.关卡标志,progress:_root.主线任务进度,
