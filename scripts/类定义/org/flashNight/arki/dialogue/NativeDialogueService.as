@@ -887,9 +887,22 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
     private static function normalizeDialogueTaskId(raw):String {
         if (raw == null || raw == undefined) return null;
         var out:String = String(raw);
-        out = out.replace(/^\s+|\s+$/g, "");
+        out = trimAsciiWhitespace(out);
         if (out.length < 1 || out.length > 32) return null;
         return out;
+    }
+
+    /** AS2 编译器不接受正则字面量，这里按 ASCII 空白手工裁剪。 */
+    private static function trimAsciiWhitespace(value:String):String {
+        var start:Number = 0;
+        var end:Number = value.length;
+        while (start < end && isAsciiWhitespace(value.charCodeAt(start))) start++;
+        while (end > start && isAsciiWhitespace(value.charCodeAt(end - 1))) end--;
+        return value.substring(start, end);
+    }
+
+    private static function isAsciiWhitespace(code:Number):Boolean {
+        return code == 32 || code == 9 || code == 10 || code == 13;
     }
 
     /** 组类型归一：daily（缺省）/ task_pre / task_post / stage；未知值一律回落 daily。 */
