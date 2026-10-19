@@ -49,6 +49,10 @@ namespace CF7Launcher.Tasks
         /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 不再被吞），
         /// 且 widget 的 advance 输入被丢弃。默认 null = 关闭，既有行为不变。</summary>
         internal Func<bool> InterjectInputFocused;
+        /// <summary>任务插话上下文组装（P4）：(dialogueTaskId, dialogueKind) → {completed, upcoming}
+        /// 或 null。只在 task_pre/task_post 组使用；未注册或返回 null 时任务插话 fail-closed
+        /// （输入保持 Hidden，不显示也不报错）。</summary>
+        internal Func<string, string, JObject> TaskContextProvider;
 
         // 回调收到的位图由 task 在 widget 克隆后释放。资源解析不拥有剧情推进权。
         internal Action<NativeDialogueFrame, JObject, Action<Bitmap>> LoadPortrait;
@@ -379,8 +383,20 @@ namespace CF7Launcher.Tasks
                     return RejectAck(p, "malformed");
                 dialogueKind = rawKind;
             }
+            // 可选任务 id（协议 4.1 / 5.1）：出现时必须是字符串、去空白后 1..32，否则整包 malformed；
+            // 只有 task_pre/task_post 组才携带（daily/stage 即使带了也忽略）。
+            string dialogueTaskId = null;
+            if (p["dialogueTaskId"] != null)
+            {
+                var taskIdToken = p["dialogueTaskId"];
+                if (taskIdToken.Type != JTokenType.String) return RejectAck(p, "malformed");
+                string rawTaskId = ((string)taskIdToken ?? "").Trim();
+                if (rawTaskId.Length < 1 || rawTaskId.Length > 32) return RejectAck(p, "malformed");
+                if (dialogueKind == "task_pre" || dialogueKind == "task_post") dialogueTaskId = rawTaskId;
+            }
             var session = new NativeDialogueBookSession(this, requestId, sceneId, mode,
-                advanceKey, lines, Interlocked.Read(ref _transportEpoch), dialogueKind);
+                advanceKey, lines, Interlocked.Read(ref _transportEpoch), dialogueKind,
+                dialogueTaskId);
             session.RetryScheduler = BookRetryScheduler ?? ScheduleBookRetry;
             if (BookRetryClock != null) session.RetryClock = BookRetryClock;
             _bookSession = session;

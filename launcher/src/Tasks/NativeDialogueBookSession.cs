@@ -53,6 +53,9 @@ namespace CF7Launcher.Tasks
         /// <summary>组类型：daily（缺省）/ task_pre / task_post / stage（协议 5.1 / §13.2）。
         /// 只由 book 报文决定；append 不改变组类型。</summary>
         internal readonly string DialogueKind;
+        /// <summary>任务 id（task_pre/task_post 组才有，来自 book 可选字段 dialogueTaskId，协议 4.1）。
+        /// 只由 book 报文决定；append 不改变；daily/stage 恒 null。</summary>
+        internal readonly string DialogueTaskId;
         /// <summary>会话创建时的连接代；跨代后在途重试发射前复查不通过。</summary>
         internal readonly long TransportEpoch;
 
@@ -81,13 +84,16 @@ namespace CF7Launcher.Tasks
 
         internal NativeDialogueBookSession(NativeDialogueTask task, string requestId,
             string sceneId, string mode, int advanceKey, Line[] lines, long transportEpoch,
-            string dialogueKind = null)
+            string dialogueKind = null, string dialogueTaskId = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             RequestId = requestId;
             SceneId = sceneId;
             Mode = mode;
             DialogueKind = NormalizeDialogueKind(dialogueKind);
+            // 日常/stage 即使报文带了 id 也忽略（协议 4.1：只有任务组使用任务 id）。
+            DialogueTaskId = (DialogueKind == "task_pre" || DialogueKind == "task_post")
+                ? NormalizeDialogueTaskId(dialogueTaskId) : null;
             _advanceKey = advanceKey;
             _lines = lines ?? throw new ArgumentNullException(nameof(lines));
             for (int i = 0; i < _lines.Length; i++)
@@ -290,6 +296,15 @@ namespace CF7Launcher.Tasks
                 || string.Equals(raw, "stage", StringComparison.Ordinal))
                 return raw;
             return "daily";
+        }
+
+        /// <summary>任务 id 归一（防御性）：去首尾空白后 1..32 才保留，否则 null。
+        /// 日常/stage 组即使传入也按 null 处理（协议 4.1：只有任务组带 id）。</summary>
+        internal static string NormalizeDialogueTaskId(string raw)
+        {
+            string trimmed = (raw ?? "").Trim();
+            if (trimmed.Length < 1 || trimmed.Length > 32) return null;
+            return trimmed;
         }
 
         /// <summary>原始行读取（越界返回 null）：请求 remaining / 失败回退定位用。</summary>

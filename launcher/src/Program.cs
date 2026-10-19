@@ -2831,6 +2831,18 @@ class Program
                 else action(); // 内存命中与当前句一起采用，不再排一次消息后闪出人物。
             },
             () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
+        // 任务插话上下文（P4）：只用任务目录 + 当前影子存档；任何一步读不到就返回 null，
+        // 控制器按 fail-closed 处理（任务组不显示输入框）。
+        nativeDialogueTask.TaskContextProvider = (taskId, kind) =>
+        {
+            CF7Launcher.Data.MapRuntimeContent content = mapDomainTask.Content;
+            string slot = CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey;
+            if (content == null || string.IsNullOrEmpty(slot)) return null;
+            Newtonsoft.Json.Linq.JObject save;
+            string error;
+            if (!archiveTask.TryLoadShadowSync(slot, out save, out error)) return null;
+            return CF7Launcher.Tasks.DialogueTaskContext.Build(content.Catalog, save, taskId, kind);
+        };
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
         nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
@@ -2898,7 +2910,8 @@ class Program
                 () => ragTerminalService.CreateInterjectTransport());
             var interjectController = dialogueInterject;
             interjectOverlay.SendRequested += text => interjectController.Submit(text);
-            dialogueInterject.InputStateChanged += state => dialogueInterjectInput.Apply(state);
+            dialogueInterject.InputStateChanged += state =>
+                dialogueInterjectInput.Apply(state, dialogueInterject.PlaceholderFor(state));
             dialogueInterject.Attach();
             if (nativeHud != null)
                 nativeHud.InterjectInputForegroundProbe =
