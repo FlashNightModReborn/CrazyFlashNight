@@ -114,7 +114,25 @@ namespace CF7Launcher.Tests.Tasks
             internal readonly NativeDialogueInterjectController Controller;
             internal readonly List<DialogueInterjectInputState> States = new List<DialogueInterjectInputState>();
             internal readonly List<string> Sent = new List<string>();
+            /// <summary>注入时钟：看门狗测试手动推进，不 sleep。</summary>
+            internal DateTime Now = new DateTime(2026, 10, 18, 22, 30, 0);
+            /// <summary>每次排定时器记录 delay（断言无事件/总时长上限的取小逻辑）。</summary>
+            internal readonly List<TimeSpan> WatchdogDelays = new List<TimeSpan>();
+            private Action _watchdogCallback;
             private int _ids;
+
+            private sealed class FakeTimer : IDisposable
+            {
+                private readonly Action _onDispose;
+                private bool _disposed;
+                internal FakeTimer(Action onDispose) { _onDispose = onDispose; }
+                public void Dispose()
+                {
+                    if (_disposed) return;
+                    _disposed = true;
+                    if (_onDispose != null) _onDispose();
+                }
+            }
 
             internal Harness(bool inline = true)
             {
@@ -125,7 +143,16 @@ namespace CF7Launcher.Tests.Tasks
                 Task.BookRetryScheduler = (ms, cb) => { };
                 Controller = new NativeDialogueInterjectController(
                     Task, Widget, a => a(), null, () => Transport,
-                    () => "id-" + (++_ids), () => new DateTime(2026, 10, 18, 22, 30, 0));
+                    () => "id-" + (++_ids), () => Now);
+                Controller.WatchdogScheduler = (delay, callback) =>
+                {
+                    WatchdogDelays.Add(delay);
+                    _watchdogCallback = callback;
+                    return new FakeTimer(() =>
+                    {
+                        if (object.ReferenceEquals(_watchdogCallback, callback)) _watchdogCallback = null;
+                    });
+                };
                 if (inline)
                     Controller.TaskRunner = f =>
                     {
@@ -134,6 +161,21 @@ namespace CF7Launcher.Tests.Tasks
                     };
                 Controller.InputStateChanged += s => States.Add(s);
                 Controller.Attach();
+            }
+
+            internal TimeSpan LastWatchdogDelay
+            {
+                get { return WatchdogDelays[WatchdogDelays.Count - 1]; }
+            }
+
+            internal int WatchdogArmedCount { get { return WatchdogDelays.Count; } }
+
+            /// <summary>手动触发当前在看门狗（等价于定时器到点），不 sleep。</summary>
+            internal void FireWatchdog()
+            {
+                Action callback = _watchdogCallback;
+                _watchdogCallback = null;
+                if (callback != null) callback();
             }
 
             internal void AdoptBook(params string[] texts)
@@ -217,6 +259,36 @@ namespace CF7Launcher.Tests.Tasks
         private static string Done()
         {
             return "event: done\ndata: {\"dialogue_instance_id\":\"inst\",\"session_id\":\"s1\",\"usage\":{}}\n\n";
+        }
+
+        // ── 假事件（绕开流驱动，直接喂控制器；P3 的 status / 中途失败都用它）──────
+
+        private static DialogueInterjectEvent Evt(DialogueInterjectEventKind kind, string dataJson)
+        {
+            return new DialogueInterjectEvent
+            {
+                Kind = kind,
+                EventName = kind.ToString().ToLowerInvariant(),
+                Data = JObject.Parse(dataJson)
+            };
+        }
+
+        private static DialogueInterjectEvent StatusEvent(string stage)
+        {
+            return Evt(DialogueInterjectEventKind.Status, "{\"stage\":\"" + stage + "\"}");
+        }
+
+        private static DialogueInterjectEvent LineEvent(string text, int seq)
+        {
+            return Evt(DialogueInterjectEventKind.Line,
+                "{\"kind\":\"add\",\"text\":\"" + text
+                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}");
+        }
+
+        private static DialogueInterjectEvent ErrorEvent(string code)
+        {
+            return Evt(DialogueInterjectEventKind.Error,
+                "{\"code\":\"" + code + "\",\"message\":\"失败\"}");
         }
 
         // ── 组类型门控 ─────────────────────────────────────────────────────
@@ -456,6 +528,163 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();                                            // 已播 AI 行之后接回原作
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
             Assert.Contains("先听我说。", h.Transport.LastFinalize);
+        }
+
+        /// <summary>
+        /// P2 缺陷：AI 首句已经上屏、队列为空时失败，旧代码只调 RestoreOriginalTail()，
+        /// 它因 _aiLineShown 直接返回，原作剩余永远不会接回。P3 改走 ResumeAfterPlayedTurnLines。
+        /// </summary>
+        [Fact]
+        public void FailureAfterAiLineIsOnScreenResumesOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。", "没事就别挡道。");
+            var hanging = new HangingStream(AddLine("先听我说。", 0));
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.True(SpinWait.SpinUntil(() => h.Controller.PendingLineCount == 1, 5000));
+            Assert.True(h.Widget.CompleteCurrentLineTyping());
+            Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(0, h.Controller.PendingLineCount);
+
+            h.Controller.OnEvent(ErrorEvent("stream_failed"));       // 首句已上屏后流失败
+
+            Assert.Equal("stream_failed", h.Controller.LastFailure);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+
+            h.Advance();                                             // 回到原作下一行，而不是组末
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            Assert.Contains("先听我说。", h.Transport.LastFinalize);
+        }
+
+        // ── 单轮看门狗 ────────────────────────────────────────────────────
+
+        [Fact]
+        public void WatchdogTimesOutSilentStreamAndRestoresOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.True(h.Controller.IsTurnActive);
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(180);                           // 注入时钟推进，不 sleep
+            h.FireWatchdog();
+
+            Assert.Equal("stream_timeout", h.Controller.LastFailure);
+            Assert.False(h.Controller.IsTurnActive);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.True(SpinWait.SpinUntil(() => hanging.Disposed, 5000));
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+
+            h.Advance();                                             // 按失败回退接回原作
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void WatchdogRearmsOnEventAndStillHonorsTotalDeadline()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("你好"));
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.FireWatchdog();                                        // 提前触发：续排，不算超时
+            Assert.Null(h.Controller.LastFailure);
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(170);
+            h.Controller.OnEvent(StatusEvent("thinking"));           // 事件刷新无事件窗口
+            Assert.Null(h.Controller.LastFailure);
+            // min(170+180, 300) → 距总时长上限只剩 130 秒
+            Assert.Equal(TimeSpan.FromSeconds(130), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(130);                           // 总上限到期（距上个事件仅 130 秒）
+            h.FireWatchdog();
+
+            Assert.Equal("stream_timeout", h.Controller.LastFailure);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void WatchdogIsInactiveAfterTurnEnds()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。");
+            h.Transport.Script(AddLine("回答", 0) + Done());
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            Assert.False(h.Controller.IsTurnActive);
+
+            int armed = h.WatchdogArmedCount;
+            h.FireWatchdog();                                        // 迟到的回调：本轮已结束
+
+            Assert.Null(h.Controller.LastFailure);
+            Assert.Equal(armed, h.WatchdogArmedCount);               // 不再续排
+        }
+
+        // ── status → Preparing ────────────────────────────────────────────
+
+        [Fact]
+        public void StatusDraftingShowsPreparingUntilFirstLineArrives()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("有没有活儿？"));           // $PC 播放中：Hidden
+
+            h.Controller.OnEvent(StatusEvent("drafting"));
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Widget.CompleteCurrentLineTyping();                     // $PC 播完、还没出词
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("插一句"));                // 准备中不接受发送
+
+            h.Controller.OnEvent(LineEvent("行，那我直说了。", 0));      // 首个 add 开始显示
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal("行，那我直说了。", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void StatusSearchingAlsoShowsPreparing()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+
+            h.Controller.OnEvent(StatusEvent("searching"));
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+
+            h.Controller.OnEvent(LineEvent("查到了。", 0));             // 出词后回到既有状态
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void StatusWithoutPreparingStageKeepsWaitingLocked()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+
+            h.Controller.OnEvent(StatusEvent("thinking"));
+            h.Controller.OnEvent(StatusEvent("waiting"));
+
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
         }
 
         // ── 中途插入 / 参考续写 ───────────────────────────────────────────

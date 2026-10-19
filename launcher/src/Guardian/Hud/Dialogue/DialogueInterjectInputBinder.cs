@@ -32,7 +32,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         internal DialogueInterjectInputOverlay Overlay { get { return _overlay; } }
 
-        /// <summary>输入状态变化：Hidden=收起并还焦点；Locked=显示禁用（“……”）；Ready=可用。</summary>
+        /// <summary>输入状态变化：Hidden=收起并还焦点；Locked=显示禁用（“……”）；
+        /// Preparing=显示禁用（“（正在准备…）”，草案/检索中）；Ready=可用。</summary>
         internal void Apply(DialogueInterjectInputState state)
         {
             if (_disposed) return;
@@ -45,6 +46,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     ShowPassive();
                     _overlay.SetInputEnabled(false);
                     _overlay.SetPlaceholder("……");
+                    break;
+                case DialogueInterjectInputState.Preparing:
+                    ShowPassive();
+                    _overlay.SetInputEnabled(false);
+                    _overlay.SetPlaceholder("（正在准备…）");
                     break;
                 case DialogueInterjectInputState.Ready:
                     ShowPassive();

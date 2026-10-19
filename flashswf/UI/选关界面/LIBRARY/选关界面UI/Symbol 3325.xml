@@ -48,7 +48,7 @@ function 组装副本任务(对象)
 	_root.委托任务界面.NPC任务_任务_等级限制 = 对象.NPC任务_任务_等级限制;
 	_root.委托任务界面.NPC任务_任务_K点 = 对象.NPC任务_任务_K点;
 	_root.委托任务界面.显示任务明细(对象.NPC任务_任务);
-	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation);
+	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation, undefined, "task_pre");
 	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
 	_root.委托任务界面._visible = true;
 }]]></script>
@@ -67,7 +67,7 @@ function 组装副本任务(对象)
 	_root.委托任务界面.NPC任务_任务_等级限制 = 对象.NPC任务_任务_等级限制;
 	_root.委托任务界面.NPC任务_任务_K点 = 对象.NPC任务_任务_K点;
 	_root.委托任务界面.显示任务明细(对象.NPC任务_任务);
-	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation);
+	_root.SetDialogue(_root.getTaskData(对象.NPC任务_任务[0]).get_conversation, undefined, "task_pre");
 	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
 	_root.委托任务界面._visible = true;
 }]]></script>

@@ -19,7 +19,9 @@ namespace CF7Launcher.Tasks
         /// <summary>输入显示但禁用：等待首句“……”、拆分前置段“（暂时不适合插话）”。</summary>
         Locked = 1,
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
-        Ready = 2
+        Ready = 2,
+        /// <summary>草案/检索准备中：显示但禁用“（正在准备…）”（《协议》3.3 / F-03）。</summary>
+        Preparing = 3
     }
 
     /// <summary>
@@ -43,6 +45,16 @@ namespace CF7Launcher.Tasks
         private const int MaxPlayerInput = 150;
         private const int LineHardMax = 165;
         private const int LinePromptMax = 135;
+        /// <summary>
+        /// 单轮"无事件"超时（秒）。依据：任务子 Agent 最坏约 120 秒不产事件，
+        /// 检索/最终对话另计；180 秒既能让长工具轮跑完，又不至于让输入无限停在 Locked。
+        /// </summary>
+        private const int NoEventTimeoutSeconds = 180;
+        /// <summary>
+        /// 单轮总时长上限（秒）。无事件超时会被持续到达的 status/line 刷新，
+        /// 必须另设总上限兜住"有输出但永不结束"；按 120 秒子 Agent 再加检索/多段/重试的一倍余量取 300。
+        /// </summary>
+        private const int TurnTotalTimeoutSeconds = 300;
         private const string PcName = "$PC";
         private const string DefaultEmotion = "普通";
         private const string KindDaily = "daily";
@@ -107,8 +119,27 @@ namespace CF7Launcher.Tasks
         private bool _finalizeAgain;
         /// <summary>失败轮还欠一次"在已播 AI 行之后接回原作"（等 $PC 播完/首句上屏再补）。</summary>
         private bool _resumeAfterFailure;
+        /// <summary>本轮收到 status(drafting/searching)：输入显示“（正在准备…）”，line/done/error 清掉。</summary>
+        private bool _preparing;
+        /// <summary>本轮开始时刻（总时长上限基准）。</summary>
+        private DateTime _turnStartedAt;
+        /// <summary>最近一次 SSE 事件时刻（无事件超时基准）。</summary>
+        private DateTime _lastActivityAt;
+        /// <summary>当前在途的单轮看门狗；收尾/取消/新 turn 必须换掉或清空。</summary>
+        private IDisposable _watchdog;
         /// <summary>后台执行器：生产 Task.Run；测试注入同步执行，避免竞态。</summary>
         internal Func<Func<Task>, Task> TaskRunner = f => Task.Run(f);
+        /// <summary>
+        /// 单轮看门狗调度器（delay, callback）→ 可取消句柄。生产用线程池 Timer；
+        /// 单测注入假调度器并配合注入时钟手动推进，不 sleep。
+        /// </summary>
+        internal Func<TimeSpan, Action, IDisposable> WatchdogScheduler = DefaultWatchdogSchedule;
+
+        private static IDisposable DefaultWatchdogSchedule(TimeSpan delay, Action callback)
+        {
+            if (delay < TimeSpan.Zero) delay = TimeSpan.Zero;
+            return new Timer(delegate { callback(); }, null, delay, Timeout.InfiniteTimeSpan);
+        }
 
         private DialogueInterjectInputState _inputState = DialogueInterjectInputState.Hidden;
 
@@ -177,6 +208,8 @@ namespace CF7Launcher.Tasks
             _pcRevision = -1;
             _finalizePending = false;
             _resumeAfterFailure = false;
+            _preparing = false;
+            DisarmWatchdog();
             session.LinePresented = OnLinePresented;
             session.Closing = OnSessionClosing;
             // 组刚开始还没有任何台词上屏：不能是 Ready（等 Begin 呈现第一句再开）。
@@ -194,6 +227,8 @@ namespace CF7Launcher.Tasks
             _closing = false;
             _dialogueInstanceId = null;
             _npcName = null;
+            _preparing = false;
+            DisarmWatchdog();
             _queued.Clear();
             _insertedLines.Clear();
             lock (_playedGate) { _played.Clear(); _nextSeq = 0; }
@@ -209,7 +244,9 @@ namespace CF7Launcher.Tasks
             if (_session == null || _closing) return;
             _closing = true;
             StopStream();
+            DisarmWatchdog();
             _turnActive = false;
+            _preparing = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
             _queued.Clear();
@@ -294,7 +331,10 @@ namespace CF7Launcher.Tasks
                     return;
                 }
             }
-            SetInputState(DialogueInterjectInputState.Locked);
+            // 没有排队的台词可放：按"等待"落回 Locked；草案/检索准备中显示“（正在准备…）”。
+            SetInputState(_preparing
+                ? DialogueInterjectInputState.Preparing
+                : DialogueInterjectInputState.Locked);
             FlushPendingFinalize();
             FlushResumeAfterFailure();
         }
@@ -350,12 +390,16 @@ namespace CF7Launcher.Tasks
             _turnId = turnId;
             _turnActive = true;
             _aiLineShown = false;
+            _preparing = false;
             _queued.Clear();
             _insertedLines.Clear();
             LastFailure = null;
             LastReferenceCount = unplayed.Count;
             SetInputState(DialogueInterjectInputState.Hidden);
 
+            // 看门狗只在本轮活动期间有效：新 turn 从此刻重新计时，收尾/取消时 disarm。
+            _turnStartedAt = _lastActivityAt = _clock();
+            ArmWatchdog(_turnStartedAt);
             StartStream(requestJson);
             return true;
         }
@@ -523,13 +567,71 @@ namespace CF7Launcher.Tasks
             catch (InvalidOperationException) { }
         }
 
-        /// <summary>SSE 事件（已在 dispatch 队列上）：P2 消费 line / done / error；
-        /// status/mute/plan 解析保留但不动作（P4 填）。</summary>
-        private void OnEvent(DialogueInterjectEvent evt)
+        // ════════════════ 单轮看门狗 ════════════════
+
+        /// <summary>每收到一个 SSE 事件刷新无事件窗口；只在本轮活动期间计时。</summary>
+        private void NoteWatchdogActivity()
+        {
+            if (!_turnActive || _closing) return;
+            _lastActivityAt = _clock();
+            ArmWatchdog(_lastActivityAt);
+        }
+
+        /// <summary>按 min(无事件窗口, 总时长上限) 重排一次性定时器；早触发由 OnWatchdogFired 自行续排。</summary>
+        private void ArmWatchdog(DateTime now)
+        {
+            DisarmWatchdog();
+            if (!_turnActive || _closing) return;
+            DateTime noEventDeadline = _lastActivityAt.AddSeconds(NoEventTimeoutSeconds);
+            DateTime totalDeadline = _turnStartedAt.AddSeconds(TurnTotalTimeoutSeconds);
+            DateTime deadline = noEventDeadline < totalDeadline ? noEventDeadline : totalDeadline;
+            TimeSpan delay = deadline - now;
+            if (delay < TimeSpan.Zero) delay = TimeSpan.Zero;
+            _watchdog = WatchdogScheduler(delay, delegate { Post(OnWatchdogFired); });
+        }
+
+        private void DisarmWatchdog()
+        {
+            IDisposable timer = _watchdog;
+            _watchdog = null;
+            if (timer == null) return;
+            try { timer.Dispose(); } catch { }
+        }
+
+        /// <summary>
+        /// 看门狗到期（已回到 dispatch 队列）：本轮已结束就只清定时器；
+        /// 没到真超时（假时钟/提前触发）按剩余时间续排；真超时则停流 + 按失败回退并解锁输入。
+        /// </summary>
+        private void OnWatchdogFired()
+        {
+            if (_session == null || _closing || !_turnActive)
+            {
+                DisarmWatchdog();
+                return;
+            }
+            DateTime now = _clock();
+            bool noEventExpired = now >= _lastActivityAt.AddSeconds(NoEventTimeoutSeconds);
+            bool totalExpired = now >= _turnStartedAt.AddSeconds(TurnTotalTimeoutSeconds);
+            if (!noEventExpired && !totalExpired)
+            {
+                ArmWatchdog(now);
+                return;
+            }
+            StopStream();
+            FailTurn("stream_timeout");
+        }
+
+        /// <summary>SSE 事件（已在 dispatch 队列上）：消费 status / line / done / error；
+        /// mute/plan 解析保留但不动作（P4 填）。internal 也作为单测的中途事件驱动点。</summary>
+        internal void OnEvent(DialogueInterjectEvent evt)
         {
             if (evt == null) return;
+            NoteWatchdogActivity();
             switch (evt.Kind)
             {
+                case DialogueInterjectEventKind.Status:
+                    ApplyStatus(evt);
+                    break;
                 case DialogueInterjectEventKind.Line:
                     AcceptLine(DialogueInterjectLine.FromEvent(evt));
                     break;
@@ -544,9 +646,27 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        /// <summary>
+        /// status（协议 5.2，可选）：drafting/searching 表示草案/检索准备中 →
+        /// 输入显示但禁用“（正在准备…）”。line/done/error 由各自路径清掉该标记并回到既有状态；
+        /// 其余 stage（connecting/thinking/waiting）不改输入态，避免自造状态。
+        /// 后端不提供这两个 stage 时输入保持 Locked“……”即可。
+        /// </summary>
+        private void ApplyStatus(DialogueInterjectEvent evt)
+        {
+            if (!_turnActive || _closing || !_groupAllowsInterject) return;
+            string stage = evt.Text("stage");
+            if (!string.Equals(stage, "drafting", StringComparison.Ordinal)
+                && !string.Equals(stage, "searching", StringComparison.Ordinal)) return;
+            _preparing = true;
+            if (_playerLinePlaying) return;   // $PC 播放期间保持 Hidden，播完再显示“正在准备…”
+            SetInputState(DialogueInterjectInputState.Preparing);
+        }
+
         private void AcceptLine(DialogueInterjectLine line)
         {
             if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
+            _preparing = false;             // 已经出词：草案/检索阶段结束
             if (_playerLinePlaying)
             {
                 _queued.Enqueue(line);      // $PC 播放期间到达：排队，播完再播
@@ -613,6 +733,8 @@ namespace CF7Launcher.Tasks
         {
             if (!_turnActive) return;
             _turnActive = false;
+            _preparing = false;
+            DisarmWatchdog();
             if (!_aiLineShown && _queued.Count == 0)
             {
                 // done 但零条可播（后端违反自身约定）：按失败处理，回原对话。
@@ -649,12 +771,17 @@ namespace CF7Launcher.Tasks
             LastFailure = code;
             _stream = null;
             _turnActive = false;
+            _preparing = false;
+            DisarmWatchdog();
 
             if (_queued.Count == 0)
             {
                 _finalizePending = false;
                 _resumeAfterFailure = false;
-                RestoreOriginalTail();
+                // 已播过 AI 行时 RestoreOriginalTail 会直接返回（_aiLineShown），
+                // 必须改走 ResumeAfterPlayedTurnLines 把原作剩余接在那些行之后（P2 缺陷修复）。
+                if (_aiLineShown) ResumeAfterPlayedTurnLines();
+                else RestoreOriginalTail();
                 SetInputState(DialogueInterjectInputState.Ready);
                 Finalize("turn_error");
                 return;
@@ -675,7 +802,9 @@ namespace CF7Launcher.Tasks
             _finalizePending = false;
             _resumeAfterFailure = false;
             _queued.Clear();
-            RestoreOriginalTail();
+            // 落不了新行（splice 失败等）：与零条失败同一口径，已在播的 AI 行之后接回原作。
+            if (_aiLineShown) ResumeAfterPlayedTurnLines();
+            else RestoreOriginalTail();
             SetInputState(DialogueInterjectInputState.Ready);
             Finalize("turn_error");
         }
@@ -685,7 +814,9 @@ namespace CF7Launcher.Tasks
         {
             bool wasActive = _turnActive || _finalizePending;
             StopStream();
+            DisarmWatchdog();
             _turnActive = false;
+            _preparing = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
             _queued.Clear();
