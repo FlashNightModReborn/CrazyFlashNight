@@ -21,7 +21,10 @@ namespace CF7Launcher.Tasks
         /// <summary>可输入（每句开始显示即可用，D-10）。</summary>
         Ready = 2,
         /// <summary>草案/检索准备中：显示但禁用“（正在准备…）”（《协议》3.3 / F-03）。</summary>
-        Preparing = 3
+        Preparing = 3,
+        /// <summary>任务模式禁言：显示但禁用“（NPC名）暂时不打算让你插话”（《协议》4.7 / F-09）。
+        /// 整组锁，组结束/关闭后重置。</summary>
+        Muted = 4
     }
 
     /// <summary>
@@ -58,6 +61,8 @@ namespace CF7Launcher.Tasks
         private const string PcName = "$PC";
         private const string DefaultEmotion = "普通";
         private const string KindDaily = "daily";
+        private const string KindTaskPre = "task_pre";
+        private const string KindTaskPost = "task_post";
         private const string KindStage = "stage";
 
         private sealed class PlayedRow
@@ -82,6 +87,38 @@ namespace CF7Launcher.Tasks
             }
         }
 
+        /// <summary>已插入播放序列的本地行：add（TaskIndex=0）或对原第 N 条的改写（TaskIndex=n）。</summary>
+        private sealed class InsertedRef
+        {
+            internal DialogueInterjectLine Line;
+            internal int WireIndex = -1;
+            internal int TaskIndex;
+        }
+
+        /// <summary>plan 里的一条改写意图（n 为当轮 remaining 的 1..N）。</summary>
+        private sealed class TaskEdit
+        {
+            internal string Kind;                      // nochange | edit | remove
+            internal readonly List<DialogueInterjectLine> Lines = new List<DialogueInterjectLine>();
+        }
+
+        /// <summary>SSE plan（协议 5.2）：end/mute/edits；非法部分宽容忽略。</summary>
+        private sealed class TaskPlan
+        {
+            internal bool HasEnd;
+            internal int End;
+            internal bool Mute;
+            internal readonly Dictionary<int, TaskEdit> Edits = new Dictionary<int, TaskEdit>();
+        }
+
+        /// <summary>参考续写条目：add/closing 带行；edit/remove 带下一轮 remaining 的 1..N 下标。</summary>
+        private sealed class ReferenceItem
+        {
+            internal string Kind;
+            internal int Index;
+            internal DialogueInterjectLine Line;
+        }
+
         private readonly NativeDialogueTask _task;
         private readonly NativeDialogueWidget _widget;
         private readonly Action<Action> _dispatch;
@@ -100,12 +137,28 @@ namespace CF7Launcher.Tasks
         private bool _groupAllowsInterject;
         private bool _closing;
 
+        // ── 任务组（P4）──
+        /// <summary>ordinary + task_pre/task_post；stage 与日常都不是任务模式。</summary>
+        private bool _taskMode;
+        /// <summary>组开始时取一次的 task_context；null = 不可插话（fail-closed）。</summary>
+        private JObject _taskContext;
+        /// <summary>mute 是任务模式唯一的整组锁；组结束/关闭后重置。</summary>
+        private bool _muted;
+        /// <summary>本轮 plan 无 end：原始剩余已放弃，下一轮 remaining 为空、不再接回原文。</summary>
+        private bool _abandonedOriginalTail;
+        /// <summary>已收到但还没应用（$PC 播放中 / add 还在排队）的 plan。</summary>
+        private TaskPlan _pendingPlan;
+        /// <summary>本轮 plan 已应用（失败时不再接回原文）。</summary>
+        private bool _planApplied;
+        /// <summary>已应用、但播放进度还没越过的 remove 的原始行号（下一轮转参考续写）。</summary>
+        private readonly List<int> _appliedRemoves = new List<int>();
+
         // ── 本轮 ──
         private string _turnId;
         private DialogueInterjectStream _stream;
         private readonly Queue<DialogueInterjectLine> _queued = new Queue<DialogueInterjectLine>();
-        private readonly Dictionary<NativeDialogueBookSession.Line, DialogueInterjectLine> _insertedLines =
-            new Dictionary<NativeDialogueBookSession.Line, DialogueInterjectLine>();
+        private readonly Dictionary<NativeDialogueBookSession.Line, InsertedRef> _insertedLines =
+            new Dictionary<NativeDialogueBookSession.Line, InsertedRef>();
         private bool _playerLinePlaying;
         private bool _aiLineShown;
         private bool _turnActive;
@@ -197,6 +250,21 @@ namespace CF7Launcher.Tasks
             _session = session;
             _closing = false;
             _groupAllowsInterject = IsDailyGroup(session);
+            _taskMode = session.Mode == "ordinary"
+                && (string.Equals(session.DialogueKind, KindTaskPre, StringComparison.Ordinal)
+                    || string.Equals(session.DialogueKind, KindTaskPost, StringComparison.Ordinal));
+            _taskContext = null;
+            _muted = false;
+            _pendingPlan = null;
+            _planApplied = false;
+            _abandonedOriginalTail = false;
+            _appliedRemoves.Clear();
+            if (_taskMode)
+            {
+                // 任务组门控（协议 4.1）：provider 拿到 task_context 才开放，否则 fail-closed。
+                _taskContext = BuildTaskContext(session);
+                _groupAllowsInterject = _taskContext != null;
+            }
             _dialogueInstanceId = null;      // 首次插入才建（D-04 / 6.1）
             _npcName = null;
             lock (_playedGate) { _played.Clear(); _nextSeq = 0; }
@@ -228,6 +296,13 @@ namespace CF7Launcher.Tasks
             _dialogueInstanceId = null;
             _npcName = null;
             _preparing = false;
+            _taskMode = false;
+            _taskContext = null;
+            _muted = false;
+            _pendingPlan = null;
+            _planApplied = false;
+            _abandonedOriginalTail = false;
+            _appliedRemoves.Clear();
             DisarmWatchdog();
             _queued.Clear();
             _insertedLines.Clear();
@@ -247,6 +322,8 @@ namespace CF7Launcher.Tasks
             DisarmWatchdog();
             _turnActive = false;
             _preparing = false;
+            _muted = false;
+            _pendingPlan = null;
             _finalizePending = false;
             _resumeAfterFailure = false;
             _queued.Clear();
@@ -265,12 +342,39 @@ namespace CF7Launcher.Tasks
             return string.Equals(session.DialogueKind, KindDaily, StringComparison.Ordinal);
         }
 
+        /// <summary>
+        /// 组开始取一次任务上下文（协议 4.2）：provider 未注册、抛错或返回 null 都按
+        /// 不可插话处理（fail-closed，输入保持 Hidden，不显示也不报错）。
+        /// </summary>
+        private JObject BuildTaskContext(NativeDialogueBookSession session)
+        {
+            string taskId = session.DialogueTaskId;
+            if (string.IsNullOrEmpty(taskId)) return null;
+            Func<string, string, JObject> provider = _task != null ? _task.TaskContextProvider : null;
+            if (provider == null) return null;
+            try
+            {
+                return provider(taskId, session.DialogueKind);
+            }
+            catch (Exception ex)
+            {
+                LogManager.Log("[DialogueInterject] task_context build failed: " + ex.Message);
+                return null;
+            }
+        }
+
         private void OnLinePresented(NativeDialogueBookSession.Line line)
         {
             if (_session == null || line == null) return;
             string name = line.Name ?? "";
             bool isPc = string.Equals(name, PcName, StringComparison.Ordinal);
             bool isLocal = line.WireIndex < 0;
+            // 任务改写行占用原始行号（WireIndex>=0），但它是 Host 生成的内容：
+            // 角色仍按原说话人记（协议 6.2），输入状态与拆分暂锁按“生成行”处理。
+            InsertedRef inserted;
+            _insertedLines.TryGetValue(line, out inserted);
+            bool isEdit = inserted != null && inserted.TaskIndex > 0;
+            bool isGenerated = isLocal || isEdit;
 
             if (!isPc && name.Length > 0) _npcName = name;
 
@@ -296,17 +400,24 @@ namespace CF7Launcher.Tasks
                 SetInputState(DialogueInterjectInputState.Hidden);
                 return;
             }
+            if (isLocal) _aiLineShown = true;
+            if (isEdit) _aiLineShown = true;
             if (!_groupAllowsInterject) return;
-            if (isLocal)
+            if (_muted)
             {
-                _aiLineShown = true;
+                // 禁言是任务模式唯一整组锁：add/plan/原文照常播放，输入禁用。
+                SetInputState(DialogueInterjectInputState.Muted);
+                return;
+            }
+            if (isGenerated)
+            {
                 // 拆分前置段：输入暂锁；末段/自然单条：开始显示即可输入（§3.3）。
                 SetInputState(line.SplitIntermediate
                     ? DialogueInterjectInputState.Locked
                     : DialogueInterjectInputState.Ready);
                 return;
             }
-            // 原作台词：可输入（stage / 任务组已在 IsDailyGroup 拦掉）
+            // 原作台词：可输入（stage / 任务组已在 IsGroupAllowsInterject 拦掉）
             SetInputState(DialogueInterjectInputState.Ready);
         }
 
@@ -326,15 +437,18 @@ namespace CF7Launcher.Tasks
                 {
                     // 首句已上屏：其余已收台词按顺序接在它后面，玩家点“下一条”逐句看。
                     DrainQueueToTail();
+                    // add 全部落完：迟到的 plan 在这里一次性应用（§4.5）。
+                    TryApplyPendingPlan();
                     FlushPendingFinalize();
                     FlushResumeAfterFailure();
                     return;
                 }
             }
-            // 没有排队的台词可放：按"等待"落回 Locked；草案/检索准备中显示“（正在准备…）”。
-            SetInputState(_preparing
-                ? DialogueInterjectInputState.Preparing
-                : DialogueInterjectInputState.Locked);
+            // 没有排队的台词可放：换句时机已就绪，迟到的 plan 现在应用。
+            TryApplyPendingPlan();
+            // 任务模式 done + plan：按"成功"解锁输入（协议 4.5 / F-08），不等下一句上屏。
+            if (_taskMode && _planApplied) SetInputState(ReadyOrMuted());
+            else SetInputState(IdleState());
             FlushPendingFinalize();
             FlushResumeAfterFailure();
         }
@@ -358,19 +472,25 @@ namespace CF7Launcher.Tasks
             // 协议 3.3：发送时若当前句仍在逐字显示，先补全当前句。
             _widget.CompleteCurrentLineTyping();
 
-            // 协议 4.6 / D-09：上一轮未播的新增/结束语转成本轮参考续写（含已插入未走到的行）。
-            List<DialogueInterjectLine> unplayed = CollectUnplayedTurnLines();
+            // played 只取本轮发送之前的已播历史（不含本轮 $PC）；下一轮 remaining 从当前播放点之后起算。
+            List<PlayedRow> playedSnapshot;
+            lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
+            int wireResume = _session.CurrentWireIndex + 1;
+
+            // 协议 4.3 / 4.6：上一轮未播的新增/结束语/改写/移除转成本轮参考续写
+            // （含已插入未走到的行；下标按下一轮 remaining 的 1..N 计算）。
+            List<ReferenceItem> unplayed = CollectUnplayedTurnLines(wireResume);
 
             // 一轮在途时再次发送：真取消在途流（Dispose 流 + token），已收内容已在上面的 unplayed 里。
             StopStream();
             _turnActive = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
+            // 已收未应用的 plan 不应用（意图已转参考）；本轮 plan 状态重新计数。
+            _pendingPlan = null;
+            _planApplied = false;
+            _appliedRemoves.RemoveAll(wire => wire < wireResume);
 
-            // played 只取本轮发送之前的已播历史（不含本轮 $PC）。
-            List<PlayedRow> playedSnapshot;
-            lock (_playedGate) { playedSnapshot = new List<PlayedRow>(_played); }
-            int wireResume = _session.CurrentWireIndex + 1;
             var remaining = BuildRemaining(wireResume);
             string dialogueInstanceId = _dialogueInstanceId ?? (_dialogueInstanceId = _newId());
             string turnId = _newId();
@@ -405,27 +525,92 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// 收集"本轮已收到但没播"的台词：排队中的 + 已插进播放序列但当前还没走到的。
-        /// 只用于本轮（新一轮开始时清空映射表）。
+        /// 收集"本轮已收到但没播"的参考续写：
+        /// - 排队中的 add/closing；
+        /// - 已插进播放序列但当前还没走到的 add（TaskIndex=0）或改写（TaskIndex=n）；
+        /// - 已应用但播放进度还没越过的 remove；
+        /// - 已收未应用的 plan 里的 edit/remove（按下一轮 remaining 的 1..N 折算）。
+        /// 无 end 的整组替换模式（_abandonedOriginalTail）下原编号已不存在：edit/remove 记录后丢弃。
         /// </summary>
-        private List<DialogueInterjectLine> CollectUnplayedTurnLines()
+        private List<ReferenceItem> CollectUnplayedTurnLines(int nextWireStart)
         {
-            var unplayed = new List<DialogueInterjectLine>();
-            while (_queued.Count > 0) unplayed.Add(_queued.Dequeue());
+            var unplayed = new List<ReferenceItem>();
+            while (_queued.Count > 0)
+            {
+                DialogueInterjectLine queued = _queued.Dequeue();
+                unplayed.Add(new ReferenceItem { Kind = RefKindOf(queued), Line = queued });
+            }
             if (_session == null) return unplayed;
+
+            int dropped = 0;
             for (int i = _session.Index + 1; i < _session.PlaybackCount; i++)
             {
                 NativeDialogueBookSession.Line line = _session.GetPlaybackLine(i);
                 if (line == null) continue;
-                DialogueInterjectLine source;
-                if (_insertedLines.TryGetValue(line, out source)) unplayed.Add(source);
+                InsertedRef inserted;
+                if (!_insertedLines.TryGetValue(line, out inserted) || inserted.Line == null) continue;
+                if (inserted.TaskIndex > 0)
+                {
+                    if (_abandonedOriginalTail) { dropped++; continue; }
+                    int index = inserted.WireIndex - nextWireStart + 1;
+                    if (index < 1) { dropped++; continue; }
+                    unplayed.Add(new ReferenceItem
+                    {
+                        Kind = "edit", Index = index, Line = inserted.Line
+                    });
+                    continue;
+                }
+                unplayed.Add(new ReferenceItem { Kind = RefKindOf(inserted.Line), Line = inserted.Line });
             }
+
+            for (int i = 0; i < _appliedRemoves.Count; i++)
+            {
+                int wire = _appliedRemoves[i];
+                if (_abandonedOriginalTail) { dropped++; continue; }
+                int index = wire - nextWireStart + 1;
+                if (index < 1) continue;      // 已越过：remove 已经生效，不再参考
+                unplayed.Add(new ReferenceItem { Kind = "remove", Index = index });
+            }
+
+            if (_pendingPlan != null) AppendPendingPlanReferences(unplayed, nextWireStart);
+
+            if (dropped > 0)
+                LogManager.Log("[DialogueInterject] dropped " + dropped
+                    + " reference items (index no longer in remaining)");
             return unplayed;
+        }
+
+        /// <summary>已收未应用的 plan：不应用，edit/remove 按下一轮 remaining 编号转参考。</summary>
+        private void AppendPendingPlanReferences(List<ReferenceItem> unplayed, int nextWireStart)
+        {
+            foreach (KeyValuePair<int, TaskEdit> pair in _pendingPlan.Edits)
+            {
+                int wire = _wireResume + pair.Key - 1;
+                int index = wire - nextWireStart + 1;
+                if (index < 1) continue;
+                TaskEdit edit = pair.Value;
+                if (string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
+                {
+                    unplayed.Add(new ReferenceItem { Kind = "remove", Index = index });
+                    continue;
+                }
+                if (!string.Equals(edit.Kind, "edit", StringComparison.Ordinal)) continue;
+                for (int i = 0; i < edit.Lines.Count; i++)
+                    unplayed.Add(new ReferenceItem { Kind = "edit", Index = index, Line = edit.Lines[i] });
+            }
+        }
+
+        private static string RefKindOf(DialogueInterjectLine line)
+        {
+            return line != null && string.Equals(line.Kind, "closing", StringComparison.Ordinal)
+                ? "closing" : "add";
         }
 
         private JArray BuildRemaining(int fromWire)
         {
             var remaining = new JArray();
+            // 无 end 的整组替换：原始剩余视为已放弃，下一轮 remaining 为空（协议 4.5）。
+            if (_abandonedOriginalTail) return remaining;
             int index = 1;
             for (int wire = Math.Max(0, fromWire); wire < _session.RowCount; wire++)
             {
@@ -442,49 +627,66 @@ namespace CF7Launcher.Tasks
             return remaining;
         }
 
-        /// <summary>上一轮未播的 add/closing → reference_continuation（协议 5.1）。</summary>
-        private JArray BuildReference(List<DialogueInterjectLine> unplayed)
+        /// <summary>参考续写 → 协议 5.1 的 reference_continuation（add/closing/edit/remove）。</summary>
+        private JArray BuildReference(List<ReferenceItem> unplayed)
         {
             var reference = new JArray();
             if (unplayed == null) return reference;
             for (int i = 0; i < unplayed.Count; i++)
             {
-                DialogueInterjectLine line = unplayed[i];
-                if (line == null || string.IsNullOrEmpty(line.Text)) continue;
-                reference.Add(new JObject
+                ReferenceItem item = unplayed[i];
+                if (item == null) continue;
+                if (string.Equals(item.Kind, "remove", StringComparison.Ordinal))
                 {
-                    ["kind"] = string.Equals(line.Kind, "closing", StringComparison.Ordinal) ? "closing" : "add",
+                    reference.Add(new JObject { ["kind"] = "remove", ["index"] = item.Index });
+                    continue;
+                }
+                DialogueInterjectLine line = item.Line;
+                if (line == null || string.IsNullOrEmpty(line.Text)) continue;
+                var entry = new JObject
+                {
+                    ["kind"] = item.Kind,
                     ["name"] = string.IsNullOrEmpty(line.Speaker) ? (_npcName ?? "") : line.Speaker,
                     ["text"] = line.Text,
                     ["emotion"] = string.IsNullOrEmpty(line.Emotion) ? DefaultEmotion : line.Emotion
-                });
+                };
+                if (string.Equals(item.Kind, "edit", StringComparison.Ordinal))
+                    entry["index"] = item.Index;
+                reference.Add(entry);
             }
             return reference;
         }
 
         private string BuildRequest(string playerInput, string npc, string dialogueInstanceId,
-            string turnId, List<PlayedRow> played, JArray remaining, List<DialogueInterjectLine> unplayed)
+            string turnId, List<PlayedRow> played, JArray remaining, List<ReferenceItem> unplayed)
         {
             var playedArray = new JArray();
             foreach (PlayedRow row in played) playedArray.Add(row.ToJson());
+            string kind = _session.DialogueKind;
+            string time = _clock().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture);
+            string sessionTitle = _taskMode
+                ? "任务插话 · " + TaskTitle() + " · "
+                    + (string.Equals(kind, KindTaskPre, StringComparison.Ordinal) ? "任务前" : "任务后")
+                    + " · " + time
+                : "日常插话 · " + npc + " · " + time;
             var request = new JObject
             {
-                ["mode"] = "daily",
+                ["mode"] = _taskMode ? "task" : "daily",
                 ["dialogue_instance_id"] = dialogueInstanceId,
                 ["turn_id"] = turnId,
                 ["npc"] = npc,
                 ["player_input"] = playerInput,
-                ["session_title"] = "日常插话 · " + npc + " · "
-                    + _clock().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture),
+                ["session_title"] = sessionTitle,
                 ["dialogue"] = new JObject
                 {
-                    ["kind"] = "daily",
+                    ["kind"] = kind,
                     ["group_id"] = _session.RequestId,
                     ["played"] = playedArray,
                     ["remaining"] = remaining,
                     ["reference_continuation"] = BuildReference(unplayed)
                 },
-                ["task_context"] = JValue.CreateNull(),
+                ["task_context"] = _taskMode && _taskContext != null
+                    ? (JToken)_taskContext.DeepClone() : (JToken)JValue.CreateNull(),
                 ["limits"] = new JObject
                 {
                     ["line_hard_max"] = LineHardMax,
@@ -492,6 +694,19 @@ namespace CF7Launcher.Tasks
                 }
             };
             return request.ToString(Formatting.None);
+        }
+
+        /// <summary>任务名（session_title 用）：取本组在 task_context 里的那一段标题。</summary>
+        private string TaskTitle()
+        {
+            if (_taskContext != null && _session != null)
+            {
+                JObject segment = (string.Equals(_session.DialogueKind, KindTaskPre, StringComparison.Ordinal)
+                    ? _taskContext["upcoming"] : _taskContext["completed"]) as JObject;
+                string title = segment != null ? (segment.Value<string>("title") ?? "").Trim() : "";
+                if (title.Length > 0) return title;
+            }
+            return _npcName ?? "";
         }
 
         /// <summary>$PC 行：优先沿用本组原作里的 $PC 外观（风险 7 的保守处理），没有就无立绘。</summary>
@@ -621,8 +836,8 @@ namespace CF7Launcher.Tasks
             FailTurn("stream_timeout");
         }
 
-        /// <summary>SSE 事件（已在 dispatch 队列上）：消费 status / line / done / error；
-        /// mute/plan 解析保留但不动作（P4 填）。internal 也作为单测的中途事件驱动点。</summary>
+        /// <summary>SSE 事件（已在 dispatch 队列上）：消费 status / mute / line / plan / done / error。
+        /// internal 也作为单测的中途事件驱动点。</summary>
         internal void OnEvent(DialogueInterjectEvent evt)
         {
             if (evt == null) return;
@@ -632,8 +847,14 @@ namespace CF7Launcher.Tasks
                 case DialogueInterjectEventKind.Status:
                     ApplyStatus(evt);
                     break;
+                case DialogueInterjectEventKind.Mute:
+                    ApplyMute(evt);
+                    break;
                 case DialogueInterjectEventKind.Line:
                     AcceptLine(DialogueInterjectLine.FromEvent(evt));
+                    break;
+                case DialogueInterjectEventKind.Plan:
+                    AcceptPlan(evt);
                     break;
                 case DialogueInterjectEventKind.Done:
                     CompleteTurn();
@@ -655,6 +876,7 @@ namespace CF7Launcher.Tasks
         private void ApplyStatus(DialogueInterjectEvent evt)
         {
             if (!_turnActive || _closing || !_groupAllowsInterject) return;
+            if (_muted) return;               // 禁言优先于“正在准备…”，不覆盖整组锁
             string stage = evt.Text("stage");
             if (!string.Equals(stage, "drafting", StringComparison.Ordinal)
                 && !string.Equals(stage, "searching", StringComparison.Ordinal)) return;
@@ -663,10 +885,293 @@ namespace CF7Launcher.Tasks
             SetInputState(DialogueInterjectInputState.Preparing);
         }
 
-        private void AcceptLine(DialogueInterjectLine line)
+        // ════════════════ 任务模式：mute / plan ════════════════
+
+        /// <summary>mute 事件（协议 4.7 / F-09）：本组输入禁用；add/plan 照常播放。</summary>
+        private void ApplyMute(DialogueInterjectEvent evt)
         {
-            if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
+            if (!_taskMode || _closing || _session == null) return;
+            bool mute = evt.Data != null && evt.Data.Value<bool?>("mute").GetValueOrDefault(false);
+            if (!mute) return;
+            SetMuted();
+        }
+
+        private void SetMuted()
+        {
+            if (_muted) return;
+            _muted = true;
+            if (_playerLinePlaying || !_groupAllowsInterject) return;   // $PC 播放期间保持 Hidden
+            SetInputState(DialogueInterjectInputState.Muted);
+        }
+
+        private DialogueInterjectInputState ReadyOrMuted()
+        {
+            return _muted
+                ? DialogueInterjectInputState.Muted
+                : DialogueInterjectInputState.Ready;
+        }
+
+        /// <summary>没有可放台词时的落点：禁言 &gt; 准备中 &gt; 等待。</summary>
+        private DialogueInterjectInputState IdleState()
+        {
+            if (_muted) return DialogueInterjectInputState.Muted;
+            return _preparing
+                ? DialogueInterjectInputState.Preparing
+                : DialogueInterjectInputState.Locked;
+        }
+
+        /// <summary>禁言提示文案（binder 显示用）：任务组才有名字，日常返回空。</summary>
+        internal string PlaceholderFor(DialogueInterjectInputState state)
+        {
+            if (state != DialogueInterjectInputState.Muted) return null;
+            string npc = string.IsNullOrEmpty(_npcName) ? "" : _npcName;
+            return "（" + npc + "）暂时不打算让你插话";
+        }
+
+        /// <summary>plan 事件（协议 5.2）：先存；add 全部落完时一次性应用（§4.5）。</summary>
+        private void AcceptPlan(DialogueInterjectEvent evt)
+        {
+            if (!_taskMode || !_turnActive || _closing || _session == null) return;
+            if (_planApplied) return;
+            TaskPlan plan = ParsePlan(evt);
+            if (plan == null) return;
+            if (plan.Mute) SetMuted();
+            _pendingPlan = plan;
+            TryApplyPendingPlan();
+        }
+
+        /// <summary>
+        /// plan 解析（宽容）：end 只认整数；edits[] 只认 n ≥ 1 的 nochange/edit/remove；
+        /// 同一 n 多条 edit 合并为一条拆成多条；非法条目忽略，不整段打回。
+        /// </summary>
+        private static TaskPlan ParsePlan(DialogueInterjectEvent evt)
+        {
+            JObject data = evt.Data;
+            if (data == null) return null;
+            var plan = new TaskPlan();
+            JToken end = data["end"];
+            if (end != null && end.Type == JTokenType.Integer)
+            {
+                plan.HasEnd = true;
+                plan.End = end.Value<int>();
+            }
+            plan.Mute = data.Value<bool?>("mute").GetValueOrDefault(false);
+
+            var edits = data["edits"] as JArray;
+            if (edits == null) return plan;
+            for (int i = 0; i < edits.Count; i++)
+            {
+                var entry = edits[i] as JObject;
+                if (entry == null) continue;
+                JToken nToken = entry["n"];
+                if (nToken == null || nToken.Type != JTokenType.Integer) continue;
+                int n = nToken.Value<int>();
+                if (n < 1) continue;
+                string kind = (entry.Value<string>("kind") ?? "").Trim();
+                if (string.Equals(kind, "nochange", StringComparison.Ordinal))
+                {
+                    if (!plan.Edits.ContainsKey(n)) plan.Edits[n] = new TaskEdit { Kind = "nochange" };
+                    continue;
+                }
+                if (string.Equals(kind, "remove", StringComparison.Ordinal))
+                {
+                    plan.Edits[n] = new TaskEdit { Kind = "remove" };
+                    continue;
+                }
+                if (!string.Equals(kind, "edit", StringComparison.Ordinal)) continue;
+                TaskEdit edit;
+                if (!plan.Edits.TryGetValue(n, out edit)
+                    || !string.Equals(edit.Kind, "edit", StringComparison.Ordinal))
+                {
+                    edit = new TaskEdit { Kind = "edit" };
+                    plan.Edits[n] = edit;
+                }
+                var lines = entry["lines"] as JArray;
+                if (lines == null) continue;
+                for (int j = 0; j < lines.Count; j++)
+                {
+                    var lineObject = lines[j] as JObject;
+                    if (lineObject == null) continue;
+                    string text = (lineObject.Value<string>("text") ?? "").Trim();
+                    if (text.Length == 0) continue;
+                    var line = new DialogueInterjectLine
+                    {
+                        Kind = "edit",
+                        Text = text,
+                        Emotion = lineObject.Value<string>("emotion") ?? "",
+                        Speaker = lineObject.Value<string>("speaker") ?? ""
+                    };
+                    var split = lineObject["split"] as JObject;
+                    if (split != null)
+                    {
+                        JToken index = split["index"];
+                        JToken count = split["count"];
+                        if (index != null && index.Type == JTokenType.Integer)
+                            line.SplitIndex = index.Value<int>();
+                        if (count != null && count.Type == JTokenType.Integer
+                            && count.Value<int>() > 0)
+                            line.SplitCount = count.Value<int>();
+                    }
+                    edit.Lines.Add(line);
+                }
+            }
+            return plan;
+        }
+
+        /// <summary>
+        /// plan 应用时机：add 已全部进播放序列（$PC 播完、队列空）；否则先存，
+        /// 等 OnTypingFinished / done 再应用。应用起点 = 新增段之后的第一条原始剩余。
+        /// </summary>
+        private bool TryApplyPendingPlan()
+        {
+            if (_pendingPlan == null || _planApplied) return false;
+            if (!_taskMode || _session == null || _closing) return false;
+            if (_playerLinePlaying || _queued.Count > 0) return false;
+            if (_turnTailIndex < 0) return false;
+            if (_session.State != NativeDialogueBookSession.HostState.Active) return false;
+            TaskPlan plan = _pendingPlan;
+            _pendingPlan = null;
+            ApplyPlan(plan);
+            return true;
+        }
+
+        /// <summary>
+        /// 按 end/edits 构建后续（协议 4.5）：
+        /// - end 存在：1..end-1 有 edit 用 edit、remove 跳过、其余原文；从 end 起接回原文；
+        ///   end 指向被 remove 的条目时跳到下一条未移除原文；end 之后的编辑/移除忽略。
+        /// - end 缺省：只用本轮 edit 构成剩余，不接回原文（原始剩余视为已放弃）。
+        /// </summary>
+        private void ApplyPlan(TaskPlan plan)
+        {
+            _planApplied = true;
+            if (_abandonedOriginalTail)
+            {
+                // 上一轮已放弃原始剩余：本轮 n 没有对应原文可改，只保留已经播/排好的 add。
+                _turnTailIndex = -1;
+                return;
+            }
+            int wireStart = _wireResume;
+            int count = Math.Max(0, _session.RowCount - wireStart);
+            int editLimit = count;
+            int resumeN = 0;                        // 1-based；0 = 不接回原文
+            bool hasEnd = plan.HasEnd && plan.End >= 1 && plan.End <= count;
+            if (hasEnd)
+            {
+                editLimit = plan.End - 1;
+                resumeN = plan.End;
+            }
+
+            var replacement = new List<NativeDialogueBookSession.Line>();
+            var refs = new List<InsertedRef>();      // 与 replacement 一一对应；原文行 = null
+            for (int n = 1; n <= editLimit; n++)
+            {
+                int wire = wireStart + n - 1;
+                TaskEdit edit;
+                if (plan.Edits.TryGetValue(n, out edit))
+                {
+                    if (string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
+                    {
+                        AddAppliedRemove(wire);
+                        continue;
+                    }
+                    if (string.Equals(edit.Kind, "edit", StringComparison.Ordinal)
+                        && edit.Lines.Count > 0)
+                    {
+                        for (int i = 0; i < edit.Lines.Count; i++)
+                        {
+                            NativeDialogueBookSession.Line local = BuildEditedLine(edit.Lines[i], wire);
+                            if (local == null) continue;
+                            replacement.Add(local);
+                            refs.Add(new InsertedRef
+                            {
+                                Line = edit.Lines[i], WireIndex = wire, TaskIndex = n
+                            });
+                        }
+                        continue;
+                    }
+                    // nochange / edit 空行：按原文处理
+                }
+                if (resumeN == 0) continue;         // end 缺省：未改写的原文不再播放
+                NativeDialogueBookSession.Line origin = _session.GetWireRow(wire);
+                if (origin == null) continue;
+                replacement.Add(origin);
+                refs.Add(null);                     // 原文行不需要参考续写映射
+            }
+
+            int resumeWire = _session.RowCount;
+            if (resumeN > 0)
+            {
+                // end 指向被 remove 的条目：跳到下一条未移除原文（协议 5.4）。
+                while (resumeN <= count)
+                {
+                    TaskEdit edit;
+                    if (plan.Edits.TryGetValue(resumeN, out edit)
+                        && string.Equals(edit.Kind, "remove", StringComparison.Ordinal))
+                    {
+                        AddAppliedRemove(wireStart + resumeN - 1);
+                        resumeN++;
+                        continue;
+                    }
+                    break;
+                }
+                resumeWire = resumeN > count
+                    ? _session.RowCount : wireStart + resumeN - 1;
+            }
+
+            if (!_session.ReplaceFrom(_turnTailIndex, replacement.ToArray(), resumeWire,
+                present: false))
+            {
+                LogManager.Log("[DialogueInterject] plan apply failed (splice rejected)");
+                return;
+            }
+            for (int i = 0; i < refs.Count; i++)
+            {
+                if (refs[i] == null) continue;      // 原文行：没有参考续写映射
+                _insertedLines[replacement[i]] = refs[i];
+            }
+            _turnTailIndex = -1;                    // plan 之后不再接受新增行插入
+            if (!hasEnd) _abandonedOriginalTail = true;
+        }
+
+        private void AddAppliedRemove(int wire)
+        {
+            if (!_appliedRemoves.Contains(wire)) _appliedRemoves.Add(wire);
+        }
+
+        /// <summary>改写行：保留原说话人/称谓/立绘/配图动作，只换正文与情绪（协议 5.5）。</summary>
+        private NativeDialogueBookSession.Line BuildEditedLine(DialogueInterjectLine source, int wire)
+        {
+            if (_session == null) return null;
+            NativeDialogueBookSession.Line origin = _session.GetWireRow(wire);
+            if (origin == null) return null;
+            return new NativeDialogueBookSession.Line
+            {
+                Name = origin.Name,
+                Title = origin.Title,
+                Text = source.Text,
+                PortraitKey = origin.PortraitKey,
+                Expression = string.IsNullOrEmpty(source.Emotion)
+                    ? origin.Expression : source.Emotion,
+                IsDoll = origin.IsDoll,
+                Appearance = origin.Appearance,
+                NormalizedAppearance = origin.NormalizedAppearance,
+                AppearanceIdentity = origin.AppearanceIdentity,
+                ImageAction = origin.ImageAction,
+                ImagePath = origin.ImagePath,
+                WireIndex = wire,
+                SplitIntermediate = source.IsSplitHead
+            };
+        }
+
+        private void AcceptLine(DialogueInterjectLine line)
+        {            if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
             _preparing = false;             // 已经出词：草案/检索阶段结束
+            if (_planApplied)
+            {
+                // plan 是任务模式的最后一块；之后还来 line 属协议违例，忽略不排队。
+                LogManager.Log("[DialogueInterject] late line after plan ignored: " + line.Text);
+                return;
+            }
             if (_playerLinePlaying)
             {
                 _queued.Enqueue(line);      // $PC 播放期间到达：排队，播完再播
@@ -717,14 +1222,16 @@ namespace CF7Launcher.Tasks
             };
             if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, null, advance)) return false;
             _turnTailIndex++;
-            _insertedLines[local] = line;
+            _insertedLines[local] = new InsertedRef { Line = line, WireIndex = -1, TaskIndex = 0 };
             if (advance)
             {
                 _pcRevision = -1;           // 后续打字完成不再当 $PC
                 _aiLineShown = true;
-                SetInputState(line.IsSplitHead
-                    ? DialogueInterjectInputState.Locked
-                    : DialogueInterjectInputState.Ready);
+                SetInputState(_muted
+                    ? DialogueInterjectInputState.Muted
+                    : (line.IsSplitHead
+                        ? DialogueInterjectInputState.Locked
+                        : DialogueInterjectInputState.Ready));
             }
             return true;
         }
@@ -732,13 +1239,35 @@ namespace CF7Launcher.Tasks
         private void CompleteTurn()
         {
             if (!_turnActive) return;
+            // 任务模式：没有 add 但有完整 plan 也算成功（协议 4.5 / F-08）。
+            if (_taskMode && !_aiLineShown && _queued.Count == 0)
+            {
+                _turnActive = false;
+                _preparing = false;
+                DisarmWatchdog();
+                if (_playerLinePlaying)
+                {
+                    // $PC 还在播：plan 等首句/换句时机再应用（不改当前句）。
+                    _finalizePending = true;
+                    return;
+                }
+                TryApplyPendingPlan();
+                if (_planApplied || _pendingPlan != null)
+                {
+                    SetInputState(ReadyOrMuted());
+                    Finalize("turn_done");
+                    return;
+                }
+                FailTurnCore("done_without_line");
+                return;
+            }
             _turnActive = false;
             _preparing = false;
             DisarmWatchdog();
             if (!_aiLineShown && _queued.Count == 0)
             {
                 // done 但零条可播（后端违反自身约定）：按失败处理，回原对话。
-                FailTurn("done_without_line");
+                FailTurnCore("done_without_line");
                 return;
             }
             if (_playerLinePlaying)
@@ -748,7 +1277,7 @@ namespace CF7Launcher.Tasks
                 return;
             }
             if (!_aiLineShown) _finalizePending = true;
-            SetInputState(DialogueInterjectInputState.Ready);
+            SetInputState(ReadyOrMuted());
             FlushPendingFinalize();
         }
 
@@ -766,23 +1295,34 @@ namespace CF7Launcher.Tasks
         /// D-17 / F-11：失败不补写、不重试整段；已经收到的台词照常播放。
         /// 零条 AI 行 → 在原生当前点接回；已播若干 AI 行 → 接在那些行之后（_wireResume）。
         /// </summary>
+        /// <summary>SSE error / 看门狗 / 传输失败的统一入口：turn 已结束后的迟到 error 只记日志。</summary>
         private void FailTurn(string code)
+        {
+            if (!_turnActive)
+            {
+                LogManager.Log("[DialogueInterject] late error ignored: " + code
+                    + " (turn already finished)");
+                return;
+            }
+            FailTurnCore(code);
+        }
+
+        private void FailTurnCore(string code)
         {
             LastFailure = code;
             _stream = null;
             _turnActive = false;
             _preparing = false;
+            // 失败不应用尚未应用的 plan（D-17 / §4.9：没有完整 plan 就回原对话当前点）。
+            _pendingPlan = null;
             DisarmWatchdog();
 
             if (_queued.Count == 0)
             {
                 _finalizePending = false;
                 _resumeAfterFailure = false;
-                // 已播过 AI 行时 RestoreOriginalTail 会直接返回（_aiLineShown），
-                // 必须改走 ResumeAfterPlayedTurnLines 把原作剩余接在那些行之后（P2 缺陷修复）。
-                if (_aiLineShown) ResumeAfterPlayedTurnLines();
-                else RestoreOriginalTail();
-                SetInputState(DialogueInterjectInputState.Ready);
+                RestoreOrResumeAfterFailure();
+                SetInputState(ReadyOrMuted());
                 Finalize("turn_error");
                 return;
             }
@@ -803,10 +1343,24 @@ namespace CF7Launcher.Tasks
             _resumeAfterFailure = false;
             _queued.Clear();
             // 落不了新行（splice 失败等）：与零条失败同一口径，已在播的 AI 行之后接回原作。
+            RestoreOrResumeAfterFailure();
+            SetInputState(ReadyOrMuted());
+            Finalize("turn_error");
+        }
+
+        /// <summary>
+        /// 失败回退（D-17 / §4.9）：有已播 AI 行 → 接在那些行之后；没有 → 回当前原文点。
+        /// 例外：已应用完整 plan（计划本身即后续）或无 end 的整组替换已放弃原文 → 不接回。
+        /// </summary>
+        private void RestoreOrResumeAfterFailure()
+        {
+            if (_planApplied || _abandonedOriginalTail)
+            {
+                _turnTailIndex = -1;
+                return;
+            }
             if (_aiLineShown) ResumeAfterPlayedTurnLines();
             else RestoreOriginalTail();
-            SetInputState(DialogueInterjectInputState.Ready);
-            Finalize("turn_error");
         }
 
         /// <summary>关闭/组结束/新一轮覆盖：真取消在途流（Dispose 流 + token），未到行不播。</summary>
@@ -819,9 +1373,10 @@ namespace CF7Launcher.Tasks
             _preparing = false;
             _finalizePending = false;
             _resumeAfterFailure = false;
+            _pendingPlan = null;
             _queued.Clear();
-            RestoreOriginalTail();
-            if (_session != null && !_closing) SetInputState(DialogueInterjectInputState.Ready);
+            if (!_planApplied && !_abandonedOriginalTail) RestoreOriginalTail();
+            if (_session != null && !_closing) SetInputState(ReadyOrMuted());
             if (wasActive) Finalize("turn_cancel:" + reason);
         }
 
@@ -839,6 +1394,7 @@ namespace CF7Launcher.Tasks
         private void RestoreOriginalTail()
         {
             if (_session == null || _aiLineShown || _closing) return;
+            if (_abandonedOriginalTail) return;   // 无 end 的整组替换：原始剩余已放弃
             if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             // 用当前已到达的原始行号 +1 接回：index 可能已经推进到原文里，不能用提交时的快照。
             _session.ReplaceFrom(_session.Index + 1, new NativeDialogueBookSession.Line[0],
@@ -860,6 +1416,7 @@ namespace CF7Launcher.Tasks
         private void ResumeAfterPlayedTurnLines()
         {
             if (_session == null || !_aiLineShown || _closing) return;
+            if (_abandonedOriginalTail) return;   // 无 end 的整组替换：原始剩余已放弃
             if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             if (_turnTailIndex < 0) return;
             _session.ReplaceFrom(_turnTailIndex, new NativeDialogueBookSession.Line[0],

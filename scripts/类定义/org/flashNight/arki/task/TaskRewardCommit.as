@@ -138,7 +138,7 @@ class org.flashNight.arki.task.TaskRewardCommit {
                 domain.taskId, String(domain.taskData.title || domain.taskId), domain.taskData.rewards.concat(domain.taskData.challenge.rewards));
         } catch (discoveryError) { }
         try { _root.UpdateTaskProgress(); } catch (listError) { }
-        try { _root.SetDialogue(TaskUtil.getTaskText(domain.taskData.finish_conversation), undefined, "task_post"); } catch (dialogueError) { }
+        try { _root.SetDialogue(TaskUtil.getTaskText(domain.taskData.finish_conversation), undefined, "task_post", domain.taskId); } catch (dialogueError) { }
         try { TaskUtil.requestAutoAcceptAfterFinish(domain.taskId); } catch (nextTaskError) { }
         try { _root.是否达成任务检测(); } catch (completionError) { }
         return true;
