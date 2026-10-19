@@ -30,7 +30,7 @@ asLoader = 游戏启动器：一个 Flash CS6 影片剪辑 symbol，**唯一承�
 
 2026-09-06 地图域切流后的新鲜发布检测到 `f36_9` 为 60,843 B；已沿顶层方案边界拆成 `单位函数_aka_战宠进阶.as` 与 `单位函数_aka_战宠进阶_扩展.as`，由 `frame36` 的 `f36_9 → f36_11 → f36_10` 连续装配，仍是先完整战宠进阶、再护盾。两段规范化拼接与拆分前原文完全一致，未改方案、数值或调用顺序；唯一顶层局部变量没有跨片引用。需要完整方案的直接 include 测试必须按相同顺序包含两段。拆分不放宽 `codeSize < 60000` 门。
 
-2026-10-18 的 CI 检出通信段 `f3` 为 60,668 B，超过既有 60,000 B 门槛，尚未达到 UI16 的 65,535 B 上限。`frame3.as` 现沿 Agent 注册边界拆成 `f3_1 → f3_2`：先执行通信、计时器、存档桥接与任务定义，再注册 Agent 接口。两段仍由同一 `s1_syncCode` 同步调用，相对拆分前的同一主线源码，两段的函数体拼接完全一致；九个 include 没有顶层局部变量或具名函数声明，不引入跨段捕获。`BOOT_SOURCES`、启动状态机和业务脚本未因拆分改写。 本轮新产物的两段分别为 45,559 / 15,472 B，全部函数最大 53,041 B；新鲜 Compiler `0/0`、103 项启动／握手断言、9 次实际候选启动的事件顺序及 18 场集成均通过，详见 [C6 补充证据](../tools/cf6-elder-assets/evidence/20261018-loader-size-followup/README.md)。C5 的完整强度统计保留原执行身份；本次未发布新的正式 Host runtime。
+2026-10-18 的 CI 检出通信段 `f3` 为 60,668 B，超过既有 60,000 B 门槛，尚未达到 UI16 的 65,535 B 上限。`frame3.as` 现沿 Agent 注册边界拆成 `f3_1 → f3_2`：先执行通信、计时器、存档桥接与任务定义，再注册 Agent 接口。两段仍由同一 `s1_syncCode` 同步调用，相对拆分前的同一主线源码，两段的函数体拼接完全一致；九个 include 没有顶层局部变量或具名函数声明，不引入跨段捕获。`BOOT_SOURCES`、启动状态机和业务脚本未因拆分改写。 本轮新产物的两段分别为 45,559 / 15,472 B，全部函数最大 53,041 B；新鲜 Compiler `0/0`、103 项启动／握手断言、9 次实际候选启动的事件顺序及 18 场集成均通过，详见 [C6 补充证据](../tools/cf6-elder-assets/e/l18/README.md)。C5 的完整强度统计保留原执行身份；本次未发布新的正式 Host runtime。
 
 - `BOOT_SOURCES` 是唯一 live 输入表：当前 29 项（13 staged + 16 loader-fire），数组顺序就是 phase 内的确定执行顺序；不得再建平行 frame 清单、stage 接线表或独立 manifest。
 - `node tools/assemble-collapsed-frame.js` 写生成物；`node tools/assemble-collapsed-frame.js --check` **不写文件**，按字节确认生成物可由当前表与规则精确重建。两种模式都会严格检查所有输入的 UTF-8 BOM、`frameNN.as` 根目录 exact-match、phase / shape、受控 envelope、具体 import 白名单、定义 / 调用唯一性，并要求 `BootSequencer.run(this)` 是唯一且最后的启动动作。
