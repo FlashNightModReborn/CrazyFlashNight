@@ -804,6 +804,10 @@ _root.跳转地图 = function(跳转帧, 返回令牌:String){
                 _root, org.flashNight.arki.scene.StageManager.instance, 场景显示帧);
         if (_root._currentframe === 场景显示帧) {
             if (跳转帧 === "基地地图") _root.加载共享场景("基地场景-" + _root.关卡标志);
+            else if (跳转帧 === "外部地图") {
+                org.flashNight.arki.scene.SceneTransitionGuard.noteExternalNavigation(_root,_root.关卡标志,"same_frame",场景显示帧);
+                _root.加载共享场景(_root.关卡标志);
+            }
             else {
                 // 与无限过图定位器的unload/load顺序一致，避免旧波次监听留到新世界。
                 _root.生存模式关闭();
@@ -817,6 +821,8 @@ _root.跳转地图 = function(跳转帧, 返回令牌:String){
                 _root.淡出动画.gotoAndStop("加载失败");
                 return;
             }
+            if (跳转帧 === "外部地图")
+                org.flashNight.arki.scene.SceneTransitionGuard.noteExternalNavigation(_root,_root.关卡标志,"remembered_frame",场景显示帧);
             _root.gotoAndPlay(场景显示帧);
         }
         return;
@@ -826,6 +832,8 @@ _root.跳转地图 = function(跳转帧, 返回令牌:String){
                 _root.淡出动画.gotoAndStop("加载失败");
                 return;
             }
+    if (跳转帧 === "外部地图")
+        org.flashNight.arki.scene.SceneTransitionGuard.noteExternalNavigation(_root,_root.关卡标志,"label",0);
 	_root.gotoAndPlay(跳转帧);
 }
 
