@@ -292,6 +292,7 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 | `diagReportIntervalSec` | `5` / `5` | `CF7_DIAG_INTERVAL_SEC` | 诊断报告周期，clamp 1–60 秒 |
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
 | `ragTerminalExePath` | 空 / 缺省 | `CF7_RAG_EXE` | 通讯终端 exe 路径覆盖；空＝按安装根通配 `CFN-RAG-v*.exe` 自动发现 |
+| `dialogueInterjectEnabled` | `false` / 缺省 | — | AI 对话内嵌插话入口；启用后构造输入层与焦点门 |
 <!-- launcher-config-registry:end -->
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
 
@@ -486,3 +487,17 @@ Flash/AS2 变更的编译与 smoke 必须遵守 [Flash CS6 自动化说明](../s
 PowerShell 先切换 UTF-8，再运行 `node tools/validate-doc-governance.js` 与 `git diff --check`。
 
 **统一奖励暂存**：已发布的奖励权威、存盘与恢复边界见[暂存 ADR](../docs/统一奖励暂存与非阻塞领取-ADR-2026-09-11.md)。共享收纳工作树（基线 commit `c1e51dd1e8dba6bf72452cfef3af8b6f09b36acf`）由 `inventory-workbench-storage-source.js` 适配单向暂存，复用现役双栏与 ItemUse；独立暂存视图退役。当前增量尚未人验或发布，入口、协议与候选证据见[施工方案](../docs/暂存物资并入共享收纳工作台-调研与施工方案-2026-09-12.md#10-共享收纳施工记录)。
+
+### Fixed WebView2 staging cache
+
+`build-runtime-candidate.ps1 -WebView2CacheDirectory C:\cf7-w2` selects an explicit short local cache; the
+default is `<projectRoot>\tmp\w2`. Direct staging uses `tools/stage-fixed-webview-runtime.ps1 -CacheDirectory
+C:\cf7-w2`. Existing LOCALAPPDATA caches are left untouched; no cache migration or system long-path setting
+change is performed.
+
+Before candidate replacement or staging writes, the producer checks the CAB, download temporary name, extraction
+tree, every locked engine file, and destination chunks against a 240 UTF-16-unit Windows path budget. Deep
+checkouts must supply a shorter explicit cache. Invalid Windows names, UNC/network roots, overlapping
+cache/destination paths, case-insensitive duplicate lock entries, and reparse ancestors are rejected. After the
+pinned CAB hash check, its file table must match the complete lock before extraction; complete file hashes,
+Microsoft signature, version, and chunk hashes remain required.

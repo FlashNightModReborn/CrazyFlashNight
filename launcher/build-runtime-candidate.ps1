@@ -1,12 +1,18 @@
-﻿param(
+param(
     [string]$BuilderId = $env:CF7_RUNTIME_BUILDER_ID,
     [string]$CandidateRoot,
+    [string]$WebView2CacheDirectory,
     [switch]$ForceReplace
 )
 
 $ErrorActionPreference = 'Stop'
 $launcherDir = $PSScriptRoot
 $projectRoot = Split-Path -Parent $launcherDir
+. (Join-Path $projectRoot 'tools\runtime-webview-paths.ps1')
+$webViewSpec = Get-Content -LiteralPath (Join-Path $launcherDir 'webview2-runtime.lock.json') -Raw -Encoding UTF8 | ConvertFrom-Json
+$webViewLayout = Get-Cf7WebViewLayout -ProjectRoot $projectRoot -Spec $webViewSpec -CacheDirectory $WebView2CacheDirectory
+$WebView2CacheDirectory = $webViewLayout.cache
+
 
 function Resolve-Cf7RuntimeWorkBase {
     param(
@@ -252,6 +258,7 @@ $longestBootstrapProbe = Join-Path $deploymentRoot 'runtime\CRAZYFLASHER7Mercena
 if ($longestBootstrapProbe.Length -ge 260) {
     throw "CandidateRoot exceeds the bootstrap MAX_PATH budget (projected=$($longestBootstrapProbe.Length), maximum=259). Choose a shorter repository/checkout path or CandidateRoot."
 }
+[void](Get-Cf7WebViewLayout -ProjectRoot $projectRoot -Spec $webViewSpec -CacheDirectory $WebView2CacheDirectory -DestinationDirectory (Join-Path $deploymentRoot 'runtime\webview2') -DeploymentRoot $deploymentRoot)
 if (Test-Path -LiteralPath $deploymentRoot) {
     if (-not $ForceReplace) { throw "CandidateRoot already exists; immutable candidates are never overwritten: $deploymentRoot" }
     Remove-Item -LiteralPath $deploymentRoot -Recurse -Force
@@ -445,7 +452,7 @@ try {
         Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $runtimeDir $_.Name) -Force
     }
 
-    & (Join-Path $projectRoot 'tools\stage-fixed-webview-runtime.ps1') -ProjectRoot $projectRoot -DestinationDirectory (Join-Path $runtimeDir 'webview2')
+    & (Join-Path $projectRoot 'tools\stage-fixed-webview-runtime.ps1') -ProjectRoot $projectRoot -DestinationDirectory (Join-Path $runtimeDir 'webview2') -CacheDirectory $WebView2CacheDirectory
 
     foreach ($nativeName in @('miniaudio.dll','sol_parser.dll','FlashCompositorNative.dll','FlashInputBridge.dll','FlashInputBroker.exe')) {
         $nativePath = Join-Path $nativeOut $nativeName

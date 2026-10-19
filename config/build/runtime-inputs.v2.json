@@ -64,6 +64,7 @@
         "launcher/native/sol_parser/build.bat",
         "tools/check-runtime-build-env.ps1",
         "tools/stage-fixed-webview-runtime.ps1",
+        "tools/runtime-webview-paths.ps1",
         "tools/runtime-build-v2-common.ps1"
       ],
       "trees": []
@@ -286,6 +287,7 @@
         "tools/test-runtime-build-consensus.ps1",
         "tools/test-runtime-build-queue.ps1",
         "tools/test-runtime-build-v2.ps1",
+        "tools/test-runtime-webview-paths.ps1",
         "tools/test-runtime-dev-entry.ps1",
         "tools/qa-composition-help.js",
         "tools/generate-guidance-catalog.js",

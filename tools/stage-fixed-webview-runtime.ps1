@@ -12,27 +12,12 @@ if ($spec.schema -ne 'cf7-fixed-webview2.v1' -or $spec.architecture -ne 'x64' -o
     ([uri]$spec.sourceUrl).Host -ne 'msedge.sf.dl.delivery.mp.microsoft.com') {
     throw 'Invalid fixed WebView2 dependency lock.'
 }
-if (-not $CacheDirectory) { $CacheDirectory = Join-Path $env:LOCALAPPDATA 'CF7\runtime-dependencies\webview2' }
-$cache = [IO.Path]::GetFullPath($CacheDirectory)
-$destination = [IO.Path]::GetFullPath($DestinationDirectory)
-function Assert-NoReparseAncestor([string]$Path) {
-    $directory = New-Object IO.DirectoryInfo $Path
-    while ($null -ne $directory) {
-        if ($directory.Exists -and (($directory.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0)) {
-            throw "Fixed WebView2 staging cannot use a reparse point: $($directory.FullName)"
-        }
-        $directory = $directory.Parent
-    }
-}
-function Resolve-LockedPath([string]$Root, [string]$Relative) {
-    if (-not $Relative -or $Relative.Contains('\') -or $Relative.Contains(':')) { throw "Invalid WebView2 path: $Relative" }
-    foreach ($segment in $Relative.Split('/')) {
-        if (-not $segment -or $segment -eq '.' -or $segment -eq '..' -or $segment.EndsWith('.') -or $segment.EndsWith(' ')) { throw "Invalid WebView2 path: $Relative" }
-    }
-    $full = [IO.Path]::GetFullPath((Join-Path $Root $Relative.Replace('/', '\')))
-    if (-not $full.StartsWith($Root.TrimEnd('\') + '\', [StringComparison]::OrdinalIgnoreCase)) { throw 'WebView2 path escaped its root.' }
-    return $full
-}
+. (Join-Path $PSScriptRoot 'runtime-webview-paths.ps1')
+$layout = Get-Cf7WebViewLayout -ProjectRoot $ProjectRoot -Spec $spec -CacheDirectory $CacheDirectory -DestinationDirectory $DestinationDirectory
+$cache = $layout.cache
+$destination = $layout.destination
+function Resolve-LockedPath([string]$Root, [string]$Relative) { Resolve-Cf7WebViewLockedPath $Root $Relative }
+function Assert-NoReparseAncestor([string]$Path) { [void](Assert-Cf7WebViewPath $Path) }
 function Assert-LockedFile([string]$Path, [long]$Size, [string]$Hash) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf) -or (Get-Item -LiteralPath $Path).Length -ne $Size -or
         ((Get-Item -LiteralPath $Path).Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 -or
@@ -41,15 +26,16 @@ function Assert-LockedFile([string]$Path, [long]$Size, [string]$Hash) {
 Assert-NoReparseAncestor $cache
 Assert-NoReparseAncestor $destination
 [IO.Directory]::CreateDirectory($cache) | Out-Null
-$cab = Join-Path $cache ($spec.cabSha256 + '.cab')
+$cab = $layout.cab
 if (-not (Test-Path -LiteralPath $cab -PathType Leaf)) {
-    $download = $cab + '.download-' + [guid]::NewGuid().ToString('N')
+    $download = $layout.download
     [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
     Invoke-WebRequest -UseBasicParsing -Uri $spec.sourceUrl -OutFile $download
     Assert-LockedFile $download $spec.cabSize $spec.cabSha256
     Move-Item -LiteralPath $download -Destination $cab -Force
 }
 Assert-LockedFile $cab $spec.cabSize $spec.cabSha256
+Assert-Cf7WebViewCabInventory -Cab $cab -Spec $spec
 # Each builder verifies the complete engine, including licenses, before creating the chunks.
 $extraction = Join-Path $cache ($spec.cabSha256 + '-extracted')
 Assert-NoReparseAncestor $extraction
@@ -58,7 +44,7 @@ if (-not (Test-Path -LiteralPath $extraction -PathType Container)) {
     & "$env:SystemRoot\System32\expand.exe" '-F:*' $cab $extraction | Out-Null
     if ($LASTEXITCODE -ne 0) { throw 'Fixed WebView2 CAB extraction failed.' }
 }
-$engine = Resolve-LockedPath $extraction $spec.extractedDirectory
+$engine = $layout.engine
 Assert-NoReparseAncestor $engine
 $entries = @(Get-ChildItem -LiteralPath $engine -Recurse -Force)
 if (@($entries | Where-Object { ($_.Attributes -band [IO.FileAttributes]::ReparsePoint) -ne 0 }).Count -ne 0) { throw 'WebView2 extraction contains a reparse point.' }
