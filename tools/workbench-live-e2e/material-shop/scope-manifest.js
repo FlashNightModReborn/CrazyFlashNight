@@ -8,6 +8,7 @@ const RuntimeProducer = require("../crafting/runtime-producer");
 const NpcClosure = require("../npc/production-closure");
 const Evidence = require("../lib/evidence-artifact");
 const Common = require("./common");
+const WorktreePathBudget = require("./worktree-path-budget");
 
 const SCOPE_SCHEMA = "workbench-live-e2e.material-shop.current-tree-scope.v1";
 const MAXIMUM_FILES = 8192;
@@ -75,6 +76,7 @@ const A5_TOOL_FILES = Object.freeze([
   "tools/workbench-live-e2e/material-shop/finalize-clone-release.js",
   "tools/workbench-live-e2e/material-shop/journey-verifier.js",
   "tools/workbench-live-e2e/material-shop/materialize.js",
+  "tools/workbench-live-e2e/material-shop/worktree-path-budget.js",
   "tools/workbench-live-e2e/material-shop/prepare.js",
   "tools/workbench-live-e2e/material-shop/production-closure.js",
   "tools/workbench-live-e2e/material-shop/protocol.js",
@@ -91,6 +93,9 @@ const A5_TOOL_FILES = Object.freeze([
   "tools/workbench-live-e2e/material-shop/test-agent-runtime-keyboard-recipe-evidence.js",
   "tools/workbench-live-e2e/material-shop/test-ignored-output-ordering.js",
   "tools/workbench-live-e2e/material-shop/test-materialized-path-budget.js",
+  "tools/workbench-live-e2e/material-shop/test-worktree-path-budget.js",
+  "tools/workbench-live-e2e/material-shop/test-materialization-layout.js",
+  "tools/workbench-live-e2e/material-shop/diagnose-materialization-layout.js",
   "tools/workbench-live-e2e/material-shop/test-agent-runtime-portrait-evidence.js",
   "tools/workbench-live-e2e/material-shop/test-raw-candidate-reader.js",
   "tools/workbench-live-e2e/material-shop/test-discard-pre-control-failed-run.js",
@@ -271,6 +276,7 @@ function sharedProducerDescriptors(rootValue, entrypointsValue) {
 function gitHead(root) {
   const result = childProcess.spawnSync("git", ["rev-parse", "HEAD"], {
     cwd: root, encoding: "utf8", windowsHide: true, timeout: 10000,
+    env: WorktreePathBudget.gitEnvironment(),
   });
   const head = String(result.stdout || "").trim().toLowerCase();
   if (result.status !== 0 || !Common.GIT_OID_RE.test(head)) {

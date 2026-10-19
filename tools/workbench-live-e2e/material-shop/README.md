@@ -10,7 +10,7 @@ Run `a5-0814-h3` reached `e2e_verified / NOT_DEPLOYED` on 2026-08-14. Its accept
 
 ## Current-data applicability
 
-`applicability.js` derives the result from the current material catalog, all 35 NPC shop files, ItemData prices, AS2/Host purchase-limit authorities, and exact JSON plus complete owned-SOL sets for four existing `cf7_agent_*` fixtures. The current inventory has 224 materials, 104 shop occurrences / 101 unique shop materials, and all 416 seed×occurrence pairs afford quantity one. There are no material `requiredInfo`, configured `purchaseLimit`, or seed material quantities at the default 999999 limit. Therefore the unlocked quantity-one route is required; locked and max live routes are recorded as `not_applicable_current_data`, never as passed. A future `requires_seed_probe` result blocks live admission until a separate seed-resolved artifact exists.
+`applicability.js` derives the result from the current material catalog, every listed NPC shop file, ItemData prices, AS2/Host purchase-limit authorities, and exact JSON plus complete owned-SOL sets for four dedicated `cf7_agent_*` fixtures. Every new run must re-derive those inputs; an offline synthetic fixture does not authorize live seed use. The original accepted 2026-08-14 snapshot contained 224 materials, 35 shops, 104 occurrences / 101 unique shop materials and 416 affordable seed-occurrence pairs. Those historical counts are not the current-data admission contract. Current `requiredInfo`, configured `purchaseLimit` and quantities at the default 999999 limit determine required or `not_applicable_current_data` routes; a `requires_seed_probe` result blocks live admission until a separate seed-resolved artifact exists.
 
 The only source fixture is `cf7_agent_character_build_b4`. `candidate-lifecycle.js` copies its JSON bytes without transformation into `cf7_agent_a5_material_shop_seed`; target and recovery remain the dedicated `cf7_agent_a5_material_shop_run` and `cf7_agent_a5_material_shop_recovery` slots. The canonical fixture is never changed. The frozen unlocked target is `shopId=厨师`, `catalogIndex=24`, `itemName=食用油`, static base price 300, initial owned 0; live settlement still trusts the authoritative snapshot `unitPrice`.
 
@@ -21,6 +21,8 @@ Live replay keeps the two roots intentionally distinct. Material catalog, NPC sh
 ```powershell
 node tools/workbench-live-e2e/material-shop/test-visible-review-contract.js
 node tools/workbench-live-e2e/material-shop/test-materialized-path-budget.js
+node tools/workbench-live-e2e/material-shop/test-worktree-path-budget.js
+node tools/workbench-live-e2e/material-shop/test-materialization-layout.js
 node tools/workbench-live-e2e/material-shop/test-agent-runtime-portrait-evidence.js
 node tools/workbench-live-e2e/material-shop/test-agent-runtime-keyboard-recipe-evidence.js
 node tools/workbench-live-e2e/material-shop/self-test.js
@@ -29,26 +31,78 @@ node tools/workbench-live-e2e/material-shop/verify-run.js --check
 
 `--check` captures the current closure twice, normalizes recursive timestamp fields, verifies current-tree bytes, and re-derives applicability. It also binds the protected canonical `launcher/perf/package-lock.json` to the installed `playwright-core` package manifest plus exact `lib/utilsBundle.js` and `lib/utilsBundleImpl/index.js` bytes. Preparation never persists `node_modules` in the materialized Worktree. The later static gate, after validating the release ignored-output inventory, copies only the Playwright files named by the sealed browser-module inventory and temporarily substitutes only the inventory-bound crafting dev harness fixture; it runs the materialized browser bootstrap, then restores the fixture byte-for-byte and removes the Playwright projection in the same process before returning. Candidate product modules and assets are never substituted. None of these offline commands builds, launches, drives, or deploys a candidate.
 
+The reviewed AS2 source contract is v6: 24 fixed function anchors, with only the 11 anchors affected by six already merged migrations updated. The other 13 and all structural rejection rules remain fixed. The versioned constants and migration provenance live in `../crafting/source-contract.js`; capture never learns replacement hashes from the source under test. Direct affinity/reward helper bytes are included in the source closure. This is source-contract verification, not Flash execution or gameplay semantics evidence.
+
 ## Candidate commands
 
-1. Materialize the exact current dirty scope over a detached HEAD Git worktree named `resources` and freeze the v4 Agent Runtime plan. The result retains `.git`, HEAD, index, and a successful `Get-Cf7RuntimeBuildIdentityV2 -Mode Worktree` receipt. This command does not build. `--agent-runtime-jsonl` is mutually exclusive with Computer Use capability files and CDP fallback.
+1. Diagnose the intended new run **before preparing it**. This read-only command captures
+only Git objects and current protected source bytes; it does not create directories, acquire
+leases, inspect live slots, build, or start Launcher/Flash/game:
+
+```powershell
+node tools/workbench-live-e2e/material-shop/diagnose-materialization-layout.js --run-id <closed-run-id>
+```
+
+New worktrees use `<canonical>/tmp/a5/m/<runId>/resources`. Evidence, creation markers,
+materialization producers, and shared live/discard operation leases keep their original
+`<canonical>/tmp/workbench-live-e2e/material-shop/runs/<runId>` location. Nothing moves or rewrites
+old runs. A retained original run directory (including an empty directory or any active lease),
+or either old/new `materialized/<runId>` directory, blocks reuse before preparation writes.
+
+For a full HEAD+overlay maximum relative path of P UTF-16 units, canonical-root length R and
+new run-ID length I, the longest new projection is `R + I + P + 21`. At P=179 after the historical
+evidence-directory migration and I=13, R must be <=27: `C:\cf7` (R=6) projects 219 and allows
+at most 34 run-ID units; `C:\projects\CrazyFlashNight` (R=27) projects exactly 240 and allows 13.
+R=60 cannot use this layout. These examples are not claims about an unmerged migration or a
+different current HEAD/dirty scope. Longer timestamps and new dirty paths may fail. The diagnostic
+prints the actual root, relative maximum, run-ID length, full-HEAD run-ID maximum and root maximum;
+its result, rather than the old sealed-scope 259 limit, determines admissibility.
+
+The canonical root is derived from the actual adapter location; `--root` is not relocation and
+`CF7_RUNTIME_WORK_ROOT` is only the separate native/MSBuild intermediate-work contract. This adapter
+does not add an external work-base switch, auto-relocate a dirty workspace, copy fixture saves,
+change permissions/global Git settings, or use symlinks/subst. Use a separately established,
+reviewed short canonical workspace with its own exact source/fixture authority. Preserve an old
+failed checkout and all local differences; do not reset/clean it to obtain the short root.
+
+Then materialize the exact current dirty scope over a detached HEAD Git worktree named `resources` and freeze the v4 Agent Runtime plan. The result retains `.git`, HEAD, index, and a successful `Get-Cf7RuntimeBuildIdentityV2 -Mode Worktree` receipt. This command does not build. `--agent-runtime-jsonl` is mutually exclusive with Computer Use capability files and CDP fallback.
 
 ```powershell
 node tools/workbench-live-e2e/material-shop/prepare.js --run-id <closed-run-id> --agent-runtime-jsonl --authorize-quantity-one-purchase
 ```
 
-Before creating even the owned run directory, `prepare` projects every file in the full sealed scope
-onto the actual canonical `materialized/<runId>/resources` destination. Because the Launcher is not
-declared `longPathAware`, every absolute physical path must be at most 259 characters (the 260th
-`MAX_PATH` character is the terminating NUL). A rejection reports the longest relative/absolute
-path, projected length, and safe run-ID maximum; the materializer repeats the same pure gate before
-any marker, Git worktree, or candidate side effect. In the current canonical root, 13-character run
-IDs project the longest hash-named shop portrait to 259 and are admissible; 14 characters project to
-260 and fail closed. The historical 36-character t1903 ID projects that same path to 282 and is not
-eligible for a fresh run.
+Before creating even the owned run directory, `prepare` retains the sealed-scope legacy gate
+(259 visible UTF-16 units, excluding the terminating NUL) and also reads every file and directory
+of the exact sealed HEAD via `git ls-tree -r -t -z --full-tree`. The object-only gate projects the
+full HEAD plus all sealed overlay paths onto the actual canonical
+`tmp/a5/m/<runId>/resources` destination, with a 240 visible UTF-16 unit limit and no source-tree
+historical exceptions. It does not check out blobs or create the destination. Invalid UTF-8,
+incomplete/failed Git reads, symlinks, gitlinks, unsafe Windows paths and collisions fail closed.
+Both the preflight and materializer Git commands disable mutable replace refs, so checkout uses
+the same immutable commit tree that was projected. Non-empty Git repository/config/index
+context overrides (including `GIT_DIR`, `GIT_WORK_TREE`, `GIT_COMMON_DIR`, `GIT_INDEX_FILE`,
+object-directory and injected-config overrides) fail before closure capture or materialized writes.
+Every touched Git probe/removal uses the same guarded context; the process changes no Git config,
+hook, filter, permission, or caller environment.
+The materializer repeats both gates before any marker, producer lease or Git worktree side effect;
+fixture-only scope copies keep their existing scope gate and do not claim HEAD coverage.
+
+A scope-only safe run-ID maximum does not prove the full worktree is admissible. Even a short run
+ID can fail because of a HEAD file outside the sealed overlay. The full-tree rejection reports the
+actual destination, longest relative/absolute projection, count and limit. Use those facts to review
+an explicitly authorized layout change; this gate neither silently switches to sparse checkout nor
+renames source files. A successful projection is not Windows/Flash or candidate execution evidence.
 
 Production materialization writes `materialization-create-intent.json` in the exact run directory
-before `git worktree add`. It binds the canonical root/commonDir, detached HEAD, exact destination,
+before `git worktree add`. Fresh writers emit creation-intent v2, which admits only the fixed
+short `tmp/a5` owned base. Existing v1 intents admit only the original long owned base. A schema
+cannot select the other layout; unknown schemas and markerless paths have no fallback. Current
+build, discard, stale-operation recovery and release derive the exact target from that sealed
+creation marker, bound to the actual evidence run directory, rather than guessing from a new base.
+The existing receipt/producer hashes, closure/identity replay and explicit cleanup acknowledgement
+remain required. Path/schema compatibility does not mean an old producer closure matches changed
+source bytes, and it never grants authority to recover an arbitrary old run. The intent binds the
+canonical root/commonDir, detached HEAD, exact destination,
 scope path set, and argv-form cleanup command. Before the first Git side effect, the same producer
 also acquires a CreateNew, fsynced `materialization-producer-lease.json` bound to the intent,
 run/destination, PID, and process start identity. Successful resolution archives the creation intent
@@ -72,7 +126,7 @@ reuse can be explicitly archived as stale, after which cleanup repeats the produ
 The cleanup v2 receipt binds that terminal/stale producer marker and its exact lease/artifact SHA.
 It invokes only argv-form exact
 `git worktree remove --force`; it never prunes or recursively deletes. The intent's `removeCommand`
-is authorization, not proof that removal ran. Receipt failure after removal resumes with the same
+is a sealed recovery target/command template, not user authorization or proof that removal ran. Receipt failure after removal resumes with the same
 command; terminal evidence is `materialization-cleanup.json` plus
 `materialization-cleanup-resolved-<hash>.json`. Never retroactively create a marker for an older orphan.
 If all preparation artifacts and `preparation.json` were durably written but the producer died before

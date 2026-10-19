@@ -818,7 +818,7 @@ function runSelfTests() {
     assert.strictEqual(fingerprint.as2AlgorithmContract.functions.length,
       SourceContract.AS2_ALGORITHM_EXPECTATIONS.length);
     assert.strictEqual(fingerprint.as2AlgorithmContract.schema,
-      "workbench-live-e2e.crafting.as2-algorithm-contract.v5");
+      "workbench-live-e2e.crafting.as2-algorithm-contract.v6");
     const itemRequire = fingerprint.as2AlgorithmContract.functions.find((entry) =>
       entry.className === "org.flashNight.arki.item.ItemUtil"
         && entry.functionName === "require");
@@ -831,10 +831,10 @@ function runSelfTests() {
       tokenCount: itemRequire && itemRequire.tokenCount,
       normalizedTokenSha256: itemRequire && itemRequire.normalizedTokenSha256,
     }, {
-      bodyTokenCount: 1354,
-      bodyTokenSha256: "5a4ee1dade54dd17acabd2f74145a53406dc3066f88cfec0768a2531d9a782bd",
-      tokenCount: 1365,
-      normalizedTokenSha256: "16403afd9e43a7a76fc78d51f986bc034290741d081ca2e6ece6a3b15378f56d",
+      bodyTokenCount: 1299,
+      bodyTokenSha256: "b28a42b9923b328d273c1ef8e550dd830436cb978b758f1eefcef1c5f63760a9",
+      tokenCount: 1310,
+      normalizedTokenSha256: "07be40a777be6555d895bc4accffb17614ea6bc8fa8f8aec6468cc495982d37d",
     });
     assert.deepStrictEqual({
       bodyTokenCount: itemAcquire && itemAcquire.bodyTokenCount,
@@ -842,10 +842,10 @@ function runSelfTests() {
       tokenCount: itemAcquire && itemAcquire.tokenCount,
       normalizedTokenSha256: itemAcquire && itemAcquire.normalizedTokenSha256,
     }, {
-      bodyTokenCount: 2419,
-      bodyTokenSha256: "95e622b90b5bdb21f2077f186c16e1fad42a8e4df61b73cc496b7dd439450d8e",
-      tokenCount: 2434,
-      normalizedTokenSha256: "8c870420d0962d33e2c58a0ceb7df4377e2e44a2946225717bd0f695cd114402",
+      bodyTokenCount: 2586,
+      bodyTokenSha256: "59998e830463d309aa114cffaccf48a6c279f78a1306af3954b9d5a58bc89a14",
+      tokenCount: 2601,
+      normalizedTokenSha256: "95746f0f9131e893605bc964eaea6ed8fe05ebad1234a8c9d7f0929fb584f32e",
     });
   });
   positive("late observer listener permits child send before parent response without inventing order", () => {

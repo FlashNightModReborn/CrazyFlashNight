@@ -418,8 +418,8 @@ function validateIntent(value) {
       || !Common.ID_RE.test(String(value.runId || ""))
       || !samePath(value.canonicalRoot, Common.CANONICAL_ROOT)
       || !samePath(value.runDir, path.join(base, "runs", value.runId))
-      || !samePath(value.destination, path.join(base, Materialize.MATERIALIZED_DIRECTORY,
-        value.runId, "resources"))
+      || !samePath(value.destination, Materialize.materializationDestinationForRun(
+        value.runDir, value.runId))
       || !samePath(value.candidateRoot, path.join(value.destination,
         "tmp", "runtime-candidates", "v2", Build.CANDIDATE_LEAF))
       || [value.preparationSha256, value.materializationSha256, value.closureSha256,
@@ -737,6 +737,7 @@ function validateReceipt(value, intent, closureValue) {
 function removeWorktree(destination) {
   const result = childProcess.spawnSync("git", ["-C", Common.CANONICAL_ROOT,
     "worktree", "remove", "--force", destination], {
+    env: Materialize.gitEnvironment(),
     encoding: "utf8", windowsHide: true, maxBuffer: 16 * 1024 * 1024,
   });
   if (result.error || result.status !== 0) {

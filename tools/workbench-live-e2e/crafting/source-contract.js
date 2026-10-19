@@ -20,7 +20,7 @@ const PERMANENT_FONT_FILES = Object.freeze([
 ]);
 const ICON_PROJECTION_SCHEMA = "workbench-live-e2e.crafting.icon-resource-projection.v1";
 const AS2_ALGORITHM_CONTRACT_SCHEMA =
-  "workbench-live-e2e.crafting.as2-algorithm-contract.v5";
+  "workbench-live-e2e.crafting.as2-algorithm-contract.v6";
 const HEX64 = /^[a-f0-9]{64}$/;
 const GIT_OID = /^(?:[a-f0-9]{40}|[a-f0-9]{64})$/;
 const REQUIRED_SOURCE_PHASES = Object.freeze([
@@ -40,6 +40,7 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/cursor-feedback.js",
   "launcher/web/modules/lazy-loader.js",
   "launcher/web/modules/doll-bake.js",
+  "launcher/web/modules/dialogue/live-portrait-bake.js",
   "launcher/web/modules/panels.js",
   "launcher/web/modules/panel-scale.js",
   "launcher/web/modules/audio.js",
@@ -47,6 +48,7 @@ const OVERLAY_STARTUP_WEB = Object.freeze([
   "launcher/web/modules/tooltip.js",
   "launcher/web/modules/asset-timeline.js",
   "launcher/web/modules/icons.js",
+  "launcher/web/modules/map-definition.js",
   "launcher/web/modules/map-panel-data.js",
   "launcher/web/modules/map-fit-presets.js",
 ]);
@@ -55,6 +57,8 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/css/game-ui-behavior.css",
   "launcher/web/css/overlay.css",
   "launcher/web/css/panels.css",
+  "launcher/web/css/guidance.css",
+  "launcher/web/css/asset-workbench.css",
   "launcher/web/css/terminal.css",
   "launcher/web/css/settings-panel.css",
   "launcher/web/modules/minigames/shared/minigame-shell.css",
@@ -62,6 +66,10 @@ const OVERLAY_STYLE_WEB = Object.freeze([
   "launcher/web/modules/minigames/pinalign/pinalign.css",
   "launcher/web/modules/minigames/gobang/gobang.css",
   "launcher/web/modules/minigames/blackmarket/blackmarket.css",
+  "launcher/web/modules/minigames/warlord/warlord.css",
+  "launcher/web/modules/lut-lab/lut-lab.css",
+  "launcher/web/css/bookshelf.css",
+  "launcher/web/css/map-workbench.css",
 ]);
 
 const PANELS_IMPORT_STYLE_WEB = Object.freeze([
@@ -69,16 +77,27 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/panels/foundation-top.css",
   "launcher/web/css/workbench/tokens.css",
   "launcher/web/css/panels/foundation-rest.css",
+  "launcher/web/css/panels/tooltip-document.css",
   "launcher/web/css/workbench/core.css",
   "launcher/web/css/workbench/profiles.css",
   "launcher/web/css/panels/features.css",
+  "launcher/web/css/panels/tactical-map-shared.css",
+  "launcher/web/css/panels/map.css",
   "launcher/web/css/panels/stage-select.css",
+  "launcher/web/css/panels/stage-select-focus.css",
   "launcher/web/css/workbench/portraits.css",
   "launcher/web/css/workbench/arena.css",
   "launcher/web/css/workbench/inventory.css",
   "launcher/web/css/workbench/skins.css",
   "launcher/web/css/workbench/entities.css",
   "launcher/web/css/workbench/crafting.css",
+  "launcher/web/css/panels/cooking.css",
+  "launcher/web/css/panels/chemistry.css",
+  "launcher/web/css/panels/commune.css",
+  "launcher/web/css/panels/bartending.css",
+  "launcher/web/css/panels/armory.css",
+  "launcher/web/css/panels/ironspear.css",
+  "launcher/web/css/panels/npcshop.css",
   "launcher/web/css/workbench/equipment-inspector.css",
   "launcher/web/css/workbench/skills.css",
   "launcher/web/css/workbench/equipment-tuning.css",
@@ -89,7 +108,17 @@ const PANELS_IMPORT_STYLE_WEB = Object.freeze([
   "launcher/web/css/workbench/team.css",
   "launcher/web/css/workbench/states.css",
   "launcher/web/css/workbench/motion.css",
+  "launcher/web/css/appearance-service.css",
   "launcher/web/css/hairdresser.css",
+  "launcher/web/css/plastic-surgery.css",
+  "launcher/web/css/garage-purchase.css",
+  "launcher/web/css/stage-doors.css",
+  "launcher/web/css/sleep/tokens.css",
+  "launcher/web/css/sleep-panel.css",
+  "launcher/web/css/gym-panel.css",
+  "launcher/web/css/book-comic.css",
+  "launcher/web/css/ragchat.css",
+  "launcher/web/css/panels/tablet.css",
   "launcher/web/css/workbench/utilities.css",
 ]);
 
@@ -120,11 +149,18 @@ const CRAFTING_LAZY_WEB = Object.freeze([
   "launcher/web/modules/crafting-detail-presenter.js",
   "launcher/web/modules/inventory-runtime.js",
   "launcher/web/modules/crafting-runtime.js",
+  "launcher/web/modules/cooking.js",
+  "launcher/web/modules/chemistry.js",
+  "launcher/web/modules/commune.js",
+  "launcher/web/modules/bartending.js",
+  "launcher/web/modules/armory.js",
+  "launcher/web/modules/ironspear.js",
   "launcher/web/modules/crafting.js",
 ]);
 
 const ORGANIZER_LAZY_WEB = Object.freeze([
   "launcher/web/modules/inventory-runtime.js",
+  "launcher/web/modules/grade-presentation.js",
   "launcher/web/modules/inventory-ui.js",
   "launcher/web/modules/inventory-workbench-config.js",
   "launcher/web/modules/inventory-workbench-quick-transfer.js",
@@ -134,6 +170,8 @@ const ORGANIZER_LAZY_WEB = Object.freeze([
 ]);
 
 const HOST_FILES = Object.freeze([
+  "launcher/src/Data/MapDefinition.cs",
+  "launcher/src/Data/MapDomainDefinition.cs",
   "launcher/src/Tasks/CraftingTask.cs",
   "launcher/src/Tasks/MaterialShopAccessTask.cs",
   "launcher/src/Tasks/NpcShopTask.cs",
@@ -173,31 +211,35 @@ const AS2_FILES = Object.freeze([
   "scripts/类定义/org/flashNight/gesh/string/StringUtils.as",
   "scripts/类定义/org/flashNight/gesh/tooltip/TooltipComposer.as",
   "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
+  "scripts/类定义/org/flashNight/arki/item/DrugSlotAffinityService.as",
+  "scripts/类定义/org/flashNight/arki/item/RewardStashStore.as",
   "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
   "scripts/类定义/LiteJSON.as",
   "scripts/逻辑系统分区/商城系统_WebView.as",
   "scripts/逻辑系统分区/商店系统_兼容.as",
 ]);
 
-// Reviewed v5 literals. ItemUtil require/acquire/submit and Crafting executeCommit include
-// bounded stack validation, raw-fulfillment accounting, exact snapshot recovery and PAT
-// settlement. Capture validates current bytes against these constants; it never derives a
-// replacement contract from the source being tested.
+// Reviewed v6 literals. The v5 baseline is commit 0270cf7a1a; subsequent reviewed
+// migrations are f1dddf6558 (drug-slot affinity), 09f33ba7dd (reward ownership),
+// e87db59478 (field-supply rejection), 84883f88d0 (infrastructure gates),
+// 7bc522c8fb (frozen mixing technique), and 99b924a47d (inventory snapshots).
+// Only the 11 affected anchors change; the other 13 and all structural rejection
+// checks remain fixed. Capture never learns replacements from current source.
 const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "require", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "789fd14ed13d8e749ae5a448e181a786fa1c295e6e127363aeeb2d3d6c9e455b",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 1354, bodyTokenSha256: "5a4ee1dade54dd17acabd2f74145a53406dc3066f88cfec0768a2531d9a782bd",
-    tokenCount: 1365, normalizedTokenSha256: "16403afd9e43a7a76fc78d51f986bc034290741d081ca2e6ece6a3b15378f56d" },
+    bodyTokenCount: 1299, bodyTokenSha256: "b28a42b9923b328d273c1ef8e550dd830436cb978b758f1eefcef1c5f63760a9",
+    tokenCount: 1310, normalizedTokenSha256: "07be40a777be6555d895bc4accffb17614ea6bc8fa8f8aec6468cc495982d37d" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "acquire", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 15, signatureTokenSha256: "afc6f2b897fe3bca12ea2d1de8de03ac125350dfe4d944bf4cabc76b5fdc28ef",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 2419, bodyTokenSha256: "95e622b90b5bdb21f2077f186c16e1fad42a8e4df61b73cc496b7dd439450d8e",
-    tokenCount: 2434, normalizedTokenSha256: "8c870420d0962d33e2c58a0ceb7df4377e2e44a2946225717bd0f695cd114402" },
+    bodyTokenCount: 2586, bodyTokenSha256: "59998e830463d309aa114cffaccf48a6c279f78a1306af3954b9d5a58bc89a14",
+    tokenCount: 2601, normalizedTokenSha256: "95746f0f9131e893605bc964eaea6ed8fe05ebad1234a8c9d7f0929fb584f32e" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "contain", classDepth: 0, memberDepth: 1,
@@ -210,8 +252,8 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
     functionName: "submit", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 15, signatureTokenSha256: "bc89e731db7621a35ae53ab39375a901ab82f4f034c6b8f4201391d79cccbe26",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 1408, bodyTokenSha256: "fb53c4ca05446f11492a7a384d5e54bbf75076e07295469c2c78262b1d50df0e",
-    tokenCount: 1423, normalizedTokenSha256: "d68fd908ce747e9aaa1f492012359bb50d09093de75bb68463828dca1a116e5f" },
+    bodyTokenCount: 1498, bodyTokenSha256: "ee3f09409580ca1b6ad30fffc11a05451dd703dd46124617859de42ee3831144",
+    tokenCount: 1513, normalizedTokenSha256: "b97beb5f0c453775b77a4991f7d6fd9dedc838e84dca159b1cd3f3f3a1d88dc5" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/ItemUtil.as",
     className: "org.flashNight.arki.item.ItemUtil", modifiers: ["public", "static"],
     functionName: "singleRequire", classDepth: 0, memberDepth: 1,
@@ -231,57 +273,57 @@ const AS2_ALGORITHM_EXPECTATIONS = Object.freeze([
     functionName: "add", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 14, signatureTokenSha256: "01bbfacf5fabaea976e7e47327526a8eefd7d98c1b4f3eb08a6de6536e6d7d22",
     returnTokenCount: 2, returnTokenSha256: "62ff10cea0b7b9a8ea2ca89d725304c12609173b1e797afec17f5142802f6959",
-    bodyTokenCount: 202, bodyTokenSha256: "6990ed28af868b582b17cf1daa60fdcbfca70911c700fde67d6be637b3dcb14a",
-    tokenCount: 216, normalizedTokenSha256: "1afce81c75dd92da98d9ca3c0933616e27c09ad797eeb3d2da8c61100b9b1df6" },
+    bodyTokenCount: 235, bodyTokenSha256: "8eb888b885bfc991569d719ba0677171e31f0d90d5cb1c4c6ac249329010a1ea",
+    tokenCount: 249, normalizedTokenSha256: "bca63a63078284622b1ed2dff1aafeb7655fe51bed00c4072c7d36058eadfbf5" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "getIndexes", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 7, signatureTokenSha256: "111e2e81e8ed3900bb67a13a57e1a5812f60325e43983d64fdb08731d7e2936b",
     returnTokenCount: 2, returnTokenSha256: "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
-    bodyTokenCount: 7, bodyTokenSha256: "a68ed31a2a85d3d52904be9c54b0879ecc8a02d2c76a2db84daddc5141034b38",
-    tokenCount: 14, normalizedTokenSha256: "b8da00f31cf56192dccce5823b861e0fdff0bf26475e3bcac8ae50db75518544" },
+    bodyTokenCount: 11, bodyTokenSha256: "4f4f58afde3b328384230480b2e678040137a7c8fdf084f1dc441edbaaf8a816",
+    tokenCount: 18, normalizedTokenSha256: "a47124feec20267740b946a7337b782fc2d24d71656495e00edfc0270c4e4c3c" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "getItemArray", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 7, signatureTokenSha256: "9db1fe707e92968a58747e6c30ec3eb59073381128c66dc5f5c9e619880c3c98",
     returnTokenCount: 2, returnTokenSha256: "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
-    bodyTokenCount: 53, bodyTokenSha256: "77c0da311eb749a88e3dd7734d82a72bf28ab1f2672543133daddf8c27818157",
-    tokenCount: 60, normalizedTokenSha256: "d799c785847b4d4306cdf5e5fd6b9c95963faa3da88b0a5855a21c088b82a39d" },
+    bodyTokenCount: 67, bodyTokenSha256: "c8c60ec31dc273673672098cbd4fdb1deeab48302ac33a7bbd5ccc0fa5b3ca0b",
+    tokenCount: 74, normalizedTokenSha256: "9cf66be3599c9130b2a9977855373313e91265c0084c19b05504001232884cb6" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "searchFirstKey", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 10, signatureTokenSha256: "8b0e2a29a111051eb42dc8a6c6856d040699bf2cb9aa7d592a5cd5f218bf201c",
     returnTokenCount: 2, returnTokenSha256: "adce924caaf57b154e4eae346fc8653788320ea2ba7a6a09ee9da878965a3777",
-    bodyTokenCount: 94, bodyTokenSha256: "3cf27d687a75257b6c874e5ab27d996fec4da946ea70fee0e95fb58b270f181d",
-    tokenCount: 104, normalizedTokenSha256: "65620a2a85a4cad1a01f38762b4937b9bdd3815792cecc8e069a0cf1b497cedb" },
+    bodyTokenCount: 99, bodyTokenSha256: "d56bfcdf96dce124ca434de0313d793b4cb2bc8c6751d6e86886740d959f69ab",
+    tokenCount: 109, normalizedTokenSha256: "20e2b689333fd833335ced8a086ed1191879aae3e746531e11d97de27c316958" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "getFirstVacancy", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 7, signatureTokenSha256: "266d7e84c4fdeeba0f515bd7c4a20fadf333802693ef0209aa1e7649ea7cfeac",
     returnTokenCount: 2, returnTokenSha256: "0f410e1b1feb2623691b3dc78fbb271f9df90cacc571ec662b3e89e21824fce3",
-    bodyTokenCount: 101, bodyTokenSha256: "02129feca123a37d843534e568bd9c8571721d66dda916341eff01bb9c82b224",
-    tokenCount: 108, normalizedTokenSha256: "d441543b8ea704b95329058a0ddb0b86a9f4adb7b9bbb871a7006c2402795fb1" },
+    bodyTokenCount: 98, bodyTokenSha256: "da44998184dd460d21af1e8d60897da297674bd7f7c1e3d55b087d56f03d3e38",
+    tokenCount: 105, normalizedTokenSha256: "e6dc3d66b3e68d1ee75a24cd2e323069d68e0cae82e7d73e9cfe1cb52dd95925" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/itemCollection/ArrayInventory.as",
     className: "org.flashNight.arki.item.itemCollection.ArrayInventory", modifiers: ["public"],
     functionName: "getVacancies", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 10, signatureTokenSha256: "268e4044c3944856051ef80917097f25dbfaf2c8a598a613395d53de8cdd44b0",
     returnTokenCount: 2, returnTokenSha256: "04b5c118cd7dead14bcef417c9db2f4439914198c243af04db237eddc59b7b0c",
-    bodyTokenCount: 185, bodyTokenSha256: "d8542dd49c066d251d418aadbe4f65dad193933cd7c11a27d5bbba71e099ccf8",
-    tokenCount: 195, normalizedTokenSha256: "47fa870047271da6f7ea8944e791d8bd97353f312fac43682f5b53d3c36f7b6b" },
+    bodyTokenCount: 182, bodyTokenSha256: "f4dab8c1ecbe0c491898f3d6b56ce163b658dfed42a694f20b5c66ea87d9ca5d",
+    tokenCount: 192, normalizedTokenSha256: "8dcf336edc90122ec2d95649a92eaa196b8e709dcdbe511d8ecf1e31eaa30638" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "executeCommit", classDepth: 0, memberDepth: 1,
     signatureTokenCount: 11, signatureTokenSha256: "f3460d8207d6a51216e63393b8296b927f3a9954d91c9a3f942a2eb3acf12dcf",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 1087, bodyTokenSha256: "d50b2cf3ea380e1bb4e8b278714bb1107b248c9235629f5c7858bb3b90010ea3",
-    tokenCount: 1098, normalizedTokenSha256: "7ec402de67729e30e29220fe98dbc117d6ee1f1b755e6f2549dd57d7390037ef" },
+    bodyTokenCount: 1095, bodyTokenSha256: "ab65e03ca01f3ffbd532d25e2becc1d17d8931b71d52527cf37ad623c41573da",
+    tokenCount: 1106, normalizedTokenSha256: "c15c9df4edbebd564a34e3daefd70b25a15d1485b33a19adebfb0102091f7907" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "buildPlan", classDepth: 0, memberDepth: 1,
-    signatureTokenCount: 35, signatureTokenSha256: "5d50ad9c988a154d08609f547cdb8588efc0568ccbf4bbf5189b3903ee9adcb4",
+    signatureTokenCount: 39, signatureTokenSha256: "e55dbc53f3873504789d6c06c91088e81bba39eb7b631b5d27629c834236fa1b",
     returnTokenCount: 2, returnTokenSha256: "f92ed6dde146db78769a8561df9ae9b75566d8cd334b9d3851ce78ade4e681a7",
-    bodyTokenCount: 1032, bodyTokenSha256: "66f257c8fc54504c04970b7b33e33da4e4b0f87305073c2162924196009ed682",
-    tokenCount: 1067, normalizedTokenSha256: "3f2f180529830e0ccd61cd4376f89a9b1e0be6136856bac42b6d5a536d26bb19" },
+    bodyTokenCount: 1164, bodyTokenSha256: "401370fe701d433286283e8315df33fdcf0cac7ca738708d4eeea1092203280b",
+    tokenCount: 1203, normalizedTokenSha256: "042d0e1f95095385879cb40560aad45a625e958cfbbddc693bc4ca3b413e5846" },
   { relativePath: "scripts/类定义/org/flashNight/arki/item/CraftingPanelService.as",
     className: "org.flashNight.arki.item.CraftingPanelService", modifiers: ["private", "static"],
     functionName: "projectOutputDeliveryAfterSubmit", classDepth: 0, memberDepth: 1,
@@ -875,25 +917,28 @@ function deriveIdlePrewarmResources(root, overlayText) {
         "map prewarm projection no longer has its one exact source statement", { statement });
     }
   });
-  const pagesStart = mapText.indexOf("var _pages = {");
-  const baseStart = mapText.indexOf("\n        base: {", pagesStart);
-  const factionStart = mapText.indexOf("\n        faction: {", baseStart);
-  if (pagesStart < 0 || baseStart < 0 || factionStart < 0) {
+  if (mapText.split("var _pages = _definition.pages;").length !== 2) {
     fail("source_idle_prewarm_page_invalid", "source_identity",
-      "map base-page declaration cannot be bounded exactly");
+      "map pages must consume the one injected definition");
   }
-  const basePage = mapText.slice(baseStart, factionStart);
-  const backgrounds = Array.from(basePage.matchAll(/\bbackgroundUrl:\s*(['"])([^'"]+)\1/g));
-  const visualsStart = basePage.indexOf("sceneVisuals: [");
-  const visualsEnd = basePage.indexOf("\n            ],", visualsStart);
-  if (backgrounds.length !== 1 || visualsStart < 0 || visualsEnd < 0) {
+  let definition;
+  try {
+    definition = JSON.parse(exactText(root, "data/map/map_definition.json",
+      "source_idle_prewarm_page_invalid").replace(/^\uFEFF/, ""));
+  } catch (_error) {
     fail("source_idle_prewarm_page_invalid", "source_identity",
-      "map base page lacks one background and one bounded sceneVisuals list");
+      "map definition must be valid JSON");
   }
-  const visualBlock = basePage.slice(visualsStart, visualsEnd);
-  const visuals = Array.from(visualBlock.matchAll(/\bassetUrl:\s*(['"])([^'"]+)\1/g))
-    .map((entry) => entry[2]);
-  const assets = [backgrounds[0][2]].concat(visuals);
+  const base = definition && definition.pages && definition.pages.base;
+  if (definition.version !== 2 || !Evidence.isPlainObject(base)
+      || typeof base.backgroundUrl !== "string" || !Array.isArray(base.sceneVisuals)
+      || base.sceneVisuals.some((visual) => !Evidence.isPlainObject(visual)
+        || typeof visual.assetUrl !== "string")) {
+    fail("source_idle_prewarm_page_invalid", "source_identity",
+      "map definition lacks the current base-page contract");
+  }
+  const visuals = base.sceneVisuals.map((visual) => visual.assetUrl);
+  const assets = [base.backgroundUrl].concat(visuals);
   if (visuals.length !== 14 || new Set(assets).size !== 15) {
     fail("source_idle_prewarm_asset_set_invalid", "source_identity",
       "base map idle prewarm must project one background and fourteen unique visuals");
@@ -946,13 +991,35 @@ function parseFontManifest(root, expectedFontUrls) {
         sha256: entry.sha256, shippedFallback: entry.shippedFallback });
     });
   });
+  let catalog;
+  try {
+    catalog = JSON.parse(exactText(root, FONT_RUNTIME_PROJECTION,
+      "source_font_manifest_invalid").replace(/^\uFEFF/, ""));
+  } catch (_error) {
+    fail("source_font_manifest_invalid", "source_identity", "font target projection is invalid");
+  }
+  if (!catalog || catalog.schemaVersion !== 1 || catalog.sourceSha256 !== manifest.sourceSha256
+      || !Array.isArray(catalog.assets) || catalog.assets.length !== resources.length
+      || new Set(catalog.assets.map((asset) => asset.file)).size !== resources.length
+      || catalog.assets.some((asset) => !Array.isArray(asset.targets) || !asset.targets.length
+        || new Set(asset.targets).size !== asset.targets.length
+        || asset.targets.some((target) => !["web", "native"].includes(target))
+        || !resources.some((entry) => entry.name === asset.file
+          && entry.bytes === asset.bytes && entry.sha256 === asset.sha256))) {
+    fail("source_font_manifest_invalid", "source_identity",
+      "font target projection must match every locked manifest asset");
+  }
+  const webNames = new Set(catalog.assets.filter((asset) => asset.targets.includes("web"))
+    .map((asset) => asset.file));
+  const webResources = resources.filter((entry) => webNames.has(entry.name));
   if (!resources.length || new Set(resources.map((entry) => entry.name)).size !== resources.length
-      || Evidence.canonicalJson(resources.map((entry) => entry.url).sort())
+      || !webResources.length
+      || Evidence.canonicalJson(webResources.map((entry) => entry.url).sort())
         !== Evidence.canonicalJson(expectedFontUrls.slice().sort())) {
     fail("source_font_css_projection_invalid", "source_identity",
-      "CSS font URLs and font-pack manifest are not one exact set");
+      "CSS font URLs and web-targeted font assets are not one exact set");
   }
-  return resources;
+  return webResources;
 }
 
 function validateIconManifest(root) {
@@ -1089,8 +1156,11 @@ function descriptors(root) {
     ...FONT_DECLARATION_STYLE_WEB.map((relativePath) => ({
       role: "font_declaration_stylesheet", relativePath,
     })),
+    { role: "idle_prewarm_definition", relativePath: "data/map/map_definition.json" },
     ...idlePrewarm.map((relativePath) => ({ role: "idle_prewarm_image", relativePath })),
-    ...conditional.assetPaths.map((relativePath) => ({ role: "css_conditional_asset", relativePath })),
+    // A prewarmed image is already mandatory, even when current CSS also references it.
+    ...conditional.assetPaths.filter((relativePath) => !idlePrewarm.includes(relativePath))
+      .map((relativePath) => ({ role: "css_conditional_asset", relativePath })),
     { role: "font_pack_manifest", relativePath: "launcher/web/assets/fonts/font-pack-manifest.json" },
     { role: "font_catalog_xml", relativePath: FONT_CATALOG_XML },
     { role: "font_runtime_projection", relativePath: FONT_RUNTIME_PROJECTION },

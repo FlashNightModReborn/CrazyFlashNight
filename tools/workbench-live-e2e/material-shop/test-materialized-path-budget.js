@@ -10,8 +10,11 @@ const Materialize = require("./materialize");
 const SHOP_SUBJECT = "launcher/web/assets/shop-portraits/subjects/"
   + "0".repeat(64) + ".png";
 const scope = { files: [{ relativePath: SHOP_SUBJECT }] };
-const base = path.resolve(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE,
-  Materialize.MATERIALIZED_DIRECTORY);
+// Keep the historical 259 scope-gate boundary independent of the checkout root.
+// This is intentionally not the new full-HEAD 240 admissibility calculation.
+const absoluteRoot = path.parse(path.resolve(__dirname)).root;
+const baseLength = 259 - 1 - SHOP_SUBJECT.length - 1 - 13 - 1 - "resources".length;
+const base = path.join(absoluteRoot, "r".repeat(baseLength - absoluteRoot.length));
 const destination = (runId) => path.join(base, runId, "resources");
 let passed = 0;
 
@@ -62,7 +65,7 @@ test("historical t1903 run id projects the observed 282-character path and fails
 test("prepare invokes the budget gate before creating its owned directories", () => {
   const source = fs.readFileSync(path.join(__dirname, "prepare.js"), "utf8");
   const gate = source.indexOf("Materialize.assertMaterializedPathBudget(resourcesRoot, closure.scope)");
-  const firstMkdir = source.indexOf("fs.mkdirSync(base", gate);
+  const firstMkdir = source.indexOf("Materialize.ensureDirectDirectoryChain(root, base", gate);
   assert(gate >= 0 && firstMkdir > gate);
 });
 
