@@ -127,6 +127,7 @@ on:
       - tools/resolve-runtime-trusted-base.ps1
       - tools/runtime-**
       - tools/runtime-build-v2-common.ps1
+      - tools/runtime-webview-paths.ps1
       - tools/test-invoke-runtime-**
       - tools/test-main-branch-**
       - tools/test-main-branch-admission.ps1
@@ -207,4 +208,43 @@ jobs:
             $classifierArguments += '-ForceDeploymentVerification'
           }
           & powershell.exe @classifierArguments
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+  generated-path-regressions:
+    name: generated-path-regressions
+    if: >-
+      github.run_attempt == 1 &&
+      (github.event_name != 'workflow_dispatch' ||
+      github.actor_id == '91271520' || github.actor_id == '138298913')
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7
+        with:
+          fetch-depth: 1
+          filter: blob:none
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            .github/workflows/runtime-bundle-integrity.yml
+            config/build/native-change-gate.v1.json
+            config/build/runtime-inputs.v2.json
+            config/build/main-branch-admission.v2.json
+            config/build/runtime-builders.v2.json
+            tools/classify-runtime-release-state.ps1
+            tools/test-runtime-release-state.ps1
+            tools/runtime-build-v2-common.ps1
+            tools/runtime-build-attestation-v2-common.ps1
+            tools/runtime-webview-paths.ps1
+            tools/test-runtime-webview-paths.ps1
+            launcher/build-runtime-candidate.ps1
+            launcher/webview2-runtime.lock.json
+      - name: Verify release-state audit boundaries with isolated Git fixtures
+        shell: pwsh
+        run: |
+          & .\tools\test-runtime-release-state.ps1
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Verify generated WebView2 path and replacement boundaries
+        shell: pwsh
+        run: |
+          & .\tools\test-runtime-webview-paths.ps1
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
