@@ -330,8 +330,8 @@ function recoverStale(runDirValue, acknowledge) {
   LauncherObservation.assertExclusiveLauncherProcess(
     LauncherObservation.queryLauncherCoreProcesses(), null);
   if (current.lease.mode === "built_only_discard") {
-    const destination = path.join(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE,
-      Materialize.MATERIALIZED_DIRECTORY, current.lease.runId, "resources");
+    const destination = Materialize.materializationDestinationForRun(
+      current.runDir, current.lease.runId);
     const present = fs.existsSync(destination);
     const listed = Materialize.worktreeListed(Common.CANONICAL_ROOT, destination);
     if (present !== listed) fail("material_shop_run_operation_recovery_split_state",

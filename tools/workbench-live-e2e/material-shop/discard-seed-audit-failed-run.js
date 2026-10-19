@@ -649,8 +649,8 @@ function validateIntent(value) {
       || !Common.ID_RE.test(String(value.runId || ""))
       || !samePath(value.canonicalRoot, Common.CANONICAL_ROOT)
       || !samePath(value.runDir, path.join(expectedBase, "runs", value.runId))
-      || !samePath(value.destination, path.join(expectedBase,
-        Materialize.MATERIALIZED_DIRECTORY, value.runId, "resources"))
+      || !samePath(value.destination, Materialize.materializationDestinationForRun(
+        value.runDir, value.runId))
       || !samePath(value.candidateRoot, value.probe.candidateRoot)
       || value.preparationSha256 !== value.probe.preparationSha256
       || value.materializationSha256 !== value.probe.materializationSha256
@@ -970,6 +970,7 @@ function receiptFromIntent(intent, closure, completedAt) {
 function runGitRemove(destination) {
   const result = childProcess.spawnSync("git", ["-C", Common.CANONICAL_ROOT,
     "worktree", "remove", "--force", destination], {
+    env: Materialize.gitEnvironment(),
     encoding: "utf8", windowsHide: true, maxBuffer: 16 * 1024 * 1024,
   });
   if (result.error || result.status !== 0) {

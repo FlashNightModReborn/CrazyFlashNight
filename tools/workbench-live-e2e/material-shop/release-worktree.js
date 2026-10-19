@@ -23,6 +23,7 @@ const REMOVAL_RESOLVED_PREFIX = "worktree-removal-resolved-";
 
 function runGit(root, args) {
   const result = childProcess.spawnSync("git", ["-C", root].concat(args), {
+    env: Materialize.gitEnvironment(),
     encoding: "utf8", windowsHide: true, maxBuffer: 16 * 1024 * 1024,
   });
   if (result.error || result.status !== 0) {
@@ -34,6 +35,7 @@ function runGit(root, args) {
 
 function gitOutput(root, args) {
   const result = childProcess.spawnSync("git", ["-C", root].concat(args), {
+    env: Materialize.gitEnvironment(),
     encoding: "utf8", windowsHide: true, maxBuffer: 4 * 1024 * 1024,
   });
   if (result.error || result.status !== 0) {
@@ -99,8 +101,8 @@ function validateRemovalIntent(value) {
       || !Evidence.pathInside(path.join(ownedBase, "runs"), runDir)
       || path.basename(runDir) !== value.runId
       || output.toLowerCase() !== path.join(runDir, REMOVAL_OUTPUT_NAME).toLowerCase()
-      || !Evidence.pathInside(path.join(ownedBase, Materialize.MATERIALIZED_DIRECTORY),
-        destination)
+      || destination.toLowerCase() !== path.resolve(
+        Materialize.materializationDestinationForRun(runDir, value.runId)).toLowerCase()
       || path.basename(destination).toLowerCase() !== "resources"
       || path.basename(path.dirname(destination)) !== value.runId
       || digests.some((entry) => !Common.SHA256_RE.test(String(entry || "")))
@@ -392,6 +394,11 @@ function loadRemovalState(runDirValue) {
   }
   const markerPath = path.join(runDir, names[0]);
   const intent = validateRemovalIntent(Prepare.readJson(markerPath, "release_worktree"));
+  if (path.resolve(intent.runDir).toLowerCase() !== runDir.toLowerCase()
+      || path.basename(runDir) !== intent.runId) {
+    Common.fail("material_shop_worktree_removal_state_invalid", "release_worktree",
+      "removal marker belongs to a different exact evidence run directory");
+  }
   const expectedResolved = resolvedRemovalName(intent);
   if (names[0] !== REMOVAL_INTENT_NAME && names[0] !== expectedResolved) {
     Common.fail("material_shop_worktree_removal_state_invalid", "release_worktree",
@@ -462,8 +469,9 @@ function release(options) {
     ownedBase: materialization.ownedBase, fixtureMode: false, allowBuildOutputs: true,
   });
   const destination = path.resolve(materialization.destination || "");
-  const expectedBase = path.resolve(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE,
-    Materialize.MATERIALIZED_DIRECTORY);
+  const creationDestination = Materialize.materializationDestinationForRun(
+    context.preparation.runDir, context.preparation.runId);
+  const expectedBase = path.dirname(path.dirname(creationDestination));
   const canonicalCommonDir = path.resolve(Common.CANONICAL_ROOT,
     gitOutput(Common.CANONICAL_ROOT, ["rev-parse", "--git-common-dir"]));
   validateReleaseBinding({ materialization, context, destination, expectedBase,
