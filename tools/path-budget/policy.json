@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "relative_limit": 200,
+    "root_units": 60,
+    "full_visible_limit": 240,
+    "segment_limit": 255,
+    "root": "",
+    "prefix": "",
+    "suffix": "",
+    "already_projected": false
+  },
+  "forbidden_new_prefixes": [
+    "tools/cf6-elder-assets/evidence/20261017-calibration",
+    "tools/cf6-elder-assets/evidence/20261018-loader-size-followup"
+  ]
+}
