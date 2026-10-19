@@ -182,7 +182,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             for (var m:Number=0;m<milKinds.length;m++) {
                 addMilitary(face,false);cases[cases.length-1].kind=milKinds[m];
             }
-            var kinds:Array=["combo","rapid","heavy","prehit","posthit","dead","lost","mp","cooldown","ai","aiHeavy","pause","walk","chase","aiClose","aiFar","aiOpening","retreat","retreatHit","poiseLow","poiseSafe","poiseClose","poiseHealthy","poiseDeath","poiseLost","poiseExternal","growthLow","growth20","growth30","growthInvalid"];
+            var kinds:Array=["combo","rapid","heavy","heavyPrehit","heavyPosthit","prehit","posthit","dead","lost","mp","cooldown","ai","aiHeavy","pause","walk","chase","aiClose","aiFar","aiOpening","retreat","retreatHit","poiseLow","poiseSafe","poiseClose","poiseHealthy","poiseDeath","poiseLost","poiseExternal","growthLow","growth20","growth30","growthInvalid"];
             for (var k:Number=0;k<kinds.length;k++) addBlack(kinds[k],face);
         }
         trace("StudentRepairAssetTest phase=spawn-complete count="+cases.length);
@@ -337,10 +337,12 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             u._visible=false;
             rapidPreviews.push({id:"black-rapid-entry-idle",bitmap:idleImage});
         }
-        var next:String=item.kind=="combo"?"兵器攻击":(item.kind=="heavy"?"凶斩":"迅斩");
+        var next:String=item.kind=="combo"?"兵器攻击":((item.kind=="heavy" || item.kind=="heavyPrehit" || item.kind=="heavyPosthit")?"凶斩":"迅斩");
         item.startMP=u.mp;u.状态改变(next);
         u.__黑仔下次技能=99999999;
         check(u.状态==next,item.id+" actual attack label entered");
+        if (next=="迅斩") check(u.man._totalframes==30,item.id+" imported rapid retains all30 authored recovery frames");
+        if (next=="凶斩") check(u.man._totalframes==49,item.id+" imported heavy retains all49 authored frames");
         check(u.mp==item.startMP,item.id+" attack preserves MP");
         check(u.man.刀.刀.装扮.刀口位置1!=undefined,item.id+" fixed bat actual marker exists");
         if (item.kind=="combo") recordOtherPreview(item);
@@ -360,8 +362,16 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
         var item:Object=u.fixtureCase;
         if (item==undefined) { check(false,"emission owned by actual published enemy");return; }
         item.hits++;
+        var authoredFrame:Number=u.man._currentframe;
+        if (p.技能名=="迅斩") check(authoredFrame==16 || authoredFrame==17 || authoredFrame==21,item.id+" rapid emission aligned to imported strike frames");
+        if (p.技能名=="凶斩") check(authoredFrame==20 || authoredFrame==21 || authoredFrame==22,item.id+" heavy emission aligned to imported strike frames");
         if (item.kind=="heavy") {
             var bounds:Object=p.区域定位area.getBounds(black);
+            var frontMin:Number=item.face==0?bounds.xMin-u._x:u._x-bounds.xMax;
+            var frontMax:Number=item.face==0?bounds.xMax-u._x:u._x-bounds.xMin;
+            check(frontMin>=-0.1 && frontMax<=147,item.id+" actual heavy area stays in front and within authored bat reach");
+            if (authoredFrame==22 && frontMin<=105 && frontMax>=105 &&
+                bounds.yMin-u.Z轴坐标<=-65 && bounds.yMax-u.Z轴坐标>=-65) item.sweptContact=true;
             trace("[ASSET_BLADE_BOUNDS] "+item.id+"|face="+item.face+"|frame="+u.man._currentframe+
                 "|xMin="+(bounds.xMin-u._x)+"|xMax="+(bounds.xMax-u._x)+
                 "|yMin="+(bounds.yMin-u.Z轴坐标)+"|yMax="+(bounds.yMax-u.Z轴坐标));
@@ -495,7 +505,7 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
             var f:Number=u.man._currentframe;
             if (item.kind=="pause" && ticks==10) { item.pausedFrame=f;item.pausedHits=item.hits; }
             if (item.kind=="pause" && ticks==14) check(f==item.pausedFrame && item.hits==item.pausedHits,item.id+" pause stops real man timeline and emission");
-            if (!item.interrupted && ((interruption=="prehit" && f>=6) || (interruption=="posthit" && item.hits>=3) ||
+            if (!item.interrupted && (((interruption=="prehit" || interruption=="heavyPrehit") && f>=6) || ((interruption=="posthit" || interruption=="heavyPosthit") && item.hits>=3) ||
                 (interruption=="dead" && f>=6) || (interruption=="lost" && f>=6))) {
                 item.interrupted=true;item.hitsBefore=item.hits;
                 if (interruption=="dead") u.hp=0;
@@ -546,12 +556,12 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
                     if (item.kind=="retreatHit") check(u._x==item.stoppedX,item.id+" no stale retreat after incoming hit");
                 }
                 if (item.kind=="aiOpening") {
-                    check(item.heavyStarted && item.hits==21 && item.firstHeavy==20,item.id+" actual rapid+normal-rhythm heavy windows execute after recovery");
+                    check(item.heavyStarted && item.hits==18 && item.firstHeavy==20,item.id+" actual rapid+normal-rhythm heavy windows execute after recovery");
                     u.黑仔目标解绑();item.target.hp=0;item.target.dispatcher.destroy();
                 }
                 var rapid:Boolean=item.kind=="rapid" || item.kind=="ai" || item.kind=="pause";
                 var heavy:Boolean=item.kind=="heavy" || item.kind=="aiHeavy";
-                var expected:Number=rapid?9:heavy?12:0;
+                var expected:Number=rapid?9:heavy?9:0;
                 if (item.kind=="combo") { check(item.hits==39,item.id+" actual native five-stage short-handle bat combo emits count="+item.hits);check(item.first==11,item.id+" short-handle first window follows its own native preparation");check(item.stages==31,item.id+" all five native combo stages executed"); }
                 else if (rapid || heavy) check(item.hits==expected,item.id+" complete skill windows count="+item.hits);
                 if (rapid) check(item.first==16,item.id+" extended windup first hit frame="+item.first);
@@ -560,7 +570,9 @@ class org.flashNight.arki.unit.Action.Melee.StudentRepairAssetTest {
                     check(item.preDrift<0.01,item.id+" windup does not move the unit before native lunge");
                 }
                 if (heavy) check(item.first==20,item.id+" normal heavy first hit frame="+item.first);
+                if (item.kind=="heavy") check(item.sweptContact===true,item.id+" fast downswing covers front target body between authored poses");
                 if (rapid || heavy) check(item.deflects>0,item.id+" native deflection window executed");
+                if (item.kind=="heavyPrehit" || item.kind=="heavyPosthit") check(item.interrupted===true,item.id+" imported heavy actually reaches requested interruption boundary");
                 if (item.interrupted) check(item.hits==item.hitsBefore,item.id+" no outgoing attack after interruption");
                 check(item.invalid==0 && item.stale==0,item.id+" finite coordinates/formula and valid lifetime");
                 if (item.kind!="dead") check(u.状态=="兵器站立",item.id+" recovered standing state");

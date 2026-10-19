@@ -90,7 +90,7 @@ class org.flashNight.arki.unit.Action.Melee.BlackShadowAssetTest {
         target.hp=1000;target.Z轴坐标=target._y=250;target._x=220;
         teacher.target=target;
         var labels:Array=["兵器站立","兵器行走","兵器跑","兵器攻击","迅斩","凶斩","被击","击倒","倒地","霸体"];
-        var lengths:Array=[64,22,22,108,27,44,20,17,25,36];
+        var lengths:Array=[64,22,22,108,30,49,20,17,25,36];
         for(var f:Number=0;f<2;f++) for(var k:Number=0;k<labels.length;k++) {
             var u:MovieClip=black.attachMovie("敌人-Codex黑仔","b"+cases.length,black.getNextHighestDepth(),{兵种:"敌人-Codex黑仔"});
             cases.push({unit:u,label:labels[k],face:f,length:lengths[k],seen:{},samples:0});

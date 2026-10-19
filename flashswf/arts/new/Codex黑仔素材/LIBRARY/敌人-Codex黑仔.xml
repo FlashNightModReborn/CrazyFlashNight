@@ -338,6 +338,47 @@ UpdateSmallState = function(small:String):Void {
     SkillAttributeCore.transferWeaponAttributes(this, p);
     this.刀口位置生成子弹(this, p);
 };
+// 新凶斩第20–22帧高速扫过正面。取相邻实际刀口的包围区域，补足跨帧漏判；不沿用收招时身后的球棒。
+黑仔凶斩轨迹判定 = function(clip:MovieClip):Boolean {
+    var frame:Number = clip._currentframe;
+    if (frame < 20 || frame > 22) return false;
+    var real:MovieClip = clip.刀.刀.装扮;
+    if (real === undefined) return false;
+    var carrier:MovieClip = clip.__黑仔凶斩判定;
+    if (carrier === undefined) {
+        carrier = clip.createEmptyMovieClip("__黑仔凶斩判定", clip.getNextHighestDepth());
+        var slot:MovieClip = carrier.createEmptyMovieClip("刀", 1);
+        slot.createEmptyMovieClip("装扮", 1);
+        carrier._visible = false;
+    }
+    if (this.__黑仔凶斩轨迹招式 !== this.__黑仔招式序号 || !(this.__黑仔凶斩判定帧 < frame)) this.__黑仔凶斩上帧刀口 = undefined;
+    var previous:Array = this.__黑仔凶斩上帧刀口;
+    var current:Array = [];
+    var holder:MovieClip = carrier.刀.装扮;
+    for (var i:Number = 1; i <= 3; i++) {
+        var blade:MovieClip = real["刀口位置" + i];
+        if (blade === undefined) return false;
+        var b:Object = blade.getBounds(clip);
+        if (!isFinite(b.xMin) || !isFinite(b.xMax) || !isFinite(b.yMin) || !isFinite(b.yMax)) return false;
+        current.push({xMin:b.xMin, xMax:b.xMax, yMin:b.yMin, yMax:b.yMax});
+        var before:Object = previous[i - 1];
+        var left:Number = Math.max(0, before === undefined ? b.xMin : Math.min(b.xMin, before.xMin));
+        var right:Number = before === undefined ? b.xMax : Math.max(b.xMax, before.xMax);
+        var top:Number = before === undefined ? b.yMin : Math.min(b.yMin, before.yMin);
+        var bottom:Number = before === undefined ? b.yMax : Math.max(b.yMax, before.yMax);
+        if (!(right > left && bottom > top)) return false;
+        var area:MovieClip = holder["刀口位置" + i];
+        if (area === undefined) area = holder.createEmptyMovieClip("刀口位置" + i, i);
+        area.clear();
+        area.beginFill(0xFFFFFF, 100);
+        area.moveTo(left, top);area.lineTo(right, top);area.lineTo(right, bottom);
+        area.lineTo(left, bottom);area.lineTo(left, top);area.endFill();
+    }
+    this.__黑仔凶斩上帧刀口 = current;
+    this.__黑仔凶斩判定帧 = frame;
+    this.__黑仔凶斩轨迹招式 = this.__黑仔招式序号;
+    return true;
+};
 黑仔技能攻击 = function(clip:MovieClip, skill:String, noStun:Boolean):Void {
     if (!this.黑仔动作有效(clip) || this.状态 != skill) return;
     // 主角帧函数中的裸 _parent 依赖原播放器作用域；敌人显式传入自己。
@@ -361,10 +402,11 @@ UpdateSmallState = function(small:String):Void {
         p.不硬直 = noStun;
     }
     if (isNaN(p.子弹威力) || p.子弹威力 <= 0) return;
+    if (skill == "凶斩" && !this.黑仔凶斩轨迹判定(clip)) return;
     this.__黑仔出手窗口++;
     if (this.__黑仔出手窗口 == 1) this.黑仔标定记录("first_hit_window");
     SkillAttributeCore.transferWeaponAttributes(this, p);
-    this.刀口位置生成子弹(this, p);
+    this.刀口位置生成子弹(this, p, skill == "凶斩" ? "__黑仔凶斩判定" : undefined);
 };
 黑仔消弹 = function(clip:MovieClip):Void {
     if (!this.黑仔动作有效(clip) || clip.攻击点 == undefined) return;
