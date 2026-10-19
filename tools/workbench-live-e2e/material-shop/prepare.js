@@ -113,6 +113,7 @@ function stablePreparation(value) {
 function prepare(options) {
   const settings = options || {};
   const root = Common.assertCanonicalRoot(settings.root || Common.CANONICAL_ROOT);
+  Materialize.gitEnvironment();
   const runId = String(settings.runId || "");
   if (!Common.ID_RE.test(runId)) Common.fail("material_shop_run_id_invalid", "prepare", "run id is invalid");
   const slots = Common.assertDedicatedSlots(settings.seedSlot,
@@ -126,10 +127,12 @@ function prepare(options) {
   const capability = agentRuntimeJsonl ? null : assertCapability(settings.capability);
   const closure = Production.captureProductionClosure(root);
   const base = path.resolve(root, Common.OWNED_BASE_RELATIVE);
-  const resourcesRoot = path.join(base, "materialized", runId, "resources");
+  const resourcesRoot = Materialize.materializationLayout(root, runId).destination;
   // Once the full closure is sealed, reject an unsafe destination before any
   // other preparation probe or owned-directory side effect.
   Materialize.assertMaterializedPathBudget(resourcesRoot, closure.scope);
+  Materialize.assertWorktreePathBudget(root, resourcesRoot, closure.scope);
+  Materialize.assertNewRunAvailable(root, runId);
   const packageLock = closure.scope.files.find((entry) =>
     entry.relativePath === "launcher/perf/package-lock.json");
   if (!packageLock) Common.fail("material_shop_external_toolchain_lock_unbound", "prepare",
@@ -152,9 +155,9 @@ function prepare(options) {
     : Protocol.createAuthorization({
       evidenceMode: "candidate_capture", decisionId: runId + "-qty1",
     });
-  if (!fs.existsSync(base)) fs.mkdirSync(base, { recursive: true });
+  Materialize.ensureDirectDirectoryChain(root, base, "prepare");
   const runs = path.join(base, "runs");
-  if (!fs.existsSync(runs)) fs.mkdirSync(runs);
+  Materialize.ensureDirectDirectoryChain(base, runs, "prepare");
   const runDir = path.join(runs, runId);
   if (fs.existsSync(runDir)) Common.fail("material_shop_run_exists", "prepare", "run directory already exists");
   fs.mkdirSync(runDir);

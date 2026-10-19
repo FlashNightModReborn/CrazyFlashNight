@@ -40,18 +40,21 @@ function loadPreparation(filePath) {
   const runId = String(value.runId || "");
   const expectedRunDir = path.join(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE,
     "runs", runId);
-  const expectedResources = path.join(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE,
-    Materialize.MATERIALIZED_DIRECTORY, runId, "resources");
   const normalized = (entry) => path.resolve(String(entry || "")).toLowerCase();
   if (value.schema !== Prepare.PREPARATION_SCHEMA || !Common.ID_RE.test(runId)
       || normalized(value.root) !== normalized(Common.CANONICAL_ROOT)
       || normalized(value.runDir) !== normalized(expectedRunDir)
       || normalized(value.runDir) !== normalized(path.dirname(path.resolve(filePath)))
-      || normalized(value.resourcesRoot) !== normalized(expectedResources)
       || value.preparationSha256 !== Evidence.sha256Text(
         Evidence.canonicalJson(Prepare.stablePreparation(value)))) {
     Common.fail("material_shop_preparation_invalid", "candidate_build",
       "candidate build is detached from its exact A5 preparation");
+  }
+  // Prove the outer canonical run before reading any marker-selected destination.
+  const expectedResources = Materialize.materializationDestinationForRun(value.runDir, runId);
+  if (normalized(value.resourcesRoot) !== normalized(expectedResources)) {
+    Common.fail("material_shop_preparation_invalid", "candidate_build",
+      "candidate resources differ from the exact sealed materialization");
   }
   const creation = Materialize.loadCreationState(value.runDir);
   const producer = Materialize.readMaterializationProducer(value.runDir, creation.intent);

@@ -6,6 +6,7 @@ const path = require("path");
 const Evidence = require("../lib/evidence-artifact");
 const Common = require("./common");
 const Scope = require("./scope-manifest");
+const WorktreePathBudget = require("./worktree-path-budget");
 
 const RECEIPT_SCHEMA = "workbench-live-e2e.material-shop.materialization.v2";
 const MATERIALIZED_DIRECTORY = "materialized";
@@ -33,7 +34,12 @@ const MAXIMUM_IGNORED_OUTPUT_BYTES = 2 * 1024 * 1024 * 1024;
 // The Launcher is not declared longPathAware. MAX_PATH includes the terminating NUL,
 // so every physical file path consumed by the materialized candidate must stay <= 259.
 const MAXIMUM_WINDOWS_LEGACY_PATH_LENGTH = 259;
-const CREATION_INTENT_SCHEMA = "workbench-live-e2e.material-shop.materialization-create-intent.v1";
+// Evidence and producer/operation leases remain in the original dedicated run root.
+// Only newly materialized resources use the shorter, still repository-owned subtree.
+const SHORT_MATERIALIZED_BASE_RELATIVE = path.join("tmp", "a5");
+const SHORT_MATERIALIZED_DIRECTORY = "m";
+const LEGACY_CREATION_INTENT_SCHEMA = "workbench-live-e2e.material-shop.materialization-create-intent.v1";
+const CREATION_INTENT_SCHEMA = "workbench-live-e2e.material-shop.materialization-create-intent.v2";
 const CREATION_INTENT_NAME = "materialization-create-intent.json";
 const CREATION_RESOLVED_PREFIX = "materialization-create-resolved-";
 const CLEANUP_RECEIPT_SCHEMA = "workbench-live-e2e.material-shop.materialization-cleanup.v2";
@@ -113,7 +119,11 @@ function run(command, args, options) {
 }
 
 function runGit(root, args) {
-  return run("git", ["-C", path.resolve(root)].concat(args));
+  // Match the object-only preflight: mutable replace refs must not change the
+  // tree actually checked out after the exact sealed commit was validated.
+  return run("git", ["-C", path.resolve(root)].concat(args), {
+    env: WorktreePathBudget.gitEnvironment(),
+  });
 }
 
 function digestWithout(value, key) {
@@ -177,27 +187,87 @@ function assertCreationIntentAvailable(runDirValue) {
   return runDir;
 }
 
+function materializationLayout(rootValue, runIdValue, schemaValue) {
+  const root = path.resolve(rootValue);
+  const runId = String(runIdValue || "");
+  const schema = schemaValue || CREATION_INTENT_SCHEMA;
+  if (!Common.ID_RE.test(runId) || ![CREATION_INTENT_SCHEMA,
+      LEGACY_CREATION_INTENT_SCHEMA].includes(schema)) {
+    Common.fail("material_shop_materialization_layout_invalid", "materialize",
+      "materialization layout requires one exact versioned schema and closed run id");
+  }
+  if (schema === CREATION_INTENT_SCHEMA && (!/^[A-Za-z0-9._-]{1,100}$/.test(runId)
+      || runId === "." || runId === ".." || /[. ]$/.test(runId)
+      || /^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)/i.test(runId))) {
+    Common.fail("material_shop_materialization_layout_invalid", "materialize",
+      "new run id must be one Windows-safe closed directory segment of 1 to 100 characters");
+  }
+  const evidenceBase = path.resolve(root, Common.OWNED_BASE_RELATIVE);
+  const base = schema === CREATION_INTENT_SCHEMA
+    ? path.resolve(root, SHORT_MATERIALIZED_BASE_RELATIVE) : evidenceBase;
+  return { schema, root, runId, evidenceBase, ownedBase: base,
+    runDir: path.join(evidenceBase, "runs", runId),
+    destination: path.join(base, schema === CREATION_INTENT_SCHEMA
+      ? SHORT_MATERIALIZED_DIRECTORY : MATERIALIZED_DIRECTORY, runId, "resources") };
+}
+
+function materializationDestinationForRun(runDirValue, runIdValue) {
+  // No destination-based alias/fallback: the exact sealed creation schema decides.
+  const state = loadCreationState(runDirValue);
+  if (state.intent.runId !== String(runIdValue || "")) {
+    Common.fail("material_shop_materialization_layout_invalid", "materialize_recovery",
+      "materialization layout is detached from the requested exact run id");
+  }
+  return state.intent.destination;
+}
+
+function assertNewRunAvailable(rootValue, runIdValue, options) {
+  const current = materializationLayout(rootValue, runIdValue);
+  const legacy = materializationLayout(rootValue, runIdValue, LEGACY_CREATION_INTENT_SCHEMA);
+  const allowEmptyRun = options && options.allowEmptyRun === true;
+  const paths = [current.runDir, path.dirname(current.destination),
+    path.dirname(legacy.destination)];
+  paths.forEach((target, index) => {
+    const parent = path.dirname(target);
+    if (!fs.existsSync(parent)) return;
+    assertDirectDirectory(parent, "prepare");
+    const matching = fs.readdirSync(parent).filter((name) =>
+      name.toLowerCase() === path.basename(target).toLowerCase());
+    if (!matching.length) return;
+    if (index === 0 && allowEmptyRun && matching.length === 1
+        && matching[0] === path.basename(target)) {
+      assertDirectDirectory(target, "prepare");
+      if (fs.readdirSync(target).length === 0) return;
+    }
+    Common.fail("material_shop_run_exists", "prepare",
+      "run id already has retained evidence, a producer/operation lease, or a legacy/short worktree directory", {
+        runId: current.runId, target, matching,
+      });
+  });
+  return current;
+}
+
 function validateCreationIntent(value) {
   Common.exactKeys(value, ["schema", "createdAt", "runId", "root", "runDir",
     "ownedBase", "destination", "head", "scopeSha256", "scopePaths",
     "scopePathsSha256", "commonDir", "removeCommand", "cleanupCommand", "intentSha256"],
   "material_shop_materialization_intent_invalid", "materialize_recovery");
   const root = Common.assertCanonicalRoot(value.root);
-  const base = path.resolve(root, Common.OWNED_BASE_RELATIVE);
+  const layout = materializationLayout(root, value.runId, value.schema);
+  const base = layout.ownedBase;
   const runDir = Evidence.assertOwnedRunDirectory(root, value.runDir,
     Common.OWNED_BASE_RELATIVE, "materialize_recovery");
   const destination = path.resolve(value.destination || "");
   const paths = Array.isArray(value.scopePaths) ? value.scopePaths : [];
   const normalized = paths.map((entry) => Common.normalizeRelative(entry));
   const expectedCommonDir = path.resolve(root, runGit(root, ["rev-parse", "--git-common-dir"]));
-  if (value.schema !== CREATION_INTENT_SCHEMA
+  if (![CREATION_INTENT_SCHEMA, LEGACY_CREATION_INTENT_SCHEMA].includes(value.schema)
       || !Number.isFinite(Date.parse(value.createdAt))
       || !Common.ID_RE.test(String(value.runId || ""))
       || path.basename(runDir) !== value.runId
-      || !samePath(runDir, path.join(base, "runs", value.runId))
+      || !samePath(runDir, layout.runDir)
       || !samePath(value.ownedBase, base)
-      || !samePath(destination, path.join(base, MATERIALIZED_DIRECTORY,
-        value.runId, "resources"))
+      || !samePath(destination, layout.destination)
       || !Common.GIT_OID_RE.test(String(value.head || ""))
       || !Common.SHA256_RE.test(String(value.scopeSha256 || ""))
       || paths.length < 1 || paths.length > Scope.MAXIMUM_FILES
@@ -262,6 +332,10 @@ function loadCreationState(runDirValue) {
     if (error && error.code) throw error;
     Common.fail("material_shop_materialization_intent_invalid", "materialize_recovery",
       error.message);
+  }
+  if (!samePath(intent.runDir, runDir) || path.basename(runDir) !== intent.runId) {
+    Common.fail("material_shop_materialization_recovery_state_invalid", "materialize_recovery",
+      "creation marker belongs to a different exact evidence run directory");
   }
   const expectedCreation = creationResolvedName(intent);
   const expectedCleanup = cleanupResolvedName(intent);
@@ -817,23 +891,27 @@ function ensureDirectDirectoryChain(rootValue, directory, phase) {
   return target;
 }
 
-function ownedBase(root, override) {
+function ownedBase(root, override, options) {
   const canonical = Common.assertCanonicalRoot(root);
-  const expected = path.resolve(canonical, Common.OWNED_BASE_RELATIVE);
+  const expected = path.resolve(canonical, options && options.fixtureMode === true
+    ? Common.OWNED_BASE_RELATIVE : SHORT_MATERIALIZED_BASE_RELATIVE);
   const value = override ? path.resolve(override) : expected;
   if (!Evidence.pathInside(canonical, value)
-      || (!samePath(value, expected) && !Evidence.pathInside(expected, value))) {
+      || (!samePath(value, expected) && (!options || options.fixtureMode !== true
+        || !Evidence.pathInside(expected, value)))) {
     Common.fail("material_shop_owned_base_invalid", "materialize",
       "materialization owned base must stay under the dedicated workspace subtree",
       { expected, actual: value });
   }
-  ensureDirectDirectoryChain(canonical, value, "materialize");
+  if (!options || options.createDirectories !== false) {
+    ensureDirectDirectoryChain(canonical, value, "materialize");
+  }
   return value;
 }
 
-function assertDestination(base, destination) {
+function assertDestination(base, destination, materializedDirectory) {
   const materializedBase = ensureDirectDirectoryChain(
-    base, path.join(base, MATERIALIZED_DIRECTORY), "materialize");
+    base, path.join(base, materializedDirectory), "materialize");
   const resolved = path.resolve(destination);
   const runDirectory = path.dirname(resolved);
   if (!Evidence.pathInside(materializedBase, resolved)
@@ -841,7 +919,7 @@ function assertDestination(base, destination) {
       || path.dirname(runDirectory).toLowerCase() !== materializedBase.toLowerCase()
       || !/^[A-Za-z0-9._-]{1,100}$/.test(path.basename(runDirectory))) {
     Common.fail("material_shop_destination_invalid", "materialize",
-      "destination must be materialized/<closed-run-id>/resources",
+      "destination must use its schema-bound owned middle segment and exact run/resources leaf",
       { materializedBase, destination: resolved });
   }
   ensureDirectDirectoryChain(materializedBase, runDirectory, "materialize");
@@ -997,6 +1075,7 @@ function worktreeIdentity(destination, expectedHead) {
   const gitDir = path.resolve(destination, runGit(destination, ["rev-parse", "--git-dir"]));
   const symbolic = childProcess.spawnSync("git", ["-C", destination,
     "symbolic-ref", "-q", "HEAD"], {
+    env: WorktreePathBudget.gitEnvironment(),
     encoding: "utf8", windowsHide: true, maxBuffer: 1024 * 1024,
   });
   const detached = !symbolic.error && symbolic.status === 1
@@ -1057,7 +1136,7 @@ function verifyFailedMaterializationWorktree(intent) {
   validateCreationIntent(intent);
   const destination = path.resolve(intent.destination);
   const base = path.resolve(intent.ownedBase);
-  [base, path.join(base, MATERIALIZED_DIRECTORY), path.dirname(destination), destination]
+  [base, path.dirname(path.dirname(destination)), path.dirname(destination), destination]
     .forEach((entry) => assertDirectDirectory(entry, "materialize_recovery"));
   const identity = worktreeIdentity(destination, intent.head);
   if (!samePath(identity.commonDir, intent.commonDir)) {
@@ -1603,9 +1682,10 @@ function stableReceipt(value) {
 function materializeScope(options) {
   const settings = options || {};
   const root = Common.assertCanonicalRoot(settings.root || Common.CANONICAL_ROOT);
-  const base = ownedBase(root, settings.ownedBase);
-  const sourceRoot = path.resolve(settings.sourceRoot || root);
+  WorktreePathBudget.gitEnvironment();
   const fixtureMode = settings.fixtureMode === true;
+  const base = ownedBase(root, settings.ownedBase, { createDirectories: false, fixtureMode });
+  const sourceRoot = path.resolve(settings.sourceRoot || root);
   if (fixtureMode) {
     if (!Evidence.pathInside(base, sourceRoot)) {
       Common.fail("material_shop_fixture_source_invalid", "materialize",
@@ -1623,10 +1703,18 @@ function materializeScope(options) {
   // Pure projection only: reject unsafe paths before destination creation, producer
   // markers, Git worktree creation, candidate output, or any other materialized write.
   assertMaterializedPathBudget(settings.destination, settings.scope);
+  if (!fixtureMode) {
+    WorktreePathBudget.assertWorktreePathBudget(root, settings.destination, settings.scope);
+    assertNewRunAvailable(root, path.basename(path.resolve(settings.runDir || "")), {
+      allowEmptyRun: true,
+    });
+  }
   // Every current-tree overlay source can be validated before creating a Git worktree.
   // Re-read again during copy so a concurrent change still fails closed.
   settings.scope.files.forEach((entry) => readExactSource(sourceRoot, entry));
-  const destination = assertDestination(base, settings.destination);
+  ensureDirectDirectoryChain(root, base, "materialize");
+  const destination = assertDestination(base, settings.destination,
+    fixtureMode ? MATERIALIZED_DIRECTORY : SHORT_MATERIALIZED_DIRECTORY);
   let baseFiles = [];
   let gitWorktree = null;
   let creationIntent = null;
@@ -1724,7 +1812,14 @@ function verifyMaterialization(value, scope, options) {
     Common.fail("material_shop_materialization_owned_base_mismatch", "materialize_verify",
       "receipt owned base differs from the verifier boundary");
   }
-  const materializedBase = path.join(base, MATERIALIZED_DIRECTORY);
+  const shortBase = path.resolve(Common.CANONICAL_ROOT, SHORT_MATERIALIZED_BASE_RELATIVE);
+  const legacyBase = path.resolve(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE);
+  if (!fixtureMode && !samePath(base, shortBase) && !samePath(base, legacyBase)) {
+    Common.fail("material_shop_materialization_owned_base_mismatch", "materialize_verify",
+      "production receipt owned base is not an exact fixed legacy or short materialization root");
+  }
+  const materializedBase = path.join(base, !fixtureMode && samePath(base, shortBase)
+    ? SHORT_MATERIALIZED_DIRECTORY : MATERIALIZED_DIRECTORY);
   if (!Evidence.pathInside(materializedBase, value.destination)
       || path.basename(value.destination).toLowerCase() !== "resources"
       || path.dirname(path.dirname(value.destination)).toLowerCase()
@@ -1864,6 +1959,13 @@ module.exports = {
   CLEANUP_RESOLVED_PREFIX,
   CREATION_INTENT_NAME,
   CREATION_INTENT_SCHEMA,
+  LEGACY_CREATION_INTENT_SCHEMA,
+  SHORT_MATERIALIZED_BASE_RELATIVE,
+  SHORT_MATERIALIZED_DIRECTORY,
+  materializationLayout,
+  materializationDestinationForRun,
+  assertNewRunAvailable,
+  gitEnvironment: WorktreePathBudget.gitEnvironment,
   CREATION_RESOLVED_PREFIX,
   FIXTURE_MODE,
   IGNORED_OUTPUT_SCHEMA,
@@ -1880,6 +1982,7 @@ module.exports = {
   RECEIPT_SCHEMA,
   captureWorktreeBuildIdentity,
   assertMaterializedPathBudget,
+  assertWorktreePathBudget: WorktreePathBudget.assertWorktreePathBudget,
   captureIgnoredOutputInventory,
   compareOrdinal,
   assertCleanupDirtyPaths,
