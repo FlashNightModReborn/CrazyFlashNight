@@ -7,6 +7,7 @@ const fs = require("fs");
 const Module = require("module");
 const path = require("path");
 const CloneGuard = require("../lib/clone-save-guard");
+const CraftingSource = require("../crafting/source-contract");
 const Evidence = require("../lib/evidence-artifact");
 const ExternalToolchain = require("../lib/playwright-websocket-toolchain");
 const LauncherObservation = require("../lib/launcher-observation");
@@ -424,11 +425,11 @@ function main() {
     const fixtureAuthorityBinding = Applicability.createFixtureAuthorityBinding(
       Common.CANONICAL_ROOT, applicability, applicability.capturedAt);
     test("current material applicability exact set", () => {
-      assert.deepStrictEqual(applicability.counts, { materialCount: 224, shopFileCount: 35,
-        materialOccurrenceCount: 104, uniqueMaterialItemCount: 101,
+      assert.deepStrictEqual(applicability.counts, { materialCount: 234, shopFileCount: 40,
+        materialOccurrenceCount: 144, uniqueMaterialItemCount: 115,
         requiredInfoOccurrenceCount: 0, purchaseLimitOccurrenceCount: 0,
-        seedCount: 4, seedMaterialPairCount: 416,
-        affordableSeedOccurrenceCount: 416, atDefaultLimitSeedOccurrenceCount: 0 });
+        seedCount: 4, seedMaterialPairCount: 576,
+        affordableSeedOccurrenceCount: 576, atDefaultLimitSeedOccurrenceCount: 0 });
       assert.strictEqual(applicability.locked.status, "not_applicable_current_data");
       assert.strictEqual(applicability.max.status, "not_applicable_current_data");
       assert.strictEqual(applicability.selectedUnlockedTarget.shopId, "厨师");
@@ -617,6 +618,42 @@ function main() {
           NpcProduction.productionFiles = originalProductionFiles;
         }
       });
+
+    function rejectCurrentClosureMutation(relativePath, transform, code) {
+      const filename = path.join(Common.CANONICAL_ROOT, ...relativePath.split("/"));
+      const original = fs.readFileSync(filename);
+      try {
+        const value = JSON.parse(original.toString("utf8").replace(/^\uFEFF/, ""));
+        transform(value);
+        fs.writeFileSync(filename, JSON.stringify(value) + "\n");
+        assert.throws(() => CraftingSource.descriptors(Common.CANONICAL_ROOT),
+          (error) => error.code === code);
+      } finally { fs.writeFileSync(filename, original); }
+      assert.deepStrictEqual(fs.readFileSync(filename), original);
+    }
+    test("current map JSON cannot duplicate a mandatory prewarm image", () => {
+      rejectCurrentClosureMutation("data/map/map_definition.json", (value) => {
+        value.pages.base.sceneVisuals[1].assetUrl = value.pages.base.sceneVisuals[0].assetUrl;
+      }, "source_idle_prewarm_asset_set_invalid");
+    });
+    test("current map JSON cannot project a prewarm asset outside Web resources", () => {
+      rejectCurrentClosureMutation("data/map/map_definition.json", (value) => {
+        value.pages.base.backgroundUrl = "../outside.webp";
+      }, "source_web_reference_invalid");
+    });
+    test("native-only font targets cannot silently become Web font requests", () => {
+      rejectCurrentClosureMutation("launcher/web/generated/font-catalog.json", (value) => {
+        const asset = value.assets.find((entry) => entry.targets.includes("native")
+          && !entry.targets.includes("web"));
+        assert(asset, "current catalog must retain its native-only target fixture");
+        asset.targets.push("web");
+      }, "source_font_css_projection_invalid");
+    });
+    test("locked Web fonts cannot silently disappear from the exact CSS projection", () => {
+      rejectCurrentClosureMutation("launcher/web/generated/font-catalog.json", (value) => {
+        value.assets.find((entry) => entry.targets.includes("web")).targets = ["native"];
+      }, "source_font_css_projection_invalid");
+    });
 
     const first = Production.captureProductionClosure(Common.CANONICAL_ROOT,
       "2026-08-11T00:00:00.000Z");
@@ -1288,10 +1325,11 @@ function main() {
       });
 
     const recoveryRunId = path.basename(testBase);
-    const recoveryDestination = path.join(owned, Materialize.MATERIALIZED_DIRECTORY,
-      recoveryRunId, "resources");
+    const recoveryDestination = Materialize.materializationLayout(
+      Common.CANONICAL_ROOT, recoveryRunId).destination;
     const creationIntent = Materialize.createCreationIntent({ runId: recoveryRunId,
-      runDir: testBase, ownedBase: owned, destination: recoveryDestination,
+      runDir: testBase, ownedBase: path.resolve(Common.CANONICAL_ROOT,
+        Materialize.SHORT_MATERIALIZED_BASE_RELATIVE), destination: recoveryDestination,
       scope: first.scope });
     test("materialization intent binds exact run destination scope and argv", () => {
       assert.strictEqual(Materialize.validateCreationIntent(creationIntent), creationIntent);
@@ -1471,10 +1509,11 @@ function main() {
       });
 
     const producerRunId = path.basename(producerLeaseBase);
-    const producerDestination = path.join(owned, Materialize.MATERIALIZED_DIRECTORY,
-      producerRunId, "resources");
+    const producerDestination = Materialize.materializationLayout(
+      Common.CANONICAL_ROOT, producerRunId).destination;
     const producerIntent = Materialize.createCreationIntent({ runId: producerRunId,
-      runDir: producerLeaseBase, ownedBase: owned, destination: producerDestination,
+      runDir: producerLeaseBase, ownedBase: path.resolve(Common.CANONICAL_ROOT,
+        Materialize.SHORT_MATERIALIZED_BASE_RELATIVE), destination: producerDestination,
       scope: first.scope });
     Materialize.writeJsonAtomicNew(path.join(producerLeaseBase,
       Materialize.CREATION_INTENT_NAME), producerIntent);
@@ -1623,10 +1662,11 @@ function main() {
       assert(write >= 0 && resolve > write);
     });
     const reusedRunId = path.basename(producerReuseBase);
-    const reusedDestination = path.join(owned, Materialize.MATERIALIZED_DIRECTORY,
-      reusedRunId, "resources");
+    const reusedDestination = Materialize.materializationLayout(
+      Common.CANONICAL_ROOT, reusedRunId).destination;
     const reusedIntent = Materialize.createCreationIntent({ runId: reusedRunId,
-      runDir: producerReuseBase, ownedBase: owned, destination: reusedDestination,
+      runDir: producerReuseBase, ownedBase: path.resolve(Common.CANONICAL_ROOT,
+        Materialize.SHORT_MATERIALIZED_BASE_RELATIVE), destination: reusedDestination,
       scope: first.scope });
     Materialize.writeJsonAtomicNew(path.join(producerReuseBase,
       Materialize.CREATION_INTENT_NAME), reusedIntent);
@@ -3488,8 +3528,7 @@ function main() {
           "--acknowledge-discard-isolated-worktree"]);
       });
     const removalRunId = path.basename(testBase);
-    const removalDestination = path.join(owned, Materialize.MATERIALIZED_DIRECTORY,
-      removalRunId, "resources");
+    const removalDestination = recoveryDestination;
     const removalOutput = path.join(testBase, Release.REMOVAL_OUTPUT_NAME);
     const commonDirText = childProcess.execFileSync("git", ["-C", Common.CANONICAL_ROOT,
       "rev-parse", "--git-common-dir"], { encoding: "utf8" }).trim();
@@ -3624,10 +3663,23 @@ function main() {
     const builtDiscardRunId = path.basename(discardTestBase);
     const builtDiscardDestination = path.join(owned, Materialize.MATERIALIZED_DIRECTORY,
       builtDiscardRunId, "resources");
+    const discardCreationIntent = clone(creationIntent);
+    Object.assign(discardCreationIntent, {
+      schema: Materialize.LEGACY_CREATION_INTENT_SCHEMA, runId: builtDiscardRunId,
+      runDir: discardTestBase, ownedBase: owned, destination: builtDiscardDestination,
+      removeCommand: ["git", "worktree", "remove", "--force", builtDiscardDestination],
+      cleanupCommand: ["node", "tools/workbench-live-e2e/material-shop/materialize.js",
+        "--cleanup-failed-materialization", "--run-dir", discardTestBase,
+        "--acknowledge-remove-failed-worktree"],
+    });
+    reseal(discardCreationIntent, "intentSha256");
+    Materialize.validateCreationIntent(discardCreationIntent);
+    const discardCreationMarker = Materialize.creationResolvedName(discardCreationIntent);
     const discardArtifactNames = ["candidate-build.json",
-      "materialization-create-resolved-aaaaaaaaaaaaaaaa.json", "preparation.json"];
+      discardCreationMarker, "preparation.json"];
     discardArtifactNames.forEach((name, index) => fs.writeFileSync(
-      path.join(discardTestBase, name), JSON.stringify({ fixture: index + 1 }) + "\n", "utf8"));
+      path.join(discardTestBase, name), JSON.stringify(name === discardCreationMarker
+        ? discardCreationIntent : { fixture: index + 1 }) + "\n", "utf8"));
     const discardRunArtifacts = discardArtifactNames.slice().sort().map((name) => {
       const file = Evidence.readExactRegularFile(path.join(discardTestBase, name), {
         phase: "self_test", maximumBytes: 1024 * 1024,

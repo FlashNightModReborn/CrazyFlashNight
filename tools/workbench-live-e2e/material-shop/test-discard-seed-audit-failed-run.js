@@ -126,8 +126,9 @@ function main() {
   const runId = "seed-audit-resume-test-" + process.pid + "-" + Date.now();
   const owned = path.join(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE);
   const runDir = path.join(owned, "runs", runId);
-  const materializedBase = path.join(owned, Materialize.MATERIALIZED_DIRECTORY, runId);
-  const destination = path.join(materializedBase, "resources");
+  const layout = Materialize.materializationLayout(Common.CANONICAL_ROOT, runId);
+  const materializedBase = path.dirname(layout.destination);
+  const destination = layout.destination;
   const hashes = {
     preparation: "1".repeat(64),
     materialization: "2".repeat(64),
@@ -139,6 +140,11 @@ function main() {
   };
   fs.mkdirSync(runDir, { recursive: true });
   fs.mkdirSync(destination, { recursive: true });
+  const creation = Materialize.createCreationIntent({ runId, runDir,
+    ownedBase: layout.ownedBase, destination,
+    scope: { head: "a".repeat(40), scopeSha256: hashes.scope,
+      files: [{ relativePath: "fixture.txt" }] } });
+  Materialize.writeJsonAtomicNew(path.join(runDir, Materialize.CREATION_INTENT_NAME), creation);
   const control = ensureControl(runDir);
   let liveHandle = null;
   let orphanTerminalHandle = null;

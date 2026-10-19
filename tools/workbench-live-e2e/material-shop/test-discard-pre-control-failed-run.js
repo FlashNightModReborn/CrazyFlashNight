@@ -112,6 +112,21 @@ function runGit(args) {
   return String(result.stdout || "").trim();
 }
 
+function writeLegacyCreationMarker(runId, runDir, destination, hashes) {
+  const current = Materialize.materializationLayout(Common.CANONICAL_ROOT, runId);
+  const creation = Materialize.createCreationIntent({ runId, runDir,
+    ownedBase: current.ownedBase, destination: current.destination,
+    scope: { head: "c".repeat(40), scopeSha256: hashes.scope,
+      files: [{ relativePath: "fixture-bound.json" }] } });
+  creation.schema = Materialize.LEGACY_CREATION_INTENT_SCHEMA;
+  creation.ownedBase = path.join(Common.CANONICAL_ROOT, Common.OWNED_BASE_RELATIVE);
+  creation.destination = destination;
+  creation.removeCommand = ["git", "worktree", "remove", "--force", destination];
+  reseal(creation, "intentSha256");
+  Materialize.validateCreationIntent(creation);
+  Materialize.writeJsonAtomicNew(path.join(runDir, Materialize.CREATION_INTENT_NAME), creation);
+}
+
 function createTransactionFixture(suffix, behavior) {
   const runId = "pre-control-discard-fixture-" + process.pid + "-"
     + Date.now() + "-" + suffix;
@@ -131,6 +146,7 @@ function createTransactionFixture(suffix, behavior) {
     failureReceipt: "6".repeat(64),
     candidateRoot: path.join(destination, "tmp", "runtime-candidates", "v2",
       Build.CANDIDATE_LEAF) };
+  writeLegacyCreationMarker(runId, runDir, destination, hashes);
   const live = RunOperationLease.acquire({ runDir, runId, mode: "live_execution",
     preparationSha256: hashes.preparation, buildSha256: hashes.build });
   const terminal = RunOperationLease.release(live);
@@ -158,7 +174,8 @@ function createTransactionFixture(suffix, behavior) {
     const files = Materialize.collectDestinationFiles(runDir).filter((entry) =>
       !excluded.has(entry.relativePath) && !operation.test(entry.relativePath)
         && !resume.test(entry.relativePath));
-    assert.deepStrictEqual(files.map((entry) => entry.relativePath), ["fixture-bound.json"]);
+    assert.deepStrictEqual(files.map((entry) => entry.relativePath),
+      ["fixture-bound.json", Materialize.CREATION_INTENT_NAME].sort());
     const value = { runArtifacts: { files,
       filesSha256: Materialize.filesDigest(files) },
     postBuildScope: { scopeSha256: hashes.scope,
@@ -221,13 +238,18 @@ function main() {
       Build.CANDIDATE_LEAF) };
   fs.mkdirSync(runDir, { recursive: true });
   fs.mkdirSync(destination, { recursive: true });
+  writeLegacyCreationMarker(runId, runDir, destination, hashes);
   const boundPath = path.join(runDir, "fixture-bound.json");
   fs.writeFileSync(boundPath, "{}\n", { encoding: "utf8", flag: "wx" });
   const bound = Evidence.readExactRegularFile(boundPath, {
     phase: "self_test", maximumBytes: 1024,
   });
+  const creationFile = Evidence.readExactRegularFile(
+    path.join(runDir, Materialize.CREATION_INTENT_NAME), { phase: "self_test", maximumBytes: 1024 * 1024 });
   const runArtifacts = [{ relativePath: "fixture-bound.json",
-    bytes: bound.length, sha256: bound.sha256 }];
+    bytes: bound.length, sha256: bound.sha256 },
+  { relativePath: Materialize.CREATION_INTENT_NAME,
+    bytes: creationFile.length, sha256: creationFile.sha256 }];
   let liveHandle = null;
   let initialHandle = null;
   let resumeHandle = null;
