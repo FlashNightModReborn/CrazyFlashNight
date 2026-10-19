@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    冷兵器主动快捷技能 · 搓招指令表（平A后摇窗口）
+
+    只登记「指令序列 → 命令名」。释放门槛、MP 结算、冷却全部在 AS2 侧：
+      - 派发/帧检查兜底：单位函数_黑猫_技能搓招指令.as
+      - 双通道释放（已装备走槽 / 未装备走 skill:<名>）：QuickSkillInputService.releaseBySkillName
+
+    - 迅斩     : ↑ + B
+    - 瞬步斩   : → + B
+    - 凶斩     : ↓ + B
+    - 火舞旋风 : ↘ + B
+    - 拔刀术   : Shift + → + B
+
+    注意：拔刀术是 Shift 修饰招。采样器每帧先发方向事件、再发 Shift 组合事件，
+    TrieDFA 又没有「失败回根」语义，所以 [SHIFT_FORWARD, B_PRESS] 这条边在
+    实际输入里几乎走不到（root 的 FORWARD 边会先吃掉状态，B_PRESS 反而命中瞬步斩）。
+    这里保留登记只为「指令表自描述 + 提示通道」；
+    真正的判定在 单位函数_黑猫_技能搓招指令.as 里用方向电平（Shift + 前 + B）裁决，
+    且排在 DFA 名字通道之前。
+-->
+<CommandSet id="playerColdSkill" label="冷兵器主动技能">
+    <Commands>
+        <Command name="迅斩" action="迅斩" priority="12">
+            <Sequence>
+                <Event>UP</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>冷兵器</Tag>
+                <Tag>主动技能</Tag>
+                <Tag>搓招</Tag>
+            </Tags>
+        </Command>
+
+        <Command name="瞬步斩" action="瞬步斩" priority="12">
+            <Sequence>
+                <Event>FORWARD</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>冷兵器</Tag>
+                <Tag>主动技能</Tag>
+                <Tag>搓招</Tag>
+            </Tags>
+        </Command>
+
+        <Command name="凶斩" action="凶斩" priority="12">
+            <Sequence>
+                <Event>DOWN</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>冷兵器</Tag>
+                <Tag>主动技能</Tag>
+                <Tag>搓招</Tag>
+            </Tags>
+        </Command>
+
+        <Command name="火舞旋风" action="火舞旋风" priority="12">
+            <Sequence>
+                <Event>DOWN_FORWARD</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>冷兵器</Tag>
+                <Tag>主动技能</Tag>
+                <Tag>搓招</Tag>
+            </Tags>
+        </Command>
+
+        <Command name="拔刀术" action="拔刀术" priority="12">
+            <Sequence>
+                <Event>SHIFT_FORWARD</Event>
+                <Event>B_PRESS</Event>
+            </Sequence>
+            <Tags>
+                <Tag>冷兵器</Tag>
+                <Tag>主动技能</Tag>
+                <Tag>搓招</Tag>
+            </Tags>
+        </Command>
+    </Commands>
+</CommandSet>

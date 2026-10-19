@@ -8,4 +8,6 @@
     <Set id="lightWeapon" file="data/inputCommand/light_weapon.xml"  label="轻武器"/>
     <Set id="heavyWeapon" file="data/inputCommand/heavy_weapon.xml"  label="重武器"/>
     <Set id="heavyWeapon" file="data/inputCommand/cold_arms_weapon.xml"  label="冷兵器"/>
+    <!-- 冷兵器主动快捷技能（↑B / →B / ↓B / ↘B / ↗B）：独立一份表，构建模组时并入轻/重兵器两个模组 -->
+    <Set id="playerColdSkill" file="data/inputCommand/player_cold_skill.xml" label="冷兵器主动技能"/>
 </InputCommandSets>

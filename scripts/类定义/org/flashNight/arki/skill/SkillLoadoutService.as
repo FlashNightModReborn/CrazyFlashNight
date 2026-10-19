@@ -203,6 +203,34 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return descriptorFromScan(slot, sync.scan);
     }
 
+    /**
+     * 该技能当前占用的物理槽（1..12）。空数组 = 未装备。
+     * 供免装备释放入口判断走「槽通道」还是「名字通道」。
+     */
+    public static function findEquippedSlots(skillKey:String):Array {
+        var normalized:String = normalizeSlotName(skillKey);
+        if (normalized == null) return [];
+        return equippedSlots(normalized);
+    }
+
+    /**
+     * 按技能名取只读投影（含 mp / cooldownMs / level），用于未装备释放。
+     *
+     * 放行口径与数字键严格对齐：未学会、行损坏、写保护、不可装备、纯被动一律返回 null。
+     * mp / cooldownMs 复用 projectLearned 的钳制，因此与槽描述符同源 —— 免装备扣的蓝
+     * 和按数字键扣的蓝必然一致。
+     */
+    public static function getSkillDescriptor(skillKey:String):Object {
+        var sync:Object = synchronize();
+        if (!sync.success) return null;
+        var info:Object = inspectFromScan(sync.scan, skillKey);
+        if (info == null || info.success !== true || info.learned !== true) return null;
+        if (info.stateHealth != "ok" || info.writeBlocked === true) return null;
+        var metadata:Object = info.metadata;
+        if (metadata == null || metadata.Equippable !== true || isPurePassive(metadata)) return null;
+        return projectLearned(info, sync.scan);
+    }
+
     public static function isReleaseAllowed(skillKey:String):Boolean {
         var sync:Object = synchronize();
         if (!sync.success) return false;

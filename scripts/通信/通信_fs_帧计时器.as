@@ -139,6 +139,10 @@ _root.帧计时器.初始化任务栈();
 _root.帧计时器.构建搓招模组 = function():Void {
     this.commandModules = {};
 
+    // 冷兵器主动快捷技能（↑B/→B/↓B/↘B/↗B）单独一份表，
+    // 只在「兵器」模式下推断出的轻/重两个模组里生效；空手模组不并入。
+    var 冷兵器技能配置:Object = CommandConfig.getXMLConfig("playerColdSkill");
+
     // 空手模组
     var bareReg:CommandRegistry = new CommandRegistry(64);
     bareReg.loadConfig(CommandConfig.getBarehanded());
@@ -149,8 +153,10 @@ _root.帧计时器.构建搓招模组 = function():Void {
     };
 
     // 轻武器模组
+    var lightConfig:Object = CommandConfig.getLightWeapon();
+    if (冷兵器技能配置 != null) lightConfig = CommandConfig.merge([lightConfig, 冷兵器技能配置]);
     var lightReg:CommandRegistry = new CommandRegistry(64);
-    lightReg.loadConfig(CommandConfig.getLightWeapon());
+    lightReg.loadConfig(lightConfig);
     lightReg.compile();
     this.commandModules["lightWeapon"] = {
         registry: lightReg,
@@ -158,8 +164,10 @@ _root.帧计时器.构建搓招模组 = function():Void {
     };
 
     // 重武器模组
+    var heavyConfig:Object = CommandConfig.getHeavyWeapon();
+    if (冷兵器技能配置 != null) heavyConfig = CommandConfig.merge([heavyConfig, 冷兵器技能配置]);
     var heavyReg:CommandRegistry = new CommandRegistry(64);
-    heavyReg.loadConfig(CommandConfig.getHeavyWeapon());
+    heavyReg.loadConfig(heavyConfig);
     heavyReg.compile();
     this.commandModules["heavyWeapon"] = {
         registry: heavyReg,
@@ -167,6 +175,9 @@ _root.帧计时器.构建搓招模组 = function():Void {
     };
 
     // 标记 DFA 已构建，D 前缀待发送
+    if (冷兵器技能配置 == null && _root.服务器 != undefined && _root.服务器.发布服务器消息 != undefined) {
+        _root.服务器.发布服务器消息("[搓招] 警告：playerColdSkill 未加载，冷兵器主动技能搓招不可用");
+    }
     this.dfaBuilt = true;
     this.dfaSentToLauncher = false;
     this.发送DFA数据到Launcher();
@@ -372,6 +383,7 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.动作A = false;
         控制对象.动作B = false;
         控制对象.动作C = false;
+        控制对象.按住奔跑键 = false;
         控制对象.强制奔跑 = false;
         // 暂停时重置搓招状态
         控制对象.commandId = 0;
@@ -397,6 +409,9 @@ _root.帧计时器.键盘输入控制目标 = function()
         控制对象.动作A = (mask & 16) != 0;
         控制对象.动作B = (mask & 32) != 0;
         控制对象.动作C = (mask & 64) != 0;
+        // 奔跑键（默认 Shift）的原始电平。与 mask 的 128 位同源，
+        // 但 强制奔跑 会被「按了 A/B/C」压掉，不能拿它当修饰键判定。
+        控制对象.按住奔跑键 = (mask & 128) != 0;
         // Shift 奔跑 与 双击方向奔跑 合并判定
         // - actionsPressed：按下任一 A/B/C 则不允许进入奔跑
         // - shiftRun：按住“奔跑键”（默认 Shift）时触发
@@ -436,6 +451,7 @@ _root.帧计时器.键盘输入控制目标 = function()
             控制对象.搓招缓冲ID = 0;
             控制对象.搓招缓冲名 = "";
             控制对象.搓招缓冲已消费 = true;
+            控制对象.搓招缓冲修饰键 = false;
         }
         控制对象.当前搓招模组 = 模组名;
 
@@ -445,6 +461,9 @@ _root.帧计时器.键盘输入控制目标 = function()
             控制对象.搓招缓冲名 = FrameBroadcaster.getCmdName();
             控制对象.搓招缓冲帧 = frame;
             控制对象.搓招缓冲已消费 = false;
+            // 命中当帧是否按着奔跑键（默认 Shift）。DFA 的事件顺序会让
+            // Shift+→+B 命中成「瞬步斩」，这里把修饰位一起存下来给消费方纠正。
+            控制对象.搓招缓冲修饰键 = (mask & 128) != 0;
         }
 
         // 根据宽容帧数决定当前帧是否有有效搓招（tolerance +1 补偿通信延迟）

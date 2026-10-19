@@ -29,6 +29,14 @@ class org.flashNight.arki.unit.Action.Skill.ManualCooldownService {
         return "drug:switch";
     }
 
+    /**
+     * 未装备（不在 1..12 号槽）技能的冷却通道。
+     * 与 quick: / drug: / weapon: 并列互不干扰；已装备技能一律只走 quick:<槽>。
+     */
+    public static function skillKey(skillName:String):String {
+        return "skill:" + skillName;
+    }
+
     public static function isReady(key:String):Boolean {
         return getState(key).ready === true;
     }

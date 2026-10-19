@@ -37,6 +37,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var poiseVisualsEnabled:Boolean = false;
     private static var resourceHintsEnabled:Boolean = false;
     private static var weaponVisualsEnabled:Boolean = false;
+    private static var coldSkillsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
     private static var profileEnabled:Boolean = false;
@@ -170,12 +171,16 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (p.poiseVisuals === true) poiseVisualsEnabled = true;
         if (p.resourceHints === true) resourceHintsEnabled = true;
         if (p.weaponVisuals === true) weaponVisualsEnabled = true;
+        // 冷兵器主动技能冷却面板（原生 C# 绘制）。只有认识这个组的 Launcher
+        // 才会在 playerHudSync 里索取；老 Launcher 不索取、本端也不发，
+        // 避免旧解析器的白名单 Keys() 因未知组名整包拒收。
+        if (p.coldSkills === true) coldSkillsEnabled = true;
         forceFull = true;
     }
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; weaponVisualsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; weaponVisualsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         if (!ensureContext(unit) || typeof _root.gameworld != "movieclip") {
@@ -194,6 +199,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (addGroup(groups, "loadout", loadout, full)) count++;
         if (addGroup(groups, "cooldowns", readCooldowns(), full)) count++;
         if (addGroup(groups, "buffs", buffProjection.snapshot(), full)) count++;
+        if (coldSkillsEnabled && addGroup(groups, "coldSkills", readColdSkills(unit), full)) count++;
         if (resourceHintsEnabled && addGroup(groups, "resources", SkillResourceService.snapshot(unit, loadout, rawGroups.resources), full)) count++;
         compat._pendingHpDisplayRefresh = false;
         if (count == 0) return;
@@ -460,6 +466,18 @@ class org.flashNight.arki.hud.PlayerHudService {
             offset += 3;
         }
         return result;
+    }
+    /**
+     * 冷兵器主动技能面板（原生 C# 侧 PlayerHudColdSkillWidget）。
+     * 具体口径全部落在 单位函数_黑猫_技能搓招指令.as 的 冷技能HUD快照：
+     * 只返回「已学会」的技能，未学会的不入表，所以原生侧不会画出空格子。
+     * 未安装该投影（或它不可用）时返回空表，原生面板随之隐藏。
+     */
+    private static function readColdSkills(unit:Object):Array {
+        // 冷兵器技能冷却面板已改回 AS2 自绘（单位函数_黑猫_技能搓招指令.as 末尾），
+        // 原生 C# 的 coldSkills 组下线：这里恒返回空表，PlayerHudColdSkillWidget
+        // 收不到行就不会画，避免两套 UI 叠在一起。
+        return [];
     }
     private static function validContext(p:Object):Boolean {
         var unit:Object = hero();
