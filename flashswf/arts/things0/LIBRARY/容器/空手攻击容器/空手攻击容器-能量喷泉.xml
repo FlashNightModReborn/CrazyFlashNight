@@ -332,7 +332,7 @@
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	// 能量喷泉2段派生
-	if (自机.按键检测(自机.B键, 100))
+	if (自机.按键检测(自机.A键, 100))
 	{
 		_parent.gotoAndPlay("能量喷泉2段");
 	}
@@ -363,7 +363,7 @@
                     <script><![CDATA[onClipEvent (enterFrame) {
 	var 自机 = _parent._parent;
 	// 能量喷泉3段派生
-	if (自机.按键检测(自机.B键, 100))
+	if (自机.按键检测(自机.A键, 100))
 	{
 		_parent.gotoAndPlay("能量喷泉3段");
 	}
