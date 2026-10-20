@@ -174,6 +174,8 @@ namespace CF7Launcher.Tasks
         private readonly Dictionary<NativeDialogueBookSession.Line, InsertedRef> _insertedLines =
             new Dictionary<NativeDialogueBookSession.Line, InsertedRef>();
         private bool _playerLinePlaying;
+        /// <summary>当前上屏行是玩家台词（含打字完成、仍停在玩家行等“下一条”）。此期间输入框整条隐藏。</summary>
+        private bool _playerLineOnScreen;
         private bool _aiLineShown;
         private bool _turnActive;
         private int _turnTailIndex = -1;
@@ -302,6 +304,7 @@ namespace CF7Launcher.Tasks
             _finalizePending = false;
             _resumeAfterFailure = false;
             _preparing = false;
+            _playerLineOnScreen = false;
             DisarmWatchdog();
             session.LinePresented = OnLinePresented;
             session.Closing = OnSessionClosing;
@@ -334,6 +337,7 @@ namespace CF7Launcher.Tasks
             _planApplied = false;
             _abandonedOriginalTail = false;
             _appliedRemoves.Clear();
+            _playerLineOnScreen = false;
             DisarmWatchdog();
             _queued.Clear();
             _insertedLines.Clear();
@@ -362,6 +366,7 @@ namespace CF7Launcher.Tasks
             _insertedLines.Clear();
             _turnTailIndex = -1;
             _playerLinePlaying = false;
+            _playerLineOnScreen = false;
             SetInputState(DialogueInterjectInputState.Hidden);
             // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
             Finalize("closing:" + (reason ?? ""));
@@ -401,6 +406,7 @@ namespace CF7Launcher.Tasks
             if (line.IsPlaceholder)
             {
                 // 等待模型返回：不记入转录、不推进说话人；输入保持“准备中/等待”。
+                _playerLineOnScreen = false;
                 SetInputState(IdleState());
                 return;
             }
@@ -436,9 +442,11 @@ namespace CF7Launcher.Tasks
             if (isPc)
             {
                 _playerLinePlaying = true;
+                _playerLineOnScreen = true;
                 SetInputState(DialogueInterjectInputState.Hidden);
                 return;
             }
+            _playerLineOnScreen = false;
             if (isLocal) _aiLineShown = true;
             if (isEdit) _aiLineShown = true;
             if (!_groupAllowsInterject) return;
@@ -1769,6 +1777,10 @@ namespace CF7Launcher.Tasks
 
         private void SetInputState(DialogueInterjectInputState state)
         {
+            // 玩家台词上屏期间（含打字完成、仍停在玩家行等“下一条”）整条输入框隐藏，
+            // 不论展开与否；只有下一句非玩家台词上屏后才恢复。
+            if (_playerLineOnScreen && state != DialogueInterjectInputState.Hidden)
+                state = DialogueInterjectInputState.Hidden;
             if (_inputState == state) return;
             _inputState = state;
             Action<DialogueInterjectInputState> handler = InputStateChanged;
