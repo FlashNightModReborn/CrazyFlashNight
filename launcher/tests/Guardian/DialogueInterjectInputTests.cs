@@ -188,6 +188,9 @@ namespace CF7Launcher.Tests.Guardian
             Assert.True(overlay.IsExpanded);
 
             overlay.SetInputEnabled(false);
+            Assert.False(overlay.IsInputEnabled);
+            overlay.SetInputEnabled(true);
+            Assert.True(overlay.IsInputEnabled);
             overlay.SetStartRequired(true);
             overlay.SetConfigRequired(true);
             Assert.True(overlay.IsExpanded);
@@ -227,6 +230,26 @@ namespace CF7Launcher.Tests.Guardian
             widget.Tick(600);
             Assert.False(widget.PlaceholderWideDotsForTest);
             Assert.Equal(0, typed);
+        }
+
+        [Fact]
+        public void StagePlaceholderKeepsFixedTextWithoutDotAnimation()
+        {
+            long clock = 1000;
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            widget.TypingClock = () => clock;
+
+            Assert.True(widget.ShowFrame(new NativeDialogueFrame
+            {
+                RequestId = "nd:23", SceneId = "scene.1", Revision = 1,
+                LineIndex = 0, LineCount = 1, Name = "Andy Law", Title = "雇佣兵",
+                Text = "查资料中", PortraitKey = "Andy Law", Expression = "普通",
+                ImageAction = "keep", IsPlaceholder = true
+            }));
+            clock += 600;
+            widget.Tick(600);
+            Assert.False(widget.PlaceholderWideDotsForTest);   // 固定阶段文案不跑省略号
         }
 
         // ── 宿主焦点门：输入框聚焦时不推进对话 ───────────────────────────

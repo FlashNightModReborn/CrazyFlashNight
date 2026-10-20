@@ -752,6 +752,45 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
         }
 
+        [Fact]
+        public void StatusStageReplacesThinkingPlaceholderWhileWaiting()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(StatusEvent("searching"));
+            Assert.Equal("查资料中", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+
+            h.Controller.OnEvent(StatusEvent("drafting"));
+            Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+        }
+
+        [Fact]
+        public void StatusBeforeAdvanceIsShownOnNewPlaceholder()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Controller.OnEvent(StatusEvent("thinking"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+
+            Assert.Equal("思考中", h.Widget.CurrentFrame.Text);
+        }
+
         // ── 玩家快照与转录归属 ───────────────────────────────────────────
 
         [Fact]
@@ -1073,7 +1112,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
 
             h.Advance();                                              // 推进到占位行：等待态可见
-            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.Equal("等待中", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
         }
 
