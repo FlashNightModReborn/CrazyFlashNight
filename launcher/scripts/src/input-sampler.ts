@@ -107,6 +107,7 @@ namespace GameInput {
                 if (holdForward) buf.push(EV_SHIFT_FORWARD);
                 if (holdBack)    buf.push(EV_SHIFT_BACK);
                 if (down)        buf.push(EV_SHIFT_DOWN);
+                if (up && holdForward) buf.push(EV_SHIFT_UP_FORWARD);
             }
 
             // === 双击检测通道1: doubleTapDir 边沿（KeyManager 毫秒级）===

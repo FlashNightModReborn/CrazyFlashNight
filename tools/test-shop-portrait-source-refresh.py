@@ -71,5 +71,45 @@ class ListSourceProofTests(unittest.TestCase):
             refresh.validate_list_identity(previous, self.current, self.raw, True)
 
 
+class DialogueBaselineProofTests(unittest.TestCase):
+    def setUp(self):
+        self.old = {"dialogueManifest": {"sha256": "bound"},
+                    "toolchain": {"dialogueBaker": {"sha256": "baker"}},
+                    "dialogueMetadataRefresh": {"mode": "unconsumed-dialogue-metadata-only",
+                        "previousManifestSha256": "baseline", "previousBakerSha256": "baker",
+                        "tool": {"sha256": "tool"}, "consumedModuleAstSha256": "ast",
+                        "unchangedShopEntries": 39}}
+
+    def test_exact_baseline_remains_valid_without_prior_receipt(self):
+        del self.old["dialogueMetadataRefresh"]
+        self.assertIsNone(refresh.validate_dialogue_baseline(self.old, "bound", "ast", {"tool"}, 39))
+
+    def test_validated_metadata_hop_preserves_original_baseline(self):
+        proof = refresh.validate_dialogue_baseline(self.old, "baseline", "ast", {"tool"}, 39)
+        self.assertEqual(proof["boundManifestSha256"], "bound")
+        self.assertEqual(proof["baselineManifestSha256"], "baseline")
+
+    def test_unknown_or_changed_proof_is_rejected(self):
+        for field, value in (("mode", "other"), ("previousManifestSha256", "foreign"),
+                             ("previousBakerSha256", "foreign"), ("consumedModuleAstSha256", "foreign"),
+                             ("unchangedShopEntries", 38), ("tool", {"sha256": "foreign"})):
+            with self.subTest(field=field), self.assertRaises(RuntimeError):
+                altered = copy.deepcopy(self.old)
+                altered["dialogueMetadataRefresh"][field] = value
+                refresh.validate_dialogue_baseline(altered, "baseline", "ast", {"tool"}, 39)
+
+    def test_missing_receipt_cannot_bridge_an_unknown_baseline(self):
+        del self.old["dialogueMetadataRefresh"]
+        with self.assertRaises(RuntimeError):
+            refresh.validate_dialogue_baseline(self.old, "baseline", "ast", {"tool"}, 39)
+
+    def test_chained_baseline_still_requires_matching_consumed_helpers(self):
+        self.old["dialogueMetadataRefresh"]["baselineManifestSha256"] = "baseline"
+        self.old["dialogueMetadataRefresh"]["previousManifestSha256"] = "intermediate"
+        self.assertIsNotNone(refresh.validate_dialogue_baseline(self.old, "baseline", "ast", {"tool"}, 39))
+        with self.assertRaises(RuntimeError):
+            refresh.validate_dialogue_baseline(self.old, "baseline", "changed-ast", {"tool"}, 39)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

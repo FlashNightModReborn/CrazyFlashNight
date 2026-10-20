@@ -18,6 +18,7 @@ internal sealed class SmokeForm : Form
 {
     private readonly string root;
     private readonly string output;
+    private readonly string appearanceFixtures;
     private readonly WebView2 web = new WebView2 { Dock = DockStyle.Fill };
     private readonly List<object> results = new List<object>();
     private object service;
@@ -29,14 +30,16 @@ internal sealed class SmokeForm : Form
     [STAThread]
     private static void Main(string[] args)
     {
-        if (args.Length != 2) { Environment.ExitCode = 2; return; }
+        if (args.Length != 2 && args.Length != 3) { Environment.ExitCode = 2; return; }
         Application.EnableVisualStyles();
-        Application.Run(new SmokeForm(Path.GetFullPath(args[0]), Path.GetFullPath(args[1])));
+        Application.Run(new SmokeForm(Path.GetFullPath(args[0]), Path.GetFullPath(args[1]),
+            args.Length == 3 ? Path.GetFullPath(args[2]) : null));
     }
 
-    private SmokeForm(string root, string output)
+    private SmokeForm(string root, string output, string appearanceFixtures)
     {
         this.root = root; this.output = output;
+        this.appearanceFixtures = appearanceFixtures;
         Directory.CreateDirectory(output);
         ShowInTaskbar = false; Opacity = 0; Width = 1024; Height = 576;
         Controls.Add(web);
@@ -104,6 +107,7 @@ internal sealed class SmokeForm : Form
             await RenderStatic("室友-女", "普通", "roommate-female");
             await RenderStatic("artist", "愤怒", "artist-angry");
             await RenderStatic("Andy Law", "微笑2", "andy-type2");
+            if (appearanceFixtures != null) await RenderAuthoredActors();
             File.WriteAllText(Path.Combine(output, "result.json"), JObject.FromObject(new
             {
                 status = "hidden_webview2_portrait_smoke_passed", hidden, posted, diskCacheCrossInstance = true,
@@ -113,6 +117,8 @@ internal sealed class SmokeForm : Form
                 dressupManifestSha256 = Hash(Path.Combine(root, "launcher/web/assets/dressup/manifest.json")),
                 portraitManifestSha256 = Hash(Path.Combine(root, "launcher/web/assets/dialogue-portraits/manifest.json")),
                 uiManifestSha256 = Hash(Path.Combine(root, "launcher/web/assets/dialogue-ui/manifest.json")),
+                appearanceFixturePath = appearanceFixtures,
+                appearanceFixtureSha256 = appearanceFixtures == null ? null : Hash(appearanceFixtures),
                 scope = "Hidden WebView2 fixture, production portrait decoding and NativeHud bitmap paint; not a player dialogue, physical-input or save journey"
             }).ToString());
         }
@@ -146,7 +152,38 @@ internal sealed class SmokeForm : Form
             .Invoke(service, args);
     }
 
-    private async Task Render(string name, string gender, string expression, JObject appearanceOverride = null)
+    private async Task RenderAuthoredActors()
+    {
+        var actors = JArray.Parse(File.ReadAllText(appearanceFixtures));
+        if (actors.Count < 1 || actors.Count > 16) throw new Exception("Expected 1-16 authored portrait fixtures");
+        var identities = new HashSet<string>(StringComparer.Ordinal);
+        for (int index = 0; index < actors.Count; index++)
+        {
+            var actor = (JObject)actors[index];
+            var appearance = actor["appearance"] as JObject;
+            if (appearance == null || string.IsNullOrEmpty(appearance.Value<string>("face"))
+                    || string.IsNullOrEmpty(appearance.Value<string>("gender")))
+                throw new Exception("Authored speaker lacks its own appearance identity");
+            await Render("authored-" + index, appearance.Value<string>("gender"),
+                actor.Value<string>("expression") ?? "普通", appearance,
+                actor.Value<string>("name"), actor.Value<string>("title"), actor.Value<string>("text"));
+            string hash = Hash(Path.Combine(output, "authored-" + index + ".png"));
+            if (!identities.Add(hash) || hash == Hash(Path.Combine(output, "male-armored.png")))
+                throw new Exception("Authored speakers reused another actor's portrait pixels");
+        }
+        await Render("authored-player-between", "女", "普通");
+        var first = (JObject)actors[0];
+        int beforeCache = posted;
+        await Render("authored-0-cached", first["appearance"].Value<string>("gender"),
+            first.Value<string>("expression") ?? "普通", (JObject)first["appearance"],
+            first.Value<string>("name"), first.Value<string>("title"), first.Value<string>("text"));
+        if (posted != beforeCache || Hash(Path.Combine(output, "authored-0.png"))
+                != Hash(Path.Combine(output, "authored-0-cached.png")))
+            throw new Exception("Returning from player dialogue changed the authored actor identity");
+    }
+
+    private async Task Render(string name, string gender, string expression, JObject appearanceOverride = null,
+        string speaker = null, string title = null, string text = null)
     {
         var tcs = new TaskCompletionSource<(Bitmap Image, RectangleF? StageRect)>(TaskCreationOptions.RunContinuationsAsynchronously);
         var frame = new NativeDialogueFrame { RequestId = "nd:1", SceneId = "fixture", Revision = results.Count + 1,
@@ -166,9 +203,9 @@ internal sealed class SmokeForm : Form
             if (alpha < 64) throw new Exception("Transparent portrait");
             string path = Path.Combine(output, name + ".png");
             bitmap.Save(path, ImageFormat.Png);
-            results.Add(new { name, gender, expression, loadMs, width = bitmap.Width, height = bitmap.Height, alphaPixels = alpha, sha256 = Hash(path) });
-            if (name == "male-normal" || name == "male-armored")
-                PaintPortrait(bitmap, name, "独立人形单位", frame, loaded.StageRect);
+            results.Add(new { name, gender, expression, speaker, appearance, loadMs, width = bitmap.Width, height = bitmap.Height, alphaPixels = alpha, sha256 = Hash(path) });
+            if (name == "male-normal" || name == "male-armored" || name.StartsWith("authored-", StringComparison.Ordinal))
+                PaintPortrait(bitmap, name, speaker ?? "独立人形单位", frame, loaded.StageRect, title, text);
         }
     }
 
@@ -214,7 +251,7 @@ internal sealed class SmokeForm : Form
     }
 
     private void PaintPortrait(Bitmap portrait, string name, string actor, NativeDialogueFrame sourceFrame,
-        RectangleF? stageRect)
+        RectangleF? stageRect, string title = null, string text = null)
     {
         foreach (int width in new[] { 1024, 1920 })
         {
@@ -236,9 +273,9 @@ internal sealed class SmokeForm : Form
             {
                 var displayFrame = sourceFrame.Snapshot();
                 displayFrame.Name = actor;
-                displayFrame.Title = "<FONT COLOR='#FFCC00'>永恒强者</FONT>";
+                displayFrame.Title = title ?? "<FONT COLOR='#FFCC00'>永恒强者</FONT>";
                 displayFrame.LineCount = 3;
-                displayFrame.Text = "远处的风掠过街口。<font color='#E8C477'>人物线条、面部表情和透明边缘</font>应当清晰稳定。<BR>按下交互键先补全文字，再推进对白。";
+                displayFrame.Text = text ?? "远处的风掠过街口。<font color='#E8C477'>人物线条、面部表情和透明边缘</font>应当清晰稳定。<BR>按下交互键先补全文字，再推进对白。";
                 displayFrame.ImageAction = "clear";
                 widget.ShowFrame(displayFrame);
                 widget.SetPortrait(displayFrame.RequestId, displayFrame.Revision, portrait, stageRect);

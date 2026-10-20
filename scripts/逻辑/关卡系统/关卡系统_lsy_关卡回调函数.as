@@ -439,3 +439,11 @@ _root.关卡回调函数.BaseSiegeBegin = function(kind:String):Void {
 _root.关卡回调函数.BaseSiegeSignal = function(name:String):Void {
     org.flashNight.arki.scene.BaseSiegeController.signal(name);
 };
+
+// 70002：任务专用场景，战犬美术可以独立替换。
+_root.关卡回调函数.NewcomerRescueBegin = function(index:Number):Void {
+    org.flashNight.arki.scene.NewcomerRescueController.start(index==undefined?0:index);
+};
+_root.关卡回调函数.NewcomerRescueSignal = function(name:String):Void {
+    org.flashNight.arki.scene.NewcomerRescueController.signal(name);
+};

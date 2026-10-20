@@ -1,0 +1,20 @@
+{
+  "schema": "cf7.dialogue-portrait-postprocess.v1",
+  "profiles": {
+    "radio": {
+      "references": ["boy（无线电）", "Blue（无线电）"],
+      "low": [24, 47, 72],
+      "high": [160, 188, 220],
+      "colorRetention": 0.12,
+      "opacity": 0.88,
+      "scanPeriod": 3,
+      "scanDarken": 0.84,
+      "glowColor": [79, 146, 223],
+      "glowRadius": 1.6,
+      "glowOpacity": 0.30
+    }
+  },
+  "entries": {
+    "前治安官（无线电）": {"source": "前治安官", "profile": "radio"}
+  }
+}

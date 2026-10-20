@@ -1,0 +1,88 @@
+{
+  "status": "source_validated",
+  "gameplayE2e": false,
+  "standardEntryVerified": false,
+  "rooms": 8,
+  "masters": {
+    "ambush": "54829216a70d742d455e86788c29f1a3302241da055f163f1c930c6f91b999e9",
+    "clinic": "d0da74ccb16bda608d1b65e0bcbaeefa512fb3f06fd001ee1a64309d53d876fb",
+    "raid": "b05338a9b189b1eecf91cf078d38795ea80244f2708bd3836ac5a530646673fd",
+    "return": "f4f0303d4912213552d3adfccf94b33f655c009188c5a4fef45d94f4349c1fd0",
+    "staging": "f6fb1c8061880ef9eb36b9a17ad6853a02c51e2dacd41ab4929bf198b740875f"
+  },
+  "symbols": 525,
+  "bitmap_caches": 43,
+  "source_bytes": 21164822,
+  "artifacts": [
+    {
+      "file": "flashswf\\backgrounds\\gk6_1_BG_70002_departure.swf",
+      "bytes": 107900,
+      "sha256": "1d06d24f9a73488c9807d16c6f073028eb104d013b947f55521e2f7e05e065de",
+      "master": "staging",
+      "master_closure_sha256": "f6fb1c8061880ef9eb36b9a17ad6853a02c51e2dacd41ab4929bf198b740875f"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_5_BG_70002_outbound.swf",
+      "bytes": 110436,
+      "sha256": "4d90956143262c4cb768ad9f56a41d8632d217c85a7e6b2083fff4ad55b53b7b",
+      "master": "return",
+      "master_closure_sha256": "f4f0303d4912213552d3adfccf94b33f655c009188c5a4fef45d94f4349c1fd0"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_4_BG_70002_rescue.swf",
+      "bytes": 171526,
+      "sha256": "3617a2117840335d6a26eca9fbfe37bf3d45f682acd74d70b46155d81332ed6d",
+      "master": "clinic",
+      "master_closure_sha256": "d0da74ccb16bda608d1b65e0bcbaeefa512fb3f06fd001ee1a64309d53d876fb"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_3_BG_70002.swf",
+      "bytes": 84881,
+      "sha256": "6c07c5d6ddf0e7c1b1177761b2e316360cc0d7ff8550c121fa390d84afcb1e44",
+      "master": "ambush",
+      "master_closure_sha256": "54829216a70d742d455e86788c29f1a3302241da055f163f1c930c6f91b999e9"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_4_BG_70002_evacuated.swf",
+      "bytes": 171773,
+      "sha256": "eeef70890899f621466019a9c0a8abf9fa26dbe50cd0f9d175ae6846dc82cd43",
+      "master": "clinic",
+      "master_closure_sha256": "d0da74ccb16bda608d1b65e0bcbaeefa512fb3f06fd001ee1a64309d53d876fb"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_5_BG_70002_return.swf",
+      "bytes": 113260,
+      "sha256": "f65bbc469d2dca528a5f47a7d58ce48d465accedef0c9ad2b630f9f23a0dd0a3",
+      "master": "return",
+      "master_closure_sha256": "f4f0303d4912213552d3adfccf94b33f655c009188c5a4fef45d94f4349c1fd0"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk6_1_BG_70002_receiving.swf",
+      "bytes": 111139,
+      "sha256": "d15ea68f1d76a14b3fe496b53556d0c8b58c91aa40d2fe6b6822c3f45953c9d8",
+      "master": "staging",
+      "master_closure_sha256": "f6fb1c8061880ef9eb36b9a17ad6853a02c51e2dacd41ab4929bf198b740875f"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk6_2_BG_70002_raid.swf",
+      "bytes": 93494,
+      "sha256": "79ddc6264a38f69e43bca3f921b4f4c131d98193ac972776100cd867771e3887",
+      "master": "raid",
+      "master_closure_sha256": "b05338a9b189b1eecf91cf078d38795ea80244f2708bd3836ac5a530646673fd"
+    },
+    {
+      "file": "flashswf\\arts\\70002_jeep.swf",
+      "bytes": 253718,
+      "sha256": "e0b14424ef550ebd2c48eeea85078e0ac37e0f7c854967ea8334205cf7190897",
+      "master": "ambush",
+      "master_closure_sha256": "54829216a70d742d455e86788c29f1a3302241da055f163f1c930c6f91b999e9"
+    },
+    {
+      "file": "flashswf\\arts\\70002_station.swf",
+      "bytes": 24175,
+      "sha256": "196f009b4fdecfdea5b6f5c9690a48be4464cb4ddd0ab2b1c0ce67121b90a7b1",
+      "master": "ambush",
+      "master_closure_sha256": "54829216a70d742d455e86788c29f1a3302241da055f163f1c930c6f91b999e9"
+    }
+  ]
+}
