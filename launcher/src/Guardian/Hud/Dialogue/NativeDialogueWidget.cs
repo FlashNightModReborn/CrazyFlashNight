@@ -827,13 +827,16 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_frame == null || _suppressed || _disposed) return;
                 if (_frame.IsPlaceholder)
                 {
-                    // 省略号由 Tick 驱动，标题与括号不动；_animActive 保持 true 直到占位被替换。
-                    long now = TypingClock();
-                    if (now >= _placeholderNextToggleMs)
+                    // 默认「思索中」的省略号由 Tick 驱动；阶段状态文案是固定文本，不跑省略号。
+                    if (IsDefaultPlaceholderText(_frame.Text))
                     {
-                        _placeholderWideDots = !_placeholderWideDots;
-                        _placeholderNextToggleMs = now + 480;
-                        repaint = true;
+                        long now = TypingClock();
+                        if (now >= _placeholderNextToggleMs)
+                        {
+                            _placeholderWideDots = !_placeholderWideDots;
+                            _placeholderNextToggleMs = now + 480;
+                            repaint = true;
+                        }
                     }
                     animChanged = UpdateAnimLocked();
                 }
@@ -1068,20 +1071,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             finally { g.Restore(st); }
         }
 
-        /// <summary>等待占位：[思索中…] / [思索中……]；左右括号按最长形态定死，只有省略号变化。</summary>
+        /// <summary>等待占位：默认 [思索中…]/[思索中……]；本轮 status 到达后改为 [阶段文案]。</summary>
         private void PaintPlaceholderBody(Graphics g, Layout L)
         {
             Rectangle tr = L.Text;
             if (tr.Width <= 0 || tr.Height <= 0 || _fontBody == null) return;
             EnsureMeasureLocked();
             DialogueUiSkin.FieldSpec fs = _skin.Body;
-            string left = "[思索中";
+            bool animated = IsDefaultPlaceholderText(_frame != null ? _frame.Text : null);
+            string label = _frame != null ? (_frame.Text ?? "").Trim() : "";
+            string left = animated ? "[思索中" : "[" + label;
             string right = "]";
             string dots = _placeholderWideDots ? "……" : "…";
             float leftW = _measureG.MeasureString(left, _fontBody, int.MaxValue, _typoFormat).Width;
             float rightW = _measureG.MeasureString(right, _fontBody, int.MaxValue, _typoFormat).Width;
-            float frameW = _measureG.MeasureString(left + "……" + right, _fontBody,
-                int.MaxValue, _typoFormat).Width;
+            float frameW = _measureG.MeasureString(
+                animated ? left + "……" + right : left + right,
+                _fontBody, int.MaxValue, _typoFormat).Width;
 
             GraphicsState st = g.Save();
             try
@@ -1093,11 +1099,20 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 SolidBrush brush = BrushFor(fs.Color);
                 float y = 1f;
                 g.DrawString(left, _fontBody, brush, TEXT_INSET_LOCAL, y, _typoFormat);
-                g.DrawString(dots, _fontBody, brush, TEXT_INSET_LOCAL + leftW, y, _typoFormat);
+                if (animated)
+                    g.DrawString(dots, _fontBody, brush, TEXT_INSET_LOCAL + leftW, y, _typoFormat);
                 g.DrawString(right, _fontBody, brush,
                     TEXT_INSET_LOCAL + frameW - rightW, y, _typoFormat);
             }
             finally { g.Restore(st); }
+        }
+
+        /// <summary>占位是否显示默认「思索中」动画（阶段状态文案为固定文本）。</summary>
+        private static bool IsDefaultPlaceholderText(string text)
+        {
+            return string.IsNullOrEmpty(text)
+                || string.Equals(text, "思索中……", StringComparison.Ordinal)
+                || string.Equals(text, "思索中…", StringComparison.Ordinal);
         }
 
         /// <summary>
