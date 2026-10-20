@@ -1,4 +1,5 @@
-﻿// File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+// File: org/flashNight/arki/unit/Action/Shoot/WeaponFireCore.as
 import org.flashNight.arki.unit.*;
 import org.flashNight.sara.util.*;
 import org.flashNight.neur.Event.*;
@@ -69,6 +70,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
             return false;
         }
         // 获取当前武器的弹药信息
+        WeaponAmmoRuntime.ensure(owner, weaponType);
         var currentShot:Number = owner[weaponType].value.shot;
         var maxAmmo:Number = owner[weaponType + "弹匣容量"];
         
@@ -103,8 +105,17 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponFireCore {
             bulletProps.发射间隔毫秒 = owner[weaponType + "属性"].interval;
         }
 
+        var ghostSpread:Number = WeaponAmmoRuntime.ghostMultiplier(owner, weaponType);
         dispatcher.publish("processShot", owner, weaponType, muzzlePosition, bulletProps, firedWeapon);
         WeaponSpreadRuntime.applyShot(owner, weaponType, firedWeapon, bulletProps);
+        // 只扩大本发弹群角度，不修改原始散射或旧远距衰减参照；移动额外散射不重复放大。
+        if (ghostSpread > 1 && bulletProps.子弹散射度 > 0) {
+            var baseSpread:Number = bulletProps.站立子弹散射度;
+            var rawSpread:Number = bulletProps.子弹散射度;
+            var moveSpread:Number = Math.max(0, rawSpread - baseSpread);
+            bulletProps.武器扩散倍率 = Math.min(3,
+                ((rawSpread * bulletProps.武器扩散倍率 - moveSpread) * ghostSpread + moveSpread) / rawSpread);
+        }
 
         // 只冻结真实发射槽/枪口/物件的表现身份；不更改命中、弹药或随机数。
         RayVisualBridge.captureShot(owner, weaponType, muzzlePosition, bulletProps, firedWeapon);

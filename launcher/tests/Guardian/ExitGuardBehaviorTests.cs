@@ -19,6 +19,18 @@ namespace CF7Launcher.Tests.Guardian
         private const int ExitGuardDelayMs = 8000;
 
         [Fact]
+        public void AgentExitCleanupStartsAfterTheResponseCompletionCallbackReturns()
+        {
+            using Process probe=StartProbe(-1);
+            if(!probe.WaitForExit(ProbeTimeoutMs))
+            {
+                probe.Kill(entireProcessTree:true);probe.WaitForExit(5000);
+                Assert.Fail("Agent exit response-completion probe did not terminate.");
+            }
+            Assert.Equal(0,probe.ExitCode);
+        }
+
+        [Fact]
         public void ExitGuardKillsProcessWhileOnShutdownEarlyBlocksTenSeconds()
         {
             var sw = new Stopwatch();

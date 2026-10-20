@@ -1,4 +1,4 @@
-[CmdletBinding()]
+﻿[CmdletBinding()]
 param([int]$TimeoutSeconds=300,[switch]$SkipCompile)
 $ErrorActionPreference='Stop'
 chcp.com 65001 | Out-Null

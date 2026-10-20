@@ -1,4 +1,5 @@
-﻿// 文件路径：org/flashNight/arki/unit/Action/Skill/SkillReloadCore.as
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+// 文件路径：org/flashNight/arki/unit/Action/Skill/SkillReloadCore.as
  
 import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
@@ -49,6 +50,14 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
      * SkillReloadCore.reloadWeapon(_parent.长枪, _parent.长枪属性, _parent);
      */
     public static function reloadWeapon(weapon:Object, weaponAttr:Object, unit:Object):Void {
+        var slot:String = weapon === unit.长枪 ? "长枪" : (weapon === unit.手枪 ? "手枪" : "手枪2");
+        var state:Object = WeaponAmmoRuntime.ensure(unit, slot);
+        if (state) {
+            if (WeaponAmmoRuntime.normal(weapon.value, state.capacity) < state.capacity
+                    && WeaponAmmoRuntime.fillMagazine(unit, slot, weaponAttr.clipname, true)
+                    && slot == "长枪") LongGunSubWeaponCore.reloadLinked(unit);
+            return;
+        }
         // 检查是否有已发射弹药
         if (weapon.value.shot > 0) {
             // 获取弹夹道具名称
@@ -98,10 +107,10 @@ class org.flashNight.arki.unit.Action.Skill.SkillReloadCore {
         // 检查是否为玩家控制目标
         if (_root.控制目标 != unit._name) {
             // 非玩家控制，直接重置（不消耗道具）
-            unit.长枪.value.shot = 0;
+            WeaponAmmoRuntime.supplyValue(unit.长枪.value, false);
             LongGunSubWeaponCore.reloadLinkedFree(unit);
-            unit.手枪.value.shot = 0;
-            unit.手枪2.value.shot = 0;
+            WeaponAmmoRuntime.supplyValue(unit.手枪.value, false);
+            WeaponAmmoRuntime.supplyValue(unit.手枪2.value, false);
             return;
         }
 

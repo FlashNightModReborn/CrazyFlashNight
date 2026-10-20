@@ -408,8 +408,10 @@ _root.联弹系统.横向联弹组装 = function(group:ChainGroup):Void {
     group.子弹种类 = b.子弹种类.split("-")[1];
 
     // 根据霰弹值生成单元体（flag 已定义时跳过，与旧逻辑一致）
+    var overloadSpread:Number = b.武器扩散倍率;
+    if (!(overloadSpread > 0) || overloadSpread > 3) overloadSpread = 1;
     for (var i:Number = 0; (i < b.霰弹值) && (b.flag == undefined); i++) {
-        _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度));
+        _root.联弹系统.生成单元体(group, _root.随机偏移(b.子弹散射度) * overloadSpread);
     }
     ChainUnitManager.prepareHorizontalAggregate(group);
     _root.联弹系统.渲染组(group);
@@ -848,7 +850,7 @@ _root.联弹系统.纵向联弹组装 = function(group:ChainGroup):Void {
     group.子弹种类 = b.子弹种类.split("-")[1];
     group.count = 1;
     var 散射倍率:Number = b.武器扩散倍率;
-    group.武器扩散倍率 = (散射倍率 > 0 && !(散射倍率 > 1)) ? 散射倍率 : 1;
+    group.武器扩散倍率 = (散射倍率 > 0 && !(散射倍率 > 3)) ? 散射倍率 : 1;
 
     // 补弹率（分数 分子/分母，整数 Bresenham 误差累加）：显式推参（每帧补弹数）优先；
     // 其次由实际发射间隔（发射间隔毫秒，WeaponFireCore.executeShot 对全武器盖戳，

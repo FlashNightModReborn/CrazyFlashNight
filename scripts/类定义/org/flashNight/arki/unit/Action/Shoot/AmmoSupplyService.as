@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.arki.item.equipment.SubweaponDataUtil;
 import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
@@ -102,8 +103,10 @@ class org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService {
         var changedHere:Boolean = false;
         var beforeShot:Number = value.shot == undefined ? 0 : Number(value.shot);
 
-        if (value.shot != undefined && Number(value.shot) > 0) {
-            value.shot = 0;
+        var ammoState:Object = WeaponAmmoRuntime.ensure(hero, slot);
+        if (value.shot != undefined && (Number(value.shot) > 0
+                || (ammoState && WeaponAmmoRuntime.normal(value, ammoState.capacity) < ammoState.capacity))) {
+            WeaponAmmoRuntime.supplyValue(value, false);
             changedHere = true;
             // tube 实例（插件可动态附加，读实例权威属性）补后清逐发装填预算，
             // 与引擎 shot<=0 自清一致；非 tube 的战术回收池 reloadCount 一律不动
@@ -143,8 +146,9 @@ class org.flashNight.arki.unit.Action.Shoot.AmmoSupplyService {
             if (!(Number(item.value.shot) > 0)) continue;    // 满弹或 GM6 合法超装，只增不减
 
             var beforeShot:Number = Number(item.value.shot);
-            item.value.shot = 0;
             var bagAttrs:Object = resolveInstanceAttrs(item);
+            WeaponAmmoRuntime.migrateItem(item, bagAttrs);
+            WeaponAmmoRuntime.supplyValue(item.value, false);
             if (bagAttrs != null && bagAttrs.reloadType == "tube") item.value.reloadCount = 0;
             if (item.value.machineGunShot != undefined) item.value.machineGunShot = 0;
             var itemData:Object = _root.getItemData(item.name);

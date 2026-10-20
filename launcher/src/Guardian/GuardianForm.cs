@@ -1492,14 +1492,23 @@ namespace CF7Launcher.Guardian
             if (!IsExactAgentRuntimeExitPreparation(actionId))
                 return;
 
-            ClearAgentRuntimeExitPreparation();
-            LogManager.Log(
-                "[Guardian] agent runtime shutdown receipt written"
-                + " actionId=" + actionId);
-            DoExit(
-                false,
-                null,
-                shutdownFenceAlreadyPassed: true);
+            // Let the gateway's marshalled response-completion callback unwind
+            // before teardown cancels/disposes the transport it is still using.
+            // Keep the exact preparation token and closed mutation admission
+            // until the next UI turn claims the already-written response.
+            this.BeginInvoke(new Action(delegate
+            {
+                if (!IsExactAgentRuntimeExitPreparation(actionId))
+                    return;
+                ClearAgentRuntimeExitPreparation();
+                LogManager.Log(
+                    "[Guardian] agent runtime shutdown receipt written"
+                    + " actionId=" + actionId);
+                DoExit(
+                    false,
+                    null,
+                    shutdownFenceAlreadyPassed: true);
+            }));
         }
 
         /// <summary>

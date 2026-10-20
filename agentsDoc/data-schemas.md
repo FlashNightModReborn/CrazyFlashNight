@@ -432,6 +432,14 @@ producer 对材料 exact-set、重复/未知 identity、未知 type/purpose、�
 
 重锤打桩机的内置联动模块由其唯一生命周期 `initParam.flamethrower` 声明，根层仍只保留一个锁定战技。控制器依据 Q 的实际机械阶段，在同一个运行态特殊槽中切换副武器补装与过载；这不开放普通配件的双特殊槽。模块复用 `LongGunSubWeaponCore` 的唯一已装弹药与物品镜像，枪锤联动只能经核对宿主/状态身份的 `consumeLoadedAmmo` 消费已付费组弹药，不能复制一份私有油量或绕过逐发库存/MP/HP成本。副射击阶段许可在请求与提交点复核，卸载只清理本人持有的状态和槽位。数值与具体玩法见[打桩机模型](../tools/cf7-balance-tool/models/pilebunker/README.md)。
 
+### 分来源装填 `<overload>`
+
+武器 `data.overload` 显式声明结构资格。`chamber` 是留膛发数（当前 0–2）；`ghost` 是原生幽灵配额（当前 0–2）；`reward` 为技能奖励超装开关，其上限随有效普通弹容变化。缺省为零，`reloadType=tube` 本身不授予超装资格。普通 `capacity` 不包含这三种来源，先按既有插件与取整规则求值。
+
+插件只通过 `merge.overload.ghostLimit` 提高已有资格枪械的幽灵上限；运行时取 `max(ghost, ghostLimit)`、硬上限 2，并独立要求冲击连携启用。内构套件单独安装不能授予资格或替代技能。留膛、幽灵、奖励各占自己的配额；拆装或技能失效只收缩相应来源。装备注释由 `GunStatsBuilder` 在普通弹容数字后插入 `WeaponAmmoInfoBuilder` 生成的彩色 `+N`，按留膛青色、幽灵黄色、奖励紫色展示最终合成后的条件上限；不读取当前弹药或玩家技能状态，不逐件重复机制正文。技能要求与散布代价归「冲击连携」，完整规则与颜色图例归游戏帮助「基本操作」的装填章节。插件 `merge.overload` 保留简短上限及资格说明，不能输出原始对象或把合并值相加。具体名单以武器 XML 为准，改动后执行 `python tools/validate-weapon-ammo.py` 及 `scripts/run-weapon-ammo-data-tests.ps1`，覆盖真实 XMLParser、插件合并和运行时消费者。
+
+`value.ammoState` 是 AS2 持久化弹药状态，`shot=capacity-实际总弹数` 继续兼容旧消费者，合法超装可令 `shot` 为负。状态分别记录留膛、幽灵、奖励、付费普通/留膛计数和原弹种拆包余额。旧 tube `reloadCount` 仅迁移一次，随后该字段只承载非 tube 枪械师战术回收；不可用它覆盖付费余额。HUD 只读投影，不修复或迁移业务状态。机制及散射口径见[散射度规范](../data/items/weapon-diffusion-guidelines.md)。
+
 ### 联弹双层配置与补弹参数（2026-06-12 起）
 
 联弹子弹名格式为 `"{模板前缀}-{单元体}"`（如 `横向联弹-普通子弹`），其弹壳/属性配置在 `bullets_cases.xml` 按全名查表。组合配置由两层声明在加载期派生（`ChainBulletConfigResolver`，挂在 `InfoLoader` 聚合之后、回调分发之前）：

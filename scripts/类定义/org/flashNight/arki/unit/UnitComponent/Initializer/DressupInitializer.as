@@ -444,15 +444,15 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.DressupInitializer {
         }
         if(target.长枪属性){
             target.长枪弹匣容量 = target.长枪属性.capacity;
-            if(target.长枪.value.shot <= 0) target.长枪.value.shot = 0;
+            org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.ensure(target, "长枪", true);
         }
         if(target.手枪属性){
             target.手枪弹匣容量 = target.手枪属性.capacity;
-            if(target.手枪.value.shot <= 0) target.手枪.value.shot = 0;
+            org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.ensure(target, "手枪", true);
         }
         if(target.手枪2属性){
             target.手枪2弹匣容量 = target.手枪2属性.capacity;
-            if(target.手枪2.value.shot <= 0) target.手枪2.value.shot = 0;
+            org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.ensure(target, "手枪2", true);
         }
 
         // 健身房与经脉的常驻加成

@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId weapon-ammo-data Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest.onComplete = function():Void {
+    trace("FocusedTestRunId weapon-ammo-data Complete: __FOCUSED_RUN_ID__");
+};
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoDataTest.runAllTests();

@@ -1,4 +1,5 @@
-﻿// 文件路径：org/flashNight/arki/unit/Action/Shoot/ShootCore.as
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+// 文件路径：org/flashNight/arki/unit/Action/Shoot/ShootCore.as
 
 import org.flashNight.naki.DataStructures.*;
 import org.flashNight.neur.Event.*;
@@ -511,7 +512,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         params:Object             // 主副手参数（primaryParams/secondaryParams）
     ):Void {
         // 若正在该状态射击中或正在换弹，直接返回
-        if (core[params.shootingStateName] || protagonist.换弹标签) return;
+        if (core[params.shootingStateName]) return;
+        if (protagonist.换弹标签 && !ReloadManager.tryCancelForFire(protagonist, core, core.攻击模式)) return;
 
         // 半自动冷却检查：锁标记存储在 core 上，随 MC 生命周期自动释放
         var semiLockProp:String = SEMI_LOCK_PREFIX + params.taskName;
@@ -528,7 +530,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         if (core[attackMode].value.shot >= core[magazineCapName]) {
             // 若剩余弹匣>0 或非控制目标，触发换弹
             // 枪械师战术换弹：0弹匣但回收池够免费换弹时也允许自动换弹
-            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name
+            if (protagonist.剩余弹匣数 > 0 || WeaponAmmoRuntime.reserve(core, attackMode) > 0 || _root.控制目标 != core._name
                 || (core[attackMode + "属性"].reloadType != "tube"
                     && core.被动技能.枪械师 && core.被动技能.枪械师.启用
                     && ReloadManager.canTacticalFreeReload(core, attackMode, core.被动技能.枪械师.等级 || 1))) {
@@ -676,7 +678,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootCore {
         var magazineCapacity:Number = ShootCore.resolveMagazineCapacity(core, weaponType, context);
         if (currentShot >= magazineCapacity) {
             if (context.emptyPolicy == "denyNoReload") return false;
-            if (protagonist.剩余弹匣数 > 0 || _root.控制目标 != core._name
+            if (protagonist.剩余弹匣数 > 0 || WeaponAmmoRuntime.reserve(core, weaponType) > 0 || _root.控制目标 != core._name
                 || (core[weaponType + "属性"].reloadType != "tube"
                     && core.被动技能.枪械师 && core.被动技能.枪械师.启用
                     && ReloadManager.canTacticalFreeReload(core, weaponType, core.被动技能.枪械师.等级 || 1))) {

@@ -6,6 +6,7 @@ import org.flashNight.arki.bullet.Factory.BulletFactory;
 import org.flashNight.arki.bullet.BulletComponent.Chain.ChainGroup;
 import org.flashNight.arki.bullet.BulletComponent.Chain.ChainUnitData;
 import org.flashNight.arki.unit.Action.Shoot.WeaponFireCore;
+import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
 
 /** 真实提交事件、游戏帧时钟、原 RNG 与生产纵向组装/补弹的定向回归。 */
 class org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntimeTest {
@@ -234,6 +235,50 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntimeTest {
             _root.联弹系统.渲染组 = oldRender;
         }
     }
+    private static function ghostCommitAndHorizontal():Void {
+        var unit:MovieClip = actor();
+        unit.长枪弹匣容量 = 8;
+        unit.长枪属性 = {interval:100,clipname:"fixture",overload:{chamber:1,ghost:1,ghostLimit:2}};
+        unit.长枪数据 = {weapontype:"霰弹枪"};
+        unit.被动技能 = {冲击连携:{启用:true}};
+        unit.长枪.value = {shot:-2,ammoState:{v:1,capacity:8,chamber:0,ghost:2,reward:0,reserve:0,reserveName:"fixture"}};
+        var p:Object = props(10,20,"横向联弹-普通子弹");
+        p.霰弹值 = 3;
+        fire(unit,"长枪",p,100);
+        var first:Object = submitted[submitted.length-1];
+        close(first.武器扩散倍率,1.5,"first ghost spread snapshots count before the committed round is consumed");
+        close(unit.长枪.value.ammoState.ghost,1,"production processShot consumes one ghost source");
+        fire(unit,"长枪",p,100);
+        close(submitted[submitted.length-1].武器扩散倍率,1.25,"second ghost uses remaining ratio");
+        fire(unit,"长枪",p,100);
+        close(p.武器扩散倍率,1,"reused bullet template does not retain ghost spread");
+        close(first.武器扩散倍率,1.5,"in-flight snapshot remains frozen");
+        unit.长枪.value.shot=-1;unit.长枪.value.ammoState.ghost=1;unit.状态="行走";
+        fire(unit,"长枪",p,100);
+        close(p.子弹散射度*p.武器扩散倍率,22.5,"ghost scales base spread while existing movement addition remains ten");
+        var b:Object=copy(first);b._x=b._y=b._rotation=0;b.xmov=20;
+        var group:ChainGroup=new ChainGroup(null,b,null,null);
+        group.盒x=7;group.盒y=-5;group.盒宽=group.盒高=10;
+        spans=[];
+        var oldRandom:Function=_root.随机偏移;
+        var oldCreate:Function=_root.联弹系统.生成单元体;
+        var oldRender:Function=_root.联弹系统.渲染组;
+        try {
+            _root.随机偏移=function(span:Number):Number {WeaponSpreadRuntimeTest.spans.push(span);return span;};
+            _root.联弹系统.生成单元体=createUnit;
+            _root.联弹系统.渲染组=function():Void {};
+            group.render=_root.联弹系统.渲染组;
+            _root.联弹系统.横向联弹组装(group);
+            check(group.单元体列表.length==3 && spans.length==3,"horizontal ghost pattern keeps pellet budget and random draw count");
+            for(var i:Number=0;i<group.单元体列表.length;i++)close(group.单元体列表[i].rot,15,"horizontal pellet receives frozen multiplier "+i);
+            close(b.子弹散射度,10,"raw diffusion reference remains unchanged");
+            close(group.衰竭计数器,-3-3*(3+10)/25,"ghost angle penalty does not add a hidden decay penalty");
+            b.武器扩散倍率=3;
+            close(group.单元体列表[0].rot,15,"later weapon changes cannot alter already born pellet angle");
+        } finally {
+            _root.随机偏移=oldRandom;_root.联弹系统.生成单元体=oldCreate;_root.联弹系统.渲染组=oldRender;
+        }
+    }
     public static function runAllTests():Void {
         passed = failed = clock = actorId = 0; actors = []; submitted = [];
         var oldWorld:MovieClip = _root.gameworld; var oldClock:Object = _root.帧计时器;
@@ -246,7 +291,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponSpreadRuntimeTest {
             _root.gameworld = world; _root.帧计时器 = {eventBus:bus, 当前帧数:0};
             _root.暂停 = false; wheel.每帧毫秒 = 1000 / 30;
             _root.子弹区域shoot传递 = function(p:Object):Void { WeaponSpreadRuntimeTest.submitted.push(WeaponSpreadRuntimeTest.copy(p)); };
-            density(); identityAndPause(); failuresAndScope(); sampling(); vertical();
+            density(); identityAndPause(); failuresAndScope(); sampling(); vertical(); ghostCommitAndHorizontal();
         } catch (error:Error) {
             failed++; trace("[TEST_FAIL] WeaponSpreadRuntimeTest exception: " + error);
         } finally {

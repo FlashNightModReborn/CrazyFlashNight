@@ -183,7 +183,7 @@ class org.flashNight.arki.scene.StageRunSession {
         return getStageStartBlockReason() == "";
     }
 
-    /** 当前 GameStage 的 opaque runId；仅供同一 AS2 外层 Warlord fencing 使用。 */
+    /** 当前 GameStage 的只读 opaque runId；供同一 AS2 的 Warlord fencing 与奖励弹出击作用域使用。 */
     public static function getCurrentRunId():String {
         return _run == null ? "" : String(_run.runId || "");
     }

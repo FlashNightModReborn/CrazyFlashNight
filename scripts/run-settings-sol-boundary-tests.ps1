@@ -12,6 +12,7 @@ Write-Host ('Owned SOL evidence: '+$fixture.evidenceDirectory)
     -SuiteRelativePaths 'scripts/类定义/org/flashNight/neur/Server/test/SettingsOwnedSolTest.as' `
     -SuiteFqns 'org.flashNight.neur.Server.test.SettingsOwnedSolTest' `
     -ExpectedTracePatterns '(?m)^SettingsOwnedSolTest Tests Passed: 20\r?$','(?m)^SettingsOwnedSolTest Tests Failed: 0\r?$', `
+        '(?m)^WeaponAmmoOwnedSolTest Tests Passed: 5\r?$','(?m)^WeaponAmmoOwnedSolTest Tests Failed: 0\r?$', `
         ('(?m)^SettingsOwnedSolTest NativeRawKnownTerminal: '+[regex]::Escape($fixture.slot)+'\r?$') `
     -SuccessSummary 'native raw confirmation; synthetic business; unique owned SOL retained for cold read' `
     -TimeoutSeconds $TimeoutSeconds -OwnedDisposableSolHost -SolFixtureConfigPath $fixturePath

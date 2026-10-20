@@ -41,8 +41,10 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
         var snapshot=_controller.State.Snapshot;
         if(!_controller.CanInteract || snapshot==null || snapshot.Epoch!=_target.Epoch
             || _target.ConnectionGeneration!=_controller.Generation) { Close();return; }
-        if(snapshot.Vitals==_lastVitals && _lastCombat?.Mode==snapshot.Combat.Mode &&
-            _lastCombat.Ammo.SequenceEqual(snapshot.Combat.Ammo))return;
+        if(snapshot.Vitals==_lastVitals && _lastCombat?.Mode==snapshot.Combat.Mode
+            && _lastCombat.Ammo.SequenceEqual(snapshot.Combat.Ammo)
+            && (_lastCombat.AmmoDetails??Array.Empty<PlayerHudAmmoDetail?>())
+                .SequenceEqual(snapshot.Combat.AmmoDetails??Array.Empty<PlayerHudAmmoDetail?>()))return;
         _updating=true;
         try
         {
@@ -66,6 +68,8 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
     {
         var result=Build(snapshot.Vitals,snapshot.Epoch,snapshot.Sequence,target,requestId);
         var combat=snapshot.Combat;
+        var ammoRuns=(JArray)result["document"]!["sections"]![0]!["runs"]!;
+        if(target.Kind=="ammo")ammoRuns.Clear();
         if(combat.Mode is "手枪" or "手枪2" or "长枪" or "双枪" or "长枪副武器" or "手雷")
         {
             var runs=(JArray)result["document"]!["sections"]![0]!["runs"]!;
@@ -77,6 +81,19 @@ internal sealed class PlayerHudResourceTooltip : IDisposable
             {
                 Line("弹内余弹："+Ammo(0)+"　备用弹夹："+Ammo(1));
                 if(combat.Mode is "双枪" or "长枪副武器")Line("副手余弹："+Ammo(2)+"　备用弹夹："+Ammo(3));
+                if(combat.AmmoDetails is { } details)
+                {
+                    for(var i=0;i<details.Length;i++)
+                    {
+                        if(details[i] is not { } detail || target.Kind=="ammo" && target.Slot!=i)continue;
+                        Line((i==0?"主手":"副手")+"装填",true);
+                        Line("普通："+detail.Normal+" / "+detail.Capacity+"　留膛："+detail.Chamber);
+                        Line("幽灵："+detail.Ghost+"　奖励："+detail.Reward+"　合计："+detail.Loaded);
+                        Line("超额装填：+"+detail.Overflow);
+                        Line("已拆包余量："+detail.Reserve+" 发（已扣除库存，可继续装填）");
+                        if(detail.Ghost>0)Line("幽灵散射倍率："+detail.Spread.ToString("0.##",CultureInfo.InvariantCulture)+"，随幽灵弹消耗恢复");
+                    }
+                }
             }
         }
         return result;

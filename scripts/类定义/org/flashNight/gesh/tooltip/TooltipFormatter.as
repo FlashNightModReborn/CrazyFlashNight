@@ -87,7 +87,7 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
   }
   
   public static function upgradeLine(
-    buf:Array, data:Object, equipData:Object, property:String, label:String, suffix:String
+    buf:Array, data:Object, equipData:Object, property:String, label:String, suffix:String, afterValueHtml:String
   ):Void {
     var base = data[property];
     var final = equipData[property];
@@ -96,17 +96,18 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
     if(!label) label = TooltipConstants.PROPERTY_DICT[property];
     if(!label) label = property;
     if(!suffix) suffix = "";
+    if(!afterValueHtml) afterValueHtml = "";
 
     // 若没有实际装备数值或实际数值与原始数值相等，则打印原始数值
     if(!equipData || final == base){
-      buf.push(label, "：", formatDisplayValue(base), suffix, "<BR>");
+      buf.push(label, "：", formatDisplayValue(base), suffix, afterValueHtml, "<BR>");
       return;
     }
 
     if(base == null) base = 0;
     // 若属性为数字，则额外打印增幅值
     if(isNaN(final) || isNaN(base)){
-      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", formatDisplayValue(final), suffix, "</FONT>");
+      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", formatDisplayValue(final), suffix, "</FONT>", afterValueHtml);
       buf.push(" (" + TooltipConstants.TXT_OVERRIDE + formatDisplayValue(base) + ")<BR>");
     }else{
       var displayBase:Number = snapDisplayNumber(Number(base));
@@ -115,12 +116,12 @@ class org.flashNight.gesh.tooltip.TooltipFormatter {
 
       // 仅有浮点尾噪时视为展示上的无变化，避免橙色高亮和“+0”。
       if(enhance == 0) {
-        buf.push(label, "：", displayFinal, suffix, "<BR>");
+        buf.push(label, "：", displayFinal, suffix, afterValueHtml, "<BR>");
         return;
       }
 
       // 以橙色字体打印实际数值
-      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", displayFinal, suffix, "</FONT>");
+      buf.push(label, "：<FONT COLOR='" + TooltipConstants.COL_HL + "'>", displayFinal, suffix, "</FONT>", afterValueHtml);
       var sign:String;
       if(enhance < 0) {
         enhance = -enhance;

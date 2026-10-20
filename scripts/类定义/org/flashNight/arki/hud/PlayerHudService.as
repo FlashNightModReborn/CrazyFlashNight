@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.hud.PlayerHudBuffProjection;
+﻿import org.flashNight.arki.hud.WeaponAmmoHudProjection;
+import org.flashNight.arki.hud.PlayerHudBuffProjection;
 import org.flashNight.arki.hud.PlayerHudShieldProjection;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.Action.Input.EnemyActionRuntime;
@@ -37,6 +38,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     private static var poiseVisualsEnabled:Boolean = false;
     private static var resourceHintsEnabled:Boolean = false;
     private static var weaponVisualsEnabled:Boolean = false;
+    private static var ammoDetailsEnabled:Boolean = false;
     private static var coldSkillsEnabled:Boolean = false;
     private static var lastFull:Number = 0;
     private static var lastProjectionError:Number = -10000;
@@ -171,6 +173,7 @@ class org.flashNight.arki.hud.PlayerHudService {
         if (p.poiseVisuals === true) poiseVisualsEnabled = true;
         if (p.resourceHints === true) resourceHintsEnabled = true;
         if (p.weaponVisuals === true) weaponVisualsEnabled = true;
+        if (p.ammoDetails === true) ammoDetailsEnabled = true;
         // 冷兵器主动技能冷却面板（原生 C# 绘制）。只有认识这个组的 Launcher
         // 才会在 playerHudSync 里索取；老 Launcher 不索取、本端也不发，
         // 避免旧解析器的白名单 Keys() 因未知组名整包拒收。
@@ -180,7 +183,7 @@ class org.flashNight.arki.hud.PlayerHudService {
     public static function tick():Void {
         if (org.flashNight.arki.render.WorkerProjectionPolicy.isNone("playerHud")) return;
         var online:Boolean = _root.server.isSocketConnected === true;
-        if (!online) { connected = false; weaponVisualsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
+        if (!online) { connected = false; weaponVisualsEnabled = false; ammoDetailsEnabled = false; resourceHintsEnabled = false; poiseDetailsEnabled = false; shieldDetailsEnabled = false; poiseVisualsEnabled = false; coldSkillsEnabled = false; forceFull = true; FrameBroadcaster.setPlayerHudPayload(null); return; }
         if (!connected) { connected = true; forceFull = true; }
         var unit:Object = hero();
         if (!ensureContext(unit) || typeof _root.gameworld != "movieclip") {
@@ -328,6 +331,22 @@ class org.flashNight.arki.hud.PlayerHudService {
         synchronizeAmmoOwners(unit);
         var secondMagazine:String = text(ammo[3]), secondAmmo:String = text(ammo[2]);
         var firstMagazine:String = text(ammo[1]), firstAmmo:String = text(ammo[0]);
+        var oldDetails:Array = lastCombat.ammoDetails;
+        var primaryDetail:Object = null;
+        var secondaryDetail:Object = null;
+        if (ammoDetailsEnabled) {
+            var primarySlot:String = mode == "双枪" ? "手枪" : (mode == "长枪副武器" ? "长枪" : mode);
+            primaryDetail = WeaponAmmoHudProjection.read(unit, primarySlot, oldDetails[0]);
+            if (mode == "双枪") secondaryDetail = WeaponAmmoHudProjection.read(unit, "手枪2", oldDetails[1]);
+            if (primaryDetail != null) {
+                var primaryData:Object = unit[primarySlot + "属性"];
+                firstAmmo = text(primaryDetail.loaded * (org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil.isVertical(primaryData.bullet) ? primaryData.split : 1));
+            }
+            if (secondaryDetail != null) {
+                var secondaryData:Object = unit.手枪2属性;
+                secondAmmo = text(secondaryDetail.loaded * (org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil.isVertical(secondaryData.bullet) ? secondaryData.split : 1));
+            }
+        }
         var visible:Boolean = skill != null && skill.isSubweaponControl !== true;
         var name:String = weaponName(skill), mp:Number = finiteValue(skill.消耗mp);
         var cooldownMs:Number = finiteValue(skill.冷却时间), key:String = keyLabel("武器技能键");
@@ -346,12 +365,15 @@ class org.flashNight.arki.hud.PlayerHudService {
         var oldWeapon:Object = lastCombat.weapon;
         if (lastCombat != null && lastCombat.mode === mode && lastCombat.ammo[0] === firstAmmo
                 && lastCombat.ammo[1] === firstMagazine && lastCombat.ammo[2] === secondAmmo && lastCombat.ammo[3] === secondMagazine
+                && (ammoDetailsEnabled ? (oldDetails != null && oldDetails[0] === primaryDetail && oldDetails[1] === secondaryDetail)
+                    : oldDetails == undefined)
                 && oldWeapon.visible === visible && oldWeapon.name === name && oldWeapon.mp === mp
                 && oldWeapon.cooldownMs === cooldownMs && oldWeapon.key === key
                 && (weaponVisualsEnabled ? (oldWeapon.iconKey === iconKey && oldWeapon.itemIconKey === itemIconKey
                     && oldWeapon.sourceItem === sourceItem) : oldWeapon.iconKey == undefined)) return lastCombat;
         lastCombat = {mode:mode, ammo:[firstAmmo, firstMagazine, secondAmmo, secondMagazine],
             weapon:{visible:visible, name:name, mp:mp, cooldownMs:cooldownMs, key:key}};
+        if (ammoDetailsEnabled) lastCombat.ammoDetails = [primaryDetail, secondaryDetail];
         if (weaponVisualsEnabled) {
             lastCombat.weapon.iconKey = iconKey;
             lastCombat.weapon.itemIconKey = itemIconKey;
