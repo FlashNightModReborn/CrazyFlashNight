@@ -241,7 +241,8 @@ function(EquipmentTuningView, EquipmentTuningModel, LoadoutPickerActionView,
         var entry = this._candidateFlow.begin(candidate, target, panelInstanceId);
         if (!entry) return false;
         var entered = this._enter(
-            target.slotKey, entry.item, panelInstanceId, entry.source, entry.slot);
+            target.kind === 'backpack' ? '' : target.slotKey,
+            entry.item, panelInstanceId, entry.source, entry.slot);
         if (!entered && this._candidateFlow.isActive()) this._candidateFlow.deactivate();
         return entered;
     };

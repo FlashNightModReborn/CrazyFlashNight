@@ -579,6 +579,21 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                     });
                 }
             }
+            if (harness.issue156WearReason || harness.issue156SameName) {
+                candidateRows.forEach(function(row) {
+                    if (row.physicalSlot !== 9) return;
+                    if (harness.issue156WearReason) {
+                        row.disabled = true;
+                        row.blockedReason = harness.issue156WearReason;
+                        if (row.equipmentEligibility) {
+                            row.equipmentEligibility.blockedReason = harness.issue156WearReason;
+                        }
+                    }
+                    if (harness.issue156SameName) {
+                        row.item.name = row.item.displayName = equipmentBySlot['长枪'];
+                    }
+                });
+            }
             response.payload = {
                 target:message.payload.slotKey
                     ? {kind:'equipment', slotKey:message.payload.slotKey}
@@ -767,6 +782,11 @@ body[data-character-stats-fixture] .character-build-stats-profile::before {
                 response.reconcileAfterCallId = message.payload.reconcileAfterCallId;
             }
         } else if (message.cmd === 'preview') {
+            if (harness.issue156RejectPreview) {
+                response.success = false;
+                response.error = 'level_locked';
+                return response;
+            }
             harness.tuning.lastSource = JSON.parse(JSON.stringify(message.payload.source));
             var current = message.payload.source.sourceKind === 'inventory'
                 ? candidateEnhancement : enhancementBySlot[message.payload.source.slotKey];
@@ -2133,6 +2153,133 @@ CharacterBuild.CharacterBuildController.prototype.activate = function(host, pane
             && InventoryWorkbench.debugState().build.view.candidateScope === 'backpack'
             && document.querySelectorAll('.character-build-candidate').length === 7,
             JSON.stringify(initialCandidateCounts));
+        if (new URLSearchParams(location.search).get('issue156-probe') === '1') {
+            var issue156Writes = commandCount('equipEquipment');
+            var issue156Commits = tuningMessages('commit').length;
+            function issue156State() { return InventoryWorkbench.debugState().build; }
+            function issue156Bag() {
+                return document.querySelector('[data-candidate-key^="backpack:9:"]');
+            }
+            async function issue156Return() {
+                document.querySelector('[data-build-tuning-return]').click();
+                check('issue156 exact return settles', await until(function() {
+                    return !issue156State().tuning.active
+                        && !!document.querySelector('[data-build-action="tune"]');
+                }));
+            }
+            async function issue156Enter(kind) {
+                document.querySelector('[data-build-action="tune"]').click();
+                check('issue156 tuning resolves exact ' + kind + ' source', await until(function() {
+                    var tuning = issue156State().tuning;
+                    var source = tuning && tuning.tuning && tuning.tuning.source;
+                    return tuning.active && !tuning.tuning.readPending && source
+                        && source.sourceKind === kind
+                        && (kind === 'inventory'
+                            ? source.slot === 9
+                                && source.expectedLease === window.__routeHarness.candidateLease
+                            : source.slotKey === '长枪'
+                                && source.expectedLoadoutRevision === issue156State().session.loadoutRevision);
+                }));
+            }
+            var issue156Scroll = document.querySelector('.character-build-candidate-scroll');
+            var issue156List = document.querySelector('.character-build-candidate-list');
+            issue156List.style.minHeight = '900px';
+            issue156List.style.paddingTop = '160px';
+            issue156Scroll.scrollTop = 80;
+            var issue156SavedScroll = issue156Scroll.scrollTop;
+            var issue156OldLease = window.__routeHarness.candidateLease;
+            var issue156Reads = commandCount('candidates');
+            var issue156StorageActivations = window.__routeHarness.storage.activations;
+            check('issue156 overview captures a nonzero scroll', issue156SavedScroll > 0);
+            issue156Bag().click();
+            check('issue156 fresh targetless bag selection exposes enabled tuning',
+                issue156State().view.selectedSlotKey === ''
+                && !document.querySelector('[data-build-action="tune"]').hidden
+                && !document.querySelector('[data-build-action="tune"]').disabled);
+            await issue156Enter('inventory');
+            check('issue156 overview authoritative preview settles before commit', await until(function() {
+                return issue156State().tuning.tuning.hasPreview
+                    && !document.querySelector('.equipment-tuning-commit').disabled;
+            }));
+            document.querySelector('.equipment-tuning-commit').click();
+            check('issue156 overview commit refreshes one selector-free candidate read and new lease',
+                await until(function() {
+                    var tuning = issue156State().tuning.tuning;
+                    return tuningMessages('commit').length === issue156Commits + 1
+                        && commandCount('candidates') === issue156Reads + 1
+                        && window.__routeHarness.candidateLease !== issue156OldLease
+                        && tuning.source.expectedLease === window.__routeHarness.candidateLease
+                        && tuning.hasPreview && !tuning.readPending;
+                }));
+            var issue156Refresh = loadoutMessages().filter(function(message) {
+                return message.cmd === 'candidates';
+            }).slice(-1)[0];
+            check('issue156 overview refresh preserves backpack authority without activating storage',
+                issue156Refresh.payload.candidateScope === 'backpack'
+                && issue156Refresh.payload.slotKey == null && issue156Refresh.payload.drugSlot == null
+                && window.__routeHarness.storage.activations === issue156StorageActivations);
+            issue156Commits = tuningMessages('commit').length;
+            await issue156Return();
+            check('issue156 overview return preserves selected exact lease and focus',
+                issue156State().view.selectedSlotKey === ''
+                && issue156State().view.candidateScope === 'backpack'
+                && issue156State().view.selectedCandidateKey === issue156Bag().getAttribute('data-candidate-key')
+                && document.activeElement === issue156Bag()
+                && issue156Scroll.scrollTop === issue156SavedScroll
+                && commandCount('candidates') === issue156Reads + 1);
+            issue156List.style.minHeight = '';
+            issue156List.style.paddingTop = '';
+            for (var issue156SameName of [false, true]) {
+                window.__routeHarness.issue156SameName = issue156SameName;
+                document.querySelector('[data-roving-key="weapon:长枪"]').click();
+                check('issue156 worn slot candidate read settles', await until(function() {
+                    return candidateProjectionReady(issue156State(), 'weapon:长枪', 1);
+                }));
+                issue156Bag().click();
+                document.querySelector('[data-roving-key="weapon:长枪"]').click();
+                check('issue156 same-slot reselect clears bag identity, sameName=' + issue156SameName,
+                    issue156State().view.selectedCandidateKey === ''
+                    && document.querySelector('[data-build-action="tune"]').textContent.trim() === '调制');
+                await issue156Enter('loadout');
+                await issue156Return();
+                issue156Bag().click();
+                await issue156Enter('inventory');
+                document.querySelector('[data-roving-key="weapon:长枪"]').click();
+                check('issue156 active candidate switches back to same worn slot atomically', await until(function() {
+                    var tuning = issue156State().tuning;
+                    return !tuning.candidateSource && !tuning.tuning.readPending
+                        && tuning.tuning.source.sourceKind === 'loadout'
+                        && tuning.tuning.source.slotKey === '长枪';
+                }));
+                await issue156Return();
+                document.querySelector('[data-build-candidate-scope-mount] [data-choice="backpack"]').click();
+                check('issue156 overview resumes for next exact-source probe', await until(function() {
+                    return issue156State().view.selectedSlotKey === '' && !!issue156Bag();
+                }));
+            }
+            window.__routeHarness.issue156WearReason = 'level_locked';
+            // A fresh selected-slot read exercises the same authority row with a wearing rejection.
+            document.querySelector('[data-roving-key="weapon:长枪"]').click();
+            check('issue156 level-locked row arrives', await until(function() {
+                return issue156Bag() && issue156Bag().getAttribute('data-blocked') === 'true';
+            }));
+            issue156Bag().click();
+            check('issue156 level-locked row permits tuning but not equip',
+                !document.querySelector('[data-build-action="tune"]').disabled
+                && document.querySelector('[data-build-action="commit"]').disabled);
+            window.__routeHarness.issue156RejectPreview = true;
+            await issue156Enter('inventory');
+            check('issue156 operation authority rejection creates no preview or write',
+                await until(function() { return !issue156State().tuning.tuning.readPending; })
+                && !issue156State().tuning.tuning.hasPreview
+                && tuningMessages('commit').length === issue156Commits
+                && commandCount('equipEquipment') === issue156Writes);
+            window.__qaReport = {checks:checks, boundary:{controller:'production', host:'fake_bridge'}};
+            document.getElementById('qa-output').textContent = JSON.stringify(window.__qaReport, null, 2);
+            window.__qaReady = true;
+            return;
+        }
+
         check('semantic hidden removes storage chrome and inactive back action from layout, hit testing, and focus',
             semanticHiddenContract(document.querySelector('.inventory-workbench-mode-actions'))
             && semanticHiddenContract(

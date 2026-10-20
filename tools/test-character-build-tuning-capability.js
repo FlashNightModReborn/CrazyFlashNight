@@ -504,4 +504,35 @@ equal({
     restores:[]
 }, 'destroy fences a late detach callback from touching the retired build view');
 
+selectedSlotKey = '';
+selectedSlot = null;
+selectedCandidate = {name:'背包装备', tunable:true, blocked:false};
+actionView.setState('idle');
+equal(tuneButton.hidden, false, 'issue156 neutral backpack selection exposes tuning');
+equal(tuneButton.disabled, false, 'issue156 neutral backpack tuning is actionable');
+selectedCandidate.blocked = true;
+actionView.sync();
+equal(tuneButton.disabled, false, 'issue156 wear-blocked but tunable candidate keeps tuning action');
+equal(commitButton.disabled, true, 'issue156 tuning availability never enables wearing');
+
+const CharacterBuildView = require('../launcher/web/modules/character-build-view.js').CharacterBuildView;
+const sameSlot = {
+    _interactionState:'idle', _selectedSlotKey:'weapon:长枪', cleared:0, selected:[],
+    root:{getAttribute:() => null},
+    clearCandidateSelection:function() { this.cleared++; },
+    _selectSlot:function(key, force) { this.selected.push({key, force}); return true; }
+};
+equal(CharacterBuildView.prototype._selectUserSlot.call(sameSlot, 'weapon:长枪', 'click'), true,
+    'issue156 same worn slot can be explicitly reselected');
+equal(sameSlot.cleared, 1, 'issue156 same worn slot clears stale bag candidate identity');
+sameSlot._interactionState = 'mutation_pending';
+equal(CharacterBuildView.prototype._selectUserSlot.call(sameSlot, 'weapon:长枪', 'click'), false,
+    'issue156 pending selection never changes target');
+equal(sameSlot.cleared, 1, 'issue156 pending selection retains exact source');
+sameSlot._interactionState = 'idle';
+sameSlot.root.getAttribute = () => 'tuning';
+CharacterBuildView.prototype._selectUserSlot.call(sameSlot, 'weapon:长枪', 'click');
+equal(sameSlot.selected[1].force, true, 'issue156 same slot tuning goes through transactional source handoff');
+equal(sameSlot.cleared, 1, 'issue156 tuning source is not cleared before admission');
+
 console.log('Character Build tuning capability ' + checks + '/' + checks + ' passed');
