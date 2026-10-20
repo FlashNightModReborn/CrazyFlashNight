@@ -1096,6 +1096,9 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq("v2", s.wire, "mat: v2 wire");
         assertEq(3, s.rowCount, "mat: normalized rowCount skips null rows");
         var p:Object = lastSentOp().payload;
+        assert(p.snapshot != undefined, "snap: inline book carries player snapshot");
+        assertEq("测试玩家", p.snapshot.playerName, "snap: playerName frozen at send");
+        assert(p.snapshot.heroPortrait != undefined, "snap: heroPortrait present");
         assertEq(3, p.lines.length, "mat: book lines skip null rows");
         assertEq("测试玩家", p.lines[0].name,
             "mat: 角色名 placeholder resolved at materialize time");
@@ -1179,13 +1182,13 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
             "taskId: overlong id dropped");
         NativeDialogueService.cancelActive("t");
 
-        // stage：不带 kind/id
+        // stage：带 stage kind（Host 据此关闭插话），不带 id
         v2Setup();
         NativeDialogueService.beginStage(
             [{name:"a", title:"", char:"卫兵", text:"t", target:null, imageurl:""}],
             {name:"NextStage", args:[]});
         var stage:Object = lastSentOp().payload;
-        assert(stage.dialogueKind == undefined, "taskId: stage omits kind");
+        assertEq("stage", stage.dialogueKind, "taskId: stage carries kind");
         assert(stage.dialogueTaskId == undefined, "taskId: stage omits id");
         NativeDialogueService.cancelActive("stage-end");
     }

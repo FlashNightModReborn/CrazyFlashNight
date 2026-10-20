@@ -878,9 +878,28 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             s.advanceKey = keyCode;
             s.desiredAdvanceKey = keyCode;
         }
+        // 插话本地 $PC 行需要玩家名/头衔/纸娃娃快照；旧 Host 忽略未知字段。
+        payload.snapshot = buildPlayerSnapshot();
         if (!sendMutation(s, "book", payload, 1, undefined)) {
             replaceWithSnapshot(s, "book_transport_unavailable", 0);
         }
+    }
+
+    /** inline book 的玩家快照：与 source book 同口径，名称/头衔/立绘在发号时冻结。 */
+    private static function buildPlayerSnapshot():Object {
+        var playerName:String = (_root.角色名 != undefined && _root.角色名 != null)
+            ? String(_root.角色名) : "";
+        var heroTitle:String = org.flashNight.arki.unit.HeroUtil.getHeroTitle();
+        if (heroTitle == undefined || heroTitle == null) heroTitle = "";
+        var heroPortrait:Object = NativeDialogueAppearance.build("$PC_CHAR", "普通", null, "");
+        if (heroPortrait == null) {
+            heroPortrait = {kind: "static", key: "", expression: "普通"};
+        }
+        return {
+            playerName: playerName,
+            heroTitle: heroTitle,
+            heroPortrait: heroPortrait
+        };
     }
 
     /** 任务 id 归一：转字符串、去首尾空白、长度 1..32 才保留，否则 null（非法值不猜）。 */

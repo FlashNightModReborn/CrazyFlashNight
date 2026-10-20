@@ -302,6 +302,7 @@ namespace CF7Launcher.Tasks
             DisarmWatchdog();
             session.LinePresented = OnLinePresented;
             session.Closing = OnSessionClosing;
+            session.EndHoldLineProvider = BuildEndHoldLine;
             // 组刚开始还没有任何台词上屏：不能是 Ready（等 Begin 呈现第一句再开）。
             SetInputState(DialogueInterjectInputState.Hidden);
             // 终端已经在线时也核对一次配置（不自动弹窗；输入条会显示“请配置模型API”）。
@@ -314,6 +315,7 @@ namespace CF7Launcher.Tasks
             CancelTurn("session_end");
             session.LinePresented = null;
             session.Closing = null;
+            session.EndHoldLineProvider = null;
             _session = null;
             _groupAllowsInterject = false;
             _closing = false;
@@ -393,8 +395,14 @@ namespace CF7Launcher.Tasks
         private void OnLinePresented(NativeDialogueBookSession.Line line)
         {
             if (_session == null || line == null) return;
+            if (line.IsPlaceholder)
+            {
+                // 等待模型返回：不记入转录、不推进说话人；输入保持“准备中/等待”。
+                SetInputState(IdleState());
+                return;
+            }
             string name = line.Name ?? "";
-            bool isPc = string.Equals(name, PcName, StringComparison.Ordinal);
+            bool isPc = line.IsPlayer || string.Equals(name, PcName, StringComparison.Ordinal);
             bool isLocal = line.WireIndex < 0;
             // 任务改写行占用原始行号（WireIndex>=0），但它是 Host 生成的内容：
             // 角色仍按原说话人记（协议 6.2），输入状态与拆分暂锁按“生成行”处理。
@@ -403,7 +411,8 @@ namespace CF7Launcher.Tasks
             bool isEdit = inserted != null && inserted.TaskIndex > 0;
             bool isGenerated = isLocal || isEdit;
 
-            if (!isPc && name.Length > 0) _npcName = name;
+            // 主 NPC 取本组第一个说话人；第三方插话不得改写下一次请求的 npc。
+            if (!isPc && name.Length > 0 && string.IsNullOrEmpty(_npcName)) _npcName = name;
 
             string role = isPc ? "player"
                 : (isLocal ? "ai" : (string.Equals(name, _npcName, StringComparison.Ordinal) ? "npc" : "other_npc"));
@@ -460,7 +469,7 @@ namespace CF7Launcher.Tasks
             if (_queued.Count > 0)
             {
                 DialogueInterjectLine next = _queued.Dequeue();
-                if (PlayLine(next, true))
+                if (PlayLine(next, AdvanceFirstLineNow()))
                 {
                     // 首句已上屏：其余已收台词按顺序接在它后面，玩家点“下一条”逐句看。
                     DrainQueueToTail();
@@ -746,7 +755,8 @@ namespace CF7Launcher.Tasks
             {
                 NativeDialogueBookSession.Line row = _session.GetWireRow(wire);
                 if (row == null) continue;
-                if ((playerName.Length > 0 && string.Equals(row.Name, playerName, StringComparison.Ordinal))
+                if (row.IsPlayer
+                    || (playerName.Length > 0 && string.Equals(row.Name, playerName, StringComparison.Ordinal))
                     || string.Equals(row.Name, PcName, StringComparison.Ordinal))
                     template = row;
             }
@@ -766,7 +776,8 @@ namespace CF7Launcher.Tasks
                     NormalizedAppearance = template.NormalizedAppearance,
                     AppearanceIdentity = template.AppearanceIdentity,
                     ImageAction = "keep",
-                    ImagePath = ""
+                    ImagePath = "",
+                    IsPlayer = true
                 };
             }
 
@@ -778,7 +789,8 @@ namespace CF7Launcher.Tasks
                 PortraitKey = playerName,
                 Expression = DefaultEmotion,
                 ImageAction = "keep",
-                ImagePath = ""
+                ImagePath = "",
+                IsPlayer = true
             };
             JObject hero = _session.HeroPortrait;
             if (hero != null)
@@ -805,6 +817,54 @@ namespace CF7Launcher.Tasks
                 }
             }
             return line;
+        }
+
+        /// <summary>玩家在末行继续点“下一条”且本轮仍在等模型：返回「思索中……」占位。
+        /// 占位只追加到播放序列尾部，AI 首行到达时从同一位置原位替换；不进转录。</summary>
+        private NativeDialogueBookSession.Line BuildEndHoldLine()
+        {
+            if (_session == null || _closing) return null;
+            if (!_turnActive && !_finalizePending && !_preparing) return null;
+            if (_aiLineShown) return null;               // 已有 AI 行可播，不再占位
+            NativeDialogueBookSession.Line template = null;
+            int wire = Math.Min(_session.CurrentWireIndex, _session.RowCount - 1);
+            for (int i = wire; i >= 0; i--)
+            {
+                NativeDialogueBookSession.Line row = _session.GetWireRow(i);
+                if (row != null && !row.IsPlayer) { template = row; break; }
+            }
+            if (template == null)
+            {
+                for (int i = Math.Max(0, wire + 1); i < _session.RowCount; i++)
+                {
+                    NativeDialogueBookSession.Line row = _session.GetWireRow(i);
+                    if (row != null && !row.IsPlayer) { template = row; break; }
+                }
+            }
+            return new NativeDialogueBookSession.Line
+            {
+                Name = template != null ? template.Name : (_npcName ?? ""),
+                Title = template != null ? template.Title : "",
+                Text = "思索中……",
+                PortraitKey = template != null ? template.PortraitKey : "",
+                Expression = template != null && !string.IsNullOrEmpty(template.Expression)
+                    ? template.Expression : DefaultEmotion,
+                IsDoll = template != null && template.IsDoll,
+                Appearance = template != null ? template.Appearance : null,
+                NormalizedAppearance = template != null ? template.NormalizedAppearance : null,
+                AppearanceIdentity = template != null ? template.AppearanceIdentity : null,
+                ImageAction = "keep",
+                ImagePath = "",
+                IsPlaceholder = true
+            };
+        }
+
+        /// <summary>AI 首行到达时是否立即切到它：玩家已点在占位条上 → 是；
+        /// 玩家还停在 $PC → 只原位放入下一行，等玩家自己点过去。</summary>
+        private bool AdvanceFirstLineNow()
+        {
+            if (_session == null || _turnTailIndex < 0) return true;
+            return _session.Index >= _turnTailIndex;
         }
 
         // ════════════════ 流与播放 ════════════════
@@ -1305,8 +1365,10 @@ namespace CF7Launcher.Tasks
                     ? _session.RowCount : wireStart + resumeN - 1;
             }
 
+            // 玩家已经点在占位条上：plan 的首行直接原位替换上屏；还停在 $PC 则不换当前显示。
+            bool atTail = _session.Index >= _turnTailIndex;
             if (!_session.ReplaceFrom(_turnTailIndex, replacement.ToArray(), resumeWire,
-                present: false))
+                present: atTail))
             {
                 LogManager.Log("[DialogueInterject] plan apply failed (splice rejected)");
                 return;
@@ -1346,12 +1408,14 @@ namespace CF7Launcher.Tasks
                 ImageAction = origin.ImageAction,
                 ImagePath = origin.ImagePath,
                 WireIndex = wire,
-                SplitIntermediate = source.IsSplitHead
+                SplitIntermediate = source.IsSplitHead,
+                IsPlayer = origin.IsPlayer
             };
         }
 
         private void AcceptLine(DialogueInterjectLine line)
-        {            if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
+        {
+            if (!_turnActive || _closing || line == null || string.IsNullOrEmpty(line.Text)) return;
             _preparing = false;             // 已经出词：草案/检索阶段结束
             if (_planApplied)
             {
@@ -1367,7 +1431,7 @@ namespace CF7Launcher.Tasks
             if (!_aiLineShown)
             {
                 // 首句：立即上屏（不等 done/后续行）
-                if (!PlayLine(line, true)) _queued.Enqueue(line);
+                if (!PlayLine(line, AdvanceFirstLineNow())) _queued.Enqueue(line);
                 return;
             }
             // 非首句：接在本轮段末；玩家点“下一条”逐句走到（包括结束语——它只是最后一条）。
@@ -1410,14 +1474,11 @@ namespace CF7Launcher.Tasks
             if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, null, advance)) return false;
             _turnTailIndex++;
             _insertedLines[local] = new InsertedRef { Line = line, WireIndex = -1, TaskIndex = 0 };
-            if (advance)
-            {
-                _pcRevision = -1;           // 后续打字完成不再当 $PC
-                _aiLineShown = true;
-                SetInputState(line.IsSplitHead
-                    ? DialogueInterjectInputState.Locked
-                    : ReadyOrMuted());
-            }
+            _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
+            if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
+            SetInputState(line.IsSplitHead
+                ? DialogueInterjectInputState.Locked
+                : ReadyOrMuted());
             return true;
         }
 
@@ -1517,7 +1578,7 @@ namespace CF7Launcher.Tasks
             _resumeAfterFailure = true;
             if (_playerLinePlaying) return;      // $PC 播完再放（OnTypingFinished → PlayLine → Flush）
             DialogueInterjectLine next = _queued.Dequeue();
-            if (PlayLine(next, true))
+            if (PlayLine(next, AdvanceFirstLineNow()))
             {
                 DrainQueueToTail();
                 FlushPendingFinalize();
@@ -1582,8 +1643,12 @@ namespace CF7Launcher.Tasks
             if (_abandonedOriginalTail) return;   // 无 end 的整组替换：原始剩余已放弃
             if (_session.State != NativeDialogueBookSession.HostState.Active) return;
             // 用当前已到达的原始行号 +1 接回：index 可能已经推进到原文里，不能用提交时的快照。
-            _session.ReplaceFrom(_session.Index + 1, new NativeDialogueBookSession.Line[0],
-                _session.CurrentWireIndex + 1, present: false);
+            // 玩家已点在「思索中……」占位上时，从占位行本身替换并重呈现，避免留下等待文案。
+            NativeDialogueBookSession.Line current = _session.GetPlaybackLine(_session.Index);
+            bool onPlaceholder = current != null && current.IsPlaceholder;
+            int start = onPlaceholder ? _session.Index : _session.Index + 1;
+            _session.ReplaceFrom(start, new NativeDialogueBookSession.Line[0],
+                _session.CurrentWireIndex + 1, present: onPlaceholder);
             _turnTailIndex = -1;
         }
 

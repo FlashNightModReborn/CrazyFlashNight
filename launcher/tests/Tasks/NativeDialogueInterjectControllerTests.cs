@@ -230,6 +230,22 @@ namespace CF7Launcher.Tests.Tasks
                 return book;
             }
 
+            /// <summary>自定义行集 + 玩家快照的 book（转录归属/快照还原用）。</summary>
+            internal void AdoptBookWith(JObject snapshot, params JObject[] lines)
+            {
+                var array = new JArray();
+                foreach (JObject line in lines) array.Add(line);
+                var book = new JObject
+                {
+                    ["version"] = 2, ["op"] = "book", ["kind"] = "inline",
+                    ["requestId"] = "nd:9", ["sceneId"] = "scene.1",
+                    ["mode"] = "ordinary", ["epoch"] = 1, ["startIndex"] = 0,
+                    ["advanceKey"] = 13, ["lines"] = array
+                };
+                if (snapshot != null) book["snapshot"] = snapshot;
+                Task.AdoptV2(book);
+            }
+
             internal void Append(int sequence, int baseEpoch, string text)
             {
                 Task.AdoptV2(new JObject
@@ -268,6 +284,39 @@ namespace CF7Launcher.Tests.Tasks
                 try { Widget.Dispose(); } catch { }
                 try { Anchor.Dispose(); } catch { }
             }
+        }
+
+        private static JObject BookLine(string name, string text, string title = "", bool doll = false)
+        {
+            var portrait = new JObject
+            {
+                ["kind"] = doll ? "doll" : "static",
+                ["key"] = doll ? "doll:" + name : name,
+                ["expression"] = "普通"
+            };
+            if (doll)
+                portrait["appearance"] = new JObject { ["gender"] = "男", ["hair"] = "短发" };
+            return new JObject
+            {
+                ["name"] = name, ["title"] = title, ["text"] = text,
+                ["portrait"] = portrait, ["imageAction"] = "keep"
+            };
+        }
+
+        private static JObject PlayerSnapshot(string name, string title, bool doll)
+        {
+            var portrait = new JObject
+            {
+                ["kind"] = doll ? "doll" : "static",
+                ["key"] = doll ? "doll:$PC_CHAR" : name,
+                ["expression"] = "普通"
+            };
+            if (doll)
+                portrait["appearance"] = new JObject { ["gender"] = "女", ["hair"] = "长发" };
+            return new JObject
+            {
+                ["playerName"] = name, ["heroTitle"] = title, ["heroPortrait"] = portrait
+            };
         }
 
         private static string AddLine(string text, int seq, string kind = "add")
@@ -464,7 +513,7 @@ namespace CF7Launcher.Tests.Tasks
         // ── 首句 / 成功轮 ─────────────────────────────────────────────────
 
         [Fact]
-        public void FirstLineQueuesWhilePcPlaysThenStartsOnTypingFinished()
+        public void FirstLineQueuesWhilePcPlaysThenStartsOnAdvance()
         {
             using var h = new Harness();
             h.AdoptBook("又是你。", "有事说事。");
@@ -481,10 +530,12 @@ namespace CF7Launcher.Tests.Tasks
             }, h.States);
 
             Assert.True(h.Widget.CompleteCurrentLineTyping());
-            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
+            Assert.Equal("最近怎么样？", h.Widget.CurrentFrame.Text);  // 还停在 $PC，等玩家推进
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
             Assert.Equal(0, h.Controller.PendingLineCount);
 
+            h.Advance();
+            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
         }
@@ -498,8 +549,10 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("最近怎么样？"));
             h.Widget.CompleteCurrentLineTyping();
-            Assert.Equal("AI 第一句", h.Widget.CurrentFrame.Text);
+            Assert.Equal("最近怎么样？", h.Widget.CurrentFrame.Text);
 
+            h.Advance();
+            Assert.Equal("AI 第一句", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("AI 第二句", h.Widget.CurrentFrame.Text);
 
@@ -522,9 +575,178 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(AddLine("只有一句", 0) + Done());
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("只有一句", h.Widget.CurrentFrame.Text);
             Assert.False(h.Controller.ClosingForTest);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        // ── 等待占位「思索中……」 ─────────────────────────────────────────
+
+        [Fact]
+        public void AdvancePastPcWithActiveTurnShowsThinkingPlaceholderThenAutoReplaces()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.Name);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+
+            h.Advance();                                   // 占位上继续点：不结束本组
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+
+            h.Controller.OnEvent(LineEvent("来了。", 0));    // 玩家已在占位条：原位自动替换
+            Assert.Equal("来了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Advance();                                   // 末行后 → 正常收尾
+            Assert.True(h.Controller.ClosingForTest);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.LastFinalize != null, 5000));
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            Assert.Equal(3, transcript.Count);
+            Assert.Equal("npc", transcript[0].Value<string>("role"));
+            Assert.Equal("player", transcript[1].Value<string>("role"));
+            Assert.Equal("ai", transcript[2].Value<string>("role"));
+            Assert.DoesNotContain("思索中", transcript.ToString());
+        }
+
+        [Fact]
+        public void AiLineArrivingWhileStillOnPcWaitsForAdvanceWithoutPlaceholder()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Controller.OnEvent(LineEvent("第一句", 0));   // $PC 还在播 → 排队
+            Assert.Equal("你好", h.Widget.CurrentFrame.Text);
+
+            h.Widget.CompleteCurrentLineTyping();           // 播完 $PC：AI 行只入队不抢屏
+            Assert.Equal("你好", h.Widget.CurrentFrame.Text);
+            Assert.Equal(0, h.Controller.PendingLineCount);
+
+            h.Advance();
+            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);  // 直接看到 AI，不经过占位
+            Assert.False(h.Controller.ClosingForTest);
+        }
+
+        [Fact]
+        public void FailureWhileOnPlaceholderRemovesItAndRestoresOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(ErrorEvent("upstream_error"));
+
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);  // 占位原位换回原文
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+        }
+
+        // ── 玩家快照与转录归属 ───────────────────────────────────────────
+
+        [Fact]
+        public void TranscriptRolesDistinguishPlayerNpcAndOtherNpc()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("阿夜", "我来了。", "$PC_TITLE", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"),
+                BookLine("守卫", "站住。"));
+
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行在播
+            h.Advance();
+            h.Advance();
+            Assert.Equal("站住。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.Equal("阿夜", h.Widget.CurrentFrame.Name);
+            Assert.Equal("流浪剑士", h.Widget.CurrentFrame.Title);
+            Assert.True(h.Widget.CurrentFrame.IsDoll);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("Andy Law", request.Value<string>("npc"));   // 第三方不改写主 NPC
+            var played = (JArray)((JObject)request["dialogue"])["played"];
+            Assert.Equal(3, played.Count);
+            Assert.Equal("player", played[0].Value<string>("role"));
+            Assert.Equal("npc", played[1].Value<string>("role"));
+            Assert.Equal("other_npc", played[2].Value<string>("role"));
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Close();
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            Assert.Equal(4, transcript.Count);
+            Assert.Equal("player", transcript[0].Value<string>("role"));
+            Assert.Equal("npc", transcript[1].Value<string>("role"));
+            Assert.Equal("other_npc", transcript[2].Value<string>("role"));
+            Assert.Equal("player", transcript[3].Value<string>("role"));
+            Assert.Equal("阿夜", transcript[3].Value<string>("name"));
+            Assert.Equal("最近怎么样？", transcript[3].Value<string>("text"));
+        }
+
+        [Fact]
+        public void PlayerSnapshotFillsLocalPcWhenBookHasNoPlayerLine()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"));
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            NativeDialogueFrame frame = h.Widget.CurrentFrame;
+            Assert.Equal("阿夜", frame.Name);
+            Assert.Equal("流浪剑士", frame.Title);
+            Assert.Equal("doll:$PC_CHAR", frame.PortraitKey);
+            Assert.True(frame.IsDoll);
+            Assert.False(string.IsNullOrEmpty(frame.AppearanceIdentity));
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Close();
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            var playerRow = transcript[transcript.Count - 1];
+            Assert.Equal("player", playerRow.Value<string>("role"));
+            Assert.Equal("阿夜", playerRow.Value<string>("name"));
+        }
+
+        [Fact]
+        public void LegacyDollarPcOriginalLineIsPlayer()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("$PC", "我来了。", "$PC_TITLE", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"));
+            h.Advance();
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            var played = (JArray)((JObject)request["dialogue"])["played"];
+            Assert.Equal("player", played[0].Value<string>("role"));
+            Assert.Equal("npc", played[1].Value<string>("role"));
         }
 
         // ── 拆分暂锁 ──────────────────────────────────────────────────────
@@ -544,6 +766,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("段0", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
             Assert.False(h.Controller.Submit("插不了"));
@@ -584,11 +807,13 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("最近怎么样？"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text);
             Assert.Equal("stream_failed", h.Controller.LastFailure);
 
             h.Advance();                                            // 已播 AI 行之后接回原作
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            h.Close();
             Assert.Contains("先听我说。", h.Transport.LastFinalize);
         }
 
@@ -607,6 +832,7 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("最近怎么样？"));
             Assert.True(SpinWait.SpinUntil(() => h.Controller.PendingLineCount == 1, 5000));
             Assert.True(h.Widget.CompleteCurrentLineTyping());
+            h.Advance();
             Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text);
             Assert.Equal(0, h.Controller.PendingLineCount);
 
@@ -709,8 +935,10 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
             Assert.False(h.Controller.Submit("插一句"));                // 准备中不接受发送
 
-            h.Controller.OnEvent(LineEvent("行，那我直说了。", 0));      // 首个 add 开始显示
+            h.Controller.OnEvent(LineEvent("行，那我直说了。", 0));      // 首个 add 已就绪
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal("有没有活儿？", h.Widget.CurrentFrame.Text);    // 仍停在 $PC
+            h.Advance();
             Assert.Equal("行，那我直说了。", h.Widget.CurrentFrame.Text);
         }
 
@@ -761,7 +989,8 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(AddLine("新回答", 0) + Done());
 
             Assert.True(h.Controller.Submit("第一次"));
-            h.Widget.CompleteCurrentLineTyping();                    // 第一句上屏
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();                                             // 第一句上屏
             Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
             string instanceId = h.Controller.DialogueInstanceId;
             string turnA = h.Controller.CurrentTurnId;
@@ -797,6 +1026,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("第一次"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("正文", h.Widget.CurrentFrame.Text);
 
             Assert.True(h.Controller.Submit("第二次"));
@@ -842,6 +1072,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
 
+            h.Advance();                                        // $PC 之后 → AI 回答
+            Assert.Equal("回答", h.Widget.CurrentFrame.Text);
             h.Advance();                                        // 末行后 → advance_past_end
             Assert.True(h.Controller.ClosingForTest);
             Assert.False(h.Controller.Submit("末句后插话"));
@@ -1023,6 +1255,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("这活儿我接了。"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("你倒是爽快。", h.Widget.CurrentFrame.Text);
 
             h.Advance();
@@ -1056,6 +1289,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("嗯。"));
             h.Widget.CompleteCurrentLineTyping();
             h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("C", h.Widget.CurrentFrame.Text);       // end=2 被 remove → 跳到 C
@@ -1079,6 +1314,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("听着。"));
             h.Widget.CompleteCurrentLineTyping();
             h.Advance();
+            Assert.Equal("这事我只跟你说一遍。", h.Widget.CurrentFrame.Text);
+            h.Advance();
             Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
             h.Advance();                                         // 组末（不接回 B/C/D）
             Assert.True(h.Controller.ClosingForTest);
@@ -1099,6 +1336,8 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("怎么说？"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("这事不好办。", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);
             h.Advance();
@@ -1121,6 +1360,8 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("然后呢？"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("……", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);
             h.Advance();
@@ -1149,6 +1390,7 @@ namespace CF7Launcher.Tests.Tasks
             h.Advance();
             h.Advance();
             h.Advance();
+            h.Advance();
             Assert.Equal("段0", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
             Assert.False(h.Controller.Submit("插不了"));
@@ -1169,6 +1411,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
@@ -1220,6 +1463,8 @@ namespace CF7Launcher.Tests.Tasks
                 h.Controller.PlaceholderFor(DialogueInterjectInputState.Muted));
 
             h.Advance();
+            Assert.Equal("行了，这事不用你操心。", h.Widget.CurrentFrame.Text);
+            h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);        // 照常播放
             Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
 
@@ -1240,6 +1485,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("第一次"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();                                          // add 上屏
             h.Advance();                                          // 停在原文 A（n1）
             Assert.Equal("A", h.Widget.CurrentFrame.Text);
 
@@ -1266,7 +1512,8 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(AddLine("新回答", 0) + Done());
 
             Assert.True(h.Controller.Submit("第一次"));
-            h.Widget.CompleteCurrentLineTyping();                 // add 上屏；plan 已应用（无 end）
+            h.Widget.CompleteCurrentLineTyping();                 // add 就绪；plan 已应用（无 end）
+            h.Advance();                                          // add 上屏
             Assert.True(h.Controller.Submit("第二次"));
 
             JObject request = JObject.Parse(h.Transport.LastRequest);
@@ -1292,6 +1539,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("stream_failed", h.Controller.LastFailure);
 
             h.Advance();
+            Assert.Equal("你倒是爽快。", h.Widget.CurrentFrame.Text);
+            h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);        // plan 已应用：A（n1）→ 接回 B/C
             h.Advance();
             Assert.Equal("B", h.Widget.CurrentFrame.Text);
@@ -1311,6 +1560,8 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("嗯。"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("先说一句。", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);        // 无 plan：接回原文当前点
         }
