@@ -42,6 +42,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         public string ImageAction;
         /// <summary>配图路径（本地资源解析器处理；widget 只按值比较异同，不自行读盘）。</summary>
         public string ImagePath;
+        /// <summary>等待模型返回的插话占位行；由 widget 以固定括号＋动态省略号呈现，不走逐字打字。</summary>
+        public bool IsPlaceholder;
 
         /// <summary>回调/外发用的浅快照（字段均为值类型或不可变 string，浅拷贝即冻结）。</summary>
         public NativeDialogueFrame Snapshot()

@@ -309,7 +309,8 @@ namespace CF7Launcher.Tasks
                 IsDoll = line.IsDoll,
                 AppearanceIdentity = line.AppearanceIdentity,
                 ImageAction = line.ImageAction,
-                ImagePath = line.ImagePath
+                ImagePath = line.ImagePath,
+                IsPlaceholder = line.IsPlaceholder
             };
             _task.PresentBookFrame(this, frame, line.Appearance);
             if (LinePresented != null)

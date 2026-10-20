@@ -114,6 +114,7 @@ namespace CF7Launcher.Tests.Tasks
             internal readonly NativeDialogueInterjectController Controller;
             internal readonly List<DialogueInterjectInputState> States = new List<DialogueInterjectInputState>();
             internal readonly List<string> Sent = new List<string>();
+            internal readonly List<string> BoundPlayers = new List<string>();
             /// <summary>注入时钟：看门狗测试手动推进，不 sleep。</summary>
             internal DateTime Now = new DateTime(2026, 10, 18, 22, 30, 0);
             /// <summary>每次排定时器记录 delay（断言无事件/总时长上限的取小逻辑）。</summary>
@@ -138,7 +139,8 @@ namespace CF7Launcher.Tests.Tasks
             internal bool TerminalReady = true;
 
             internal Harness(bool inline = true, Func<Task<bool>> ensureReady = null,
-                Func<Task<bool>> llmConfigured = null, bool terminalReady = true)
+                Func<Task<bool>> llmConfigured = null, bool terminalReady = true,
+                Func<string, Task> ensureBound = null)
             {
                 TerminalReady = terminalReady;
                 Anchor = new Control { Size = new Size(1024, 576) };
@@ -149,7 +151,13 @@ namespace CF7Launcher.Tests.Tasks
                 Controller = new NativeDialogueInterjectController(
                     Task, Widget, a => a(), ensureReady, () => Transport,
                     () => "id-" + (++_ids), () => Now,
-                    terminalReady: () => TerminalReady, llmConfigured: llmConfigured);
+                    terminalReady: () => TerminalReady, llmConfigured: llmConfigured,
+                    ensureBound: name =>
+                    {
+                        BoundPlayers.Add(name);
+                        return ensureBound != null ? ensureBound(name)
+                            : System.Threading.Tasks.Task.CompletedTask;
+                    });
                 Controller.WatchdogScheduler = (delay, callback) =>
                 {
                     WatchdogDelays.Add(delay);
@@ -319,10 +327,13 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
-        private static string AddLine(string text, int seq, string kind = "add")
+        private static string AddLine(string text, int seq, string kind = "add",
+            string emotion = "普通")
         {
+            string emotionField = string.IsNullOrEmpty(emotion)
+                ? "" : ",\"emotion\":\"" + emotion + "\"";
             return "event: line\ndata: {\"kind\":\"" + kind + "\",\"text\":\"" + text
-                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}\n\n";
+                + "\"" + emotionField + ",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}\n\n";
         }
 
         private static string Done()
@@ -538,6 +549,42 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void AiLineInheritsNpcPortraitAndBindsPlayerSnapshot()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(new JObject
+            {
+                ["playerName"] = "测试玩家",
+                ["heroTitle"] = "队长",
+                ["heroPortrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "测试玩家", ["expression"] = "普通"
+                }
+            }, new JObject
+            {
+                ["name"] = "Andy Law", ["title"] = "雇佣兵", ["text"] = "又是你。",
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "Andy Law", ["expression"] = "严肃"
+                },
+                ["imageAction"] = "keep"
+            });
+            // 本轮没有自带 emotion：表情应回落到 NPC 模板的「严肃」，立绘随 NPC。
+            h.Transport.Script(AddLine("听见了。", 0, emotion: null) + Done());
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+
+            Assert.Equal("听见了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.Name);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.PortraitKey);
+            Assert.Equal("严肃", h.Widget.CurrentFrame.Expression);
+            Assert.Equal("雇佣兵", h.Widget.CurrentFrame.Title);
+            Assert.Contains("测试玩家", h.BoundPlayers);
         }
 
         [Fact]

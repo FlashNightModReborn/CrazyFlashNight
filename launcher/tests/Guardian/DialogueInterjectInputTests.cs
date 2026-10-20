@@ -122,6 +122,113 @@ namespace CF7Launcher.Tests.Guardian
             }
         }
 
+        // ── 输入条几何与展开态记忆 ───────────────────────────────────────
+
+        private static JObject BuildSingleLineBook()
+        {
+            return new JObject
+            {
+                ["version"] = 2, ["op"] = "book", ["kind"] = "inline",
+                ["requestId"] = "nd:21", ["sceneId"] = "scene.1",
+                ["mode"] = "ordinary", ["epoch"] = 1, ["startIndex"] = 0,
+                ["advanceKey"] = 13,
+                ["lines"] = new JArray(new JObject
+                {
+                    ["name"] = "Andy Law", ["title"] = "雇佣兵", ["text"] = "第一句",
+                    ["portrait"] = new JObject
+                    {
+                        ["kind"] = "static", ["key"] = "Andy Law", ["expression"] = "普通"
+                    },
+                    ["imageAction"] = "keep"
+                })
+            };
+        }
+
+        [Fact]
+        public void ExpandedToggleMatchesCollapsedSizeAndAnchor()
+        {
+            using var owner = new Form { ClientSize = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(owner);
+            var task = new NativeDialogueTask(widget, a => a(), wire => true, () => true);
+            task.BookRetryScheduler = (ms, cb) => { };
+            task.AdoptV2(BuildSingleLineBook());
+            using var overlay = new DialogueInterjectInputOverlay();
+            using var binder = new DialogueInterjectInputBinder(owner, widget, overlay);
+
+            binder.Position();
+            Rectangle collapsed = overlay.Bounds;
+            Assert.False(overlay.IsExpanded);
+            Rectangle panel, close;
+            float scale;
+            Assert.True(widget.TryGetInterjectInputAnchor(out panel, out close, out scale));
+            Assert.Equal(panel.Top, collapsed.Bottom);
+
+            overlay.ExpandForTest();
+            binder.Position();
+            overlay.ExpandForTest();   // 让展开尺寸下再排一次版
+
+            Rectangle expanded = overlay.Bounds;
+            Rectangle toggle = overlay.ToggleBoundsForTest;
+            Rectangle action = overlay.ActionBoundsForTest;
+            Assert.True(overlay.IsExpanded);
+            Assert.Equal(collapsed.Size, new Size(toggle.Width, toggle.Height));
+            Assert.Equal(collapsed.Right, expanded.X + toggle.Right);
+            Assert.Equal(collapsed.Bottom, expanded.Y + toggle.Bottom);
+            Assert.Equal(panel.Top, expanded.Bottom);
+            Assert.Equal(toggle.Height, action.Height);
+            Assert.Equal(toggle.Bottom, action.Bottom);
+            Assert.True(action.Right < toggle.Left);
+        }
+
+        [Fact]
+        public void ExpandedChoiceSurvivesDisableHideAndDismiss()
+        {
+            using var overlay = new DialogueInterjectInputOverlay();
+            overlay.ExpandForTest();
+            Assert.True(overlay.IsExpanded);
+
+            overlay.SetInputEnabled(false);
+            overlay.SetStartRequired(true);
+            overlay.SetConfigRequired(true);
+            Assert.True(overlay.IsExpanded);
+
+            overlay.DismissToOwner();
+            Assert.True(overlay.IsExpanded);
+
+            overlay.Collapse(false);
+            Assert.False(overlay.IsExpanded);
+            overlay.DismissToOwner();
+            Assert.False(overlay.IsExpanded);
+        }
+
+        [Fact]
+        public void PlaceholderFrameAlternatesDotsWithoutTypingFinished()
+        {
+            long clock = 1000;
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            widget.TypingClock = () => clock;
+            int typed = 0;
+            widget.TypingFinished += _ => typed++;
+
+            Assert.True(widget.ShowFrame(new NativeDialogueFrame
+            {
+                RequestId = "nd:22", SceneId = "scene.1", Revision = 1,
+                LineIndex = 0, LineCount = 1, Name = "Andy Law", Title = "雇佣兵",
+                Text = "思索中……", PortraitKey = "Andy Law", Expression = "普通",
+                ImageAction = "keep", IsPlaceholder = true
+            }));
+            Assert.False(widget.PlaceholderWideDotsForTest);
+
+            clock += 600;
+            widget.Tick(600);
+            Assert.True(widget.PlaceholderWideDotsForTest);
+            clock += 600;
+            widget.Tick(600);
+            Assert.False(widget.PlaceholderWideDotsForTest);
+            Assert.Equal(0, typed);
+        }
+
         // ── 宿主焦点门：输入框聚焦时不推进对话 ───────────────────────────
 
         private sealed class TaskHarness : IDisposable

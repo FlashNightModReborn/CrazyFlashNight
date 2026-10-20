@@ -129,6 +129,7 @@ namespace CF7Launcher.Tasks
         private readonly NativeDialogueWidget _widget;
         private readonly Action<Action> _dispatch;
         private readonly Func<Task<bool>> _ensureReady;
+        private readonly Func<string, Task> _ensureBound;
         private readonly Func<IDialogueInterjectTransport> _transportFactory;
         private readonly Func<bool> _terminalReady;
         private readonly Func<Task<bool>> _llmConfigured;
@@ -233,12 +234,14 @@ namespace CF7Launcher.Tasks
             Func<string> newId = null,
             Func<DateTime> clock = null,
             Func<bool> terminalReady = null,
-            Func<Task<bool>> llmConfigured = null)
+            Func<Task<bool>> llmConfigured = null,
+            Func<string, Task> ensureBound = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             _widget = widget ?? throw new ArgumentNullException(nameof(widget));
             _dispatch = dispatch ?? throw new ArgumentNullException(nameof(dispatch));
             _ensureReady = ensureReady;
+            _ensureBound = ensureBound;
             _transportFactory = transportFactory ?? throw new ArgumentNullException(nameof(transportFactory));
             _newId = newId ?? (() => Guid.NewGuid().ToString("D"));
             _clock = clock ?? (() => DateTime.Now);
@@ -819,6 +822,25 @@ namespace CF7Launcher.Tasks
             return line;
         }
 
+        /// <summary>本组 NPC 模板行：优先当前原始行及之前的最近一句，否则向后找第一句；
+        /// 插话新增行与占位行据此继承立绘/外观，避免 AI 行落到无立绘空槽。</summary>
+        private NativeDialogueBookSession.Line FindNpcTemplate()
+        {
+            if (_session == null) return null;
+            int wire = Math.Min(_session.CurrentWireIndex, _session.RowCount - 1);
+            for (int i = wire; i >= 0; i--)
+            {
+                NativeDialogueBookSession.Line row = _session.GetWireRow(i);
+                if (row != null && !row.IsPlayer) return row;
+            }
+            for (int i = Math.Max(0, wire + 1); i < _session.RowCount; i++)
+            {
+                NativeDialogueBookSession.Line row = _session.GetWireRow(i);
+                if (row != null && !row.IsPlayer) return row;
+            }
+            return null;
+        }
+
         /// <summary>玩家在末行继续点“下一条”且本轮仍在等模型：返回「思索中……」占位。
         /// 占位只追加到播放序列尾部，AI 首行到达时从同一位置原位替换；不进转录。</summary>
         private NativeDialogueBookSession.Line BuildEndHoldLine()
@@ -826,21 +848,7 @@ namespace CF7Launcher.Tasks
             if (_session == null || _closing) return null;
             if (!_turnActive && !_finalizePending && !_preparing) return null;
             if (_aiLineShown) return null;               // 已有 AI 行可播，不再占位
-            NativeDialogueBookSession.Line template = null;
-            int wire = Math.Min(_session.CurrentWireIndex, _session.RowCount - 1);
-            for (int i = wire; i >= 0; i--)
-            {
-                NativeDialogueBookSession.Line row = _session.GetWireRow(i);
-                if (row != null && !row.IsPlayer) { template = row; break; }
-            }
-            if (template == null)
-            {
-                for (int i = Math.Max(0, wire + 1); i < _session.RowCount; i++)
-                {
-                    NativeDialogueBookSession.Line row = _session.GetWireRow(i);
-                    if (row != null && !row.IsPlayer) { template = row; break; }
-                }
-            }
+            NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
                 Name = template != null ? template.Name : (_npcName ?? ""),
@@ -879,6 +887,7 @@ namespace CF7Launcher.Tasks
             }
             var stream = new DialogueInterjectStream(transport, OnEvent, _dispatch);
             _stream = stream;
+            string playerName = _session != null ? _session.PlayerName : "";
             TaskRunner(async () =>
             {
                 try
@@ -890,6 +899,16 @@ namespace CF7Launcher.Tasks
                         {
                             Post(() => { if (ReferenceEquals(_stream, stream)) FailTurn("terminal_unavailable"); });
                             return;
+                        }
+                    }
+                    // 终端就绪后再补一次存档绑定：后端提示词据此拿到玩家名/场景/进度，
+                    // 本组 session 也才会带上当前 slot_key 并出现在终端会话列表。
+                    if (_ensureBound != null)
+                    {
+                        try { await _ensureBound(playerName).ConfigureAwait(false); }
+                        catch (Exception ex)
+                        {
+                            LogManager.Log("[DialogueInterject] bind context failed (ignored): " + ex.Message);
                         }
                     }
                     await stream.RunAsync(requestJson, CancellationToken.None).ConfigureAwait(false);
@@ -1460,13 +1479,29 @@ namespace CF7Launcher.Tasks
         {
             if (_session == null || _turnTailIndex < 0) return false;
             if (!advance && _session.Index >= _turnTailIndex) return false;
+            NativeDialogueBookSession.Line template = FindNpcTemplate();
+            string speaker = string.IsNullOrEmpty(line.Speaker)
+                ? (!string.IsNullOrEmpty(_npcName) ? _npcName
+                    : (template != null ? template.Name : ""))
+                : line.Speaker;
+            // AI 正文只属于当前 NPC；其他说话人不套主 NPC 的立绘。
+            bool useTemplate = template != null
+                && (string.IsNullOrEmpty(line.Speaker)
+                    || string.Equals(speaker, template.Name, StringComparison.Ordinal)
+                    || string.Equals(speaker, _npcName, StringComparison.Ordinal));
             var local = new NativeDialogueBookSession.Line
             {
-                Name = string.IsNullOrEmpty(line.Speaker) ? (_npcName ?? "") : line.Speaker,
-                Title = "",
+                Name = speaker,
+                Title = useTemplate ? template.Title : "",
                 Text = line.Text,
-                PortraitKey = "",
-                Expression = string.IsNullOrEmpty(line.Emotion) ? DefaultEmotion : line.Emotion,
+                PortraitKey = useTemplate ? template.PortraitKey : "",
+                Expression = !string.IsNullOrEmpty(line.Emotion) ? line.Emotion
+                    : (useTemplate && !string.IsNullOrEmpty(template.Expression)
+                        ? template.Expression : DefaultEmotion),
+                IsDoll = useTemplate && template.IsDoll,
+                Appearance = useTemplate ? template.Appearance : null,
+                NormalizedAppearance = useTemplate ? template.NormalizedAppearance : null,
+                AppearanceIdentity = useTemplate ? template.AppearanceIdentity : null,
                 ImageAction = "keep",
                 ImagePath = "",
                 SplitIntermediate = line.IsSplitHead

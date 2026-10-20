@@ -43,6 +43,12 @@ namespace CF7Launcher.RagTerminal
         /// <summary>最近一次 EnsureReady 是否成功；插话输入据此决定“可输入/先启动终端”。</summary>
         internal bool IsReady { get; private set; }
 
+        private readonly object _bindCacheGate = new object();
+        /// <summary>最近收到的存档投影（AS2 rag_bind_refresh / 面板打开）。exe 离线时也保留，
+        /// 供插话在终端拉起后补绑定，避免后端 save_info 缺玩家名、session 缺 slot_key。</summary>
+        private JObject _cachedBindPayload;
+        private string _boundBindSignature;
+
         internal RagTerminalService(
             string projectRoot,
             string exePathOverride,
@@ -71,6 +77,99 @@ namespace CF7Launcher.RagTerminal
         internal static bool IsValidSlotKey(string value)
         {
             return !string.IsNullOrEmpty(value) && SlotKeyPattern.IsMatch(value);
+        }
+
+        private void RememberBindPayload(JObject payload)
+        {
+            if (payload == null) return;
+            lock (_bindCacheGate)
+                _cachedBindPayload = (JObject)payload.DeepClone();
+        }
+
+        private JObject SnapshotCachedBindPayload()
+        {
+            lock (_bindCacheGate)
+                return _cachedBindPayload != null ? (JObject)_cachedBindPayload.DeepClone() : null;
+        }
+
+        private void MarkBound(string signature)
+        {
+            lock (_bindCacheGate) _boundBindSignature = signature;
+        }
+
+        /// <summary>终端进程/绑定状态变化后必须重绑：清掉“已绑”标记，下一次插话前会补 bind。</summary>
+        private void InvalidateBoundBinding()
+        {
+            lock (_bindCacheGate) _boundBindSignature = null;
+        }
+
+        /// <summary>
+        /// 插话前补一次存档绑定：优先用最近投影，缺投影时至少带当前槽位；
+        /// 玩家名可从本组对话快照补进 character.name，保证后端提示词有称呼可用。
+        /// 绑定成功由后端记录 slot_key，插话 session 才会出现在终端的当前存档会话列表。
+        /// </summary>
+        internal async Task EnsureInterjectBindingAsync(string playerName)
+        {
+            string slotKey = AgentSaveContext.CurrentSlotKey;
+            JObject payload = SnapshotCachedBindPayload();
+            if (payload != null)
+            {
+                string cachedSlot = payload.Value<string>("slot_key");
+                if (!string.IsNullOrEmpty(slotKey)
+                    && !string.Equals(slotKey, cachedSlot, StringComparison.Ordinal))
+                    payload = null;                       // 缓存属于旧存档，不能拿来绑当前槽位
+                else if (string.IsNullOrEmpty(slotKey))
+                    slotKey = cachedSlot;
+            }
+            if (string.IsNullOrEmpty(slotKey) || !IsValidSlotKey(slotKey))
+            {
+                LogManager.Log("[RagTerminal] interject bind skipped: no valid slot");
+                return;
+            }
+            if (payload == null) payload = BuildBindPayload(slotKey);
+            if (string.IsNullOrEmpty(payload.Value<string>("slot_key")))
+                payload["slot_key"] = slotKey;
+
+            string name = (playerName ?? "").Trim();
+            if (name.Length > 0)
+            {
+                JObject character = payload["character"] as JObject;
+                if (character == null)
+                {
+                    character = new JObject();
+                    payload["character"] = character;
+                }
+                if (string.IsNullOrEmpty((character.Value<string>("name") ?? "").Trim()))
+                    character["name"] = name;
+            }
+
+            string signature = payload.ToString(Formatting.None);
+            lock (_bindCacheGate)
+            {
+                if (string.Equals(_boundBindSignature, signature, StringComparison.Ordinal)) return;
+            }
+
+            if (!IsReady)
+            {
+                JObject probe = await ProbeHealthAsync().ConfigureAwait(false);
+                if (probe == null)
+                {
+                    LogManager.Log("[RagTerminal] interject bind skipped: exe offline");
+                    return;
+                }
+                IsReady = true;
+            }
+            JObject response = await PostJsonAsync(
+                "/api/integration/bind", signature).ConfigureAwait(false);
+            if (response == null || response.Value<bool?>("ok") != true)
+            {
+                LogManager.Log("[RagTerminal] interject bind failed (ignored) slot=" + slotKey);
+                return;
+            }
+            RememberBindPayload(payload);
+            MarkBound(signature);
+            LogManager.Log("[RagTerminal] interject bind ok slot=" + slotKey
+                + " player=" + (name.Length > 0 ? name : "<empty>"));
         }
 
         /// <summary>健康轮询 + 按需拉起 + bind 的完整前置链；任一步失败都不开面板。
@@ -107,6 +206,8 @@ namespace CF7Launcher.RagTerminal
 
             try
             {
+                // 新进程不继承上一实例的绑定态；插话/面板下一次请求前会补 bind。
+                InvalidateBoundBinding();
                 _processStarter(exePath);
                 LogManager.Log("[RagTerminal] started embedded exe=" + exePath);
             }
@@ -147,14 +248,16 @@ namespace CF7Launcher.RagTerminal
             // data/rag/agent_saves/<slotKey>/dialogue_overrides.json，换槽位同时失效覆盖层缓存。
             JObject payload = BuildBindPayload(slotKey, character, progress, scene, player);
             AgentSaveContext.Set(payload.Value<string>("slot_key"));
+            RememberBindPayload(payload);
+            string signature = payload.ToString(Formatting.None);
 
             for (int attempt = 0; attempt < 2; attempt++)
             {
                 JObject response = await PostJsonAsync(
-                    "/api/integration/bind",
-                    payload.ToString(Formatting.None)).ConfigureAwait(false);
+                    "/api/integration/bind", signature).ConfigureAwait(false);
                 if (response != null && response.Value<bool?>("ok") == true)
                 {
+                    MarkBound(signature);
                     string frontendUrl = response.Value<string>("frontend_url");
                     if (string.IsNullOrEmpty(frontendUrl)
                         || !frontendUrl.StartsWith(LoopbackOrigin, StringComparison.Ordinal))
@@ -168,6 +271,7 @@ namespace CF7Launcher.RagTerminal
                 if (attempt == 0)
                     LogManager.Log("[RagTerminal] bind attempt failed; retrying once slot=" + slotKey);
             }
+            InvalidateBoundBinding();
             LogManager.Log("[RagTerminal] bind failed slot=" + slotKey);
             return RagTerminalPrepareResult.Fail("rag_bind_failed", "通讯终端存档绑定失败，请稍后重试。");
         }
@@ -176,6 +280,7 @@ namespace CF7Launcher.RagTerminal
         internal async Task UnbindAsync()
         {
             JObject response = await PostJsonAsync("/api/integration/unbind", "{}").ConfigureAwait(false);
+            InvalidateBoundBinding();
             if (response == null || response.Value<bool?>("ok") != true)
                 LogManager.Log("[RagTerminal] unbind best-effort failed (ignored)");
         }
@@ -226,17 +331,20 @@ namespace CF7Launcher.RagTerminal
             // 刷新同样带 slot_key，且在健康探测之前记录：覆盖层是本地文件，exe 不在线也要让宿主知道当前存档。
             JObject payload = BuildBindPayload(slotKey, character, progress, scene, player);
             AgentSaveContext.Set(payload.Value<string>("slot_key"));
+            RememberBindPayload(payload);
             JObject health = await ProbeHealthAsync().ConfigureAwait(false);
             if (health == null)
             {
                 LogManager.Log("[RagTerminal] refresh skipped: exe offline");
                 return;
             }
+            string signature = payload.ToString(Formatting.None);
             JObject response = await PostJsonAsync(
-                "/api/integration/bind",
-                payload.ToString(Formatting.None)).ConfigureAwait(false);
+                "/api/integration/bind", signature).ConfigureAwait(false);
             if (response == null || response.Value<bool?>("ok") != true)
                 LogManager.Log("[RagTerminal] refresh bind failed (ignored) slot=" + slotKey);
+            else
+                MarkBound(signature);
         }
 
         /// <summary>Agent 委托完成事件的异步落点（G4-2）：绝不拉起 exe，exe 不在线静默跳过；

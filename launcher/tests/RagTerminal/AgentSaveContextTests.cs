@@ -143,6 +143,89 @@ namespace CF7Launcher.Tests.RagTerminal
         }
 
         [Fact]
+        public async Task InterjectBindingReplaysCachedProjectionAndFillsPlayerName()
+        {
+            bool online = false;
+            var handler = new RagHttpStub(request =>
+            {
+                if (request.RequestUri.AbsolutePath == "/api/health")
+                {
+                    return RagHttpStub.Json(online
+                        ? "{\"status\":\"ok\",\"mode\":\"embedded\"}"
+                        : "{\"status\":\"down\"}");
+                }
+                return RagHttpStub.Json("{\"ok\":true}");
+            });
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            // 先在 exe 离线时收到投影：只缓存、不 bind；角色名为空，留给插话快照补。
+            await service.RefreshBindingBestEffortAsync("slotB",
+                new JObject { ["name"] = "" });
+            Assert.Equal("slotB", AgentSaveContext.CurrentSlotKey);
+            Assert.DoesNotContain(handler.Requests,
+                r => r.RequestUri.AbsolutePath == "/api/integration/bind");
+
+            online = true;
+            await service.EnsureInterjectBindingAsync("测试玩家");
+
+            string bindBody = handler.Bodies[handler.Bodies.Count - 1];
+            JObject payload = JObject.Parse(bindBody);
+            Assert.Equal("slotB", payload.Value<string>("slot_key"));
+            Assert.Equal("测试玩家", payload["character"].Value<string>("name"));
+
+            int binds = handler.Requests.FindAll(
+                r => r.RequestUri.AbsolutePath == "/api/integration/bind").Count;
+            Assert.Equal(1, binds);
+
+            // 同一投影/玩家名重复插话不再重复 bind。
+            await service.EnsureInterjectBindingAsync("测试玩家");
+            binds = handler.Requests.FindAll(
+                r => r.RequestUri.AbsolutePath == "/api/integration/bind").Count;
+            Assert.Equal(1, binds);
+        }
+
+        [Fact]
+        public async Task InterjectBindingDropsProjectionFromAnotherSlot()
+        {
+            bool online = false;
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json(online
+                    ? "{\"status\":\"ok\",\"mode\":\"embedded\"}"
+                    : "{\"status\":\"down\"}")
+                : RagHttpStub.Json("{\"ok\":true}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+
+            await service.RefreshBindingBestEffortAsync("slotA",
+                new JObject { ["name"] = "旧存档角色" });
+            AgentSaveContext.Set("slotB");
+            online = true;
+            await service.EnsureInterjectBindingAsync("新玩家");
+
+            JObject payload = JObject.Parse(handler.Bodies[handler.Bodies.Count - 1]);
+            Assert.Equal("slotB", payload.Value<string>("slot_key"));
+            Assert.Equal("新玩家", payload["character"].Value<string>("name"));
+            Assert.DoesNotContain("旧存档角色", payload.ToString(), StringComparison.Ordinal);
+        }
+
+        [Fact]
+        public async Task UnbindInvalidatesInterjectBindingForNextTurn()
+        {
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json("{\"ok\":true}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+            AgentSaveContext.Set("slotA");
+
+            await service.EnsureInterjectBindingAsync("玩家");
+            await service.UnbindAsync();
+            await service.EnsureInterjectBindingAsync("玩家");
+
+            int binds = handler.Requests.FindAll(
+                r => r.RequestUri.AbsolutePath == "/api/integration/bind").Count;
+            Assert.Equal(2, binds);
+        }
+
+        [Fact]
         public async Task InvalidSlotBindsNothingAndRecordsNothing()
         {
             var handler = new RagHttpStub(request => RagHttpStub.Json("{\"ok\":true}"));

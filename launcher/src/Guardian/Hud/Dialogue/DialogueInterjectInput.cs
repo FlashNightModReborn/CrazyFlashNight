@@ -149,6 +149,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal const int ToggleWidthDesign = 52;
         internal const int ToggleHeightDesign = 30;
 
+        /// <summary>收起/展开两态共用的按钮尺寸与右侧内边距；宿主按同一 scale 计算，
+        /// 避免展开态自己再推一套尺寸导致两态一大一小。</summary>
+        internal static int ToggleWidthForScale(float scale)
+        {
+            return Math.Max(44, Math.Min(80, (int)Math.Round(ToggleWidthDesign * scale)));
+        }
+
+        internal static int ToggleHeightForScale(float scale)
+        {
+            return Math.Max(26, Math.Min(48, (int)Math.Round(ToggleHeightDesign * scale)));
+        }
+
+        internal static int OuterPaddingForScale(float scale)
+        {
+            return Math.Max(8, (int)Math.Round(12 * scale));
+        }
+
         [StructLayout(LayoutKind.Sequential)]
         private struct NativePoint { public int X; public int Y; }
 
@@ -196,6 +213,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Rectangle _actionRect = Rectangle.Empty;
         private Rectangle _fieldRect = Rectangle.Empty;
         private Rectangle _counterRect = Rectangle.Empty;
+        private int _toggleWidthPx;
+        private int _toggleHeightPx;
+        private int _outerPaddingPx;
         private float _uiScale;
         private Font _inputFont;
         private Font _smallFont;
@@ -244,16 +264,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _textBox.TextChanged += OnTextChanged;
             _textBox.KeyDown += OnKeyDown;
             _textBox.GotFocus += delegate { SetFocused(true); };
-            _textBox.LostFocus += delegate
-            {
-                SetFocused(false);
-                if (IsDisposed || !IsHandleCreated) return;
-                BeginInvoke((Action)delegate
-                {
-                    if (IsDisposed || !_expanded || ContainsFocus) return;
-                    Collapse(false);   // 点到游戏画面后自动收回收起按钮
-                });
-            };
+            // 展开态是玩家显式选择的持久状态：点到游戏画面只还焦点，不收面板。
+            _textBox.LostFocus += delegate { SetFocused(false); };
             _textBox.CompositionStateChanged += OnCompositionStateChanged;
             Controls.Add(_textBox);
 
@@ -296,6 +308,26 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             Owner = owner;
         }
 
+        /// <summary>宿主按对话面板缩放显式下发两态共用尺寸；展开态不再自行推导按钮大小。</summary>
+        internal void SetToggleMetrics(int width, int height, int outerPadding)
+        {
+            _toggleWidthPx = Math.Max(1, width);
+            _toggleHeightPx = Math.Max(1, height);
+            _outerPaddingPx = Math.Max(1, outerPadding);
+            if (_expanded && ClientSize.Width > 0 && ClientSize.Height > 0) ApplyLayout();
+        }
+
+        internal Rectangle ToggleBoundsForTest { get { return _chevronRect; } }
+        internal Rectangle ActionBoundsForTest { get { return _actionRect; } }
+        internal Rectangle FieldBoundsForTest { get { return _fieldRect; } }
+
+        /// <summary>几何单测用：不依赖窗口可见/激活，直接进入展开布局。</summary>
+        internal void ExpandForTest()
+        {
+            _expanded = true;
+            ApplyLayout();
+        }
+
         /// <summary>本窗是否为本进程当前的系统前台（供 NativeHudOverlay 的白名单探针）。
         /// 输入焦点在 TextBox 子控件上时前景窗仍是本 Form，故只比 Form 句柄。</summary>
         public bool IsForegroundWindow()
@@ -310,7 +342,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// </summary>
         public void DismissToOwner()
         {
-            Collapse(false);
+            // 只隐藏，不改展开/收起偏好：本组内 $PC 播放或换组结束后再现时沿用玩家上次选择。
             ClearInput();
             SetFocused(false);
             Hide();
@@ -347,15 +379,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _textBox.Visible = false;
             AnimateChevron(0f);
             ApplyLayout();
-            if (returnFocus)
-            {
-                SetFocused(false);
-                Form owner = Owner;
-                if (owner != null && !owner.IsDisposed)
-                {
-                    try { owner.Activate(); } catch { }
-                }
-            }
+            if (returnFocus) ReleaseFocusToOwner();
             NotifyExpandedChanged();
         }
 
@@ -388,7 +412,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             if (_startRequired == value) return;
             _startRequired = value;
-            if (value) Collapse(false);
             UpdateCursor();
             UpdateToolTip();
             Invalidate();
@@ -399,7 +422,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             if (_configRequired == value) return;
             _configRequired = value;
-            if (value) Collapse(false);
             UpdateCursor();
             UpdateToolTip();
             Invalidate();
@@ -427,7 +449,6 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _model.Enabled = value;
             _textBox.ReadOnly = !value;
             _textBox.BackColor = value ? _fieldBack : _fieldDisabledBack;
-            if (!value) Collapse(false);
             UpdatePlaceholder();
             UpdateCursor();
             Invalidate();
@@ -523,6 +544,14 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             SetFocused(false);
         }
 
+        private void ReleaseFocusToOwner()
+        {
+            SetFocused(false);
+            Form owner = Owner;
+            if (owner == null || owner.IsDisposed) return;
+            try { owner.Activate(); } catch { }
+        }
+
         /// <summary>日志/验收用：IME 是否组词中。</summary>
         public bool IsImeComposing()
         {
@@ -579,7 +608,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     {
                         e.Handled = true;
                         e.SuppressKeyPress = true;
-                        Collapse(true);
+                        ReleaseFocusToOwner();
                     }
                     return;
                 }
@@ -617,7 +646,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             string text = _model.Text;
             ClearInput();
-            Collapse(true);
+            // 发送不改变展开偏好：本轮等待期间由状态机隐藏，回来后仍按玩家上次选择展开。
             Action<string> handler = SendRequested;
             if (handler != null)
             {
@@ -1043,11 +1072,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             base.OnVisibleChanged(e);
             // 被直接 Hide（不经 DismissToOwner）时也要退出文字输入态，否则热键会一直放行。
-            if (!Visible)
-            {
-                SetFocused(false);
-                Collapse(false);
-            }
+            // 展开/收起是玩家持久选择，隐藏不改变它。
+            if (!Visible) SetFocused(false);
         }
 
         protected override void OnResize(EventArgs e)
@@ -1057,8 +1083,23 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         }
 
         private int HeaderHeight { get { return Math.Max(26, (int)Math.Round(30 * _uiScale)); } }
-        private int FooterHeight { get { return Math.Max(30, (int)Math.Round(38 * _uiScale)); } }
-        private int Pad { get { return Math.Max(8, (int)Math.Round(12 * _uiScale)); } }
+        private int FooterHeight
+        {
+            get
+            {
+                int natural = Math.Max(30, (int)Math.Round(38 * _uiScale));
+                return _toggleHeightPx > 0 ? Math.Max(natural, _toggleHeightPx) : natural;
+            }
+        }
+        private int Pad
+        {
+            get
+            {
+                return _outerPaddingPx > 0
+                    ? _outerPaddingPx
+                    : Math.Max(8, (int)Math.Round(12 * _uiScale));
+            }
+        }
 
         /// <summary>收起态只排箭头按钮；展开态排头条、输入槽、计数、操作与旋转箭头。</summary>
         private void ApplyLayout()
@@ -1113,13 +1154,15 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     Math.Max(1, (int)Math.Round(2 * ui)), 0, 0);
             }
 
-            // 上下两个箭头开关共用同一尺寸；展开态只是转了 180°、换成浅底黑箭头。
-            int toggleW = Math.Max(44, (int)Math.Round(ToggleWidthDesign * ui));
-            int toggleH = Math.Max(26, (int)Math.Round(ToggleHeightDesign * ui));
-            int toggleY = footerTop + Math.Max(0, (footerH - toggleH) / 2);
+            // 上下两个箭头开关共用宿主下发的同一尺寸；展开态只是转了 180°、换成浅底黑箭头。
+            int toggleW = _toggleWidthPx > 0 ? _toggleWidthPx : ToggleWidthForScale(ui);
+            int toggleH = _toggleHeightPx > 0 ? _toggleHeightPx : ToggleHeightForScale(ui);
+            // 下沿贴住面板底边：展开面板底边＝对话黑头条上沿，与收起钮同一基准线。
+            int toggleY = Math.Max(headerH, h - toggleH);
             _chevronRect = new Rectangle(w - pad - toggleW, toggleY, toggleW, toggleH);
 
-            int actionW = Math.Max(58, (int)Math.Round(66 * ui));
+            int actionW = Math.Max(58, (int)Math.Round(
+                66f * toggleH / ToggleHeightDesign));
             int actionX = _chevronRect.Left - gap - actionW;
             _actionRect = new Rectangle(actionX, toggleY, actionW, toggleH);
 

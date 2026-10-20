@@ -99,6 +99,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private string _planKey;
         private int _manualFirstLine = -1;
         private bool _animActive;
+        // 等待占位：固定括号，省略号在 … / …… 间轮换；括号位置由最长形态定死。
+        private bool _placeholderWideDots;
+        private long _placeholderNextToggleMs;
+        internal bool PlaceholderWideDotsForTest { get { lock (_gate) return _placeholderWideDots; } }
 
         // 手势（Down 绑定身份+zone；Up 校验）
         private bool _gestureArmed;
@@ -287,8 +291,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _manualFirstLine = -1;
                 _typingWallStartMs = TypingClock();
                 _typingWallElapsedMs = _typingTickElapsedMs = 0;
-                _typingNotified = false;
+                // 占位行不做逐字：立即显示固定括号，只让省略号轮换；不产生 TypingFinished。
+                _typingNotified = frame.IsPlaceholder;
                 _typingDoneFrame = null;
+                _placeholderWideDots = false;
+                _placeholderNextToggleMs = TypingClock() + 480;
                 _plan = null;
                 _planKey = null;
                 DisarmGestureLocked();
@@ -818,11 +825,26 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             lock (_gate)
             {
                 if (_frame == null || _suppressed || _disposed) return;
-                EnsurePlanLocked();
-                _typingTickElapsedMs += deltaMs;
-                repaint = CatchUpTypingLocked();
-                CheckTypingCompletedLocked();
-                animChanged = UpdateAnimLocked();
+                if (_frame.IsPlaceholder)
+                {
+                    // 省略号由 Tick 驱动，标题与括号不动；_animActive 保持 true 直到占位被替换。
+                    long now = TypingClock();
+                    if (now >= _placeholderNextToggleMs)
+                    {
+                        _placeholderWideDots = !_placeholderWideDots;
+                        _placeholderNextToggleMs = now + 480;
+                        repaint = true;
+                    }
+                    animChanged = UpdateAnimLocked();
+                }
+                else
+                {
+                    EnsurePlanLocked();
+                    _typingTickElapsedMs += deltaMs;
+                    repaint = CatchUpTypingLocked();
+                    CheckTypingCompletedLocked();
+                    animChanged = UpdateAnimLocked();
+                }
             }
             if (repaint) FireRepaint();
             FireTypingFinishedPending();
@@ -839,10 +861,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Layout L = ComputeLayoutLocked();
                 if (L.Panel.Width <= 0 || L.Panel.Height <= 0) return;
                 EnsureFontsLocked();
-                EnsurePlanLocked();
-                // WM_TIMER 在繁忙消息队列中优先级低；正常绘制也按真实经过时间补算。
-                CatchUpTypingLocked();
-                CheckTypingCompletedLocked();
+                if (!f.IsPlaceholder)
+                {
+                    EnsurePlanLocked();
+                    // WM_TIMER 在繁忙消息队列中优先级低；正常绘制也按真实经过时间补算。
+                    CatchUpTypingLocked();
+                    CheckTypingCompletedLocked();
+                }
                 animChanged = UpdateAnimLocked();
 
                 GraphicsState state = g.Save();
@@ -857,7 +882,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                     PaintDecor(g, L);
                     PaintButtonOverlays(g, L);
                     PaintNameTitle(g, f, L);
-                    PaintBody(g, L);
+                    if (f.IsPlaceholder) PaintPlaceholderBody(g, L);
+                    else PaintBody(g, L);
                 }
                 finally { g.Restore(state); }
             }
@@ -1038,6 +1064,38 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                             TEXT_INSET_LOCAL + line.Indent + line.PrefixW[run.LineOffset],
                             1f, _typoFormat);
                 }
+            }
+            finally { g.Restore(st); }
+        }
+
+        /// <summary>等待占位：[思索中…] / [思索中……]；左右括号按最长形态定死，只有省略号变化。</summary>
+        private void PaintPlaceholderBody(Graphics g, Layout L)
+        {
+            Rectangle tr = L.Text;
+            if (tr.Width <= 0 || tr.Height <= 0 || _fontBody == null) return;
+            EnsureMeasureLocked();
+            DialogueUiSkin.FieldSpec fs = _skin.Body;
+            string left = "[思索中";
+            string right = "]";
+            string dots = _placeholderWideDots ? "……" : "…";
+            float leftW = _measureG.MeasureString(left, _fontBody, int.MaxValue, _typoFormat).Width;
+            float rightW = _measureG.MeasureString(right, _fontBody, int.MaxValue, _typoFormat).Width;
+            float frameW = _measureG.MeasureString(left + "……" + right, _fontBody,
+                int.MaxValue, _typoFormat).Width;
+
+            GraphicsState st = g.Save();
+            try
+            {
+                g.SetClip(tr, CombineMode.Intersect);
+                PointF o = LogicalToScreen(L, (float)fs.Matrix.Tx, (float)fs.Matrix.Ty, true);
+                g.TranslateTransform(o.X, o.Y);
+                g.ScaleTransform(L.Scale * fs.TextScale, L.Scale * fs.TextScale);
+                SolidBrush brush = BrushFor(fs.Color);
+                float y = 1f;
+                g.DrawString(left, _fontBody, brush, TEXT_INSET_LOCAL, y, _typoFormat);
+                g.DrawString(dots, _fontBody, brush, TEXT_INSET_LOCAL + leftW, y, _typoFormat);
+                g.DrawString(right, _fontBody, brush,
+                    TEXT_INSET_LOCAL + frameW - rightW, y, _typoFormat);
             }
             finally { g.Restore(st); }
         }
@@ -1578,9 +1636,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// 保证 ShowFrame 后 tick 能启动，首个 Tick 内排版再校准。</summary>
         private bool UpdateAnimLocked()
         {
-            bool typingLeft = _plan != null
+            bool placeholder = _frame != null && _frame.IsPlaceholder;
+            bool typingLeft = placeholder || (_plan != null
                 ? _visibleChars < _plan.TotalGlyphs
-                : !string.IsNullOrEmpty(_frame != null ? _frame.Text : null);
+                : !string.IsNullOrEmpty(_frame != null ? _frame.Text : null));
             bool want = _frame != null && !_suppressed && !_disposed && typingLeft;
             if (want == _animActive) return false;
             _animActive = want;
@@ -1661,7 +1720,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>锁内：当前帧是否已经打完（含零字帧），是则登记一次待发通知。</summary>
         private void CheckTypingCompletedLocked()
         {
-            if (_typingNotified || _frame == null) return;
+            if (_typingNotified || _frame == null || _frame.IsPlaceholder) return;
             EnsurePlanLocked();
             int total = _plan != null ? _plan.TotalGlyphs : 0;
             if (_visibleChars < total) return;
