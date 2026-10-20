@@ -120,11 +120,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int gap = Math.Max(4, (int)Math.Round(6 * scale));
             int rightLimit = close.IsEmpty ? panel.Right : close.Left;
 
-            int size = Clamp((int)Math.Round(38 * scale), 32, 60);
-            int collapsedX = rightLimit - gap - size;
-            int collapsedY = close.IsEmpty
-                ? panel.Top - gap - size
-                : close.Top + (close.Height - size) / 2;
+            int toggleW = Clamp((int)Math.Round(
+                DialogueInterjectInputOverlay.ToggleWidthDesign * scale), 44, 80);
+            int toggleH = Clamp((int)Math.Round(
+                DialogueInterjectInputOverlay.ToggleHeightDesign * scale), 26, 48);
+            int collapsedX = rightLimit - gap - toggleW;
+            // 收起钮下沿贴住对话框黑色头条上沿，不再悬在关闭钮垂直中线。
+            int collapsedY = panel.Top - toggleH;
 
             int width;
             int height;
@@ -133,16 +135,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_overlay.IsExpanded)
             {
                 width = Clamp((int)Math.Round(panel.Width * 0.47), 380, 660);
-                height = Clamp((int)Math.Round(160 * scale), 150, 280);
+                height = Clamp((int)Math.Round(
+                    DialogueInterjectInputOverlay.DesignHeight * scale), 170, 340);
                 x = rightLimit - gap - width;
-                int bottom = collapsedY + size;   // 展开面板底边与收起箭头对齐，箭头原地旋转
+                int bottom = collapsedY + toggleH;   // 展开面板底边与对话框头条上沿重合
                 y = bottom - height;
                 if (y < viewport.Top) y = viewport.Top;
             }
             else
             {
-                width = size;
-                height = size;
+                width = toggleW;
+                height = toggleH;
                 x = collapsedX;
                 y = collapsedY;
             }
