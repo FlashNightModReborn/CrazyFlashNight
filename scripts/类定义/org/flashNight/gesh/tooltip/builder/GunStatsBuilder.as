@@ -18,6 +18,7 @@ import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
+import org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder;
  
 class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
 
@@ -130,6 +131,7 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
         // - 为避免"上限/增量被放大造成误解"，括号内的增量按基础容量计算，并明确显示"×点射数"。
         // - 当 deltaBase = 0（无配件修改）时，仅显示简化格式，避免混淆的 "0×N" 显示
         if (capacity > 0) {
+            var ammoSuffix:String = WeaponAmmoInfoBuilder.capacitySuffix(equipData ? equipData : data);
             if (magazineCapacity > 1) {
                 // 计算基础与最终容量（未乘点射数）
                 var baseCap:Number = Number(data.capacity);
@@ -149,16 +151,16 @@ class org.flashNight.gesh.tooltip.builder.GunStatsBuilder {
                     // 有配件修改时：显示详细分解公式
                     // 输出：弹夹容量：<HL>最终×点射</HL> (基础×点射 + 基础增量 × 点射数)
                     result.push(
-                        TooltipConstants.LBL_CAPACITY, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>",
+                        TooltipConstants.LBL_CAPACITY, "：<FONT COLOR='", TooltipConstants.COL_HL, "'>", finalScaled, "</FONT>", ammoSuffix,
                         " (", baseScaled, " + ", deltaBase, "×", magazineCapacity, ")<BR>"
                     );
                 } else {
                     // 无配件修改时：简化显示，避免混淆的 "0×N"
-                    result.push(TooltipConstants.LBL_CAPACITY, "：", finalScaled, "<BR>");
+                    result.push(TooltipConstants.LBL_CAPACITY, "：", finalScaled, ammoSuffix, "<BR>");
                 }
             } else {
                 // 普通武器，直接使用 upgradeLine
-                TooltipFormatter.upgradeLine(result, data, equipData, "capacity", TooltipConstants.LBL_CAPACITY, null);
+                TooltipFormatter.upgradeLine(result, data, equipData, "capacity", TooltipConstants.LBL_CAPACITY, null, ammoSuffix);
             }
         }
 

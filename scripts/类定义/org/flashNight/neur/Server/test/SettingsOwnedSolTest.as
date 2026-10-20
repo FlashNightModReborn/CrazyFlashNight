@@ -4,11 +4,28 @@ import org.flashNight.neur.Server.SettingsCanonicalSchema;
 import org.flashNight.arki.ui.GameSettingsPanelService;
 import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.arki.key.KeyManager;
+import org.flashNight.arki.item.BaseItem;
+import org.flashNight.gesh.object.ObjectUtil;
 
 /** Real native SO flush, synthetic business root, unique exact owned test slot. */
 class org.flashNight.neur.Server.test.SettingsOwnedSolTest {
     private static var passed:Number=0;
     private static var failed:Number=0;
+    private static var ammoItem:BaseItem;
+    private static var ammoPassed:Number=0;
+    private static var ammoFailed:Number=0;
+    private static function checkAmmo(ok:Boolean, name:String):Void {
+        if(ok)ammoPassed++;else{ammoFailed++;trace("[FAIL] WeaponAmmoOwnedSolTest: "+name);}
+    }
+    private static function findAmmo(node):Object {
+        if (node == null || typeof node != "object") return null;
+        if (node.name == "TTI Benelli M4" && node.value.ownedAmmoFixture === true) return node;
+        for (var key:String in node) {
+            var found:Object = findAmmo(node[key]);
+            if (found != null) return found;
+        }
+        return null;
+    }
     private static function check(ok:Boolean,name:String):Void {
         if(ok)passed++;else {failed++;trace("[FAIL] SettingsOwnedSolTest: "+name);}
     }
@@ -43,6 +60,13 @@ class org.flashNight.neur.Server.test.SettingsOwnedSolTest {
         _root.主线任务进度=0;_root.基建系统={infrastructure:{__unknownCounter:1}};
         _root.物品栏={背包:{toObject:function():Object{return {}; }},装备栏:{toObject:function():Object{return {}; }},
             药剂栏:{toObject:function():Object{return {}; }},仓库:{toObject:function():Object{return {}; }},战备箱:{toObject:function():Object{return {}; }}};
+        // 仅存在于本次已准入的唯一测试槽，走真实物品 toObject 与 SaveManager 原生 flush。
+        ammoItem = new BaseItem("TTI Benelli M4", {level:1, mods:[], shot:-3, ownedAmmoFixture:true,
+            ammoState:{v:1, capacity:7, chamber:1, ghost:2, reward:0, reserve:4,
+                reserveName:"00号鹿弹", paidNormal:7, paidChamber:0}}, 123);
+        _root.物品栏.装备栏.toObject = function():Object {
+            return {长枪:SettingsOwnedSolTest.ammoItem.toObject()};
+        };
         _root.收集品栏={材料:{toObject:function():Object{return {}; }},情报:{toObject:function():Object{return {}; }}};
         _root.宠物信息=[];_root.宠物领养限制=5;_root.商城已购买物品=[];_root.商城购物车=[];
         _root._saveExt={__ownedUnknown:{value:7},ownProbe:{value:1}};
@@ -125,6 +149,21 @@ class org.flashNight.neur.Server.test.SettingsOwnedSolTest {
         check(finalized=="committed" && domainCalls==2 && domainBusiness==1,"known finalizer settlement does not duplicate business");
         check(manager._getSavePhysicalStatsForTest().flushAttempt==flushes,"confirmed finalizer retry performs no additional flush");
         check(!manager.hasRewardCommitPending() && manager.getSettingsAuthority().readOutcome().durable===true,"all native write boundaries terminal");
+        var durableAmmo:Object = findAmmo(so.data.test);
+        checkAmmo(durableAmmo != null,"actual inventory weapon included in native payload");
+        checkAmmo(durableAmmo.value.ammoState.chamber == 1 && durableAmmo.value.ammoState.ghost == 2
+            && durableAmmo.value.shot == -3,"typed overload survives save packing");
+        checkAmmo(durableAmmo.value.ammoState.reserve == 4 && durableAmmo.value.ammoState.reserveName == "00号鹿弹",
+            "paid remainder keeps exact ammunition identity");
+        checkAmmo(durableAmmo.value.ammoState.paidNormal == 7 && durableAmmo.value.ammoState.paidChamber == 0,
+            "funded counters survive native payload");
+        ammoItem.value.ammoState.reserve = 0;
+        var rebuilt:BaseItem = new BaseItem(durableAmmo.name, ObjectUtil.clone(durableAmmo.value), durableAmmo.lastUpdate);
+        checkAmmo(durableAmmo.value.ammoState.reserve == 4 && rebuilt.value.ammoState.ghost == 2
+            && rebuilt.value.ammoState.reserve == 4,"saved ammo is detached from subsequent live item mutation");
+        trace("WeaponAmmoOwnedSolPayload " + new LiteJSON().stringifySafe(durableAmmo));
+        trace("WeaponAmmoOwnedSolTest Tests Passed: "+ammoPassed);
+        trace("WeaponAmmoOwnedSolTest Tests Failed: "+ammoFailed);
         trace("SettingsOwnedSolTest slot: "+cfg.slot);
         trace("SettingsOwnedSolTest receipt: "+new LiteJSON().stringifySafe(so.data.test.ext.settingsReceipt));
         trace("SettingsOwnedSolTest Tests Passed: "+passed);trace("SettingsOwnedSolTest Tests Failed: "+failed);

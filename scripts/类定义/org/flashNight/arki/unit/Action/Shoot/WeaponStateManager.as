@@ -1,4 +1,6 @@
-﻿import org.flashNight.arki.item.*;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+import org.flashNight.arki.item.*;
+import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 
 /**
  * WeaponStateManager.as
@@ -61,6 +63,8 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      * 每次进行状态判断前调用此方法
      */
     public function updateState():Void {
+        WeaponAmmoRuntime.ensure(parentRef, mainWeaponType);
+        WeaponAmmoRuntime.ensure(parentRef, subWeaponType);
         // 获取当前射击次数
         mainNumber = parentRef[mainShotCountIndex].value.shot;
         subNumber = parentRef[subShotCountIndex].value.shot;
@@ -69,8 +73,9 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         _mainIsEmpty = mainNumber >= parentRef[mainMagCapacity];
         _subIsEmpty = subNumber >= parentRef[subMagCapacity];
         
-        _mainIsFull = mainNumber == 0;
-        _subIsFull = subNumber == 0;
+        var allowGhost:Boolean = parentRef === TargetCacheManager.findHero();
+        _mainIsFull = !WeaponAmmoRuntime.canReload(parentRef, mainWeaponType, allowGhost);
+        _subIsFull = !WeaponAmmoRuntime.canReload(parentRef, subWeaponType, allowGhost);
 
         // _root.发布消息(parentRef[mainWeaponType].name, parentRef[subWeaponType].name, parentRef[mainWeaponType].name == parentRef[subWeaponType].name)
 
@@ -173,7 +178,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      */
     public function canFinishMainHandReload(remainingMainMag:Number, remainingSubMag:Number, hasImpactChain:Boolean):Boolean {
         // 无可用弹匣：直接结束
-        if (remainingSubMag == 0) {
+        if (remainingSubMag == 0 && !(WeaponAmmoRuntime.reserve(parentRef, subWeaponType) > 0)) {
             return true;
         }
 
@@ -196,7 +201,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
      */
     public function canFinishSubHandReload(remainingMainMag:Number, remainingSubMag:Number, hasImpactChain:Boolean):Boolean {
         // 无可用弹匣：直接结束
-        if (remainingMainMag == 0) {
+        if (remainingMainMag == 0 && !(WeaponAmmoRuntime.reserve(parentRef, mainWeaponType) > 0)) {
             return true;
         }
 
@@ -282,10 +287,10 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
         if (halfReloadEnabled) {
             // 先检查主手是否需要且可以换弹
             if (!_mainIsFull) {
-                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                isMainReloadable = (WeaponAmmoRuntime.reserve(parentRef, mainWeaponType) > 0 || !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1)));
                 if (isMainReloadable) {
                     // 检查是否应该优先主手
-                    isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                    isSubReloadable = (WeaponAmmoRuntime.reserve(parentRef, subWeaponType) > 0 || !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1)));
                     if (shouldReloadMainFirst(isMainReloadable, isSubReloadable)) {
                         return 1; // 主手换弹
                     }
@@ -295,7 +300,7 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
             // 检查副手是否需要且可以换弹
             if (!_subIsFull) {
                 if (!isSubReloadable) {
-                    isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                    isSubReloadable = (WeaponAmmoRuntime.reserve(parentRef, subWeaponType) > 0 || !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1)));
                 }
                 if (isSubReloadable) {
                     return 2; // 副手换弹
@@ -310,14 +315,14 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
             // 非半换弹：优先换空弹的那只手，其次允许补弹
             // 优先换空弹的那只手
             if (_mainIsEmpty && !_mainIsFull) {
-                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                isMainReloadable = (WeaponAmmoRuntime.reserve(parentRef, mainWeaponType) > 0 || !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1)));
                 if (isMainReloadable) {
                     return 1; // 主手换弹
                 }
             }
 
             if (_subIsEmpty && !_subIsFull) {
-                isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                isSubReloadable = (WeaponAmmoRuntime.reserve(parentRef, subWeaponType) > 0 || !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1)));
                 if (isSubReloadable) {
                     return 2; // 副手换弹
                 }
@@ -325,14 +330,14 @@ class org.flashNight.arki.unit.Action.Shoot.WeaponStateManager {
 
             // 如果都没空但未满，检查是否可以补弹
             if (!_mainIsFull) {
-                isMainReloadable = !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1));
+                isMainReloadable = (WeaponAmmoRuntime.reserve(parentRef, mainWeaponType) > 0 || !!(ItemUtil.singleContain(target.主手使用弹匣名称, 1)));
                 if (isMainReloadable) {
                     return 1;
                 }
             }
 
             if (!_subIsFull) {
-                isSubReloadable = !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1));
+                isSubReloadable = (WeaponAmmoRuntime.reserve(parentRef, subWeaponType) > 0 || !!(ItemUtil.singleContain(target.副手使用弹匣名称, 1)));
                 if (isSubReloadable) {
                     return 2;
                 }

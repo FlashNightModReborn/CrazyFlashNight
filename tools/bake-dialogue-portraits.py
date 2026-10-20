@@ -878,10 +878,19 @@ def bake_external(
     selected_keys: set[str] | None = None,
     selected_expressions: set[str] | None = None,
 ) -> None:
+    # Shop portraits consume other helpers from this module, never this path.
+    from dialogue_portrait_postprocess import recipes, process_frame, provenance, POLICY
     project_root = Path(args.project_root)
     ffdec = Path(args.ffdec)
     portrait_dir = project_root / "flashswf" / "portraits"
     lookup = swf_lookup(portrait_dir)
+    effects = recipes(project_root)
+    if effects:
+        manifest["postprocessInputs"] = [
+            {"path": source.relative_to(project_root).as_posix(),
+             "sha256": hashlib.sha256(source.read_bytes()).hexdigest()}
+            for source in (project_root / "tools/dialogue_portrait_postprocess.py", project_root / POLICY)
+        ]
     names = read_external_names(portrait_dir / "list.xml")
     if selected_keys is not None:
         names = [name for name in names if external_name_selected(name, lookup, selected_keys)]
@@ -890,10 +899,15 @@ def bake_external(
     tmp_base = Path(args.tmp_dir) / "external"
     for index, name in enumerate(names, 1):
         swf = lookup.get(name) or lookup.get(name.lower())
-        if not swf or not swf.exists():
+        key = swf.stem if swf else name
+        effect = effects.get(key)
+        if effect:
+            swf = lookup.get(effect["source"]) or lookup.get(effect["source"].lower())
+            if not swf or not swf.is_file():
+                raise RuntimeError("Missing original portrait for postprocess: " + key)
+        elif not swf or not swf.exists():
             report["missingExternalSwf"].append(name)
             continue
-        key = swf.stem
         print(f"[external {index}/{len(names)}] {key}")
         stem_id = stable_dir("external", key)
         xml_path = tmp_base / stem_id / "source.xml"
@@ -977,11 +991,16 @@ def bake_external(
             "defaultExpression": DEFAULT_EXPRESSION,
             "expressions": {},
         }
+        if effect:
+            entry["postprocess"] = provenance(effect, swf, project_root)
         for expression, frame_no in sorted(labels.items(), key=lambda item: (item[1], item[0])):
             frame_path = frames_dir / f"{frame_no}.png"
             if not frame_path.exists():
                 report["missingFrames"].append({"key": key, "expression": expression, "frame": frame_no})
                 continue
+            if effect:
+                frame_path = process_frame(frame_path, tmp_base / stem_id / "processed" / frame_path.name,
+                                           effect, args.zoom)
             entry["expressions"][expression] = copy_asset(
                 frame_path,
                 Path(args.output_dir),

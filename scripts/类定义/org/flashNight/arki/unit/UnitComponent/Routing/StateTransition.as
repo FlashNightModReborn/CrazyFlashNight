@@ -32,6 +32,8 @@ class org.flashNight.arki.unit.UnitComponent.Routing.StateTransition {
             return;
         }
 
+        if (plan.transition && self.man.换弹标签)
+            org.flashNight.arki.unit.Action.Shoot.ReloadManager.cancelReload(self.man, false);
         self.攻击模式 = plan.attackMode;
         self.旧状态   = plan.oldState;
 

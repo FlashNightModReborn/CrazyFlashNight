@@ -49,6 +49,10 @@ namespace CF7Launcher.Tasks
         /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 不再被吞），
         /// 且 widget 的 advance 输入被丢弃。默认 null = 未接线，既有行为不变。</summary>
         internal Func<bool> InterjectInputFocused;
+        /// <summary>插话输入面板展开且可输入（输入层接线后由宿主注册探针）。
+        /// true 时推进键被钩子吞掉但不推进对话；聚焦态由上层文字输入态先行放行给 TextBox。
+        /// 收起/隐藏/禁用时保持既有推进逻辑。默认 null = 未接线。</summary>
+        internal Func<bool> InterjectInputExpanded;
         /// <summary>任务插话上下文组装（P4）：(dialogueTaskId, dialogueKind) → {completed, upcoming}
         /// 或 null。只在 task_pre/task_post 组使用；未注册或返回 null 时任务插话 fail-closed
         /// （输入保持 Hidden，不显示也不报错）。</summary>
@@ -736,8 +740,14 @@ namespace CF7Launcher.Tasks
             // 文字输入期间不抢占任何对话键：Enter 归输入框（IME 组词确认），Esc 不关对话。
             if (InterjectInputActive) return null;
             bool close = virtualKey == 27;
+            bool panelActive = !close && InterjectInputExpandedActive;
+            // 面板展开且可输入时连空格一起吞掉（玩家不确定互动键是空格还是 E）；
+            // 聚焦时钩子已在文字输入态放行，空格照常进输入框。
+            if (panelActive && virtualKey == 32) return delegate { };
             int advanceKey = _bookSession != null ? _bookSession.AdvanceKey : _advanceKey;
             if (!close && virtualKey != 13 && virtualKey != advanceKey) return null;
+            // 输入面板展开且可输入：推进键只吞掉，不触发下一条。
+            if (panelActive) return delegate { };
             return () =>
             {
                 try
@@ -774,6 +784,21 @@ namespace CF7Launcher.Tasks
                 catch (Exception ex)
                 {
                     LogManager.Log("[NativeDialogue] interject focus probe: " + ex.Message);
+                    return false;
+                }
+            }
+        }
+
+        private bool InterjectInputExpandedActive
+        {
+            get
+            {
+                Func<bool> probe = InterjectInputExpanded;
+                if (probe == null) return false;
+                try { return probe(); }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[NativeDialogue] interject input probe: " + ex.Message);
                     return false;
                 }
             }

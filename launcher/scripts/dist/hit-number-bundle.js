@@ -104,8 +104,9 @@ var GameInput;
     GameInput.EV_SHIFT_FORWARD = 15;
     GameInput.EV_SHIFT_BACK = 16;
     GameInput.EV_SHIFT_DOWN = 17;
+    GameInput.EV_SHIFT_UP_FORWARD = 18;
     // 字母表大小（DFA 数组分配用）
-    GameInput.ALPHABET_SIZE = 18;
+    GameInput.ALPHABET_SIZE = 19;
     // 事件名称（调试 + 可视化提示）
     const _names = [
         "NONE",
@@ -125,7 +126,8 @@ var GameInput;
         "Shift", // SHIFT_HOLD
         "Shift+→", // SHIFT_FORWARD
         "Shift+←", // SHIFT_BACK
-        "Shift+↓" // SHIFT_DOWN
+        "Shift+↓", // SHIFT_DOWN
+        "Shift+↑→" // SHIFT_UP_FORWARD
     ];
     function eventName(id) {
         return (id >= 0 && id < _names.length) ? _names[id] : "?";
@@ -425,6 +427,8 @@ var GameInput;
                     buf.push(GameInput.EV_SHIFT_BACK);
                 if (down)
                     buf.push(GameInput.EV_SHIFT_DOWN);
+                if (up && holdForward)
+                    buf.push(GameInput.EV_SHIFT_UP_FORWARD);
             }
             // === 双击检测通道1: doubleTapDir 边沿（KeyManager 毫秒级）===
             const prevDir = this._prevDoubleTapDir;

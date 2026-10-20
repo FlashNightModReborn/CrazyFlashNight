@@ -174,6 +174,8 @@ namespace CF7Launcher.Tasks
         private readonly Dictionary<NativeDialogueBookSession.Line, InsertedRef> _insertedLines =
             new Dictionary<NativeDialogueBookSession.Line, InsertedRef>();
         private bool _playerLinePlaying;
+        /// <summary>当前上屏行是玩家台词（含打字完成、仍停在玩家行等“下一条”）。此期间输入框整条隐藏。</summary>
+        private bool _playerLineOnScreen;
         private bool _aiLineShown;
         private bool _turnActive;
         private int _turnTailIndex = -1;
@@ -188,6 +190,8 @@ namespace CF7Launcher.Tasks
         private bool _resumeAfterFailure;
         /// <summary>本轮收到 status(drafting/searching)：输入显示“（正在准备…）”，line/done/error 清掉。</summary>
         private bool _preparing;
+        /// <summary>本轮最近一次阶段状态文案；空＝尚无状态，占位显示默认「思索中」。</summary>
+        private string _turnStatusText;
         /// <summary>本轮开始时刻（总时长上限基准）。</summary>
         private DateTime _turnStartedAt;
         /// <summary>最近一次 SSE 事件时刻（无事件超时基准）。</summary>
@@ -302,6 +306,8 @@ namespace CF7Launcher.Tasks
             _finalizePending = false;
             _resumeAfterFailure = false;
             _preparing = false;
+            _turnStatusText = null;
+            _playerLineOnScreen = false;
             DisarmWatchdog();
             session.LinePresented = OnLinePresented;
             session.Closing = OnSessionClosing;
@@ -325,6 +331,7 @@ namespace CF7Launcher.Tasks
             _dialogueInstanceId = null;
             _npcName = null;
             _preparing = false;
+            _turnStatusText = null;
             _taskMode = false;
             _taskContext = null;
             _muted = false;
@@ -334,6 +341,7 @@ namespace CF7Launcher.Tasks
             _planApplied = false;
             _abandonedOriginalTail = false;
             _appliedRemoves.Clear();
+            _playerLineOnScreen = false;
             DisarmWatchdog();
             _queued.Clear();
             _insertedLines.Clear();
@@ -353,6 +361,7 @@ namespace CF7Launcher.Tasks
             DisarmWatchdog();
             _turnActive = false;
             _preparing = false;
+            _turnStatusText = null;
             _muted = false;
             _needsConfig = false;
             _pendingPlan = null;
@@ -362,6 +371,7 @@ namespace CF7Launcher.Tasks
             _insertedLines.Clear();
             _turnTailIndex = -1;
             _playerLinePlaying = false;
+            _playerLineOnScreen = false;
             SetInputState(DialogueInterjectInputState.Hidden);
             // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
             Finalize("closing:" + (reason ?? ""));
@@ -401,6 +411,7 @@ namespace CF7Launcher.Tasks
             if (line.IsPlaceholder)
             {
                 // 等待模型返回：不记入转录、不推进说话人；输入保持“准备中/等待”。
+                _playerLineOnScreen = false;
                 SetInputState(IdleState());
                 return;
             }
@@ -436,9 +447,11 @@ namespace CF7Launcher.Tasks
             if (isPc)
             {
                 _playerLinePlaying = true;
+                _playerLineOnScreen = true;
                 SetInputState(DialogueInterjectInputState.Hidden);
                 return;
             }
+            _playerLineOnScreen = false;
             if (isLocal) _aiLineShown = true;
             if (isEdit) _aiLineShown = true;
             if (!_groupAllowsInterject) return;
@@ -550,6 +563,7 @@ namespace CF7Launcher.Tasks
             _turnActive = true;
             _aiLineShown = false;
             _preparing = false;
+            _turnStatusText = null;
             _queued.Clear();
             _insertedLines.Clear();
             LastFailure = null;
@@ -853,7 +867,7 @@ namespace CF7Launcher.Tasks
             {
                 Name = template != null ? template.Name : (_npcName ?? ""),
                 Title = template != null ? template.Title : "",
-                Text = "思索中……",
+                Text = string.IsNullOrEmpty(_turnStatusText) ? "思索中……" : _turnStatusText,
                 PortraitKey = template != null ? template.PortraitKey : "",
                 Expression = template != null && !string.IsNullOrEmpty(template.Expression)
                     ? template.Expression : DefaultEmotion,
@@ -1020,21 +1034,42 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>
-        /// status（协议 5.2，可选）：drafting/searching 表示草案/检索准备中 →
-        /// 输入显示但禁用“（正在准备…）”。line/done/error 由各自路径清掉该标记并回到既有状态；
-        /// 其余 stage（connecting/thinking/waiting）不改输入态，避免自造状态。
-        /// 后端不提供这两个 stage 时输入保持 Locked“……”即可。
+        /// status（协议 5.2，可选）：已知 stage 一律刷新等待占位文案（[思考中]/[查资料中]…）；
+        /// drafting/searching 另外表示草案/检索准备中 → 输入显示但禁用“（正在准备…）”。
+        /// line/done/error 由各自路径清掉该标记并回到既有状态；其余 stage 不改输入态。
         /// </summary>
         private void ApplyStatus(DialogueInterjectEvent evt)
         {
-            if (!_turnActive || _closing || !_groupAllowsInterject) return;
-            if (_muted) return;               // 禁言优先于“正在准备…”，不覆盖整组锁
+            if (!_turnActive || _closing) return;
             string stage = evt.Text("stage");
+            string label = StatusLabel(stage);
+            if (label.Length > 0)
+            {
+                _turnStatusText = label;
+                // 占位可能已经上屏：原位换文案；还没上屏时由 BuildEndHoldLine 取同一份。
+                if (_session != null) _session.UpdatePlaceholderText(label);
+            }
+            if (!_groupAllowsInterject) return;
+            if (_muted) return;               // 禁言优先于“正在准备…”，不覆盖整组锁
             if (!string.Equals(stage, "drafting", StringComparison.Ordinal)
                 && !string.Equals(stage, "searching", StringComparison.Ordinal)) return;
             _preparing = true;
             if (_playerLinePlaying) return;   // $PC 播放期间保持 Hidden，播完再显示“正在准备…”
             SetInputState(DialogueInterjectInputState.Preparing);
+        }
+
+        /// <summary>status.stage → 占位文案；与终端阶段用词保持一致。</summary>
+        private static string StatusLabel(string stage)
+        {
+            switch (stage)
+            {
+                case "connecting": return "连接中";
+                case "thinking": return "思考中";
+                case "searching": return "查资料中";
+                case "drafting": return "拟定委托中";
+                case "waiting": return "等待中";
+                default: return "";
+            }
         }
 
         // ════════════════ 任务模式：mute / plan ════════════════
@@ -1769,6 +1804,10 @@ namespace CF7Launcher.Tasks
 
         private void SetInputState(DialogueInterjectInputState state)
         {
+            // 玩家台词上屏期间（含打字完成、仍停在玩家行等“下一条”）整条输入框隐藏，
+            // 不论展开与否；只有下一句非玩家台词上屏后才恢复。
+            if (_playerLineOnScreen && state != DialogueInterjectInputState.Hidden)
+                state = DialogueInterjectInputState.Hidden;
             if (_inputState == state) return;
             _inputState = state;
             Action<DialogueInterjectInputState> handler = InputStateChanged;

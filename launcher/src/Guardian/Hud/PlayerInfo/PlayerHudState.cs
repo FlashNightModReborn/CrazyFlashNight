@@ -25,7 +25,10 @@ internal sealed record PlayerHudLoadout(long Revision, long DrugRevision, int Ba
     string SwitchKey, PlayerHudSkill[] Skills, PlayerHudDrug[] Drugs);
 internal sealed record PlayerHudCombat(string Mode, string[] Ammo, bool WeaponVisible,
     string WeaponName, string WeaponKey, double WeaponMp, double WeaponCooldown,
-    string WeaponIconKey = "", string WeaponItemIconKey = "", string WeaponSourceItem = "");
+    string WeaponIconKey = "", string WeaponItemIconKey = "", string WeaponSourceItem = "",
+    PlayerHudAmmoDetail?[]? AmmoDetails = null);
+internal sealed record PlayerHudAmmoDetail(int Capacity, int Loaded, int Normal, int Chamber,
+    int Ghost, int Reward, int Reserve, double Spread, int Overflow);
 internal readonly record struct PlayerHudCooldown(bool Ready, double Step, double Total)
 {
     internal double Fraction => Ready ? 1 : Total > 0 ? Math.Clamp(Step / Total, 0, 1) : 0;
@@ -201,14 +204,38 @@ internal sealed class PlayerHudState
 
     private static PlayerHudCombat ReadCombat(JToken token)
     {
-        var o = Object(token); Keys(o, "mode", "ammo", "weapon");
+        var o = Object(token); Keys(o, "mode", "ammo", "weapon", "ammoDetails");
         var mode = Text(o["mode"], 32);
         if (!new[] { "", "手枪", "手枪2", "长枪", "兵器", "手雷", "空手", "双枪", "长枪副武器" }.Contains(mode)) throw new FormatException("mode");
         var ammo = Array(o["ammo"], 4).Select(t => Text(t, 64)).ToArray();
         var weapon = Object(o["weapon"]); Keys(weapon, "visible", "name", "mp", "cooldownMs", "key", "iconKey", "itemIconKey", "sourceItem");
         return new(mode, ammo, Boolean(weapon["visible"]), Text(weapon["name"], 128), Text(weapon["key"], 32),
             Number(weapon["mp"]), Number(weapon["cooldownMs"]), OptionalText(weapon["iconKey"], 128),
-            OptionalText(weapon["itemIconKey"], 128), OptionalText(weapon["sourceItem"], 128));
+            OptionalText(weapon["itemIconKey"], 128), OptionalText(weapon["sourceItem"], 128), ReadAmmoDetails(o["ammoDetails"]));
+    }
+
+    private static PlayerHudAmmoDetail?[]? ReadAmmoDetails(JToken? token)
+    {
+        if (token == null) return null;
+        return Array(token, 2).Select(t =>
+        {
+            if (t.Type == JTokenType.Null) return null;
+            var o = Object(t);
+            Keys(o, "capacity", "loaded", "normal", "chamber", "ghost", "reward", "reserve", "spread", "overflow");
+            int Count(string key)
+            {
+                var n = Number(o[key]);
+                if (n < 0 || n > 1_000_000 || n != Math.Floor(n)) throw new FormatException("ammo " + key);
+                return (int)n;
+            }
+            var detail = new PlayerHudAmmoDetail(Count("capacity"), Count("loaded"), Count("normal"),
+                Count("chamber"), Count("ghost"), Count("reward"), Count("reserve"), Number(o["spread"]), Count("overflow"));
+            if (detail.Capacity == 0 || detail.Normal > detail.Capacity || detail.Chamber > 2 || detail.Ghost > 2
+                || detail.Reward > detail.Capacity || detail.Spread < 1 || detail.Spread > 3
+                || detail.Loaded != detail.Normal + detail.Chamber + detail.Ghost + detail.Reward
+                || detail.Overflow != Math.Max(0, detail.Loaded - detail.Capacity)) throw new FormatException("ammo totals");
+            return detail;
+        }).ToArray();
     }
 
     private static PlayerHudLoadout ReadLoadout(JToken token)

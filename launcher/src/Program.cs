@@ -2902,6 +2902,11 @@ class Program
             dialogueInterjectInput = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder(
                 form, dialogueWidget, interjectOverlay);
             interjectOverlay.InputFocusChanged += focused => form.SetTextInputActive(focused);
+            // 输入面板展开且可输入：推进键只吞掉、不推进；聚焦时钩子已按文字输入态放行给 TextBox。
+            nativeDialogueTask.InterjectInputFocused = () => interjectOverlay.IsTextInputActive();
+            nativeDialogueTask.InterjectInputExpanded = () =>
+                interjectOverlay.Visible && interjectOverlay.IsExpanded
+                && interjectOverlay.IsInputEnabled;
             dialogueInterject = new CF7Launcher.Tasks.NativeDialogueInterjectController(
                 nativeDialogueTask, dialogueWidget,
                 action =>

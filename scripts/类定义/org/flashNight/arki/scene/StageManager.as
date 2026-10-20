@@ -985,6 +985,7 @@ class org.flashNight.arki.scene.StageManager {
     public function debugClearStage():Boolean {
         if (!isActive || isFinished || isFailed || stageMode == "warlord") return false;
         org.flashNight.arki.scene.BaseSiegeController.prepareDebugClear(this, gameworld);
+        org.flashNight.arki.scene.NewcomerRescueController.prepareDebugClear(this, gameworld);
         if (spawner != null && spawner.isActive) {
             spawner.currentWave = Math.max(0, spawner.totalWave - 1);
             spawner.isFinished = true;
@@ -998,6 +999,7 @@ class org.flashNight.arki.scene.StageManager {
         if(!isActive || isFinished || isFailed) return;
         if (org.flashNight.arki.scene.LeeAssaultService.interceptClear(this, gameworld)) return;
         if (org.flashNight.arki.scene.BaseSiegeController.interceptClear(this, gameworld)) return;
+        if (org.flashNight.arki.scene.NewcomerRescueController.interceptClear(this, gameworld)) return;
         if (stageMode == "warlord") {
             trace("[StageManager] Warlord clearStage rejected; typed result required");
             return;

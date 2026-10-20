@@ -99,7 +99,7 @@ internal sealed class PlayerHudController : IDisposable
                 _adoptedGeneration = packet.Generation;
         }
         if (CanInteract && _poiseRequestGeneration != Generation &&
-            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true }))
+            Send(new JObject { ["action"] = "playerHudSync", ["poiseDetails"] = true, ["poiseVisuals"] = true, ["shieldDetails"] = true, ["resourceHints"] = true, ["weaponVisuals"] = true, ["ammoDetails"] = true }))
             _poiseRequestGeneration = Generation;
         if (Profiler != null && CanInteract && _profileGeneration != Generation &&
             Send(new JObject { ["action"] = "playerHudProfile", ["enabled"] = true, ["profileId"] = Profiler.Id }))
@@ -170,7 +170,7 @@ internal sealed class PlayerHudController : IDisposable
     {
         HideTooltip();
         if (!_connected() || target.ConnectionGeneration != Generation || _adoptedGeneration != Generation || State.Snapshot?.Epoch != target.Epoch) return;
-        if(target.Kind=="resources")
+        if(target.Kind is "resources" or "ammo")
         {
             _resourceHover=true;ResourceTooltipRequested?.Invoke(target);return;
         }

@@ -404,7 +404,8 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         {
             DrawArt(g, "ammo-round", x - 14.45f, y + 1.95f);
             DrawArt(g, "ammo-magazine", x - 14.3f, y + 25.35f);
-            DrawAmmo(g,AmmoValue(combat.Ammo[0]),text,new RectangleF(x-1.45f,y-1.45f,49,14),false);
+            using var ammoInk = new SolidBrush(AmmoColor(combat.AmmoDetails?[0]));
+            DrawAmmo(g,AmmoValue(combat.Ammo[0]),ammoInk,new RectangleF(x-1.45f,y-1.45f,49,14),false);
             DrawAmmo(g,AmmoValue(combat.Ammo[1]),text,new RectangleF(x-1.6f,y+22,49,14),false);
         }
         else if (mode >= 6)
@@ -414,8 +415,9 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
             {
                 DrawArt(g, "ammo-round", x - 23.6f, y - 5.8f + row * 24.5f);
                 DrawArt(g, "ammo-magazine", x - 24.1f, y + 6.2f + row * 24.5f);
-                DrawAmmo(g,Ammo(combat.Ammo[row*2],combat.Ammo[row*2+1]),text,
-                    new RectangleF(x-10.1f,y-3+row*24.55f,81.25f,15.55f),true);
+                using var ammoInk = new SolidBrush(AmmoColor(combat.AmmoDetails?[row]));
+                var caption = Ammo(combat.Ammo[row*2],combat.Ammo[row*2+1]);
+                DrawAmmo(g,caption,ammoInk,new RectangleF(x-10.1f,y-3+row*24.55f,81.25f,15.55f),true);
             }
         }
         else if (mode == 4) DrawAmmo(g,AmmoValue(combat.Ammo[1]),text,new RectangleF(x+1.2f,y+17.65f,46,14),false);
@@ -425,6 +427,15 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
             g.DrawString("+++++++++++++++++", tiny, text, x - 9.25f + (mode == 4 ? 9.2f : -1.5f), y + 5.6f);
         }
     }
+
+    // Keep the existing single/dual numeric layout; source counts and paid remainder live in hover.
+    internal static Color AmmoColor(PlayerHudAmmoDetail? detail) => detail switch
+    {
+        { Ghost: > 0 } => Color.FromArgb(255,204,112),
+        { Reward: > 0 } => Color.FromArgb(202,173,255),
+        { Chamber: > 0 } => Color.FromArgb(155,224,233),
+        _ => Color.FromArgb(204,204,204)
+    };
 
     private void DrawBankDots(Graphics g, int bank)
     {
@@ -543,6 +554,15 @@ internal sealed class PlayerHudBottomWidget : PlayerHudWidgetBase
         for (var i = 0; i < 4; i++)
             if (s.Loadout.Drugs[i].Count > 0 && DrugRect(i).Contains(point)) return Target("drug", s.Loadout.Drugs[i].Slot, s.Loadout.Drugs[i].Name, s.Loadout.DrugRevision, DrugRect(i));
         if (HasWeaponSlot(s.Combat) && WeaponRect.Contains(point)) return Target("weapon", 0, s.Combat.WeaponName, 0, WeaponRect);
+        if (s.Combat.AmmoDetails is { } details)
+        {
+            var dual = s.Combat.Mode is "双枪" or "长枪副武器";
+            for (var i=0;i<(dual?2:1);i++)
+            {
+                var area = dual ? new RectangleF(482,515+i*24.55f,96,23) : new RectangleF(488,518,68,46);
+                if (details[i] != null && area.Contains(point)) return Target("ammo",i,"",0,area);
+            }
+        }
         return null;
     }
     public override bool TryHitTest(Point screenPt) => Hit(screenPt) != null;

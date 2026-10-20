@@ -323,7 +323,7 @@ class org.flashNight.arki.bullet.Factory.BulletFactory {
     /** 保留原整数抽样与 RNG 消耗；小数倍率只缩放结果，未盖戳的旁路仍用原角度。 */
     public static function sampleScatterOffset(Obj:Object):Number {
         var scale:Number = Obj.武器扩散倍率;
-        if (!(scale > 0) || scale > 1) scale = 1;
+        if (!(scale > 0) || scale > 3) scale = 1;
         return LinearCongruentialEngine.getInstance().randomOffset(Obj.子弹散射度) * scale;
     }
 

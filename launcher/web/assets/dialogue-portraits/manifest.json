@@ -1,6 +1,6 @@
 {
   "schema": "cf7-dialogue-portraits-v2",
-  "generatedAt": "2026-10-01T09:33:39+0800",
+  "generatedAt": "2026-10-19T10:45:36.451744+00:00",
   "zoom": 2,
   "baseSize": {
     "width": 2048,
@@ -3526,6 +3526,38 @@
           }
         }
       }
+    },
+    "前治安官（无线电）": {
+      "key": "前治安官（无线电）",
+      "aliases": [],
+      "source": "external-swf",
+      "sourcePath": "flashswf/portraits/前治安官.swf",
+      "defaultExpression": "普通",
+      "expressions": {
+        "普通": {
+          "uri": "external/p_57d5136cc491/e_7cda072d452b.webp",
+          "width": 2048,
+          "height": 1152,
+          "frame": 1,
+          "sha256": "1fb16d2570492442a344229eab1aa818f0fc26fdc27abd9936dcecf4904c7161",
+          "bytes": 297386,
+          "format": "webp",
+          "bounds": {
+            "x": 163,
+            "y": 150,
+            "width": 716,
+            "height": 675
+          }
+        }
+      },
+      "postprocess": {
+        "algorithm": "radio-color-alpha-scan-glow-v1",
+        "profile": "radio",
+        "profileSha256": "469fa7aa70c121bbbf7eafd673d6c967e40a84d37000999ac26c190a5b2bcfa4",
+        "sourceKey": "前治安官",
+        "sourcePath": "flashswf/portraits/前治安官.swf",
+        "sourceSha256": "2b929fdd4a6717cf7e97204fa8ddd05cf31b657dfccac2ffa1c6caab9cd89984"
+      }
     }
   },
   "aliases": {
@@ -3579,8 +3611,8 @@
     "小f": "小F",
     "RESEARCHER": "researcher",
     "a兵团士兵": "A兵团士兵",
-    "Lee": "LEE",
     "lee": "LEE",
+    "Lee": "LEE",
     "LOCHAN": "lochan",
     "prophet": "PROPHET",
     "prophet2": "PROPHET2",
@@ -3590,7 +3622,7 @@
   "generatorInputs": [
     {
       "path": "tools/bake-dialogue-portraits.py",
-      "sha256": "475c26177272db399e03dfe0819d5f26d772d7be7eca175b99540626d1e890e5"
+      "sha256": "78707ccce5e7a686fb4d22352874aeeca7cb33e30e2b50015c4bdd17f6f6fa6e"
     },
     {
       "path": "tools/dialogue_svg_fallback.py",
@@ -3603,6 +3635,24 @@
     {
       "path": "tools/dialogue-portrait-source-review/requirements.txt",
       "sha256": "96f34fac52b02291bc737b0a6e254aa8cab79664616103ee4d634ae091069211"
+    },
+    {
+      "path": "tools/dialogue_portrait_postprocess.py",
+      "sha256": "a00205bceb068ead1483f8f91cef87feea9ab8fe8221cd21a1df6de6eec05813"
+    },
+    {
+      "path": "flashswf/portraits/postprocess.json",
+      "sha256": "1ec639b70309dd5df8a5a81ebe24e58ea68a03465edd2a15d92583cf44c66294"
+    }
+  ],
+  "postprocessInputs": [
+    {
+      "path": "tools/dialogue_portrait_postprocess.py",
+      "sha256": "a00205bceb068ead1483f8f91cef87feea9ab8fe8221cd21a1df6de6eec05813"
+    },
+    {
+      "path": "flashswf/portraits/postprocess.json",
+      "sha256": "1ec639b70309dd5df8a5a81ebe24e58ea68a03465edd2a15d92583cf44c66294"
     }
   ]
 }

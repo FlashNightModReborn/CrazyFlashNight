@@ -301,7 +301,11 @@ class org.flashNight.arki.unit.Action.Regeneration.RegenerationCore {
         var maxAmmo:Number = target[weaponType + "弹匣容量"];
         
         var newShot:Number = Math.max(0, currentShot - value);
-        target[weaponType].value.shot = newShot;
+        var ammoValue:Object = target[weaponType].value;
+        if (ammoValue.ammoState) {
+            org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.setNormal(ammoValue, maxAmmo,
+                org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.normal(ammoValue, maxAmmo) + value);
+        } else ammoValue.shot = newShot;
         
         // 播放装弹效果
         playRegenerationEffect(target, AMMO_REGEN, config);

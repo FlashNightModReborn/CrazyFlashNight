@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" name="IG70002/Clinic/Corpse/Symbol 1182-f0" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="Symbol 1182">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F4FFF" current="true" isSelected="true">
+          <frames><DOMFrame index="0" duration="1" keyMode="9728">
+              <elements>
+                <DOMShape isFloating="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#1B2834" />
+                    </FillStyle>
+                    <FillStyle index="2">
+                      <SolidColor color="#314252" />
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal">
+                        <fill>
+                          <SolidColor />
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge fillStyle1="1" edges="!1051 765|1040 771!1040 771[783 904 488 890!488 890|384 881!384 881[296 869 205 845!205 845|189 841!189 841|182 839!182 839[118 813 67 774!67 774|51 761" />
+                    <Edge fillStyle1="2" edges="!51 761[11 727 3 695" />
+                    <Edge fillStyle1="2" strokeStyle="1" edges="!3 695|0 679!0 679|0 677!0 677[0 567 38 377!38 377[75 198 76 54!76 54|121 52" />
+                    <Edge fillStyle1="1" strokeStyle="1" edges="!121 52|1077 0!1077 0[1126 146 1145 243!1145 243[1170 464 1089 674!1089 674|1051 765" />
+                    <Edge fillStyle0="2" fillStyle1="1" edges="!51 761|48 695!48 695|47 679!47 679|44 615!44 615[124 246 124 143!124 143|121 52" />
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames></DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

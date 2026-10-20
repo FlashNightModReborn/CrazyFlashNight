@@ -1657,12 +1657,14 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
     private static function testTubeReloadConsumesReserveExactlyOnce():Void {
         installMockInventory("主武器弹匣", 1);
         var unit:Object = makeUnit();
+        unit.动作B = false; // 本例验证装填扣费；按住射击现在会按响应式规则取消换弹。
         unit.长枪 = {value:{shot:2, reloadCount:0}};
         unit.长枪弹匣容量 = 5;
-        unit.长枪属性 = {reloadType:"tube", reloadPenalty:50,
+        unit.长枪属性 = {reloadType:"tube", reloadPenalty:50, clipname:"主武器弹匣",
             bullet:"普通", split:1};
         unit.man = makeReloadClip(unit);
         unit.man.perRoundReload = true;
+        unit.man.换弹标签 = true;
         unit.man.reloadFrameControlActive = true;
         unit.man.reloadEndFrame = 74;
         unit.man.reloadLoopBackFrame = 51;
@@ -1674,7 +1676,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
         });
 
         ReloadManager.handleReloadGate(unit.man);
-        assert(unit.长枪.value.shot == 1 && unit.长枪.value.reloadCount == 4,
+        assert(unit.长枪.value.shot == 1 && unit.长枪.value.ammoState.reserve == 4 && unit.长枪.value.reloadCount == 0,
             "tube reload first cycle injects one round from committed pool");
         assert(ItemUtil.getTotal("主武器弹匣") == 0
                 && _root.存档系统.dirtyMark === true,
@@ -1685,7 +1687,7 @@ class org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCoreTest {
             "tube reload publishes reserve loss once when pool is acquired");
 
         ReloadManager.handleReloadGate(unit.man);
-        assert(unit.长枪.value.shot == 0 && unit.长枪.value.reloadCount == 3,
+        assert(unit.长枪.value.shot == 0 && unit.长枪.value.ammoState.reserve == 3 && unit.长枪.value.reloadCount == 0,
             "tube reload later cycle consumes existing pool without another reserve");
         assert(receipts.length == 1,
             "tube reload later cycle does not duplicate loss receipt");

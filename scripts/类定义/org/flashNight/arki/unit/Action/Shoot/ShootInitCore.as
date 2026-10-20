@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.*;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+import org.flashNight.arki.item.*;
 import org.flashNight.arki.unit.Action.Shoot.WeaponStateManager;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
@@ -53,6 +54,11 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             return;
         }
         
+        if (config.isDualGun) {
+            WeaponAmmoRuntime.ensure(parentRef, "手枪");
+            WeaponAmmoRuntime.ensure(parentRef, "手枪2");
+        } else WeaponAmmoRuntime.ensure(parentRef, config.weaponType);
+
         // 绑定核心函数到目标对象，传入必要的引用
         _bindCoreFunctions(self, parentRef, _root);
         
@@ -91,6 +97,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         };
 
         target.开始副武器射击 = function() {
+            if (!ReloadManager.tryCancelForFire(target, parentRef, "长枪副武器")) return;
             LongGunSubWeaponCore.requestShoot(parentRef);
         };
         
@@ -108,6 +115,7 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
         
         // ReloadManager 相关函数
         target.开始换弹 = function() {
+            if (ReloadManager.handleReloadInput(target, parentRef)) return;
             // 清理射击循环/连射链/半自动锁等帧计时器任务，
             // 防止换弹期间射击任务继续抢时间轴导致 finishReload 不执行
             ShootCore.cleanup(parentRef);
@@ -266,7 +274,8 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             var that:MovieClip = self;
 
             // 检查是否可以射击
-            if (parentRef[shootingFlagProp] || that.换弹标签) return;
+            if (parentRef[shootingFlagProp]) return;
+            if (that.换弹标签 && !ReloadManager.tryCancelForFire(that, parentRef, weaponType)) return;
 
             // 半自动冷却检查（锁标记存储在 parentRef 上）
             if (parentRef[semiLockProp]) return;
@@ -281,13 +290,17 @@ class org.flashNight.arki.unit.Action.Shoot.ShootInitCore {
             // 2. 如果当前手弹夹空了但无剩余弹匣 → 静默返回，不射击
             // 3. 如果当前手弹夹未空 → 继续射击流程
             if (currentHandIsEmpty) {
+                var otherType:String = weaponType == "手枪" ? "手枪2" : "手枪";
+                var otherAction:Boolean = weaponType == "手枪" ? parentRef.动作B : parentRef.动作A;
+                if (parentRef.__reloadFireHeld && otherAction
+                        && parentRef[otherType + "弹匣容量"] - parentRef[otherType].value.shot > 0) return;
                 // 延迟更新状态：仅在需要判断换弹策略时才刷新
                 stateManager.updateState();
 
                 var isHeroControlled:Boolean = (_root.控制目标 == parentRef._name);
                 var passiveSkills:Object = parentRef.被动技能;
                 var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
-                var rMP:Number = that[remainingMagProp];
+                var rMP:Number = Math.max(that[remainingMagProp], WeaponAmmoRuntime.reserve(parentRef, weaponType) > 0 ? 1 : 0);
 
                 // 使用状态管理器的决策 API 判断是否应该换弹
                 // 枪械师战术换弹：0弹匣但回收池够免费换弹时也允许自动换弹

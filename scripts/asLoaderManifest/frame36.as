@@ -1,5 +1,5 @@
 ﻿// [stage-wrap chunked<70000B] frame36 折叠中间态：帧顶联合头(lint --fold-specific 子集,0 碰撞)
-//   + staged 函数(11 chunk 绕 AVM1 64KB 函数体上限,见 swf-function-sizes 门) + 内联调用。
+//   + staged 函数(13 chunk 绕 AVM1 64KB 函数体上限,见 swf-function-sizes 门) + 内联调用。
 import org.flashNight.arki.bullet.BulletComponent.Collider.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.component.Buff.*;
@@ -65,9 +65,14 @@ _root.__boot.f36_6 = function() {
 _root.__boot.f36_7 = function() {
     #include "../逻辑/单位函数/单位函数_lsy_主角技能.as"
 };
+// 指令注册分开成片，保留兵器→空手→技能顺序，避免单个 AVM1 函数逼近 64KB。
 _root.__boot.f36_8 = function() {
     #include "../逻辑/单位函数/单位函数_雾人_兵器搓招指令.as"
+};
+_root.__boot.f36_12 = function() {
     #include "../逻辑/单位函数/单位函数_雾人_空手搓招指令.as"
+};
+_root.__boot.f36_13 = function() {
     #include "../逻辑/单位函数/单位函数_黑猫_技能搓招指令.as"
 };
 _root.__boot.f36_9 = function() {
@@ -87,6 +92,8 @@ _root.__boot.f36_5();
 _root.__boot.f36_6();
 _root.__boot.f36_7();
 _root.__boot.f36_8();
+_root.__boot.f36_12();
+_root.__boot.f36_13();
 _root.__boot.f36_9();
 _root.__boot.f36_11();
 _root.__boot.f36_10();

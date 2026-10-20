@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.*;
+﻿import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
+import org.flashNight.arki.item.*;
 import org.flashNight.arki.bullet.BulletComponent.Type.*;
 import org.flashNight.arki.unit.UnitComponent.Targetcache.TargetCacheManager;
 import org.flashNight.arki.unit.Action.Shoot.ShootCore;
@@ -157,9 +158,8 @@ import org.flashNight.arki.unit.Action.Shoot.LongGunSubWeaponCore;
  *
  * 四、与tube逐发换弹的关系
  * ----------------------------------------------------------------------------
- * tube类型武器的 reloadCount 用于逐发填充进度，与战术换弹互斥：
- *   - tube类型：reloadCount = 门禁逐发消耗的换弹额度（原有机制）
- *   - 非tube类型：reloadCount = 战术换弹累积的回收弹药（新机制）
+ * tube 付费拆包余额已迁移到 value.ammoState.reserve，跨切图/存档保留。
+ * reloadCount 只保留非 tube 枪械师战术回收语义；迁移旧 tube 时原额一次搬入 reserve。
  * 两者共用同一字段但路径完全分离，不会冲突。
  *
  * 五、触发链路
@@ -202,69 +202,30 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function startReload(target:MovieClip, parentRef:Object, rootRef:Object):Void {
+        if (_root.暂停 || target.换弹标签) return;
         var attackMode:String = parentRef.攻击模式;
-
-        // 如果已在换弹，则直接返回
-        if (target.换弹标签) return;
         LongGunSubWeaponCore.clearReloadRequest(target);
-
-        // 检查是否为玩家控制的角色
-        var isHero:Boolean = (parentRef === TargetCacheManager.findHero());
-
-        // 长枪副武器把 R 视为换弹请求的一部分：主武器满弹时，允许副武器作为候补目标。
-        if (parentRef[attackMode].value.shot == 0) {
-            if (isHero && attackMode == "长枪") {
-                LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
-            }
+        var isHero:Boolean = parentRef === TargetCacheManager.findHero();
+        if (!WeaponAmmoRuntime.canReload(parentRef, attackMode, isHero)) {
+            if (isHero && attackMode == "长枪") LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
             return;
         }
-
-        if (isHero) {
-            // 获取武器属性，检查是否为逐发换弹类型
-            var weaponAttr:Object = parentRef[attackMode + "属性"];
-            var reloadType:String = weaponAttr.reloadType;
-            var canLinkSubweaponReload:Boolean = ReloadManager._canLinkSubweaponReload(parentRef, reloadType);
-
-            // 逐发换弹（tube类型）：有残余换弹值时可以继续换弹，无需弹匣
-            if (reloadType == "tube" && parentRef[attackMode].value.reloadCount > 0) {
-                ReloadManager.bumpReloadGeneration(target);
-                target.换弹标签 = true;
-                target.gotoAndPlay("换弹匣");
-                return;
-            }
-
-            // 检查是否有可用弹匣
-            if (ItemUtil.singleContain(target.使用弹匣名称, 1) != null) {
-                if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
-                ReloadManager.bumpReloadGeneration(target);
-                target.换弹标签 = true;
-                target.gotoAndPlay("换弹匣");
-                return;
-            }
-
-            // 枪械师战术换弹：无弹匣但回收弹药够一整匣，允许免费换弹
-            // tube类型走逐发换弹机制，不参与战术换弹
-            if (reloadType != "tube"
-                && parentRef.被动技能.枪械师
-                && parentRef.被动技能.枪械师.启用
-                && ReloadManager.canTacticalFreeReload(parentRef, attackMode, parentRef.被动技能.枪械师.等级 || 1)) {
-                if (canLinkSubweaponReload) LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
-                ReloadManager.bumpReloadGeneration(target);
-                target.换弹标签 = true;
-                target.gotoAndPlay("换弹匣");
-                return;
-            }
-
-            // 主武器当前不能换弹时，长枪副武器作为 R 键候补换弹目标。
-            if (attackMode == "长枪") {
-                LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
-            }
-        } else {
-            // AI角色直接进入换弹状态
-            ReloadManager.bumpReloadGeneration(target);
-            target.换弹标签 = true;
-            target.gotoAndPlay("换弹匣");
+        var attrs:Object = parentRef[attackMode + "属性"];
+        var gs:Object = parentRef.被动技能.枪械师;
+        var hasStock:Boolean = !isHero || WeaponAmmoRuntime.reserve(parentRef, attackMode) > 0
+            || ItemUtil.singleContain(target.使用弹匣名称, 1) != null;
+        if (!hasStock && attrs.reloadType != "tube" && gs.启用)
+            hasStock = canTacticalFreeReload(parentRef, attackMode, gs.等级 || 1);
+        if (!hasStock) {
+            if (attackMode == "长枪") LongGunSubWeaponCore.startManualReloadAnimation(parentRef);
+            return;
         }
+        WeaponAmmoRuntime.beginReload(parentRef, attackMode);
+        if (isHero && _canLinkSubweaponReload(parentRef, attrs.reloadType))
+            LongGunSubWeaponCore.setLinkedReloadRequest(target, parentRef);
+        bumpReloadGeneration(target);
+        target.换弹标签 = true;
+        target.gotoAndPlay("换弹匣");
     }
 
     private static function _canLinkSubweaponReload(parentRef:Object, reloadType:String):Boolean {
@@ -288,68 +249,66 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param rootRef 根引用 (原_root引用)
      */
     public static function reloadMagazine(target:MovieClip, parentRef:Object, rootRef:Object):Void {
-        ReloadManager.bumpReloadGeneration(target);
-        if (LongGunSubWeaponCore.isManualReloadRequest(target)) {
+        if (_root.暂停 || !target.换弹标签) return;
+        if (target.reloadWeaponValue != null && target.reloadWeaponValue !== parentRef[parentRef.攻击模式].value) {
+            cancelReload(target, true);return;
+        }
+        bumpReloadGeneration(target);
+        var manualSubweapon:Boolean = LongGunSubWeaponCore.isManualReloadRequest(target);
+        if (manualSubweapon) {
             LongGunSubWeaponCore.commitReloadRequest(target, parentRef);
-            ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
-            return;
-        }
-
-        // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
-        if (target.perRoundReload) {
-            return;
-        }
-
-        var attackMode:String = parentRef.攻击模式;
-
-        // 检查是否为玩家控制的角色
-        if (parentRef === TargetCacheManager.findHero()) {
-            var weaponValue:Object = parentRef[attackMode].value;
-            var capacity:Number = parentRef[attackMode + "弹匣容量"];
-
-            // 枪械师战术换弹：回收未用弹药
-            var gs:Object = parentRef.被动技能.枪械师;
-            var hadReloadCount:Boolean = weaponValue.reloadCount != undefined;
-            var reloadCountBefore = weaponValue.reloadCount;
-            if (gs && gs.启用
-                && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1)) {
-                // 免费换弹完成（shot已重置，reloadCount已扣减）
-                LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
-                ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
-                return;
-            }
-
-            // 正常换弹：库存提交成功才允许重置 shot。动画开始时的 contain 只是
-            // 预检，不能代替此处最终提交门，否则陈旧库存会变成免费补弹。
-            if (!ItemUtil.singleSubmit(target.使用弹匣名称, 1, {
-                source:"reload", reason:"magazine_reload", mergeScope:"operation"
-            })) {
-                if (hadReloadCount) weaponValue.reloadCount = reloadCountBefore;
-                else delete weaponValue.reloadCount;
-                target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
-                rootRef.发布消息("弹匣不足，换弹失败！");
-                ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
-                return;
-            }
-            weaponValue.shot = 0;
-
-            // 更新剩余弹匣数
-            target.剩余弹匣数 = ItemUtil.getTotal(target.使用弹匣名称);
-
-            // 检查弹匣是否耗尽
-            if (target.剩余弹匣数 === 0) {
-                rootRef.发布消息("弹匣耗尽！");
-            }
-
-            // 联动提交副武器换弹；弹仓快照由 LongGunSubWeaponCore 统一同步。
-            LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
-
-            // 刷新UI显示
-            ReloadManager.updateAmmoDisplay(target, parentRef, rootRef);
         } else {
-            // AI角色：直接重置射击次数
-            parentRef[attackMode].value.shot = 0;
+            if (target.perRoundReload) return;
+            if (!commitMagazine(parentRef, parentRef.攻击模式, target.使用弹匣名称)) {
+                rootRef.发布消息("弹匣不足，换弹失败！");
+                updateAmmoDisplay(target, parentRef, rootRef);
+                return;
+            }
+            LongGunSubWeaponCore.commitLinkedReloadRequest(target, parentRef);
         }
+        target.剩余弹匣数 = ReloadManager.magazineStock(parentRef, target.使用弹匣名称);
+        updateAmmoDisplay(target, parentRef, rootRef);
+        if (!manualSubweapon) continueGhostReload(target, parentRef, parentRef.攻击模式);
+    }
+
+    /** 原子提交：失败恢复战术回收池，付费余额只在库存提交成功后改变。 */
+    private static function magazineStock(parent:Object, name:String):Number {
+        return parent === TargetCacheManager.findHero() ? ItemUtil.getTotal(name) : 1;
+    }
+
+    public static function commitMagazine(parent:Object, slot:String, magazine:String):Boolean {
+        var state:Object = WeaponAmmoRuntime.ensure(parent, slot);
+        var value:Object = parent[slot].value;
+        if (state && !(WeaponAmmoRuntime.normal(value, state.capacity) < state.capacity)) return true;
+        var isHero:Boolean = parent === TargetCacheManager.findHero();
+        if (!isHero) {
+            WeaponAmmoRuntime.supplyValue(value, false);
+            return true;
+        }
+        var hadRecovery:Boolean = value.reloadCount != undefined;
+        var oldRecovery = value.reloadCount;
+        var gs:Object = parent.被动技能.枪械师;
+        if (parent[slot + "属性"].reloadType != "tube" && gs.启用
+                && _applyTacticalRecovery(value, parent[slot + "弹匣容量"], gs.等级 || 1)) {
+            if (state) {
+                WeaponAmmoRuntime.setNormal(value, state.capacity, state.capacity);
+                state.paidNormal = 0;
+            }
+            if (_root.存档系统) _root.存档系统.dirtyMark = true;
+            return true;
+        }
+        var success:Boolean;
+        if (state) success = WeaponAmmoRuntime.fillMagazine(parent, slot, magazine, true);
+        else {
+            success = ItemUtil.singleSubmit(magazine, 1,
+                {source:"reload", reason:"magazine_reload", mergeScope:"operation"});
+            if (success) value.shot = 0;
+        }
+        if (!success) {
+            if (hadRecovery) value.reloadCount = oldRecovery;
+            else delete value.reloadCount;
+        }
+        return success;
     }
     
     /**
@@ -357,17 +316,75 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 目标MovieClip (原this引用)
      */
     public static function finishReload(target:MovieClip):Void {
-        ReloadManager.bumpReloadGeneration(target);
-        // 清理双枪换弹序列标记，避免影响下一次换弹
+        cancelReload(target, true);
+    }
+
+    /** 与返回空闲分离，受击/换姿只清自己的事务，绝不覆盖外部状态。 */
+    public static function cancelReload(target:Object, returnIdle:Boolean):Void {
+        bumpReloadGeneration(target);
+        LongGunSubWeaponCore.clearReloadRequest(target);
         delete target.dualReloadStartHand;
         delete target._dualReloadFirstInitStartFrame;
-        LongGunSubWeaponCore.clearReloadRequest(target);
+        delete target.dualReloadWeaponType;
+        delete target.dualReloadHandPrefix;
         delete target.reloadBurden;
         delete target.reloadFrameControlRequest;
         delete target.reloadFrameControlActive;
         delete target.reloadFrameProgress;
+        delete target.reloadHeldMode;
+        delete target.reloadCanSelectTube;
+        delete target.perRoundReload;
+        delete target.reloadWeaponValue;
         target.换弹标签 = false;
-        target.gotoAndStop("空闲");
+        if (returnIdle) target.gotoAndStop("空闲");
+    }
+
+    public static function tryCancelForFire(target:Object, parent:Object, slot:String):Boolean {
+        if (!target.换弹标签) return true;
+        var loaded:Number = slot == "长枪副武器" ? LongGunSubWeaponCore.getLoadedCount(parent)
+            : parent[slot + "弹匣容量"] - parent[slot].value.shot;
+        if (_root.暂停 || (parent.man != null && parent.man !== target)
+                || !(loaded > 0)) return false;
+        parent.__reloadFireHeld = true;
+        cancelReload(target, true);
+        return true;
+    }
+
+    /** 射击优先于持续按住 R；取消后仍回到原射速/许可/半自动检查，不直接生成子弹。 */
+    public static function handleReloadInput(target:Object, parent:Object):Boolean {
+        if (_root.控制目标 != parent._name) return false;
+        var firing:Boolean = parent.动作A || parent.动作B;
+        if (!firing) delete parent.__reloadFireHeld;
+        if (_root.暂停) return target.换弹标签 == true;
+        if (firing && (target.换弹标签 || parent.__reloadFireHeld)) {
+            var dual:Boolean = parent.攻击模式 == "双枪";
+            var subweapon:Boolean = !dual && parent.攻击模式 == "长枪" && LongGunSubWeaponCore.hasSubweapon(parent);
+            var mainSlot:String = dual ? "手枪" : parent.攻击模式;
+            var mainReady:Boolean = (parent.动作A || (!dual && !subweapon && parent.动作B))
+                && parent[mainSlot + "弹匣容量"] - parent[mainSlot].value.shot > 0;
+            var subReady:Boolean = parent.动作B && (dual
+                ? parent.手枪2弹匣容量 - parent.手枪2.value.shot > 0
+                : subweapon && LongGunSubWeaponCore.getLoadedCount(parent) > 0);
+            if (!mainReady && !subReady) {
+                if (!target.换弹标签) delete parent.__reloadFireHeld;
+                return false;
+            }
+            var slot:String = mainReady ? mainSlot : (dual ? "手枪2" : "长枪副武器");
+            if (!tryCancelForFire(target, parent, slot)) return true;
+            if (dual) {
+                if (mainReady) target.主手开始射击();
+                if (subReady) target.副手开始射击();
+            } else {
+                if (mainReady) target.开始射击();
+                if (subReady) target.开始副武器射击();
+            }
+            return true;
+        }
+        if (target.换弹标签 && target.reloadHeldMode && !parent.动作C) {
+            cancelReload(target, true);
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -456,6 +473,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         return function():Void {
             var that:MovieClip = self;
             
+            if (ReloadManager.handleReloadInput(that, parentRef)) return;
             // 检查换弹标签
             if (that.换弹标签) {
                 return;
@@ -563,7 +581,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
             ReloadManager.bumpReloadGeneration(that);
             // 逐发换弹路径中，弹匣消耗和shot重置已在门禁中处理，此处直接返回
-            if (that.perRoundReload) {
+            if (_root.暂停 || !that.换弹标签 || that.perRoundReload) {
                 return;
             }
 
@@ -571,29 +589,15 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 var weaponValue:Object = parentRef[weaponType].value;
                 var capacity:Number = parentRef[weaponType + "弹匣容量"];
 
-                // 枪械师战术换弹：回收未用弹药
                 var gs:Object = parentRef.被动技能.枪械师;
-                var hadReloadCount:Boolean = weaponValue.reloadCount != undefined;
-                var reloadCountBefore = weaponValue.reloadCount;
-                var isFreeReload:Boolean = (gs && gs.启用)
-                    && ReloadManager._applyTacticalRecovery(weaponValue, capacity, gs.等级 || 1);
-
-                if (!isFreeReload) {
-                    // 最终库存提交是 shot 清零的唯一门；预检到动画帧之间库存可能变化。
-                    if (!ItemUtil.singleSubmit(that[magNameProp], 1, {
-                        source:"reload", reason:"dual_magazine_reload",
-                        mergeScope:"operation"
-                    })) {
-                        if (hadReloadCount) weaponValue.reloadCount = reloadCountBefore;
-                        else delete weaponValue.reloadCount;
-                        that.主手剩余弹匣数 = ItemUtil.getTotal(that.主手使用弹匣名称);
-                        that.副手剩余弹匣数 = ItemUtil.getTotal(that.副手使用弹匣名称);
-                        rootRef.发布消息("弹匣不足，换弹失败！");
-                        ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
-                        stateManager.updateState();
-                        return;
-                    }
-                    weaponValue.shot = 0;
+                var isFreeReload:Boolean = false;
+                if (!ReloadManager.commitMagazine(parentRef, weaponType, that[magNameProp])) {
+                    that.主手剩余弹匣数 = ItemUtil.getTotal(that.主手使用弹匣名称);
+                    that.副手剩余弹匣数 = ItemUtil.getTotal(that.副手使用弹匣名称);
+                    rootRef.发布消息("弹匣不足，换弹失败！");
+                    ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
+                    stateManager.updateState();
+                    return;
                 }
 
                 // 更新弹匣数量（两把枪都需要更新）
@@ -606,6 +610,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
                 ReloadManager.updateAmmoDisplay(that, parentRef, rootRef);
                 stateManager.updateState();
+                if (ReloadManager.continueGhostReload(that, parentRef, weaponType)) return;
 
                 var hasImpactChain:Boolean = !!(parentRef.被动技能.冲击连携 && parentRef.被动技能.冲击连携.启用);
 
@@ -619,7 +624,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
                 // canFinish 因另一手无弹匣而返回 true 时，检查另一手是否可以战术免费换弹
                 // 如果可以，不提前结束，让动画继续到另一手
-                // tube 类型不参与战术换弹（reloadCount 含义不同）
+                // tube 类型按真实余弹/付费余额装填，不参与盒式战术回收
                 if (canFinish && gs && gs.启用) {
                     var otherType:String = (handPrefix == "主手") ? "手枪2" : "手枪";
                     var otherNeedsReload:Boolean = (handPrefix == "主手") ? !stateManager.subIsFull : !stateManager.mainIsFull;
@@ -635,7 +640,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 }
             } else {
                 // AI角色：直接重置射击次数
-                parentRef[weaponType].value.shot = 0;
+                WeaponAmmoRuntime.supplyValue(parentRef[weaponType].value, false);
             }
         };
     }
@@ -673,7 +678,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var shot:Number = Number(weaponValue.shot);
         if (isNaN(shot) || shot < 0) shot = 0;
         if (shot > cap) shot = cap;
-        var remaining:Number = cap - shot;
+        var remaining:Number = weaponValue.ammoState ? WeaponAmmoRuntime.normal(weaponValue, cap) : cap - shot;
         var recovered:Number = Math.floor(remaining * (0.5 + (lv - 1) * 0.5 / 9));
         var rc:Number = Number(weaponValue.reloadCount);
         if (isNaN(rc) || rc < 0) rc = 0;
@@ -697,7 +702,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var shot:Number = Number(weaponValue.shot);
         if (isNaN(shot) || shot < 0) shot = 0;
         if (shot > cap) shot = cap;
-        var remaining:Number = cap - shot;
+        var remaining:Number = weaponValue.ammoState ? WeaponAmmoRuntime.normal(weaponValue, cap) : cap - shot;
         var recovered:Number = Math.floor(remaining * (0.5 + (lv - 1) * 0.5 / 9));
         var rc:Number = Number(weaponValue.reloadCount);
         if (isNaN(rc) || rc < 0) rc = 0;
@@ -792,6 +797,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var weaponValue:Object = parent[attackMode].value;
         var capacity:Number = parent[attackMode + "弹匣容量"];
         var shot:Number = weaponValue.shot;
+        target.reloadWeaponValue = weaponValue;
         var useSubweaponManualReload:Boolean = LongGunSubWeaponCore.isManualReloadRequest(target);
         var useSubweaponLinkedReload:Boolean = LongGunSubWeaponCore.isLinkedReloadRequest(target);
 
@@ -814,6 +820,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         // 路径分流：完全打空→整弹匣换弹，部分打空→逐发换弹
         // shot == capacity 表示完全打空（已发射数等于弹匣容量）
         var usePerRoundReload:Boolean = isTubeReload && (shot < capacity);
+        target.reloadCanSelectTube = isTubeReload;
+        target.reloadHeldMode = false;
         target.perRoundReload = usePerRoundReload;
 
         // 处理音频帧：排序+去重，避免跳过必经帧
@@ -826,7 +834,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             }
         }
         // 逐发换弹：添加门禁帧为必经帧
-        if (usePerRoundReload && gateFrame != undefined) {
+        if (isTubeReload && gateFrame != undefined) {
             processedAudioFrames.push(gateFrame);
         }
         if (processedAudioFrames.length > 0) {
@@ -876,7 +884,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             // 小容量武器（≤10发）：逐发换弹，灵活快速
             // 中容量武器（11-100发）：每次换2-5发，平衡手感和效率
             // 大容量武器（>100发）：每次换N发，控制循环次数在20-30次，ratio收敛到2.0
-            if (usePerRoundReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
+            target.reloadFullBurden = burden;
+            if (isTubeReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
                 var loopFrames:Number = gateFrame - loopBackFrame;  // 单次循环帧数 t
                 var fullFrames:Number = endFrame - startFrame;      // 整弹匣换弹帧数 T
 
@@ -905,7 +914,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 // 应用基础负担的惩罚/加速比例
                 perRoundBurden = Math.round(perRoundBurden * burden / 100);
 
-                burden = perRoundBurden;
+                target.reloadPerRoundBurden = perRoundBurden;
+                if (usePerRoundReload) burden = perRoundBurden;
             }
 
             if (useSubweaponLinkedReload) {
@@ -1012,9 +1022,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         var parent:Object = target._parent;
         var weaponType:String = target.dualReloadWeaponType;
         var weaponIndex:String = weaponType; // parentRef[weaponType] 结构与单武器一致
+        WeaponAmmoRuntime.beginReload(parent, weaponType);
         var weaponValue:Object = parent[weaponIndex].value;
         var capacity:Number = parent[weaponType + "弹匣容量"];
         var shot:Number = weaponValue.shot;
+        target.reloadWeaponValue = weaponValue;
 
         // 记录帧位置（与单武器共用同一套帧率控制字段）
         target.reloadGateFrame = gateFrame;
@@ -1035,6 +1047,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
 
         // 路径分流：完全打空→整弹匣换弹，部分打空→逐发换弹
         var usePerRoundReload:Boolean = isTubeReload && (shot < capacity);
+        target.reloadCanSelectTube = isTubeReload;
+        if (!target.reloadHeldMode) target.reloadHeldMode = false;
         target.perRoundReload = usePerRoundReload;
 
         // 处理音频帧：排序+去重，避免跳过必经帧
@@ -1046,7 +1060,7 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
                 if (!isNaN(af)) processedAudioFrames.push(af);
             }
         }
-        if (usePerRoundReload && gateFrame != undefined) {
+        if (isTubeReload && gateFrame != undefined) {
             processedAudioFrames.push(gateFrame);
         }
         if (processedAudioFrames.length > 0) {
@@ -1088,7 +1102,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
         }
 
         // 逐发换弹负担值缩放（双枪同样支持 tube 类型）
-        if (usePerRoundReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
+        target.reloadFullBurden = burden;
+        if (isTubeReload && endFrame != undefined && gateFrame != undefined && loopBackFrame != undefined) {
             var loopFrames:Number = gateFrame - loopBackFrame;  // 单次循环帧数 t
             var fullFrames:Number = endFrame - startFrame;      // 整段换弹帧数 T
 
@@ -1108,7 +1123,8 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
             var totalCycles:Number = Math.ceil(capacity / roundsPerCycle);
             var perRoundBurden:Number = Math.round(100 * fullFrames * ratio / (loopFrames * totalCycles));
             perRoundBurden = Math.round(perRoundBurden * burden / 100);
-            burden = perRoundBurden;
+            target.reloadPerRoundBurden = perRoundBurden;
+            if (usePerRoundReload) burden = perRoundBurden;
         }
 
         target.reloadBurden = burden;
@@ -1130,107 +1146,9 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 时间轴MovieClip（this引用）
      */
     public static function handleDualGunReloadGate(target:MovieClip):Void {
-        // 非tube类型或未启用逐发换弹模式：直接返回，让动画继续播放到换弹匣()
-        if (!target.perRoundReload) {
-            return;
-        }
-
-        var parent:Object = target._parent;
-        var weaponType:String = target.dualReloadWeaponType;
-        var weaponValue:Object = parent[weaponType].value;
-        var capacity:Number = parent[weaponType + "弹匣容量"];
-        var shot:Number = weaponValue.shot;
-
-        // 1. 弹匣已满，清空换弹值，跳到结束帧
-        if (shot <= 0) {
-            weaponValue.reloadCount = 0;
-            target.reloadFrameControlActive = false;
-            target.gotoAndPlay(target.reloadEndFrame);
-            return;
-        }
-
-        // 2. 检查换弹值，没有则消耗弹匣获取
-        if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
-            if (parent === TargetCacheManager.findHero()) {
-                // 预缓存弹匣名称（AS2性能优化）
-                var magNameProp:String = target.dualReloadMagNameProp;
-                var magName:String = target[magNameProp];
-
-                if (ItemUtil.singleContain(magName, 1) != null) {
-                    if (!ItemUtil.singleSubmit(magName, 1, {
-                        source:"reload", reason:"dual_per_round_reload",
-                        mergeScope:"operation"
-                    })) {
-                        _root.发布消息("弹匣不足，换弹失败！");
-                        target.reloadFrameControlActive = false;
-                        target.gotoAndPlay(target.reloadEndFrame);
-                        return;
-                    }
-                    weaponValue.reloadCount = capacity;
-
-                    // 更新两手剩余弹匣数（考虑同弹匣共享库存）
-                    var handPrefix:String = target.dualReloadHandPrefix;
-                    var remainingProp:String = target.dualReloadRemainingMagProp;
-                    target[remainingProp] = ItemUtil.getTotal(magName);
-
-                    var otherHandPrefix:String = (handPrefix == "主手") ? "副手" : "主手";
-                    var otherMagName:String = target[otherHandPrefix + "使用弹匣名称"];
-                    if (otherMagName != undefined) {
-                        target[otherHandPrefix + "剩余弹匣数"] = ItemUtil.getTotal(otherMagName);
-                    }
-                } else {
-                    // 没有弹匣了，结束换弹（保留当前填充进度）
-                    _root.发布消息("弹匣耗尽！");
-                    target.reloadFrameControlActive = false;
-                    target.gotoAndPlay(target.reloadEndFrame);
-                    return;
-                }
-            } else {
-                // AI直接获得换弹值
-                weaponValue.reloadCount = capacity;
-            }
-        }
-
-        // 3. 填充N发（大容量武器每次换多发）
-        var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
-        roundsPerCycle = Math.min(roundsPerCycle, shot);
-        roundsPerCycle = Math.min(roundsPerCycle, weaponValue.reloadCount);
-
-        weaponValue.reloadCount -= roundsPerCycle;
-        weaponValue.shot -= roundsPerCycle;
-
-        // 更新UI显示
-        ReloadManager.updateAmmoDisplay(target, parent, _root);
-        _root.soundEffectManager.playSound("9mmclip2.wav");
-
-        // 4. 检查是否继续
-        if (weaponValue.shot <= 0) {
-            target.reloadFrameControlActive = false;
-
-            // 双枪：逐发换弹完成后，根据状态管理器决定是否需要继续换另一只手
-            var stateManager:Object = target.weaponStateManager;
-            if (stateManager != null) {
-                stateManager.updateState();
-                var passiveSkills:Object = parent.被动技能;
-                var hasImpactChain:Boolean = Boolean(passiveSkills && passiveSkills.冲击连携 && passiveSkills.冲击连携.启用);
-
-                var canFinish:Boolean = false;
-                if (target.dualReloadHandPrefix == "主手") {
-                    canFinish = stateManager.canFinishMainHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, hasImpactChain);
-                } else {
-                    canFinish = stateManager.canFinishSubHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, hasImpactChain);
-                }
-
-                if (canFinish) {
-                    target.gotoAndPlay("换弹结束");
-                    return;
-                }
-            }
-
-            target.gotoAndPlay(target.reloadEndFrame);
-        } else {
-            target.gotoAndPlay(target.reloadLoopBackFrame);
-        }
+        if (!target.换弹标签 || handleReloadInput(target, target._parent)) return;
+        if (!selectTubeAtGate(target, target._parent)) return;
+        commitRoundGate(target, target.dualReloadWeaponType, target[target.dualReloadMagNameProp]);
     }
 
     /**
@@ -1251,82 +1169,89 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 时间轴MovieClip（this引用）
      */
     public static function handleReloadGate(target:MovieClip):Void {
-        // 缓存parent引用和核心属性
+        if (!target.换弹标签) return;
         var parent:Object = target._parent;
-        var attackMode:String = parent.攻击模式;
-        // 非tube类型或未启用逐发换弹模式：直接返回，让动画继续播放到换弹匣()
-        if (!target.perRoundReload) {
+        if (handleReloadInput(target, parent)) return;
+        if (!selectTubeAtGate(target, parent)) return;
+        commitRoundGate(target, parent.攻击模式, target.使用弹匣名称);
+    }
+
+    /** 空仓轻按仍先整匣提交，再以独立逐发动画付费补幽灵；不能在换匣帧凭空加弹。 */
+    private static function continueGhostReload(target:MovieClip, parent:Object, slot:String):Boolean {
+        if (!target.reloadCanSelectTube || parent !== TargetCacheManager.findHero()
+                || parent[slot + "属性"].reloadType != "tube"
+                || !(target.reloadPerRoundBurden > 0) || !(target.reloadLoopBackFrame > 0)) return false;
+        var state:Object = parent[slot].value.ammoState;
+        if (!state || !(state.ghost < WeaponAmmoRuntime.ghostLimit(parent, slot))
+                || !(WeaponAmmoRuntime.reserve(parent, slot) > 0 || magazineStock(parent, parent[slot + "属性"].clipname) > 0)) return false;
+        target.perRoundReload = true;
+        target.reloadHeldMode = false;
+        target.reloadBurden = target.reloadPerRoundBurden;
+        target.reloadFrameProgress = 0;
+        target.gotoAndPlay(target.reloadLoopBackFrame);
+        return true;
+    }
+
+    private static function selectTubeAtGate(target:Object, parent:Object):Boolean {
+        if (!target.perRoundReload && target.reloadCanSelectTube && parent.动作C
+                && parent === TargetCacheManager.findHero()) {
+            target.perRoundReload = true;
+            target.reloadHeldMode = true;
+            target.reloadBurden = target.reloadPerRoundBurden;
+            // 空仓长按改为逐发时，不再为尚未提交的联动副仓承担整匣负担。
+            LongGunSubWeaponCore.clearReloadRequest(target);
+        }
+        return target.perRoundReload == true;
+    }
+
+    private static function commitRoundGate(target:MovieClip, slot:String, magazine:String):Void {
+        var parent:Object = target._parent;
+        if (target.reloadWeaponValue != null && target.reloadWeaponValue !== parent[slot].value) {
+            cancelReload(target, true);
             return;
         }
-
-        // ============ 逐发换弹（tube类型，shot < capacity） ============
-        var capacity:Number = parent[attackMode + "弹匣容量"];
-        var weaponValue:Object = parent[attackMode].value;
-        var shot:Number = weaponValue.shot;
-
-        // 1. 弹匣已满，清空换弹值，跳到结束帧
-        if (shot <= 0) {
-            weaponValue.reloadCount = 0;
-            // 关闭帧率控制，防止继续推进到换弹匣()帧
+        var isHero:Boolean = parent === TargetCacheManager.findHero();
+        WeaponAmmoRuntime.ensure(parent, slot);
+        // 技能与结构决定资格，R 是否仍按住只决定空仓的逐发选择/取消。
+        var allowGhost:Boolean = isHero;
+        if (!(WeaponAmmoRuntime.missing(parent, slot, allowGhost) > 0)) {
+            finishRoundSegment(target, slot);
+            return;
+        }
+        var amount:Number = WeaponAmmoRuntime.fillRounds(parent, slot,
+            calculateRoundsPerCycle(parent[slot + "弹匣容量"]), allowGhost, magazine, isHero);
+        if (!(amount > 0)) {
+            if (isHero) _root.发布消息("弹匣不足，换弹失败！");
             target.reloadFrameControlActive = false;
             target.gotoAndPlay(target.reloadEndFrame);
             return;
         }
-
-        // 2. 检查换弹值，没有则消耗弹匣获取
-        if (weaponValue.reloadCount == undefined || weaponValue.reloadCount <= 0) {
-            // 玩家需要检查并消耗弹匣
-            if (parent === TargetCacheManager.findHero()) {
-                // 预缓存弹匣名称（AS2性能优化：减少3次属性访问）
-                var magName:String = target.使用弹匣名称;
-                if (ItemUtil.singleContain(magName, 1) != null) {
-                    if (!ItemUtil.singleSubmit(magName, 1, {
-                        source:"reload", reason:"per_round_reload",
-                        mergeScope:"operation"
-                    })) {
-                        _root.发布消息("弹匣不足，换弹失败！");
-                        target.reloadFrameControlActive = false;
-                        target.gotoAndPlay(target.reloadEndFrame);
-                        return;
-                    }
-                    weaponValue.reloadCount = capacity;
-                    target.剩余弹匣数 = ItemUtil.getTotal(magName);
-                } else {
-                    // 没有弹匣了，结束换弹（保留当前填充进度）
-                    _root.发布消息("弹匣耗尽！");
-                    target.reloadFrameControlActive = false;
-                    target.gotoAndPlay(target.reloadEndFrame);
-                    return;
-                }
-            } else {
-                // AI直接获得换弹值
-                weaponValue.reloadCount = capacity;
-            }
-        }
-
-        // 3. 填充N发（大容量武器每次换多发）
-        var roundsPerCycle:Number = ReloadManager.calculateRoundsPerCycle(capacity);
-        // 不能超过剩余需要填充的发数
-        roundsPerCycle = Math.min(roundsPerCycle, shot);
-        // 也不能超过当前换弹值剩余
-        roundsPerCycle = Math.min(roundsPerCycle, weaponValue.reloadCount);
-
-        weaponValue.reloadCount -= roundsPerCycle;
-        weaponValue.shot -= roundsPerCycle;
-
-        // 更新UI显示
-        ReloadManager.updateAmmoDisplay(target, parent, _root);
+        bumpReloadGeneration(target);
+        target.剩余弹匣数 = ReloadManager.magazineStock(parent, target.使用弹匣名称);
+        target.主手剩余弹匣数 = ReloadManager.magazineStock(parent, target.主手使用弹匣名称);
+        target.副手剩余弹匣数 = ReloadManager.magazineStock(parent, target.副手使用弹匣名称);
+        updateAmmoDisplay(target, parent, _root);
         _root.soundEffectManager.playSound("9mmclip2.wav");
-
-        // 4. 检查是否继续
-        if (weaponValue.shot <= 0) {
-            // 弹匣满了，关闭帧率控制，跳到结束帧
-            target.reloadFrameControlActive = false;
-            target.gotoAndPlay(target.reloadEndFrame);
-        } else {
-            // 回跳继续循环
+        if (WeaponAmmoRuntime.missing(parent, slot, allowGhost) > 0) {
             target.gotoAndPlay(target.reloadLoopBackFrame);
+        } else {
+            finishRoundSegment(target, slot);
         }
+    }
+
+    private static function finishRoundSegment(target:MovieClip, slot:String):Void {
+        target.reloadFrameControlActive = false;
+        var parent:Object = target._parent;
+        if (parent.攻击模式 == "双枪" && target.weaponStateManager) {
+            var manager:Object = target.weaponStateManager;
+            manager.updateState();
+            var impact:Boolean = Boolean(parent.被动技能.冲击连携.启用);
+            var finished:Boolean = slot == "手枪"
+                ? manager.canFinishMainHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, impact)
+                : manager.canFinishSubHandReload(target.主手剩余弹匣数, target.副手剩余弹匣数, impact);
+            if (finished) { target.gotoAndPlay("换弹结束"); return; }
+        }
+        target.gotoAndPlay(target.reloadEndFrame);
     }
 
     /**
@@ -1339,6 +1264,11 @@ class org.flashNight.arki.unit.Action.Shoot.ReloadManager {
      * @param target 要控制的时间轴MovieClip
      */
     public static function controlReloadFrameRate(target:MovieClip):Void {
+        if (_root.暂停) {
+            if (target.reloadFrameControlRequest || target.reloadFrameControlActive) target.stop();
+            return;
+        }
+        if (handleReloadInput(target, target._parent)) return;
         // 首次请求：接管时间轴控制
         if (target.reloadFrameControlRequest) {
             target.reloadFrameControlRequest = false;

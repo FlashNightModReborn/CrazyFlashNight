@@ -340,6 +340,20 @@ namespace CF7Launcher.Tasks
             return _lines[playbackIndex];
         }
 
+        /// <summary>阶段状态变化时原位刷新当前等待占位；当前行不是占位返回 false。</summary>
+        internal bool UpdatePlaceholderText(string text)
+        {
+            if (_state != HostState.Active) return false;
+            if (_index < 0 || _index >= _lines.Length) return false;
+            Line line = _lines[_index];
+            if (line == null || !line.IsPlaceholder) return false;
+            string next = text ?? "";
+            if (string.Equals(line.Text, next, StringComparison.Ordinal)) return false;
+            line.Text = next;
+            Present();
+            return true;
+        }
+
         /// <summary>组类型归一：daily / task_pre / task_post / stage；未知值回落 daily。</summary>
         internal static string NormalizeDialogueKind(string raw)
         {

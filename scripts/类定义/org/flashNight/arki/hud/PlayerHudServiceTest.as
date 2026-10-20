@@ -28,8 +28,43 @@ class org.flashNight.arki.hud.PlayerHudServiceTest {
         testResourceFacts();
         testResourceHints();
         testWeaponIconProjection();
+        testTypedAmmoProjection();
         ManualCooldownService.resetForTests();
         trace("--- PlayerHudServiceTest: " + passed + "/" + total + " passed, " + (total-passed) + " failed ---");
+    }
+    private static function testTypedAmmoProjection():Void {
+        var service:Object = org.flashNight.arki.hud.PlayerHudService;
+        var oldDetails = service.ammoDetailsEnabled;
+        var oldWorld:MovieClip = _root.gameworld;
+        var oldTarget = _root.控制目标;
+        var world:MovieClip = _root.createEmptyMovieClip("ammoHudWorld", _root.getNextHighestDepth());
+        var unit:MovieClip = world.createEmptyMovieClip("ammoHudPlayer", 1);
+        _root.gameworld=world;_root.控制目标=unit._name;
+        unit.攻击模式="长枪";unit.长枪弹匣容量=7;
+        unit.长枪属性={bullet:"横向联弹-普通子弹",split:5,clipname:"00号鹿弹"};
+        unit.长枪={name:"TTI Benelli M4",value:{shot:-3,ammoState:{v:1,capacity:7,
+            chamber:1,ghost:2,reward:0,reserve:4,reserveName:"00号鹿弹"}}};
+        service.ammoDetailsEnabled=false;
+        PlayerHudService.testOnlyAmmo(unit,0,900);
+        PlayerHudService.testOnlyAmmo(unit,1,5);
+        var legacy:Object=PlayerHudService.testOnlyCombat(unit);
+        check(legacy.ammoDetails==undefined,"old Host receives no new ammo fields");
+        PlayerHudService.testOnlyConfigure({ammoDetails:true});
+        var first:Object=PlayerHudService.testOnlyCombat(unit);
+        check(first.ammo[0]=="10","typed HUD samples committed total instead of stale legacy cache");
+        check(first.ammoDetails[0].normal==7 && first.ammoDetails[0].chamber==1
+            && first.ammoDetails[0].ghost==2 && first.ammoDetails[0].reward==0,"wire separates all ammo sources");
+        check(first.ammoDetails[0].overflow==3 && first.ammoDetails[0].reserve==4,"wire includes actual excess and paid remainder");
+        check(PlayerHudService.testOnlyCombat(unit)===first,"unchanged typed ammo keeps cached immutable combat snapshot");
+        var codec:LiteJSON=new LiteJSON();
+        trace("AMMO_HUD_COMBAT_WIRE "+codec.stringifySafe(first));
+        unit.长枪.value.shot++;
+        unit.长枪.value.ammoState.ghost--;
+        var next:Object=PlayerHudService.testOnlyCombat(unit);
+        check(next!==first && next.ammo[0]=="9" && next.ammoDetails[0].ghost==1,"source change invalidates combat delta");
+        check(first.ammoDetails[0].loaded==10 && first.ammoDetails[0].ghost==2,"prior wire snapshot is not mutated by next shot");
+        service.ammoDetailsEnabled=oldDetails;
+        world.removeMovieClip();_root.gameworld=oldWorld;_root.控制目标=oldTarget;
     }
     private static function testWeaponIconProjection():Void {
         var service:Object = org.flashNight.arki.hud.PlayerHudService;

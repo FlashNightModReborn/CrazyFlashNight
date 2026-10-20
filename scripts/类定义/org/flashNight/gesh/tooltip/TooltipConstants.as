@@ -11,6 +11,10 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   // 颜色常量 (Colors)
   // ══════════════════════════════════════════════════════════════
   public static var COL_HL:String = "#FFCC00";           // 高亮色（金色）
+  // 与原生弹药 HUD 的来源色一致；装备显示条件上限，战斗 HUD 显示实际装填。
+  public static var COL_AMMO_CHAMBER:String = "#9BE0E9";
+  public static var COL_AMMO_GHOST:String = "#FFCC70";
+  public static var COL_AMMO_REWARD:String = "#CAADFF";
   public static var COL_HP:String = "#00FF00";           // 生命值（绿色）
   public static var COL_MP:String = "#00FFFF";           // 魔法值（青色）
   public static var COL_CRIT:String = "#DD4455";         // 暴击（红色）
@@ -109,6 +113,7 @@ class org.flashNight.gesh.tooltip.TooltipConstants {
   public static var TIP_FIRE_MODE_AUTO:String = "全自动";
   public static var TIP_FIRE_MODE_SEMI:String = "半自动";
   public static var LBL_RELOAD_TYPE:String = "装填形式";
+  public static var LBL_GHOST_LIMIT:String = "幽灵装填上限";
   public static var TIP_RELOAD_TYPE_MAG:String = "整匣换弹";
   public static var TIP_RELOAD_TYPE_TUBE:String = "逐发装填";
   public static var LBL_RELOAD_PENALTY:String = "换弹延迟";

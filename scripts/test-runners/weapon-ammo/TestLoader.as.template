@@ -1,0 +1,5 @@
+﻿trace("FocusedTestRunId weapon-ammo Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntimeTest.runAllTests();
+org.flashNight.gesh.tooltip.test.WeaponAmmoTooltipTest.runAllTests();
+org.flashNight.gesh.tooltip.test.TooltipFormatterTest.runAllTests();
+trace("FocusedTestRunId weapon-ammo Complete: __FOCUSED_RUN_ID__");

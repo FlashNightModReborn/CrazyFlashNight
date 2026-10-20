@@ -3993,9 +3993,12 @@ namespace CF7Launcher.Tests.Guardian
                     System.Threading.SpinWait.SpinUntil(
                         delegate
                         {
+                            // Clearing pending precedes toast delivery on the timer callback.
+                            // Wait for both observable outcomes before inspecting the notification.
                             return router
                                 .PendingCharacterBuildPreparationNavigationInstance
-                                == null;
+                                == null
+                                && capture.Posts.Count > 0;
                         },
                         2000));
 

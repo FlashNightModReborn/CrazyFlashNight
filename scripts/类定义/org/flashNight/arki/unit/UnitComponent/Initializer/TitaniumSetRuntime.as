@@ -5,6 +5,7 @@ import org.flashNight.arki.unit.Action.Regeneration.HealApplier;
 import org.flashNight.arki.unit.UnitComponent.Initializer.SetEffectController;
 import org.flashNight.arki.weather.WeatherSystem;
 import org.flashNight.arki.unit.Action.Shoot.ReloadManager;
+import org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime;
 import org.flashNight.arki.bullet.BulletComponent.Type.BulletTypeUtil;
 import org.flashNight.arki.unit.UnitComponent.Dressup.EquipmentUtil.EquipmentFireIntent;
 import org.flashNight.arki.item.ItemUtil;
@@ -309,7 +310,9 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         synchronizeState();
         if (disposed) return;
         // 缺弹更多的一槽优先；相同时主手在前。每槽提交仍独立复核真实状态。
-        var secondaryFirst:Boolean = target.手枪2.value.shot > target.手枪.value.shot;
+        var primaryAmmo:Object = readAmmo("手枪");
+        var secondaryAmmo:Object = readAmmo("手枪2");
+        var secondaryFirst:Boolean = secondaryAmmo && (!primaryAmmo || secondaryAmmo.missing > primaryAmmo.missing);
         synthesizeAmmo(secondaryFirst ? "手枪2" : "手枪");
         synthesizeAmmo(secondaryFirst ? "手枪" : "手枪2");
         writeStatus();
@@ -632,9 +635,24 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         var capacity:Number = target[slot + "弹匣容量"];
         var shot:Number = item.value.shot;
         if (!finite(capacity) || capacity <= 0 || capacity != Math.floor(capacity) ||
-            !finite(shot) || shot < 0 || shot > capacity || shot != Math.floor(shot)) return null;
+            !finite(shot) || shot > capacity || shot != Math.floor(shot)) return null;
+        var state:Object = item.value.ammoState;
+        var ordinary:Number = capacity - shot;
+        var chamber:Number = 0;
+        var ghost:Number = 0;
+        var reward:Number = 0;
+        if (state) {
+            chamber = state.chamber; ghost = state.ghost; reward = state.reward;
+            if (state.v != 1 || state.capacity != capacity || state.reserveName != attrs.clipname ||
+                !finite(chamber) || chamber < 0 || chamber != Math.floor(chamber) || chamber > WeaponAmmoRuntime.chamberLimit(target,slot) ||
+                !finite(ghost) || ghost < 0 || ghost != Math.floor(ghost) || ghost > WeaponAmmoRuntime.ghostLimit(target,slot) ||
+                !finite(reward) || reward < 0 || reward != Math.floor(reward) || reward > WeaponAmmoRuntime.rewardLimit(target,slot)) return null;
+            ordinary -= chamber + ghost + reward;
+        } else if (shot < 0) return null;
+        if (ordinary < 0 || ordinary > capacity) return null;
         return {item:item, value:item.value, source:source, attrs:attrs, name:item.name,
                 clipname:attrs.clipname, capacity:capacity, shot:shot, man:man,
+                ammoState:state, ordinary:ordinary, missing:capacity-ordinary, chamber:chamber, ghost:ghost, reward:reward,
                 generation:ReloadManager.getReloadGeneration(man)};
     }
 
@@ -643,26 +661,29 @@ class org.flashNight.arki.unit.UnitComponent.Initializer.TitaniumSetRuntime {
         if ((slot != "手枪" && slot != "手枪2") || !bindingValid() || effect.group.status != "committed" ||
             !(target.hp > 0) || container.getShieldById(shieldId) !== layer || layer.getCapacity() != fullStrength) return 0;
         var first:Object = readAmmo(slot);
-        if (!first || first.shot == 0) return 0;
+        if (!first || first.missing == 0) return 0;
         var second:Object = readAmmo(slot);
         if (!second || !bindingValid() || effect.group.status != "committed" ||
             container.getShieldById(shieldId) !== layer || layer.getCapacity() != fullStrength ||
             first.item !== second.item || first.value !== second.value || first.source !== second.source ||
             first.attrs !== second.attrs || first.name !== second.name || first.clipname !== second.clipname ||
             first.capacity != second.capacity || first.shot != second.shot || first.man !== second.man ||
+            first.ammoState !== second.ammoState || first.ordinary != second.ordinary ||
+            first.chamber != second.chamber || first.ghost != second.ghost || first.reward != second.reward ||
             first.generation != second.generation) return 0;
         var cost:Number = config.ammoMpPerRound;
         var reserve:Number = target.mp满血值 * config.ammoReserveRatio;
         if (!finite(cost) || !(cost > 0) || !finite(reserve) || reserve < 0 ||
             !finite(target.mp) || target.mp < 0 || !finite(config.ammoMaxPerSlotPulse) ||
             !(config.ammoMaxPerSlotPulse > 0) || config.ammoMaxPerSlotPulse != Math.floor(config.ammoMaxPerSlotPulse)) return 0;
-        var count:Number = Math.min(Math.min(second.shot, config.ammoMaxPerSlotPulse),
+        var count:Number = Math.min(Math.min(second.missing, config.ammoMaxPerSlotPulse),
             affordableUnits(Math.max(0, target.mp - reserve), cost));
         if (!(count > 0)) return 0;
         var price:Number = count * cost;
         // 临界段内无事件/库存调用；小数尾差最多钳到既定储备线。
         target.mp = Math.max(reserve, target.mp - price);
-        second.value.shot = second.shot - count;
+        if (second.ammoState) WeaponAmmoRuntime.setNormal(second.value, second.capacity, second.ordinary + count);
+        else second.value.shot = second.shot - count;
         mpSpent += price;
         ammoMpSpent += price;
         ammoSynthesized += count;

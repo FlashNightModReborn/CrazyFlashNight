@@ -16,6 +16,7 @@ import org.flashNight.gesh.tooltip.TooltipConstants;
 import org.flashNight.gesh.tooltip.TooltipFormatter;
 import org.flashNight.gesh.tooltip.builder.SlayEffectBuilder;
 import org.flashNight.gesh.tooltip.builder.SilenceEffectBuilder;
+import org.flashNight.gesh.tooltip.builder.WeaponAmmoInfoBuilder;
 import org.flashNight.gesh.tooltip.TooltipTextBuilder;
 import org.flashNight.gesh.object.ObjectUtil;
 
@@ -240,7 +241,7 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             for (var i = 0; i < sortedList.length; i++) {
                 var key = sortedList[i];
                 // 跳过嵌套对象，它们需要特殊处理
-                if (key == "magicdefence" || key == "skillmultipliers" || key == "hitBehavior" || key == "switchstrike") continue;
+                if (key == "magicdefence" || key == "skillmultipliers" || key == "hitBehavior" || key == "switchstrike" || key == "overload") continue;
                 result.push(indent);
                 TooltipFormatter.statLine(result, "merge", key, statsObj.merge[key], null);
             }
@@ -316,8 +317,9 @@ class org.flashNight.gesh.tooltip.builder.UseSwitchStatsBuilder {
             }
         }
 
-        // 处理 merge 中的特殊对象（magicdefence/skillmultipliers/hitBehavior）
+        // 处理 merge 中的特殊对象（magicdefence/skillmultipliers/hitBehavior/overload）
         if (statsObj.merge) {
+            WeaponAmmoInfoBuilder.appendMerge(result, statsObj.merge.overload, indent);
             if (statsObj.merge.magicdefence) {
                 result.push(indent, TooltipTextBuilder.quickBuildMagicDefence(statsObj.merge.magicdefence, TooltipConstants.TXT_MERGE));
             }

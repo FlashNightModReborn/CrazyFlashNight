@@ -16,6 +16,7 @@
       <weight>5</weight>
       <dressup>枪-长枪-单管霰弹枪</dressup>
       <capacity>1</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>8</split>
       <diffusion>16</diffusion>
       <interval>800</interval>
@@ -68,6 +69,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-DBHshotgun</dressup>
       <capacity>2</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>15</split>
       <diffusion>6</diffusion>
       <interval>1000</interval>
@@ -120,6 +122,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-雷明登870</dressup>
       <capacity>8</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>7</split>
       <diffusion>10</diffusion>
       <interval>700</interval>
@@ -173,6 +176,7 @@
       <weight>3</weight>
       <dressup>枪-长枪-勃朗宁725双管霰弹枪</dressup>
       <capacity>2</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>12</split>
       <diffusion>17</diffusion>
       <interval>800</interval>
@@ -225,6 +229,7 @@
       <weight>8</weight>
       <dressup>枪-长枪-雷明登870急速型</dressup>
       <capacity>6</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>4</split>
       <diffusion>7</diffusion>
       <interval>550</interval>
@@ -278,6 +283,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-雷明登870警用型</dressup>
       <capacity>5</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>8</split>
       <diffusion>10</diffusion>
       <interval>1500</interval>
@@ -331,6 +337,7 @@
       <weight>6</weight>
       <dressup>枪-长枪-XM1014</dressup>
       <capacity>8</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>7</split>
       <diffusion>20</diffusion>
       <interval>250</interval>
@@ -436,6 +443,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-FNSLP半自动霰弹枪</dressup>
       <capacity>12</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>8</split>
       <diffusion>20</diffusion>
       <interval>600</interval>
@@ -489,6 +497,7 @@
       <weight>5</weight>
       <dressup>枪-长枪-白火铳</dressup>
       <capacity>1</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>11</split>
       <diffusion>15</diffusion>
       <interval>800</interval>
@@ -601,6 +610,7 @@
       <weight>8</weight>
       <dressup>枪-长枪-ZUX197</dressup>
       <capacity>5</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>3</split>
       <diffusion>8</diffusion>
       <interval>400</interval>
@@ -656,6 +666,7 @@
       <modslot>1</modslot>
       <dressup>枪-长枪-XM1014战术版</dressup>
       <capacity>13</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>8</split>
       <diffusion>15</diffusion>
       <interval>360</interval>
@@ -718,12 +729,13 @@
     <use>长枪</use>
     <price>327600</price>
     <description>由塔兰战术定制改造的Benelli M4，其在原版的基础上让枪械更加轻量化和更加稳定可靠， 全新的烫纹防滑护木,提升了使用舒适性。
-    tti制定供弹仓更换了更柔顺的弹簧,可装入7+1发12号霰弹。</description>
+    tti制定供弹仓更换了更柔顺的弹簧,普通弹仓7发，提前换弹可保留膛内1发；幽灵装填另按技能与结构配额结算。</description>
     <data>
       <level>35</level>
       <weight>4</weight>
       <dressup>枪-长枪-TTI Benelli M4</dressup>
-      <capacity>8</capacity>
+      <capacity>7</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
       <interval>200</interval>
@@ -757,7 +769,7 @@
           <formula>1</formula>
           <status>unresolved</status>
           <displayEligible>false</displayEligible>
-          <inputDigest>fnv1a32:4ea792a8</inputDigest>
+          <inputDigest>fnv1a32:80ae4103</inputDigest>
           <auditRef>weapon:TTI Benelli M4:data</auditRef>
         </data>
       </profiles>
@@ -780,6 +792,7 @@
       <weight>8</weight>
       <dressup>枪-长枪-Six12-Matryoshka</dressup>
       <capacity>12</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>8</split>
       <diffusion>10</diffusion>
       <interval>500</interval>
@@ -850,6 +863,7 @@
       <modslot>1</modslot>
       <dressup>枪-长枪-SPAS12战术版</dressup>
       <capacity>12</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>1</split>
       <diffusion>9</diffusion>
       <interval>290</interval>
@@ -903,6 +917,7 @@
       <weight>5</weight>
       <dressup>枪-长枪-SPAS12</dressup>
       <capacity>10</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
       <split>10</split>
       <diffusion>14</diffusion>
       <interval>330</interval>
@@ -975,6 +990,7 @@
       <weight>5</weight>
       <dressup>枪-长枪-Jackhammer</dressup>
       <capacity>10</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>8</split>
       <diffusion>20</diffusion>
       <interval>250</interval>
@@ -1053,6 +1069,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-牛仔的温切斯特</dressup>
       <capacity>8</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>10</split>
       <diffusion>20</diffusion>
       <interval>1000</interval>
@@ -1105,6 +1122,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-夜莺</dressup>
       <capacity>6</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>3</split>
       <diffusion>1</diffusion>
       <interval>1100</interval>
@@ -1159,6 +1177,7 @@
       <weight>9</weight>
       <dressup>枪-长枪-TTI Gen 12</dressup>
       <capacity>14</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>9</diffusion>
       <interval>140</interval>
@@ -1211,6 +1230,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-黄金QBZ</dressup>
       <capacity>25</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>9</split>
       <diffusion>9</diffusion>
       <interval>500</interval>
@@ -1264,6 +1284,7 @@
       <weight>10</weight>
       <dressup>枪-长枪-双管白火铳</dressup>
       <capacity>2</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>13</split>
       <diffusion>12</diffusion>
       <interval>550</interval>
@@ -1318,6 +1339,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-逻辑工作室一型</dressup>
       <capacity>30</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>4</split>
       <diffusion>4</diffusion>
       <interval>65</interval>
@@ -1368,6 +1390,7 @@
       <weight>8</weight>
       <dressup>枪-长枪-黄金QBZ</dressup>
       <capacity>30</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>10</split>
       <diffusion>11</diffusion>
       <interval>320</interval>
@@ -1417,6 +1440,7 @@
       <weight>8</weight>
       <dressup>枪-长枪-SHRAPNEL</dressup>
       <capacity>30</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>10</split>
       <diffusion>11</diffusion>
       <interval>320</interval>
@@ -1466,6 +1490,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-AA12</dressup>
       <capacity>8</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
       <interval>150</interval>
@@ -1516,6 +1541,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-AA12战术版</dressup>
       <capacity>20</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
       <interval>150</interval>
@@ -1581,6 +1607,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-AA12丧尸</dressup>
       <capacity>8</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
       <interval>150</interval>
@@ -1659,6 +1686,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-众神之力</dressup>
       <capacity>8</capacity>
+      <overload><chamber>0</chamber><ghost>0</ghost></overload>
       <split>5</split>
       <diffusion>10</diffusion>
       <interval>200</interval>
@@ -1711,6 +1739,7 @@
       <weight>4</weight>
       <dressup>枪-长枪-杠杆式霰弹枪</dressup>
       <capacity>6</capacity>
+      <overload><chamber>1</chamber><ghost>0</ghost></overload>
       <split>7</split>
       <diffusion>10</diffusion>
       <interval>700</interval>
@@ -1763,6 +1792,7 @@
     <weight>8.5</weight>
     <dressup>枪-长枪-Codex-特勤霰弹枪</dressup>
     <capacity>8</capacity>
+      <overload><chamber>1</chamber><ghost>1</ghost></overload>
     <split>1</split>
     <diffusion>4</diffusion>
     <interval>250</interval>

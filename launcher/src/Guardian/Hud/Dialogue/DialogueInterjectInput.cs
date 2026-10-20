@@ -240,6 +240,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         /// <summary>当前是否为展开输入面板；默认 false（关闭钮左侧的收起箭头）。</summary>
         internal bool IsExpanded { get { return _expanded; } }
 
+        /// <summary>输入当前可用（状态机 Ready）；展开且可用时宿主屏蔽推进键。</summary>
+        internal bool IsInputEnabled { get { return _model.Enabled; } }
+
         public DialogueInterjectInputOverlay()
         {
             FormBorderStyle = FormBorderStyle.None;

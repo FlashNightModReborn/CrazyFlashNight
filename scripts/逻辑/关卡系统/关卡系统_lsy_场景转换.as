@@ -854,12 +854,16 @@ _root.加载共享场景 = function(加载场景名){
 
 _root.场景转换函数.场景切换时补充玩家弹药 = function(){
 	if(_root.当前为战斗地图) return;
+    org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.endSortie();
 	var 装备栏 = _root.物品栏.装备栏;
 	var keys = ["长枪", "手枪", "手枪2"];
 	for(var i=0; i<keys.length; i++){
 		var item = 装备栏.getItem(keys[i]);
 		if(item.value.level > 0){
-			item.value.shot = 0;
+            if (typeof item.getData == "function") {
+                org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.migrateItem(item, item.getData().data);
+            }
+			org.flashNight.arki.unit.Action.Shoot.WeaponAmmoRuntime.supplyValue(item.value, true);
 			item.value.reloadCount = 0;
 			if (keys[i] == "长枪") {
 				item.value.subweaponShot = 0;

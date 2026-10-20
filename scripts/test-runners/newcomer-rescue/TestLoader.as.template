@@ -1,0 +1,4 @@
+﻿import org.flashNight.arki.scene.*;
+trace("FocusedTestRunId newcomer-rescue Start: __FOCUSED_RUN_ID__");
+_root.__newcomerRescueFocusedRunId="__FOCUSED_RUN_ID__";
+org.flashNight.arki.scene.NewcomerRescueTest.runAllTests();
