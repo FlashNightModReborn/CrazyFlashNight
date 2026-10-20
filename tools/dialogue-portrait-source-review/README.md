@@ -50,3 +50,22 @@ python tools/test-dialogue-portrait-authority.py
 ```
 
 然后按 `agentsDoc/testing-guide.md` 的 Dialogue Portraits 行执行完整候选与正式烘焙。更新策略本身不代表生产 manifest 已刷新。
+
+## 程序化无线电派生
+
+外部立绘后处理由 [postprocess.json](../../flashswf/portraits/postprocess.json) 显式登记派生名、原稿名和效果 profile。boy/Blue 的原有无线电图作为视觉参照保持原样。当前 `radio` profile 在原取景和透明画布上叠加冷色、透明度、细扫描线和人物轮廓微光，不画矩形底板，不按包围盒重新缩放人物。
+
+[共享处理器](../dialogue_portrait_postprocess.py)供正式烘焙器和[原生生成器](../build-dialogue-portrait-postprocess.py)使用。Web/Host 仍读取既有 manifest/图片合同；派生条目记录原 SWF 哈希及 profile 身份。原生 XFL 从未修改的角色源稿生成，在加载时用 BitmapData 处理一次并缓存，卸载时释放位图，仍须通过真实 CS6 发布。当前原生生成器只接受单帧 FLA，遇到动画源会拒绝，避免静默压平表情。
+
+单项烘焙必须输出到独立候选目录；烘焙器会重建指定输出目录，不能把 `--keys` 配合默认生产输出使用。新人救援的有界合并脚本在更新该条目和生成器身份时逐份验证其余图片哈希；原稿、其他角色和同名双源权威策略保持独立。
+
+商店未消费的对白条目更新后，可沿用 `refresh-shop-portrait-sources.py` 的元数据核对入口。连续更新允许使用先前已经验证的相同基线，但必须匹配已知工具摘要、消费模块 AST、商店身份数量及原基线摘要；随后仍完整校验每个实际消费条目、SWF/XFL、工具和图片。未知或已漂移的基线会拒绝，不能用历史核对代替当前消费输入检查。
+
+```powershell
+python tools/build-dialogue-portrait-postprocess.py --key "前治安官（无线电）"
+python tools/build-dialogue-portrait-postprocess.py --key "前治安官（无线电）" --check
+python tools/bake-dialogue-portraits.py --keys "前治安官（无线电）" --external-only --zoom 2 --supersample 2 --image-format webp --output-dir tmp/newcomer-rescue/radio-bake-v2 --tmp-dir tmp/newcomer-rescue/radio-bake-v2-work
+python tools/newcomer-rescue-assets/install_radio_portrait.py
+python tools/test-dialogue-portrait-postprocess.py
+python tools/test-dialogue-portrait-authority.py
+```

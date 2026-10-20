@@ -1,5 +1,5 @@
 ﻿[CmdletBinding()]
-param([Parameter(Mandatory=$true)][string]$OutputDirectory)
+param([Parameter(Mandatory=$true)][string]$OutputDirectory, [string]$AppearanceFixtures)
 $ErrorActionPreference = 'Stop'
 $projectRoot = Split-Path -Parent $PSScriptRoot
 $outputPath = [IO.Path]::GetFullPath((Join-Path $projectRoot $OutputDirectory))
@@ -10,7 +10,13 @@ if (-not $outputPath.StartsWith($scratchRoot, [StringComparison]::OrdinalIgnoreC
 if (Test-Path -LiteralPath $outputPath) { throw 'Use a fresh smoke output directory.' }
 . (Join-Path $projectRoot 'launcher/resolve-dotnet.ps1')
 $dialogueDotnet = Resolve-Cf7Dotnet -ProjectRoot $projectRoot
-& $dialogueDotnet run --project (Join-Path $PSScriptRoot 'native-dialogue-webview2-smoke/NativeDialogue.Smoke.csproj') -c Release -- $projectRoot $outputPath
+$smokeArguments = @($projectRoot, $outputPath)
+if ($AppearanceFixtures) {
+    $fixturePath = [IO.Path]::GetFullPath((Join-Path $projectRoot $AppearanceFixtures))
+    if (-not (Test-Path -LiteralPath $fixturePath -PathType Leaf)) { throw 'Appearance fixture file does not exist.' }
+    $smokeArguments += $fixturePath
+}
+& $dialogueDotnet run --project (Join-Path $PSScriptRoot 'native-dialogue-webview2-smoke/NativeDialogue.Smoke.csproj') -c Release -- @smokeArguments
 if ($LASTEXITCODE -ne 0) { throw "Hidden WebView2 portrait smoke failed: $outputPath" }
 $resultPath = Join-Path $outputPath 'result.json'
 if (-not (Test-Path -LiteralPath $resultPath)) { throw 'Smoke exited without evidence.' }

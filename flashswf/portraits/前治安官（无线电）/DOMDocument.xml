@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="1024" height="576" frameRate="30" currentTimeline="0" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows" versionInfo="Saved by Adobe Flash Windows 12.0 build 481" majorVersion="12" buildNumber="481" viewAngle3D="88.2079048186946" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false">
+     <folders>
+          <DOMFolderItem name="shape" itemID="68657179-000017b7" isExpanded="true" />
+     </folders>
+     <symbols>
+          <Include href="shape/Symbol 1626.xml" itemIcon="1" loadImmediate="false" itemID="6597607e-000009ac" lastModified="1762173550" />
+          <Include href="前治安官.xml" itemIcon="1" loadImmediate="false" itemID="67dc4d21-00000a15" lastModified="1742490914" />
+     <Include href="RadioPostprocessSource.xml" /></symbols>
+     <timelines>
+          <DOMTimeline name="场景 1">
+               <layers><DOMLayer name="radio postprocess"><frames><DOMFrame index="0"><Actionscript><script>import flash.display.BitmapData;
+import flash.geom.Matrix;
+import flash.geom.Point;
+import flash.geom.Rectangle;
+import flash.geom.ColorTransform;
+import flash.filters.ColorMatrixFilter;
+import flash.filters.GlowFilter;
+stop();
+var source:MovieClip=this.__radioSource;
+var bitmap:BitmapData=new BitmapData(1024,576,true,0);
+bitmap.draw(source,new Matrix());
+bitmap.applyFilter(bitmap,bitmap.rectangle,new Point(),new ColorMatrixFilter([0.2197802667,0.3356672,0.03388586667,0,21.12,0.1034486588,0.4680079059,0.03513167059,0,41.36,0.1085844078,0.3652848941,0.1568757961,0,63.36,0,0,0,0.88,0]));
+var scan:ColorTransform=new ColorTransform(0.84,0.84,0.84,1);
+for(var scanY:Number=0;scanY&lt;576;scanY+=3){
+    bitmap.colorTransform(new Rectangle(0,scanY,1024,1),scan);
+}
+source._visible=false;
+var picture:MovieClip=this.createEmptyMovieClip("__radioPicture",this.getNextHighestDepth());
+picture.attachBitmap(bitmap,0,"auto",true);
+picture.filters=[new GlowFilter(5214943,0.3,3.2,3.2,1,2,false,false)];
+picture.cacheAsBitmap=true;
+this.__radioBitmap=bitmap;
+this.onUnload=function():Void{this.__radioBitmap.dispose();};
+</script></Actionscript><elements><DOMSymbolInstance libraryItemName="RadioPostprocessSource" name="__radioSource" /></elements></DOMFrame></frames></DOMLayer></layers></DOMTimeline>
+     </timelines>
+     <PrinterSettings />
+     <publishHistory />
+</DOMDocument>

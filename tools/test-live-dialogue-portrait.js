@@ -14,6 +14,7 @@
  *   6. 旧默认行为：不传 expression → static-first-frame 首帧、无表情记录
  *   7. renderDataUrl 端到端（stub Image 异步 onload + 轮询）+ dispose
  *   8. resolveExpressionFrame 纯函数回退链
+ *   9. 无线电后处理（普通（无线电）/愤怒（无线电））拆出底层表情帧并施加 radio 滤镜
  */
 
 const assert = require('assert');
@@ -159,8 +160,16 @@ class FakeContext2D {
     }
     getImageData(x, y, w, h) {
         const data = new Uint8ClampedArray(Math.max(1, w * h * 4));
-        for (let i = 3; i < data.length; i += 4) data[i] = 255;
+        for (let i = 0; i < data.length; i += 4) {
+            data[i] = 200;
+            data[i + 1] = 160;
+            data[i + 2] = 120;
+            data[i + 3] = 255;
+        }
         return { data: data, width: w, height: h };
+    }
+    putImageData(imgData) {
+        this.canvas.__putImageData = imgData;
     }
 }
 
@@ -172,6 +181,8 @@ class FakeCanvas {
         this.clientHeight = 0;
         this.parentNode = null;
         this.__drawn = [];
+        this.__putImageData = null;
+        this.__postprocessed = null;
         this.__ctx = new FakeContext2D(this);
     }
     getContext() { return this.__ctx; }
@@ -182,7 +193,8 @@ class FakeCanvas {
     toDataURL() {
         return 'data:image/png;base64,'
             + Buffer.from(JSON.stringify({
-                width: this.width, height: this.height, drawn: this.__drawn
+                width: this.width, height: this.height, drawn: this.__drawn,
+                postprocessed: this.__postprocessed || null
             }), 'utf8').toString('base64');
     }
 }
@@ -429,7 +441,21 @@ async function main() {
         assert.strictEqual(h.renderer.resolveExpressionFrame(face, null), null);
     }
 
-    console.log('test-live-dialogue-portrait: all 8 cases passed');
+    // 9. 无线电后处理（普通（无线电）/愤怒（无线电））拆出底层表情帧并施加 radio 滤镜
+    {
+        const h = createHarness();
+        const idNormal = h.api.identity(h.manifest, APPEARANCE_A, { size: 256, expression: '愤怒' });
+        const idRadio = h.api.identity(h.manifest, APPEARANCE_A, { size: 256, expression: '愤怒（无线电）' });
+        assert.notStrictEqual(idNormal, idRadio, '无线电后缀与普通表情 identity 隔离');
+        const radioUrl = await h.api.renderDataUrl(APPEARANCE_A,
+            { manifest: h.manifest, size: 128, expression: '愤怒（无线电）', timeoutMs: 3000, pollMs: 5 });
+        const radioDecoded = decodeDataUrl(radioUrl);
+        assert.strictEqual(radioDecoded.postprocessed, 'radio', '无线电后缀触发 radio 后处理');
+        assert.ok(radioDecoded.drawn.some(function(u) { return u.indexOf('face_m_expr_2.png') >= 0; }),
+            '愤怒（无线电）应先按愤怒帧选脸型');
+    }
+
+    console.log('test-live-dialogue-portrait: all 9 cases passed');
 }
 
 main().catch(function(error) {
