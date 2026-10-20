@@ -542,13 +542,56 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Widget.CompleteCurrentLineTyping());
             Assert.Equal("最近怎么样？", h.Widget.CurrentFrame.Text);  // 还停在 $PC，等玩家推进
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：整条隐藏
             Assert.Equal(0, h.Controller.PendingLineCount);
 
             h.Advance();
             Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
             h.Advance();
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void SubmittedPlayerLineStaysHiddenAfterTypingUntilNextNonPlayerLine()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("我来了。"));
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            Assert.True(h.Widget.CompleteCurrentLineTyping());
+            Assert.Equal("我来了。", h.Widget.CurrentFrame.Text);       // 玩家台词仍在上屏等推进
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Advance();                                               // 推进到等待占位（非玩家行）
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void OriginalPlayerLineStaysHiddenAfterTyping()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"),
+                BookLine("阿夜", "我来了。", "$PC_TITLE", doll: true),
+                BookLine("Andy Law", "进来吧。", "雇佣兵"));
+
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            h.Advance();
+            Assert.Equal("我来了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Widget.CompleteCurrentLineTyping();
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Advance();
+            Assert.Equal("进来吧。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
         }
 
         [Fact]
@@ -835,11 +878,12 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("最近怎么样？"));
             Assert.Equal("$PC", h.Widget.CurrentFrame.Name);
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行在屏：隐藏
             Assert.Equal("no_valid_lines", h.Controller.LastFailure);
 
             h.Advance();
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);   // 接回原作
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
             Assert.True(h.Transport.Finalizes.Count > 0);
         }
 
@@ -912,12 +956,13 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.Equal("stream_timeout", h.Controller.LastFailure);
             Assert.False(h.Controller.IsTurnActive);
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：隐藏
             Assert.True(SpinWait.SpinUntil(() => hanging.Disposed, 5000));
             Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
 
             h.Advance();                                             // 按失败回退接回原作
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
         }
 
         [Fact]
@@ -944,7 +989,7 @@ namespace CF7Launcher.Tests.Tasks
             h.FireWatchdog();
 
             Assert.Equal("stream_timeout", h.Controller.LastFailure);
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：隐藏
         }
 
         [Fact]
@@ -979,14 +1024,15 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
 
             h.Widget.CompleteCurrentLineTyping();                     // $PC 播完、还没出词
-            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
-            Assert.False(h.Controller.Submit("插一句"));                // 准备中不接受发送
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏
+            Assert.False(h.Controller.Submit("插一句"));                // 隐藏期间不接受发送
 
             h.Controller.OnEvent(LineEvent("行，那我直说了。", 0));      // 首个 add 已就绪
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 仍停在 $PC
             Assert.Equal("有没有活儿？", h.Widget.CurrentFrame.Text);    // 仍停在 $PC
             h.Advance();
             Assert.Equal("行，那我直说了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
         }
 
         [Fact]
@@ -997,13 +1043,16 @@ namespace CF7Launcher.Tests.Tasks
             var hanging = new HangingStream("");
             h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
             Assert.True(h.Controller.Submit("你好"));
-            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
-            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：玩家行仍在屏
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
 
             h.Controller.OnEvent(StatusEvent("searching"));
-            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 仍停在 $PC
 
             h.Controller.OnEvent(LineEvent("查到了。", 0));             // 出词后回到既有状态
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 仍停在 $PC
+            h.Advance();
+            Assert.Equal("查到了。", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
         }
 
@@ -1015,12 +1064,16 @@ namespace CF7Launcher.Tests.Tasks
             var hanging = new HangingStream("");
             h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
             Assert.True(h.Controller.Submit("最近怎么样？"));
-            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
-            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：玩家行仍在屏
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
 
             h.Controller.OnEvent(StatusEvent("thinking"));
             h.Controller.OnEvent(StatusEvent("waiting"));
 
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Advance();                                              // 推进到占位行：等待态可见
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
         }
 
@@ -1482,10 +1535,11 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Null(h.Controller.LastFailure);
 
             h.Widget.CompleteCurrentLineTyping();                // $PC 播完 → plan 应用
-            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：隐藏
 
             h.Advance();
             Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
             h.Advance();
             Assert.Equal("B", h.Widget.CurrentFrame.Text);
         }
@@ -1504,13 +1558,14 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("你到底说不说？"));
             Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
             h.Widget.CompleteCurrentLineTyping();
-            Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行仍在屏：隐藏
             Assert.False(h.Controller.Submit("再说一句"));
             Assert.Equal("（Andy Law）暂时不打算让你插话",
                 h.Controller.PlaceholderFor(DialogueInterjectInputState.Muted));
 
             h.Advance();
             Assert.Equal("行了，这事不用你操心。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
             h.Advance();
             Assert.Equal("A", h.Widget.CurrentFrame.Text);        // 照常播放
             Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
