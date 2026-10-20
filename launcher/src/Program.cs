@@ -2917,7 +2917,8 @@ class Program
                     RagLlmConfig config = await ragTerminalService.GetLlmConfigAsync().ConfigureAwait(false);
                     // 探测失败（旧 exe 无端点/瞬断）按已配置处理，避免把输入永久锁死。
                     return config == null || config.Configured;
-                });
+                },
+                ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName));
             var interjectController = dialogueInterject;
 
             Action<bool> showInterjectConfig = delegate(bool autoMode)

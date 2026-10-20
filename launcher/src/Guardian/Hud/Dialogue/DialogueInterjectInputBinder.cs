@@ -117,14 +117,14 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (!_widget.TryGetInterjectInputAnchor(out panel, out close, out scale)) return;
             Rectangle viewport = _owner.RectangleToScreen(_owner.ClientRectangle);
             if (viewport.Width <= 0 || viewport.Height <= 0) return;
-            int gap = Math.Max(4, (int)Math.Round(6 * scale));
+            int pad = DialogueInterjectInputOverlay.OuterPaddingForScale(scale);
             int rightLimit = close.IsEmpty ? panel.Right : close.Left;
 
-            int toggleW = Clamp((int)Math.Round(
-                DialogueInterjectInputOverlay.ToggleWidthDesign * scale), 44, 80);
-            int toggleH = Clamp((int)Math.Round(
-                DialogueInterjectInputOverlay.ToggleHeightDesign * scale), 26, 48);
-            int collapsedX = rightLimit - gap - toggleW;
+            // 两态共用同一尺寸；展开态不再按自身画布重推，避免一大一小。
+            int toggleW = DialogueInterjectInputOverlay.ToggleWidthForScale(scale);
+            int toggleH = DialogueInterjectInputOverlay.ToggleHeightForScale(scale);
+            _overlay.SetToggleMetrics(toggleW, toggleH, pad);
+            int collapsedX = rightLimit - pad - toggleW;
             // 收起钮下沿贴住对话框黑色头条上沿，不再悬在关闭钮垂直中线。
             int collapsedY = panel.Top - toggleH;
 
@@ -137,7 +137,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 width = Clamp((int)Math.Round(panel.Width * 0.47), 380, 660);
                 height = Clamp((int)Math.Round(
                     DialogueInterjectInputOverlay.DesignHeight * scale), 170, 340);
-                x = rightLimit - gap - width;
+                // 面板右沿贴关闭钮左界，内部再留 pad；这样展开态的箭头右沿
+                // 与收起态箭头右沿落在同一条线上。
+                x = rightLimit - width;
                 int bottom = collapsedY + toggleH;   // 展开面板底边与对话框头条上沿重合
                 y = bottom - height;
                 if (y < viewport.Top) y = viewport.Top;
