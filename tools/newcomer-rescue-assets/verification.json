@@ -1,0 +1,421 @@
+{
+  "schema": "cf7.newcomer-rescue.verification.v6",
+  "verified_at": "2026-10-20T04:32:51.770293+00:00",
+  "branch": "main",
+  "source_inputs": {
+    "data/stages/副本任务/新人救援.xml": "cf7171125b63157b2446227f299b6831733bba99782c8b315eb616b316c089d6",
+    "data/task/iron_spear_tasks.json": "98e73464cf6b6611d06ef98c8f56a79634ad4cd3bb664e63ca8bd57d1373eddc",
+    "data/task/text/iron_spear_text.json": "422de873736578ae7207df4517b0fa1cb74506439ebaf91c3a6185385063fd5e",
+    "flashswf/arts/new/铁枪会支线用素材.swf": "39f701b897962ecc81c4651f094cb893bd0b494cdca7d69549e9ec36cc303f4c",
+    "flashswf/backgrounds/70002/ambush/LIBRARY/Jeep70002/Detonating.xml": "d39382f089a4309f5c34ff242840bd56a63f09ade8539f0a1be116a41f9c465b",
+    "flashswf/levels/wuxianguotu_1.swf": "4b455a2325845b5aa84e663bc4484d86d0aff2b7cf2060dda0a00be2849b3c73",
+    "flashswf/portraits/list.xml": "20e8e386e06bec22b777e61cf7488f43e2bd812316f63c86ebf77fe5d3f73223",
+    "flashswf/portraits/postprocess.json": "1ec639b70309dd5df8a5a81ebe24e58ea68a03465edd2a15d92583cf44c66294",
+    "flashswf/portraits/前治安官.fla": "d398c9411dfbc441af807f1f3030dd28fc0c8225169b24e3c8bd3e6cdeed6f1e",
+    "flashswf/portraits/前治安官.swf": "2b929fdd4a6717cf7e97204fa8ddd05cf31b657dfccac2ffa1c6caab9cd89984",
+    "flashswf/portraits/前治安官（无线电）.swf": "3a1b8e7a6c3add925a3f94e49b35e56e534d08fbaf1ee10fc4aa8a6f46c15296",
+    "flashswf/portraits/前治安官（无线电）/DOMDocument.xml": "30bd03b9c8803feac6647484a5ecf32c69ee1112c873b1acaefdf839ea711f89",
+    "launcher/web/assets/dialogue-portraits/manifest.json": "6bf3fd2bf145b2d949fbc01ce7030eef8203b259d4aa45f2f6eecfed9aeb9286",
+    "launcher/web/assets/shop-portraits/promotion-receipt.json": "2e148178b12a0e2bf8a9822b06989f825df7a119169a1bbf5587b55a6d785760",
+    "launcher/web/assets/shop-portraits/provenance.json": "2b43fee31045ffba9f95032155679094273103d4b8d1ff5ca1d23eb49e28c995",
+    "scripts/NewcomerRescueNativeHost/DOMDocument.xml": "139c174e9fe675255f73bc082629eafa8794002ec8f51f02eba9c4d98413f622",
+    "scripts/NewcomerRescueNativeHost/LIBRARY/Import2.xml": "8e4064db108910a0aebe617b8e113a9dedf77ae2d7e17c986d0f8fe6365daccc",
+    "scripts/NewcomerRescueNativeHost/LIBRARY/NativeDrone456.xml": "76a8dffc5611f126e2ba9da733b730ee6a3f60af0b45a04dee905d5b03b8d4ce",
+    "scripts/run-newcomer-rescue-tests.ps1": "e6485a1fe6e77022deede4541dc428c8e8f1aba69c5d535c237dcdbdc0ed19d8",
+    "scripts/类定义/org/flashNight/arki/scene/NewcomerRescueController.as": "69960a88b9a0099959560d829bb0431ffcce4dafbb657cc7547231b14a50b79f",
+    "scripts/类定义/org/flashNight/arki/scene/NewcomerRescueTest.as": "1b063b4217eabe5fd9fd499b6a2da857b5bfef4df4812b293f041223132286a7",
+    "scripts/类定义/org/flashNight/arki/scene/StageManager.as": "7a852eba0077d8fdb7ea50ed49b758ae68efd9653d2c809da39044ce7fb33541",
+    "scripts/逻辑/关卡系统/关卡系统_lsy_关卡回调函数.as": "11ef13a905d0e29753cd1e67b4326d20b878de16a87db315741022618347d290",
+    "tools/bake-dialogue-portraits.py": "78707ccce5e7a686fb4d22352874aeeca7cb33e30e2b50015c4bdd17f6f6fa6e",
+    "tools/build-dialogue-portrait-postprocess.py": "ea1b6b6f0fbb308c6cfc27a33c66f90929d185db1e8246b5d737ec0e4895bc49",
+    "tools/dialogue_portrait_postprocess.py": "a00205bceb068ead1483f8f91cef87feea9ab8fe8221cd21a1df6de6eec05813",
+    "tools/newcomer-rescue-assets/build.py": "9cd4b2908763a4959f805192ff48bad96cadf9ce77242a84e51934b3edb400a1",
+    "tools/newcomer-rescue-assets/build_radio_portrait.py": "cd57c6081b939d6e7c8245b461754d50d767bb480054c6412fac97767c010bcf",
+    "tools/newcomer-rescue-assets/install_radio_portrait.py": "28dd699b2fc317fc70a89084501ff3578e22d292b5a63e96243e67019d97c00e",
+    "tools/newcomer-rescue-assets/repair_vectors.py": "27ff5828bde3dc732ac34373af2f46a376102872128dd0fe179df72108c7f42c",
+    "tools/newcomer-rescue-assets/source/layouts.json": "ae73317c33024f010742dbfe29b55d44aa360b4be3bf5196ca37335e3fe13870",
+    "tools/newcomer-rescue-assets/stage.py": "fa2946192f6053f14a4a9da69077912bf4e107f7608236ab2dd6821e6bdf1fe7",
+    "tools/newcomer-rescue-assets/validate.py": "9f6514ed5c9a40b5b094bee85d8dd84d8fbd2a0610ebd9cd49786cc56903aed2",
+    "tools/refresh-shop-portrait-sources.py": "9604d32c42147990b2720237bc9b3aaf261b2b4dd5fe8c51f9fdc4ea3367e949",
+    "tools/test-dialogue-portrait-postprocess.py": "6089a4d795787ba8e037dc802b8531dbf44c23396346fe2c3b118791a3c643b3",
+    "tools/test-shop-portrait-source-refresh.py": "699164f358c7fce79626e03b9fc85884d4966acc0034af3032c81524d88ea8c1",
+    "data/stages/基地门口/商业区.xml": "31de5d9f8ccafcdf17d500e35d0f6ba24ff6499d68c5b38da4568d5a396f0358",
+    "data/stages/基地门口/地铁站.xml": "fc9886833f218181065831e39f39c30f9fbba392a7bbd05be1bd6473fcf9b817",
+    "data/stages/基地门口/第一防线.xml": "d3494d9f6c76d565f5a9507156c12d1fa44a97c637b37e7218edec9974bbd4ca",
+    "data/stages/基地门口/贫民窟.xml": "957e6fad7c41c33f795d4034038ddb3862f13c15d2fbfa592d25f469ac6fd186",
+    "data/stages/基地门口/闹市区.xml": "e2843b5f71b4c66c66151514e8d2beb52551e37d1f17fc86a78edbf3de571de0",
+    "data/task/tasks1.json": "9c92a7b527a8764355935b04b3e052d5ffeebf0569eb03c9b8cefd597535f716",
+    "data/units/units.json": "79024eb7274d9fac3716e1a043340d117245e5d56209f93f84e857df52de22cc",
+    "flashswf/arts/things1/LIBRARY/敌人-兽化僵尸1.xml": "5cdd3a67e560ed141d5121acfa5c20fc62de150dee3b651e352c75d3b2dc17a8",
+    "tools/newcomer-rescue-assets/source/dialogue-actors.json": "beb8d732f1cd544c741f7e9dfe2250805fa3a176951044f9f14ca5c703d0383f",
+    "scripts/类定义/org/flashNight/arki/dialogue/NativeDialogueAppearance.as": "77614450468d4477a8393dfb62097c7a7518979f4fa3abb50ac55fb29ea6a47b",
+    "scripts/类定义/org/flashNight/arki/scene/StageInfo.as": "b40cc0023a27318b89d0a02af9d5bcb4c5685f3f58137f024a3bdfd8893c9547",
+    "tools/native-dialogue-webview2-smoke/Program.cs": "582f1bfc8b736947c40ec68bd16b510375daab19785a1a803725f0d1f94ac09a",
+    "tools/run-native-dialogue-webview2-smoke.ps1": "e3645416a03320579e10dcde7c0a9ee0cdbbd8c9d57837466958302f65353e4e",
+    "launcher/web/assets/dressup/manifest.json": "499ac8896dfd955ccef89c5868bcfbbbde38c62cdca53954b08471a2d27eb024",
+    "data/items/防具_0-19级.xml": "e181f1a94bf44b7f55f012fc2ef2679389701d48c608735cb6660dd0f9dfebc7",
+    "launcher/web/modules/dialogue/live-portrait.js": "325893c5a2f3cdadff7643eaed69970c726b5e6f8ad183c9fe45790a9ce97a2f",
+    "launcher/web/modules/dressup-doll-renderer.js": "12ed68a01eee5685a390cb76a9413948847f7b28b3127cfc4c148c289ccdcecc",
+    "launcher/src/Guardian/Dialogue/DialoguePortraitService.cs": "44fe56661fdef788c8a7711415ec763dd79ae7b4f49d8fee3b59506bd6f422e1"
+  },
+  "artifacts": [
+    {
+      "file": "flashswf\\backgrounds\\gk6_1_BG_70002_departure.swf",
+      "bytes": 107900,
+      "sha256": "1d06d24f9a73488c9807d16c6f073028eb104d013b947f55521e2f7e05e065de",
+      "master": "staging",
+      "master_closure_sha256": "f6fb1c8061880ef9eb36b9a17ad6853a02c51e2dacd41ab4929bf198b740875f"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_4_BG_70002_rescue.swf",
+      "bytes": 171526,
+      "sha256": "3617a2117840335d6a26eca9fbfe37bf3d45f682acd74d70b46155d81332ed6d",
+      "master": "clinic",
+      "master_closure_sha256": "d0da74ccb16bda608d1b65e0bcbaeefa512fb3f06fd001ee1a64309d53d876fb"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_3_BG_70002.swf",
+      "bytes": 84881,
+      "sha256": "6c07c5d6ddf0e7c1b1177761b2e316360cc0d7ff8550c121fa390d84afcb1e44",
+      "master": "ambush",
+      "master_closure_sha256": "e4116bfebf9124f12cf817bece799c7c931086523fc8c26c16e75e95e2836e46"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_4_BG_70002_evacuated.swf",
+      "bytes": 171773,
+      "sha256": "eeef70890899f621466019a9c0a8abf9fa26dbe50cd0f9d175ae6846dc82cd43",
+      "master": "clinic",
+      "master_closure_sha256": "d0da74ccb16bda608d1b65e0bcbaeefa512fb3f06fd001ee1a64309d53d876fb"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk5_5_BG_70002_return.swf",
+      "bytes": 113368,
+      "sha256": "dc750cf6f0d44c25ab18cfd0274c2756f15355074f2c23d28888269f22aca152",
+      "master": "return",
+      "master_closure_sha256": "d55c852d7fb046e7104d8f126aadb7ca6d4e47565987098e767f4dfed1f9e17c"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk6_1_BG_70002_receiving.swf",
+      "bytes": 111139,
+      "sha256": "d15ea68f1d76a14b3fe496b53556d0c8b58c91aa40d2fe6b6822c3f45953c9d8",
+      "master": "staging",
+      "master_closure_sha256": "f6fb1c8061880ef9eb36b9a17ad6853a02c51e2dacd41ab4929bf198b740875f"
+    },
+    {
+      "file": "flashswf\\backgrounds\\gk6_2_BG_70002_raid.swf",
+      "bytes": 93494,
+      "sha256": "79ddc6264a38f69e43bca3f921b4f4c131d98193ac972776100cd867771e3887",
+      "master": "raid",
+      "master_closure_sha256": "b05338a9b189b1eecf91cf078d38795ea80244f2708bd3836ac5a530646673fd"
+    },
+    {
+      "file": "flashswf\\arts\\70002_jeep.swf",
+      "bytes": 251580,
+      "sha256": "4ad0d9ac73bafffdbd4055818f2af4cf9324a7689e7a253baac40a9c59489d98",
+      "master": "ambush",
+      "master_closure_sha256": "e4116bfebf9124f12cf817bece799c7c931086523fc8c26c16e75e95e2836e46"
+    },
+    {
+      "file": "flashswf\\arts\\70002_station.swf",
+      "bytes": 24050,
+      "sha256": "e89b5f9027fdd546f36caaed79d74e6beb1fff392923008fecdaad94145b8487",
+      "master": "ambush",
+      "master_closure_sha256": "e4116bfebf9124f12cf817bece799c7c931086523fc8c26c16e75e95e2836e46"
+    }
+  ],
+  "logic_publication": {
+    "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\asLoader.swf",
+    "sha256": "515d6ff1e8f48beafbba1e49efe6b043e3e5de3c272e79ab2f5af6c5e2f54383",
+    "bytes": 6136131,
+    "compiler_errors": 0,
+    "compiler_warnings": 0,
+    "compiled_marker_readback": [
+      "wreckVisible",
+      "blastFrame",
+      "jeep_ready",
+      "NewcomerRescueBegin",
+      "NewcomerRescueSignal",
+      "iron_spear_70002_veteran_type56r"
+    ],
+    "evidence": "tmp/newcomer-rescue/compiler-horde-v4/asLoader"
+  },
+  "native_fixture": {
+    "run_id": "b1dd8850ba5741c688b568706426c430",
+    "executed_path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\scripts\\NewcomerRescueNativeHost.swf",
+    "swf_sha256": "407796b4b36383205636103cf3537aba26d17f8c1f680ea2f6f5b341a71d542f",
+    "passed": 98,
+    "failed": 0,
+    "assets_loaded": "10/10",
+    "compiler_errors": 0,
+    "compiler_warnings": 0,
+    "branch_32k_retries": 0,
+    "max_avm1_function_bytes": 19072,
+    "trace_sha256": "005c46c86d7c0826e0d272baf5e57ac214f64e830f98d6a78826a23a8eebac60",
+    "evidence": "tmp/newcomer-rescue/native-authored-portraits-final",
+    "real_neutral_drone_attached": true,
+    "real_stage_manager_clear": true,
+    "real_scene_interaction_manager": true,
+    "native_fill_pixel_checks": 6,
+    "damage_and_pickup_requests": "captured fixtures",
+    "unit_combat_initialization": "isolated in fixture",
+    "real_player_saves_used": false,
+    "radio_pixel_checks": 3,
+    "early_wreck_and_live_smoke_verified": true,
+    "blast_visual_pause_verified": true,
+    "stage_xml_sha256": "cf7171125b63157b2446227f299b6831733bba99782c8b315eb616b316c089d6",
+    "authored_actor_checks": 13
+  },
+  "unit_export_coverage": {
+    "available": 15,
+    "total": 15,
+    "evidence": "tmp/newcomer-rescue/unit-export-coverage.json"
+  },
+  "portrait": {
+    "radio_key": "前治安官（无线电）",
+    "retained_dialogue_portraits_unchanged": true,
+    "shop_portraits_unchanged": 39,
+    "postprocess": {
+      "algorithm": "radio-color-alpha-scan-glow-v1",
+      "profile": "radio",
+      "profileSha256": "469fa7aa70c121bbbf7eafd673d6c967e40a84d37000999ac26c190a5b2bcfa4",
+      "sourceKey": "前治安官",
+      "sourcePath": "flashswf/portraits/前治安官.swf",
+      "sourceSha256": "2b929fdd4a6717cf7e97204fa8ddd05cf31b657dfccac2ffa1c6caab9cd89984"
+    },
+    "native_swf_sha256": "3a1b8e7a6c3add925a3f94e49b35e56e534d08fbaf1ee10fc4aa8a6f46c15296",
+    "native_swf_bytes": 84715,
+    "asset": {
+      "uri": "external/p_57d5136cc491/e_7cda072d452b.webp",
+      "width": 2048,
+      "height": 1152,
+      "frame": 1,
+      "sha256": "1fb16d2570492442a344229eab1aa818f0fc26fdc27abd9936dcecf4904c7161",
+      "bytes": 297386,
+      "format": "webp",
+      "bounds": {
+        "x": 163,
+        "y": 150,
+        "width": 716,
+        "height": 675
+      }
+    },
+    "shop_metadata_verification": "passed; full current input and image closure checked",
+    "unrelated_full_shop_rerender": "not completed: FFDec full sprite export timed out, then failed; production images retained",
+    "supporting_actors": {
+      "source": "tools/newcomer-rescue-assets/source/dialogue-actors.json",
+      "source_sha256": "beb8d732f1cd544c741f7e9dfe2250805fa3a176951044f9f14ca5c703d0383f",
+      "count": 3,
+      "dialogue_rows": 8,
+      "level_range": [
+        1,
+        1
+      ],
+      "new_combat_instances": 0,
+      "real_player_saves_used": false,
+      "native_snapshots_equal_webview2_inputs": true,
+      "native_snapshots": [
+        {
+          "name": "卫生所幸存者",
+          "title": "公社外勤新人",
+          "text": "是来接我们的吗？人和应急包都准备好了，可门外的尸群越来越多！",
+          "expression": "普通",
+          "appearance": {
+            "neck": "",
+            "foot": "白色板鞋",
+            "hand": "",
+            "leg": "咖啡色多包短裤",
+            "body": "浅灰背心",
+            "head": "",
+            "mask": "",
+            "hair": "发型-男式-黑蓬头",
+            "face": "男变装-基本脸型",
+            "gender": "男"
+          }
+        },
+        {
+          "name": "老兵通话记录",
+          "title": "断后老兵·通话记录",
+          "text": "车载武器坏了，我们停在这里断后。别回头，先把货车送到卫生所！",
+          "expression": "普通",
+          "appearance": {
+            "neck": "",
+            "foot": "棕色圆头皮鞋",
+            "hand": "",
+            "leg": "咖啡色多包裤",
+            "body": "绿色马甲",
+            "head": "",
+            "mask": "",
+            "hair": "发型-男式-络腮胡",
+            "face": "男变装-基本脸型",
+            "gender": "男"
+          }
+        },
+        {
+          "name": "防线哨兵",
+          "title": "第一防线",
+          "text": "右边有枪声！盗贼绕过来了！",
+          "expression": "普通",
+          "appearance": {
+            "neck": "",
+            "foot": "墨绿军用鞋",
+            "hand": "",
+            "leg": "墨绿军用下装",
+            "body": "护肩夹克",
+            "head": "",
+            "mask": "",
+            "hair": "发型-男式-平头",
+            "face": "男变装-基本脸型",
+            "gender": "男"
+          }
+        }
+      ],
+      "hidden_webview2": {
+        "evidence": "tmp/newcomer-rescue/webview2-authored-20261020-v1/result.json",
+        "result_sha256": "8897b02cbbad57d169918cadb6885765c3296656dadabe2734af373c67115349",
+        "assembly_path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tools\\native-dialogue-webview2-smoke\\bin\\Release\\net10.0-windows\\CRAZYFLASHER7MercenaryEmpire.Core.dll",
+        "assembly_sha256": "3ec22c3a8e82ad416a2235e820c69a4482ffa053ea4cb164d0cab1abc0e3d7b9",
+        "appearance_fixture_sha256": "e53a57b17b7fed250d5a3aa907cc8e6e4ec7e8fe9a38b141fad60b70948d8961",
+        "same_actor_cache_pixels_preserved": true,
+        "distinct_actor_pixels": true,
+        "actual_portrait_size": 768,
+        "native_widget_widths": [
+          1024,
+          1920
+        ]
+      },
+      "incomplete_vest_parts_avoided": true
+    }
+  },
+  "gameplay_e2e": false,
+  "standard_entry_verified": false,
+  "human_visual_acceptance": false,
+  "runtime_promoted": false,
+  "scene_data": {
+    "exits": [
+      "左",
+      "左",
+      "左",
+      "右",
+      "右",
+      "右",
+      "右",
+      "右"
+    ],
+    "ground_arrow_instances": 0,
+    "spawn_points_outside_static_collision": 8,
+    "raid_dressup_units": 0,
+    "raid_dedicated_bandit_ids": [
+      44,
+      45,
+      48,
+      49
+    ],
+    "raid_enemies_explicitly_hostile": true,
+    "blast_visual_diameter_ratio": 2.272727272727273,
+    "blast_damage_or_range_changed": false,
+    "wreck_appearance_blast_frame": 8,
+    "blast_total_frames": 78,
+    "hold_seconds": 75,
+    "horde_reserve": 745,
+    "basic_zombie_reserve": 720,
+    "spawn_lanes": 6,
+    "per_lane_capacity": 8,
+    "total_spawn_capacity": 48,
+    "return_dialogue_explains_tail_pursuit": true,
+    "zombie_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      293
+    ]
+  },
+  "changed_native_artifact_evidence": {
+    "flashswf/arts/70002_jeep.swf": "tmp/newcomer-rescue/compiler-horde-v4/jeep",
+    "flashswf/portraits/前治安官（无线电）.swf": "tmp/newcomer-rescue/compiler-guidance-v3/radio"
+  },
+  "horde_reference": {
+    "path": "data/stages/基地门口/第三集结点.xml",
+    "sha256": "9c8c43b0862765fcf6f5bbf951e54ae0cd440ccff13237f2a89bdc07fbdee73e",
+    "pattern": "six sustained basic-zombie streams with sparse higher-level zombies already encountered by main quest 13"
+  },
+  "mass_horde_live_fps_verified": false,
+  "story_roster": {
+    "main_quest_completed": 13,
+    "availability_chain": [
+      13,
+      70001,
+      70002
+    ],
+    "allowed_zombie_ids": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      293
+    ],
+    "removed_later_zombies": [
+      {
+        "unit_id": 7,
+        "first_main_task": 14,
+        "stage": "data/stages/基地门口/商业区.xml"
+      },
+      {
+        "unit_id": 9,
+        "first_main_task": 21,
+        "stage": "data/stages/基地门口/地铁站.xml"
+      },
+      {
+        "unit_id": 10,
+        "first_main_task": 17,
+        "stage": "data/stages/基地门口/贫民窟.xml"
+      },
+      {
+        "unit_id": 39,
+        "first_main_task": 17,
+        "stage": "data/stages/基地门口/贫民窟.xml"
+      },
+      {
+        "unit_id": 400,
+        "first_main_task": 19,
+        "stage": "data/stages/基地门口/闹市区.xml"
+      },
+      {
+        "unit_id": 401,
+        "first_main_task": 21,
+        "stage": "data/stages/基地门口/地铁站.xml"
+      }
+    ],
+    "enhanced_beast_art_unit": 9,
+    "enhanced_beast_art_source": "flashswf/arts/things1/LIBRARY/敌人-兽化僵尸1.xml",
+    "raid_only_exceptions": [
+      13,
+      44,
+      45,
+      48,
+      49,
+      456,
+      458
+    ],
+    "roster_rejection_checks_passed": 8,
+    "availability_evidence": "task prerequisites and stage XML; no player progression or combat claimed"
+  },
+  "data_validation": {
+    "stage_generator_check": true,
+    "published_art_validator": true,
+    "arena_roster_check": true,
+    "arena_factions_check": true,
+    "roster_rejection_checks": 8,
+    "unit_exports_in_live_rsl_graph": 15,
+    "native_xml_reloaded": true,
+    "portrait_identity_rejection_checks": 5,
+    "portrait_source_parts_exist": true,
+    "combat_and_dialogue_text_unchanged": true
+  }
+}

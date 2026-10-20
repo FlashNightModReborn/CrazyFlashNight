@@ -33,6 +33,18 @@ var LiveDialoguePortraits = (function() {
         '0': '女变装-基本脸型',
         '1': '男变装-基本脸型'
     };
+    // 与 flashswf/portraits/postprocess.json (radio-color-alpha-scan-glow-v1) 同源的参数
+    var RADIO_PROFILE = {
+        low: [24, 47, 72],
+        high: [160, 188, 220],
+        colorRetention: 0.12,
+        opacity: 0.88,
+        scanPeriod: 3,
+        scanDarken: 0.84,
+        glowColor: [79, 146, 223],
+        glowRadius: 1.6,
+        glowOpacity: 0.30
+    };
     // 与 merc-portrait-renderer.js 的 HAIR_COMPAT_ALIASES 同源（两边保持逐字节一致；
     // 该文件不可改，故在此复制而非引入 MercPortraits 依赖）。
     var HAIR_COMPAT_ALIASES = {
@@ -173,6 +185,150 @@ var LiveDialoguePortraits = (function() {
         return String(value);
     }
 
+    function parseExpressionSpec(options) {
+        var raw = normalizeExpression(options);
+        var postprocess = (options && options.postprocess) ? String(options.postprocess) : '';
+        var faceExpression = raw;
+        var radioMatch = /^(.*?)(?:（无线电）|\(无线电\))$/.exec(raw);
+        if (radioMatch) {
+            faceExpression = radioMatch[1] || DEFAULT_EXPRESSION;
+            if (!postprocess) postprocess = 'radio';
+        } else if (raw === '无线电') {
+            faceExpression = DEFAULT_EXPRESSION;
+            if (!postprocess) postprocess = 'radio';
+        }
+        return {
+            raw: raw,
+            faceExpression: faceExpression,
+            postprocess: postprocess
+        };
+    }
+
+    function applyRadioPostprocess(canvas) {
+        if (!canvas || !canvas.width || !canvas.height) return;
+        var ctx = canvas.getContext('2d');
+        if (!ctx || typeof ctx.getImageData !== 'function') return;
+        var w = canvas.width;
+        var h = canvas.height;
+        var imgData = ctx.getImageData(0, 0, w, h);
+        var data = imgData && imgData.data;
+        if (!data || !data.length) return;
+        var p = RADIO_PROFILE;
+        var scale = Math.max(1, h / 576);
+        var period = p.scanPeriod * scale;
+        var scanWidth = Math.max(1, Math.round(scale));
+        var scanRows = new Uint8Array(h);
+        var maxLogical = Math.round(h / period) + 1;
+        for (var logical = 0; logical < maxLogical; logical++) {
+            var y0 = Math.round(logical * period);
+            if (y0 >= h) break;
+            var yEnd = Math.min(h, y0 + scanWidth);
+            for (var sy = y0; sy < yEnd; sy++) scanRows[sy] = 1;
+        }
+        var origAlpha = new Uint8Array(w * h);
+        var minX = w, minY = h, maxX = -1, maxY = -1;
+        for (var y = 0; y < h; y++) {
+            var rowOff = y * w;
+            for (var x = 0; x < w; x++) {
+                var a = data[(rowOff + x) * 4 + 3];
+                if (a > 0) {
+                    origAlpha[rowOff + x] = a;
+                    if (x < minX) minX = x;
+                    if (x > maxX) maxX = x;
+                    if (y < minY) minY = y;
+                    if (y > maxY) maxY = y;
+                }
+            }
+        }
+        if (maxX >= minX) {
+            minX = Math.max(0, minX - 3);
+            minY = Math.max(0, minY - 3);
+            maxX = Math.min(w - 1, maxX + 3);
+            maxY = Math.min(h - 1, maxY + 3);
+            var tempAlpha = new Uint8Array(w * h);
+            var blurredAlpha = new Uint8Array(w * h);
+            for (var by = minY; by <= maxY; by++) {
+                var rOff = by * w;
+                for (var bx = minX; bx <= maxX; bx++) {
+                    var xm2 = bx > 1 ? bx - 2 : 0;
+                    var xm1 = bx > 0 ? bx - 1 : 0;
+                    var xp1 = bx + 1 < w ? bx + 1 : w - 1;
+                    var xp2 = bx + 2 < w ? bx + 2 : w - 1;
+                    tempAlpha[rOff + bx] = (
+                        origAlpha[rOff + xm2] +
+                        origAlpha[rOff + xm1] * 4 +
+                        origAlpha[rOff + bx] * 6 +
+                        origAlpha[rOff + xp1] * 4 +
+                        origAlpha[rOff + xp2] + 8
+                    ) >> 4;
+                }
+            }
+            for (var by2 = minY; by2 <= maxY; by2++) {
+                var ym2 = (by2 > 1 ? by2 - 2 : 0) * w;
+                var ym1 = (by2 > 0 ? by2 - 1 : 0) * w;
+                var y0Off = by2 * w;
+                var yp1 = (by2 + 1 < h ? by2 + 1 : h - 1) * w;
+                var yp2 = (by2 + 2 < h ? by2 + 2 : h - 1) * w;
+                for (var bx2 = minX; bx2 <= maxX; bx2++) {
+                    blurredAlpha[y0Off + bx2] = (
+                        tempAlpha[ym2 + bx2] +
+                        tempAlpha[ym1 + bx2] * 4 +
+                        tempAlpha[y0Off + bx2] * 6 +
+                        tempAlpha[yp1 + bx2] * 4 +
+                        tempAlpha[yp2 + bx2] + 8
+                    ) >> 4;
+                }
+            }
+            var keep = p.colorRetention;
+            var invKeep = 1 - keep;
+            var slopeR = (p.high[0] - p.low[0]) / 255 * invKeep;
+            var slopeG = (p.high[1] - p.low[1]) / 255 * invKeep;
+            var slopeB = (p.high[2] - p.low[2]) / 255 * invKeep;
+            var offR = p.low[0] * invKeep;
+            var offG = p.low[1] * invKeep;
+            var offB = p.low[2] * invKeep;
+            var glowR = p.glowColor[0], glowG = p.glowColor[1], glowB = p.glowColor[2];
+            var opacity = p.opacity;
+            var glowOpacity = p.glowOpacity;
+            var scanDarken = p.scanDarken;
+            for (var py = minY; py <= maxY; py++) {
+                var scanMul = scanRows[py] ? scanDarken : 1;
+                var pRow = py * w;
+                for (var px = minX; px <= maxX; px++) {
+                    var idx = pRow + px;
+                    var a0 = origAlpha[idx];
+                    var bA = blurredAlpha[idx];
+                    if (a0 === 0 && bA === 0) continue;
+                    var p4 = idx * 4;
+                    var fgA = Math.round(a0 * opacity) / 255;
+                    var bgA = Math.round(bA * glowOpacity) / 255;
+                    var outA = fgA + bgA * (1 - fgA);
+                    if (outA <= 0) {
+                        data[p4 + 3] = 0;
+                        continue;
+                    }
+                    var fgR = 0, fgG = 0, fgB = 0;
+                    if (a0 > 0) {
+                        var r = data[p4], g = data[p4 + 1], b = data[p4 + 2];
+                        var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+                        fgR = Math.round(Math.min(255, Math.max(0, slopeR * luma + keep * r + offR)) * scanMul);
+                        fgG = Math.round(Math.min(255, Math.max(0, slopeG * luma + keep * g + offG)) * scanMul);
+                        fgB = Math.round(Math.min(255, Math.max(0, slopeB * luma + keep * b + offB)) * scanMul);
+                    }
+                    var bgWeight = bgA * (1 - fgA);
+                    data[p4] = Math.round((fgR * fgA + glowR * bgWeight) / outA);
+                    data[p4 + 1] = Math.round((fgG * fgA + glowG * bgWeight) / outA);
+                    data[p4 + 2] = Math.round((fgB * fgA + glowB * bgWeight) / outA);
+                    data[p4 + 3] = Math.round(outA * 255);
+                }
+            }
+            if (typeof ctx.putImageData === 'function') {
+                ctx.putImageData(imgData, 0, 0);
+            }
+        }
+        canvas.__postprocessed = 'radio';
+    }
+
     function normalizeSize(options) {
         options = options || {};
         var size = Number(options.size);
@@ -206,6 +362,7 @@ var LiveDialoguePortraits = (function() {
         options = options || {};
         if (typeof DressupDollRenderer === 'undefined' || !DressupDollRenderer) return null;
         var normalized = normalizeAppearance(manifest, appearance);
+        var exprSpec = parseExpressionSpec(options);
         var state = DressupDollRenderer.buildStateFromEquipment(manifest, {
             gender: normalized.gender,
             equipment: normalized.equipment,
@@ -217,11 +374,12 @@ var LiveDialoguePortraits = (function() {
             stateLabel: options.stateLabel,
             zoom: options.zoom == null ? 1 : options.zoom,
             margin: options.margin == null ? 8 : options.margin,
-            expression: normalizeExpression(options),
+            expression: exprSpec.faceExpression,
             fieldExpressions: options.fieldExpressions,
             strictFields: options.strictFields === true
         });
         state.vAlign = options.vAlign || 'top';
+        if (exprSpec.postprocess) state.postprocess = exprSpec.postprocess;
         var fitEnvelope = options.fitEnvelope;
         if (fitEnvelope && typeof fitEnvelope === 'object') state.fitEnvelope = fitEnvelope;
         return state;
@@ -241,11 +399,16 @@ var LiveDialoguePortraits = (function() {
         Object.keys(keyMap).sort().forEach(function(field) {
             extra[field] = keyMap[field];
         });
+        var exprSpec = parseExpressionSpec(options);
+        var identityExpr = exprSpec.raw;
+        if (exprSpec.postprocess === 'radio' && !/(?:（无线电）|\(无线电\)|^无线电$)/.test(identityExpr)) {
+            identityExpr = (identityExpr || DEFAULT_EXPRESSION) + '（无线电）';
+        }
         return 'live-portrait:' + JSON.stringify({
             v: 1,
             appearance: normalized.normalizedAppearance,
             keyMap: extra,
-            expression: normalizeExpression(options),
+            expression: identityExpr,
             rig: normalizeRig(options),
             size: size.width + 'x' + size.height,
             assetVersion: assetVersionOf(manifest, options)
@@ -344,6 +507,10 @@ var LiveDialoguePortraits = (function() {
                     var ready = !!(lastMeta && lastMeta.pendingImages === 0
                         && lastMeta.failedImages === 0 && lastMeta.drawnImages > 0);
                     if (ready && alphaPixels(canvas) > minAlpha) {
+                        if ((state && state.postprocess === 'radio')
+                                || parseExpressionSpec(options).postprocess === 'radio') {
+                            applyRadioPostprocess(canvas);
+                        }
                         settle(canvas.toDataURL('image/png'));
                         return;
                     }
@@ -498,6 +665,10 @@ var LiveDialoguePortraits = (function() {
                         var ready = !!(lastMeta && lastMeta.pendingImages === 0
                             && lastMeta.failedImages === 0 && lastMeta.drawnImages > 0);
                         if (ready || Date.now() >= deadline) {
+                            if (ready && options.animate !== true
+                                    && resolved.state && resolved.state.postprocess === 'radio') {
+                                applyRadioPostprocess(canvas);
+                            }
                             resolveReady(lastMeta);
                             return;
                         }

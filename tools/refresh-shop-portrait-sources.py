@@ -25,6 +25,30 @@ def load(name: str, filename: str):
     return module
 
 
+def validate_dialogue_baseline(previous: dict, baseline_sha: str, module_ast_sha: str,
+                              known_tool_shas: set[str], active_count: int) -> dict | None:
+    """An older exact baseline can cross a previously verified metadata-only hop.
+
+    The caller still rechecks every consumed entry and the complete image/source
+    closure. A receipt alone cannot authorize a changed helper, identity or image.
+    """
+    if baseline_sha == previous["dialogueManifest"]["sha256"]:
+        return None
+    prior = previous.get("dialogueMetadataRefresh", {})
+    accepted = (prior.get("mode") == "unconsumed-dialogue-metadata-only"
+                and prior.get("baselineManifestSha256", prior.get("previousManifestSha256")) == baseline_sha
+                and prior.get("consumedModuleAstSha256") == module_ast_sha
+                and prior.get("unchangedShopEntries") == active_count
+                and prior.get("tool", {}).get("sha256") in known_tool_shas
+                and prior.get("currentBakerSha256", prior.get("previousBakerSha256")) == previous["toolchain"]["dialogueBaker"]["sha256"])
+    if not accepted:
+        raise RuntimeError("Dialogue baseline does not match the bound manifest or a verified metadata-only baseline.")
+    return {"mode": "verified-prior-metadata-refresh", "baselineManifestSha256": baseline_sha,
+            "boundManifestSha256": previous["dialogueManifest"]["sha256"],
+            "priorRefreshToolSha256": prior["tool"]["sha256"],
+            "consumedModuleAstSha256": module_ast_sha}
+
+
 def refresh_dialogue_metadata(previous: dict, updated: dict, baker, baseline_dir: Path,
                              baker_ref: str) -> None:
     """只允许未被商店调用的 bake_external 和非商店对白条目发生变化。
@@ -34,8 +58,6 @@ def refresh_dialogue_metadata(previous: dict, updated: dict, baker, baseline_dir
     图片、真正的渲染输入、原生成环境与输出证据仍由完整 validator 校验。
     """
     old_manifest_path = baseline_dir / "manifest.json"
-    if baker.sha256_file(old_manifest_path) != previous["dialogueManifest"]["sha256"]:
-        raise RuntimeError("Dialogue baseline does not match the bound manifest.")
     result = subprocess.run(["git", "show", f"{baker_ref}:tools/bake-dialogue-portraits.py"],
                             cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
     old_source = result.stdout
@@ -62,6 +84,11 @@ def refresh_dialogue_metadata(previous: dict, updated: dict, baker, baseline_dir
         if old_manifest[key] != manifest[key]:
             raise RuntimeError(f"Consumed dialogue manifest contract changed: {key}")
     active, _ = baker.read_active_shops(ROOT)
+    old_refresh_tool = subprocess.run(["git", "show", f"{baker_ref}:tools/refresh-shop-portrait-sources.py"],
+                                    cwd=ROOT, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True).stdout
+    baseline_proof = validate_dialogue_baseline(previous, baker.sha256_file(old_manifest_path),
+        baker.sha256_bytes(old_module.encode("utf-8")),
+        {baker.sha256_bytes(old_refresh_tool), baker.sha256_file(Path(__file__).resolve())}, len(active))
     for shop_id in active:
         if old_manifest["entries"].get(shop_id) != manifest["entries"].get(shop_id):
             raise RuntimeError(f"Consumed dialogue portrait changed: {shop_id}")
@@ -72,10 +99,14 @@ def refresh_dialogue_metadata(previous: dict, updated: dict, baker, baseline_dir
         "tool": baker.artifact(Path(__file__).resolve(), ROOT),
         "previousManifestSha256": previous["dialogueManifest"]["sha256"],
         "previousBakerSha256": previous["toolchain"]["dialogueBaker"]["sha256"],
+        "currentBakerSha256": updated["toolchain"]["dialogueBaker"]["sha256"],
         "consumedModuleAstSha256": baker.sha256_bytes(old_module.encode("utf-8")),
         "unchangedShopDialogueHelpers": sorted(helpers),
         "unchangedShopEntries": len(active),
     }
+    if baseline_proof is not None:
+        updated["dialogueMetadataRefresh"]["baselineManifestSha256"] = baseline_proof["baselineManifestSha256"]
+        updated["dialogueMetadataRefresh"]["baselineProof"] = baseline_proof
 
 
 def validate_list_identity(previous: dict, current: dict, raw: bytes,

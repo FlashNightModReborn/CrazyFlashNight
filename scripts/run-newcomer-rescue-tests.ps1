@@ -1,0 +1,5 @@
+﻿[CmdletBinding()]
+param([ValidateRange(1,3600)][int]$TimeoutSeconds=240)
+$ErrorActionPreference='Stop'
+& (Join-Path $PSScriptRoot 'test-runners/run-focused-testloader.ps1') -DomainId 'newcomer-rescue' -TemplateRelativePath 'scripts/test-runners/newcomer-rescue/TestLoader.as.template' -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/scene/NewcomerRescueTest.as') -CompileTargetRelativePath 'scripts/NewcomerRescueNativeHost/NewcomerRescueNativeHost.xfl' -CompileSwfRelativePath 'scripts/NewcomerRescueNativeHost.swf' -SuiteFqns @('org.flashNight.arki.scene.NewcomerRescueTest') -ExpectedTracePatterns @('(?m)^NewcomerRescueTest Tests Passed: 102\r?$','(?m)^NewcomerRescueTest Tests Failed: 0\r?$','(?m)^NewcomerRescueTest Assets Loaded: 11/11\r?$') -SuccessSummary 'native art, authored speaker appearances, interaction, map-element hit/fuse lifecycle and 75-second native wave timer; damage/pickup requests captured without saves' -TimeoutSeconds $TimeoutSeconds -AsyncBehaviorTimeoutSeconds 180
+if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
