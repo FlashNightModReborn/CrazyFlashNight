@@ -132,8 +132,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int y;
             if (_overlay.IsExpanded)
             {
-                width = Clamp((int)Math.Round(panel.Width * 0.46), 360, 640);
-                height = Clamp((int)Math.Round(150 * scale), 140, 260);
+                width = Clamp((int)Math.Round(panel.Width * 0.47), 380, 660);
+                height = Clamp((int)Math.Round(160 * scale), 150, 280);
                 x = rightLimit - gap - width;
                 int bottom = collapsedY + size;   // 展开面板底边与收起箭头对齐，箭头原地旋转
                 y = bottom - height;

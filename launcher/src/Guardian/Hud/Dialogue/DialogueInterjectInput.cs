@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -136,7 +137,28 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         private const int GCS_COMPSTR = 0x0008;
+        private const int EM_SETMARGINS = 0x00D3;
+        private const int EC_LEFTMARGIN = 0x0001;
+        private const int EC_RIGHTMARGIN = 0x0002;
+        private const int WM_GETMINMAXINFO = 0x0024;
+        private const float DesignHeight = 160f;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct NativePoint { public int X; public int Y; }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MinMaxInfo
+        {
+            public NativePoint Reserved;
+            public NativePoint MaxSize;
+            public NativePoint MaxPosition;
+            public NativePoint MinTrackSize;
+            public NativePoint MaxTrackSize;
+        }
 
         private readonly DialogueInterjectInputModel _model = new DialogueInterjectInputModel();
         private readonly ComposingTextBox _textBox;
@@ -152,6 +174,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Color _accent = Color.FromArgb(204, 0, 0);
         private Color _accentAlt = Color.FromArgb(0, 153, 204);
         private Color _muted = Color.FromArgb(118, 118, 118);
+        private Color _fieldBack = Color.FromArgb(250, 248, 243);
+        private Color _fieldDisabledBack = Color.FromArgb(238, 235, 228);
+        private Color _fieldBorder = Color.FromArgb(188, 182, 170);
 
         private string _placeholder = "说点什么…";
         private bool _textInputActive;
@@ -166,6 +191,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         private Rectangle _chevronRect = Rectangle.Empty;
         private Rectangle _actionRect = Rectangle.Empty;
+        private Rectangle _fieldRect = Rectangle.Empty;
+        private Rectangle _counterRect = Rectangle.Empty;
         private float _uiScale;
         private Font _inputFont;
         private Font _smallFont;
@@ -203,10 +230,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             _textBox = new ComposingTextBox();
             _textBox.BorderStyle = BorderStyle.None;
-            _textBox.BackColor = _bodyBack;
+            _textBox.BackColor = _fieldBack;
             _textBox.ForeColor = _bodyFore;
-            _textBox.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Regular, GraphicsUnit.Pixel);
+            _textBox.Font = new Font("Microsoft YaHei UI", 14f, FontStyle.Regular, GraphicsUnit.Pixel);
             _textBox.Multiline = false;
+            _textBox.AutoSize = false;
             _textBox.ShortcutsEnabled = true;
             _textBox.TabStop = true;
             _textBox.Visible = false;
@@ -236,6 +264,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _chevronTimer.Interval = 15;
             _chevronTimer.Tick += OnChevronTick;
 
+            DeriveInputColors();
             ApplyLayout();
 
             Enter += delegate { if (_expanded && _model.Enabled) _textBox.Focus(); };
@@ -381,7 +410,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             _model.Enabled = value;
             _textBox.ReadOnly = !value;
-            _textBox.BackColor = value ? _bodyBack : _bodyDisabledBack;
+            _textBox.BackColor = value ? _fieldBack : _fieldDisabledBack;
             if (!value) Collapse(false);
             UpdateCursor();
             Invalidate();
@@ -409,10 +438,36 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Math.Max(0, background.R - 15),
                 Math.Max(0, background.G - 15),
                 Math.Max(0, background.B - 15));
+            DeriveInputColors();
             BackColor = _headerBack;
-            _textBox.BackColor = _model.Enabled ? _bodyBack : _bodyDisabledBack;
+            _textBox.BackColor = _model.Enabled ? _fieldBack : _fieldDisabledBack;
             _textBox.ForeColor = _bodyFore;
             Invalidate();
+        }
+
+        /// <summary>纸面输入槽：比对话正文更亮一档，带一点暖色，和深色头条拉开层次。</summary>
+        private void DeriveInputColors()
+        {
+            _fieldBack = Blend(Color.FromArgb(255, 252, 247), _bodyBack, 0.12f);
+            _fieldDisabledBack = Blend(_fieldBack, _bodyDisabledBack, 0.55f);
+            _fieldBorder = Blend(_bodyFore, _bodyBack, 0.58f);
+        }
+
+        private static Color Blend(Color a, Color b, float bWeight)
+        {
+            float w = Math.Max(0f, Math.Min(1f, bWeight));
+            return Color.FromArgb(
+                (int)Math.Round(a.R + (b.R - a.R) * w),
+                (int)Math.Round(a.G + (b.G - a.G) * w),
+                (int)Math.Round(a.B + (b.B - a.B) * w));
+        }
+
+        private static Color Shade(Color color, float factor)
+        {
+            return Color.FromArgb(
+                Math.Max(0, Math.Min(255, (int)Math.Round(color.R * factor))),
+                Math.Max(0, Math.Min(255, (int)Math.Round(color.G * factor))),
+                Math.Max(0, Math.Min(255, (int)Math.Round(color.B * factor))));
         }
 
         /// <summary>提示文案：收起按钮 Tooltip 与展开态输入框共用。</summary>
@@ -456,6 +511,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_model.Focused == focused) return;
             _model.Focused = focused;
             _textInputActive = focused;
+            Invalidate();   // 焦点环
             Action<bool> handler = InputFocusChanged;
             if (handler != null)
             {
@@ -578,16 +634,34 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             PaintExpanded(e.Graphics);
         }
 
-        /// <summary>收起态：一个与关闭钮同高的深色标签，中间是向上的箭头。</summary>
+        /// <summary>收起态：深色釉面方块，左侧红条 + 向上箭头；悬停转青色描边。</summary>
         private void PaintCollapsed(Graphics g)
         {
             Rectangle r = ClientRectangle;
-            using (SolidBrush back = new SolidBrush(_headerBack))
+            if (r.Width <= 0 || r.Height <= 0) return;
+
+            using (LinearGradientBrush back = new LinearGradientBrush(
+                new Rectangle(0, 0, Math.Max(1, r.Width), Math.Max(1, r.Height)),
+                Color.FromArgb(44, 44, 44), Color.FromArgb(16, 16, 16), 90f))
                 g.FillRectangle(back, r);
-            using (Pen border = new Pen(Color.FromArgb(90, 255, 255, 255)))
-                g.DrawRectangle(border, 0, 0, r.Width - 1, r.Height - 1);
+            using (Pen top = new Pen(Color.FromArgb(46, 255, 255, 255)))
+                g.DrawLine(top, 1, 1, r.Width - 2, 1);
+
             using (SolidBrush accent = new SolidBrush(CanToggle ? _accent : _muted))
-                g.FillRectangle(accent, 0, 0, Math.Max(2, (int)Math.Round(3 * _uiScale)), r.Height);
+                g.FillRectangle(accent, 0, 0, Math.Max(3, (int)Math.Round(4 * _uiScale)), r.Height);
+            using (SolidBrush sheen = new SolidBrush(Color.FromArgb(18, 255, 255, 255)))
+                g.FillRectangle(sheen, Math.Max(3, (int)Math.Round(4 * _uiScale)), 0,
+                    r.Width - Math.Max(3, (int)Math.Round(4 * _uiScale)), r.Height / 2);
+
+            Color border = _chevronHover && CanToggle
+                ? Color.FromArgb(180, _accentAlt) : Color.FromArgb(68, 255, 255, 255);
+            using (Pen pen = new Pen(border))
+                g.DrawRectangle(pen, 0, 0, r.Width - 1, r.Height - 1);
+            if (_chevronHover && CanToggle)
+            {
+                using (Pen glow = new Pen(Color.FromArgb(34, _accentAlt)))
+                    g.DrawRectangle(glow, 1, 1, r.Width - 3, r.Height - 3);
+            }
 
             Color chevron = !CanToggle ? _muted
                 : (_chevronHover ? _accentAlt : _headerFore);
@@ -595,82 +669,221 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             if (_startRequired || _configRequired)
             {
-                float dot = Math.Max(4f, 6f * _uiScale);
+                float dot = Math.Max(5f, 7f * _uiScale);
+                float x = r.Width - dot - Math.Max(3f, 4f * _uiScale);
+                using (SolidBrush ring = new SolidBrush(Color.FromArgb(210, 255, 255, 255)))
+                    g.FillEllipse(ring, x - 1.5f, 1.5f, dot + 3f, dot + 3f);
                 using (SolidBrush warn = new SolidBrush(_accent))
-                    g.FillEllipse(warn, r.Width - dot - 3, 3, dot, dot);
+                    g.FillEllipse(warn, x, 3f, dot, dot);
             }
         }
 
-        /// <summary>展开态：深色头条 + 浅灰输入区 + 底部计数/操作/旋转箭头。</summary>
+        /// <summary>展开态：深色头条 + 暖白纸面 + 圆角输入槽 + 底部计数/动作/旋转箭头。</summary>
         private void PaintExpanded(Graphics g)
         {
             int w = ClientSize.Width;
             int h = ClientSize.Height;
+            if (w <= 0 || h <= 0) return;
             int headerH = HeaderHeight;
             int footerTop = h - FooterHeight;
+            float ui = _uiScale;
 
-            using (SolidBrush body = new SolidBrush(_bodyBack))
-                g.FillRectangle(body, ClientRectangle);
-            using (SolidBrush header = new SolidBrush(_headerBack))
-                g.FillRectangle(header, 0, 0, w, headerH);
+            // 页眉：深色渐变 + 极淡扫描线，保留对话面板的“终端头条”质感。
+            using (LinearGradientBrush back = new LinearGradientBrush(
+                new Rectangle(0, 0, w, Math.Max(1, headerH)),
+                Color.FromArgb(42, 42, 42), Color.FromArgb(16, 16, 16), 90f))
+                g.FillRectangle(back, 0, 0, w, headerH);
+            if (headerH > 8)
+            {
+                using (Pen scan = new Pen(Color.FromArgb(7, 255, 255, 255)))
+                {
+                    int step = Math.Max(2, (int)Math.Round(3 * ui));
+                    for (int y = 3; y < headerH - 2; y += step)
+                        g.DrawLine(scan, 0, y, w, y);
+                }
+            }
             using (SolidBrush accent = new SolidBrush(_accent))
-                g.FillRectangle(accent, 0, 0, Math.Max(3, (int)Math.Round(4 * _uiScale)), headerH);
-            using (Pen cyan = new Pen(_accentAlt, Math.Max(1f, 1f * _uiScale)))
+                g.FillRectangle(accent, 0, 0, Math.Max(4, (int)Math.Round(5 * ui)), headerH);
+            using (LinearGradientBrush rule = new LinearGradientBrush(
+                new Rectangle(0, headerH - 1, w, 1), _accentAlt,
+                Color.FromArgb(0, _accentAlt), 0f))
+                g.FillRectangle(rule, 0, headerH - 1, w, Math.Max(1, (int)Math.Round(ui)));
+
+            // 纸面：暖白竖向渐变 + 极淡横线纹。
+            Rectangle bodyRect = new Rectangle(0, headerH, w, Math.Max(1, footerTop - headerH));
+            using (LinearGradientBrush body = new LinearGradientBrush(bodyRect,
+                Color.FromArgb(247, 245, 240), _bodyBack, 90f))
+                g.FillRectangle(body, bodyRect);
+            using (Pen rule = new Pen(Color.FromArgb(9, 84, 68, 42)))
             {
-                float y = headerH - Math.Max(1f, 1f * _uiScale);
-                g.DrawLine(cyan, 0, y, w, y);
+                int step = Math.Max(4, (int)Math.Round(6 * ui));
+                for (int y = headerH + step; y < footerTop; y += step)
+                    g.DrawLine(rule, 0, y, w, y);
             }
 
-            int textLeft = (int)Math.Round(Pad + 6 * _uiScale);
-            TextRenderer.DrawText(g, "插话", _headerFont,
-                new Rectangle(textLeft, 0, Math.Max(20, w - textLeft - Pad), headerH),
-                _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            PaintHeaderTitle(g, headerH);
 
-            // 输入框外框（TextBox 自身无边框）。
-            if (_textBox.Visible)
+            // 输入槽：圆角浅色内凹框；聚焦时青色双线，禁用时灰化。
+            if (!_fieldRect.IsEmpty)
             {
-                using (Pen field = new Pen(Color.FromArgb(165, 165, 165)))
-                    g.DrawRectangle(field, _textBox.Left - 1, _textBox.Top - 1,
-                        _textBox.Width + 1, _textBox.Height + 1);
+                float radius = Math.Max(5f, 7f * ui);
+                if (_model.Enabled && _model.Focused)
+                {
+                    using (Pen outer = new Pen(Color.FromArgb(42, _accentAlt),
+                        Math.Max(1f, 2.4f * ui)))
+                        DrawRounded(g, RectangleF.Inflate(_fieldRect, 1.5f, 1.5f), radius + 1.5f, outer);
+                    using (Pen inner = new Pen(Color.FromArgb(150, _accentAlt),
+                        Math.Max(1f, 1.2f * ui)))
+                        DrawRounded(g, _fieldRect, radius, inner);
+                }
+                else
+                {
+                    using (Pen edge = new Pen(_fieldBorder, Math.Max(1f, ui)))
+                        DrawRounded(g, _fieldRect, radius, edge);
+                }
+                using (Pen highlight = new Pen(Color.FromArgb(80, 255, 255, 255)))
+                    g.DrawLine(highlight, _fieldRect.Left + (int)radius, _fieldRect.Top + 1,
+                        _fieldRect.Right - (int)radius, _fieldRect.Top + 1);
             }
 
-            using (Pen separator = new Pen(Color.FromArgb(190, 190, 190)))
+            // 页脚：浅色分隔线 + 计数胶囊 + 动作按钮 + 圆形箭头热区。
+            using (Pen separator = new Pen(Color.FromArgb(198, 193, 183)))
                 g.DrawLine(separator, Pad, footerTop, w - Pad, footerTop);
+            using (Pen highlight = new Pen(Color.FromArgb(120, 255, 255, 255)))
+                g.DrawLine(highlight, Pad, footerTop + 1, w - Pad, footerTop + 1);
 
-            Rectangle counterRect = new Rectangle(Pad, footerTop,
-                Math.Max(20, _actionRect.Left - Pad - 4), FooterHeight);
-            TextRenderer.DrawText(g, _model.CounterText, _smallFont, counterRect,
-                _muted, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            PaintCounter(g);
 
             if (!_actionRect.IsEmpty)
             {
                 string label = _startRequired ? "启动" : (_configRequired ? "配置" : "发送");
-                Color accent = _configRequired ? _accent : (_startRequired ? _accentAlt : _headerBack);
+                Color accent = _startRequired ? _accentAlt : _accent;
                 PaintActionButton(g, _actionRect, label, ActionEnabled, accent);
             }
 
+            if (_chevronHover && CanToggle)
+            {
+                using (SolidBrush halo = new SolidBrush(Color.FromArgb(16, 0, 0, 0)))
+                    g.FillEllipse(halo, _chevronRect);
+            }
             Color chevron = !CanToggle ? _muted
-                : (_chevronHover ? _accentAlt : _headerBack);
+                : (_chevronHover ? _accent : _headerBack);
             DrawChevron(g, _chevronRect.Left + _chevronRect.Width / 2f,
                 _chevronRect.Top + _chevronRect.Height / 2f, chevron);
 
-            using (Pen border = new Pen(Color.FromArgb(80, 0, 0, 0)))
+            using (Pen border = new Pen(Color.FromArgb(105, 0, 0, 0)))
                 g.DrawRectangle(border, 0, 0, w - 1, h - 1);
         }
 
+        /// <summary>头条：红色对话气泡图标 + 标题；右侧留白保持干净。</summary>
+        private void PaintHeaderTitle(Graphics g, int headerH)
+        {
+            float ui = _uiScale;
+            int left = (int)Math.Round(Pad + 2 * ui);
+            float iconW = Math.Max(13f, 15f * ui);
+            float iconH = Math.Max(10f, 11f * ui);
+            RectangleF bubble = new RectangleF(left,
+                (headerH - iconH) / 2f - Math.Max(1f, ui), iconW, iconH);
+            using (GraphicsPath path = RoundedRectPath(bubble, Math.Max(2f, 3f * ui)))
+            using (SolidBrush fill = new SolidBrush(_accent))
+                g.FillPath(fill, path);
+            float tail = Math.Max(2.5f, 3.5f * ui);
+            using (SolidBrush tailFill = new SolidBrush(_accent))
+                g.FillPolygon(tailFill, new PointF[]
+                {
+                    new PointF(bubble.Left + bubble.Width * 0.18f, bubble.Bottom - 1f),
+                    new PointF(bubble.Left + bubble.Width * 0.36f, bubble.Bottom - 1f),
+                    new PointF(bubble.Left + bubble.Width * 0.16f, bubble.Bottom + tail)
+                });
+            float dot = Math.Max(1.3f, 1.6f * ui);
+            using (SolidBrush dots = new SolidBrush(_headerFore))
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    float x = bubble.Left + bubble.Width * (0.28f + i * 0.22f) - dot / 2f;
+                    g.FillEllipse(dots, x, bubble.Top + bubble.Height / 2f - dot / 2f, dot, dot);
+                }
+            }
+
+            int textLeft = (int)Math.Round(bubble.Right + Math.Max(6f, 8f * ui));
+            TextRenderer.DrawText(g, "插话", _headerFont,
+                new Rectangle(textLeft, 0, Math.Max(20, ClientSize.Width - textLeft - Pad), headerH),
+                _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+        }
+
+        private void PaintCounter(Graphics g)
+        {
+            if (_counterRect.IsEmpty) return;
+            using (GraphicsPath path = RoundedRectPath(_counterRect, _counterRect.Height / 2f))
+            using (SolidBrush fill = new SolidBrush(Color.FromArgb(17, 0, 0, 0)))
+                g.FillPath(fill, path);
+            TextRenderer.DrawText(g, _model.CounterText, _smallFont, _counterRect,
+                _muted, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                | TextFormatFlags.NoPrefix);
+        }
+
+        /// <summary>胶囊动作按钮：红/青渐变、顶部高光、禁用灰化；文本保持既有文案。</summary>
         private void PaintActionButton(Graphics g, Rectangle rect, string label,
             bool enabled, Color accent)
         {
-            Color back = _actionHover && enabled
-                ? Color.FromArgb(48, 48, 48) : Color.FromArgb(32, 32, 32);
-            using (SolidBrush fill = new SolidBrush(back))
-                g.FillRectangle(fill, rect);
-            using (Pen border = new Pen(enabled ? accent : Color.FromArgb(150, 150, 150)))
-                g.DrawRectangle(border, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            float radius = rect.Height / 2f;
+            if (enabled)
+            {
+                Color top = _actionHover ? Blend(accent, Color.White, 0.18f) : accent;
+                Color bottom = Shade(accent, 0.68f);
+                using (GraphicsPath path = RoundedRectPath(rect, radius))
+                using (LinearGradientBrush fill = new LinearGradientBrush(
+                    new Rectangle(rect.X, rect.Y, Math.Max(1, rect.Width), Math.Max(1, rect.Height)),
+                    top, bottom, 90f))
+                    g.FillPath(fill, path);
+                using (GraphicsPath inner = RoundedRectPath(
+                    RectangleF.Inflate(rect, -1.5f, -1.5f), radius - 1f))
+                using (Pen sheen = new Pen(Color.FromArgb(58, 255, 255, 255)))
+                    g.DrawPath(sheen, inner);
+            }
+            else
+            {
+                using (GraphicsPath path = RoundedRectPath(rect, radius))
+                using (SolidBrush fill = new SolidBrush(Color.FromArgb(215, 211, 202)))
+                    g.FillPath(fill, path);
+            }
+            using (GraphicsPath edge = RoundedRectPath(rect, radius))
+            using (Pen border = new Pen(enabled ? Shade(accent, 0.55f)
+                : Color.FromArgb(178, 172, 161)))
+                g.DrawPath(border, edge);
+
             TextRenderer.DrawText(g, label, _actionFont, rect,
-                enabled ? _headerFore : _muted,
+                enabled ? _headerFore : Color.FromArgb(125, 120, 111),
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
                 | TextFormatFlags.NoPrefix);
+        }
+
+        private static GraphicsPath RoundedRectPath(RectangleF rect, float radius)
+        {
+            var path = new GraphicsPath();
+            float d = Math.Max(0f, Math.Min(radius * 2f, Math.Min(rect.Width, rect.Height)));
+            if (d <= 0.5f)
+            {
+                path.AddRectangle(rect);
+                return path;
+            }
+            var arc = new RectangleF(rect.X, rect.Y, d, d);
+            path.AddArc(arc, 180f, 90f);
+            arc.X = rect.Right - d;
+            path.AddArc(arc, 270f, 90f);
+            arc.Y = rect.Bottom - d;
+            path.AddArc(arc, 0f, 90f);
+            arc.X = rect.Left;
+            path.AddArc(arc, 90f, 90f);
+            path.CloseFigure();
+            return path;
+        }
+
+        private static void DrawRounded(Graphics g, RectangleF rect, float radius, Pen pen)
+        {
+            using (GraphicsPath path = RoundedRectPath(rect, radius))
+                g.DrawPath(pen, path);
         }
 
         /// <summary>0° = 向上箭头（收起态）；180° = 向下箭头（展开态）。</summary>
@@ -780,6 +993,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         protected override void WndProc(ref Message m)
         {
+            // 顶层窗默认受系统最小跟踪尺寸约束（约 136×39）；收起按钮只有 38px，
+            // 不解除的话箭头会被排到 68px 处，实际变成一个宽条。
+            if (m.Msg == WM_GETMINMAXINFO)
+            {
+                base.WndProc(ref m);
+                var info = (MinMaxInfo)Marshal.PtrToStructure(m.LParam, typeof(MinMaxInfo));
+                info.MinTrackSize.X = 1;
+                info.MinTrackSize.Y = 1;
+                Marshal.StructureToPtr(info, m.LParam, false);
+                return;
+            }
             // WM_MOUSEACTIVATE 早于 owner 失活：提前记下交互，HUD 白名单才不会在点击瞬间隐藏对话。
             if (m.Msg == 0x0021) NoteInteraction();
             base.WndProc(ref m);
@@ -838,16 +1062,16 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             ApplyLayout();
         }
 
-        private int HeaderHeight { get { return Math.Max(24, (int)Math.Round(28 * _uiScale)); } }
-        private int FooterHeight { get { return Math.Max(32, (int)Math.Round(40 * _uiScale)); } }
-        private int Pad { get { return Math.Max(7, (int)Math.Round(10 * _uiScale)); } }
+        private int HeaderHeight { get { return Math.Max(26, (int)Math.Round(30 * _uiScale)); } }
+        private int FooterHeight { get { return Math.Max(30, (int)Math.Round(38 * _uiScale)); } }
+        private int Pad { get { return Math.Max(8, (int)Math.Round(12 * _uiScale)); } }
 
-        /// <summary>收起态只排箭头按钮；展开态排头条、输入框、计数、操作与旋转箭头。</summary>
+        /// <summary>收起态只排箭头按钮；展开态排头条、输入槽、计数、操作与旋转箭头。</summary>
         private void ApplyLayout()
         {
             if (_textBox == null) return;
             float ui = _expanded
-                ? Math.Max(1f, Math.Min(2.4f, ClientSize.Height / 150f))
+                ? Math.Max(1f, Math.Min(2.4f, ClientSize.Height / DesignHeight))
                 : Math.Max(1f, Math.Min(2.4f, ClientSize.Width / 38f));
             EnsureFonts(ui);
 
@@ -856,6 +1080,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             {
                 _chevronRect = ClientRectangle;
                 _actionRect = Rectangle.Empty;
+                _fieldRect = Rectangle.Empty;
+                _counterRect = Rectangle.Empty;
                 BackColor = _headerBack;
                 UpdateCursor();
                 Invalidate();
@@ -868,27 +1094,55 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int headerH = HeaderHeight;
             int footerH = FooterHeight;
             int pad = Pad;
-            int bodyTop = headerH + pad;
-            int bodyBottom = h - footerH - pad / 2;
-            int bodyH = Math.Max((int)Math.Round(22 * ui), bodyBottom - bodyTop);
-            int inputH = Math.Min((int)Math.Round(34 * ui), bodyH);
-            int inputY = bodyTop + Math.Max(0, (bodyH - inputH) / 2);
-            _textBox.Bounds = new Rectangle(pad, inputY, Math.Max(40, w - pad * 2), inputH);
-
             int footerTop = h - footerH;
+            int bodyTop = headerH + pad;
+            int bodyBottom = footerTop - pad / 2;
+            int fieldH = Math.Max((int)Math.Round(30 * ui),
+                Math.Min((int)Math.Round(40 * ui), bodyBottom - bodyTop));
+            int fieldY = bodyTop + Math.Max(0, (bodyBottom - bodyTop - fieldH) / 2);
+            _fieldRect = new Rectangle(pad, fieldY, Math.Max(80, w - pad * 2), fieldH);
+
+            int insetX = Math.Max(8, (int)Math.Round(10 * ui));
+            int textH = Math.Max((int)Math.Round(20 * ui), fieldH - Math.Max(6, (int)Math.Round(8 * ui)));
+            int textY = fieldY + Math.Max(0, (fieldH - textH) / 2);
+            _textBox.Bounds = new Rectangle(_fieldRect.Left + insetX, textY,
+                Math.Max(40, _fieldRect.Width - insetX * 2), textH);
+            if (_textBox.IsHandleCreated) ApplyTextBoxMargins();
+
             int chevronSize = Math.Max(28, (int)Math.Round(34 * ui));
             int chevronY = footerTop + Math.Max(0, (footerH - chevronSize) / 2);
             _chevronRect = new Rectangle(w - pad - chevronSize, chevronY,
                 chevronSize, chevronSize);
 
-            int actionW = Math.Max(54, (int)Math.Round(62 * ui));
-            int actionH = Math.Max(24, (int)Math.Round(30 * ui));
+            int actionW = Math.Max(58, (int)Math.Round(66 * ui));
+            int actionH = Math.Max(26, (int)Math.Round(30 * ui));
             int actionX = _chevronRect.Left - Math.Max(4, (int)Math.Round(8 * ui)) - actionW;
             _actionRect = new Rectangle(actionX, footerTop + Math.Max(0, (footerH - actionH) / 2),
                 actionW, actionH);
 
+            int counterH = Math.Max(18, (int)Math.Round(21 * ui));
+            int counterY = footerTop + Math.Max(0, (footerH - counterH) / 2);
+            int counterW = Math.Max(46, (int)Math.Round(56 * ui));
+            _counterRect = new Rectangle(pad - Math.Max(2, (int)Math.Round(3 * ui)),
+                counterY, counterW, counterH);
+
             UpdateCursor();
             Invalidate();
+        }
+
+        private void ApplyTextBoxMargins()
+        {
+            if (!_textBox.IsHandleCreated) return;
+            int margin = Math.Max(2, (int)Math.Round(4 * _uiScale));
+            int lParam = (margin & 0xFFFF) | ((margin & 0xFFFF) << 16);
+            SendMessage(_textBox.Handle, EM_SETMARGINS,
+                (IntPtr)(EC_LEFTMARGIN | EC_RIGHTMARGIN), (IntPtr)lParam);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyTextBoxMargins();
         }
 
         private void EnsureFonts(float ui)
@@ -897,10 +1151,10 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _uiScale = ui;
             Font oldInput = _inputFont, oldSmall = _smallFont,
                 oldHeader = _headerFont, oldAction = _actionFont;
-            _inputFont = new Font("Microsoft YaHei UI", 13f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
-            _smallFont = new Font("Microsoft YaHei UI", 10.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
-            _headerFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Bold, GraphicsUnit.Pixel);
-            _actionFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _inputFont = new Font("Microsoft YaHei UI", 14f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _smallFont = new Font("Microsoft YaHei UI", 10f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _headerFont = new Font("Microsoft YaHei UI", 12f * ui, FontStyle.Bold, GraphicsUnit.Pixel);
+            _actionFont = new Font("Microsoft YaHei UI", 12f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
             _textBox.Font = _inputFont;
             if (oldInput != null) oldInput.Dispose();
             if (oldSmall != null) oldSmall.Dispose();
