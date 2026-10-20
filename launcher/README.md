@@ -292,7 +292,6 @@ candidate 与正式入口旅程按 [#runtime](../agentsDoc/testing-guide.md#runt
 | `diagReportIntervalSec` | `5` / `5` | `CF7_DIAG_INTERVAL_SEC` | 诊断报告周期，clamp 1–60 秒 |
 | `webOverlayHotReload` | `false` / `false` | `CF7_WEB_HOTRELOAD` | 开发热重载，玩家版保持关闭 |
 | `ragTerminalExePath` | 空 / 缺省 | `CF7_RAG_EXE` | 通讯终端 exe 路径覆盖；空＝按安装根通配 `CFN-RAG-v*.exe` 自动发现 |
-| `dialogueInterjectEnabled` | `false` / 缺省 | — | AI 对话内嵌插话入口；启用后构造输入层与焦点门 |
 <!-- launcher-config-registry:end -->
 `CF7_DIAG_FOCUS_PROBE` 是 `UiFreezeProbe` 的独立环境急停，不属于 `AppConfig` key。生产默认值、诊断建议和硬件边界以 `config.toml` 注释为准，README 不复制长注释。用户偏好落在 `%LOCALAPPDATA%/CF7FlashNight/launcher_user_prefs.json`；项目根同名文件只作一次性 legacy 导入。
 

@@ -44,6 +44,10 @@ namespace CF7Launcher.Tasks
             /// <summary>插话侧标记：这条本地行是被 165 上限拆出来的非末段（输入暂锁，§3.3）。
             /// 只影响 Host 输入状态，不参与 wire 校验。</summary>
             internal bool SplitIntermediate;
+            /// <summary>玩家说话行（原作 $PC/角色名 或本地插话 $PC）；转录按玩家归属。</summary>
+            internal bool IsPlayer;
+            /// <summary>等待模型返回的本地占位行（「思索中……」）；不进转录，也不结束本组。</summary>
+            internal bool IsPlaceholder;
         }
 
         private readonly NativeDialogueTask _task;
@@ -53,6 +57,13 @@ namespace CF7Launcher.Tasks
         /// <summary>组类型：daily（缺省）/ task_pre / task_post / stage（协议 5.1 / §13.2）。
         /// 只由 book 报文决定；append 不改变组类型。</summary>
         internal readonly string DialogueKind;
+        /// <summary>任务 id（task_pre/task_post 组才有，来自 book 可选字段 dialogueTaskId，协议 4.1）。
+        /// 只由 book 报文决定；append 不改变；daily/stage 恒 null。</summary>
+        internal readonly string DialogueTaskId;
+        /// <summary>book 报文里的玩家快照（source 组）；插话本地 $PC 行据此还原名称/头衔/立绘。</summary>
+        internal readonly string PlayerName;
+        internal readonly string HeroTitle;
+        internal readonly JObject HeroPortrait;
         /// <summary>会话创建时的连接代；跨代后在途重试发射前复查不通过。</summary>
         internal readonly long TransportEpoch;
 
@@ -81,21 +92,39 @@ namespace CF7Launcher.Tasks
 
         internal NativeDialogueBookSession(NativeDialogueTask task, string requestId,
             string sceneId, string mode, int advanceKey, Line[] lines, long transportEpoch,
-            string dialogueKind = null)
+            string dialogueKind = null, string dialogueTaskId = null,
+            JObject playerSnapshot = null)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
             RequestId = requestId;
             SceneId = sceneId;
             Mode = mode;
             DialogueKind = NormalizeDialogueKind(dialogueKind);
+            // 日常/stage 即使报文带了 id 也忽略（协议 4.1：只有任务组使用任务 id）。
+            DialogueTaskId = (DialogueKind == "task_pre" || DialogueKind == "task_post")
+                ? NormalizeDialogueTaskId(dialogueTaskId) : null;
+            PlayerName = playerSnapshot != null
+                ? (playerSnapshot.Value<string>("playerName") ?? "") : "";
+            HeroTitle = playerSnapshot != null
+                ? (playerSnapshot.Value<string>("heroTitle") ?? "") : "";
+            JObject hero = playerSnapshot != null ? playerSnapshot["heroPortrait"] as JObject : null;
+            HeroPortrait = hero != null ? (JObject)hero.DeepClone() : null;
             _advanceKey = advanceKey;
             _lines = lines ?? throw new ArgumentNullException(nameof(lines));
             for (int i = 0; i < _lines.Length; i++)
             {
                 _lines[i].WireIndex = i;
+                if (IsPlayerSpeaker(_lines[i].Name)) _lines[i].IsPlayer = true;
                 _wireRows.Add(_lines[i]);
             }
             TransportEpoch = transportEpoch;
+        }
+
+        /// <summary>原作说话人是否玩家：$PC 占位或 book 快照的 playerName（AS2 已解析角色名）。</summary>
+        internal bool IsPlayerSpeaker(string name)
+        {
+            if (string.Equals(name, "$PC", StringComparison.Ordinal)) return true;
+            return PlayerName.Length > 0 && string.Equals(name, PlayerName, StringComparison.Ordinal);
         }
 
         internal int AppliedEpoch { get { return _appliedEpoch; } }
@@ -138,6 +167,29 @@ namespace CF7Launcher.Tasks
         {
             if (_state != HostState.Active) return;
             if (_index + 1 < _lines.Length) { _index++; Present(); return; }
+            // 已经在等待占位条上：模型未返回前继续点击不结束本组。
+            if (_lines[_index].IsPlaceholder) return;
+            Line hold = null;
+            Func<Line> provider = EndHoldLineProvider;
+            if (provider != null)
+            {
+                try { hold = provider(); }
+                catch (Exception ex) { LogManager.Log("[NativeDialogue] end hold: " + ex.Message); }
+            }
+            if (hold != null)
+            {
+                // 占位行追加在播放序列末尾（WireIndex=-1）；AI 首行到达时从同一位置原位替换。
+                hold.IsPlaceholder = true;
+                var merged = new Line[_lines.Length + 1];
+                Array.Copy(_lines, merged, _lines.Length);
+                merged[_lines.Length] = hold;
+                _lines = merged;
+                _index = _lines.Length - 1;
+                _retryToken++;
+                _frozenWire = null;
+                Present();
+                return;
+            }
             EnterClosing("advance_past_end");
         }
 
@@ -214,6 +266,7 @@ namespace CF7Launcher.Tasks
             for (int i = 0; i < extra.Length; i++)
             {
                 extra[i].WireIndex = _wireRows.Count;
+                if (IsPlayerSpeaker(extra[i].Name)) extra[i].IsPlayer = true;
                 _wireRows.Add(extra[i]);
             }
             _appliedEpoch = epoch;
@@ -256,7 +309,8 @@ namespace CF7Launcher.Tasks
                 IsDoll = line.IsDoll,
                 AppearanceIdentity = line.AppearanceIdentity,
                 ImageAction = line.ImageAction,
-                ImagePath = line.ImagePath
+                ImagePath = line.ImagePath,
+                IsPlaceholder = line.IsPlaceholder
             };
             _task.PresentBookFrame(this, frame, line.Appearance);
             if (LinePresented != null)
@@ -275,6 +329,10 @@ namespace CF7Launcher.Tasks
         /// 插话侧据此立即取消在途流并 finalize（§13.2 决定 5）。</summary>
         internal Action<string> Closing;
 
+        /// <summary>玩家在末行继续推进时的等待占位提供者（插话在途 turn 返回「思索中……」）；
+        /// null 或返回 null 时按原语义 advance_past_end 收组。</summary>
+        internal Func<Line> EndHoldLineProvider;
+
         /// <summary>播放序列行读取（越界返回 null）：中途插入时收集"已插入未播"的本地行。</summary>
         internal Line GetPlaybackLine(int playbackIndex)
         {
@@ -290,6 +348,15 @@ namespace CF7Launcher.Tasks
                 || string.Equals(raw, "stage", StringComparison.Ordinal))
                 return raw;
             return "daily";
+        }
+
+        /// <summary>任务 id 归一（防御性）：去首尾空白后 1..32 才保留，否则 null。
+        /// 日常/stage 组即使传入也按 null 处理（协议 4.1：只有任务组带 id）。</summary>
+        internal static string NormalizeDialogueTaskId(string raw)
+        {
+            string trimmed = (raw ?? "").Trim();
+            if (trimmed.Length < 1 || trimmed.Length > 32) return null;
+            return trimmed;
         }
 
         /// <summary>原始行读取（越界返回 null）：请求 remaining / 失败回退定位用。</summary>

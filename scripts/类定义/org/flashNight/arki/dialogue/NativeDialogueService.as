@@ -192,6 +192,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             terminal: s.terminal,
             wire: s.wire, epoch: s.epoch, rowCount: s.rowCount,
             dialogueKind: s.dialogueKind,
+            dialogueTaskId: s.dialogueTaskId,
             bookSettled: s.bookSettled === true,
             setPending: s.setPending === true,
             pendingCount: pendingCount,
@@ -237,7 +238,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
      * @return 恒 true：服务一旦安装即接管，不走 legacy MovieClip 路径
      */
     public static function handleAssign(rows:Array, overwrite:Boolean,
-                                        dialogueKind:String):Boolean {
+                                        dialogueKind:String, dialogueTaskId):Boolean {
         install();
         tryAwaitingCommit();   // 入向活动顺带核验待提交义务（§4.6）
         if (rows == null) return true;
@@ -286,7 +287,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             }
         }
         // dialogueKind 只作用于新组；append（上文非覆盖分支）不改组类型。
-        beginSession(rows, "ordinary", null, undefined, undefined, undefined, dialogueKind);
+        beginSession(rows, "ordinary", null, undefined, undefined, undefined, dialogueKind, dialogueTaskId);
         return true;
     }
 
@@ -510,7 +511,8 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
 
     private static function beginSession(rows:Array, mode:String, followingEvent:Object,
                                          inheritedLease:String, frozenPortraits:Array,
-                                         snapshotOnly:Boolean, dialogueKind:String):Void {
+                                         snapshotOnly:Boolean, dialogueKind:String,
+                                         dialogueTaskId):Void {
         _reqSeq++;
         var s:Object = {
             requestId: "nd:" + _reqSeq,
@@ -523,6 +525,10 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
             mode: mode,
             // 组类型：daily（缺省）/ task_pre / task_post / stage；stage 恒为 stage。
             dialogueKind: (mode == "stage") ? "stage" : normalizeDialogueKind(dialogueKind),
+            // 任务 id：仅任务组用（协议 4.1 / 5.1）；非任务组即使传入也丢弃。
+            dialogueTaskId: ((mode == "stage") ? null
+                : ((normalizeDialogueKind(dialogueKind) == "daily") ? null
+                    : normalizeDialogueTaskId(dialogueTaskId))),
             leaseId: inheritedLease == undefined ? null : inheritedLease,
             followingEvent: followingEvent,
             terminal: false,
@@ -584,7 +590,7 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         s.leaseId = null; // cancel 不释放：避免移交期间出现未暂停的一帧
         cancelSession("snapshot_fallback");
         trace("[NativeDialogueService] snapshot fallback: " + reason);
-        beginSession(rows, s.mode, follow, leaseId, portraits, true, s.dialogueKind);
+        beginSession(rows, s.mode, follow, leaseId, portraits, true, s.dialogueKind, s.dialogueTaskId);
     }
 
     /**
@@ -861,15 +867,61 @@ class org.flashNight.arki.dialogue.NativeDialogueService {
         };
         // 可选组类型：只有非 daily 才上线（老 Host 忽略未知字段；daily 保持报文逐字节不变）。
         if (s.dialogueKind != "daily") payload.dialogueKind = s.dialogueKind;
+        // 可选任务 id：只在任务组且合法时上线；必须是字符串（不能把 Number 塞进 payload）。
+        if ((s.dialogueKind == "task_pre" || s.dialogueKind == "task_post")
+                && s.dialogueTaskId != null) {
+            payload.dialogueTaskId = s.dialogueTaskId;
+        }
         var keyCode:Number = org.flashNight.arki.key.KeyManager.getKeySetting("互动键");
         if (!isNaN(keyCode)) {
             payload.advanceKey = keyCode;
             s.advanceKey = keyCode;
             s.desiredAdvanceKey = keyCode;
         }
+        // 插话本地 $PC 行需要玩家名/头衔/纸娃娃快照；旧 Host 忽略未知字段。
+        payload.snapshot = buildPlayerSnapshot();
         if (!sendMutation(s, "book", payload, 1, undefined)) {
             replaceWithSnapshot(s, "book_transport_unavailable", 0);
         }
+    }
+
+    /** inline book 的玩家快照：与 source book 同口径，名称/头衔/立绘在发号时冻结。 */
+    private static function buildPlayerSnapshot():Object {
+        var playerName:String = (_root.角色名 != undefined && _root.角色名 != null)
+            ? String(_root.角色名) : "";
+        var heroTitle:String = org.flashNight.arki.unit.HeroUtil.getHeroTitle();
+        if (heroTitle == undefined || heroTitle == null) heroTitle = "";
+        var heroPortrait:Object = NativeDialogueAppearance.build("$PC_CHAR", "普通", null, "");
+        if (heroPortrait == null) {
+            heroPortrait = {kind: "static", key: "", expression: "普通"};
+        }
+        return {
+            playerName: playerName,
+            heroTitle: heroTitle,
+            heroPortrait: heroPortrait
+        };
+    }
+
+    /** 任务 id 归一：转字符串、去首尾空白、长度 1..32 才保留，否则 null（非法值不猜）。 */
+    private static function normalizeDialogueTaskId(raw):String {
+        if (raw == null || raw == undefined) return null;
+        var out:String = String(raw);
+        out = trimAsciiWhitespace(out);
+        if (out.length < 1 || out.length > 32) return null;
+        return out;
+    }
+
+    /** AS2 编译器不接受正则字面量，这里按 ASCII 空白手工裁剪。 */
+    private static function trimAsciiWhitespace(value:String):String {
+        var start:Number = 0;
+        var end:Number = value.length;
+        while (start < end && isAsciiWhitespace(value.charCodeAt(start))) start++;
+        while (end > start && isAsciiWhitespace(value.charCodeAt(end - 1))) end--;
+        return value.substring(start, end);
+    }
+
+    private static function isAsciiWhitespace(code:Number):Boolean {
+        return code == 32 || code == 9 || code == 10 || code == 13;
     }
 
     /** 组类型归一：daily（缺省）/ task_pre / task_post / stage；未知值一律回落 daily。 */

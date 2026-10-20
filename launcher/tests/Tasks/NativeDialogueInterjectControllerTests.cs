@@ -114,18 +114,59 @@ namespace CF7Launcher.Tests.Tasks
             internal readonly NativeDialogueInterjectController Controller;
             internal readonly List<DialogueInterjectInputState> States = new List<DialogueInterjectInputState>();
             internal readonly List<string> Sent = new List<string>();
+            internal readonly List<string> BoundPlayers = new List<string>();
+            /// <summary>注入时钟：看门狗测试手动推进，不 sleep。</summary>
+            internal DateTime Now = new DateTime(2026, 10, 18, 22, 30, 0);
+            /// <summary>每次排定时器记录 delay（断言无事件/总时长上限的取小逻辑）。</summary>
+            internal readonly List<TimeSpan> WatchdogDelays = new List<TimeSpan>();
+            private Action _watchdogCallback;
             private int _ids;
 
-            internal Harness(bool inline = true)
+            private sealed class FakeTimer : IDisposable
             {
+                private readonly Action _onDispose;
+                private bool _disposed;
+                internal FakeTimer(Action onDispose) { _onDispose = onDispose; }
+                public void Dispose()
+                {
+                    if (_disposed) return;
+                    _disposed = true;
+                    if (_onDispose != null) _onDispose();
+                }
+            }
+
+            /// <summary>当前终端是否在线（测试可切换，模拟 ensureReady 成功/失败）。</summary>
+            internal bool TerminalReady = true;
+
+            internal Harness(bool inline = true, Func<Task<bool>> ensureReady = null,
+                Func<Task<bool>> llmConfigured = null, bool terminalReady = true,
+                Func<string, Task> ensureBound = null)
+            {
+                TerminalReady = terminalReady;
                 Anchor = new Control { Size = new Size(1024, 576) };
                 Widget = new NativeDialogueWidget(Anchor);
                 Task = new NativeDialogueTask(Widget, a => a(),
                     wire => { Sent.Add(wire); return true; }, () => true);
                 Task.BookRetryScheduler = (ms, cb) => { };
                 Controller = new NativeDialogueInterjectController(
-                    Task, Widget, a => a(), null, () => Transport,
-                    () => "id-" + (++_ids), () => new DateTime(2026, 10, 18, 22, 30, 0));
+                    Task, Widget, a => a(), ensureReady, () => Transport,
+                    () => "id-" + (++_ids), () => Now,
+                    terminalReady: () => TerminalReady, llmConfigured: llmConfigured,
+                    ensureBound: name =>
+                    {
+                        BoundPlayers.Add(name);
+                        return ensureBound != null ? ensureBound(name)
+                            : System.Threading.Tasks.Task.CompletedTask;
+                    });
+                Controller.WatchdogScheduler = (delay, callback) =>
+                {
+                    WatchdogDelays.Add(delay);
+                    _watchdogCallback = callback;
+                    return new FakeTimer(() =>
+                    {
+                        if (object.ReferenceEquals(_watchdogCallback, callback)) _watchdogCallback = null;
+                    });
+                };
                 if (inline)
                     Controller.TaskRunner = f =>
                     {
@@ -136,6 +177,21 @@ namespace CF7Launcher.Tests.Tasks
                 Controller.Attach();
             }
 
+            internal TimeSpan LastWatchdogDelay
+            {
+                get { return WatchdogDelays[WatchdogDelays.Count - 1]; }
+            }
+
+            internal int WatchdogArmedCount { get { return WatchdogDelays.Count; } }
+
+            /// <summary>手动触发当前在看门狗（等价于定时器到点），不 sleep。</summary>
+            internal void FireWatchdog()
+            {
+                Action callback = _watchdogCallback;
+                _watchdogCallback = null;
+                if (callback != null) callback();
+            }
+
             internal void AdoptBook(params string[] texts)
             {
                 AdoptBookInMode(7, "ordinary", null, texts);
@@ -143,6 +199,19 @@ namespace CF7Launcher.Tests.Tasks
 
             internal void AdoptBookInMode(int sequence, string mode, string dialogueKind,
                 params string[] texts)
+            {
+                Task.AdoptV2(BuildBook(sequence, mode, dialogueKind, null, texts));
+            }
+
+            /// <summary>任务组 book：带 dialogueKind + dialogueTaskId（P4）。</summary>
+            internal void AdoptTaskBook(int sequence, string dialogueKind, string taskId,
+                params string[] texts)
+            {
+                Task.AdoptV2(BuildBook(sequence, "ordinary", dialogueKind, taskId, texts));
+            }
+
+            internal JObject BuildBook(int sequence, string mode, string dialogueKind,
+                JToken taskId, params string[] texts)
             {
                 var lines = new JArray();
                 for (int i = 0; i < texts.Length; i++)
@@ -165,6 +234,23 @@ namespace CF7Launcher.Tests.Tasks
                     ["advanceKey"] = 13, ["lines"] = lines
                 };
                 if (dialogueKind != null) book["dialogueKind"] = dialogueKind;
+                if (taskId != null) book["dialogueTaskId"] = taskId;
+                return book;
+            }
+
+            /// <summary>自定义行集 + 玩家快照的 book（转录归属/快照还原用）。</summary>
+            internal void AdoptBookWith(JObject snapshot, params JObject[] lines)
+            {
+                var array = new JArray();
+                foreach (JObject line in lines) array.Add(line);
+                var book = new JObject
+                {
+                    ["version"] = 2, ["op"] = "book", ["kind"] = "inline",
+                    ["requestId"] = "nd:9", ["sceneId"] = "scene.1",
+                    ["mode"] = "ordinary", ["epoch"] = 1, ["startIndex"] = 0,
+                    ["advanceKey"] = 13, ["lines"] = array
+                };
+                if (snapshot != null) book["snapshot"] = snapshot;
                 Task.AdoptV2(book);
             }
 
@@ -208,15 +294,123 @@ namespace CF7Launcher.Tests.Tasks
             }
         }
 
-        private static string AddLine(string text, int seq, string kind = "add")
+        private static JObject BookLine(string name, string text, string title = "", bool doll = false)
         {
+            var portrait = new JObject
+            {
+                ["kind"] = doll ? "doll" : "static",
+                ["key"] = doll ? "doll:" + name : name,
+                ["expression"] = "普通"
+            };
+            if (doll)
+                portrait["appearance"] = new JObject { ["gender"] = "男", ["hair"] = "短发" };
+            return new JObject
+            {
+                ["name"] = name, ["title"] = title, ["text"] = text,
+                ["portrait"] = portrait, ["imageAction"] = "keep"
+            };
+        }
+
+        private static JObject PlayerSnapshot(string name, string title, bool doll)
+        {
+            var portrait = new JObject
+            {
+                ["kind"] = doll ? "doll" : "static",
+                ["key"] = doll ? "doll:$PC_CHAR" : name,
+                ["expression"] = "普通"
+            };
+            if (doll)
+                portrait["appearance"] = new JObject { ["gender"] = "女", ["hair"] = "长发" };
+            return new JObject
+            {
+                ["playerName"] = name, ["heroTitle"] = title, ["heroPortrait"] = portrait
+            };
+        }
+
+        private static string AddLine(string text, int seq, string kind = "add",
+            string emotion = "普通")
+        {
+            string emotionField = string.IsNullOrEmpty(emotion)
+                ? "" : ",\"emotion\":\"" + emotion + "\"";
             return "event: line\ndata: {\"kind\":\"" + kind + "\",\"text\":\"" + text
-                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}\n\n";
+                + "\"" + emotionField + ",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}\n\n";
         }
 
         private static string Done()
         {
             return "event: done\ndata: {\"dialogue_instance_id\":\"inst\",\"session_id\":\"s1\",\"usage\":{}}\n\n";
+        }
+
+        // ── 假事件（绕开流驱动，直接喂控制器；P3 的 status / 中途失败都用它）──────
+
+        private static DialogueInterjectEvent Evt(DialogueInterjectEventKind kind, string dataJson)
+        {
+            return new DialogueInterjectEvent
+            {
+                Kind = kind,
+                EventName = kind.ToString().ToLowerInvariant(),
+                Data = JObject.Parse(dataJson)
+            };
+        }
+
+        private static DialogueInterjectEvent StatusEvent(string stage)
+        {
+            return Evt(DialogueInterjectEventKind.Status, "{\"stage\":\"" + stage + "\"}");
+        }
+
+        private static DialogueInterjectEvent LineEvent(string text, int seq)
+        {
+            return Evt(DialogueInterjectEventKind.Line,
+                "{\"kind\":\"add\",\"text\":\"" + text
+                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}");
+        }
+
+        private static DialogueInterjectEvent ErrorEvent(string code)
+        {
+            return Evt(DialogueInterjectEventKind.Error,
+                "{\"code\":\"" + code + "\",\"message\":\"失败\"}");
+        }
+
+        private static DialogueInterjectEvent PlanEvent(string json)
+        {
+            return Evt(DialogueInterjectEventKind.Plan, json);
+        }
+
+        private static DialogueInterjectEvent MuteEvent()
+        {
+            return Evt(DialogueInterjectEventKind.Mute, "{\"mute\":true}");
+        }
+
+        private static DialogueInterjectEvent DoneEvent()
+        {
+            return Evt(DialogueInterjectEventKind.Done,
+                "{\"dialogue_instance_id\":\"inst\",\"session_id\":\"s1\"}");
+        }
+
+        /// <summary>任务上下文桩（F-05 形状）：upcoming=本任务，completed=上一个任务。</summary>
+        private static JObject DemoTaskContext()
+        {
+            return new JObject
+            {
+                ["completed"] = new JObject
+                {
+                    ["task_id"] = 200123, ["title"] = "南边哨站补给", ["npc"] = "Andy Law",
+                    ["objectives"] = new JArray("送回 3 箱弹药"),
+                    ["rewards"] = new JArray("金币 1200"),
+                    ["outcome"] = "送回 3 箱弹药"
+                },
+                ["upcoming"] = new JObject
+                {
+                    ["task_id"] = 200124, ["title"] = "北边仓库失窃", ["npc"] = "Andy Law",
+                    ["objectives"] = new JArray("找回失窃货物", "返回交付"),
+                    ["rewards"] = new JArray("金币 2400", "声望 10")
+                }
+            };
+        }
+
+        private static void EnableTaskContext(Harness h)
+        {
+            h.Task.TaskContextProvider = (id, kind) => DemoTaskContext();
         }
 
         // ── 组类型门控 ─────────────────────────────────────────────────────
@@ -330,7 +524,7 @@ namespace CF7Launcher.Tests.Tasks
         // ── 首句 / 成功轮 ─────────────────────────────────────────────────
 
         [Fact]
-        public void FirstLineQueuesWhilePcPlaysThenStartsOnTypingFinished()
+        public void FirstLineQueuesWhilePcPlaysThenStartsOnAdvance()
         {
             using var h = new Harness();
             h.AdoptBook("又是你。", "有事说事。");
@@ -347,12 +541,50 @@ namespace CF7Launcher.Tests.Tasks
             }, h.States);
 
             Assert.True(h.Widget.CompleteCurrentLineTyping());
-            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
+            Assert.Equal("最近怎么样？", h.Widget.CurrentFrame.Text);  // 还停在 $PC，等玩家推进
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
             Assert.Equal(0, h.Controller.PendingLineCount);
 
             h.Advance();
+            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
+            h.Advance();
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void AiLineInheritsNpcPortraitAndBindsPlayerSnapshot()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(new JObject
+            {
+                ["playerName"] = "测试玩家",
+                ["heroTitle"] = "队长",
+                ["heroPortrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "测试玩家", ["expression"] = "普通"
+                }
+            }, new JObject
+            {
+                ["name"] = "Andy Law", ["title"] = "雇佣兵", ["text"] = "又是你。",
+                ["portrait"] = new JObject
+                {
+                    ["kind"] = "static", ["key"] = "Andy Law", ["expression"] = "严肃"
+                },
+                ["imageAction"] = "keep"
+            });
+            // 本轮没有自带 emotion：表情应回落到 NPC 模板的「严肃」，立绘随 NPC。
+            h.Transport.Script(AddLine("听见了。", 0, emotion: null) + Done());
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+
+            Assert.Equal("听见了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.Name);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.PortraitKey);
+            Assert.Equal("严肃", h.Widget.CurrentFrame.Expression);
+            Assert.Equal("雇佣兵", h.Widget.CurrentFrame.Title);
+            Assert.Contains("测试玩家", h.BoundPlayers);
         }
 
         [Fact]
@@ -364,8 +596,10 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("最近怎么样？"));
             h.Widget.CompleteCurrentLineTyping();
-            Assert.Equal("AI 第一句", h.Widget.CurrentFrame.Text);
+            Assert.Equal("最近怎么样？", h.Widget.CurrentFrame.Text);
 
+            h.Advance();
+            Assert.Equal("AI 第一句", h.Widget.CurrentFrame.Text);
             h.Advance();
             Assert.Equal("AI 第二句", h.Widget.CurrentFrame.Text);
 
@@ -388,9 +622,178 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(AddLine("只有一句", 0) + Done());
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("只有一句", h.Widget.CurrentFrame.Text);
             Assert.False(h.Controller.ClosingForTest);
             Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        // ── 等待占位「思索中……」 ─────────────────────────────────────────
+
+        [Fact]
+        public void AdvancePastPcWithActiveTurnShowsThinkingPlaceholderThenAutoReplaces()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.Equal("Andy Law", h.Widget.CurrentFrame.Name);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+
+            h.Advance();                                   // 占位上继续点：不结束本组
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.ClosingForTest);
+            Assert.Equal(0, h.Transport.Finalizes.Count);
+
+            h.Controller.OnEvent(LineEvent("来了。", 0));    // 玩家已在占位条：原位自动替换
+            Assert.Equal("来了。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Advance();                                   // 末行后 → 正常收尾
+            Assert.True(h.Controller.ClosingForTest);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.LastFinalize != null, 5000));
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            Assert.Equal(3, transcript.Count);
+            Assert.Equal("npc", transcript[0].Value<string>("role"));
+            Assert.Equal("player", transcript[1].Value<string>("role"));
+            Assert.Equal("ai", transcript[2].Value<string>("role"));
+            Assert.DoesNotContain("思索中", transcript.ToString());
+        }
+
+        [Fact]
+        public void AiLineArrivingWhileStillOnPcWaitsForAdvanceWithoutPlaceholder()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Controller.OnEvent(LineEvent("第一句", 0));   // $PC 还在播 → 排队
+            Assert.Equal("你好", h.Widget.CurrentFrame.Text);
+
+            h.Widget.CompleteCurrentLineTyping();           // 播完 $PC：AI 行只入队不抢屏
+            Assert.Equal("你好", h.Widget.CurrentFrame.Text);
+            Assert.Equal(0, h.Controller.PendingLineCount);
+
+            h.Advance();
+            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);  // 直接看到 AI，不经过占位
+            Assert.False(h.Controller.ClosingForTest);
+        }
+
+        [Fact]
+        public void FailureWhileOnPlaceholderRemovesItAndRestoresOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(ErrorEvent("upstream_error"));
+
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);  // 占位原位换回原文
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+        }
+
+        // ── 玩家快照与转录归属 ───────────────────────────────────────────
+
+        [Fact]
+        public void TranscriptRolesDistinguishPlayerNpcAndOtherNpc()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("阿夜", "我来了。", "$PC_TITLE", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"),
+                BookLine("守卫", "站住。"));
+
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState); // 玩家行在播
+            h.Advance();
+            h.Advance();
+            Assert.Equal("站住。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.Equal("阿夜", h.Widget.CurrentFrame.Name);
+            Assert.Equal("流浪剑士", h.Widget.CurrentFrame.Title);
+            Assert.True(h.Widget.CurrentFrame.IsDoll);
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("Andy Law", request.Value<string>("npc"));   // 第三方不改写主 NPC
+            var played = (JArray)((JObject)request["dialogue"])["played"];
+            Assert.Equal(3, played.Count);
+            Assert.Equal("player", played[0].Value<string>("role"));
+            Assert.Equal("npc", played[1].Value<string>("role"));
+            Assert.Equal("other_npc", played[2].Value<string>("role"));
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Close();
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            Assert.Equal(4, transcript.Count);
+            Assert.Equal("player", transcript[0].Value<string>("role"));
+            Assert.Equal("npc", transcript[1].Value<string>("role"));
+            Assert.Equal("other_npc", transcript[2].Value<string>("role"));
+            Assert.Equal("player", transcript[3].Value<string>("role"));
+            Assert.Equal("阿夜", transcript[3].Value<string>("name"));
+            Assert.Equal("最近怎么样？", transcript[3].Value<string>("text"));
+        }
+
+        [Fact]
+        public void PlayerSnapshotFillsLocalPcWhenBookHasNoPlayerLine()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"));
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            NativeDialogueFrame frame = h.Widget.CurrentFrame;
+            Assert.Equal("阿夜", frame.Name);
+            Assert.Equal("流浪剑士", frame.Title);
+            Assert.Equal("doll:$PC_CHAR", frame.PortraitKey);
+            Assert.True(frame.IsDoll);
+            Assert.False(string.IsNullOrEmpty(frame.AppearanceIdentity));
+
+            h.Widget.CompleteCurrentLineTyping();
+            h.Close();
+            JObject finish = JObject.Parse(h.Transport.LastFinalize);
+            var transcript = (JArray)finish["transcript"];
+            var playerRow = transcript[transcript.Count - 1];
+            Assert.Equal("player", playerRow.Value<string>("role"));
+            Assert.Equal("阿夜", playerRow.Value<string>("name"));
+        }
+
+        [Fact]
+        public void LegacyDollarPcOriginalLineIsPlayer()
+        {
+            using var h = new Harness();
+            h.AdoptBookWith(PlayerSnapshot("阿夜", "流浪剑士", doll: true),
+                BookLine("$PC", "我来了。", "$PC_TITLE", doll: true),
+                BookLine("Andy Law", "又是你。", "雇佣兵"));
+            h.Advance();
+            h.Transport.Script(AddLine("说吧。", 0) + Done());
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            var played = (JArray)((JObject)request["dialogue"])["played"];
+            Assert.Equal("player", played[0].Value<string>("role"));
+            Assert.Equal("npc", played[1].Value<string>("role"));
         }
 
         // ── 拆分暂锁 ──────────────────────────────────────────────────────
@@ -410,6 +813,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("段0", h.Widget.CurrentFrame.Text);
             Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
             Assert.False(h.Controller.Submit("插不了"));
@@ -450,12 +854,174 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("最近怎么样？"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text);
             Assert.Equal("stream_failed", h.Controller.LastFailure);
 
             h.Advance();                                            // 已播 AI 行之后接回原作
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            h.Close();
             Assert.Contains("先听我说。", h.Transport.LastFinalize);
+        }
+
+        /// <summary>
+        /// P2 缺陷：AI 首句已经上屏、队列为空时失败，旧代码只调 RestoreOriginalTail()，
+        /// 它因 _aiLineShown 直接返回，原作剩余永远不会接回。P3 改走 ResumeAfterPlayedTurnLines。
+        /// </summary>
+        [Fact]
+        public void FailureAfterAiLineIsOnScreenResumesOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。", "没事就别挡道。");
+            var hanging = new HangingStream(AddLine("先听我说。", 0));
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.True(SpinWait.SpinUntil(() => h.Controller.PendingLineCount == 1, 5000));
+            Assert.True(h.Widget.CompleteCurrentLineTyping());
+            h.Advance();
+            Assert.Equal("先听我说。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(0, h.Controller.PendingLineCount);
+
+            h.Controller.OnEvent(ErrorEvent("stream_failed"));       // 首句已上屏后流失败
+
+            Assert.Equal("stream_failed", h.Controller.LastFailure);
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+
+            h.Advance();                                             // 回到原作下一行，而不是组末
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+            Assert.Contains("先听我说。", h.Transport.LastFinalize);
+        }
+
+        // ── 单轮看门狗 ────────────────────────────────────────────────────
+
+        [Fact]
+        public void WatchdogTimesOutSilentStreamAndRestoresOriginalTail()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。", "有事说事。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            Assert.True(h.Controller.IsTurnActive);
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(180);                           // 注入时钟推进，不 sleep
+            h.FireWatchdog();
+
+            Assert.Equal("stream_timeout", h.Controller.LastFailure);
+            Assert.False(h.Controller.IsTurnActive);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.True(SpinWait.SpinUntil(() => hanging.Disposed, 5000));
+            Assert.True(SpinWait.SpinUntil(() => h.Transport.Finalizes.Count > 0, 5000));
+
+            h.Advance();                                             // 按失败回退接回原作
+            Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void WatchdogRearmsOnEventAndStillHonorsTotalDeadline()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("你好"));
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.FireWatchdog();                                        // 提前触发：续排，不算超时
+            Assert.Null(h.Controller.LastFailure);
+            Assert.Equal(TimeSpan.FromSeconds(180), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(170);
+            h.Controller.OnEvent(StatusEvent("thinking"));           // 事件刷新无事件窗口
+            Assert.Null(h.Controller.LastFailure);
+            // min(170+180, 300) → 距总时长上限只剩 130 秒
+            Assert.Equal(TimeSpan.FromSeconds(130), h.LastWatchdogDelay);
+
+            h.Now = h.Now.AddSeconds(130);                           // 总上限到期（距上个事件仅 130 秒）
+            h.FireWatchdog();
+
+            Assert.Equal("stream_timeout", h.Controller.LastFailure);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void WatchdogIsInactiveAfterTurnEnds()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。");
+            h.Transport.Script(AddLine("回答", 0) + Done());
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            Assert.False(h.Controller.IsTurnActive);
+
+            int armed = h.WatchdogArmedCount;
+            h.FireWatchdog();                                        // 迟到的回调：本轮已结束
+
+            Assert.Null(h.Controller.LastFailure);
+            Assert.Equal(armed, h.WatchdogArmedCount);               // 不再续排
+        }
+
+        // ── status → Preparing ────────────────────────────────────────────
+
+        [Fact]
+        public void StatusDraftingShowsPreparingUntilFirstLineArrives()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("有没有活儿？"));           // $PC 播放中：Hidden
+
+            h.Controller.OnEvent(StatusEvent("drafting"));
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+
+            h.Widget.CompleteCurrentLineTyping();                     // $PC 播完、还没出词
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("插一句"));                // 准备中不接受发送
+
+            h.Controller.OnEvent(LineEvent("行，那我直说了。", 0));      // 首个 add 已就绪
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal("有没有活儿？", h.Widget.CurrentFrame.Text);    // 仍停在 $PC
+            h.Advance();
+            Assert.Equal("行，那我直说了。", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void StatusSearchingAlsoShowsPreparing()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+
+            h.Controller.OnEvent(StatusEvent("searching"));
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+
+            h.Controller.OnEvent(LineEvent("查到了。", 0));             // 出词后回到既有状态
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void StatusWithoutPreparingStageKeepsWaitingLocked()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            h.Widget.CompleteCurrentLineTyping();                     // 等待首句：Locked
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+
+            h.Controller.OnEvent(StatusEvent("thinking"));
+            h.Controller.OnEvent(StatusEvent("waiting"));
+
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
         }
 
         // ── 中途插入 / 参考续写 ───────────────────────────────────────────
@@ -470,7 +1036,8 @@ namespace CF7Launcher.Tests.Tasks
             h.Transport.Script(AddLine("新回答", 0) + Done());
 
             Assert.True(h.Controller.Submit("第一次"));
-            h.Widget.CompleteCurrentLineTyping();                    // 第一句上屏
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();                                             // 第一句上屏
             Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
             string instanceId = h.Controller.DialogueInstanceId;
             string turnA = h.Controller.CurrentTurnId;
@@ -506,6 +1073,7 @@ namespace CF7Launcher.Tests.Tasks
 
             Assert.True(h.Controller.Submit("第一次"));
             h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
             Assert.Equal("正文", h.Widget.CurrentFrame.Text);
 
             Assert.True(h.Controller.Submit("第二次"));
@@ -551,6 +1119,8 @@ namespace CF7Launcher.Tests.Tasks
             Assert.True(h.Controller.Submit("你好"));
             h.Widget.CompleteCurrentLineTyping();
 
+            h.Advance();                                        // $PC 之后 → AI 回答
+            Assert.Equal("回答", h.Widget.CurrentFrame.Text);
             h.Advance();                                        // 末行后 → advance_past_end
             Assert.True(h.Controller.ClosingForTest);
             Assert.False(h.Controller.Submit("末句后插话"));
@@ -604,6 +1174,462 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("有事说事。", h.Widget.CurrentFrame.Text);
         }
 
+        // ══════════════════ P4：任务插话 ══════════════════
+
+        private const string TaskPlanEdit =
+            "{\"mute\":false,\"end\":3,\"edits\":[{\"n\":2,\"kind\":\"edit\","
+            + "\"lines\":[{\"text\":\"北边仓库昨晚丢了一批货。\",\"emotion\":\"普通\"}]}]}";
+
+        [Fact]
+        public void TaskBookParsesDialogueTaskIdAndAppendKeepsIt()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "北边仓库出事了。");
+            var session = h.Task.BookSessionForTest;
+            Assert.Equal("200124", session.DialogueTaskId);
+            Assert.Equal("task_pre", session.DialogueKind);
+
+            h.Append(7, 1, "追加一句");
+            Assert.Same(session, h.Task.BookSessionForTest);
+            Assert.Equal("200124", h.Task.BookSessionForTest.DialogueTaskId);
+            Assert.Equal("task_pre", h.Task.BookSessionForTest.DialogueKind);
+        }
+
+        [Fact]
+        public void DailyBookIgnoresDialogueTaskId()
+        {
+            using var h = new Harness();
+            h.Task.AdoptV2(h.BuildBook(7, "ordinary", "daily", new JValue("200124"), "又是你。"));
+            Assert.Null(h.Task.BookSessionForTest.DialogueTaskId);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void InvalidTaskIdRejectsWholeBook()
+        {
+            using var h = new Harness();
+            var oversized = new string('1', 33);
+            int sequence = 7;
+            foreach (JToken token in new JToken[]
+            {
+                new JValue(200124), new JValue("   "), new JValue(oversized)
+            })
+            {
+                JObject ack = JObject.Parse(h.Task.AdoptV2(
+                    h.BuildBook(sequence++, "ordinary", "task_pre", token, "你来了。")));
+                Assert.Equal("malformed", ack.Value<string>("reason"));
+                Assert.Null(h.Widget.CurrentFrame);
+            }
+        }
+
+        [Fact]
+        public void TaskGroupWithoutContextOrIdStaysHidden()
+        {
+            using var h = new Harness();
+            // 有任务 id 但没 provider：fail-closed
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("插一句"));
+            Assert.Equal(0, h.Transport.OpenCount);
+
+            // 有 provider 但 book 没带 task id：同样 fail-closed
+            using var h2 = new Harness();
+            EnableTaskContext(h2);
+            h2.AdoptTaskBook(7, "task_pre", null, "你来了。");
+            Assert.Equal(DialogueInterjectInputState.Hidden, h2.Controller.InputState);
+        }
+
+        [Fact]
+        public void TaskPreRequestCarriesModeKindContextAndTitle()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "北边仓库出事了。");
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Transport.Script(AddLine("你倒是爽快。", 0) + Done());
+            Assert.True(h.Controller.Submit("这活儿我接了。"));
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("task", request.Value<string>("mode"));
+            JObject dialogue = (JObject)request["dialogue"];
+            Assert.Equal("task_pre", dialogue.Value<string>("kind"));
+            Assert.Equal("任务插话 · 北边仓库失窃 · 任务前 · 2026-10-18 22:30",
+                request.Value<string>("session_title"));
+            var context = (JObject)request["task_context"];
+            Assert.Equal(200124, context["upcoming"].Value<int>("task_id"));
+            Assert.Equal(200123, context["completed"].Value<int>("task_id"));
+            var remaining = (JArray)dialogue["remaining"];
+            Assert.Single(remaining);
+            Assert.Equal("北边仓库出事了。", remaining[0].Value<string>("text"));
+        }
+
+        [Fact]
+        public void TaskPostRequestUsesCompletedSegmentTitle()
+        {
+            using var h = new Harness();
+            h.Task.TaskContextProvider = (id, kind) => new JObject
+            {
+                ["completed"] = new JObject
+                {
+                    ["task_id"] = 200124, ["title"] = "北边仓库失窃", ["npc"] = "Andy Law",
+                    ["objectives"] = new JArray("找回失窃货物"), ["rewards"] = new JArray("金币 2400")
+                }
+            };
+            h.AdoptTaskBook(7, "task_post", "200124", "干得不错。");
+            h.Transport.Script(AddLine("嗯。", 0) + Done());
+            Assert.True(h.Controller.Submit("交差了。"));
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            Assert.Equal("task", request.Value<string>("mode"));
+            Assert.Equal("task_post", ((JObject)request["dialogue"]).Value<string>("kind"));
+            Assert.Equal("任务插话 · 北边仓库失窃 · 任务后 · 2026-10-18 22:30",
+                request.Value<string>("session_title"));
+            Assert.Equal(200124, ((JObject)request["task_context"])["completed"].Value<int>("task_id"));
+        }
+
+        [Fact]
+        public void PlanEndReplaysOriginalsAndEditThenFinishUsesWireTail()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124",
+                "你来了。", "先别急着答应。", "北边仓库昨晚丢了东西。",
+                "去把清单上的货找回来。", "回来之前别让我等太久。");
+            h.Transport.Script(
+                AddLine("你倒是爽快。", 0) + "event: plan\ndata: " + TaskPlanEdit + "\n\n" + Done());
+
+            Assert.True(h.Controller.Submit("这活儿我接了。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("你倒是爽快。", h.Widget.CurrentFrame.Text);
+
+            h.Advance();
+            Assert.Equal("先别急着答应。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("北边仓库昨晚丢了一批货。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("去把清单上的货找回来。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("回来之前别让我等太久。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+
+            JObject finish = h.LastFinish();
+            Assert.NotNull(finish);
+            Assert.Equal("advance_past_end", finish.Value<string>("reason"));
+            Assert.Equal(4, finish.Value<int>("finalIndex"));   // AS2 原始末行
+            Assert.Contains("北边仓库昨晚丢了一批货。", h.Transport.LastFinalize);
+        }
+
+        [Fact]
+        public void PlanEndPointingAtRemovedEntrySkipsForward()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("好。", 0)
+                + "event: plan\ndata: {\"end\":2,\"edits\":[{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("好。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);       // end=2 被 remove → 跳到 C
+            h.Advance();
+            Assert.Equal("D", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanWithoutEndReplacesWholeTail()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("这事我只跟你说一遍。", 0)
+                + "event: plan\ndata: {\"mute\":false,\"end\":null,\"edits\":["
+                + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]},"
+                + "{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("听着。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("这事我只跟你说一遍。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
+            h.Advance();                                         // 组末（不接回 B/C/D）
+            Assert.True(h.Controller.ClosingForTest);
+            JObject finish = h.LastFinish();
+            Assert.Equal(4, finish.Value<int>("finalIndex"));    // 仍用 AS2 原始末行
+        }
+
+        [Fact]
+        public void PlanRemoveSkipsLineAndKeepsEnd()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("这事不好办。", 0)
+                + "event: plan\ndata: {\"end\":3,\"edits\":[{\"n\":2,\"kind\":\"remove\"}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("怎么说？"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("这事不好办。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);       // B 被跳过
+            h.Advance();
+            Assert.Equal("D", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanMissingNochangeKeepsOriginal()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("……", 0)
+                + "event: plan\ndata: {\"end\":4,\"edits\":[{\"n\":3,\"kind\":\"edit\","
+                + "\"lines\":[{\"text\":\"改写的 C\",\"emotion\":\"普通\"}]}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("然后呢？"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("……", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);       // 未提及 = nochange
+            h.Advance();
+            Assert.Equal("改写的 C", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("D", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void PlanSplitEditLocksUntilLastSegment()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("……", 0)
+                + "event: plan\ndata: {\"end\":4,\"edits\":[{\"n\":3,\"kind\":\"edit\",\"lines\":["
+                + "{\"text\":\"段0\",\"emotion\":\"普通\",\"split\":{\"index\":0,\"count\":2}},"
+                + "{\"text\":\"段1\",\"emotion\":\"普通\",\"split\":{\"index\":1,\"count\":2}}]}]}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            h.Advance();
+            h.Advance();
+            h.Advance();
+            Assert.Equal("段0", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Locked, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("插不了"));
+            h.Advance();
+            Assert.Equal("段1", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void PlanWaitsForAllAddsBeforeApplying()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            h.Transport.Script(
+                AddLine("第一句", 0) + AddLine("第二句", 1)
+                + "event: plan\ndata: {\"end\":1}\n\n" + Done());
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("第一句", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);       // end=1 接回原文
+        }
+
+        [Fact]
+        public void PlanWithoutAddAppliesOnDoneAndIsNotAFailure()
+        {
+            using var h = new Harness(inline: false);
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Controller.OnEvent(PlanEvent("{\"end\":2,\"edits\":[{\"n\":1,\"kind\":\"edit\","
+                + "\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}"));
+            h.Controller.OnEvent(DoneEvent());                   // 没有 add，只有 plan
+            Assert.Null(h.Controller.LastFailure);
+
+            h.Widget.CompleteCurrentLineTyping();                // $PC 播完 → plan 应用
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Advance();
+            Assert.Equal("改写的 A", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void MuteLocksGroupButKeepsPlayingAndResetsOnNewGroup()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A");
+            h.Transport.Script(
+                "event: mute\ndata: {\"mute\":true}\n\n"
+                + AddLine("行了，这事不用你操心。", 0)
+                + "event: plan\ndata: {\"mute\":true,\"end\":1}\n\n" + Done());
+
+            Assert.True(h.Controller.Submit("你到底说不说？"));
+            Assert.Equal(DialogueInterjectInputState.Hidden, h.Controller.InputState);
+            h.Widget.CompleteCurrentLineTyping();
+            Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
+            Assert.False(h.Controller.Submit("再说一句"));
+            Assert.Equal("（Andy Law）暂时不打算让你插话",
+                h.Controller.PlaceholderFor(DialogueInterjectInputState.Muted));
+
+            h.Advance();
+            Assert.Equal("行了，这事不用你操心。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);        // 照常播放
+            Assert.Equal(DialogueInterjectInputState.Muted, h.Controller.InputState);
+
+            h.Advance();                                          // 组末关闭 → 重置
+            h.AdoptTaskBook(8, "task_pre", "200124", "换一场。");
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void TaskMidTurnInsertCarriesUnplayedEditAsReference()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C", "D");
+            h.Transport.Script(
+                AddLine("你倒是爽快。", 0) + "event: plan\ndata: " + TaskPlanEdit + "\n\n" + Done());
+            h.Transport.Script(AddLine("新回答", 0) + Done());
+
+            Assert.True(h.Controller.Submit("第一次"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();                                          // add 上屏
+            h.Advance();                                          // 停在原文 A（n1）
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);
+
+            Assert.True(h.Controller.Submit("第二次"));
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            var reference = (JArray)((JObject)request["dialogue"])["reference_continuation"];
+            Assert.Single(reference);
+            Assert.Equal("edit", reference[0].Value<string>("kind"));
+            Assert.Equal(1, reference[0].Value<int>("index"));    // 改写的是 n2 → 下一轮第 1 条
+            Assert.Equal("北边仓库昨晚丢了一批货。", reference[0].Value<string>("text"));
+        }
+
+        [Fact]
+        public void AbandonedTailKeepsRemainingEmptyAndDropsEditReference()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            h.Transport.Script(
+                AddLine("这事我只跟你说一遍。", 0)
+                + "event: plan\ndata: {\"end\":null,\"edits\":["
+                + "{\"n\":1,\"kind\":\"edit\",\"lines\":[{\"text\":\"改写的 A\",\"emotion\":\"普通\"}]}]}\n\n"
+                + Done());
+            h.Transport.Script(AddLine("新回答", 0) + Done());
+
+            Assert.True(h.Controller.Submit("第一次"));
+            h.Widget.CompleteCurrentLineTyping();                 // add 就绪；plan 已应用（无 end）
+            h.Advance();                                          // add 上屏
+            Assert.True(h.Controller.Submit("第二次"));
+
+            JObject request = JObject.Parse(h.Transport.LastRequest);
+            JObject dialogue = (JObject)request["dialogue"];
+            Assert.Empty((JArray)dialogue["remaining"]);          // 原始剩余已放弃
+            Assert.Empty((JArray)dialogue["reference_continuation"]); // 原编号不存在 → 丢弃
+            Assert.Equal("task", request.Value<string>("mode"));
+        }
+
+        [Fact]
+        public void TaskFailureAfterAppliedPlanKeepsPlanAndDoesNotResumeOriginal()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B", "C");
+            h.Transport.Script(
+                AddLine("你倒是爽快。", 0)
+                + "event: plan\ndata: {\"end\":3}\n\n"
+                + "event: error\ndata: {\"code\":\"stream_failed\",\"message\":\"断流\"}\n\n");
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            Assert.Equal("stream_failed", h.Controller.LastFailure);
+
+            h.Advance();
+            Assert.Equal("你倒是爽快。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);        // plan 已应用：A（n1）→ 接回 B/C
+            h.Advance();
+            Assert.Equal("B", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("C", h.Widget.CurrentFrame.Text);
+        }
+
+        [Fact]
+        public void TaskFailureWithoutPlanRestoresOriginalTail()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "A", "B");
+            h.Transport.Script(
+                AddLine("先说一句。", 0)
+                + "event: error\ndata: {\"code\":\"stream_failed\",\"message\":\"断流\"}\n\n");
+
+            Assert.True(h.Controller.Submit("嗯。"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("先说一句。", h.Widget.CurrentFrame.Text);
+            h.Advance();
+            Assert.Equal("A", h.Widget.CurrentFrame.Text);        // 无 plan：接回原文当前点
+        }
+
+        [Fact]
+        public void LateErrorAfterDoneIsIgnored()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。");
+            h.Transport.Script(AddLine("回答", 0) + Done());
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            int finalizes = h.Transport.Finalizes.Count;
+
+            h.Controller.OnEvent(ErrorEvent("stream_failed"));
+
+            Assert.Null(h.Controller.LastFailure);
+            Assert.Equal(finalizes, h.Transport.Finalizes.Count);
+        }
+
         [Fact]
         public void SubmitRejectedWhenNotReadyOrTooLong()
         {
@@ -613,5 +1639,68 @@ namespace CF7Launcher.Tests.Tasks
             Assert.False(h.Controller.Submit(new string('字', 151)));
             Assert.True(h.Controller.Submit(new string('字', 150)));
         }
+
+        // ── 配置门：终端在线但模型 API 未配置 ─────────────────────────────
+
+        [Fact]
+        public void TerminalStartWithoutLlmConfigLocksUntilSaved()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                ensureReady: () => Task.FromResult(true),
+                llmConfigured: () => Task.FromResult(false),
+                terminalReady: false);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。", "有事说事。");
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+            Assert.Equal("请先启动聊天终端",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
+
+            h.TerminalReady = true;
+            h.Controller.RequestTerminalStart();
+
+            Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
+            Assert.Equal(1, dialogs);                       // 从插话处启动 → 自动弹配置小窗
+            Assert.Equal("请配置模型API",
+                h.Controller.PlaceholderFor(h.Controller.InputState));
+            Assert.False(h.Controller.Submit("配置前不能发送"));
+
+            h.Controller.NotifyLlmConfigSaved();
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void TerminalStartWithConfiguredLlmUnlocksWithoutDialog()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                ensureReady: () => Task.FromResult(true),
+                llmConfigured: () => Task.FromResult(true),
+                terminalReady: false);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。");
+            Assert.Equal(DialogueInterjectInputState.Offline, h.Controller.InputState);
+
+            h.TerminalReady = true;
+            h.Controller.RequestTerminalStart();
+
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+            Assert.Equal(0, dialogs);
+        }
+
+        [Fact]
+        public void AlreadyRunningTerminalWithoutConfigLocksWithoutAutoDialog()
+        {
+            int dialogs = 0;
+            using var h = new Harness(
+                llmConfigured: () => Task.FromResult(false),
+                terminalReady: true);
+            h.Controller.ConfigRequired += () => dialogs++;
+            h.AdoptBook("又是你。");
+
+            Assert.Equal(DialogueInterjectInputState.NeedsConfig, h.Controller.InputState);
+            Assert.Equal(0, dialogs);   // 非“从插话处启动”：只锁输入，不自动弹窗
+        }
+
     }
 }

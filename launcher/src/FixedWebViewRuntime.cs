@@ -102,6 +102,19 @@ namespace CF7Launcher
             return admitted.Count == expected.Count;
         }
 
+        /// <summary>
+        /// 终端前端以 iframe 嵌在 overlay.local 里；Chromium 默认按 top-level site
+        /// 分区第三方 localStorage，导致同源但独立打开的 /config 配置页读不到终端设置。
+        /// 本地终端是本应用的受信页面，关闭分区让 iframe 与配置浮窗共用同一份存储。
+        /// </summary>
+        internal const string StorageSharingBrowserArguments =
+            "--disable-features=ThirdPartyStoragePartitioning";
+
+        internal static CoreWebView2EnvironmentOptions CreateStorageSharingOptions()
+        {
+            return new CoreWebView2EnvironmentOptions(StorageSharingBrowserArguments);
+        }
+
         internal static string EnsureAvailable()
         {
             string folder = Prepared.Value.GetAwaiter().GetResult();

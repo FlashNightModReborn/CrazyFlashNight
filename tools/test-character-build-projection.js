@@ -311,5 +311,14 @@ check('neutral overview derives exact equipment and drug drop targets without a 
         ['weapon:长枪']);
 });
 
+check('tuning target projects neutral backpack without inventing a wearing slot', function() {
+    const equipment = {kind:'equipment', slotKey:'长枪'};
+    assert.strictEqual(Projection.tuningTarget(equipment, 'compatible', null), equipment);
+    assert.deepStrictEqual(Projection.tuningTarget(null, 'backpack', {key:'bag'}), {kind:'backpack'});
+    assert.strictEqual(Projection.tuningTarget(null, 'backpack', null), null);
+    assert.strictEqual(Projection.tuningTarget(null, 'unknown', {key:'bag'}), null);
+    assert.strictEqual(Projection.tuningTarget({kind:'drug', drugSlot:0}, 'backpack', {key:'bag'}), null);
+});
+
 process.stdout.write(
     'Character Build projection: ' + passed + '/' + passed + ' passed\n');

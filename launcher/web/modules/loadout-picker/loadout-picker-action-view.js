@@ -41,6 +41,17 @@
         return {available:true, code:'available', reason:''};
     }
 
+    function candidateTuningBlockReason(candidate) {
+        var raw = candidate && candidate.raw || {};
+        // Wearing eligibility never grants a tuning write. Each operation still
+        // requires the authoritative preview/token/commit decision.
+        if (raw.blockedReason === 'level_locked' || raw.blockedReason === 'incompatible_item'
+                || candidate && candidate.blocked !== true && raw.disabled !== true) return '';
+        var reason = String(raw.blockedReason || candidate && candidate.blockedReason || '');
+        return reason && !/^[a-z0-9_]+$/i.test(reason)
+            ? reason : '该候选当前不可用，不能调制';
+    }
+
     var DEFAULT_TEXTS = {
         commitReconcile:'确认',
         commitNoSlot:'先选栏位',
@@ -144,9 +155,9 @@
         if (this._tuneButton) {
             var occupiedEquipment = !!slot && slot.getAttribute('data-empty') !== 'true'
                 && slot.getAttribute('data-slot-kind') !== 'drug';
-            var candidateSelected = !!candidate && !!slot;
+            var candidateSelected = !!candidate;
             var tunable = candidateSelected
-                ? candidate.tunable === true && candidate.blocked !== true
+                ? candidate.tunable === true
                 : occupiedEquipment && slot.getAttribute('data-tunable') === 'true'
                 && slot.getAttribute('data-blocked') !== 'true';
             var tuningReason = candidateSelected
@@ -203,5 +214,6 @@
         this._root.removeEventListener('click', this._onClick);
         this._root.removeEventListener('keydown', this._onKeyDown);
     };
-    return {ActionView:ActionView, tuningCapability:tuningCapability};
+    return {ActionView:ActionView, tuningCapability:tuningCapability,
+        candidateTuningBlockReason:candidateTuningBlockReason};
 });

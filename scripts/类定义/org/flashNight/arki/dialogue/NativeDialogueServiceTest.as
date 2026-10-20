@@ -368,6 +368,7 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         // ── wire v2（以上 v1 套件原样保留）──
         test_v2_caps_latch();
         test_v2_book_materialize();
+        test_v2_dialogue_task_id();
         test_v2_epoch_append_set();
         test_v2_finish_linearization();
         test_v2_terminal_finish_resends_hide();
@@ -1095,6 +1096,9 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq("v2", s.wire, "mat: v2 wire");
         assertEq(3, s.rowCount, "mat: normalized rowCount skips null rows");
         var p:Object = lastSentOp().payload;
+        assert(p.snapshot != undefined, "snap: inline book carries player snapshot");
+        assertEq("测试玩家", p.snapshot.playerName, "snap: playerName frozen at send");
+        assert(p.snapshot.heroPortrait != undefined, "snap: heroPortrait present");
         assertEq(3, p.lines.length, "mat: book lines skip null rows");
         assertEq("测试玩家", p.lines[0].name,
             "mat: 角色名 placeholder resolved at materialize time");
@@ -1121,6 +1125,72 @@ class org.flashNight.arki.dialogue.NativeDialogueServiceTest {
         assertEq(1, countOp("hide"), "mat: empty set emits orphan hide");
         assertEq(2, lastPayload().version, "mat: orphan hide carries v2 tag");
         assertEq(0, published.length, "mat: empty set publishes nothing");
+    }
+
+    /**
+     * dialogueTaskId（P4 / 协议 4.1、5.1）：
+     * 任务组把 id 以字符串上线；daily/stage 不带；append 不改组类型也不改任务 id；
+     * 非法/空/超长 id 归一为 null（不猜）。
+     */
+    private static function test_v2_dialogue_task_id():Void {
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false, "task_pre", 200124);
+        var pre:Object = lastSentOp().payload;
+        assertEq("task_pre", pre.dialogueKind, "taskId: task_pre kind");
+        assertEq("200124", pre.dialogueTaskId, "taskId: numeric id stringified");
+        assert(typeof pre.dialogueTaskId == "string", "taskId: payload id is String");
+        assertEq("200124", curSession().dialogueTaskId, "taskId: session stores id");
+        NativeDialogueService.cancelActive("t");
+
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false, "task_post", "  200125  ");
+        var post:Object = lastSentOp().payload;
+        assertEq("task_post", post.dialogueKind, "taskId: task_post kind");
+        assertEq("200125", post.dialogueTaskId, "taskId: id trimmed");
+
+        // append：不改组类型、不改任务 id，报文不带这两个字段
+        NativeDialogueService.handleAssign(rows(1), false, "task_pre", "999999");
+        var ap:Object = lastSentOp().payload;
+        assertEq("append", ap.op, "taskId: append op");
+        assert(ap.dialogueTaskId == undefined, "taskId: append omits id field");
+        assert(ap.dialogueKind == undefined, "taskId: append omits kind field");
+        assertEq("200125", curSession().dialogueTaskId, "taskId: append keeps id");
+        assertEq("task_post", curSession().dialogueKind, "taskId: append keeps kind");
+        NativeDialogueService.cancelActive("t");
+
+        // daily：即使传入也丢弃，报文不带
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false);
+        var daily:Object = lastSentOp().payload;
+        assert(daily.dialogueKind == undefined, "taskId: daily omits kind");
+        assert(daily.dialogueTaskId == undefined, "taskId: daily omits id");
+        assert(curSession().dialogueTaskId == null, "taskId: daily session id null");
+        NativeDialogueService.cancelActive("t");
+
+        // 空白 id → null，报文不带
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false, "task_pre", "   ");
+        assert(lastSentOp().payload.dialogueTaskId == undefined,
+            "taskId: blank id dropped");
+        NativeDialogueService.cancelActive("t");
+
+        // 超长 id（>32）→ null，报文不带
+        v2Setup();
+        NativeDialogueService.handleAssign(rows(1), false, "task_pre",
+            "012345678901234567890123456789012345");
+        assert(lastSentOp().payload.dialogueTaskId == undefined,
+            "taskId: overlong id dropped");
+        NativeDialogueService.cancelActive("t");
+
+        // stage：带 stage kind（Host 据此关闭插话），不带 id
+        v2Setup();
+        NativeDialogueService.beginStage(
+            [{name:"a", title:"", char:"卫兵", text:"t", target:null, imageurl:""}],
+            {name:"NextStage", args:[]});
+        var stage:Object = lastSentOp().payload;
+        assertEq("stage", stage.dialogueKind, "taskId: stage carries kind");
+        assert(stage.dialogueTaskId == undefined, "taskId: stage omits id");
+        NativeDialogueService.cancelActive("stage-end");
     }
 
     private static function test_v2_epoch_append_set():Void {

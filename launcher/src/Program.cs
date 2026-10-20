@@ -21,6 +21,7 @@ using CF7Launcher.Config;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian;
 using CF7Launcher.Data;
+using CF7Launcher.RagTerminal;
 using CF7Launcher.Tasks;
 using CF7Launcher.V8;
 using Microsoft.Web.WebView2.Core;
@@ -2831,6 +2832,18 @@ class Program
                 else action(); // 内存命中与当前句一起采用，不再排一次消息后闪出人物。
             },
             () => nativeHud != null && !nativeHud.IsSuspended && !panelHost.IsPanelOpen);
+        // 任务插话上下文（P4）：只用任务目录 + 当前影子存档；任何一步读不到就返回 null，
+        // 控制器按 fail-closed 处理（任务组不显示输入框）。
+        nativeDialogueTask.TaskContextProvider = (taskId, kind) =>
+        {
+            CF7Launcher.Data.MapRuntimeContent content = mapDomainTask.Content;
+            string slot = CF7Launcher.RagTerminal.AgentSaveContext.CurrentSlotKey;
+            if (content == null || string.IsNullOrEmpty(slot)) return null;
+            Newtonsoft.Json.Linq.JObject save;
+            string error;
+            if (!archiveTask.TryLoadShadowSync(slot, out save, out error)) return null;
+            return CF7Launcher.Tasks.DialogueTaskContext.Build(content.Catalog, save, taskId, kind);
+        };
         nativeDialogueTask.LoadPortraitWithRect = dialoguePortraits.LoadPortrait;
         nativeDialogueTask.PrefetchPortrait = dialoguePortraits.PrefetchPortrait;
         nativeDialogueTask.LoadSceneImage = dialoguePortraits.LoadSceneImage;
@@ -2876,12 +2889,14 @@ class Program
         socketServer.OnClientReadyForGeneration += nativeDialogueTask.PushCapsForGeneration;
         form.SetDialogueKeyboardSurface(nativeDialogueTask.CaptureKeyboardAction);
 
-        // === AI 对话内嵌插话（config dialogueInterjectEnabled，默认 false）===
-        // 关闭时：不建输入浮窗、不挂会话钩子、不动热键与推进语义；终端与现有对话零变化。
+        // === AI 对话内嵌插话（exe 存在即启用）===
+        // 没有独立特性开关：只要 ragTerminalService 可用就构建输入浮窗、挂会话钩子与焦点门；
+        // 未发现 exe 时自然不构建，对话按键/点击/推进保持原样。
         CF7Launcher.Tasks.NativeDialogueInterjectController dialogueInterject = null;
         CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder dialogueInterjectInput = null;
-        if (config.DialogueInterjectEnabled && ragTerminalService != null)
+        if (ragTerminalService != null)
         {
+            CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectConfigWindow interjectConfigWindow = null;
             var interjectOverlay = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputOverlay();
             interjectOverlay.AttachOwner(form);
             dialogueInterjectInput = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectInputBinder(
@@ -2895,19 +2910,71 @@ class Program
                     if (form.InvokeRequired) form.BeginInvoke(action); else action();
                 },
                 async () => (await ragTerminalService.EnsureReadyAsync().ConfigureAwait(false)).Success,
-                () => ragTerminalService.CreateInterjectTransport());
+                () => ragTerminalService.CreateInterjectTransport(),
+                terminalReady: () => ragTerminalService.IsReady,
+                llmConfigured: async () =>
+                {
+                    RagLlmConfig config = await ragTerminalService.GetLlmConfigAsync().ConfigureAwait(false);
+                    // 探测失败（旧 exe 无端点/瞬断）按已配置处理，避免把输入永久锁死。
+                    return config == null || config.Configured;
+                },
+                ensureBound: playerName => ragTerminalService.EnsureInterjectBindingAsync(playerName));
             var interjectController = dialogueInterject;
+
+            Action<bool> showInterjectConfig = delegate(bool autoMode)
+            {
+                if (form.IsDisposed) return;
+                if (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed)
+                {
+                    if (interjectConfigWindow.IsRevealed) interjectConfigWindow.Activate();
+                    return;
+                }
+                string userDataFolder = webOverlay == null ? null : webOverlay.SharedUserDataFolder;
+                if (string.IsNullOrEmpty(userDataFolder))
+                {
+                    LogManager.Log("[DialogueInterject] config window: shared user data folder unavailable");
+                    return;
+                }
+                // 与聊天面板 iframe 同 origin + 同 WebView2 用户目录：直接共用 terminal 的 localStorage。
+                string url = RagTerminalService.LoopbackOrigin + "/config?popup=1&mode="
+                    + (autoMode ? "auto" : "edit");
+                var window = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectConfigWindow(
+                    userDataFolder, url, autoMode, config.WebView2DeveloperMode,
+                    webOverlay == null ? null : webOverlay.CreateSharedWebView2EnvironmentOptions());
+                interjectConfigWindow = window;
+                window.Saved += () => interjectController.NotifyLlmConfigSaved();
+                window.TextInputActiveChanged += active => form.SetTextInputActive(active);
+                window.FormClosed += delegate
+                {
+                    if (ReferenceEquals(interjectConfigWindow, window))
+                        interjectConfigWindow = null;
+                };
+                window.Show(form);   // 屏外创建，页面 ready 后再决定显示或直接关闭
+            };
+
             interjectOverlay.SendRequested += text => interjectController.Submit(text);
-            dialogueInterject.InputStateChanged += state => dialogueInterjectInput.Apply(state);
+            interjectOverlay.StartRequested += () => interjectController.RequestTerminalStart();
+            interjectOverlay.ConfigRequested += () => showInterjectConfig(false);
+            dialogueInterject.ConfigRequired += () => showInterjectConfig(true);
+            dialogueInterject.InputStateChanged += state =>
+                dialogueInterjectInput.Apply(state, dialogueInterject.PlaceholderFor(state));
             dialogueInterject.Attach();
             if (nativeHud != null)
-                nativeHud.InterjectInputForegroundProbe =
-                    () => interjectOverlay.Visible && interjectOverlay.IsForegroundWindow();
+                nativeHud.InterjectInputForegroundProbe = () =>
+                    interjectOverlay.ShouldKeepHudPresented()
+                    || (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed
+                        && interjectConfigWindow.ShouldKeepHudPresented());
             form.FormClosed += delegate
             {
                 dialogueInterject.Dispose();
                 dialogueInterjectInput.Dispose();
                 interjectOverlay.Dispose();
+                try
+                {
+                    if (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed)
+                        interjectConfigWindow.Dispose();
+                }
+                catch { }
             };
         }
 

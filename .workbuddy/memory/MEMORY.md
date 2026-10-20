@@ -27,6 +27,8 @@
 - 成功判据（两条同时成立）：① `scripts/compiler_errors.txt` 属本轮且严格 0 错 0 警 ② 目标 SWF 已刷新。`publish_done.marker` 单独出现不算；publish-only 不产 trace，`flashlog.txt` 不刷新正常
 - 被 `#include` 的 `.as` 丢 BOM → CS6 静默跳过（报 0/0、marker 正常但帧脚本 0 字节）；新增/重建必须保 BOM
 - `[TIMEOUT]` 留 `compile_state_uncertain.marker` 卡后续编译；确认 Flash/任务静止后再删
+- **Flash 进程杀不掉 = 权限差**：`CompileTriggerTask` 是 `RunLevel=Highest`，拉起的 Flash 以高权限运行；非管理员 shell 下 `Stop-Process`/`taskkill /F /T` 全报「拒绝访问」。遇到「Flash 一直开着 + 编译超时」，先看 `IsInRole(Administrator)`，没有权限就别反复重试，改走「不依赖 Flash 的验证路径」（XFL audit + 已发布 SWF 反编译核对）
+- **独立 XFL 发布（已验证可行，175s/things0）**：`-Target "flashswf\arts\<name>\<name>.xfl" -PublishOnly -VerifySwf "flashswf\arts\<name>.swf" -TimeoutSeconds 420`。发布后**必须用 `tools/ffdec/ffdec-cli.exe -export script <tmpdir> <swf>` 反编译核对实际字节码**，别只看 XML 改对就以为生效（导出目录 `scripts/DefineSprite_*_<容器名>/`）
 
 ## 立绘 / 头像的渲染落点（2026-09-26 定论，别再混）
 
@@ -72,3 +74,31 @@
 - 敌人数值表在 `data/enemy_properties/*.xml`；`units.json` 的 `level` 是兵种表基础值
 - **物品 `<data>` 字段口径**（数据在 `data/items/*.xml`）：刀/手枪/长枪的威力在 `power`，拳套在 `punch`；另有 **`defence`(防御) / `damage`(通用伤害)**，`damage` **常缺项**（读之前要兜 0）。★ 用户口中的「防御力 / 伤害加成」在**物品语境**下 = `data.defence` / `data.damage`，不是施术者身上的 `防御力` / `全身伤害加成`——**别混**。
 - 无精英/BOSS 血量倍率；`韧性系数` 只影响受击硬直，不进任何额度公式
+
+## 输入事件扩展（改搓招键位时必看，2026-10-20 重写）
+
+`SHIFT` 家族现有 5 个：`SHIFT_HOLD=14 / SHIFT_FORWARD=15 / SHIFT_BACK=16 / SHIFT_DOWN=17 / SHIFT_UP_FORWARD=18`
+（`COUNT=19`；`SHIFT_UP_FORWARD` 即「Shift+↑+→」同时按住，幻影剑舞/疾影剑舞/狂暴切割的指令）。
+**没有单独的 `SHIFT_UP`**。方向判定 if/else 互斥：按住 ↑+→ 只产出 `UP_FORWARD`，不会同时产出 `UP` 和 `FORWARD`
+⇒ 表达「Shift + 两个方向 + 攻击键」必须加复合事件，四处镜像同步：
+`InputEvent.as`（常量 / `_names` / `_nameToId` 常量名+符号两条）、`InputSampler.as`、
+`launcher/scripts/src/input-event.ts`（含 `ALPHABET_SIZE=19`）、`input-sampler.ts`。
+`alphabetSize` 由 `serializeForLauncher` 动态下发，无需别处硬编码。
+
+★ 改某招键位时，对应 `使用*` 函数守卫**既不能拒指令的方向、也不能拒指令的末键**：
+守卫拒掉 = DFA 识别成功也照样 return 0，表现为「技能放不出 + 刘海屏（Ncombo）无显示」。
+实证（2026-10-20）：幻影剑舞改 A 结尾后，守卫里的 `|| 自机.动作A` 在 A 按下帧把已识别的招拦死。
+同类参照：月光斩(上+A)/蓄力重劈(Shift+↓+A) 守卫均不含 动作A。当前三剑舞守卫 = `技能.等级 < 4 || 自机.下行`。
+
+★ 提交可能被另一条工作线的分支操作冲掉（`8e96e110b2` 就是这么没的）⇒ **接活先读盘确认现状**，
+发现旧提交消失时按 diff 记忆重放；`flashswf/gk-1-s.swf` 是 Steam 写的 SteamID 文本，非 SWF，忽略其 diff。
+
+## ★ 用户工作流约定（2026-10-20，必须遵守）
+
+1. **每次动手改代码前，先 `git fetch` + 合并远端更新**（`git merge origin/main`），
+   再把我的改动合上去。不要等到最后才拉，否则 `scripts/asLoader.swf` 必冲突。
+2. **改完不要直接 `git commit` 进入待上传状态** —— 改完、编译验证完就停下，
+   把改动留在工作区/暂存区，由用户决定何时提交推送。
+3. **`scripts/asLoader.swf` 是编译产物，冲突时永远两边都不要**：
+   `git checkout --theirs scripts/asLoader.swf` 先解冲突占位，然后在**合并后的源码**上
+   重新跑 `compile_test.ps1 -Target publish`，让 SWF 同时含两边改动。别手工挑某一版。

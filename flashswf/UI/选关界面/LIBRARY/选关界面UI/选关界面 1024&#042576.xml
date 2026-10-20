@@ -71,7 +71,7 @@ function 组装副本任务(对象)
 	_root.委托任务界面.NPC任务_任务_契约金 = taskData.deposit;
 	_root.委托任务界面.NPC任务_任务_等级限制 = taskData.restricted_level;
 	_root.委托任务界面.NPC任务_任务_K点 = taskData.Kdeposit;
-	_root.SetDialogue(taskData.get_conversation);
+	_root.SetDialogue(taskData.get_conversation, undefined, "task_pre", taskData.id);
 	_root.委托任务界面.配置关卡属性(对象.NPC任务_任务_关卡路径);
 	_root.委托任务界面.显示任务明细(taskData);
 	_root.委托任务界面._visible = true;

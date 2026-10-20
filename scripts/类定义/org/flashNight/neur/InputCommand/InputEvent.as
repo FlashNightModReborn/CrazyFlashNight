@@ -36,9 +36,10 @@ class org.flashNight.neur.InputCommand.InputEvent {
     public static var SHIFT_FORWARD:Number      = 15;  // Shift + 前
     public static var SHIFT_BACK:Number         = 16;  // Shift + 后
     public static var SHIFT_DOWN:Number         = 17;  // Shift + 下
+    public static var SHIFT_UP_FORWARD:Number   = 18;  // Shift + 上前（↑+→，同时按住）
 
     // === 事件总数（用于DFA数组分配）===
-    public static var COUNT:Number = 18;
+    public static var COUNT:Number = 19;
 
     // ========== 事件名称映射（用于调试和UI）==========
 
@@ -68,6 +69,7 @@ class org.flashNight.neur.InputCommand.InputEvent {
             _names[SHIFT_FORWARD]     = "Shift+→";
             _names[SHIFT_BACK]        = "Shift+←";
             _names[SHIFT_DOWN]        = "Shift+↓";
+            _names[SHIFT_UP_FORWARD]  = "Shift+↑→";
         }
         return _names;
     }
@@ -132,6 +134,7 @@ class org.flashNight.neur.InputCommand.InputEvent {
             _nameToId["SHIFT_FORWARD"]     = SHIFT_FORWARD;
             _nameToId["SHIFT_BACK"]        = SHIFT_BACK;
             _nameToId["SHIFT_DOWN"]        = SHIFT_DOWN;
+            _nameToId["SHIFT_UP_FORWARD"]  = SHIFT_UP_FORWARD;
 
             // 符号格式（兼容可视化表示）
             _nameToId["→"]       = FORWARD;
@@ -151,6 +154,7 @@ class org.flashNight.neur.InputCommand.InputEvent {
             _nameToId["Shift+→"] = SHIFT_FORWARD;
             _nameToId["Shift+←"] = SHIFT_BACK;
             _nameToId["Shift+↓"] = SHIFT_DOWN;
+            _nameToId["Shift+↑→"] = SHIFT_UP_FORWARD;
         }
 
         var id:Number = _nameToId[name];

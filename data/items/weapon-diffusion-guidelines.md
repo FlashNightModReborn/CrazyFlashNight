@@ -48,7 +48,7 @@
 
 HUD 主数字显示实际总弹数，沿用原有单枪/双枪数字格式与宽度，只改变现有弹药文字颜色：幽灵为黄色、奖励为紫色、留膛为青色，三者并存时依此取优先级。拆包余量和全部来源发数、超额数及本发散射倍率放在对应枪位的悬停说明中。新 Host 通过 `ammoDetails` 协商详情，旧 Host 仍接收原字段集合；合法来源由 AS2 判定。
 
-机器验证入口：`scripts/run-weapon-ammo-tests.ps1`、`scripts/run-weapon-ammo-data-tests.ps1`、既有射击/双持/联弹/HUD/钛金套装专项。原生持久化通过唯一 disposable SOL 的真实 flush，再由 `tools/inspect-weapon-ammo-sol.mts` 读取原始字节的不可变副本；测试不写玩家槽位。最终候选从根 `本地开发启动.cmd` 进入，换弹节奏、散射风险、HUD 可读性与 TTI 平衡保留人工验收。本轮开发授权止于该节点，不等同于正式部署。
+机器验证入口：`scripts/run-weapon-ammo-tests.ps1`、`scripts/run-weapon-ammo-data-tests.ps1`、既有射击/双持/联弹/HUD/钛金套装专项。原生持久化通过唯一 disposable SOL 的真实 flush，再由 `tools/inspect-weapon-ammo-sol.mts` 读取原始字节的不可变副本；测试不写玩家槽位。最终候选从根 `本地开发启动.cmd` 进入，换弹节奏、散射风险、HUD 可读性与 TTI 平衡保留人工验收。前期开发停在人力验收；2026-10-20 已追加完整发布列车授权，按冻结源码、本地与云端独立共识、政策门及原子部署推进。正式状态以 runtime manifest 与签名 consensus 为准，部署不代签手感和平衡验收。
 
 ## 建议带
 
