@@ -417,7 +417,7 @@ function() {
         prototype._selectCandidate = function(key) {
             if (!key || this._interactionState !== 'idle') return false;
             var candidate = this._candidateByKey(key);
-            if (!candidate || candidate.blocked === true) return false;
+            if (!candidate || candidate.blocked === true && candidate.tunable !== true) return false;
             this._selectedCandidateKey = String(key);
             this._syncCandidateSelection();
             this._onCandidateSelect(candidate, {
@@ -506,7 +506,15 @@ function() {
             return this._candidateState.getCandidates();
         };
         prototype.restoreCandidateTuning = function(plan, state) {
-            if (this._destroyed || !plan || !state || !this.restoreSlot(state.slotKey)) return false;
+            if (this._destroyed || !plan || !state) return false;
+            if (state.slotKey) {
+                if (!this.restoreSlot(state.slotKey)) return false;
+            } else if (state.target && state.target.kind === 'backpack') {
+                // The exact overview request survives behind tuning; do not
+                // start another read or invent a wearing slot on return.
+                if (this._selectedSlotKey || this._candidateScope !== 'backpack'
+                        || this._candidateRequestKey !== state.requestKey) return false;
+            } else return false;
             var scroll = this.root.querySelector(candidateScrollSelector);
             if (scroll) scroll.scrollTop = Number(state.scrollTop) || 0;
             var candidate = plan.candidate;

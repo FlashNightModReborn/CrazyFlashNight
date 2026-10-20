@@ -184,7 +184,12 @@ function(TuningAdapter, CandidateEligibility, DrugLayout) {
             : null;
     }
 
+    function tuningTarget(target, scope, candidate) {
+        if (target) return target.kind === 'equipment' ? target : null;
+        return scope === 'backpack' && candidate ? {kind:'backpack'} : null;
+    }
     return {
+        tuningTarget:tuningTarget,
         viewSnapshot:viewSnapshot,
         viewCandidates:viewCandidates,
         targetForSelection:targetForSelection

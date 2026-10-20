@@ -61,17 +61,17 @@ check('near-shaped and mismatched candidate sources fail closed', function() {
     assert.strictEqual(CandidateTuning.sourceFor(mismatch), null);
 });
 
-check('blocked non-equipment and untunable candidates expose readable zero-intent reasons', function() {
+check('wearing level gate is distinct from tuning and invalid items still fail closed', function() {
     const blocked = candidate(7, 'lease.7', {
         blocked:true,
         raw:{disabled:true, blockedReason:'level_locked',
             physicalSlot:7, source:{containerId:'背包', slot:7, expectedLease:'lease.7'}}
     });
     assert.deepStrictEqual(CandidateTuning.capability(blocked), {
-        available:false,
-        code:'blocked',
-        reason:'该候选当前等级不足，不能调制',
-        source:null
+        available:true,
+        code:'available',
+        reason:'',
+        source:{sourceKind:'inventory', containerId:'背包', slot:7, expectedLease:'lease.7'}
     });
     const stack = candidate(8, 'lease.8');
     stack.presentation = {
@@ -204,14 +204,15 @@ check('slot adapter preserves the exact lease for EquipmentTuningView', function
     });
 });
 
-function flowFixture(mode) {
+function flowFixture(mode, overview) {
     const oldCandidate = candidate(7, 'lease.old');
     const nextCandidate = candidate(7, 'lease.new');
     const state = {
         candidates:[oldCandidate],
         selectedCandidateKey:oldCandidate.key,
         candidateRequestKey:'candidate-view-1:weapon:长枪:1',
-        selectedSlotKey:'weapon:长枪',
+        selectedSlotKey:overview ? '' : 'weapon:长枪',
+        candidateScope:overview ? 'backpack' : 'compatible',
         sets:0,
         cacheCalls:0,
         invalidations:0,
@@ -225,7 +226,7 @@ function flowFixture(mode) {
                 sessionGeneration:4
             };
         },
-        requestCandidates:function(target, callback) {
+        requestCandidates:function(target, scope, callback) {
             if (mode === 'late') {
                 state.pending = callback;
                 return 'call.candidates.late';
@@ -233,7 +234,7 @@ function flowFixture(mode) {
             callback({
                 success:true,
                 payload:{projected:[nextCandidate]}
-            }, true, 'equipment:' + target.slotKey);
+            }, true, target.kind === 'backpack' ? 'backpack' : 'equipment:' + target.slotKey, scope);
             return 'call.candidates.1';
         }
     };
@@ -243,7 +244,8 @@ function flowFixture(mode) {
             return {
                 selectedCandidateKey:state.selectedCandidateKey,
                 candidateRequestKey:state.candidateRequestKey,
-                selectedSlotKey:state.selectedSlotKey
+                selectedSlotKey:state.selectedSlotKey,
+                candidateScope:state.candidateScope
             };
         },
         getCandidates:function() { return state.candidates.slice(); },
@@ -273,7 +275,7 @@ function flowFixture(mode) {
     });
     assert.ok(flow.begin(
         oldCandidate,
-        {kind:'equipment', slotKey:'长枪'},
+        overview ? {kind:'backpack'} : {kind:'equipment', slotKey:'长枪'},
         'panel.build.1'));
     return {flow:flow, state:state, nextCandidate:nextCandidate};
 }
@@ -308,9 +310,76 @@ check('deactivate fences a late candidate refresh from reviving retired view sta
     fixture.state.pending({
         success:true,
         payload:{projected:[fixture.nextCandidate]}
-    }, true, 'equipment:长枪');
+    }, true, 'equipment:长枪', 'compatible');
     assert.strictEqual(result, null);
     assert.strictEqual(fixture.state.sets, 0);
+});
+
+check('neutral backpack flow retains the exact overview through refresh and return', function() {
+    const fixture = flowFixture('success', true);
+    let result;
+    fixture.flow.completeWrite({id:'write.1'}, true, value => { result = value; });
+    assert.deepStrictEqual(result, {success:true, refreshed:true});
+    const entry = fixture.flow.deactivate();
+    assert.deepStrictEqual(entry.target, {kind:'backpack'});
+    assert.strictEqual(entry.slotKey, '');
+    assert.strictEqual(entry.scope, 'backpack');
+    assert.strictEqual(fixture.flow.returnPlan(entry,
+        CandidateTuning.sourceFor(fixture.nextCandidate)).kind, 'exact');
+});
+check('unknown and missing wearing reasons stay blocked, known wearing reasons do not grant writes', function() {
+    for (const reason of ['', 'authority_unavailable', 'stale_state']) {
+        const row = candidate(7, 'lease.7', {blocked:true});
+        row.raw.disabled = true;
+        row.raw.blockedReason = reason;
+        assert.strictEqual(CandidateTuning.sourceFor(row), null);
+    }
+    const row = candidate(7, 'lease.7', {blocked:true});
+    row.raw.disabled = true;
+    row.raw.blockedReason = 'incompatible_item';
+    assert.strictEqual(CandidateTuning.capability(row).available, true);
+    row.raw.source.slot = 8;
+    assert.strictEqual(CandidateTuning.sourceFor(row), null);
+});
+check('scope change fences a delayed overview refresh', function() {
+    const fixture = flowFixture('late', true);
+    let result = null;
+    fixture.flow.completeWrite({id:'write.1'}, true, value => { result = value; });
+    fixture.state.candidateScope = 'compatible';
+    fixture.state.pending({success:true, payload:{projected:[fixture.nextCandidate]}}, true, 'backpack', 'backpack');
+    assert.strictEqual(result, null);
+    assert.strictEqual(fixture.state.sets, 0);
+});
+
+check('same key cannot substitute a stale or forged source lease', function() {
+    const fixture = flowFixture('success');
+    fixture.flow.deactivate();
+    const forged = candidate(7, 'lease.other');
+    forged.key = fixture.state.selectedCandidateKey;
+    assert.strictEqual(fixture.flow.begin(forged, {kind:'equipment', slotKey:'长枪'}, 'panel.build.1'), null);
+});
+check('overview return restores exact selection and scroll without reading or inventing a slot', function() {
+    const row = candidate(7, 'lease.new');
+    const scroll = {scrollTop:0};
+    let selected = '', focused = '';
+    const view = {
+        _destroyed:false, _selectedSlotKey:'', _candidateScope:'backpack', _candidateRequestKey:'overview.1',
+        root:{querySelector:() => scroll},
+        restoreSlot:() => { throw new Error('must not invent a loadout slot'); },
+        _selectCandidate:key => { selected = key; return true; },
+        _candidateRoving:{refresh:() => {}},
+        _candidateState:{focusCandidate:key => { focused = key; }},
+        _showBrowsingNotice:() => {}
+    };
+    const entry = {slotKey:'', target:{kind:'backpack'}, requestKey:'overview.1', scrollTop:63};
+    assert.strictEqual(CharacterBuildView.prototype.restoreCandidateTuning.call(view,
+        {kind:'exact', candidate:row, index:0}, entry), true);
+    assert.strictEqual(selected, row.key);
+    assert.strictEqual(focused, row.key);
+    assert.strictEqual(scroll.scrollTop, 63);
+    entry.requestKey = 'stale';
+    assert.strictEqual(CharacterBuildView.prototype.restoreCandidateTuning.call(view,
+        {kind:'exact', candidate:row, index:0}, entry), false);
 });
 
 process.stdout.write(

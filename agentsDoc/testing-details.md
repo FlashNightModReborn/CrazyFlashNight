@@ -345,8 +345,9 @@ commit 成功先采用 Host 验证的 `response.snapshot`，但 inventory extern
 Web pointer/focus 共用 basic→rich；snapshot/新 candidates/写入/supersede/离开 `idle`/rebind/close 均使对应 owner/cache 失效、隐藏浮层并拒绝迟到复活，tooltip 零选择/装备/调制/对账 authority。布局另固定验证右栏只有「PaneChrome 标题 / 紧凑单行候选上下文 / 占满余高的候选网格」三行；范围控件、焦点摘要与候选操作组同一紧凑单行、按钮 non-shrink/nowrap，兼容/背包 scope 的 scroll viewport 等高，候选首行不得被说明区推到底部。
 blocked 候选解释收敛为底部状态栏（aria-live）单一出口，瓦片仅露「不可装备」短标记，完整原因保留 aria-describedby 与悬浮说明，候选摘要行不再镜像原生 title tooltip。audit 口径：`--strict-warnings` 双树 `0 error / 0 warning` 为现役要求；文本曾记录的非严格 `0 error / 4 WB112 warnings` 已被取代（见归档）。
 
-**候选直接调制（C3）**：固定覆盖 selected candidate 优先、无 candidate 才回落 loadout；exact inventory source，blocked/非装备/零强化/near-shape/同槽歧义 fail closed；写后只通过已挂载 Storage cache coordinator 收束且不得激活 Storage，再刷新 exact target/new lease/source/tooltip/current selection。
-entry/session/panel/target/request generation fence 必须阻止迟到复活，unknown/stale 不 replay。返回先匹配同 physical slot + 新 lease，缺失时 next→previous，歧义/空集合聚焦当前槽候选标题；先恢复非零 scroll，再对越界目标做 PanelScale-aware nearest 修正，可见目标不得扰动滚动。1024 下「装备 / 调制候选 / 卸下」保持单行、完整 ARIA 与至少 44px 命中宽。C3 只复用现役 Host/AS2 inventory-source 闭环；
+**候选直接调制（C3）**：固定覆盖 selected candidate 优先、无 candidate 才回落 loadout；exact inventory source，非装备/零强化/near-shape/同槽歧义及未知阻断原因 fail closed；明确的穿戴专用 `level_locked` / `incompatible_item` 不阻止有效装备进入调制，但不授予装备或调制写权限，每项操作仍由原 preview/commit 权威裁决；写后只通过已挂载 Storage cache coordinator 收束且不得激活 Storage，再刷新 exact target/new lease/source/tooltip/current selection。
+背包总览无需先选穿戴槽即可调制，使用 exact `backpack` target、scope 和原 request fence，返回不伪造穿戴 anchor；同槽“已穿戴→候选→已穿戴”须按 source 而非名称切换。
+entry/session/panel/target/scope/request generation fence 必须阻止迟到复活，unknown/stale 不 replay。返回先匹配同 physical slot + 新 lease，缺失时 next→previous，歧义/空集合聚焦当前槽候选标题；先恢复非零 scroll，再对越界目标做 PanelScale-aware nearest 修正，可见目标不得扰动滚动。1024 下「装备 / 调制候选 / 卸下」保持单行、完整 ARIA 与至少 44px 命中宽。C3 只复用现役 Host/AS2 inventory-source 闭环；
 未改 `.as`、SWF 或 Flash target 时不要求 CS6/publish，也不能把自动门外推为 candidate、游戏 E2E 或部署。
 
 **Skills 往返**：Character Build → Skills 必须 strict `reason:"navigate_skills"`、active/exact binding、arm-before-close、visual-retire、acknowledged detach 与 coordinator-settled 后原子消费；Host 生成一次性 `openRequestId`，AS2 只回显 `nativehud/manage`，nonce/source/view/baseline 全匹配才开。
