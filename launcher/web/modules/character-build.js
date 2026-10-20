@@ -249,7 +249,7 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
             onCandidateSelect:function(candidate) {
                 self._selectedCandidate = candidate;
                 if (self._view) self._view.setItemUseCandidate(candidate);
-                self._renderPortrait(candidate);
+                self._renderPortrait(candidate && candidate.blocked !== true ? candidate : null);
             },
             bindCandidateTooltip:function(node, candidate, isSuppressed) {
                 return self._candidateTooltip
@@ -440,13 +440,14 @@ function(SessionModule, ViewModule, TuningModule, Mutation, Pose, Projection,
         }
     };
     CharacterBuildController.prototype._enterTuning = function() {
-        if (!this._tuning || !this._selectedTarget
-                || this._selectedTarget.kind !== 'equipment' || !this._snapshotPayload) return false;
+        var target = Projection.tuningTarget(
+            this._selectedTarget, this._candidateScope, this._selectedCandidate);
+        if (!this._tuning || !target || !this._snapshotPayload) return false;
         var entered = false;
         if (this._selectedCandidate) {
             if (this._candidateTooltip) this._candidateTooltip.invalidate();
             entered = this._tuning.enterCandidate(
-                this._selectedCandidate, this._selectedTarget, this._panelInstanceId);
+                this._selectedCandidate, target, this._panelInstanceId);
         } else {
             var item = TuningModule.findEquipment(
                 this._snapshotPayload, this._selectedTarget.slotKey);

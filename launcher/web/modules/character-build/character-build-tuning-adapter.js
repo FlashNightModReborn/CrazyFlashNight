@@ -105,13 +105,6 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
             expectedLease:source.expectedLease
         });
     }
-    function blockedReason(candidate) {
-        var raw = candidate && candidate.raw || {};
-        var reason = String(raw.blockedReason || candidate && candidate.blockedReason || '');
-        if (reason === 'level_locked') return '该候选当前等级不足，不能调制';
-        return reason && !/^[a-z0-9_]+$/i.test(reason)
-            ? reason : '该候选当前不可用，不能调制';
-    }
     function sourceFor(candidate) {
         var projected = capability(candidate);
         return projected.available ? projected.source : null;
@@ -120,9 +113,9 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
         if (!candidate) return {
             available:false, code:'empty', reason:'尚未选择候选装备', source:null
         };
-        if (candidate.blocked === true
-                || candidate.raw && candidate.raw.disabled === true) return {
-            available:false, code:'blocked', reason:blockedReason(candidate), source:null
+        var blocked = LoadoutPickerActionView.candidateTuningBlockReason(candidate);
+        if (blocked) return {
+            available:false, code:'blocked', reason:blocked, source:null
         };
         var itemCapability =
             LoadoutPickerActionView.tuningCapability(candidate.presentation);
@@ -169,7 +162,8 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
     }
     function availableFallback(candidates, start, direction) {
         for (var i = start; i >= 0 && i < candidates.length; i += direction) {
-            if (candidates[i] && candidates[i].blocked !== true) return i;
+            if (candidates[i] && (candidates[i].blocked !== true
+                    || capability(candidates[i]).available)) return i;
         }
         return -1;
     }
@@ -234,19 +228,27 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
             if (source && projected.source
                     && source.slot === projected.source.slot) sourceMatches += 1;
         }
+        var overview = target && target.kind === 'backpack'
+            && Object.keys(target).length === 1
+            && view.selectedSlotKey === '' && view.candidateScope === 'backpack';
+        var equipment = target && target.kind === 'equipment'
+            && !!view.selectedSlotKey
+            && view.selectedSlotKey.split(':').slice(1).join(':') === target.slotKey;
         if (this._active || !projected.available || index < 0 || sourceMatches !== 1
-                || !target || target.kind !== 'equipment'
+                || !sameExactSource(candidates[index], projected.source)
+                || (!overview && !equipment)
                 || session.state !== 'idle'
                 || session.panelInstanceId !== String(panelInstanceId || '')
                 || view.selectedCandidateKey !== String(candidate.key || '')
-                || !view.candidateRequestKey || !view.selectedSlotKey
-                || view.selectedSlotKey.split(':').slice(1).join(':') !== target.slotKey) return null;
+                || !view.candidateRequestKey) return null;
         var scroll = this._view.root.querySelector('.character-build-candidate-scroll');
         this._entry = returnState(candidate, index);
         this._entry.slotKey = view.selectedSlotKey;
         this._entry.requestKey = view.candidateRequestKey;
         this._entry.scrollTop = scroll ? scroll.scrollTop : 0;
-        this._entry.target = {kind:'equipment', slotKey:String(target.slotKey)};
+        this._entry.scope = view.candidateScope || 'compatible';
+        this._entry.target = overview ? {kind:'backpack'}
+            : {kind:'equipment', slotKey:String(target.slotKey)};
         this._entry.panelInstanceId = session.panelInstanceId;
         this._entry.sessionGeneration = session.sessionGeneration;
         this._active = true;
@@ -266,6 +268,7 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
             && session.state === 'idle'
             && session.panelInstanceId === this._entry.panelInstanceId
             && session.sessionGeneration === this._entry.sessionGeneration
+            && (view.candidateScope || 'compatible') === this._entry.scope
             && view.selectedSlotKey === this._entry.slotKey
             && view.candidateRequestKey === this._entry.requestKey;
     };
@@ -275,10 +278,13 @@ function(EquipmentTuningModel, LoadoutPickerActionView) {
         var target = this._entry.target;
         this._invalidateTooltip();
         var callbackCalled = false;
-        var callId = this._session.requestCandidates(target, function(response, accepted, targetKey) {
+        var callId = this._session.requestCandidates(target, this._entry.scope, function(
+                response, accepted, targetKey, responseScope) {
             callbackCalled = true;
             if (!self._fenced(epoch, generation)) return;
-            if (!accepted || targetKey !== 'equipment:' + target.slotKey
+            if (!accepted || responseScope !== self._entry.scope
+                    || targetKey !== (target.kind === 'backpack'
+                    ? 'backpack' : 'equipment:' + target.slotKey)
                     || !response || !response.payload) {
                 callback({success:false, error:response && response.error
                     || 'candidate_refresh_failed'});

@@ -202,6 +202,10 @@ function(WorkbenchFocus, WorkbenchComponents,
                     }) : null;
             },
             onBlocked:function(candidate, context) {
+                if (candidate.tunable === true && self._interactionState === 'idle') {
+                    if (self._selectedCandidateKey === candidate.key) self.clearCandidateSelection();
+                    else self._selectCandidate(candidate.key);
+                }
                 return self._explainBlockedCandidate(candidate, context);
             },
             onRetry:function(requestKey) { return self._retryCandidates(requestKey); }
@@ -404,6 +408,14 @@ function(WorkbenchFocus, WorkbenchComponents,
     CharacterBuildView.prototype._selectUserSlot = function(key, reason) {
         if (this._interactionState !== 'idle') return false;
         this._itemUseResultNotice = '';
+        // Re-selecting the same worn slot is an explicit source choice, not
+        // a request to keep the backpack candidate selected.
+        if (key === this._selectedSlotKey) {
+            if (this.root.getAttribute('data-build-subview') === 'tuning') {
+                return this._selectSlot(key, true);
+            }
+            this.clearCandidateSelection();
+        }
         return this._selectSlot(key, reason);
     };
 
