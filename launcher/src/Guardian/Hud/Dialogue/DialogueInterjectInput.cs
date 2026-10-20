@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
@@ -136,22 +137,49 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
         private const int GCS_COMPSTR = 0x0008;
+        private const int EM_SETMARGINS = 0x00D3;
+        private const int EC_LEFTMARGIN = 0x0001;
+        private const int EC_RIGHTMARGIN = 0x0002;
+        private const int WM_GETMINMAXINFO = 0x0024;
+        internal const float DesignHeight = 180f;
+        internal const int ToggleWidthDesign = 52;
+        internal const int ToggleHeightDesign = 30;
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct NativePoint { public int X; public int Y; }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MinMaxInfo
+        {
+            public NativePoint Reserved;
+            public NativePoint MaxSize;
+            public NativePoint MaxPosition;
+            public NativePoint MinTrackSize;
+            public NativePoint MaxTrackSize;
+        }
 
         private readonly DialogueInterjectInputModel _model = new DialogueInterjectInputModel();
         private readonly ComposingTextBox _textBox;
+        private readonly Label _placeholderLabel;
         private readonly ToolTip _toolTip;
         private readonly Timer _chevronTimer;
 
-        // 与对话面板同一套视觉：深色头条、浅灰正文、红色装饰、青色辅助。
-        private Color _bodyBack = Color.FromArgb(229, 229, 229);
+        // 与对话面板同一套视觉：黑色头条、半透明灰面板的等效中灰、黑色文字。
+        private Color _bodyBack = Color.FromArgb(191, 191, 191);
         private Color _bodyFore = Color.FromArgb(24, 24, 24);
-        private Color _bodyDisabledBack = Color.FromArgb(214, 214, 214);
+        private Color _bodyDisabledBack = Color.FromArgb(172, 172, 172);
         private Color _headerBack = Color.FromArgb(25, 25, 25);
         private Color _headerFore = Color.FromArgb(245, 245, 245);
         private Color _accent = Color.FromArgb(204, 0, 0);
         private Color _accentAlt = Color.FromArgb(0, 153, 204);
         private Color _muted = Color.FromArgb(118, 118, 118);
+        private Color _fieldBack = Color.FromArgb(250, 248, 243);
+        private Color _fieldDisabledBack = Color.FromArgb(238, 235, 228);
+        private Color _fieldBorder = Color.FromArgb(188, 182, 170);
 
         private string _placeholder = "说点什么…";
         private bool _textInputActive;
@@ -166,6 +194,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         private Rectangle _chevronRect = Rectangle.Empty;
         private Rectangle _actionRect = Rectangle.Empty;
+        private Rectangle _fieldRect = Rectangle.Empty;
+        private Rectangle _counterRect = Rectangle.Empty;
         private float _uiScale;
         private Font _inputFont;
         private Font _smallFont;
@@ -203,10 +233,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             _textBox = new ComposingTextBox();
             _textBox.BorderStyle = BorderStyle.None;
-            _textBox.BackColor = _bodyBack;
+            _textBox.BackColor = _fieldBack;
             _textBox.ForeColor = _bodyFore;
-            _textBox.Font = new Font("Microsoft YaHei UI", 13f, FontStyle.Regular, GraphicsUnit.Pixel);
-            _textBox.Multiline = false;
+            _textBox.Font = new Font("Microsoft YaHei UI", 14f, FontStyle.Regular, GraphicsUnit.Pixel);
+            _textBox.Multiline = true;
+            _textBox.AutoSize = false;
             _textBox.ShortcutsEnabled = true;
             _textBox.TabStop = true;
             _textBox.Visible = false;
@@ -224,8 +255,21 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 });
             };
             _textBox.CompositionStateChanged += OnCompositionStateChanged;
-            _textBox.PlaceholderText = _placeholder;
             Controls.Add(_textBox);
+
+            // 多行 EDIT 不支持 EM_SETCUEBANNER，用同色 Label 承担占位文案。
+            _placeholderLabel = new Label();
+            _placeholderLabel.AutoSize = false;
+            _placeholderLabel.TabStop = false;
+            _placeholderLabel.TextAlign = ContentAlignment.TopLeft;
+            _placeholderLabel.BackColor = _fieldBack;
+            _placeholderLabel.ForeColor = Blend(_bodyFore, _fieldBack, 0.55f);
+            _placeholderLabel.Cursor = Cursors.IBeam;
+            _placeholderLabel.Visible = false;
+            _placeholderLabel.Click += delegate { if (_model.Enabled) FocusInput(); };
+            _placeholderLabel.MouseDown += delegate { NoteInteraction(); };
+            Controls.Add(_placeholderLabel);
+            _placeholderLabel.BringToFront();
 
             _toolTip = new ToolTip();
             _toolTip.InitialDelay = 350;
@@ -236,6 +280,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _chevronTimer.Interval = 15;
             _chevronTimer.Tick += OnChevronTick;
 
+            DeriveInputColors();
             ApplyLayout();
 
             Enter += delegate { if (_expanded && _model.Enabled) _textBox.Focus(); };
@@ -381,8 +426,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         {
             _model.Enabled = value;
             _textBox.ReadOnly = !value;
-            _textBox.BackColor = value ? _bodyBack : _bodyDisabledBack;
+            _textBox.BackColor = value ? _fieldBack : _fieldDisabledBack;
             if (!value) Collapse(false);
+            UpdatePlaceholder();
             UpdateCursor();
             Invalidate();
         }
@@ -409,19 +455,52 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Math.Max(0, background.R - 15),
                 Math.Max(0, background.G - 15),
                 Math.Max(0, background.B - 15));
+            DeriveInputColors();
             BackColor = _headerBack;
-            _textBox.BackColor = _model.Enabled ? _bodyBack : _bodyDisabledBack;
+            _textBox.BackColor = _model.Enabled ? _fieldBack : _fieldDisabledBack;
             _textBox.ForeColor = _bodyFore;
             Invalidate();
+        }
+
+        /// <summary>输入槽沿用原版面板的中性灰阶：比正文略亮，边框直接用正文黑。</summary>
+        private void DeriveInputColors()
+        {
+            _fieldBack = Blend(Color.FromArgb(232, 232, 232), _bodyBack, 0.30f);
+            _fieldDisabledBack = Blend(_fieldBack, _bodyDisabledBack, 0.55f);
+            _fieldBorder = _bodyFore;
+        }
+
+        private static Color Blend(Color a, Color b, float bWeight)
+        {
+            float w = Math.Max(0f, Math.Min(1f, bWeight));
+            return Color.FromArgb(
+                (int)Math.Round(a.R + (b.R - a.R) * w),
+                (int)Math.Round(a.G + (b.G - a.G) * w),
+                (int)Math.Round(a.B + (b.B - a.B) * w));
         }
 
         /// <summary>提示文案：收起按钮 Tooltip 与展开态输入框共用。</summary>
         public void SetPlaceholder(string text)
         {
             _placeholder = text ?? "";
-            _textBox.PlaceholderText = _placeholder;
+            UpdatePlaceholder();
             UpdateToolTip();
             Invalidate();
+        }
+
+        /// <summary>多行输入框的占位文案：空文本且未聚焦时用同色 Label 盖在输入区上。</summary>
+        private void UpdatePlaceholder()
+        {
+            if (_placeholderLabel == null) return;
+            bool show = _expanded && !_model.Focused && _model.Text.Length == 0
+                && !string.IsNullOrEmpty(_placeholder);
+            _placeholderLabel.Text = _placeholder ?? "";
+            _placeholderLabel.BackColor = _model.Enabled ? _fieldBack : _fieldDisabledBack;
+            _placeholderLabel.ForeColor = _model.Enabled
+                ? Blend(_bodyFore, _fieldBack, 0.55f)
+                : Blend(_bodyFore, _fieldDisabledBack, 0.55f);
+            _placeholderLabel.Visible = show;
+            if (show) _placeholderLabel.BringToFront();
         }
 
         /// <summary>清空文本（发送后 / 本组结束）。</summary>
@@ -456,6 +535,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_model.Focused == focused) return;
             _model.Focused = focused;
             _textInputActive = focused;
+            UpdatePlaceholder();
+            Invalidate();   // 焦点环
             Action<bool> handler = InputFocusChanged;
             if (handler != null)
             {
@@ -478,6 +559,7 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _textBox.Text = _model.Text;
                 _textBox.SelectionStart = Math.Min(caret, _textBox.Text.Length);
             }
+            UpdatePlaceholder();
             UpdateCursor();
             Invalidate();
         }
@@ -578,114 +660,239 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             PaintExpanded(e.Graphics);
         }
 
-        /// <summary>收起态：一个与关闭钮同高的深色标签，中间是向上的箭头。</summary>
+        /// <summary>收起态：与展开态箭头同尺寸的黑色长方形开关，左上折角、白色箭头、无红色。</summary>
         private void PaintCollapsed(Graphics g)
         {
             Rectangle r = ClientRectangle;
-            using (SolidBrush back = new SolidBrush(_headerBack))
-                g.FillRectangle(back, r);
-            using (Pen border = new Pen(Color.FromArgb(90, 255, 255, 255)))
-                g.DrawRectangle(border, 0, 0, r.Width - 1, r.Height - 1);
-            using (SolidBrush accent = new SolidBrush(CanToggle ? _accent : _muted))
-                g.FillRectangle(accent, 0, 0, Math.Max(2, (int)Math.Round(3 * _uiScale)), r.Height);
+            if (r.Width <= 0 || r.Height <= 0) return;
 
-            Color chevron = !CanToggle ? _muted
-                : (_chevronHover ? _accentAlt : _headerFore);
-            DrawChevron(g, r.Width / 2f, r.Height / 2f, chevron);
+            int cut = Math.Max(4, (int)Math.Round(7 * _uiScale));
+            using (GraphicsPath back = ChamferedRectPath(r, cut))
+            using (SolidBrush fill = new SolidBrush(CanToggle ? _headerBack : Color.FromArgb(42, 42, 42)))
+                g.FillPath(fill, back);
+
+            // 原版头条右端的斜线刻纹，缩到按钮尺度只保留两道。
+            using (Pen hatch = new Pen(Color.FromArgb(72, _headerFore)))
+            {
+                int step = Math.Max(4, (int)Math.Round(6 * _uiScale));
+                for (int x = r.Width - step * 3; x < r.Width - 1; x += step)
+                    g.DrawLine(hatch, x, r.Height - 2,
+                        Math.Min(r.Width - 1, x + step), Math.Max(2, r.Height - 2 - step));
+            }
+
+            DrawChamferedBorder(g, r, cut,
+                !CanToggle ? Color.FromArgb(72, 72, 72)
+                : (_chevronHover ? Color.FromArgb(225, 225, 225) : Color.FromArgb(118, 118, 118)));
+
+            DrawChevron(g, r.Width / 2f, r.Height / 2f, CanToggle ? _headerFore : _muted, r.Height);
 
             if (_startRequired || _configRequired)
             {
-                float dot = Math.Max(4f, 6f * _uiScale);
-                using (SolidBrush warn = new SolidBrush(_accent))
-                    g.FillEllipse(warn, r.Width - dot - 3, 3, dot, dot);
+                float dot = Math.Max(4f, 5f * _uiScale);
+                float x = r.Width - dot - Math.Max(4f, 5f * _uiScale);
+                using (SolidBrush warn = new SolidBrush(Color.FromArgb(230, 230, 230)))
+                    g.FillEllipse(warn, x, 4f, dot, dot);
             }
         }
 
-        /// <summary>展开态：深色头条 + 浅灰输入区 + 底部计数/操作/旋转箭头。</summary>
+        /// <summary>展开态：沿用原版对话框的黑色斜切头条 + 平直浅灰面板 + 方角输入槽。</summary>
         private void PaintExpanded(Graphics g)
         {
             int w = ClientSize.Width;
             int h = ClientSize.Height;
+            if (w <= 0 || h <= 0) return;
             int headerH = HeaderHeight;
             int footerTop = h - FooterHeight;
+            float ui = _uiScale;
 
-            using (SolidBrush body = new SolidBrush(_bodyBack))
-                g.FillRectangle(body, ClientRectangle);
+            // 页眉：平涂 #191919，右端斜切角 + 斜线刻纹，取自对话框原版头条。
             using (SolidBrush header = new SolidBrush(_headerBack))
                 g.FillRectangle(header, 0, 0, w, headerH);
-            using (SolidBrush accent = new SolidBrush(_accent))
-                g.FillRectangle(accent, 0, 0, Math.Max(3, (int)Math.Round(4 * _uiScale)), headerH);
-            using (Pen cyan = new Pen(_accentAlt, Math.Max(1f, 1f * _uiScale)))
+            int cut = Math.Max(4, (int)Math.Round(6 * ui));
+            using (Pen chamfer = new Pen(Color.FromArgb(110, _headerFore), Math.Max(1f, ui)))
+                g.DrawLine(chamfer, w - cut, 0, w - 1, cut);
+            PaintHeaderHatch(g, w - Math.Max(66, (int)Math.Round(96 * ui)),
+                w - cut - Math.Max(6, (int)Math.Round(8 * ui)), headerH, ui);
+
+            // 正文：与对话框一致的浅灰平涂底，不再做纸面渐变/纹理。
+            Rectangle bodyRect = new Rectangle(0, headerH, w, Math.Max(1, footerTop - headerH));
+            using (SolidBrush body = new SolidBrush(_bodyBack))
+                g.FillRectangle(body, bodyRect);
+
+            PaintHeaderTitle(g, headerH);
+
+            // 输入槽：方角灰/黑边；聚焦只加粗为黑色 2px，不加颜色光晕。
+            if (!_fieldRect.IsEmpty)
             {
-                float y = headerH - Math.Max(1f, 1f * _uiScale);
-                g.DrawLine(cyan, 0, y, w, y);
+                using (SolidBrush fill = new SolidBrush(_model.Enabled ? _fieldBack : _fieldDisabledBack))
+                    g.FillRectangle(fill, _fieldRect);
+                bool focused = _model.Enabled && _model.Focused;
+                using (Pen edge = new Pen(focused ? _bodyFore : _fieldBorder,
+                    focused ? Math.Max(2f, 2f * ui) : Math.Max(1f, ui)))
+                {
+                    edge.Alignment = PenAlignment.Inset;
+                    g.DrawRectangle(edge, _fieldRect.X, _fieldRect.Y,
+                        _fieldRect.Width - 1, _fieldRect.Height - 1);
+                }
             }
 
-            int textLeft = (int)Math.Round(Pad + 6 * _uiScale);
-            TextRenderer.DrawText(g, "插话", _headerFont,
-                new Rectangle(textLeft, 0, Math.Max(20, w - textLeft - Pad), headerH),
-                _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
-
-            // 输入框外框（TextBox 自身无边框）。
-            if (_textBox.Visible)
-            {
-                using (Pen field = new Pen(Color.FromArgb(165, 165, 165)))
-                    g.DrawRectangle(field, _textBox.Left - 1, _textBox.Top - 1,
-                        _textBox.Width + 1, _textBox.Height + 1);
-            }
-
-            using (Pen separator = new Pen(Color.FromArgb(190, 190, 190)))
+            // 页脚：一条黑色细线 + 纯文字计数 + 黑色动作块 + 同尺寸箭头按钮。
+            using (Pen separator = new Pen(_headerBack))
                 g.DrawLine(separator, Pad, footerTop, w - Pad, footerTop);
 
-            Rectangle counterRect = new Rectangle(Pad, footerTop,
-                Math.Max(20, _actionRect.Left - Pad - 4), FooterHeight);
-            TextRenderer.DrawText(g, _model.CounterText, _smallFont, counterRect,
-                _muted, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+            PaintCounter(g);
 
             if (!_actionRect.IsEmpty)
             {
                 string label = _startRequired ? "启动" : (_configRequired ? "配置" : "发送");
-                Color accent = _configRequired ? _accent : (_startRequired ? _accentAlt : _headerBack);
-                PaintActionButton(g, _actionRect, label, ActionEnabled, accent);
+                PaintActionButton(g, _actionRect, label, ActionEnabled);
             }
 
-            Color chevron = !CanToggle ? _muted
-                : (_chevronHover ? _accentAlt : _headerBack);
-            DrawChevron(g, _chevronRect.Left + _chevronRect.Width / 2f,
-                _chevronRect.Top + _chevronRect.Height / 2f, chevron);
+            PaintToggleButton(g, _chevronRect);
 
-            using (Pen border = new Pen(Color.FromArgb(80, 0, 0, 0)))
-                g.DrawRectangle(border, 0, 0, w - 1, h - 1);
+            DrawChamferedBorder(g, ClientRectangle,
+                Math.Max(6, (int)Math.Round(12 * ui)), Color.FromArgb(190, _bodyFore));
         }
 
-        private void PaintActionButton(Graphics g, Rectangle rect, string label,
-            bool enabled, Color accent)
+        /// <summary>展开态收起钮：与收起态同尺寸的长方形，浅灰底黑箭头，左上折角。</summary>
+        private void PaintToggleButton(Graphics g, Rectangle rect)
         {
-            Color back = _actionHover && enabled
-                ? Color.FromArgb(48, 48, 48) : Color.FromArgb(32, 32, 32);
-            using (SolidBrush fill = new SolidBrush(back))
-                g.FillRectangle(fill, rect);
-            using (Pen border = new Pen(enabled ? accent : Color.FromArgb(150, 150, 150)))
-                g.DrawRectangle(border, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            int cut = Math.Max(4, (int)Math.Round(7 * _uiScale));
+            Color fill = !CanToggle ? Color.FromArgb(180, 180, 180)
+                : (_chevronHover ? Color.FromArgb(168, 168, 168) : _bodyBack);
+            using (GraphicsPath back = ChamferedRectPath(rect, cut))
+            using (SolidBrush brush = new SolidBrush(fill))
+                g.FillPath(brush, back);
+            DrawChamferedBorder(g, rect, cut,
+                !CanToggle ? Color.FromArgb(158, 158, 158)
+                : (_chevronHover ? Color.FromArgb(82, 82, 82) : Color.FromArgb(122, 122, 122)));
+            DrawChevron(g, rect.Left + rect.Width / 2f, rect.Top + rect.Height / 2f,
+                CanToggle ? _bodyFore : _muted, rect.Height);
+        }
+
+        /// <summary>头条右端的 45° 斜线刻纹（原版对话框黑色头条的同款收尾）。</summary>
+        private void PaintHeaderHatch(Graphics g, int left, int right, int headerH, float ui)
+        {
+            int width = right - left;
+            if (width < 8 || headerH < 8) return;
+            System.Drawing.Drawing2D.GraphicsState state = g.Save();
+            try
+            {
+                g.SetClip(new Rectangle(left, 0, width, headerH));
+                using (Pen hatch = new Pen(Color.FromArgb(86, _headerFore), Math.Max(1f, ui)))
+                {
+                    int step = Math.Max(4, (int)Math.Round(6 * ui));
+                    for (int x = left; x < right + headerH; x += step)
+                        g.DrawLine(hatch, x, headerH, x + headerH, 0);
+                }
+            }
+            finally
+            {
+                g.Restore(state);
+            }
+        }
+
+        /// <summary>头条：与对话框名字栏同一条黑色横带，只写「插话」，不加红色点色。</summary>
+        private void PaintHeaderTitle(Graphics g, int headerH)
+        {
+            int textLeft = (int)Math.Round(Pad + Math.Max(2f, 2 * _uiScale));
+            TextRenderer.DrawText(g, "插话", _headerFont,
+                new Rectangle(textLeft, 0, Math.Max(20, ClientSize.Width - textLeft - Pad), headerH),
+                _headerFore, TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+        }
+
+        private void PaintCounter(Graphics g)
+        {
+            if (_counterRect.IsEmpty) return;
+            TextRenderer.DrawText(g, _model.CounterText, _smallFont,
+                new Rectangle(_counterRect.Left, _counterRect.Top,
+                    _counterRect.Width, _counterRect.Height),
+                Blend(_bodyFore, _bodyBack, 0.35f),
+                TextFormatFlags.Left | TextFormatFlags.VerticalCenter | TextFormatFlags.NoPrefix);
+        }
+
+        /// <summary>方角动作块：黑底白字，与整体灰黑面板一致；禁用时灰化但文案不变。</summary>
+        private void PaintActionButton(Graphics g, Rectangle rect, string label, bool enabled)
+        {
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            if (enabled)
+            {
+                Color fill = _actionHover ? Color.FromArgb(44, 44, 44) : _headerBack;
+                using (SolidBrush brush = new SolidBrush(fill))
+                    g.FillRectangle(brush, rect);
+                using (Pen edge = new Pen(Color.FromArgb(110, 110, 110)))
+                    g.DrawRectangle(edge, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            }
+            else
+            {
+                using (SolidBrush brush = new SolidBrush(Color.FromArgb(201, 201, 201)))
+                    g.FillRectangle(brush, rect);
+                using (Pen edge = new Pen(Color.FromArgb(150, 150, 150)))
+                    g.DrawRectangle(edge, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            }
+
             TextRenderer.DrawText(g, label, _actionFont, rect,
-                enabled ? _headerFore : _muted,
+                enabled ? Color.White : Color.FromArgb(110, 110, 110),
                 TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
                 | TextFormatFlags.NoPrefix);
         }
 
+        /// <summary>左上折角的矩形路径；与对话框原版头条的缺口同形。</summary>
+        internal static GraphicsPath ChamferedRectPath(Rectangle rect, int cut)
+        {
+            int max = Math.Max(0, Math.Min(rect.Width, rect.Height) / 2);
+            cut = Math.Max(0, Math.Min(cut, max));
+            var path = new GraphicsPath();
+            path.AddPolygon(new PointF[]
+            {
+                new PointF(rect.Left + cut, rect.Top),
+                new PointF(rect.Right, rect.Top),
+                new PointF(rect.Right, rect.Bottom),
+                new PointF(rect.Left, rect.Bottom),
+                new PointF(rect.Left, rect.Top + cut)
+            });
+            path.CloseFigure();
+            return path;
+        }
+
+        /// <summary>沿折角矩形画 1px 边线（含左上斜边）。</summary>
+        private static void DrawChamferedBorder(Graphics g, Rectangle rect, int cut, Color color)
+        {
+            int max = Math.Max(0, Math.Min(rect.Width, rect.Height) / 2);
+            cut = Math.Max(0, Math.Min(cut, max));
+            float l = rect.Left + 0.5f;
+            float t = rect.Top + 0.5f;
+            float r = rect.Right - 0.5f;
+            float b = rect.Bottom - 0.5f;
+            using (Pen pen = new Pen(color))
+            {
+                g.DrawLines(pen, new PointF[]
+                {
+                    new PointF(l + cut, t),
+                    new PointF(r, t),
+                    new PointF(r, b),
+                    new PointF(l, b),
+                    new PointF(l, t + cut)
+                });
+                g.DrawLine(pen, l, t + cut, l + cut, t);
+            }
+        }
+
         /// <summary>0° = 向上箭头（收起态）；180° = 向下箭头（展开态）。</summary>
-        private void DrawChevron(Graphics g, float cx, float cy, Color color)
+        private void DrawChevron(Graphics g, float cx, float cy, Color color, float buttonHeight)
         {
             System.Drawing.Drawing2D.GraphicsState state = g.Save();
             try
             {
                 g.TranslateTransform(cx, cy);
                 g.RotateTransform(_chevronAngle);
-                float size = Math.Max(4.5f, Math.Min(8f, Height / 16f));
+                float size = Math.Max(4.5f, Math.Min(8f, buttonHeight * 0.28f));
                 using (Pen pen = new Pen(color, Math.Max(1.7f, size * 0.36f)))
                 {
-                    pen.StartCap = System.Drawing.Drawing2D.LineCap.Round;
-                    pen.EndCap = System.Drawing.Drawing2D.LineCap.Round;
+                    pen.StartCap = System.Drawing.Drawing2D.LineCap.Flat;
+                    pen.EndCap = System.Drawing.Drawing2D.LineCap.Flat;
+                    pen.LineJoin = System.Drawing.Drawing2D.LineJoin.Miter;
                     g.DrawLines(pen, new PointF[]
                     {
                         new PointF(-size, size * 0.45f),
@@ -780,6 +987,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
         protected override void WndProc(ref Message m)
         {
+            // 顶层窗默认受系统最小跟踪尺寸约束（约 136×39）；收起按钮只有 38px，
+            // 不解除的话箭头会被排到 68px 处，实际变成一个宽条。
+            if (m.Msg == WM_GETMINMAXINFO)
+            {
+                base.WndProc(ref m);
+                var info = (MinMaxInfo)Marshal.PtrToStructure(m.LParam, typeof(MinMaxInfo));
+                info.MinTrackSize.X = 1;
+                info.MinTrackSize.Y = 1;
+                Marshal.StructureToPtr(info, m.LParam, false);
+                return;
+            }
             // WM_MOUSEACTIVATE 早于 owner 失活：提前记下交互，HUD 白名单才不会在点击瞬间隐藏对话。
             if (m.Msg == 0x0021) NoteInteraction();
             base.WndProc(ref m);
@@ -838,17 +1056,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             ApplyLayout();
         }
 
-        private int HeaderHeight { get { return Math.Max(24, (int)Math.Round(28 * _uiScale)); } }
-        private int FooterHeight { get { return Math.Max(32, (int)Math.Round(40 * _uiScale)); } }
-        private int Pad { get { return Math.Max(7, (int)Math.Round(10 * _uiScale)); } }
+        private int HeaderHeight { get { return Math.Max(26, (int)Math.Round(30 * _uiScale)); } }
+        private int FooterHeight { get { return Math.Max(30, (int)Math.Round(38 * _uiScale)); } }
+        private int Pad { get { return Math.Max(8, (int)Math.Round(12 * _uiScale)); } }
 
-        /// <summary>收起态只排箭头按钮；展开态排头条、输入框、计数、操作与旋转箭头。</summary>
+        /// <summary>收起态只排箭头按钮；展开态排头条、输入槽、计数、操作与旋转箭头。</summary>
         private void ApplyLayout()
         {
             if (_textBox == null) return;
             float ui = _expanded
-                ? Math.Max(1f, Math.Min(2.4f, ClientSize.Height / 150f))
-                : Math.Max(1f, Math.Min(2.4f, ClientSize.Width / 38f));
+                ? Math.Max(1f, Math.Min(2.4f, ClientSize.Height / DesignHeight))
+                : Math.Max(1f, Math.Min(2.4f, ClientSize.Height / (float)ToggleHeightDesign));
             EnsureFonts(ui);
 
             _textBox.Visible = _expanded;
@@ -856,7 +1074,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             {
                 _chevronRect = ClientRectangle;
                 _actionRect = Rectangle.Empty;
+                _fieldRect = Rectangle.Empty;
+                _counterRect = Rectangle.Empty;
                 BackColor = _headerBack;
+                if (_placeholderLabel != null) _placeholderLabel.Visible = false;
+                ApplyWindowRegion();
                 UpdateCursor();
                 Invalidate();
                 return;
@@ -868,27 +1090,78 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int headerH = HeaderHeight;
             int footerH = FooterHeight;
             int pad = Pad;
-            int bodyTop = headerH + pad;
-            int bodyBottom = h - footerH - pad / 2;
-            int bodyH = Math.Max((int)Math.Round(22 * ui), bodyBottom - bodyTop);
-            int inputH = Math.Min((int)Math.Round(34 * ui), bodyH);
-            int inputY = bodyTop + Math.Max(0, (bodyH - inputH) / 2);
-            _textBox.Bounds = new Rectangle(pad, inputY, Math.Max(40, w - pad * 2), inputH);
-
+            int gap = Math.Max(4, (int)Math.Round(6 * ui));
             int footerTop = h - footerH;
-            int chevronSize = Math.Max(28, (int)Math.Round(34 * ui));
-            int chevronY = footerTop + Math.Max(0, (footerH - chevronSize) / 2);
-            _chevronRect = new Rectangle(w - pad - chevronSize, chevronY,
-                chevronSize, chevronSize);
 
-            int actionW = Math.Max(54, (int)Math.Round(62 * ui));
-            int actionH = Math.Max(24, (int)Math.Round(30 * ui));
-            int actionX = _chevronRect.Left - Math.Max(4, (int)Math.Round(8 * ui)) - actionW;
-            _actionRect = new Rectangle(actionX, footerTop + Math.Max(0, (footerH - actionH) / 2),
-                actionW, actionH);
+            // 输入框吃满头条与页脚之间的正文区，只留 6px 上下呼吸位；至少容纳三行。
+            int bodyTop = headerH + gap;
+            int bodyBottom = footerTop - gap;
+            int fieldH = Math.Max(1, bodyBottom - bodyTop);
+            _fieldRect = new Rectangle(pad, bodyTop, Math.Max(80, w - pad * 2), fieldH);
 
+            int insetX = Math.Max(8, (int)Math.Round(12 * ui));
+            int insetY = Math.Max(4, (int)Math.Round(6 * ui));
+            int textH = Math.Max(1, fieldH - insetY * 2);
+            _textBox.Bounds = new Rectangle(_fieldRect.Left + insetX, _fieldRect.Top + insetY,
+                Math.Max(40, _fieldRect.Width - insetX * 2), textH);
+            if (_textBox.IsHandleCreated) ApplyTextBoxMargins();
+            if (_placeholderLabel != null)
+            {
+                _placeholderLabel.Bounds = _textBox.Bounds;
+                _placeholderLabel.Padding = new Padding(
+                    Math.Max(2, (int)Math.Round(4 * ui)),
+                    Math.Max(1, (int)Math.Round(2 * ui)), 0, 0);
+            }
+
+            // 上下两个箭头开关共用同一尺寸；展开态只是转了 180°、换成浅底黑箭头。
+            int toggleW = Math.Max(44, (int)Math.Round(ToggleWidthDesign * ui));
+            int toggleH = Math.Max(26, (int)Math.Round(ToggleHeightDesign * ui));
+            int toggleY = footerTop + Math.Max(0, (footerH - toggleH) / 2);
+            _chevronRect = new Rectangle(w - pad - toggleW, toggleY, toggleW, toggleH);
+
+            int actionW = Math.Max(58, (int)Math.Round(66 * ui));
+            int actionX = _chevronRect.Left - gap - actionW;
+            _actionRect = new Rectangle(actionX, toggleY, actionW, toggleH);
+
+            int counterH = Math.Max(18, (int)Math.Round(21 * ui));
+            int counterY = footerTop + Math.Max(0, (footerH - counterH) / 2);
+            int counterW = Math.Max(46, (int)Math.Round(56 * ui));
+            _counterRect = new Rectangle(pad, counterY, counterW, counterH);
+
+            UpdatePlaceholder();
+            ApplyWindowRegion();
             UpdateCursor();
             Invalidate();
+        }
+
+        /// <summary>窗口裁出左上折角；收起与展开用同一形状，只随状态换折角大小。</summary>
+        private void ApplyWindowRegion()
+        {
+            if (ClientSize.Width <= 0 || ClientSize.Height <= 0) return;
+            int cut = _expanded
+                ? Math.Max(6, (int)Math.Round(12 * _uiScale))
+                : Math.Max(4, (int)Math.Round(7 * _uiScale));
+            using (GraphicsPath path = ChamferedRectPath(ClientRectangle, cut))
+            {
+                Region previous = Region;
+                Region = new Region(path);
+                if (previous != null) previous.Dispose();
+            }
+        }
+
+        private void ApplyTextBoxMargins()
+        {
+            if (!_textBox.IsHandleCreated) return;
+            int margin = Math.Max(2, (int)Math.Round(4 * _uiScale));
+            int lParam = (margin & 0xFFFF) | ((margin & 0xFFFF) << 16);
+            SendMessage(_textBox.Handle, EM_SETMARGINS,
+                (IntPtr)(EC_LEFTMARGIN | EC_RIGHTMARGIN), (IntPtr)lParam);
+        }
+
+        protected override void OnHandleCreated(EventArgs e)
+        {
+            base.OnHandleCreated(e);
+            ApplyTextBoxMargins();
         }
 
         private void EnsureFonts(float ui)
@@ -897,11 +1170,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             _uiScale = ui;
             Font oldInput = _inputFont, oldSmall = _smallFont,
                 oldHeader = _headerFont, oldAction = _actionFont;
-            _inputFont = new Font("Microsoft YaHei UI", 13f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
-            _smallFont = new Font("Microsoft YaHei UI", 10.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
-            _headerFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Bold, GraphicsUnit.Pixel);
-            _actionFont = new Font("Microsoft YaHei UI", 11.5f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _inputFont = new Font("Microsoft YaHei UI", 14f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _smallFont = new Font("Microsoft YaHei UI", 10f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
+            _headerFont = new Font("Microsoft YaHei UI", 12f * ui, FontStyle.Bold, GraphicsUnit.Pixel);
+            _actionFont = new Font("Microsoft YaHei UI", 12f * ui, FontStyle.Regular, GraphicsUnit.Pixel);
             _textBox.Font = _inputFont;
+            if (_placeholderLabel != null) _placeholderLabel.Font = _inputFont;
             if (oldInput != null) oldInput.Dispose();
             if (oldSmall != null) oldSmall.Dispose();
             if (oldHeader != null) oldHeader.Dispose();

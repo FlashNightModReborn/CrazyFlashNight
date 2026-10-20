@@ -781,6 +781,18 @@ async function runPreparationMenuViewportMatrix(browser, server, viewports) {
             browser, server, viewports);
         let passed = 0;
         for (const viewport of viewports) {
+            const regressionPage = await browser.newPage({viewport, reducedMotion:'reduce'});
+            await routeCatalogFonts(regressionPage);
+            await regressionPage.goto('http://127.0.0.1:' + server.address().port + '/' + HARNESS
+                + '?issue156-probe=1', {waitUntil:'load'});
+            await regressionPage.waitForFunction(() => window.__qaReady === true, null, {timeout:120000});
+            const regression = await regressionPage.evaluate(() => window.__qaReport);
+            const regressionFailures = regression.checks.filter(check => !check.ok);
+            if (regressionFailures.length) throw new Error('issue156 regression: '
+                + JSON.stringify(regressionFailures));
+            console.log('Issue156 browser ' + viewport.width + 'x' + viewport.height + ': '
+                + regression.checks.length + '/' + regression.checks.length + ' passed (mock authority)');
+            await regressionPage.close();
             const page = await browser.newPage({
                 viewport,
                 reducedMotion:'reduce',
