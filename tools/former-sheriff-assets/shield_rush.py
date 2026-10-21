@@ -9,6 +9,7 @@ from functools import lru_cache
 from pathlib import Path
 from lxml import etree as E
 import build as b
+import authored_actions
 
 SOURCE = b.ROOT / 'flashswf/arts/new/Codex素材源稿/重装特勤-盾冲'
 PREFIX = b.PREFIX + '战技/'
@@ -414,6 +415,13 @@ def poses():
             pose=[tween(a,z,settle) for a,z in zip(recoil,end)]
             weapon=tween(ws,wend,settle);progress=14
         allposes.append(dict(parts=pose,weapon=weapon,progress=progress))
+    # Share the artist's new 16-key cycle with the NPC while preserving this
+    # 152-frame dressup container, input timing and the charge/return poses.
+    import sys
+    api=sys.modules[__name__]
+    for f in range(RUSH_COUNT):
+        allposes[RUSH_START+f]=authored_actions.run(allposes[RUSH_START+f],
+            authored_actions.pose('持盾冲刺',15+f,api),api)
     # A stop can arrive on any stride (tap, partial/full charge, wall). Each
     # six-frame branch starts at the exact last displayed run key and lands in
     # the common low guard. Native keys avoid script-owned transform overrides.
@@ -530,6 +538,11 @@ def build():
     reference=b.ROOT/'flashswf/arts/things0/LIBRARY/sprite/Symbol 627.xml'
     report=dict(linkage=LINKAGE,frames=COUNT,transformFrames=15,phaseFrames=dict(open=[1,15],hold=[16,19],rush=[20,35],brake=[36,41],close=[42,56],strideBrakes=[BRAKE_BANK_START+1,COUNT]),brakeBranchFrames=BRAKE_COUNT,returnPose='native long-gun combat legs frame 0; upper-body idle',strideStep=STRIDE_STEP,light=dict(source='same R26 shotgun lamp and authored tactical beam',mount='exterior, occluded by inner shield face',port='手电口',beam='装备光束',path=[lamp_matrix(f) for f in range(15)],launchGlintTicks=6),runReference=dict(source=reference.relative_to(b.ROOT).as_posix(),sha256=hashlib.sha256(reference.read_bytes()).hexdigest(),keyframes=list(range(0,22,3)),startFrame=6),holders=hs,poses=frames,symbolCount=len(b.GENERATED))
     report['shadow']=dict(source=shadow_source().relative_to(b.ROOT).as_posix(),sha256=hashlib.sha256(shadow_source().read_bytes()).hexdigest(),host=shadow_reference()['branch'],unitMatrix=shadow_matrix(),actionLocalMatrix=b.writer.mul(inverse(CONTAINER),shadow_matrix()),visibility='native player shadow setting')
+    authored=authored_actions.SOURCE/'持盾冲刺.xml'
+    report['runReference']=dict(source=authored.relative_to(b.ROOT).as_posix(),
+        sha256=hashlib.sha256(authored.read_bytes()).hexdigest(),keyframes=list(range(14,30)),
+        startFrame=14,playerFrames=[20,35],sourceFrames=[15,30],
+        baselineSource=reference.relative_to(b.ROOT).as_posix())
     (out/'art-report.json').write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n','utf8')
     print('Shield rush native art:',len(b.GENERATED),'symbols;',COUNT,'action frames, 15 transform frames')
 

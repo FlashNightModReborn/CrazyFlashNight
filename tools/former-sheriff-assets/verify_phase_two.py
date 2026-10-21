@@ -80,6 +80,33 @@ def main():
     assert pm['frames']==138 and pm['segments']['reloadEntry']==86 and pm['segments']['reloadCommit']==110
     for ref in p.REMOVED_BODY_GEAR:
         assert p.PREFIX+ref+'.xml' not in includes
+    # Read the actual three generated timelines, independently of pose output.
+    # The same artist cycle must reach the dressup player and both fixed NPC
+    # consumers, rather than just one source preview or an unused export.
+    def instances_at(root, frame):
+        found={}
+        for layer in root.findall('./x:timeline/x:DOMTimeline/x:layers/x:DOMLayer',b.NS):
+            for key in layer.findall('x:frames/x:DOMFrame',b.NS):
+                start=int(key.get('index','0'))+1
+                if start<=frame<start+int(key.get('duration','1')):
+                    for inst in key.findall('x:elements/x:DOMSymbolInstance',b.NS):
+                        if inst.get('name'):found[inst.get('name')]=inst
+        return found
+    consumers=[('Codex/重装特勤/战技/战技容器-特勤盾冲',20),
+               ('Codex/前治安官/固定盾冲/战技容器-特勤盾冲',20),
+               ('Codex/前治安官二阶段/持盾冲刺',15)]
+    for ref,start in consumers:
+        root=E.parse(str(b.OWNER/'LIBRARY'/(ref+'.xml')))
+        for offset in range(16):
+            authored=p.s.authored_actions.pose('持盾冲刺',15+offset,p.s)
+            placed=instances_at(root,start+offset)
+            expected={'盾具':authored['weapon']}
+            expected.update({'肢体'+str(i):m for i,m in authored['parts'].items() if i not in [5,6,7,14,15,16]})
+            for field,want in expected.items():
+                matrix=placed[field].find('x:matrix/x:Matrix',b.NS)
+                local=tuple(float(matrix.get(k,str(v))) for k,v in zip(['a','b','c','d','tx','ty'],b.I))
+                actual=b.writer.mul(p.s.CONTAINER,local)
+                assert max(abs(a-z) for a,z in zip(actual,want))<1e-7,(ref,start+offset,field)
     # Support and rest registration live under the shield. Follow both facing
     # directions and nonuniform actor scaling, without a garment transform.
     for step in range(p.SUPPORT_STEPS):
@@ -106,6 +133,7 @@ def main():
       'pistolMagazineShots':8,'oneHandedSupportedReload':True,'weaponTransfersContinuous':True,
       'addedBodyGear':False,'supportOwnedByShield':True,'supportFoldsWhenIdle':True,
       'shieldBehindAllLimbs':True,'runtimeDressup':False,'sourceDependencyClosure':True,'events':all_labels}
+    report['authoredCycleConsumers']=dict(player=[20,35],fixedNpcShieldRush=[20,35],phaseTwoLocomotion=[15,30])
     if not args.source_only:
         swf=b.ROOT/'flashswf/arts/new/Codex专用素材.swf';names,sprites=exports(swf)
         for action in metadata['actions']:

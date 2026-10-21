@@ -176,12 +176,11 @@ def sequence():
     pistol=sample(pistol_keys,PISTOL_FRAMES)
     charge=copy.deepcopy(RUSH[18]);charge['right']=charge['parts'][16][4:]
     run0=copy.deepcopy(RUSH[19]);run0['right']=run0['parts'][16][4:]
-    rush=sample({0:guard,8:charge,12:run0},13)
+    rush=sample({0:guard,8:charge,13:run0},14)
     for p in RUSH[19:35]:
         p=copy.deepcopy(p);p['right']=p['parts'][16][4:];rush.append(p)
     last=rush[-1]
-    rush+=sample({0:last,7:guard},8)
-    rush.append(copy.deepcopy(guard))
+    rush+=sample({0:last,18:guard},19)
     actions={KEYS[0]:[guard],KEYS[1]:bash,KEYS[2]:knife,KEYS[3]:pistol,KEYS[4]:rush}
     # Generic character animations do not add equipment-specific belt gear.
     # Draw/stow travels through the existing hip silhouette; only the active
@@ -240,6 +239,10 @@ def sequence():
             if name==KEYS[3]:
                 p['supportStep']=round(track({0:0,85:0,91:SUPPORT_STEPS-1,
                   113:SUPPORT_STEPS-1,121:0,137:0},f))
+    # Import only the authored arm/blade motion, retaining our fixed equipment
+    # and AS2 weapon ownership, sockets, labels and damage-free asset scripts.
+    import sys
+    s.authored_actions.stab(actions[KEYS[2]],sys.modules[__name__])
     return actions
 
 
@@ -353,7 +356,7 @@ def action_symbol(name,frames):
         events.update({8:'拔枪',22:'瞄准',85:'移入承托',92:'枪械承托',95:'空匣脱离',101:'取新弹匣',
           108:'对准匣口',109:'弹匣到位',113:'握枪复位',117:'撤出承托',121:'承托折回并收枪',130:'收枪到位'})
         events.update({f:'射击'+str(i+1) for i,f in enumerate(PISTOL_SHOTS)})
-    elif name=='持盾冲刺':events.update({8:'蓄势',13:'冲刺循环开始',28:'冲刺循环结束',29:'制动'})
+    elif name=='持盾冲刺':events.update({8:'蓄势',14:'冲刺循环开始',29:'冲刺循环结束',30:'制动'})
     for f in range(len(frames)):
         script='stop();' if f==len(frames)-1 else None
         frame=b.frame(timeline,f,script=script)
@@ -472,7 +475,7 @@ def build(check=False):
         (out/'poses.json').write_text(json.dumps(actions,ensure_ascii=False),'utf8')
         (out/'manifest.json').write_text(json.dumps(dict(actions=metadata,symbols=len(b.GENERATED),runtimeDressup=False,
             combatEnabled=False,bodyGearAdded=False,shieldOwnedFoldingSupport=True,
-            source='native fixed rig; shared R36 run and R40 shadow registrations',fps=30),ensure_ascii=False,indent=2),'utf8')
+            source='2026-10-20 authored run/knife motion; existing fixed rig, AS2 interfaces and R40 shadow',fps=30),ensure_ascii=False,indent=2),'utf8')
     print(json.dumps(dict(actions=metadata,symbols=len(b.GENERATED),check=check),ensure_ascii=False))
 
 

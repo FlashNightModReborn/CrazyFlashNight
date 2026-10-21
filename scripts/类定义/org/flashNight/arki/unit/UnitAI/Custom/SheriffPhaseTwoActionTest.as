@@ -27,7 +27,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.SheriffPhaseTwoActionTest {
         passed=0;failed=0;index=0;frame=1;wait=false;
         palette=[0];colorLookup=new Object();colorLookup["00000"]=0;
         names=["持盾待机","盾击","持盾刺击","持盾射击","持盾冲刺"];
-        counts=[1,42,76,138,38];capture=_root.phaseTwoCapture===true;
+        counts=[1,42,76,138,49];capture=_root.phaseTwoCapture===true;
         trace("SheriffPhaseTwoActionTest Capture Player: "+System.capabilities.playerType);
         _root.createTextField("title",500,18,12,630,40);
         _root.title.text="前治安官 · 二阶段原生动作预览";

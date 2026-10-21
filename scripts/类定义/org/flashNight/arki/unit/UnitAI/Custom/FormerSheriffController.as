@@ -816,7 +816,7 @@ class org.flashNight.arki.unit.UnitAI.Custom.FormerSheriffController {
         u.方向改变(dx<0?"左":"右");
         if(lane>p.laneTolerance || distance>p.phaseTwoPistolRange) {
             if(action!="持盾冲刺")mountPhaseTwo(u,"持盾冲刺");
-            c.actionAge++;u.man.gotoAndStop(14+(Math.floor(c.actionAge/2)%16));
+            c.actionAge++;u.man.gotoAndStop(15+(Math.floor(c.actionAge/2)%16));
             if(lane>p.laneTolerance)Mover.move2DStrict(u,dz<0?"上":"下",u.行走Y速度*p.phaseTwoMoveRatio);
             if(distance>p.phaseTwoPistolRange)Mover.move2DStrict(u,u.方向,u.行走X速度*p.phaseTwoMoveRatio);
             phaseTwoLight(u);return;
