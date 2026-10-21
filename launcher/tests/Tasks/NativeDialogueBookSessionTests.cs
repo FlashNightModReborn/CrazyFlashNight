@@ -116,21 +116,18 @@ namespace CF7Launcher.Tests.Tasks
         }
 
         [Fact]
-        public void ExpandedInterjectInputSwallowsAdvanceKeysWithoutAdvancing()
+        public void ExpandedInterjectInputKeepsAdvanceKeysWorking()
         {
             using var h = new Harness();
             h.Task.AdoptV2(Book(7, 2));                        // advanceKey=13
-            h.Task.InterjectInputExpanded = () => true;
+            h.Widget.CompleteCurrentLineTyping();               // 首屏先打完字，推进键才直接换句
 
             Action enter = h.Task.CaptureKeyboardAction(13);
-            Action space = h.Task.CaptureKeyboardAction(32);    // 空格也一并吞掉
-            Assert.NotNull(enter);
-            Assert.NotNull(space);
+            Assert.NotNull(enter);                              // 展开但未聚焦：Enter 仍归对话
+            Assert.Null(h.Task.CaptureKeyboardAction(32));      // 空格不进 Host 路径，原样交游戏
             Assert.NotNull(h.Task.CaptureKeyboardAction(27));   // Esc 仍走原有关闭语义
             enter();
-            space();
-            Assert.Equal("第0行", h.Widget.CurrentFrame.Text);   // 只吞键，不换句
-            Assert.Equal(1, h.Widget.CurrentFrame.Revision);
+            Assert.Equal("第1行", h.Widget.CurrentFrame.Text);   // 点/按都能进下一条
         }
 
         [Fact]
@@ -140,7 +137,6 @@ namespace CF7Launcher.Tests.Tasks
             JObject book = Book(7, 2);
             book["advanceKey"] = 32;
             h.Task.AdoptV2(book);
-            h.Task.InterjectInputExpanded = () => false;
             h.Widget.CompleteCurrentLineTyping();   // 首屏先打完字，推进键才直接换句
 
             Action interact = h.Task.CaptureKeyboardAction(32);
@@ -156,7 +152,6 @@ namespace CF7Launcher.Tests.Tasks
             JObject book = Book(7, 2);
             book["advanceKey"] = 32;
             h.Task.AdoptV2(book);
-            h.Task.InterjectInputExpanded = () => true;
             h.Task.InterjectInputFocused = () => true;
 
             Assert.Null(h.Task.CaptureKeyboardAction(32));   // 交给输入框，不吞也不推进
