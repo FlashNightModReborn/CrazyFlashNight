@@ -1,0 +1,1755 @@
+{
+  "schemaVersion": 1,
+  "normalCount": 13,
+  "deathCount": 25,
+  "parts": [
+    {
+      "characterId": 1331,
+      "slug": "front-upper-leg",
+      "label": "前腿上段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 726",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/01_front-upper-leg.svg",
+      "referencePng": "reference-package/parts/png/01_front-upper-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/01_front-upper-leg.png",
+      "localTemplate": "local-templates/normal/1331_front-upper-leg.svg",
+      "returnRelativePath": "normal/1331_front-upper-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -35.3,
+        -32.1,
+        76.6,
+        132.75
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          282.4,
+          256.8
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          282.4,
+          256.8
+        ]
+      },
+      "legacyShapeBounds": [
+        -35.3,
+        -32.1,
+        41.3,
+        100.65
+      ]
+    },
+    {
+      "characterId": 1332,
+      "slug": "front-middle-leg",
+      "label": "前腿中段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 727",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/02_front-middle-leg.svg",
+      "referencePng": "reference-package/parts/png/02_front-middle-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/02_front-middle-leg.png",
+      "localTemplate": "local-templates/normal/1332_front-middle-leg.svg",
+      "returnRelativePath": "normal/1332_front-middle-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -55.8,
+        -15.45,
+        75.15,
+        105.4
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          446.4,
+          123.6
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          446.4,
+          123.6
+        ]
+      },
+      "legacyShapeBounds": [
+        -55.8,
+        -15.45,
+        19.35,
+        89.95
+      ]
+    },
+    {
+      "characterId": 1333,
+      "slug": "front-lower-leg",
+      "label": "前腿下段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 728",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/03_front-lower-leg.svg",
+      "referencePng": "reference-package/parts/png/03_front-lower-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/03_front-lower-leg.png",
+      "localTemplate": "local-templates/normal/1333_front-lower-leg.svg",
+      "returnRelativePath": "normal/1333_front-lower-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -12.95,
+        -14.2,
+        25.9,
+        58.95
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          103.6,
+          113.6
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          103.6,
+          113.6
+        ]
+      },
+      "legacyShapeBounds": [
+        -12.95,
+        -14.2,
+        12.95,
+        44.75
+      ]
+    },
+    {
+      "characterId": 1334,
+      "slug": "paw",
+      "label": "共用脚掌",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 729",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/04_paw.svg",
+      "referencePng": "reference-package/parts/png/04_paw.png",
+      "originOverlay": "reference-package/parts/with-origin/04_paw.png",
+      "localTemplate": "local-templates/normal/1334_paw.svg",
+      "returnRelativePath": "normal/1334_paw.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -39.65,
+        -8.3,
+        49.2,
+        34.1
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          317.2,
+          66.4
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          317.2,
+          66.4
+        ]
+      },
+      "legacyShapeBounds": [
+        -39.65,
+        -8.3,
+        9.55,
+        25.8
+      ]
+    },
+    {
+      "characterId": 1335,
+      "slug": "hind-upper-leg",
+      "label": "后腿上段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 730",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/05_hind-upper-leg.svg",
+      "referencePng": "reference-package/parts/png/05_hind-upper-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/05_hind-upper-leg.png",
+      "localTemplate": "local-templates/normal/1335_hind-upper-leg.svg",
+      "returnRelativePath": "normal/1335_hind-upper-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -46.75,
+        -36.6,
+        93.6,
+        153.75
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          374.0,
+          292.8
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          374.0,
+          292.8
+        ]
+      },
+      "legacyShapeBounds": [
+        -46.75,
+        -36.6,
+        46.85,
+        117.15
+      ]
+    },
+    {
+      "characterId": 1336,
+      "slug": "hind-middle-leg",
+      "label": "后腿中段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 731",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/06_hind-middle-leg.svg",
+      "referencePng": "reference-package/parts/png/06_hind-middle-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/06_hind-middle-leg.png",
+      "localTemplate": "local-templates/normal/1336_hind-middle-leg.svg",
+      "returnRelativePath": "normal/1336_hind-middle-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -22.15,
+        -17.3,
+        52.3,
+        83.15
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          177.2,
+          138.4
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          177.2,
+          138.4
+        ]
+      },
+      "legacyShapeBounds": [
+        -22.15,
+        -17.3,
+        30.15,
+        65.85
+      ]
+    },
+    {
+      "characterId": 1337,
+      "slug": "hind-lower-leg",
+      "label": "后腿下段",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 732",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/07_hind-lower-leg.svg",
+      "referencePng": "reference-package/parts/png/07_hind-lower-leg.png",
+      "originOverlay": "reference-package/parts/with-origin/07_hind-lower-leg.png",
+      "localTemplate": "local-templates/normal/1337_hind-lower-leg.svg",
+      "returnRelativePath": "normal/1337_hind-lower-leg.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -49.9,
+        -9.65,
+        63.3,
+        87.8
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          399.2,
+          77.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          399.2,
+          77.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -49.9,
+        -9.65,
+        13.4,
+        78.15
+      ]
+    },
+    {
+      "characterId": 1338,
+      "slug": "torso",
+      "label": "躯干",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 733",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/08_torso.svg",
+      "referencePng": "reference-package/parts/png/08_torso.png",
+      "originOverlay": "reference-package/parts/with-origin/08_torso.png",
+      "localTemplate": "local-templates/normal/1338_torso.svg",
+      "returnRelativePath": "normal/1338_torso.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -278.7,
+        -66.75,
+        323.55,
+        137.5
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          2229.6,
+          534.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          2229.6,
+          534.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -278.7,
+        -66.75,
+        44.85,
+        70.75
+      ]
+    },
+    {
+      "characterId": 1339,
+      "slug": "neck-shoulder",
+      "label": "颈肩与胸腔",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 734",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/09_neck-shoulder.svg",
+      "referencePng": "reference-package/parts/png/09_neck-shoulder.png",
+      "originOverlay": "reference-package/parts/with-origin/09_neck-shoulder.png",
+      "localTemplate": "local-templates/normal/1339_neck-shoulder.svg",
+      "returnRelativePath": "normal/1339_neck-shoulder.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -119.3,
+        -42.55,
+        164.35,
+        117.65
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          954.4,
+          340.4
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          954.4,
+          340.4
+        ]
+      },
+      "legacyShapeBounds": [
+        -119.3,
+        -42.55,
+        45.05,
+        75.1
+      ]
+    },
+    {
+      "characterId": 1340,
+      "slug": "lower-jaw",
+      "label": "下颌与下排牙",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 735",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/10_lower-jaw.svg",
+      "referencePng": "reference-package/parts/png/10_lower-jaw.png",
+      "originOverlay": "reference-package/parts/with-origin/10_lower-jaw.png",
+      "localTemplate": "local-templates/normal/1340_lower-jaw.svg",
+      "returnRelativePath": "normal/1340_lower-jaw.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -21.65,
+        -17.0,
+        40.0,
+        112.05
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          173.2,
+          136.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          173.2,
+          136.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -21.65,
+        -17.0,
+        18.35,
+        95.05
+      ]
+    },
+    {
+      "characterId": 1341,
+      "slug": "ear",
+      "label": "共用耳片",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 736",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/11_ear.svg",
+      "referencePng": "reference-package/parts/png/11_ear.png",
+      "originOverlay": "reference-package/parts/with-origin/11_ear.png",
+      "localTemplate": "local-templates/normal/1341_ear.svg",
+      "returnRelativePath": "normal/1341_ear.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -25.5,
+        -66.5,
+        49.0,
+        79.0
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          204.0,
+          532.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          204.0,
+          532.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -25.5,
+        -66.5,
+        23.5,
+        12.5
+      ]
+    },
+    {
+      "characterId": 1342,
+      "slug": "head",
+      "label": "头部、上吻与上排牙",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 737",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/12_head.svg",
+      "referencePng": "reference-package/parts/png/12_head.png",
+      "originOverlay": "reference-package/parts/with-origin/12_head.png",
+      "localTemplate": "local-templates/normal/1342_head.svg",
+      "returnRelativePath": "normal/1342_head.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -61.2,
+        -28.7,
+        88.05,
+        164.95
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          489.6,
+          229.6
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          489.6,
+          229.6
+        ]
+      },
+      "legacyShapeBounds": [
+        -61.2,
+        -28.7,
+        26.85,
+        136.25
+      ]
+    },
+    {
+      "characterId": 1343,
+      "slug": "tail",
+      "label": "尾巴",
+      "group": "normal-rig",
+      "nativeSymbolHint": "Symbol 738",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/13_tail.svg",
+      "referencePng": "reference-package/parts/png/13_tail.png",
+      "originOverlay": "reference-package/parts/with-origin/13_tail.png",
+      "localTemplate": "local-templates/normal/1343_tail.svg",
+      "returnRelativePath": "normal/1343_tail.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -7.2,
+        -28.45,
+        50.9,
+        36.95
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          57.6,
+          227.6
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          57.6,
+          227.6
+        ]
+      },
+      "legacyShapeBounds": [
+        -7.2,
+        -28.45,
+        43.7,
+        8.5
+      ]
+    },
+    {
+      "characterId": 1351,
+      "slug": "death-only-01",
+      "label": "血腥死专用帧图形 01",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/14_death-only-01.svg",
+      "referencePng": "reference-package/parts/png/14_death-only-01.png",
+      "originOverlay": "reference-package/parts/with-origin/14_death-only-01.png",
+      "localTemplate": "local-templates/death/1351_death-only-01.svg",
+      "returnRelativePath": "death/1351_death-only-01.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        13.75,
+        -15.25,
+        67.15,
+        46.0
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          -110.0,
+          122.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          -110.0,
+          122.0
+        ]
+      },
+      "legacyShapeBounds": [
+        13.75,
+        -15.25,
+        80.9,
+        30.75
+      ]
+    },
+    {
+      "characterId": 1352,
+      "slug": "death-only-02",
+      "label": "血腥死专用件 02",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/15_death-only-02.svg",
+      "referencePng": "reference-package/parts/png/15_death-only-02.png",
+      "originOverlay": "reference-package/parts/with-origin/15_death-only-02.png",
+      "localTemplate": "local-templates/death/1352_death-only-02.svg",
+      "returnRelativePath": "death/1352_death-only-02.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -28.3,
+        -27.75,
+        93.1,
+        74.15
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          226.4,
+          222.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          226.4,
+          222.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -28.3,
+        -27.75,
+        64.8,
+        46.4
+      ]
+    },
+    {
+      "characterId": 1353,
+      "slug": "death-only-03",
+      "label": "血腥死专用件 03",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/16_death-only-03.svg",
+      "referencePng": "reference-package/parts/png/16_death-only-03.png",
+      "originOverlay": "reference-package/parts/with-origin/16_death-only-03.png",
+      "localTemplate": "local-templates/death/1353_death-only-03.svg",
+      "returnRelativePath": "death/1353_death-only-03.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -12.2,
+        56.75,
+        71.55,
+        5.25
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          97.6,
+          -454.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          97.6,
+          -454.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -12.2,
+        56.75,
+        59.35,
+        62.0
+      ]
+    },
+    {
+      "characterId": 1354,
+      "slug": "death-only-04",
+      "label": "血腥死专用件 04",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/17_death-only-04.svg",
+      "referencePng": "reference-package/parts/png/17_death-only-04.png",
+      "originOverlay": "reference-package/parts/with-origin/17_death-only-04.png",
+      "localTemplate": "local-templates/death/1354_death-only-04.svg",
+      "returnRelativePath": "death/1354_death-only-04.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -69.5,
+        -24.25,
+        121.75,
+        85.0
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          556.0,
+          194.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          556.0,
+          194.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -69.5,
+        -24.25,
+        52.25,
+        60.75
+      ]
+    },
+    {
+      "characterId": 1355,
+      "slug": "death-only-05",
+      "label": "血腥死专用件 05",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/18_death-only-05.svg",
+      "referencePng": "reference-package/parts/png/18_death-only-05.png",
+      "originOverlay": "reference-package/parts/with-origin/18_death-only-05.png",
+      "localTemplate": "local-templates/death/1355_death-only-05.svg",
+      "returnRelativePath": "death/1355_death-only-05.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -110.3,
+        68.65,
+        144.4,
+        6.5
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          882.4,
+          -549.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          882.4,
+          -549.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -110.3,
+        68.65,
+        34.1,
+        75.15
+      ]
+    },
+    {
+      "characterId": 1356,
+      "slug": "death-only-06",
+      "label": "血腥死专用件 06",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/19_death-only-06.svg",
+      "referencePng": "reference-package/parts/png/19_death-only-06.png",
+      "originOverlay": "reference-package/parts/with-origin/19_death-only-06.png",
+      "localTemplate": "local-templates/death/1356_death-only-06.svg",
+      "returnRelativePath": "death/1356_death-only-06.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -77.05,
+        2.75,
+        114.8,
+        61.0
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          616.4,
+          -22.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          616.4,
+          -22.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -77.05,
+        2.75,
+        37.75,
+        63.75
+      ]
+    },
+    {
+      "characterId": 1357,
+      "slug": "death-only-07",
+      "label": "血腥死专用件 07",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/20_death-only-07.svg",
+      "referencePng": "reference-package/parts/png/20_death-only-07.png",
+      "originOverlay": "reference-package/parts/with-origin/20_death-only-07.png",
+      "localTemplate": "local-templates/death/1357_death-only-07.svg",
+      "returnRelativePath": "death/1357_death-only-07.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -151.8,
+        67.25,
+        185.9,
+        10.0
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1214.4,
+          -538.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1214.4,
+          -538.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -151.8,
+        67.25,
+        34.1,
+        77.25
+      ]
+    },
+    {
+      "characterId": 1358,
+      "slug": "death-only-08",
+      "label": "血腥死专用件 08",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/21_death-only-08.svg",
+      "referencePng": "reference-package/parts/png/21_death-only-08.png",
+      "originOverlay": "reference-package/parts/with-origin/21_death-only-08.png",
+      "localTemplate": "local-templates/death/1358_death-only-08.svg",
+      "returnRelativePath": "death/1358_death-only-08.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -99.9,
+        30.25,
+        136.65,
+        31.5
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          799.2,
+          -242.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          799.2,
+          -242.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -99.9,
+        30.25,
+        36.75,
+        61.75
+      ]
+    },
+    {
+      "characterId": 1359,
+      "slug": "death-only-09",
+      "label": "血腥死专用件 09",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/22_death-only-09.svg",
+      "referencePng": "reference-package/parts/png/22_death-only-09.png",
+      "originOverlay": "reference-package/parts/with-origin/22_death-only-09.png",
+      "localTemplate": "local-templates/death/1359_death-only-09.svg",
+      "returnRelativePath": "death/1359_death-only-09.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -151.8,
+        64.5,
+        185.9,
+        13.6
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1214.4,
+          -516.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1214.4,
+          -516.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -151.8,
+        64.5,
+        34.1,
+        78.1
+      ]
+    },
+    {
+      "characterId": 1360,
+      "slug": "death-only-10",
+      "label": "血腥死专用件 10",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/23_death-only-10.svg",
+      "referencePng": "reference-package/parts/png/23_death-only-10.png",
+      "originOverlay": "reference-package/parts/with-origin/23_death-only-10.png",
+      "localTemplate": "local-templates/death/1360_death-only-10.svg",
+      "returnRelativePath": "death/1360_death-only-10.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -100.3,
+        40.9,
+        137.05,
+        23.45
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          802.4,
+          -327.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          802.4,
+          -327.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -100.3,
+        40.9,
+        36.75,
+        64.35
+      ]
+    },
+    {
+      "characterId": 1361,
+      "slug": "death-only-11",
+      "label": "血腥死专用件 11",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/24_death-only-11.svg",
+      "referencePng": "reference-package/parts/png/24_death-only-11.png",
+      "originOverlay": "reference-package/parts/with-origin/24_death-only-11.png",
+      "localTemplate": "local-templates/death/1361_death-only-11.svg",
+      "returnRelativePath": "death/1361_death-only-11.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -151.8,
+        64.5,
+        185.9,
+        17.25
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1214.4,
+          -516.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1214.4,
+          -516.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -151.8,
+        64.5,
+        34.1,
+        81.75
+      ]
+    },
+    {
+      "characterId": 1362,
+      "slug": "death-only-12",
+      "label": "血腥死专用件 12",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/25_death-only-12.svg",
+      "referencePng": "reference-package/parts/png/25_death-only-12.png",
+      "originOverlay": "reference-package/parts/with-origin/25_death-only-12.png",
+      "localTemplate": "local-templates/death/1362_death-only-12.svg",
+      "returnRelativePath": "death/1362_death-only-12.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        19.85,
+        -27.65,
+        49.85,
+        37.9
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          -158.8,
+          221.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          -158.8,
+          221.2
+        ]
+      },
+      "legacyShapeBounds": [
+        19.85,
+        -27.65,
+        69.7,
+        10.25
+      ]
+    },
+    {
+      "characterId": 1363,
+      "slug": "death-only-13",
+      "label": "血腥死专用件 13",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/26_death-only-13.svg",
+      "referencePng": "reference-package/parts/png/26_death-only-13.png",
+      "originOverlay": "reference-package/parts/with-origin/26_death-only-13.png",
+      "localTemplate": "local-templates/death/1363_death-only-13.svg",
+      "returnRelativePath": "death/1363_death-only-13.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -26.9,
+        -63.9,
+        113.0,
+        89.25
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          215.2,
+          511.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          215.2,
+          511.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -26.9,
+        -63.9,
+        86.1,
+        25.35
+      ]
+    },
+    {
+      "characterId": 1364,
+      "slug": "death-only-14",
+      "label": "血腥死专用件 14",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/27_death-only-14.svg",
+      "referencePng": "reference-package/parts/png/27_death-only-14.png",
+      "originOverlay": "reference-package/parts/with-origin/27_death-only-14.png",
+      "localTemplate": "local-templates/death/1364_death-only-14.svg",
+      "returnRelativePath": "death/1364_death-only-14.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -2.65,
+        57.15,
+        61.4,
+        3.45
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          21.2,
+          -457.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          21.2,
+          -457.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -2.65,
+        57.15,
+        58.75,
+        60.6
+      ]
+    },
+    {
+      "characterId": 1365,
+      "slug": "death-only-15",
+      "label": "血腥死专用件 15",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/28_death-only-15.svg",
+      "referencePng": "reference-package/parts/png/28_death-only-15.png",
+      "originOverlay": "reference-package/parts/with-origin/28_death-only-15.png",
+      "localTemplate": "local-templates/death/1365_death-only-15.svg",
+      "returnRelativePath": "death/1365_death-only-15.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -98.3,
+        -70.75,
+        184.4,
+        130.45
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          786.4,
+          566.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          786.4,
+          566.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -98.3,
+        -70.75,
+        86.1,
+        59.7
+      ]
+    },
+    {
+      "characterId": 1366,
+      "slug": "death-only-16",
+      "label": "血腥死专用件 16",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/29_death-only-16.svg",
+      "referencePng": "reference-package/parts/png/29_death-only-16.png",
+      "originOverlay": "reference-package/parts/with-origin/29_death-only-16.png",
+      "localTemplate": "local-templates/death/1366_death-only-16.svg",
+      "returnRelativePath": "death/1366_death-only-16.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -93.05,
+        68.5,
+        153.25,
+        5.1
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          744.4,
+          -548.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          744.4,
+          -548.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -93.05,
+        68.5,
+        60.2,
+        73.6
+      ]
+    },
+    {
+      "characterId": 1367,
+      "slug": "death-only-17",
+      "label": "血腥死专用件 17",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/30_death-only-17.svg",
+      "referencePng": "reference-package/parts/png/30_death-only-17.png",
+      "originOverlay": "reference-package/parts/with-origin/30_death-only-17.png",
+      "localTemplate": "local-templates/death/1367_death-only-17.svg",
+      "returnRelativePath": "death/1367_death-only-17.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -114.15,
+        -29.75,
+        200.55,
+        94.35
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          913.2,
+          238.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          913.2,
+          238.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -114.15,
+        -29.75,
+        86.4,
+        64.6
+      ]
+    },
+    {
+      "characterId": 1368,
+      "slug": "death-only-18",
+      "label": "血腥死专用件 18",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/31_death-only-18.svg",
+      "referencePng": "reference-package/parts/png/31_death-only-18.png",
+      "originOverlay": "reference-package/parts/with-origin/31_death-only-18.png",
+      "localTemplate": "local-templates/death/1368_death-only-18.svg",
+      "returnRelativePath": "death/1368_death-only-18.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -152.9,
+        66.25,
+        213.1,
+        9.25
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1223.2,
+          -530.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1223.2,
+          -530.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -152.9,
+        66.25,
+        60.2,
+        75.5
+      ]
+    },
+    {
+      "characterId": 1369,
+      "slug": "death-only-19",
+      "label": "血腥死专用件 19",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/32_death-only-19.svg",
+      "referencePng": "reference-package/parts/png/32_death-only-19.png",
+      "originOverlay": "reference-package/parts/with-origin/32_death-only-19.png",
+      "localTemplate": "local-templates/death/1369_death-only-19.svg",
+      "returnRelativePath": "death/1369_death-only-19.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -98.8,
+        14.0,
+        183.3,
+        49.4
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          790.4,
+          -112.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          790.4,
+          -112.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -98.8,
+        14.0,
+        84.5,
+        63.4
+      ]
+    },
+    {
+      "characterId": 1370,
+      "slug": "death-only-20",
+      "label": "血腥死专用件 20",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/33_death-only-20.svg",
+      "referencePng": "reference-package/parts/png/33_death-only-20.png",
+      "originOverlay": "reference-package/parts/with-origin/33_death-only-20.png",
+      "localTemplate": "local-templates/death/1370_death-only-20.svg",
+      "returnRelativePath": "death/1370_death-only-20.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -162.7,
+        66.25,
+        222.9,
+        9.35
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1301.6,
+          -530.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1301.6,
+          -530.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -162.7,
+        66.25,
+        60.2,
+        75.6
+      ]
+    },
+    {
+      "characterId": 1371,
+      "slug": "death-only-21",
+      "label": "血腥死专用件 21",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/34_death-only-21.svg",
+      "referencePng": "reference-package/parts/png/34_death-only-21.png",
+      "originOverlay": "reference-package/parts/with-origin/34_death-only-21.png",
+      "localTemplate": "local-templates/death/1371_death-only-21.svg",
+      "returnRelativePath": "death/1371_death-only-21.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -15.85,
+        14.0,
+        98.35,
+        51.9
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          126.8,
+          -112.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          126.8,
+          -112.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -15.85,
+        14.0,
+        82.5,
+        65.9
+      ]
+    },
+    {
+      "characterId": 1372,
+      "slug": "death-only-22",
+      "label": "血腥死专用件 22",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/35_death-only-22.svg",
+      "referencePng": "reference-package/parts/png/35_death-only-22.png",
+      "originOverlay": "reference-package/parts/with-origin/35_death-only-22.png",
+      "localTemplate": "local-templates/death/1372_death-only-22.svg",
+      "returnRelativePath": "death/1372_death-only-22.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -148.8,
+        44.9,
+        189.3,
+        30.7
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1190.4,
+          -359.2
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1190.4,
+          -359.2
+        ]
+      },
+      "legacyShapeBounds": [
+        -148.8,
+        44.9,
+        40.5,
+        75.6
+      ]
+    },
+    {
+      "characterId": 1373,
+      "slug": "death-only-23",
+      "label": "血腥死专用件 23",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/36_death-only-23.svg",
+      "referencePng": "reference-package/parts/png/36_death-only-23.png",
+      "originOverlay": "reference-package/parts/with-origin/36_death-only-23.png",
+      "localTemplate": "local-templates/death/1373_death-only-23.svg",
+      "returnRelativePath": "death/1373_death-only-23.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -168.2,
+        66.25,
+        228.4,
+        9.35
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1345.6,
+          -530.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1345.6,
+          -530.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -168.2,
+        66.25,
+        60.2,
+        75.6
+      ]
+    },
+    {
+      "characterId": 1374,
+      "slug": "death-only-24",
+      "label": "血腥死专用件 24",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/37_death-only-24.svg",
+      "referencePng": "reference-package/parts/png/37_death-only-24.png",
+      "originOverlay": "reference-package/parts/with-origin/37_death-only-24.png",
+      "localTemplate": "local-templates/death/1374_death-only-24.svg",
+      "returnRelativePath": "death/1374_death-only-24.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -148.45,
+        48.45,
+        188.95,
+        27.15
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1187.6,
+          -387.6
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1187.6,
+          -387.6
+        ]
+      },
+      "legacyShapeBounds": [
+        -148.45,
+        48.45,
+        40.5,
+        75.6
+      ]
+    },
+    {
+      "characterId": 1375,
+      "slug": "death-only-25",
+      "label": "血腥死专用件 25",
+      "group": "death-only",
+      "nativeSymbolHint": "Symbol 748+",
+      "legacyCharacterIdIsNotNewRuntimeIdentity": true,
+      "referenceSvg": "reference-package/parts/svg/38_death-only-25.svg",
+      "referencePng": "reference-package/parts/png/38_death-only-25.png",
+      "originOverlay": "reference-package/parts/with-origin/38_death-only-25.png",
+      "localTemplate": "local-templates/death/1375_death-only-25.svg",
+      "returnRelativePath": "death/1375_death-only-25.svg",
+      "coordinateSystem": "flash-local-px",
+      "localOrigin": [
+        0,
+        0
+      ],
+      "templateViewBox": [
+        -171.2,
+        66.25,
+        231.4,
+        9.35
+      ],
+      "legacyExportConversion": {
+        "matrix": [
+          8.0,
+          0.0,
+          0.0,
+          8.0,
+          1369.6,
+          -530.0
+        ],
+        "formula": "local_x=(export_pixel_x-tx)/scale; local_y=(export_pixel_y-ty)/scale",
+        "scale": 8.0,
+        "originInExportPixels": [
+          1369.6,
+          -530.0
+        ]
+      },
+      "legacyShapeBounds": [
+        -171.2,
+        66.25,
+        60.2,
+        75.6
+      ]
+    }
+  ]
+}

@@ -272,3 +272,12 @@ launcher/app.manifest text eol=lf
 
 # Phoenix assembly binds exact generator and manifest bytes on Windows checkouts.
 /tools/phoenix-phase-assets/** text eol=lf
+
+# Two-dog source, native fixture and evidence retain their reviewed byte identities.
+/flashswf/arts/new/Codex素材源稿/两犬-V6/** -text whitespace=cr-at-eol
+/flashswf/arts/new/Codex专用素材/LIBRARY/Codex/两犬/** -text whitespace=cr-at-eol
+/tools/two-dogs-assets/** -text whitespace=cr-at-eol
+/scripts/TwoDogsNativeHost/** -text whitespace=cr-at-eol
+/scripts/run-two-dogs-asset-tests.ps1 -text whitespace=cr-at-eol
+/scripts/test-runners/two-dogs/** -text whitespace=cr-at-eol
+/scripts/类定义/org/flashNight/arki/unit/Action/Melee/TwoDogsAssetTest.as -text whitespace=cr-at-eol

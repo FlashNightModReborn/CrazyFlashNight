@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/两犬/盗贼撕咬犬/原生/Symbol 195" itemID="6cd10000-8afeb477">
+  <timeline>
+    <DOMTimeline name="Symbol 195" currentFrame="1">
+      <layers>
+        <DOMLayer name="Script Layer" color="#EE5D7B">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[this.removeMovieClip();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 2" color="#8541E3" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="2" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/原生/Symbol 19" name="area">
+                  <matrix>
+                    <Matrix d="0.999984741210938" tx="-12.5" ty="-12.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="2" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -1,0 +1,215 @@
+{
+  "samples": [
+    {
+      "sequence": "idle-dodge",
+      "frame": 1,
+      "label": "站立 / 躲闪"
+    },
+    {
+      "sequence": "idle-dodge",
+      "frame": 5,
+      "label": "站立 / 躲闪"
+    },
+    {
+      "sequence": "walk-run",
+      "frame": 1,
+      "label": "行走 / 奔跑"
+    },
+    {
+      "sequence": "walk-run",
+      "frame": 5,
+      "label": "行走 / 奔跑"
+    },
+    {
+      "sequence": "walk-run",
+      "frame": 10,
+      "label": "行走 / 奔跑"
+    },
+    {
+      "sequence": "walk-run",
+      "frame": 15,
+      "label": "行走 / 奔跑"
+    },
+    {
+      "sequence": "attack",
+      "frame": 1,
+      "label": "扑咬"
+    },
+    {
+      "sequence": "attack",
+      "frame": 10,
+      "label": "扑咬"
+    },
+    {
+      "sequence": "attack",
+      "frame": 15,
+      "label": "扑咬"
+    },
+    {
+      "sequence": "attack",
+      "frame": 24,
+      "label": "扑咬"
+    },
+    {
+      "sequence": "hit",
+      "frame": 1,
+      "label": "被击"
+    },
+    {
+      "sequence": "hit",
+      "frame": 10,
+      "label": "被击"
+    },
+    {
+      "sequence": "hit",
+      "frame": 23,
+      "label": "被击"
+    },
+    {
+      "sequence": "hit",
+      "frame": 31,
+      "label": "被击"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 1,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 5,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 6,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 17,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 18,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 103,
+      "label": "击倒"
+    },
+    {
+      "sequence": "knockdown",
+      "frame": 119,
+      "label": "击倒"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 4,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 12,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 31,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 35,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 51,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "down-thrown",
+      "frame": 94,
+      "label": "倒地 / 被投"
+    },
+    {
+      "sequence": "death",
+      "frame": 1,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 6,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 10,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 27,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 28,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 29,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 34,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 42,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 54,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 55,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 56,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 61,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 72,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 88,
+      "label": "血腥死"
+    },
+    {
+      "sequence": "death",
+      "frame": 89,
+      "label": "血腥死"
+    }
+  ],
+  "note": "Contact-sheet sampling only; inspect every timeline frame in the interactive viewer. Blank terminal frames may be intentional and are not automatically errors."
+}
