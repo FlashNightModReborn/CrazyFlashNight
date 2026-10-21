@@ -401,6 +401,71 @@ The slot allow-list is:
   `resources/tmp/runtime-candidates/v2/a5` candidate, while no candidate
   selector binds the verified canonical `formal_runtime`. It rejects ordinary
   `c-*` candidates and every other short leaf.
+- The closed Issue #152 cohort in [`regression-profile.js`](regression-profile.js)
+  requires an explicit immutable `c-*` candidate. Core independently checks the
+  same exact slots in `TrustedRegressionSlots`; formal runtime is refused.
+
+### Interactive regression session
+
+[`regression-session.js`](regression-session.js) reuses the trusted JSONL runner
+and guarded Runtime controller. In a persistent Node session:
+
+```javascript
+const regression = require("./tools/cf7-agent/regression-session");
+const session = await regression.createSession({
+  candidateId: "<verified immutable c-* leaf>", slot: "cf7_agent_152_a28"
+});
+await session.openPanel("materials", "Inspect the current test role's material sources");
+const capture = await session.capture("web_overlay");
+// Display regression.captureToPng(capture) in an ephemeral image viewer.
+// Choose coordinates from this actual frame; each action obtains a fresh binding.
+await session.click({x: 100, y: 100, reason: "Activate the observed control"});
+const completion = await session.finish(); // supported shutdown, exact owned process exit
+regression.writeAudit(session, "<absolute resources>/tmp/issue-152-acceptance/run.json", [], completion);
+```
+
+The wrapper binds the completion to the actual Core executable hash, build
+identity and payload closure. Launch still verifies the full candidate manifest.
+Only this regression profile's first `session.status` read allows 180 seconds
+for wrapper verification plus Core startup; the A5 90-second startup budget,
+ordinary 30-second RPCs and Host credential/lease limits are unchanged.
+The session's `getRegressionBudget()` reports an eight-minute work window.
+After it ends, new input/panel actions fail before dispatch; reads and supported
+shutdown remain available. Reconcile any pending business result, finish normally,
+and resume the same isolated role with a fresh session. No credential renewal or
+save reset is performed. Start a book journey with a fresh work window and return
+to its original role before rotating sessions.
+The verified regression cohort additionally advertises guarded input on the
+actual Launcher surface for timed movement only. After observing and focusing
+the game world, use `session.pressKey({targetKind:"launcher", key:"s",
+durationMs:500})`. Duration is 1–2000ms, repeat must be one, and only unmodified
+W/A/S/D or arrow keys are accepted. Native dispatch rechecks the lease,
+foreground, focus and epochs every 25ms; cancellation/failure releases the owned
+key. Other Launcher native actions are rejected. This observes the Launcher
+window and verifies the resulting movement/scene separately; it does not grant
+Flash pixels or change the metadata-only embedded Flash surface. Ordinary and
+A5 compositions continue to advertise no Launcher native input.
+For this profile, an exact `foreground_mismatch / retryable:true /
+reconcileKind:none` rejection also permits the existing bounded fresh-observation
+retry. New observations and leases are required for each attempt; unknown or
+non-retryable results and the A5 behavior are unchanged.
+It neither resets saves nor exposes credentials. Audit files are exclusive-create
+and omit captured pixel bytes; grants remain ephemeral with persistence/export
+disabled. Use observed coordinates, never the example point above without a frame.
+Regression response audits retain verified frame metadata/hashes without copying
+binary pixel responses; request the full audit at a checkpoint instead of after
+each click. Existing A5 return values and transcript handling are unchanged.
+The new cohort additionally permits the real `openBookshelf` AS2 opener and the
+production intelligence panel through `panel.open`; the default production
+allow-list is unchanged. Bookshelf role destinations and book-run origins stay
+inside this cohort. Existing A5 qualification and artifact gates remain separate.
+The Host's `web_overlay` target follows the exact active help/intelligence
+composition endpoint supplied by `PanelHostController`. It never falls back to
+the hidden legacy WebView while a composition panel is selected but unavailable.
+Panel changes refresh the known HWND before publishing the new panel instance;
+normal surface epochs invalidate captures and leases from the previous endpoint.
+This tooling does not add a Flash pixel/input producer: the embedded Flash target
+continues to advertise empty observation/input modes.
 
 The historical slots retain the existing boundary: no candidate ID selects
 formal runtime, while an explicit candidate ID must match the immutable `c-*`

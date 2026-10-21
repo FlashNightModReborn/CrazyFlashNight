@@ -837,7 +837,7 @@ namespace CF7Launcher.AgentRuntime.Contracts
                     Exact(
                         arguments,
                         new[] { "key", "modifiers", "repeat" },
-                        Array.Empty<string>(),
+                        new[] { "durationMs" },
                         "$.params.arguments",
                         errors);
                     String(
@@ -864,6 +864,16 @@ namespace CF7Launcher.AgentRuntime.Contracts
                         16,
                         errors,
                         "$.params.arguments");
+                    if (arguments.TryGetProperty("durationMs", out _))
+                    {
+                        Integer(arguments, "durationMs", 1, 2000, errors, "$.params.arguments");
+                        string heldKey = arguments.TryGetProperty("key", out var keyValue)
+                            && keyValue.ValueKind == JsonValueKind.String ? keyValue.GetString()?.ToLowerInvariant() : null;
+                        if (!(heldKey is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right")
+                            || !arguments.TryGetProperty("repeat", out var heldRepeat) || heldRepeat.ValueKind != JsonValueKind.Number || !heldRepeat.TryGetInt32(out int heldCount) || heldCount != 1
+                            || !arguments.TryGetProperty("modifiers", out var heldModifiers) || heldModifiers.ValueKind != JsonValueKind.Array || heldModifiers.GetArrayLength() != 0)
+                            Error(errors, "$.params.arguments", "held_key_invalid", "Timed presses require one unmodified movement key.");
+                    }
                     break;
                 case AgentCapabilitiesV1.TypeText:
                     ExactArgument(arguments, "text", errors);

@@ -202,6 +202,10 @@ NPC 元件可设置 `任务需求支线 = [任务ID, ...]`；`_root.初始化NPC
 
 改动关卡箱声明后运行 `tools/test-audit-stage-chests.ps1`；改箱体 XFL/回调时再追加 `tools/test-map-loot-wiring.ps1` 与对应独立 XFL 发布验证。完整权威、状态机与人工代表场见 [地图资源箱实施与验收基线](../docs/地图资源箱-Web战利品工作台与开锁流程-前期调研-2026-07-17.md)。
 
+### NPC 商店准入来源
+
+`data/shops/remote-access.json` 使用 `npc-shop-access.v1`，只为材料与配方来源涉及的商店声明 `placement`（显式 `placements`）、`fixed`（现役平板联系人）、`book` 或 `local`。它不替代商品目录和地图条件；规则归地图域、当前书中/现场上下文与交易归 AS2。配置及所引用的商店、联系人输入进入地图内容摘要，生产消费与角色切换边界见 [店级资格合同](as2-web-panel-migration.md#npc-商店的店级资格issue-152)。
+
 ### NPC 商店 `npc-shop.v2`
 
 `data/shops/list.xml` 中每个 `<shops>` 指向一个独立 NPC JSON。运行时加载器把 v2 文档归一化回 `_root.shops[shopId] = catalog`，因此旧 NPC 对目录对象的引用与 `catalogIndex` 协议身份不变；展示配置进入 `_root.shopLayouts[shopId]`。

@@ -40,6 +40,15 @@ and docs; they cannot silently replace the deployed v1 contract.
 
 Files:
 
+The candidate-source additive `input.press_key.arguments.durationMs` extension
+allows 1–2000ms for exactly one unmodified W/A/S/D or arrow key. Existing key
+arguments retain their pulse behavior. Type-level Launcher applicability still
+requires actual surface input modes: only the verified regression cohort enables
+Launcher timed movement, and the performer rejects its other native operations.
+This does not change the embedded Flash metadata-only surface or assert formal
+runtime support for the extension. Server and Node validators enforce the same
+closed cross-field rules; interruption releases the key through the native guard.
+
 - `agent-runtime.v1.schema.json`: JSON Schema 2020-12 catalog for handshake,
   session, surface, grant, lease, observation, action, and terminal receipt payloads.
 - `json-rpc.v1.schema.json`: exact single-message JSON-RPC 2.0 request,

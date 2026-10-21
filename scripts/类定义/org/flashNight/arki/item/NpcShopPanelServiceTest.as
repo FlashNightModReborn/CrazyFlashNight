@@ -1,4 +1,5 @@
-﻿import org.flashNight.aven.test.*;
+﻿import org.flashNight.arki.item.NpcShopAccessService;
+import org.flashNight.aven.test.*;
 
 import org.flashNight.arki.item.InventoryPanelService;
 import org.flashNight.arki.item.ItemUtil;
@@ -16,6 +17,7 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
     private static var failed:Number = 0;
 
     public static function runAllTests():Void {
+        org.flashNight.arki.item.NpcShopAccessFixture.install();
         setup();
         testPermillePricingContract();
         testExactEconomicNumberContract();
@@ -44,8 +46,133 @@ class org.flashNight.arki.item.NpcShopPanelServiceTest {
         testBuyListenerFaultRestoresExactSnapshot();
         testBatchSellListenerFaultRecovery();
         testRollbackTradeSalesFailureKeepsPostSaleFact();
+        testBookShopIsolation();
+        testRemoteAccessAndContext();
+        testVehicleOwnershipValues();
+        org.flashNight.arki.item.NpcShopAccessFixture.restore();
         trace("NpcShopPanelServiceTest Tests Passed: " + passed);
         trace("NpcShopPanelServiceTest Tests Failed: " + failed);
+    }
+
+    private static function testBookShopIsolation():Void {
+        var previousExt:Object = _root._saveExt;
+        var previousSlot = _root.savePath;
+        var previousStage = _root.当前关卡名;
+        var shopId:String = "书中-迷之盔甲君";
+        _root.shops[shopId] = _root.shops["测试商店"];
+        _root.savePath = "cf7_test_issue152_book";
+        _root.当前关卡名 = String(org.flashNight.arki.scene.BookDefinition.get().stageName);
+        _root._saveExt = {};
+        check(!NpcShopAccessService.canAccess(shopId), "ordinary role cannot access the book-only shop");
+        check(service().execute("snapshot", {shopId:shopId}).error == "access_denied",
+            "ordinary role cannot fetch a book-shop snapshot");
+        check(_root.gameCommands["openNpcShop"]({shopId:shopId}) === false,
+            "direct opener rejects the book shop before panel request");
+        var run:Object = {bookId:"repair-campus", outcome:"active", slot:String(_root.savePath)};
+        _root._saveExt.bookRun = run;
+        check(NpcShopAccessService.canAccess(shopId), "active repair-campus role may use its shop");
+        resetOwned();
+        _root.收集品栏.材料.add("强化石",5);
+        var snapshot:Object = service().execute("snapshot", {shopId:shopId});
+        check(snapshot.success, "legal book shop retains its complete catalog snapshot");
+        var preview:Object = service().execute("tradePreview", {shopId:shopId,
+            purchases:[{catalogIndex:1,quantity:1}], sales:[]});
+        check(preview.success && preview.canCommit, "legal book purchase can be previewed");
+        run.outcome = "victory";
+        var denied:Object = service().execute("tradeCommit", {shopId:shopId, expectedTradeToken:preview.tradeToken});
+        check(denied.error == "access_denied" && _root.金钱 == 5000
+                && _root.收集品栏.材料.getValue("强化石") == 5 && _root.testNpcShopSaveCount == 0,
+            "ended run cannot submit an earlier token or change player assets");
+        run.outcome = "active"; run.bookId = "lee-trial";
+        check(!NpcShopAccessService.canAccess(shopId), "Lee is not repair-campus shop authority");
+        run.bookId = "repair-campus"; run.slot = "another_slot";
+        check(!NpcShopAccessService.canAccess(shopId), "foreign save slot cannot use the book shop");
+        run.slot = String(_root.savePath); _root.当前关卡名 = "普通关卡";
+        check(!NpcShopAccessService.canAccess(shopId), "active run outside its configured stage is rejected");
+        _root.当前关卡名 = String(org.flashNight.arki.scene.BookDefinition.get().stageName);
+        snapshot = service().execute("snapshot", {shopId:shopId});
+        preview = service().execute("tradePreview", {shopId:shopId,
+            purchases:[{catalogIndex:1,quantity:1}], sales:[{quantity:1,
+                source:{viewId:"material",key:"强化石",expectedLease:snapshot.views.material.slots[0].slotLease}}]});
+        var commit:Object = service().execute("tradeCommit", {shopId:shopId, expectedTradeToken:preview.tradeToken});
+        check(commit.success && _root.金钱 == 4850 && _root.收集品栏.材料.getValue("强化石") == 5,
+            "legal repair-campus role retains mixed purchase and sale");
+        _root._saveExt = previousExt; _root.savePath = previousSlot; _root.当前关卡名 = previousStage;
+        delete _root.shops[shopId];
+    }
+
+    private static function testRemoteAccessAndContext():Void {
+        resetOwned();
+        var shopId:String = "测试商店";
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, true);
+        check(service().execute("snapshot", {shopId:shopId}).error == "access_denied",
+            "existing source/catalog cannot override denied current service eligibility");
+        check(_root.gameCommands["openNpcShop"]({shopId:shopId}) === false,
+            "direct opener shares the same denied service result");
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, false);
+        service().execute("snapshot", {shopId:shopId});
+        var preview:Object = service().execute("tradePreview", {shopId:shopId,
+            purchases:[{catalogIndex:1,quantity:1}], sales:[]});
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, true);
+        var denied:Object = service().execute("tradeCommit", {shopId:shopId,expectedTradeToken:preview.tradeToken});
+        check(denied.error == "access_denied" && _root.金钱 == 5000 && _root.testNpcShopSaveCount == 0,
+            "revoked story eligibility rejects an earlier token before any asset write");
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, false);
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(false);
+        check(service().execute("buy", {shopId:shopId,catalogIndex:1,quantity:1}).error == "access_denied",
+            "cached allow is unusable while map facts are stale");
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(true);
+        var slot = _root.savePath;
+        service().execute("snapshot", {shopId:shopId});
+        var nonce:String = String(service().sessionNonce);
+        _root.savePath = "cf7_issue152_foreign_context";
+        check(service().execute("tradeCommit", {shopId:shopId,expectedTradeToken:preview.tradeToken}).error == "stale_state",
+            "same shop and assets do not carry a trade capability across save slots");
+        service().execute("snapshot", {shopId:shopId});
+        check(String(service().sessionNonce) != nonce && service().tradePlan == null,
+            "new save context retires old collection leases and trade plans");
+        _root.savePath = slot;
+        var previousWorld = _root.gameworld;
+        var world:MovieClip = _root.createEmptyMovieClip("__issue152World", _root.getNextHighestDepth());
+        var npc:MovieClip = world.createEmptyMovieClip("onsiteNpc", 1);
+        npc.物品栏 = _root.shops[shopId]; _root.gameworld = world;
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, true);
+        check(NpcShopAccessService.canAccess(shopId), "real current-world NPC retains on-site service without remote permission");
+        npc.removeMovieClip();
+        world.fake = {物品栏:_root.shops[shopId]};
+        check(!NpcShopAccessService.canAccess(shopId), "unloaded NPC and plain objects cannot forge on-site service");
+        world.removeMovieClip(); _root.gameworld = previousWorld;
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(shopId, false);
+    }
+
+    private static function testVehicleOwnershipValues():Void {
+        var rows:Array = [
+            {label:"zero",value:0,owned:false}, {label:"one",value:1,owned:true},
+            {label:"old-string",value:"1",owned:true}, {label:"old-boolean",value:true,owned:true},
+            {label:"false",value:false,owned:false}, {label:"undefined",value:undefined,owned:false},
+            {label:"null",value:null,owned:false}, {label:"empty-string",value:"",owned:false},
+            {label:"invalid-string",value:"invalid",owned:false}, {label:"NaN",value:Number.NaN,owned:false},
+            {label:"Infinity",value:Number.POSITIVE_INFINITY,owned:false},
+            {label:"negative-infinity",value:Number.NEGATIVE_INFINITY,owned:false},
+            {label:"negative",value:-1,owned:false}, {label:"fraction",value:1.5,owned:false},
+            {label:"coercible-object",value:{valueOf:function():Number { return 1; }},owned:false},
+            {label:"Infinity-string",value:"Infinity",owned:false}, {label:"old-leading-zero",value:"01",owned:true},
+            {label:"positive-level",value:2,owned:true}, {label:"below-one",value:0.5,owned:false}
+        ];
+        for (var i:Number = 0; i < rows.length; i++) {
+            var entry:Object = rows[i];
+            var infrastructure:Object = {自行车:entry.value};
+            trace("[VehicleOwnership] " + entry.label + " type=" + typeof entry.value + " value=" + String(entry.value));
+            check(org.flashNight.arki.item.InfrastructureVehicleAccess.owned(infrastructure,"自行车") === entry.owned,
+                "real AVM1 vehicle ownership: " + entry.label);
+        }
+        check(!org.flashNight.arki.item.InfrastructureVehicleAccess.owned({},"自行车"), "missing vehicle flag is not owned");
+        var inherited:Object = {}; inherited.__proto__ = {自行车:1};
+        check(!org.flashNight.arki.item.InfrastructureVehicleAccess.owned(inherited,"自行车"), "inherited vehicle flag is not save authority");
+        var detached:Object = {自行车:1}; detached.__proto__ = null;
+        check(!org.flashNight.arki.item.InfrastructureVehicleAccess.owned(detached,"自行车"), "prototype-less object is not a supported vehicle save record");
+        var restored:Object = new LiteJSON().parse('{"自行车":"1"}');
+        check(org.flashNight.arki.item.InfrastructureVehicleAccess.owned(restored,"自行车"), "supported old primitive survives save-shaped deserialization");
     }
 
     private static function setup():Void {

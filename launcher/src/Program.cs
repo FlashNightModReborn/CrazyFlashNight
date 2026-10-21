@@ -38,6 +38,9 @@ class Program
         private long _webOverlayHwnd;
         private long _nativeHudHwnd;
         private SessionProcessIdentity _flashProcess;
+        private volatile bool _regressionWorldInput;
+
+        internal void EnableRegressionWorldInput() { lock (_sync) _regressionWorldInput = true; }
 
         internal AgentRuntimeSurfaceCache(
             SessionProcessIdentity launcherProcess)
@@ -101,7 +104,9 @@ class Program
                             ObservationMode
                                 .WindowGraphicsCapture
                         },
-                        Array.Empty<InputMode>(),
+                        _regressionWorldInput
+                            ? new[] { InputMode.SendInputGuarded }
+                            : Array.Empty<InputMode>(),
                         10));
             }
             if (flashHwnd > 0 && flashProcess != null)
@@ -3724,7 +3729,9 @@ class Program
                         ReadExistingWindowHandle(form),
                         flashHwnd,
                         flashIdentity,
-                        ReadExistingWindowHandle(webOverlay),
+                        panelHost != null && panelHost.AnyCompositionPanelSelected
+                            ? panelHost.ExistingAgentRuntimeCompositionHandle
+                            : ReadExistingWindowHandle(webOverlay),
                         ReadExistingWindowHandle(nativeHud));
 
                     LauncherAgentRuntimeHost current =
@@ -3780,8 +3787,7 @@ class Program
                     {
                         return launchFlow
                             .TrySendTrustedResolvedSaveEntry(
-                                TrustedUnattendedGameEntryGate
-                                    .ExactA5Slot,
+                                launchFlow.CaptureAgentRuntimeLaunchSnapshot()?.Slot,
                                 attemptId,
                                 delegate
                                 {
@@ -3912,6 +3918,10 @@ class Program
             agentPanelChanged =
                 delegate(string name, string instanceId)
                 {
+                    // Help/intelligence can own a separate composition HWND.
+                    // Rebind that exact endpoint before publishing its instance;
+                    // the synchronizer invalidates observations of the old HWND.
+                    synchronizeAgentRuntime();
                     LauncherAgentRuntimeHost current =
                         agentRuntimeHost;
                     if (current != null
@@ -3995,6 +4005,13 @@ class Program
                 panelHost.ActivePanelInstanceId);
             string unattendedSlot =
                 agentRuntimeHost.UnattendedSlot;
+            if (TrustedRegressionSlots.Contains(unattendedSlot))
+            {
+                agentSurfaceCache.EnableRegressionWorldInput();
+                synchronizeAgentRuntime();
+                bookshelfTask.SetAutomationSlotAdmission(TrustedRegressionSlots.Contains);
+                commandRouter.EnableRegressionAutomation();
+            }
             if (!string.IsNullOrWhiteSpace(
                     unattendedSlot))
             {

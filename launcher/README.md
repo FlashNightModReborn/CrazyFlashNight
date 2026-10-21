@@ -196,6 +196,8 @@ powershell -File launcher/build.ps1 -BuilderId local-dev
 
 `launcher/build.ps1` 只执行 prepare → pure producer → policy，最高到 `candidate_built`。它不具备 promotion 权限，也不能把 candidate 复制到正式 runtime。
 
+原生源码装配按字节把 CRLF / CR 规范化为 LF，保留 BOM 和其他原始字节；实现使用编译循环，避免大文件逐字节解释执行。修改此路径运行 `launcher/tests/runtime-canonical-lf.tests.ps1`，先核对旧算法等价性，再建新 identity 的完整候选，不复写旧候选。
+
 ### 离线开发入口与身份绑定候选
 
 `automation/dev.ps1` 把 exact candidate 交给 `automation/start.ps1 -CandidateRoot <absolute-path>`。候选入口必须位于本仓受控 candidate 根、不是 reparse point，并由候选自身 bootstrap 使用 `--verify-runtime-only` 验证 manifest、Core、build identity 和 payload closure。
@@ -423,6 +425,7 @@ Bootstrap 建角遮罩按 `openRequestId` 关联，snapshot 与有效首帧（�
 | `tasks` | 业务 Panel | `modules/tasks/task-panel.js` |
 <!-- launcher-panel-registry:end -->
 - 所有 Panel：Host 拥有 open/admission、实例和跨 Panel 导航；Web 只消费授权 initData/snapshot。素材工作台从 **其他 → 工具** 打开，当前实例调用固定 Python 内核，候选图片映射 `asset-workbench.local`；旧 `icon_bake` 和三项旧烘焙菜单已退役。
+- NPC 店级资格由 `NpcShopAccessPolicy` 读取 [remote-access.json](../data/shops/remote-access.json)，复用地图地点/驻点规则并随现役事实桥返回；AS2 在来源导航和交易执行前复证当前角色上下文。书中与真实现场 NPC 的资格仍归 AS2，见 [店级资格](../agentsDoc/as2-web-panel-migration.md#npc-商店的店级资格issue-152)。
 - NPC 商店价格 wire 使用整数 `buyRatePermille` 与 safe-integer 金额；AS2/Host 按 `floor((basePrice × quantity) × rate / 1000)` 的同一顺序复验，Web 不重算价格。旧浮点 `buyMultiplier` 不兼容，Host、asLoader、Web 与 harness 必须进入同一 immutable candidate 原子交付；完整字段与 blocked-preview 边界见 [AS2 UI → Web Panel 迁移护栏](../agentsDoc/as2-web-panel-migration.md)。
 - Team 内嵌 `pets` / `mercs` 的全部请求（含 T800 武器命令与佣兵装备 tooltip）携 active `panelInstanceId`；Web 回包精确匹配 instance/callId/cmd，Host 拒绝 inactive/foreign/stale owner，replacement 清退旧 pending，迟到响应不可跨实例采用。业务写仍由白名单、revision/lease/token 与 AS2/Host 裁决，未知结果进入对账；T800 详见[施工记录](../docs/终结者T800-托管长枪与射击核心-施工-2026-08-22.md)。
 - LoadoutPicker 候选只接受装备槽、药剂槽或无 selector 背包总览三种 target。Character `equipmentEligibility` 在两种 scope 由 Host 复验；Merc `eligibleSlots` 由 AS2 两种 scope 签发。scope 只筛候选，白名单裁决 drop target，写后保留原 scope/anchor；Merc 按新 revision 恰好刷新一次 authority。详见[迁移护栏](../agentsDoc/as2-web-panel-migration.md)。

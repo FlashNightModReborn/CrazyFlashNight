@@ -23,6 +23,7 @@ class org.flashNight.arki.ui.BookshelfPanelService {
     public static function install():Void {
         if (_installed) return;
         _installed = true;
+        _root.gameCommands["openBookshelf"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.openPanel(); };
         _root.gameCommands["bookshelfSnapshot"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("snapshot", p); };
         _root.gameCommands["bookshelfCommit"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("commit", p); };
         _root.gameCommands["bookshelfQuery"] = function(p) { org.flashNight.arki.ui.BookshelfPanelService.handle("query", p); };

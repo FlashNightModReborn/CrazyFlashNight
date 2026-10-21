@@ -25,13 +25,14 @@ function sha256(bytes) {
   return crypto.createHash("sha256").update(bytes).digest("hex");
 }
 
-function fixture(t) {
+function fixture(t, regression = false) {
   const temporary = fs.mkdtempSync(path.join(fs.realpathSync.native(os.tmpdir()),
     "cf7-a5-jsonl-"));
   t.after(() => fs.rmSync(temporary, { recursive: true, force: true }));
   const resourcesRoot = path.join(temporary, "resources");
   const entry = path.join(resourcesRoot, "tools", "cf7-agent", "unattended.js");
-  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", "a5");
+  const candidateId = regression ? "c-0123456789ab-0123456789-i152" : "a5";
+  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", candidateId);
   const processPath = path.join(candidateRoot, "runtime", CORE_NAME);
   fs.mkdirSync(path.dirname(entry), { recursive: true });
   fs.mkdirSync(path.dirname(processPath), { recursive: true });
@@ -53,6 +54,8 @@ function fixture(t) {
     processSha256: sha256(processBytes),
     identity,
     preparation: {
+      ...(regression ? {schema:"cf7.regression-runtime.v1",candidateId,
+        slots:{targetSlot:"cf7_agent_152_a28"}} : {}),
       resourcesRoot,
       candidateRoot,
       runId: "a5-jsonl-test-run",
@@ -152,8 +155,8 @@ class FakeChild extends EventEmitter {
   }
 }
 
-function makeRunner(t, behavior, options) {
-  const fx = fixture(t);
+function makeRunner(t, behavior, options, regression = false) {
+  const fx = fixture(t, regression);
   const calls = [];
   let monotonicNow = 0;
   const spawnImpl = (executable, args, spawnOptions) => {
@@ -310,6 +313,29 @@ test("readContent binds every range and verifies canonical base64, total, and ha
     count: 3,
   });
   assert.deepStrictEqual(actual, content);
+  await runner.finish();
+});
+
+test("regression frames return exact pixels while retaining only metadata in the audit", async t => {
+  const content=Buffer.from("regression-pixels"), contentHash=sha256(content);
+  const {runner}=makeRunner(t,{onRequest(request,child){
+    const result={handle:HANDLE,offset:0,totalLength:content.length,returnedBytes:content.length,
+      final:true,contentHash};
+    child.result(request.id,{result,metadata:{handle:HANDLE,offset:0,totalLength:content.length,
+      final:true,contentHash},contentBase64:content.toString("base64")});
+  }},{},true);
+  assert.deepStrictEqual(await runner.readContent(HANDLE,{totalLength:content.length,contentHash}),content);
+  const transcript=runner.getTranscript();
+  assert(!JSON.stringify(transcript).includes(content.toString("base64")));
+  assert(transcript.some(x=>x.kind==="response"&&x.response.result.pixelBytesOmitted===true));
+  await runner.finish();
+});
+
+test("regression content-read errors reject promptly and keep normal shutdown available", async t => {
+  const {runner}=makeRunner(t,{onRequest(request,child){child.rpcError(request.id,-32000,"capture expired");}},{},true);
+  await assertRejectCode(runner.call("content.read",{handle:HANDLE,offset:0,count:4}),"trusted_runner_rpc_error");
+  assert.strictEqual(runner.fatal,null);
+  assert.strictEqual(runner.pending.size,0);
   await runner.finish();
 });
 

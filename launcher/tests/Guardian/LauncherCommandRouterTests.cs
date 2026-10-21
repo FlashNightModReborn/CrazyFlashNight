@@ -386,6 +386,25 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
+        public void RegressionBookshelfOpenerKeepsProductionClosedAndUsesAs2Authority()
+        {
+            var capture = new Capture();
+            var router = MakeRouter(capture);
+            using var harness = new HostHarness(router);
+            var commands = new List<string>();
+            router.SetGameCommandSenderForTests(value => { commands.Add(value); return true; });
+            Assert.False(router.TryOpenAgentPanel("bookshelf"));
+            Assert.False(router.TryOpenAgentPanel("intelligence"));
+            Assert.Empty(commands);
+            router.EnableRegressionAutomation();
+            Assert.True(router.TryOpenAgentPanel("bookshelf"));
+            var command = JObject.Parse(Assert.Single(commands).TrimEnd('\0'));
+            Assert.Equal("cmd", command.Value<string>("task"));
+            Assert.Equal("openBookshelf", command.Value<string>("action"));
+            Assert.False(harness.Host.IsPanelOpen); // Actual AS2 panel_request is still required.
+        }
+
+        [Fact]
         public void AgentPanelOpen_MaterialsReturnsFalseWhenAuthoritySendFails()
         {
             Capture c = new Capture();

@@ -44,7 +44,9 @@ if ($unattendedRequested) {
         'cf7_agent_arena_calibration',
         'cf7_agent_character_build',
         'cf7_agent_loot_target_full_v1',
-        'cf7_agent_a5_material_shop_run'
+        'cf7_agent_a5_material_shop_run',
+        'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
+        'cf7_agent_152_d69', 'cf7_agent_152_e69'
     )
     if ($UnattendedSlot -cnotin $allowedUnattendedSlots) {
         throw '-UnattendedSlot is not in the frozen unattended slot allowlist.'
@@ -53,6 +55,9 @@ if ($unattendedRequested) {
         throw 'Unattended Agent Runtime cannot enable legacy HTTP automation.'
     }
     $a5UnattendedSlot = $UnattendedSlot -ceq 'cf7_agent_a5_material_shop_run'
+    $regressionUnattendedSlot = $UnattendedSlot -cin @(
+        'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
+        'cf7_agent_152_d69', 'cf7_agent_152_e69')
     $candidateLeaf = if ([string]::IsNullOrWhiteSpace($CandidateRoot)) {
         $null
     } else {
@@ -60,6 +65,9 @@ if ($unattendedRequested) {
     }
     if ($a5UnattendedSlot -and $null -ne $candidateLeaf -and $candidateLeaf -cne 'a5') {
         throw 'The A5 material-shop unattended slot allows formal runtime or requires exact CandidateRoot leaf a5.'
+    }
+    if ($regressionUnattendedSlot -and $null -eq $candidateLeaf) {
+        throw 'Regression slots require an explicit verified isolated candidate; formal runtime is not allowed.'
     }
     if (-not $a5UnattendedSlot -and $null -ne $candidateLeaf -and
             $candidateLeaf -cnotmatch '^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$') {

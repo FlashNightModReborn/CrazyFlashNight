@@ -549,7 +549,7 @@
         var messages = {
             shop_not_found:'未找到该 NPC 的商店。', item_not_found:'商品或待售物品已经变化。', locked:'尚未获得所需情报。', insufficient_money:'金币不足。', inventory_full:'背包空间不足。',
             destination_full:'对应收集项已达持有上限。',
-            stale_state:'物品状态已经变化。', invalid_price:'商品或售卖价格已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
+            access_denied:'当前角色暂不能使用这家商店，请确认剧情和关卡条件后重新进入。', stale_state:'物品状态已经变化。', invalid_price:'商品或售卖价格已经变化。', sell_forbidden:'该容器不允许出售。', insufficient_quantity:'物品数量不足。', duplicate_line:'交易清单包含重复物品。',
             invalid_payload:'交易清单包含无效数据。', invalid_quantity:'购买或出售数量无效。', nothing_to_sell:'没有可批量出售的普通实例。', target_full:'目标容器已满。', slot_locked:'该战备箱槽位尚未解锁。',
             busy:'商店正在处理另一项交易。', reconcile_required:'交易结果需要重新同步。', malformed_response:'交易回包不完整，需要重新核算。', invalid_response:'交易回包无效，需要重新核算。',
             timeout:'商店响应超时。', client_timeout:'商店响应超时。', disconnected:'连接已断开。'

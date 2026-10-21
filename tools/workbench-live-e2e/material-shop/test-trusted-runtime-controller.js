@@ -547,6 +547,25 @@ test("bounds exact stale-focus retries at four total panel.open attempts", async
   assert.equal(runner.calls.filter((entry) => entry.method === "observation.capture").length, 4);
 });
 
+test("regression retries only explicitly unexecuted transient foreground mismatches", async t => {
+  const regression={...preparation(),schema:"cf7.regression-runtime.v1",
+    candidateId:"c-0123456789ab-0123456789-i152",slots:{targetSlot:"cf7_agent_152_d69"}};
+  for(const [name,prep,data,attempts] of [
+    ["qualified",regression,{reasonCode:"foreground_mismatch"},3],
+    ["legacy",preparation(),{reasonCode:"foreground_mismatch"},1],
+    ["not retryable",regression,{reasonCode:"foreground_mismatch",retryable:false},1],
+    ["unknown execution",regression,{reasonCode:"foreground_mismatch",reconcileKind:"visual_ambiguous"},1]
+  ]) await t.test(name,async()=>{
+    const runner=new FakeRunner({panelOpenStaleFocusFailures:2,staleFocusErrorData:data});
+    const controller=await Controller.start(prep,{createRunner:()=>runner});
+    if(attempts===3)await controller.openMaterials("Fresh observation after a rejected foreground race");
+    else await assert.rejects(controller.openMaterials("Do not replay uncertain or legacy focus failures"),{code:"trusted_runner_rpc_error"});
+    assert.equal(runner.calls.filter(x=>x.method==="panel.open").length,attempts);
+    assert.equal(runner.calls.filter(x=>x.method==="observation.capture").length,attempts);
+    assert.equal(runner.calls.filter(x=>x.method==="lease.acquire").length,attempts);
+  });
+});
+
 test("does not retry near input-not-quiescent errors", async (t) => {
   for (const [name, inputNotQuiescentErrorData] of [
     ["reason", { reasonCode: "stale_observation" }],

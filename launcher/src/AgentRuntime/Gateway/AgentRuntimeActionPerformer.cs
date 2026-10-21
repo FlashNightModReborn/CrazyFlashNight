@@ -118,6 +118,7 @@ namespace CF7Launcher.AgentRuntime.Gateway
         private readonly NativeInputGuard _guard;
         private readonly InputSafetyStateMachine _safety;
         private readonly AgentObservationEnvelopeStore _observations;
+        private readonly string _launcherTargetId;
         private readonly INativeScreenCoordinateNormalizer
             _coordinates;
         private readonly IAgentStructuredActionHost
@@ -136,8 +137,10 @@ namespace CF7Launcher.AgentRuntime.Gateway
             HairAppearanceModifierTransaction hair,
             IAgentHairPreviewStore hairPreviews,
             IAgentHairDomainTargetAuthority hairTargets,
-            INativeScreenCoordinateNormalizer coordinates = null)
+            INativeScreenCoordinateNormalizer coordinates = null,
+            string launcherTargetId = null)
         {
+            _launcherTargetId = launcherTargetId;
             _nativeInput = nativeInput
                 ?? throw new ArgumentNullException(
                     nameof(nativeInput));
@@ -176,6 +179,17 @@ namespace CF7Launcher.AgentRuntime.Gateway
             if (lease == null)
                 throw new ArgumentNullException(nameof(lease));
 
+            // Launcher pixels remain Launcher pixels. The isolated regression
+            // composition advertises guarded input solely for timed movement;
+            // never turn the parent frame into a Flash pixel/input fallback.
+            if (_launcherTargetId != null
+                && string.Equals(action.TargetId, _launcherTargetId, StringComparison.Ordinal)
+                && action.Operation != AgentCapabilitiesV1.PanelOpen
+                && action.Operation != AgentCapabilitiesV1.SessionShutdown
+                && !(action.Operation == AgentCapabilitiesV1.PressKey
+                    && action.Arguments.TryGetProperty("durationMs", out _)))
+                return Task.FromResult(AgentActionPerformance.Rejected("unsupported_for_surface"));
+
             return action.Operation switch
             {
                 AgentCapabilitiesV1.Click
@@ -189,8 +203,9 @@ namespace CF7Launcher.AgentRuntime.Gateway
                     Task.FromResult(
                         PerformClick(context, action, lease)),
                 AgentCapabilitiesV1.PressKey =>
-                    Task.FromResult(
-                        PerformPressKey(action, lease)),
+                    action.Arguments.TryGetProperty("durationMs", out _)
+                        ? PerformHeldKeyAsync(action, lease, cancellationToken)
+                        : Task.FromResult(PerformPressKey(action, lease)),
                 AgentCapabilitiesV1.TypeText =>
                     PerformTypeTextAsync(
                         action,
@@ -291,6 +306,48 @@ namespace CF7Launcher.AgentRuntime.Gateway
                 lease,
                 packets,
                 new[] { point });
+        }
+
+        private async Task<AgentActionPerformance> PerformHeldKeyAsync(
+            ActionEnvelope action, WriteLease lease, CancellationToken cancellationToken)
+        {
+            string key = action.Arguments.GetProperty("key").GetString()?.ToLowerInvariant();
+            if (!(key is "w" or "a" or "s" or "d" or "up" or "down" or "left" or "right")
+                || action.Arguments.GetProperty("repeat").GetInt32() != 1
+                || action.Arguments.GetProperty("modifiers").GetArrayLength() != 0
+                || !TryResolveKey(key, out ushort virtualKey, out bool extended))
+                return AgentActionPerformance.Rejected("arguments_invalid");
+            int duration = action.Arguments.GetProperty("durationMs").GetInt32();
+            if (duration < 1 || duration > 2000)
+                return AgentActionPerformance.Rejected("arguments_invalid");
+            bool held = false;
+            try
+            {
+                // Recheck the same lease, foreground, focus and epochs every
+                // 25ms using the existing executor. Each repeat is a down edge;
+                // the guard owns one release across batches, as for drag.
+                for (int elapsed = 0; elapsed < duration; elapsed += 25)
+                {
+                    AgentActionPerformance step = DispatchNative(action, lease,
+                        new[] { NativeInputPacket.Key(virtualKey, 0, extended ? KeyExtended : 0, false) },
+                        Array.Empty<NativeScreenPoint>(), true);
+                    if (step.Outcome != ActionOutcome.InputDispatched)
+                        return held ? AgentActionPerformance.Unknown(step.ReasonCode, ReconcileKind.VisualAmbiguous) : step;
+                    held = true;
+                    await Task.Delay(Math.Min(25, duration - elapsed), cancellationToken).ConfigureAwait(false);
+                }
+                AgentActionPerformance release = DispatchNative(action, lease,
+                    new[] { NativeInputPacket.Key(virtualKey, 0, extended ? KeyExtended : 0, true) },
+                    Array.Empty<NativeScreenPoint>(), true);
+                if (release.Outcome != ActionOutcome.InputDispatched)
+                    return AgentActionPerformance.Unknown(release.ReasonCode, ReconcileKind.VisualAmbiguous);
+                held = false;
+                return release;
+            }
+            finally
+            {
+                if (held) _guard.FailAndPreempt(cancellationToken.IsCancellationRequested ? "deadline_exceeded" : "reconcile_required");
+            }
         }
 
         private AgentActionPerformance PerformPressKey(

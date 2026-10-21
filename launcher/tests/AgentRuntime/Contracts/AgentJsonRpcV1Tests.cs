@@ -192,6 +192,22 @@ namespace CF7Launcher.Tests.AgentRuntime.Contracts
             }
         }
 
+        [Theory]
+        [InlineData("s", 1, 50, true)]
+        [InlineData("down", 1, 2000, true)]
+        [InlineData("f4", 1, 50, false)]
+        [InlineData("s", 2, 50, false)]
+        [InlineData("s", 1, 2001, false)]
+        [InlineData("s", 1, 0, false)]
+        public void TimedDirectionContractIsClosed(string key, int repeat, int durationMs, bool valid)
+        {
+            var sample = Element(ValidParameterSamples()[AgentCapabilitiesV1.PressKey]);
+            var action = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(sample.GetRawText());
+            action["arguments"] = Element(new { key, modifiers = Array.Empty<string>(), repeat, durationMs });
+            var errors = AgentJsonRpcValidator.ValidateParameters(AgentCapabilitiesV1.PressKey, Element(action));
+            Assert.Equal(valid, errors.Count == 0);
+        }
+
         [Fact]
         public void EveryRegisteredMethod_HasValidExactParams()
         {

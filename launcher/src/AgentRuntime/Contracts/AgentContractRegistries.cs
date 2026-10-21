@@ -247,7 +247,7 @@ namespace CF7Launcher.AgentRuntime.Contracts
                 Define(AgentCapabilitiesV1.Click, "click", true, true, false, true, false,
                     InteractiveSurfaces),
                 Define(AgentCapabilitiesV1.PressKey, "press_key", true, true, false, true, false,
-                    InteractiveSurfaces),
+                    AllProductSurfaces),
                 Define(AgentCapabilitiesV1.TypeText, "type_text", true, true, false, true, false,
                     InteractiveSurfaces),
                 Define(AgentCapabilitiesV1.Scroll, "scroll", true, true, false, true, false,

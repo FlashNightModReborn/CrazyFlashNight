@@ -69,6 +69,7 @@ function validBoundedString(value, maximumBytes) {
 }
 
 function validatePreparation(preparation) {
+  const regression = require("../../cf7-agent/regression-profile").resolve(preparation);
   if (!isPlainObject(preparation)
       || typeof preparation.resourcesRoot !== "string"
       || !path.isAbsolute(preparation.resourcesRoot)) {
@@ -77,7 +78,7 @@ function validatePreparation(preparation) {
   }
   const resourcesRoot = Evidence.assertExactDirectory(
     preparation.resourcesRoot, "trusted_runner_jsonl");
-  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", CANDIDATE_ID);
+  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", regression?.candidateId || CANDIDATE_ID);
   if (preparation.candidateRoot !== undefined
       && (typeof preparation.candidateRoot !== "string"
         || !path.isAbsolute(preparation.candidateRoot)
@@ -108,7 +109,7 @@ function validatePreparation(preparation) {
     fail("trusted_runner_preparation_invalid", "preparation buildSha256 is malformed");
   }
   return Object.freeze({ resourcesRoot, candidateRoot, entry,
-    entrySha256: entryArtifact.sha256 });
+    entrySha256: entryArtifact.sha256, ...(regression || {}) });
 }
 
 function normalizeEnvironment(options) {
@@ -326,8 +327,8 @@ class TrustedRunnerJsonl {
     if (typeof spawnImpl !== "function") {
       fail("trusted_runner_spawn_invalid", "spawnImpl must be a function");
     }
-    const args = [this.paths.entry, "--adapter", "jsonl", "--slot", SLOT,
-      "--candidate-id", CANDIDATE_ID];
+    const args = [this.paths.entry, "--adapter", "jsonl", "--slot", this.paths.slot || SLOT,
+      "--candidate-id", this.paths.candidateId || CANDIDATE_ID];
     try {
       this.child = spawnImpl(process.execPath, args, {
         cwd: this.paths.resourcesRoot,
@@ -555,7 +556,15 @@ class TrustedRunnerJsonl {
     this.responseIds.add(response.id);
     clearTimeout(pending.timer);
     this.pending.delete(response.id);
-    this._record("response", { response });
+    // Regression journeys can span many frames. Keep verified content hashes
+    // and metadata in the in-memory audit, rather than retaining every BGRA
+    // object's base64 a second time. The response delivered below stays exact.
+    const auditResponse = pending.method === "content.read" && this.paths.slot
+      && Object.hasOwn(response, "result")
+      ? { ...response, result: { result: response.result.result,
+        metadata: response.result.metadata, pixelBytesOmitted: true } }
+      : response;
+    this._record("response", { response: auditResponse });
     if (Object.hasOwn(response, "error")) {
       const error = new TrustedRunnerJsonlError("trusted_runner_rpc_error",
         response.error.message, { id: response.id, method: pending.method,

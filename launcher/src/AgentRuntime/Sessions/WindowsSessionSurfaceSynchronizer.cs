@@ -1005,6 +1005,26 @@ namespace CF7Launcher.AgentRuntime.Sessions
             }
 
             long focusedHwnd = focus.FocusWindowHandle;
+            string ResolveInputRoot(ProbedSurface focused)
+            {
+                // A metadata-only embedded Flash keeps its own identity. An
+                // explicitly input-enabled Launcher may own keyboard focus in
+                // that exact child; qualify both HWND containment and the real
+                // foreground root, without granting Flash pixels/input or
+                // treating Web/native panels as the game world.
+                if (focused.Spec.Kind == SurfaceKind.Flash
+                    && focused.Spec.ObservationModes.Count == 0
+                    && focused.Spec.InputModes.Count == 0)
+                {
+                    ProbedSurface root = focusable.FirstOrDefault(candidate =>
+                        candidate.Spec.Kind == SurfaceKind.Launcher
+                        && candidate.Spec.KnownWindowHandle == focus.ForegroundWindowHandle
+                        && candidate.Spec.InputModes.Contains(InputMode.SendInputGuarded)
+                        && IsWithinKnownSurface(candidate.Spec.KnownWindowHandle, focused.Spec.KnownWindowHandle));
+                    if (root != null) return root.Spec.TargetId;
+                }
+                return focused.Spec.TargetId;
+            }
             if (focusedHwnd > 0)
             {
                 ProbedSurface exact = focusable.FirstOrDefault(
@@ -1012,7 +1032,7 @@ namespace CF7Launcher.AgentRuntime.Sessions
                         candidate.Spec.KnownWindowHandle
                             == focusedHwnd);
                 if (exact != null)
-                    return exact.Spec.TargetId;
+                    return ResolveInputRoot(exact);
 
                 ProbedSurface containing = focusable
                     .Where(candidate => IsWithinKnownSurface(
@@ -1027,7 +1047,7 @@ namespace CF7Launcher.AgentRuntime.Sessions
                         StringComparer.Ordinal)
                     .FirstOrDefault();
                 if (containing != null)
-                    return containing.Spec.TargetId;
+                    return ResolveInputRoot(containing);
                 reasons.Add("focus_outside_known_surfaces");
                 return null;
             }

@@ -344,7 +344,8 @@
         "key",
         "modifiers",
         "repeat"
-      ]
+      ],
+      "optional": ["durationMs"]
     },
     "input.type_text": {
       "required": [

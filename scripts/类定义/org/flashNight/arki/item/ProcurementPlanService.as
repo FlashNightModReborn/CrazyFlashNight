@@ -766,8 +766,7 @@ class org.flashNight.arki.item.ProcurementPlanService {
     }
 
     private static function unlocked(infra:Object, key:String):Boolean {
-        return infra != null && infra[key] != undefined && infra[key] != null
-            && Number(infra[key]) >= 1;
+        return org.flashNight.arki.item.InfrastructureVehicleAccess.owned(infra, key);
     }
 
     private static function safeRequired(value):Number {
