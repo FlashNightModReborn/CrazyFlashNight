@@ -533,24 +533,30 @@
         <MP>0</MP>
     </Skill>
     <Skill id="43">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>幻影剑舞</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;幻影剑舞&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;Shift+↑+→+J（消耗MP，不足时无法释放）&lt;/font&gt;。根据当前兵器动作类型自动变化为狂暴切割或疾影剑舞。向前方挥出如舞蹈般的连斩。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="44">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>见切</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;见切&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;Shift+←（不按前）&lt;/font&gt;。根据当前兵器动作类型自动变化为重架、微风拂柳、交叠或疾影后撤。后撤步回避并伺机反击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
@@ -568,24 +574,30 @@
         <MP>100</MP>
     </Skill>
     <Skill id="46">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>猎影十字</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;猎影十字&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↓←+J&lt;/font&gt;。根据当前兵器动作类型自动变化为空坠强袭、交叉斩或疾影十字。挥出十字形斩击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="47">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>百万突刺</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;百万突刺&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;Shift+→+J&lt;/font&gt;。根据当前兵器动作类型自动变化为百裂刺、迷踪连刺或回旋刃。向正前方发动超高速连续突刺。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
@@ -646,15 +658,10 @@
 被动效果：
 在地面冷兵器战斗时，
 &lt;font color="#ffee00"&gt;J+K&lt;/font&gt;可以使用&lt;font color="#ffee00"&gt;上挑&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;见切（轻武器）；重架（重武器）；微风拂柳（长武器）；交叠（双刀）；疾影后撤（疾影）&lt;/font&gt;可小幅度斜向后撤，
-攻击后摇时&lt;font color="#ffee00"&gt;Shift+←&lt;/font&gt;，
-长按&lt;font color="#ffee00"&gt;R&lt;/font&gt;进入&lt;font color="#ffee00"&gt;特殊纳刀（仅限轻武器；疾影）&lt;/font&gt;再按&lt;font color="#ffee00"&gt;J&lt;/font&gt;追加后续攻击。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;粉碎切割（轻武器）；疾空旋风破（重武器，可小幅度移动）；狂乱龙卷（长武器）；双旋轮切（双刀）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑+R&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;十六夜月华(轻武器)；千山破晓钟(重武器)；日耀三段突（长武器）；双龙连斩（双刀）；迅捷连斩（直剑、迅捷）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑←+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;月光斩(轻武器)；全垒打(重武器)；无双击（长武器）；外斩劈裂（双刀）；疾影上挑（疾影）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;，再按&lt;font color="#ffee00"&gt;J&lt;/font&gt;追加后续派生（仅限轻武器、长武器）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;见切、重架、微风拂柳、交叠、疾影后撤&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;粉碎切割、疾空旋风破、狂乱龙卷、双旋轮切&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;十六夜月华、千山破晓钟、日曜三段突、双龙连斩、迅捷连斩&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;月光斩、全垒打、无双击、外斩劈裂、疾影上挑&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -671,14 +678,10 @@
 在空中冷兵器战斗时，
 &lt;font color="#ffee00"&gt;K&lt;/font&gt;可以&lt;font color="#ffee00"&gt;垂直下劈&lt;/font&gt;。
 &lt;font color="#ffee00"&gt;Shift+K&lt;/font&gt;可以&lt;font color="#ffee00"&gt;飞扑下劈&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;蓄力重劈&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;Shift+↓+J&lt;/font&gt;，蓄满3段后增加范围。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;百万突刺（轻武器）；回旋刃（重武器）；迷踪连刺（长武器）；百裂刺（双刀）；&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;Shift+→+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;猎影十字(轻武器)；空坠强袭(重武器)；交叉斩（双刀）；疾影十字（疾影）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓←+J&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;幻影剑舞（通用）；狂暴切割（双刀）；疾影剑舞（疾影）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;Shift+↑+→+J(消耗MP，不足时无法释放)&lt;/font&gt;。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;蓄力重劈&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;百万突刺、回旋刃、迷踪连刺、百裂刺&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;猎影十字、空坠强袭、交叉斩、疾影十字&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;幻影剑舞、狂暴切割、疾影剑舞&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>5</UnlockLevel>
         <MaxLevel>10</MaxLevel>
@@ -698,8 +701,7 @@
 被击飞时按&lt;font color="#ffee00"&gt;J&lt;/font&gt;。
 &lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;飞燕&lt;/font&gt;
 空中攻击后摇时&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv4&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;次元斩(轻武器)；追地祀(重武器)&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓+R&lt;/font&gt;。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;次元斩、追地祀&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
 次元斩收刀后精准按&lt;font color="#ffee00"&gt;R&lt;/font&gt;可连续使用。
 技能升级可以略微增加伤害。</Description>
         <UnlockLevel>15</UnlockLevel>
@@ -710,13 +712,16 @@
         <MP>0</MP>
     </Skill>
     <Skill id="54">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>蓄力重劈</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;蓄力重劈&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;Shift+↓+J&lt;/font&gt;。蓄力后向下劈出毁灭性的一击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
@@ -798,10 +803,8 @@
 被动效果：
 刀剑跳劈可以通过反作用力浮空。
 &lt;font color="#2bff00"&gt;Lv1&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;多段冲刺攻击&lt;/font&gt;，攻击后摇时再次按&lt;font color="#ffee00"&gt;J&lt;/font&gt;，攻击会根据武器类型改变，&lt;font color="#ffee00"&gt;疾影&lt;/font&gt;模组可在第一段冲刺攻击后摇中按k升空。
-&lt;font color="#2bff00"&gt;Lv2&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;贯穿突刺（轻武器）；飞跃砸击（重武器）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。
-&lt;font color="#2bff00"&gt;Lv3&lt;/font&gt;解锁&lt;font color="#ffee00"&gt;剑气释放(轻武器)；飞沙走石(重武器)；双剑气（双刀）；疾影剑气（疾影）&lt;/font&gt;
-攻击后摇时&lt;font color="#ffee00"&gt;↓→+J&lt;/font&gt;。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;贯穿突刺、飞跃砸击、疾影突进&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
+&lt;font color="#2bff00"&gt;搓招技能已独立&lt;/font&gt;：原有的&lt;font color="#ffee00"&gt;剑气释放、飞沙走石、双剑气、疾影剑气&lt;/font&gt;等指令技能已分离为独立被动技能，可在 Andylaw / 武器大师 处学习（5级解锁，消耗10SP，上限1级，学习后通过原指令释放）。
 增加刀剑普通攻击的基础伤害，技能升级时伤害将线性提升。
 初始收益：较高。升级收益：中等。</Description>
         <UnlockLevel>1</UnlockLevel>
@@ -1003,68 +1006,86 @@
         <MP>0</MP>
     </Skill>
     <Skill id="74">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>剑气释放</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;剑气释放&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↓→+J&lt;/font&gt;。根据当前兵器动作类型自动变化为双剑气、疾影剑气或飞沙走石。挥出剑气攻击远处的敌人。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="75">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>贯穿突刺</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;贯穿突刺&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;→→&lt;/font&gt;。根据当前兵器动作类型自动变化为飞跃砸击或疾影突进。向前突进攻击敌人。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="76">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>次元斩</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;次元斩&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↓+R（空中）&lt;/font&gt;。根据当前兵器动作类型自动变化为追地祀。释放范围斩击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="77">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>月光斩</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;月光斩&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↑+J&lt;/font&gt;。根据当前兵器动作类型自动变化为全垒打、无双击、外斩劈裂或疾影上挑。向上挥出强力一击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="78">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>粉碎切割</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;粉碎切割&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↑+R&lt;/font&gt;。根据当前兵器动作类型自动变化为双旋轮切、狂乱龙卷或疾空旋风破。挥出范围旋转攻击。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>
     <Skill id="79">
-        <Name></Name>
-        <Type></Type>
-        <Description></Description>
-        <UnlockLevel>1</UnlockLevel>
-        <MaxLevel>10</MaxLevel>
-        <UnlockSP>0</UnlockSP>
-        <UpgradeSP>0</UpgradeSP>
+        <Name>十六夜月华</Name>
+        <Type>被动</Type>
+        <Description>被动技能，学习后通过指令释放，&lt;font color="#00ff4c"&gt;不可装备至技能栏&lt;/font&gt;。
+被动效果：
+解锁&lt;font color="#ffee00"&gt;十六夜月华&lt;/font&gt;：攻击后摇期间&lt;font color="#ffee00"&gt;↑←+J&lt;/font&gt;。根据当前兵器动作类型自动变化为千山破晓钟、日曜三段突、双龙连斩或迅捷连斩。释放华丽的多段连斩。
+基础强度：可用，无升级收益。</Description>
+        <UnlockLevel>5</UnlockLevel>
+        <MaxLevel>1</MaxLevel>
+        <UnlockSP>10</UnlockSP>
+        <UpgradeSP>10</UpgradeSP>
         <CD>0</CD>
         <MP>0</MP>
     </Skill>

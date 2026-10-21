@@ -46,13 +46,10 @@ namespace CF7Launcher.Tasks
         /// <summary>closing 重试时钟注入点（参照 widget TypingClock）。</summary>
         internal Func<long> BookRetryClock;
         /// <summary>插话输入框是否持有焦点（输入层接线后由宿主注册探针）。
-        /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 不再被吞），
-        /// 且 widget 的 advance 输入被丢弃。默认 null = 未接线，既有行为不变。</summary>
+        /// true 时：低级键盘钩子的对话推进键探针返回 null（Enter/Esc/advanceKey 交给 TextBox，
+        /// 空格与 E 正常打字）。鼠标点击推进不受此影响——输入态下左键照常进下一条。
+        /// 默认 null = 未接线，既有行为不变。</summary>
         internal Func<bool> InterjectInputFocused;
-        /// <summary>插话输入面板展开且可输入（输入层接线后由宿主注册探针）。
-        /// true 时推进键被钩子吞掉但不推进对话；聚焦态由上层文字输入态先行放行给 TextBox。
-        /// 收起/隐藏/禁用时保持既有推进逻辑。默认 null = 未接线。</summary>
-        internal Func<bool> InterjectInputExpanded;
         /// <summary>任务插话上下文组装（P4）：(dialogueTaskId, dialogueKind) → {completed, upcoming}
         /// 或 null。只在 task_pre/task_post 组使用；未注册或返回 null 时任务插话 fail-closed
         /// （输入保持 Hidden，不显示也不报错）。</summary>
@@ -705,8 +702,8 @@ namespace CF7Launcher.Tasks
             if (current == null || frame.RequestId != current.RequestId || frame.SceneId != current.SceneId
                 || frame.Revision != current.Revision || !_inputAllowed()
                 || (verb != "advance" && verb != "close" && verb != "finish")) return;
-            // 插话输入框持有焦点时只挡推进（close 是显式关闭意图，不挡）。
-            if (verb == "advance" && InterjectInputActive) return;
+            // 推进不按输入态设门：鼠标点正文/「下一条」任何时候都要能换句。
+            // 键盘侧不会误触发——输入框持焦点时钩子已把键让给 TextBox（见 CaptureKeyboardAction）。
             var session = _bookSession;
             if (session != null && session.RequestId == current.RequestId
                 && session.SceneId == current.SceneId)
@@ -737,17 +734,14 @@ namespace CF7Launcher.Tasks
         {
             var frame = _current;
             if (frame == null || !_widget.Visible || !_inputAllowed()) return null;
-            // 文字输入期间不抢占任何对话键：Enter 归输入框（IME 组词确认），Esc 不关对话。
+            // 输入框持有焦点时一个键都不抢：Enter 归输入框发送/组词确认，Esc 收起输入框，
+            // 空格与 E 正常打字。没聚焦则按下面的常规推进走，不因面板展开而静默吞键。
             if (InterjectInputActive) return null;
             bool close = virtualKey == 27;
-            bool panelActive = !close && InterjectInputExpandedActive;
-            // 面板展开且可输入时连空格一起吞掉（玩家不确定互动键是空格还是 E）；
-            // 聚焦时钩子已在文字输入态放行，空格照常进输入框。
-            if (panelActive && virtualKey == 32) return delegate { };
             int advanceKey = _bookSession != null ? _bookSession.AdvanceKey : _advanceKey;
+            // Esc 关闭；Enter / advanceKey（通常是 E）推进。空格不进 Host 路径：
+            // 游戏侧自己认空格，Host 既不吞也不代劳，避免和输入态互相打架。
             if (!close && virtualKey != 13 && virtualKey != advanceKey) return null;
-            // 输入面板展开且可输入：推进键只吞掉，不触发下一条。
-            if (panelActive) return delegate { };
             return () =>
             {
                 try
@@ -784,21 +778,6 @@ namespace CF7Launcher.Tasks
                 catch (Exception ex)
                 {
                     LogManager.Log("[NativeDialogue] interject focus probe: " + ex.Message);
-                    return false;
-                }
-            }
-        }
-
-        private bool InterjectInputExpandedActive
-        {
-            get
-            {
-                Func<bool> probe = InterjectInputExpanded;
-                if (probe == null) return false;
-                try { return probe(); }
-                catch (Exception ex)
-                {
-                    LogManager.Log("[NativeDialogue] interject input probe: " + ex.Message);
                     return false;
                 }
             }

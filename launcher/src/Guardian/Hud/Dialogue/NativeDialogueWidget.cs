@@ -827,16 +827,14 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_frame == null || _suppressed || _disposed) return;
                 if (_frame.IsPlaceholder)
                 {
-                    // 默认「思索中」与带末尾省略号的 ui_hint 由 Tick 轮换；无省略号文案保持固定。
-                    if (PlaceholderAnimates(_frame.Text))
+                    // 所有占位文案（默认「思索中」/ stage 文案 / 终端 ui_hint）统一轮换末尾省略号；
+                    // 文案自身带不带点都补，括号位置由各条最长形态定死。
+                    long now = TypingClock();
+                    if (now >= _placeholderNextToggleMs)
                     {
-                        long now = TypingClock();
-                        if (now >= _placeholderNextToggleMs)
-                        {
-                            _placeholderWideDots = !_placeholderWideDots;
-                            _placeholderNextToggleMs = now + 480;
-                            repaint = true;
-                        }
+                        _placeholderWideDots = !_placeholderWideDots;
+                        _placeholderNextToggleMs = now + 480;
+                        repaint = true;
                     }
                     animChanged = UpdateAnimLocked();
                 }
@@ -1071,25 +1069,24 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             finally { g.Restore(st); }
         }
 
-        /// <summary>等待占位：默认 [思索中…]/[思索中……]；ui_hint 带末尾省略号时同样轮换，
-        /// 无省略号则按固定文案显示。括号宽度始终按当前文案实测。</summary>
+        /// <summary>等待占位：默认 [思索中…]/[思索中……]；stage 文案与终端 ui_hint 同样补点轮换，
+        /// 文案自带的末尾省略号先剥掉。括号位置按本条最长形态（含「……」）定死，
+        /// 省略号在 …/…… 之间切换时左右括号都不动；不同条目各按自己的长度定位。</summary>
         private void PaintPlaceholderBody(Graphics g, Layout L)
         {
             Rectangle tr = L.Text;
             if (tr.Width <= 0 || tr.Height <= 0 || _fontBody == null) return;
             EnsureMeasureLocked();
             DialogueUiSkin.FieldSpec fs = _skin.Body;
-            string label;
-            bool animated;
-            SplitPlaceholderText(_frame != null ? _frame.Text : null, out label, out animated);
+            string label = PlaceholderLabel(_frame != null ? _frame.Text : null);
             string left = "[" + label;
             string right = "]";
             string dots = _placeholderWideDots ? "……" : "…";
             float leftW = _measureG.MeasureString(left, _fontBody, int.MaxValue, _typoFormat).Width;
             float rightW = _measureG.MeasureString(right, _fontBody, int.MaxValue, _typoFormat).Width;
+            // 始终按最长形态量取整条宽度：右括号位置与省略号单/双点无关。
             float frameW = _measureG.MeasureString(
-                animated ? left + "……" + right : left + right,
-                _fontBody, int.MaxValue, _typoFormat).Width;
+                left + "……" + right, _fontBody, int.MaxValue, _typoFormat).Width;
 
             GraphicsState st = g.Save();
             try
@@ -1101,44 +1098,21 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 SolidBrush brush = BrushFor(fs.Color);
                 float y = 1f;
                 g.DrawString(left, _fontBody, brush, TEXT_INSET_LOCAL, y, _typoFormat);
-                if (animated)
-                    g.DrawString(dots, _fontBody, brush, TEXT_INSET_LOCAL + leftW, y, _typoFormat);
+                g.DrawString(dots, _fontBody, brush, TEXT_INSET_LOCAL + leftW, y, _typoFormat);
                 g.DrawString(right, _fontBody, brush,
                     TEXT_INSET_LOCAL + frameW - rightW, y, _typoFormat);
             }
             finally { g.Restore(st); }
         }
 
-        /// <summary>占位文案拆分：返回固定部分，并标记末尾省略号是否走 480ms 轮换。
-        /// 空文案按默认「思索中」；ui_hint 自带 `…`/`……` 时剥掉后动画，否则原样固定。</summary>
-        private static void SplitPlaceholderText(string text, out string label, out bool animated)
+        /// <summary>占位文案拆分：剥掉末尾省略号（`…`/`……`）后返回固定部分。
+        /// 省略号一律由 480ms 轮换补上——终端推来的 ui_hint 不带点也补；空文案回落「思索中」。</summary>
+        private static string PlaceholderLabel(string text)
         {
-            string trimmed = (text ?? "").Trim();
-            if (trimmed.Length == 0)
-            {
-                label = "思索中";
-                animated = true;
-                return;
-            }
-            string bare = trimmed;
+            string bare = (text ?? "").Trim();
             while (bare.EndsWith("…", StringComparison.Ordinal))
                 bare = bare.Substring(0, bare.Length - 1).TrimEnd();
-            if (bare.Length != trimmed.Length)
-            {
-                label = bare.Length > 0 ? bare : "思索中";
-                animated = true;
-                return;
-            }
-            label = trimmed;
-            animated = false;
-        }
-
-        private static bool PlaceholderAnimates(string text)
-        {
-            string label;
-            bool animated;
-            SplitPlaceholderText(text, out label, out animated);
-            return animated;
+            return bare.Length > 0 ? bare : "思索中";
         }
 
         /// <summary>

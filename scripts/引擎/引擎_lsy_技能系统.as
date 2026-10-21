@@ -12,8 +12,8 @@ _root.根据技能名查找主角技能等级 = function(技能名){
 // 纯领域层：不读取 hero、HUD 或物品栏 MovieClip。
 _root.重建主角被动技能领域 = function(){
 	if(!_root.技能表对象 || !(_root.主角技能表 instanceof Array)) return false;
-	_root.主角被动技能 = {};
-	var seen:Object = {};
+	var computed = {};
+	var seen = {};
 	for(var i = 0; i < Math.min(80, _root.主角技能表.length); i++){
 		var 技能 = _root.主角技能表[i];
 		if(!(技能 instanceof Array) || typeof 技能[0] != "string" || 技能[0] == "" || seen["$" + 技能[0]]) continue;
@@ -22,9 +22,17 @@ _root.重建主角被动技能领域 = function(){
 		if(技能对象 && 技能对象.Passive){
 			var enabled = 技能[4];
 			var enabledBool:Boolean = enabled === true || enabled === 1 || enabled === "true" || enabled === "1";
-			_root.主角被动技能[技能[0]] = {技能名:技能[0], 等级:Number(技能[1]), 启用:enabledBool};
+			computed[技能[0]] = {技能名:技能[0], 等级:Number(技能[1]), 启用:enabledBool};
 		}
 	}
+	// 原地合并而非整体换对象：hero.被动技能 出生时绑同一引用，换新对象会让
+	// 搓招门槛等旧引用读到过期缓存（技能面板停用被动后搓招仍可释放）。
+	var live = (_root.主角被动技能 != null && typeof _root.主角被动技能 == "object") ? _root.主角被动技能 : null;
+	if(live == null){ live = {}; _root.主角被动技能 = live; }
+	var staleKeys = [];
+	for(var k in live){ if(computed[k] == undefined) staleKeys.push(k); }
+	for(var s = 0; s < staleKeys.length; s++) delete live[staleKeys[s]];
+	for(var k2 in computed){ live[k2] = computed[k2]; }
 	return _root.动态更新技能冷却领域() !== false;
 };
 

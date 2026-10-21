@@ -233,7 +233,7 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void StagePlaceholderKeepsFixedTextWithoutDotAnimation()
+        public void StagePlaceholderAlsoAnimatesDots()
         {
             long clock = 1000;
             using var anchor = new Control { Size = new Size(1024, 576) };
@@ -249,7 +249,10 @@ namespace CF7Launcher.Tests.Guardian
             }));
             clock += 600;
             widget.Tick(600);
-            Assert.False(widget.PlaceholderWideDotsForTest);   // 固定阶段文案不跑省略号
+            Assert.True(widget.PlaceholderWideDotsForTest);    // 无省略号的 stage 文案同样补点轮换
+            clock += 600;
+            widget.Tick(600);
+            Assert.False(widget.PlaceholderWideDotsForTest);
         }
 
         [Fact]
@@ -325,21 +328,22 @@ namespace CF7Launcher.Tests.Guardian
         }
 
         [Fact]
-        public void FocusedInputBlocksAdvanceKeysAndAdvanceVerb()
+        public void FocusedInputYieldsKeysButPointerAdvanceStillWorks()
         {
             using var h = new TaskHarness();
             Assert.NotNull(h.Task.CaptureKeyboardAction(13));            // 未聚焦：Enter 归对话
 
             h.Focused = true;
-            Assert.Null(h.Task.CaptureKeyboardAction(13));               // 聚焦：Enter 归输入框
-            Assert.Null(h.Task.CaptureKeyboardAction(27));               // 聚焦：Esc 不关对话
+            Assert.Null(h.Task.CaptureKeyboardAction(13));               // 聚焦：Enter 归输入框（发送）
+            Assert.Null(h.Task.CaptureKeyboardAction(27));               // 聚焦：Esc 收起输入框
 
+            // 鼠标点正文/“下一条”任何时候都要能换句：输入态不设门。
             string before = h.Widget.CurrentFrame.Text;
-            h.Widget.InputRequested(h.Widget.CurrentFrame, "advance");   // 聚焦期间的迟到推进被丢弃
-            Assert.Equal(before, h.Widget.CurrentFrame.Text);
+            h.Widget.InputRequested(h.Widget.CurrentFrame, "advance");
+            Assert.NotEqual(before, h.Widget.CurrentFrame.Text);
 
             h.Focused = false;
-            h.Widget.InputRequested(h.Widget.CurrentFrame, "advance");   // 失焦后恢复推进
+            h.Widget.InputRequested(h.Widget.CurrentFrame, "advance");   // 失焦后键盘推进也恢复
             Assert.Equal("第二句", h.Widget.CurrentFrame.Text);
         }
     }
