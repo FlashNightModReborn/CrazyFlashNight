@@ -1,7 +1,10 @@
+[CmdletBinding(DefaultParameterSetName='Candidate')]
 param(
-    [Parameter(Mandatory=$true)]
+    [Parameter(Mandatory=$true,ParameterSetName='Candidate')]
     [ValidatePattern('^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$')]
     [string]$CandidateId,
+    [Parameter(Mandatory=$true,ParameterSetName='Formal')]
+    [switch]$FormalRuntime,
     [string]$OutputName = 'played-save-readback.json'
 )
 $ErrorActionPreference = 'Stop'
@@ -13,14 +16,21 @@ if(@(Get-CimInstance Win32_Process -Filter "Name='CRAZYFLASHER7MercenaryEmpire.C
 }).Count){throw 'Run only after all game/runner processes from this resources directory exited normally'}
 $playedBundle = Join-Path $playedRoot 'tmp/issue-152-acceptance'
 $playedManifest = Get-Content -LiteralPath (Join-Path $playedBundle 'manifest.json') -Raw -Encoding UTF8 | ConvertFrom-Json
-$playedRuntime = Join-Path $playedRoot ('tmp/runtime-candidates/v2/' + $CandidateId + '/runtime')
+$playedDeployment = if($PSCmdlet.ParameterSetName -ceq 'Formal'){
+    if(-not $FormalRuntime){throw 'FormalRuntime must be explicitly enabled'}
+    $playedRoot
+}else{Join-Path $playedRoot ('tmp/runtime-candidates/v2/' + $CandidateId)}
+$playedRuntime = Join-Path $playedDeployment 'runtime'
+$playedMode = if($FormalRuntime){'formal_runtime'}else{'isolated_candidate'}
+$playedRuntimeManifest = Join-Path $playedRuntime 'cf7-runtime-manifest.tsv'
+if(-not (Test-Path -LiteralPath $playedRuntimeManifest -PathType Leaf)){throw 'Selected runtime manifest is missing'}
 Add-Type -Path (Join-Path $playedRuntime 'Newtonsoft.Json.dll')
 Add-Type -Path (Join-Path $playedRuntime 'CRAZYFLASHER7MercenaryEmpire.Core.dll')
-# A fresh PowerShell process loads the selected candidate parser explicitly.
+# A fresh PowerShell process loads the selected deployment's parser explicitly.
 [void][Runtime.InteropServices.NativeLibrary]::Load((Join-Path $playedRuntime 'sol_parser.dll'))
 $playedParserModule = @((Get-Process -Id $PID).Modules | Where-Object ModuleName -eq 'sol_parser.dll')
 if($playedParserModule.Count -ne 1 -or $playedParserModule[0].FileName -ine (Join-Path $playedRuntime 'sol_parser.dll')){
-    throw 'SOL parser is not bound to the selected candidate'
+    throw 'SOL parser is not bound to the selected runtime'
 }
 $playedArchive = [CF7Launcher.Tasks.ArchiveTask]::new($playedRoot)
 $playedLocator = [CF7Launcher.Save.SolFileLocator]::new()
@@ -70,11 +80,12 @@ $playedDeltas = @(foreach($playedRecord in $playedPreserved){
     }
 })
 $playedSuccess = @($playedEntries|Where-Object {-not $_.expectedMatches -or $_.militaryCloth -ne 0}).Count -eq 0 -and @($playedDeltas|Where-Object {-not $_.launcherMarker}).Count -eq 0
-$playedReport = [ordered]@{schema='issue152-played-save-readback.v1';createdAtUtc=[datetime]::UtcNow.ToString('o');
+$playedReport = [ordered]@{schema='issue152-played-save-readback.v2';createdAtUtc=[datetime]::UtcNow.ToString('o');
+    runtimeMode=$playedMode;runtimeRoot=$playedRuntime;runtimeManifestSha256=(Get-FileHash -LiteralPath $playedRuntimeManifest).Hash;
     candidateId=$CandidateId;coreDllSha256=(Get-FileHash -LiteralPath (Join-Path $playedRuntime 'CRAZYFLASHER7MercenaryEmpire.Core.dll')).Hash;
     parserPath=$playedParserModule[0].FileName;slots=@($playedEntries);preexistingFileDeltas=$playedDeltas;success=$playedSuccess;
     evidence='offline production SOL/shadow resolver and schema readback; combine with actual runtime session audits';
-    humanAccepted=$false;promoted=$false}
+    humanAccepted=$false;promotionPerformedByThisCheck=$false}
 $playedDestination = Join-Path $playedBundle $OutputName
 $playedStream = [IO.File]::Open($playedDestination,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
 try{$playedBytes=[Text.Encoding]::UTF8.GetBytes(($playedReport|ConvertTo-Json -Depth 12)+"`n");$playedStream.Write($playedBytes,0,$playedBytes.Length)}finally{$playedStream.Dispose()}
