@@ -1,0 +1,43 @@
+{
+  "result": "PASS",
+  "runId": "8bc4a1b1ee7345f9980eef1d048e83a7",
+  "passed": 277,
+  "failed": 0,
+  "actualTimelineCases": 24,
+  "nativeFramesDecoded": 32,
+  "actualEmissionFrames": [
+    7,
+    13,
+    16
+  ],
+  "bothFacingsComparedWithOriginal": true,
+  "allThreeDeathBranchesComparedWithOriginal": true,
+  "opaqueOralCavityCheckedInNativePixels": true,
+  "originalA2EmptyStagePreserved": true,
+  "fixtureSourceSha256": "e2d0dc32d2234c9bdcc971e19b886683b9eb68ffbeae66f06953cd0fd1a7fd7e",
+  "nativeHostSwfSha256": "71ca41510cb808bb18c8d237020f1a120724411bba72d30273008572f34fd06f",
+  "compiledInputs": {
+    "flashswf/arts/new/Codex专用素材.swf": {
+      "bytes": 2097652,
+      "sha256": "efb97e892c59a5851d2d94da1ce606169179860b792996065e1e1d694d92f095"
+    },
+    "flashswf/arts/things-new.swf": {
+      "bytes": 113919,
+      "sha256": "0728c419b082d8d6a6a292bb5b07007523cb4587e184a6e3fc55822160d29dd1"
+    }
+  },
+  "fixtureBoundaries": [
+    "enemy initialization",
+    "movement",
+    "outgoing bullet receiver"
+  ],
+  "gameplayE2e": false,
+  "standardEntryVerified": false,
+  "runtimePromoted": false,
+  "humanVisualApproval": false,
+  "recordedAt": "2026-10-21T07:23:19.461648+08:00",
+  "nativeTraceSha256": "2f52becb8d0ac3b60547123df39d5c4dee0d6cd66d43a135f0995500693a5ca9",
+  "nativeHostLargestFunctionBytes": 3552,
+  "playerStopVerified": true,
+  "playerStopReceiptDirectory": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\tmp\\flash-testplayer-control\\1de2bbd2a1254e4ba2a5ff90f6d8e92e"
+}

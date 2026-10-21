@@ -1,0 +1,488 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/两犬/盗贼撕咬犬/原生/Symbol 745" itemID="6cd10000-20ac2a7c">
+  <timeline>
+    <DOMTimeline name="Symbol 745">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#1DEBAE">
+          <frames>
+            <DOMFrame index="0" name="空手" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" name="长枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="18" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" name="手枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="35" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" name="手枪2" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="52" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" name="双枪" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="69" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" name="手雷" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="86" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" name="兵器" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#B5FEDB">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[if(_parent.已加经验值 != true)
+{
+   _root.播放音效("狗叫-1.wav");
+}
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="6" duration="10" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="16" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="17" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="33" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="34" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="50" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="51" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="67" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="68" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="84" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="85" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="101" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="102" duration="16" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="118" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 3" color="#D174B9">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1334-paw" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.642196655273438" b="0.2138671875" c="0.2138671875" d="0.642196655273438" tx="111.75" ty="96.15"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 4" color="#6441F8">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1337-hind-lower-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.390731811523438" b="0.553451538085938" c="0.553451538085938" d="-0.390731811523438" tx="92.5" ty="145.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 5" color="#76C698">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1336-hind-middle-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.233642578125" b="0.634323120117188" c="0.634323120117188" d="0.233642578125" tx="65.25" ty="128.35"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 6" color="#C3A124">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1335-hind-upper-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.647933959960938" b="0.19415283203125" c="0.19415283203125" d="-0.647933959960938" tx="43.75" ty="188.95"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 7" color="#B697B0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1343-tail" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.390731811523438" b="0.553451538085938" c="0.553451538085938" d="-0.390731811523438" tx="34.15" ty="225.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 8" color="#B392BA">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1334-paw" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.341445922851563" b="-0.582199096679688" c="-0.582199096679688" d="0.341445922851563" tx="99.85" ty="8.6"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 9" color="#DECC3A">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1333-front-lower-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="-0.16632080078125" b="0.652923583984375" c="0.652923583984375" d="0.16632080078125" tx="74.35" ty="4.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 10" color="#C340F0">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1332-front-middle-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.376556396484375" b="0.55950927734375" c="0.55950927734375" d="-0.376556396484375" tx="42.65" ty="58.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 11" color="#8B3DB9">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1331-front-upper-leg" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.12481689453125" b="0.6649169921875" c="0.6649169921875" d="-0.12481689453125" tx="-19.75" ty="58.25"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 12" color="#59EAB1">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1341-ear" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.672821044921875" b="0.0436248779296875" c="0.0436248779296875" d="-0.672821044921875" tx="-89.2" ty="34.65"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 13" color="#56E79B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1342-head" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.591217041015625" b="-0.326217651367188" c="-0.326217651367188" d="-0.591217041015625" tx="-81.9" ty="20.3"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 14" color="#8A45F5">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1341-ear" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.606399536132813" b="0.293228149414063" c="0.293228149414063" d="-0.606399536132813" tx="-101.15" ty="17.55"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 15" color="#DAE64B">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1340-lower-jaw" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.536590576171875" b="-0.406600952148438" c="-0.406600952148438" d="-0.536590576171875" tx="-80.95" ty="2.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer xmlns="http://ns.adobe.com/xfl/2008/" name="口腔内壁（随双颌姿势）" color="#7B3C4D">
+  <frames>
+    <DOMFrame index="0" duration="119" keyMode="9728">
+      <elements>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#39232B"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1938 -138|-1861 65[-1812 -65 -1845 -347[-1911 -331 -1973 -303[-1998 -295 -2047 -321[-2097 -346 -2166 -395[-2236 -445 -2321 -508[-2405 -572 -2500 -640[-2219 -361 -1938 -138" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#1C1419"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1872 27|-1892 -226[-1947 -188 -2082 -297[-2092 -262 -1948 -132[-1919 -79 -1872 27" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#58373F"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1957 -151|-1945 -126|-1992 -166|-2040 -209|-2089 -254|-2137 -303|-2186 -353|-2236 -406|-2285 -460|-2335 -516|-2385 -573|-2436 -632|-2487 -690|-2538 -750|-2589 -809|-2640 -869|-2692 -928|-2744 -986|-2815 -984|-2766 -930|-2715 -875|-2665 -819|-2613 -762|-2561 -706|-2508 -649|-2455 -593|-2402 -538|-2347 -483|-2293 -430|-2238 -378|-2182 -328|-2127 -280|-2070 -234|-2014 -191|-1957 -151" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#633E47"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1865 32|-1854 54|-1835 21|-1821 -17|-1812 -61|-1808 -109|-1809 -161|-1815 -217|-1827 -278|-1843 -342|-1866 -409|-1894 -480|-1928 -553|-1967 -629|-2013 -707|-2065 -788|-2123 -870|-2188 -954|-2254 -954|-2191 -874|-2134 -794|-2083 -717|-2036 -641|-1995 -568|-1960 -496|-1929 -428|-1903 -362|-1883 -299|-1867 -240|-1855 -184|-1849 -132|-1846 -84|-1848 -41|-1855 -2|-1865 32" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#995D66"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1861 40[-1872 -280 -2013 -640[-2124 -789 -2099 -689[-2072 -597 -2029 -453[-1986 -310 -1925 -175[-1886 -46 -1861 40" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#BB8386"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1893 -108[-1884 -128 -1907 -202[-1981 -411 -2060 -615[-2001 -347 -1893 -108" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#75434E"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-1864 -86|-1858 -82[-1922 -299 -2008 -560[-1937 -305 -1864 -86" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#76505A"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-2112 -275|-2127 -289|-2152 -304|-2135 -289|-2112 -275" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#76505A"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-2245 -410|-2260 -426|-2297 -439|-2280 -423|-2245 -410" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+        <DOMShape isDrawingObject="true">
+          <fills>
+            <FillStyle index="1">
+              <SolidColor color="#76505A"/>
+            </FillStyle>
+          </fills>
+          <edges>
+            <Edge edges="!-2380 -558|-2395 -575|-2439 -585|-2422 -567|-2380 -558" fillStyle0="1"/>
+          </edges>
+        </DOMShape>
+      </elements>
+    </DOMFrame>
+  </frames>
+</DOMLayer>
+
+        <DOMLayer name="Layer 16" color="#F89AEE">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1339-neck-shoulder" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.657241821289063" b="0.150985717773438" c="0.150985717773438" d="-0.657241821289063" tx="-38.2" ty="59.2"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 17" color="#FECFB8" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="119" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/两犬/盗贼撕咬犬/分件/1338-torso" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.319580078125" b="0.5970458984375" c="0.5970458984375" d="-0.319580078125" tx="45.35" ty="198"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

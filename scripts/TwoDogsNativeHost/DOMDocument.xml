@@ -1,0 +1,40 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="500" height="400" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows">
+  <symbols>
+    <Include href="DogImport0.xml"/>
+    <Include href="DogImport1.xml"/>
+    <Include href="DogImport2.xml"/>
+  </symbols>
+  <timelines>
+    <DOMTimeline name="两犬原生共享导入专项">
+      <layers>
+        <DOMLayer name="测试与共享库">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[stop();
+#include "../TestLoader.as"]]></script>
+              </Actionscript>
+              <elements>
+                <DOMSymbolInstance libraryItemName="DogImport0">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="DogImport1">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+                <DOMSymbolInstance libraryItemName="DogImport2">
+                  <matrix>
+                    <Matrix tx="-3000" ty="-3000"/>
+                  </matrix>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timelines>
+</DOMDocument>

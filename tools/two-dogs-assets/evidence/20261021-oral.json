@@ -1,0 +1,59 @@
+{
+  "result": "PASS",
+  "runId": "d9aeb3900d2b4bd5aa58f6af922a4289",
+  "passed": 253,
+  "failed": 0,
+  "actualTimelineCases": 24,
+  "nativeFramesDecoded": 18,
+  "nativeKeyPosesPerDog": 9,
+  "sourcePreviewFramesPerDog": 24,
+  "actualEmissionFrames": [
+    7,
+    13,
+    16
+  ],
+  "nativeReadbackDimensions": {
+    "fullAndDeath": [
+      180,
+      140
+    ],
+    "mouthCloseups": [
+      240,
+      186
+    ]
+  },
+  "bothFacingsComparedWithOriginal": true,
+  "allThreeDeathBranchesComparedWithOriginal": true,
+  "oralPixelChecks": [
+    "anterior opening transparent",
+    "rear cheek opaque",
+    "tongue visible and pink"
+  ],
+  "originalA2EmptyStagePreserved": true,
+  "propertiesAndUnitDataByteIdentical": true,
+  "fixtureSourceSha256": "904d42e372ed13b696f2e0534413563f746ee242b441ad9f91ed151ba0686154",
+  "nativeHostSwfSha256": "caf1bac4a8838dd39c2d522716800d532a4953c1bd204d1113868c61167071d8",
+  "compiledInputs": {
+    "flashswf/arts/new/Codex专用素材.swf": {
+      "bytes": 2110281,
+      "sha256": "93ad92ca1a4de261573eb68604fceed0d14dad7da7a1ce2162875ddf3dc55fb8"
+    },
+    "flashswf/arts/things-new.swf": {
+      "bytes": 113924,
+      "sha256": "ff848f537cdc3217259c187262fcab7045d51e93235e94c7b18dc7b7d39bf697"
+    }
+  },
+  "traceSha256": "01c564e497e0f1c1e801908f6d155104e42230c64db83024d2b6ca258a646b54",
+  "fixtureBoundaries": [
+    "enemy initialization",
+    "movement",
+    "outgoing bullet receiver"
+  ],
+  "gameplayE2e": false,
+  "standardEntryVerified": false,
+  "runtimePromoted": false,
+  "humanVisualApproval": false,
+  "xflAuditKnownIssues": [
+    "unchanged pre-existing former-sheriff bitmap references 1 and 2; no new dog errors"
+  ]
+}
