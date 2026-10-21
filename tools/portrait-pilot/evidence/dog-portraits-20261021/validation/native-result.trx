@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a2b022ed-59e8-4150-9363-3c99c34070a7" name="fs@DESKTOP-76J1PBE 2026-10-21 11:06:38" runUser="DESKTOP-76J1PBE\fs" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-21T11:06:38.4484244+08:00" queuing="2026-10-21T11:06:38.4484248+08:00" start="2026-10-21T11:06:33.3801088+08:00" finish="2026-10-21T11:06:40.8628858+08:00" />
+  <TestSettings name="default" id="6c51b4c8-0f7c-497b-add4-60f0b5043216">
+    <Deployment runDeploymentRoot="fs_DESKTOP-76J1PBE_2026-10-21_11_06_38" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="09afc9e5-baab-4a90-8f1c-5629efe1fc83" testId="765065b4-81c2-eeb2-d4f6-c879edeaee20" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_PortraitAlias_ResolvesToTarget" computerName="DESKTOP-76J1PBE" duration="00:00:02.0597517" startTime="2026-10-21T11:06:38.4081114+08:00" endTime="2026-10-21T11:06:38.4081756+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="09afc9e5-baab-4a90-8f1c-5629efe1fc83" />
+    <UnitTestResult executionId="ba2b4659-aa2c-4e15-a5e7-48264a10293e" testId="0272e3d0-50cd-4253-0eb7-6a0b6cf0f5da" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-盗贼撕咬犬&quot;)" computerName="DESKTOP-76J1PBE" duration="00:00:00.1110794" startTime="2026-10-21T11:06:38.5872762+08:00" endTime="2026-10-21T11:06:38.5872764+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba2b4659-aa2c-4e15-a5e7-48264a10293e" />
+    <UnitTestResult executionId="493ab9ef-ea3c-41d8-866a-46f68e65f612" testId="84769293-b970-37a1-8025-993a77a6e8ce" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_ItemIconUnaffectedByPortraitFallback" computerName="DESKTOP-76J1PBE" duration="00:00:00.0381129" startTime="2026-10-21T11:06:38.4758852+08:00" endTime="2026-10-21T11:06:38.4758855+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="493ab9ef-ea3c-41d8-866a-46f68e65f612" />
+    <UnitTestResult executionId="644e87d5-1681-4cf7-8d48-cabf1fd14f2b" testId="d85e2e6d-9efd-29e1-3042-df6ace59402b" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.StripSvgFilters_RemovesFilterDefsAndReferences" computerName="DESKTOP-76J1PBE" duration="00:00:00.0006890" startTime="2026-10-21T11:06:40.3463556+08:00" endTime="2026-10-21T11:06:40.3463558+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="644e87d5-1681-4cf7-8d48-cabf1fd14f2b" />
+    <UnitTestResult executionId="7f96d9ca-b604-4aa0-9a93-3ddaeadfc937" testId="554debf5-c048-48d0-cfa8-076c16029a9d" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-Codex黑仔&quot;)" computerName="DESKTOP-76J1PBE" duration="00:00:00.6881636" startTime="2026-10-21T11:06:39.2757169+08:00" endTime="2026-10-21T11:06:39.2757175+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f96d9ca-b604-4aa0-9a93-3ddaeadfc937" />
+    <UnitTestResult executionId="cacc3867-0039-4e37-a127-ad0172dbebdd" testId="202a81bb-46da-f1d4-3383-f317a55e363e" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-军阀铁卫犬&quot;)" computerName="DESKTOP-76J1PBE" duration="00:00:00.5668101" startTime="2026-10-21T11:06:39.8427514+08:00" endTime="2026-10-21T11:06:39.8427528+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cacc3867-0039-4e37-a127-ad0172dbebdd" />
+    <UnitTestResult executionId="600e57c8-4636-40de-ad72-e8a4ee8733fb" testId="f3937425-e02a-67f3-30a1-ac21da35633f" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-前治安官&quot;)" computerName="DESKTOP-76J1PBE" duration="00:00:00.3844941" startTime="2026-10-21T11:06:40.3454041+08:00" endTime="2026-10-21T11:06:40.3454044+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="600e57c8-4636-40de-ad72-e8a4ee8733fb" />
+    <UnitTestResult executionId="36722e84-ff96-40d6-bbd6-214d21584c35" testId="cda5ca26-bde0-7036-f8a0-8c91de1202b8" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_PortraitRef_RasterizesSvgToStaticThumb" computerName="DESKTOP-76J1PBE" duration="00:00:00.3602810" startTime="2026-10-21T11:06:40.7725516+08:00" endTime="2026-10-21T11:06:40.7725520+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="36722e84-ff96-40d6-bbd6-214d21584c35" />
+    <UnitTestResult executionId="24a381e9-f175-4dd0-9e1e-b84aaecbc144" testId="c70a3132-fff4-6fe2-ebf3-43daba37073f" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_UnknownRef_Rejected" computerName="DESKTOP-76J1PBE" duration="00:00:00.0652647" startTime="2026-10-21T11:06:40.4119075+08:00" endTime="2026-10-21T11:06:40.4119079+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="24a381e9-f175-4dd0-9e1e-b84aaecbc144" />
+    <UnitTestResult executionId="4e9db103-7f50-4ae5-8d1c-faa7ccc5c249" testId="6925a0b8-f966-25d2-147b-cf66a6eb0a6c" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.StripSvgFilters_KeepsNonFilterContentIntact" computerName="DESKTOP-76J1PBE" duration="00:00:00.0128734" startTime="2026-10-21T11:06:38.4367658+08:00" endTime="2026-10-21T11:06:38.4367663+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4e9db103-7f50-4ae5-8d1c-faa7ccc5c249" />
+    <UnitTestResult executionId="85356c75-ba3f-4722-9898-d602e9d10258" testId="905e2f6e-940c-f317-9802-12aad5d5185d" testName="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-制式军警犬&quot;)" computerName="DESKTOP-76J1PBE" duration="00:00:00.1176092" startTime="2026-10-21T11:06:39.9606369+08:00" endTime="2026-10-21T11:06:39.9606375+08:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="85356c75-ba3f-4722-9898-d602e9d10258" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-Codex黑仔&quot;)" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="554debf5-c048-48d0-cfa8-076c16029a9d">
+      <Execution id="7f96d9ca-b604-4aa0-9a93-3ddaeadfc937" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_DirectPortrait_RendersVisibleImageWithTransparency" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-前治安官&quot;)" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="f3937425-e02a-67f3-30a1-ac21da35633f">
+      <Execution id="600e57c8-4636-40de-ad72-e8a4ee8733fb" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_DirectPortrait_RendersVisibleImageWithTransparency" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-盗贼撕咬犬&quot;)" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="0272e3d0-50cd-4253-0eb7-6a0b6cf0f5da">
+      <Execution id="ba2b4659-aa2c-4e15-a5e7-48264a10293e" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_DirectPortrait_RendersVisibleImageWithTransparency" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_PortraitRef_RasterizesSvgToStaticThumb" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="cda5ca26-bde0-7036-f8a0-8c91de1202b8">
+      <Execution id="36722e84-ff96-40d6-bbd6-214d21584c35" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_PortraitRef_RasterizesSvgToStaticThumb" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.StripSvgFilters_RemovesFilterDefsAndReferences" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="d85e2e6d-9efd-29e1-3042-df6ace59402b">
+      <Execution id="644e87d5-1681-4cf7-8d48-cabf1fd14f2b" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="StripSvgFilters_RemovesFilterDefsAndReferences" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_ItemIconUnaffectedByPortraitFallback" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="84769293-b970-37a1-8025-993a77a6e8ce">
+      <Execution id="493ab9ef-ea3c-41d8-866a-46f68e65f612" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_ItemIconUnaffectedByPortraitFallback" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.StripSvgFilters_KeepsNonFilterContentIntact" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="6925a0b8-f966-25d2-147b-cf66a6eb0a6c">
+      <Execution id="4e9db103-7f50-4ae5-8d1c-faa7ccc5c249" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="StripSvgFilters_KeepsNonFilterContentIntact" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-制式军警犬&quot;)" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="905e2f6e-940c-f317-9802-12aad5d5185d">
+      <Execution id="85356c75-ba3f-4722-9898-d602e9d10258" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_DirectPortrait_RendersVisibleImageWithTransparency" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_PortraitAlias_ResolvesToTarget" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="765065b4-81c2-eeb2-d4f6-c879edeaee20">
+      <Execution id="09afc9e5-baab-4a90-8f1c-5629efe1fc83" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_PortraitAlias_ResolvesToTarget" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_UnknownRef_Rejected" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="c70a3132-fff4-6fe2-ebf3-43daba37073f">
+      <Execution id="24a381e9-f175-4dd0-9e1e-b84aaecbc144" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_UnknownRef_Rejected" />
+    </UnitTest>
+    <UnitTest name="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests.TryGet_DirectPortrait_RendersVisibleImageWithTransparency(portraitRef: &quot;敌人-军阀铁卫犬&quot;)" storage="c:\program files (x86)\steam\steamapps\common\crazyflasher7standalonestarter\crazyflashnight\launcher\tests\bin\debug\launcher.tests.dll" id="202a81bb-46da-f1d4-3383-f317a55e363e">
+      <Execution id="cacc3867-0039-4e37-a127-ad0172dbebdd" />
+      <TestMethod codeBase="C:\Program Files (x86)\Steam\steamapps\common\CRAZYFLASHER7StandAloneStarter\CrazyFlashNight\launcher\tests\bin\Debug\Launcher.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="CF7Launcher.Tests.Guardian.Hud.Loot.LootIconCatalogPortraitTests" name="TryGet_DirectPortrait_RendersVisibleImageWithTransparency" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="765065b4-81c2-eeb2-d4f6-c879edeaee20" executionId="09afc9e5-baab-4a90-8f1c-5629efe1fc83" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0272e3d0-50cd-4253-0eb7-6a0b6cf0f5da" executionId="ba2b4659-aa2c-4e15-a5e7-48264a10293e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="84769293-b970-37a1-8025-993a77a6e8ce" executionId="493ab9ef-ea3c-41d8-866a-46f68e65f612" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d85e2e6d-9efd-29e1-3042-df6ace59402b" executionId="644e87d5-1681-4cf7-8d48-cabf1fd14f2b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="554debf5-c048-48d0-cfa8-076c16029a9d" executionId="7f96d9ca-b604-4aa0-9a93-3ddaeadfc937" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="202a81bb-46da-f1d4-3383-f317a55e363e" executionId="cacc3867-0039-4e37-a127-ad0172dbebdd" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="f3937425-e02a-67f3-30a1-ac21da35633f" executionId="600e57c8-4636-40de-ad72-e8a4ee8733fb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="cda5ca26-bde0-7036-f8a0-8c91de1202b8" executionId="36722e84-ff96-40d6-bbd6-214d21584c35" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="c70a3132-fff4-6fe2-ebf3-43daba37073f" executionId="24a381e9-f175-4dd0-9e1e-b84aaecbc144" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="6925a0b8-f966-25d2-147b-cf66a6eb0a6c" executionId="4e9db103-7f50-4ae5-8d1c-faa7ccc5c249" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="905e2f6e-940c-f317-9802-12aad5d5185d" executionId="85356c75-ba3f-4722-9898-d602e9d10258" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="列表中未列出的结果" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="所有已加载的结果" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="11" executed="11" passed="11" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 10.0.8)&#xD;
+[xUnit.net 00:00:00.89]   Discovering: Launcher.Tests (method display = ClassAndMethod, method display options = None)&#xD;
+[xUnit.net 00:00:01.93]   Discovered:  Launcher.Tests (found 7660 test cases)&#xD;
+[xUnit.net 00:00:01.95]   Starting:    Launcher.Tests (parallel test collections = off, stop on fail = off)&#xD;
+[xUnit.net 00:00:06.46]   Finished:    Launcher.Tests&#xD;
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="DESKTOP-76J1PBE" outcome="Warning" timestamp="2026-10-21T11:06:35.3649625+08:00">
+        <Text>[xUnit.net 00:00:01.04] Launcher.Tests: Non-serializable data ('System.Object[]') found for 'CF7Launcher.Tests.Tasks.StashSharedContractTests.StashPage_MalformedFilterSpecRejectedBeforeSend'; falling back to single test case.</Text>
+      </RunInfo>
+      <RunInfo computerName="DESKTOP-76J1PBE" outcome="Warning" timestamp="2026-10-21T11:06:35.4945573+08:00">
+        <Text>[xUnit.net 00:00:01.17] Launcher.Tests: Non-serializable data ('System.Object[]') found for 'CF7Launcher.Tests.Guardian.Hud.PlayerInfo.PlayerInfoRasterPlannerTests.Create_MapsFrozenTy512WithFloorTopLeftAndCeilBottomRight'; falling back to single test case.</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

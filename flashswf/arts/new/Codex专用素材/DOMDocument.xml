@@ -29,6 +29,10 @@
     <DOMFolderItem name="Codex/两犬/盗贼撕咬犬" isExpanded="false"/>
     <DOMFolderItem name="Codex/两犬/盗贼撕咬犬/分件" isExpanded="false"/>
     <DOMFolderItem name="Codex/两犬/盗贼撕咬犬/原生" isExpanded="false"/>
+    <DOMFolderItem name="Codex/铁卫犬" itemID="6b500000-2eac1df6"/>
+    <DOMFolderItem name="Codex/铁卫犬/共用" itemID="6b500000-fc11f9b5"/>
+    <DOMFolderItem name="Codex/铁卫犬/分件" itemID="6b500000-b1c61165"/>
+    <DOMFolderItem name="Codex/铁卫犬/动作" itemID="6b500000-1ab85359"/>
   </folders>
      <symbols>
           <Include href="图标-战术手电.xml" itemID="6bba6b00-00000101"/>
@@ -551,7 +555,80 @@
     <Include href="Codex/两犬/盗贼撕咬犬/原生/Symbol 99.xml" itemID="6cd10000-dd158fd1" loadImmediate="false"/>
     <Include href="Codex/两犬/盗贼撕咬犬/原生/思考标签.xml" itemID="6cd10000-a1f4bdeb" loadImmediate="false"/>
     <Include href="Codex/两犬/盗贼撕咬犬/敌人-盗贼撕咬犬.xml" itemID="6cd10000-6c58e93e" loadImmediate="false"/>
-  </symbols>
+      <Include href="Codex/铁卫犬/共用/Symbol 113.xml" itemID="6b200000-e81c4d2c" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 15.xml" itemID="6b200000-84b925d6" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 16.xml" itemID="6b200000-1afee1c4" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 18.xml" itemID="6b200000-f9a4d99e" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 19.xml" itemID="6b200000-e2a387f2" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 195.xml" itemID="6b200000-7974f599" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 2.xml" itemID="6b200000-6fb3e64e" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 21.xml" itemID="6b200000-6066e7b0" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 23.xml" itemID="6b200000-e3468ebd" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 24.xml" itemID="6b200000-5da763a1" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 26.xml" itemID="6b200000-821ad310" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 32.xml" itemID="6b200000-d933d8c8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/Symbol 99.xml" itemID="6b200000-6b2ecc1e" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/共用/思考标签.xml" itemID="6b200000-acd44672" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1331.xml" itemID="6af00000-716615b8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1332.xml" itemID="6af00000-32610c5a" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1333.xml" itemID="6af00000-5c186a70" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1334.xml" itemID="6af00000-1524e131" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1335.xml" itemID="6af00000-29a75eab" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1336.xml" itemID="6af00000-a2d66bde" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1337.xml" itemID="6af00000-fc3d8a01" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1338.xml" itemID="6af00000-7f9e02d6" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1339.xml" itemID="6af00000-da59786e" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1339-熄灭.xml" itemID="6b300000-60ddd6ea" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1340.xml" itemID="6af00000-35ca82f9" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1341.xml" itemID="6af00000-fdafd8eb" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1342.xml" itemID="6af00000-61af4493" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1343.xml" itemID="6af00000-0b4582a6" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1351.xml" itemID="6af00000-f5ef0cf3" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1352.xml" itemID="6af00000-4cd956b5" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1353.xml" itemID="6af00000-364af6ef" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1354.xml" itemID="6af00000-438fd325" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1355.xml" itemID="6af00000-449191d1" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1356.xml" itemID="6af00000-b21d34ea" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1357.xml" itemID="6af00000-fe7c96e9" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1358.xml" itemID="6af00000-a2364dcd" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1359.xml" itemID="6af00000-ef6eab83" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1360.xml" itemID="6af00000-bf98c932" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1361.xml" itemID="6af00000-0c745377" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1362.xml" itemID="6af00000-e0486d73" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1363.xml" itemID="6af00000-4b81cf8c" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1364.xml" itemID="6af00000-fecf1b13" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1365.xml" itemID="6af00000-10749021" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1366.xml" itemID="6af00000-c64464cd" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1367.xml" itemID="6af00000-1d059019" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1368.xml" itemID="6af00000-4c0f5d35" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1369.xml" itemID="6af00000-9ba41874" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1370.xml" itemID="6af00000-cf78cff8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1371.xml" itemID="6af00000-76d6121c" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1372.xml" itemID="6af00000-9ab8a9cf" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1373.xml" itemID="6af00000-90b74ee8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1374.xml" itemID="6af00000-02aaf1f1" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1375.xml" itemID="6af00000-5b6ded18" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1800.xml" itemID="6af00000-9d14ffee" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1801.xml" itemID="6af00000-9fa9b76e" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1811.xml" itemID="6af00000-6b74ecd6" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1812.xml" itemID="6af00000-7579da0b" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1813.xml" itemID="6af00000-beb52ad8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1814.xml" itemID="6af00000-8902db06" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1815.xml" itemID="6af00000-667ef500" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1816.xml" itemID="6af00000-982b9709" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1817.xml" itemID="6af00000-6875f0c8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1818.xml" itemID="6af00000-2a2d4f97" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1819.xml" itemID="6af00000-219cf523" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/分件/1820.xml" itemID="6af00000-f9cd85ec" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/attack.xml" itemID="6b100000-4daf886b" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/death.xml" itemID="6b100000-d3bf6292" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/down-thrown.xml" itemID="6b100000-09d665b8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/hit.xml" itemID="6b100000-6e173ec9" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/idle-dodge.xml" itemID="6b100000-aacdcb49" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/knockdown.xml" itemID="6b100000-aac236b8" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/动作/walk-run.xml" itemID="6b100000-cda3a9c6" loadImmediate="false"/>
+    <Include href="Codex/铁卫犬/敌人-军阀铁卫犬.xml" itemID="6b400000-c01f919f" loadImmediate="false"/>
+</symbols>
      <timelines>
           <DOMTimeline name="Codex素材总览">
                <layers>

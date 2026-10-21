@@ -1,0 +1,43 @@
+{
+  "status": "prototype",
+  "authority": "0.说明文件与教程/武器-技能数值-价格-合成表填写的参考公式（修改后请勿上传git）.xlsx",
+  "sheet": "怪物大致面板",
+  "formulaRange": "N3:S3",
+  "input": {
+    "stage": 3,
+    "tierFactor": 2.5,
+    "growthFactor": 1,
+    "atkSpeedFactor": 5,
+    "atkMultiplier": 1,
+    "segmentFactor": 4,
+    "speedFactor": 2,
+    "highAtkFactor": 2.4,
+    "superArmorFactor": 2,
+    "highDefFactor": 4.3
+  },
+  "stats": {
+    "atkMin": 61,
+    "atkMax": 225,
+    "hpMin": 541,
+    "hpMax": 1446,
+    "defMin": 232,
+    "defMax": 563,
+    "expMin": 127,
+    "expMax": 516,
+    "goldPrice": 26000,
+    "kPointPrice": 740,
+    "speedMin": 50,
+    "speedMax": 70
+  },
+  "unitId": 477,
+  "config": {
+    "shieldHpRatio": 0.55,
+    "strengthAtkRatio": 0.8,
+    "rechargeFrames": 240,
+    "rechargeFullFrames": 600,
+    "rechargeDelay": 60,
+    "toughnessBonus": 4,
+    "teslaMultiplier": 3,
+    "focusInterval": 45
+  }
+}

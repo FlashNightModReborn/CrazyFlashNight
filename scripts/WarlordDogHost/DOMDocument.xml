@@ -1,0 +1,15 @@
+<DOMDocument xmlns="http://ns.adobe.com/xfl/2008/" width="640" height="480" frameRate="30" xflVersion="2.2" creatorInfo="Adobe Flash Professional CS6" platform="Windows">
+  <symbols>
+    <Include href="FormerSheriffLibrary.xml"/>
+    <Include href="FormerSheriffNameplate.xml"/>
+    <Include href="IronGuardImport.xml"/>
+  </symbols>
+  <timelines><DOMTimeline name="铁卫犬原生测试"><layers><DOMLayer name="共享库导入"><frames>
+    <DOMFrame index="0" keyMode="9728"><Actionscript><script><![CDATA[stop();
+#include "../TestLoader.as"]]></script></Actionscript><elements>
+      <DOMSymbolInstance libraryItemName="FormerSheriffLibrary"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance>
+      <DOMSymbolInstance libraryItemName="FormerSheriffNameplate"><matrix><Matrix tx="-2000" ty="-2000"/></matrix></DOMSymbolInstance>
+    </elements></DOMFrame>
+    <DOMFrame index="1" keyMode="9728"><elements><DOMSymbolInstance libraryItemName="IronGuardImport"/></elements></DOMFrame>
+  </frames></DOMLayer></layers></DOMTimeline></timelines>
+</DOMDocument>

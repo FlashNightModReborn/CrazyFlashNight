@@ -1,0 +1,6 @@
+﻿import org.flashNight.arki.unit.UnitAI.Custom.*;
+_root.warlordDogBiteComplete=function():Void {
+    trace("FocusedTestRunId warlord-dog-bite Complete: __FOCUSED_RUN_ID__");
+};
+trace("FocusedTestRunId warlord-dog-bite Start: __FOCUSED_RUN_ID__");
+org.flashNight.arki.unit.UnitAI.Custom.WarlordDogBiteArtTest.runAllTests();

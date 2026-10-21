@@ -1,0 +1,63 @@
+{
+  "prior": {
+    "ready": 219,
+    "total": 235,
+    "missing": 16,
+    "missingRefs": [
+      "敌人-延寿克隆兽",
+      "敌人-完全体克隆兽",
+      "敌人-CF6普通男僵尸",
+      "敌人-CF6女僵尸",
+      "敌人-CF6蛮蛮",
+      "敌人-CF6Wings",
+      "敌人-CF6大刀机器人",
+      "敌人-CF6特种兵",
+      "敌人-CF6持盾特种兵",
+      "敌人-CF6光头保安",
+      "敌人-CF6变身光头保安",
+      "敌人-CF6大头机器人",
+      "敌人-CF6老头人形",
+      "敌人-CF6老头机器人",
+      "敌人-制式军警犬",
+      "敌人-盗贼撕咬犬"
+    ],
+    "errors": [
+      "catalog identity closure changed: 235 != 222",
+      "ready coverage closure changed: 219 != 222",
+      "missing coverage closure changed: 16 != 0",
+      "enemy identity closure changed: 232 != 219",
+      "enemy ready closure changed: 216 != 219",
+      "enemy missing closure changed: 16 != 0",
+      "human-accepted variant closure changed: 224 != 227",
+      "accepted binding closure changed: 448 != 454",
+      "unique accepted file closure changed: 446 != 452"
+    ]
+  },
+  "current": {
+    "ready": 222,
+    "total": 236,
+    "missing": 14,
+    "missingRefs": [
+      "敌人-延寿克隆兽",
+      "敌人-完全体克隆兽",
+      "敌人-CF6普通男僵尸",
+      "敌人-CF6女僵尸",
+      "敌人-CF6蛮蛮",
+      "敌人-CF6Wings",
+      "敌人-CF6大刀机器人",
+      "敌人-CF6特种兵",
+      "敌人-CF6持盾特种兵",
+      "敌人-CF6光头保安",
+      "敌人-CF6变身光头保安",
+      "敌人-CF6大头机器人",
+      "敌人-CF6老头人形",
+      "敌人-CF6老头机器人"
+    ],
+    "errors": [
+      "catalog identity closure changed: 236 != 222",
+      "missing coverage closure changed: 14 != 0",
+      "enemy identity closure changed: 233 != 219",
+      "enemy missing closure changed: 14 != 0"
+    ]
+  }
+}

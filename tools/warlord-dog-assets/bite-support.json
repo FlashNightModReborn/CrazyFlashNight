@@ -1,0 +1,88 @@
+{
+  "scope": "attack pose only; four fixed stance contacts, connected low body, original timing and emitters",
+  "bodyDepth": 110,
+  "legs": [
+    {
+      "name": "farFront",
+      "depths": [
+        30,
+        40,
+        50,
+        60
+      ],
+      "ankleDegrees": 0
+    },
+    {
+      "name": "farRear",
+      "depths": [
+        70,
+        80,
+        90,
+        100
+      ],
+      "ankleDegrees": 0
+    },
+    {
+      "name": "nearRear",
+      "depths": [
+        120,
+        130,
+        140,
+        150
+      ],
+      "ankleDegrees": 0
+    },
+    {
+      "name": "nearFront",
+      "depths": [
+        160,
+        170,
+        180,
+        190
+      ],
+      "ankleDegrees": 0
+    }
+  ],
+  "phases": [
+    {
+      "first": 4,
+      "last": 9,
+      "bodyOffset": [
+        12,
+        0
+      ],
+      "bodyDegrees": -3
+    },
+    {
+      "first": 10,
+      "last": 12,
+      "bodyOffset": [
+        8.5,
+        1.5
+      ],
+      "bodyDegrees": -1.5
+    },
+    {
+      "first": 13,
+      "last": 18,
+      "bodyOffset": [
+        12,
+        0
+      ],
+      "bodyDegrees": -3
+    },
+    {
+      "first": 19,
+      "last": 21,
+      "bodyOffset": [
+        8.5,
+        1.5
+      ],
+      "bodyDegrees": -1.5
+    }
+  ],
+  "jawRelativeDegrees": [
+    -8,
+    18
+  ]
+}
