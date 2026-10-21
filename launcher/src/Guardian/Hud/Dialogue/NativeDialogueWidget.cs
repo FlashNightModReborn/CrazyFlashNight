@@ -827,8 +827,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (_frame == null || _suppressed || _disposed) return;
                 if (_frame.IsPlaceholder)
                 {
-                    // 默认「思索中」的省略号由 Tick 驱动；阶段状态文案是固定文本，不跑省略号。
-                    if (IsDefaultPlaceholderText(_frame.Text))
+                    // 默认「思索中」与带末尾省略号的 ui_hint 由 Tick 轮换；无省略号文案保持固定。
+                    if (PlaceholderAnimates(_frame.Text))
                     {
                         long now = TypingClock();
                         if (now >= _placeholderNextToggleMs)
@@ -1071,16 +1071,18 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             finally { g.Restore(st); }
         }
 
-        /// <summary>等待占位：默认 [思索中…]/[思索中……]；本轮 status 到达后改为 [阶段文案]。</summary>
+        /// <summary>等待占位：默认 [思索中…]/[思索中……]；ui_hint 带末尾省略号时同样轮换，
+        /// 无省略号则按固定文案显示。括号宽度始终按当前文案实测。</summary>
         private void PaintPlaceholderBody(Graphics g, Layout L)
         {
             Rectangle tr = L.Text;
             if (tr.Width <= 0 || tr.Height <= 0 || _fontBody == null) return;
             EnsureMeasureLocked();
             DialogueUiSkin.FieldSpec fs = _skin.Body;
-            bool animated = IsDefaultPlaceholderText(_frame != null ? _frame.Text : null);
-            string label = _frame != null ? (_frame.Text ?? "").Trim() : "";
-            string left = animated ? "[思索中" : "[" + label;
+            string label;
+            bool animated;
+            SplitPlaceholderText(_frame != null ? _frame.Text : null, out label, out animated);
+            string left = "[" + label;
             string right = "]";
             string dots = _placeholderWideDots ? "……" : "…";
             float leftW = _measureG.MeasureString(left, _fontBody, int.MaxValue, _typoFormat).Width;
@@ -1107,12 +1109,36 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             finally { g.Restore(st); }
         }
 
-        /// <summary>占位是否显示默认「思索中」动画（阶段状态文案为固定文本）。</summary>
-        private static bool IsDefaultPlaceholderText(string text)
+        /// <summary>占位文案拆分：返回固定部分，并标记末尾省略号是否走 480ms 轮换。
+        /// 空文案按默认「思索中」；ui_hint 自带 `…`/`……` 时剥掉后动画，否则原样固定。</summary>
+        private static void SplitPlaceholderText(string text, out string label, out bool animated)
         {
-            return string.IsNullOrEmpty(text)
-                || string.Equals(text, "思索中……", StringComparison.Ordinal)
-                || string.Equals(text, "思索中…", StringComparison.Ordinal);
+            string trimmed = (text ?? "").Trim();
+            if (trimmed.Length == 0)
+            {
+                label = "思索中";
+                animated = true;
+                return;
+            }
+            string bare = trimmed;
+            while (bare.EndsWith("…", StringComparison.Ordinal))
+                bare = bare.Substring(0, bare.Length - 1).TrimEnd();
+            if (bare.Length != trimmed.Length)
+            {
+                label = bare.Length > 0 ? bare : "思索中";
+                animated = true;
+                return;
+            }
+            label = trimmed;
+            animated = false;
+        }
+
+        private static bool PlaceholderAnimates(string text)
+        {
+            string label;
+            bool animated;
+            SplitPlaceholderText(text, out label, out animated);
+            return animated;
         }
 
         /// <summary>

@@ -252,6 +252,29 @@ namespace CF7Launcher.Tests.Guardian
             Assert.False(widget.PlaceholderWideDotsForTest);   // 固定阶段文案不跑省略号
         }
 
+        [Fact]
+        public void HintPlaceholderWithTrailingDotsAnimatesSameAsDefault()
+        {
+            long clock = 1000;
+            using var anchor = new Control { Size = new Size(1024, 576) };
+            using var widget = new NativeDialogueWidget(anchor);
+            widget.TypingClock = () => clock;
+
+            Assert.True(widget.ShowFrame(new NativeDialogueFrame
+            {
+                RequestId = "nd:24", SceneId = "scene.1", Revision = 1,
+                LineIndex = 0, LineCount = 1, Name = "Andy Law", Title = "雇佣兵",
+                Text = "正在查询……", PortraitKey = "Andy Law", Expression = "普通",
+                ImageAction = "keep", IsPlaceholder = true
+            }));
+            clock += 600;
+            widget.Tick(600);
+            Assert.True(widget.PlaceholderWideDotsForTest);   // 自带省略号的 ui_hint 同样轮换
+            clock += 600;
+            widget.Tick(600);
+            Assert.False(widget.PlaceholderWideDotsForTest);
+        }
+
         // ── 宿主焦点门：输入框聚焦时不推进对话 ───────────────────────────
 
         private sealed class TaskHarness : IDisposable

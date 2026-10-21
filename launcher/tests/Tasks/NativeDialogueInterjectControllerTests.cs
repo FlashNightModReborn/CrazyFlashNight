@@ -353,16 +353,20 @@ namespace CF7Launcher.Tests.Tasks
             };
         }
 
-        private static DialogueInterjectEvent StatusEvent(string stage)
+        private static DialogueInterjectEvent StatusEvent(string stage, string uiHint = null)
         {
-            return Evt(DialogueInterjectEventKind.Status, "{\"stage\":\"" + stage + "\"}");
+            var data = new JObject { ["stage"] = stage };
+            if (uiHint != null) data["ui_hint"] = uiHint;
+            return Evt(DialogueInterjectEventKind.Status,
+                data.ToString(Newtonsoft.Json.Formatting.None));
         }
 
-        private static DialogueInterjectEvent LineEvent(string text, int seq)
+        private static DialogueInterjectEvent LineEvent(string text, int seq, bool interim = false)
         {
             return Evt(DialogueInterjectEventKind.Line,
                 "{\"kind\":\"add\",\"text\":\"" + text
-                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq + "}");
+                + "\",\"emotion\":\"普通\",\"speaker\":\"Andy Law\",\"seq\":" + seq
+                + (interim ? ",\"interim\":true" : "") + "}");
         }
 
         private static DialogueInterjectEvent ErrorEvent(string code)
@@ -773,6 +777,82 @@ namespace CF7Launcher.Tests.Tasks
             Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
             Assert.False(h.Controller.ClosingForTest);
             Assert.Equal(0, h.Transport.Finalizes.Count);
+        }
+
+        [Fact]
+        public void StatusUiHintTakesPriorityAndRefreshesPlaceholderInPlace()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("你好"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("思索中……", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(StatusEvent("drafting", "准备候选中"));
+            Assert.Equal("准备候选中", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(StatusEvent("drafting", "校验修正中"));
+            Assert.Equal("校验修正中", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Preparing, h.Controller.InputState);
+        }
+
+        [Fact]
+        public void TransitionLineThenUiHintPlaceholderUntilFinalDialogueReplacesIt()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("帮我找个活。"));
+            h.Controller.OnEvent(StatusEvent("drafting", "拟定委托中"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+
+            // 过渡话先到：原位替换等待占位。
+            h.Controller.OnEvent(LineEvent("我这儿正盘算着件事。", 0, interim: true));
+            Assert.Equal("我这儿正盘算着件事。", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            // 玩家越过过渡话、最终确认对话还没到：继续显示 ui_hint 占位。
+            h.Advance();
+            Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.ClosingForTest);
+
+            // 最终确认对话到达：原位替换占位，不追加到占位之后。
+            h.Controller.OnEvent(LineEvent("这活你接吗？", 1));
+            Assert.Equal("这活你接吗？", h.Widget.CurrentFrame.Text);
+            Assert.Equal(DialogueInterjectInputState.Ready, h.Controller.InputState);
+
+            h.Controller.OnEvent(DoneEvent());
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
+        }
+
+        [Fact]
+        public void DoneWhileOnPostTransitionPlaceholderStillClosesOnAdvance()
+        {
+            using var h = new Harness(inline: false);
+            h.AdoptBook("又是你。");
+            var hanging = new HangingStream("");
+            h.Transport.OpenAsyncOverride = _ => Task.FromResult<Stream>(hanging);
+
+            Assert.True(h.Controller.Submit("帮我找个活。"));
+            h.Controller.OnEvent(StatusEvent("drafting", "拟定委托中"));
+            h.Widget.CompleteCurrentLineTyping();
+            h.Advance();
+            h.Controller.OnEvent(LineEvent("我这儿正盘算着件事。", 0, interim: true));
+            h.Advance();
+            Assert.Equal("拟定委托中", h.Widget.CurrentFrame.Text);
+
+            h.Controller.OnEvent(DoneEvent());
+            h.Advance();
+            Assert.True(h.Controller.ClosingForTest);
         }
 
         [Fact]
