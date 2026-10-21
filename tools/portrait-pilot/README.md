@@ -394,6 +394,8 @@ Web 保持已认可的 PNG 为首选。Native `LootIconCatalog` 的 SVG 安全�
 
 本批 checker 的通过状态为 `direct_delta_and_preserved_base_verified`。它验证新增原生帧、真人回执、现役素材和原有 manifest 保持集，**不重认证旧 campaign 来源审计**。本机旧门原已存在 producer artifact 漂移；旧 SVG 的 CRLF checkout 只在归一为 LF 后长度与原 SHA-256 完全相符时接受，新素材仍逐字节校验，不改写历史报告或 digest。当前 Arena 覆盖为 219/219，其中怪物 216、纸娃娃 3，224 个 accepted variant / 448 个绑定 / 446 个唯一运行引用；历史 inventory 214 保留其原批次口径。
 
+验证还包括 `test-direct-portrait-preservation-v1.py`（旧身份重签改写、未人审新变体、PNG 损坏/缺失均拒绝）、`test-manifest-last-publish-v1.py`、`test-portrait-resolver-runtime.js`、`test-arena-portrait-coverage.js`、`test-arena-meta-portraits.js`、Team/Arena 浏览器 harness 及真实素材的 Loot 结算夹具。Team 三视口均 222/223，唯一 `equiplocked` 提示文案失败在冻结的新增前 manifest 下也相同；本批未处理该无关业务。夹具与 Native 读回不代签实际游戏结算、存档重启或正式部署。
+
 ## 2026-10-21：三犬原生头像
 
 维护者接受犬体与扑咬修正，并明确要求「给这3只狗照着僵尸犬的风格，都配上合适的头像，然后提交推送」。新增制式军警犬 475、盗贼撕咬犬 476、军阀铁卫犬 477，使用原生朝右站姿第 1 帧的头肩取景，透明背景；不生成另一套角色画稿。铁卫犬保留红色颈圈与能源灯。共用 EnemyPortraits 按独立身份解析，未借用僵尸犬头像或增加别名。
@@ -415,5 +417,3 @@ node tools/portrait-pilot/test-dog-portraits-v1.js
 原包校验器及两份当时的 SWF 从可追溯 Git 历史冻结，仍由原校验器核验原清单、原生帧、像素与完整保持集；没有把后来增添犬体的库文件冒充旧源，也没有跳过旧来源校验。发布仍复用 subjects-first、manifest-last writer，旧 228 个身份内容不变。新增 3 个独立身份、6 个 SVG/PNG 文件；现有消费者图像测试为 Web 24/24、Native `LootIconCatalogPortraitTests` 11/11，原头像保持与损坏拒绝 5/5，原生 PNG/SVG 重导出 6/6 字节相同。
 
 **全量基线另记**：本次上游已经有 235 个消费身份，其中 219 ready、16 缺图（含两只新装配犬）。接入本批后为 236 个身份、222 ready、14 缺图；其余缺口属于两型克隆兽与 CF6 新单位，本批未代补，也未将全量缺图门改为通过。Arena 三视口各 35/36，均停在要求全目录零缺图的 `custom-match-p1`；Team 为 222/223、222/223、221/223，装备锁文案既有失败外，1920 另有 `team-m15` 未通过。它们与本批三个身份的显示门分别报告，失败记录保留，不用局部通过代签全量通过。Loot 真实素材浏览器夹具 147/147、lazy-cancel 6/6。
-
-验证还包括 `test-direct-portrait-preservation-v1.py`（旧身份重签改写、未人审新变体、PNG 损坏/缺失均拒绝）、`test-manifest-last-publish-v1.py`、`test-portrait-resolver-runtime.js`、`test-arena-portrait-coverage.js`、`test-arena-meta-portraits.js`、Team/Arena 浏览器 harness 及真实素材的 Loot 结算夹具。Team 三视口均 222/223，唯一 `equiplocked` 提示文案失败在冻结的新增前 manifest 下也相同；本批未处理该无关业务。夹具与 Native 读回不代签实际游戏结算、存档重启或正式部署。
