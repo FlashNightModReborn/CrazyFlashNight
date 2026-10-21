@@ -127,6 +127,20 @@ namespace CF7Launcher.Guardian
 
         internal bool AnyCompositionPanelSelected => SelectedOwnedCompositionSurface != null;
 
+        // Agent Runtime observes the actual selected endpoint, never the hidden
+        // legacy WebView behind it. Read only an existing, presenting HWND;
+        // selection/preparation/retirement must not create or revive a handle.
+        internal long ExistingAgentRuntimeCompositionHandle
+        {
+            get
+            {
+                CompositionHelpSurface surface = SelectedOwnedCompositionSurface;
+                return surface != null && !surface.IsDisposed
+                    && surface.IsHandleCreated && surface.Active && surface.Visible
+                    ? surface.Handle.ToInt64() : 0;
+            }
+        }
+
         private void PrepareCompositionSurface(CompositionHelpSurface surface)
         {
             if (ReferenceEquals(surface, _compositionIntelligence)) PrepareCompositionIntelligence();

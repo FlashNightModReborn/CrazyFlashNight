@@ -14,6 +14,7 @@ namespace CF7Launcher.Data
         public string DefinitionDigest { get; }
         public string ContentDigest { get; }
         public JObject Bootstrap { get; }
+        private readonly NpcShopAccessPolicy shopAccess;
         private readonly HashSet<string> taskIds;
         private readonly HashSet<string> structuredIds;
         private readonly Dictionary<string, string> worldHashes;
@@ -27,22 +28,26 @@ namespace CF7Launcher.Data
             Catalog = MapTaskCatalog.Load(root); Catalog.ValidateBindings(Definition);
             var world = new MapRuntimeWorld(root, Definition); WorldOccurrences = world.Occurrences;
             worldHashes = new Dictionary<string, string>(world.SourceHashes, StringComparer.Ordinal);
+            shopAccess = NpcShopAccessPolicy.Load(root, Definition);
+            foreach (var source in shopAccess.SourceHashes) worldHashes[source.Key] = source.Value;
             DefinitionDigest = MapDefinition.Hash(bytes);
             ContentDigest = ContentDigestOf(DefinitionDigest, Catalog.Digest, worldHashes);
             taskIds = TaskIdsOf(Catalog); structuredIds = StructuredIdsOf(Catalog);
             Bootstrap = BuildBootstrap();
         }
-        internal MapRuntimeContent(JObject definition, MapTaskCatalog catalog, JObject world)
+        internal MapRuntimeContent(JObject definition, MapTaskCatalog catalog, JObject world, NpcShopAccessPolicy shopPolicy = null)
         {
             MapDefinition.Validate(definition); Definition = (JObject)definition.DeepClone(); Catalog = catalog; WorldOccurrences = (JObject)world.DeepClone();
             worldHashes = new Dictionary<string, string>(StringComparer.Ordinal);
+            shopAccess = shopPolicy;
+            if (shopAccess != null) foreach (var source in shopAccess.SourceHashes) worldHashes[source.Key] = source.Value;
             DefinitionDigest = MapDefinition.Hash(MapDefinition.Bytes(definition)); ContentDigest = ContentDigestOf(DefinitionDigest, catalog.Digest, worldHashes);
             taskIds = TaskIdsOf(catalog); structuredIds = StructuredIdsOf(catalog);
             Bootstrap = BuildBootstrap();
         }
         private MapRuntimeContent(MapRuntimeContent previous, MapTaskCatalog catalog)
         {
-            Definition = previous.Definition; DefinitionDigest = previous.DefinitionDigest;
+            Definition = previous.Definition; DefinitionDigest = previous.DefinitionDigest; shopAccess = previous.shopAccess;
             WorldOccurrences = previous.WorldOccurrences; worldHashes = previous.worldHashes;
             Catalog = catalog; ContentDigest = ContentDigestOf(DefinitionDigest, catalog.Digest, worldHashes);
             taskIds = TaskIdsOf(catalog); structuredIds = StructuredIdsOf(catalog);
@@ -140,7 +145,12 @@ namespace CF7Launcher.Data
             return new JObject { ["chains"] = chains.DeepClone(), ["infrastructure"] = infra.DeepClone(), ["flags"] = flags.DeepClone(), ["tasks"] = tasks,
                 ["activeOrder"] = active, ["scene"] = scene.DeepClone(), ["navigation"] = navigation.DeepClone(), ["dynamic"] = dynamic.DeepClone() };
         }
-        public JObject Project(JObject facts) => MapDomainService.Project(Definition, facts, Catalog.Tasks, WorldOccurrences);
+        public JObject Project(JObject facts)
+        {
+            var projection = MapDomainService.Project(Definition, facts, Catalog.Tasks, WorldOccurrences);
+            projection["shopAccess"] = shopAccess?.Project(Definition, projection) ?? new JObject();
+            return projection;
+        }
         public JObject ForAs2(JObject projection, JObject facts, JArray interests)
         {
             var ids = new HashSet<string>(structuredIds, StringComparer.Ordinal);
@@ -153,7 +163,7 @@ namespace CF7Launcher.Data
             foreach (var p in ((JObject)projection["placements"]).Properties()) placements[p.Name] = new JObject { ["present"] = p.Value["present"], ["worldReady"] = p.Value["worldReady"], ["npcId"] = p.Value["npcId"], ["locationId"] = p.Value["locationId"] };
             foreach (var p in ((JObject)snapshot["hotspotStates"]).Properties()) ((JObject)p.Value).Remove("reason");
             foreach (var p in ((JObject)snapshot["pageStates"]).Properties()) ((JObject)p.Value).Remove("reason");
-            return new JObject { ["snapshot"] = snapshot, ["locations"] = locations,
+            return new JObject { ["snapshot"] = snapshot, ["locations"] = locations, ["shopAccess"] = projection["shopAccess"].DeepClone(),
                 ["placements"] = placements, ["taskEndpoints"] = endpoints, ["delivery"] = projection["delivery"].DeepClone(),
                 ["npcTasks"] = projection["npcTasks"].DeepClone(), ["autoAccept"] = projection["autoAccept"].DeepClone(), ["hasDeliverable"] = projection["hasDeliverable"],
                 ["currentLocationId"] = projection["currentLocationId"], ["hudMode"] = projection["hudMode"] };

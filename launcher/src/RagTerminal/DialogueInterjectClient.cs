@@ -415,6 +415,8 @@ namespace CF7Launcher.RagTerminal
         internal int Seq;
         internal int SplitIndex = -1;
         internal int SplitCount = 1;
+        /// <summary>草案等待期的过渡话：越过它后若本轮未结束，继续显示 ui_hint 占位。</summary>
+        internal bool Interim;
 
         /// <summary>true = 165 拆分出来的非末段（输入可暂锁，《协议》3.3 / 5.2）。</summary>
         internal bool IsSplitHead
@@ -424,13 +426,16 @@ namespace CF7Launcher.RagTerminal
 
         internal static DialogueInterjectLine FromEvent(DialogueInterjectEvent evt)
         {
+            JToken interim = evt.Raw("interim");
             var line = new DialogueInterjectLine
             {
                 Kind = evt.Text("kind"),
                 Text = evt.Text("text"),
                 Emotion = evt.Text("emotion"),
                 Speaker = evt.Text("speaker"),
-                Seq = evt.Int("seq", -1)
+                Seq = evt.Int("seq", -1),
+                Interim = interim != null && interim.Type == JTokenType.Boolean
+                    && interim.Value<bool>()
             };
             JToken split = evt.Raw("split");
             if (split != null && split.Type == JTokenType.Object)

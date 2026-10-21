@@ -177,6 +177,8 @@ namespace CF7Launcher.Tasks
         /// <summary>当前上屏行是玩家台词（含打字完成、仍停在玩家行等“下一条”）。此期间输入框整条隐藏。</summary>
         private bool _playerLineOnScreen;
         private bool _aiLineShown;
+        /// <summary>最近一条已插入的 AI 行是过渡话：越过它但本轮未结束时仍显示 ui_hint 占位。</summary>
+        private bool _lastAiLineInterim;
         private bool _turnActive;
         private int _turnTailIndex = -1;
         private int _wireResume;
@@ -300,6 +302,7 @@ namespace CF7Launcher.Tasks
             _queued.Clear();
             _insertedLines.Clear();
             _aiLineShown = false;
+            _lastAiLineInterim = false;
             _turnActive = false;
             _turnTailIndex = -1;
             _pcRevision = -1;
@@ -342,6 +345,7 @@ namespace CF7Launcher.Tasks
             _abandonedOriginalTail = false;
             _appliedRemoves.Clear();
             _playerLineOnScreen = false;
+            _lastAiLineInterim = false;
             DisarmWatchdog();
             _queued.Clear();
             _insertedLines.Clear();
@@ -372,6 +376,7 @@ namespace CF7Launcher.Tasks
             _turnTailIndex = -1;
             _playerLinePlaying = false;
             _playerLineOnScreen = false;
+            _lastAiLineInterim = false;
             SetInputState(DialogueInterjectInputState.Hidden);
             // 关闭/组末这一次是权威收尾（transcript 全量前缀，幂等）。
             Finalize("closing:" + (reason ?? ""));
@@ -562,6 +567,7 @@ namespace CF7Launcher.Tasks
             _turnId = turnId;
             _turnActive = true;
             _aiLineShown = false;
+            _lastAiLineInterim = false;
             _preparing = false;
             _turnStatusText = null;
             _queued.Clear();
@@ -856,12 +862,14 @@ namespace CF7Launcher.Tasks
         }
 
         /// <summary>玩家在末行继续点“下一条”且本轮仍在等模型：返回「思索中……」占位。
-        /// 占位只追加到播放序列尾部，AI 首行到达时从同一位置原位替换；不进转录。</summary>
+        /// 过渡话之后、最终确认对话尚未到达时同样占位（显示最新 ui_hint）；
+        /// 占位只追加到播放序列尾部，下一句到达时从同一位置原位替换；不进转录。</summary>
         private NativeDialogueBookSession.Line BuildEndHoldLine()
         {
             if (_session == null || _closing) return null;
             if (!_turnActive && !_finalizePending && !_preparing) return null;
-            if (_aiLineShown) return null;               // 已有 AI 行可播，不再占位
+            // 已有普通 AI 行可播时按原语义直接收组；只有过渡话之后才继续等最终确认。
+            if (_aiLineShown && !_lastAiLineInterim) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             return new NativeDialogueBookSession.Line
             {
@@ -1042,7 +1050,8 @@ namespace CF7Launcher.Tasks
         {
             if (!_turnActive || _closing) return;
             string stage = evt.Text("stage");
-            string label = StatusLabel(stage);
+            string hint = (evt.Text("ui_hint") ?? "").Trim();
+            string label = hint.Length > 0 ? hint : StatusLabel(stage);
             if (label.Length > 0)
             {
                 _turnStatusText = label;
@@ -1513,7 +1522,46 @@ namespace CF7Launcher.Tasks
         private bool PlayLine(DialogueInterjectLine line, bool advance)
         {
             if (_session == null || _turnTailIndex < 0) return false;
+            NativeDialogueBookSession.Line current = _session.GetPlaybackLine(_session.Index);
+            if (!advance && current != null && current.IsPlaceholder)
+            {
+                // 玩家停在等待占位：下一句（最终确认对话）原位替换，不再追加到占位之后。
+                NativeDialogueBookSession.Line replacement = BuildLocalLine(line);
+                if (replacement == null) return false;
+                int index = _session.Index;
+                if (!_session.ReplaceFrom(index, new[] { replacement }, null, true)) return false;
+                _turnTailIndex = index + 1;
+                _insertedLines[replacement] = new InsertedRef
+                {
+                    Line = line, WireIndex = -1, TaskIndex = 0
+                };
+                _aiLineShown = true;
+                _lastAiLineInterim = line.Interim;
+                _pcRevision = -1;
+                SetInputState(line.IsSplitHead
+                    ? DialogueInterjectInputState.Locked
+                    : ReadyOrMuted());
+                return true;
+            }
             if (!advance && _session.Index >= _turnTailIndex) return false;
+            NativeDialogueBookSession.Line local = BuildLocalLine(line);
+            if (local == null) return false;
+            if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, null, advance)) return false;
+            _turnTailIndex++;
+            _insertedLines[local] = new InsertedRef { Line = line, WireIndex = -1, TaskIndex = 0 };
+            _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
+            _lastAiLineInterim = line.Interim;
+            if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
+            SetInputState(line.IsSplitHead
+                ? DialogueInterjectInputState.Locked
+                : ReadyOrMuted());
+            return true;
+        }
+
+        /// <summary>把一条 AI 台词转成本地播放行（继承本组 NPC 的立绘/称谓）。</summary>
+        private NativeDialogueBookSession.Line BuildLocalLine(DialogueInterjectLine line)
+        {
+            if (line == null) return null;
             NativeDialogueBookSession.Line template = FindNpcTemplate();
             string speaker = string.IsNullOrEmpty(line.Speaker)
                 ? (!string.IsNullOrEmpty(_npcName) ? _npcName
@@ -1524,7 +1572,7 @@ namespace CF7Launcher.Tasks
                 && (string.IsNullOrEmpty(line.Speaker)
                     || string.Equals(speaker, template.Name, StringComparison.Ordinal)
                     || string.Equals(speaker, _npcName, StringComparison.Ordinal));
-            var local = new NativeDialogueBookSession.Line
+            return new NativeDialogueBookSession.Line
             {
                 Name = speaker,
                 Title = useTemplate ? template.Title : "",
@@ -1541,15 +1589,6 @@ namespace CF7Launcher.Tasks
                 ImagePath = "",
                 SplitIntermediate = line.IsSplitHead
             };
-            if (!_session.ReplaceFrom(_turnTailIndex, new[] { local }, null, advance)) return false;
-            _turnTailIndex++;
-            _insertedLines[local] = new InsertedRef { Line = line, WireIndex = -1, TaskIndex = 0 };
-            _aiLineShown = true;            // 已插入（未必已上屏）：本轮已有可播内容
-            if (advance) _pcRevision = -1;  // 后续打字完成不再当 $PC
-            SetInputState(line.IsSplitHead
-                ? DialogueInterjectInputState.Locked
-                : ReadyOrMuted());
-            return true;
         }
 
         private void CompleteTurn()

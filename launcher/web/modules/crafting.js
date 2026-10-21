@@ -1333,7 +1333,7 @@ var CraftingPanel = (function() {
             invalid_payload:'商店入口数据无效；请重新同步材料档案。',
             stale_source:'材料来源已经变化；请重新同步后再试。',
             navigation_unavailable:'商店导航暂不可用；请重试。',
-            access_denied:'需要自行车、摩托车或越野车，才能从材料档案前往商店。',
+            access_denied:'请先解锁商人并确认角色与关卡适用；远程访问还需自行车或更高级载具。',
             source_not_settled:'材料档案仍在同步；请稍后重试。',
             admission_failed:'商店暂时无法打开；请重试。',
             timeout:'打开商店超时；请重试。',
@@ -1344,7 +1344,7 @@ var CraftingPanel = (function() {
 
     function procurementNavigationError(error) {
         if (String(error || '') === 'access_denied') {
-            return '需要摩托车或越野车基建，才能从配方直接前往商店。';
+            return '请先解锁商人并确认角色与关卡适用；配方采购还需摩托车或越野车。';
         }
         return materialShopNavigationError(error);
     }

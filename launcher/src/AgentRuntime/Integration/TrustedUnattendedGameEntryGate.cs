@@ -1,4 +1,5 @@
 using System;
+using CF7Launcher.AgentRuntime.TrustedRunner;
 
 namespace CF7Launcher.AgentRuntime.Integration
 {
@@ -75,10 +76,7 @@ namespace CF7Launcher.AgentRuntime.Integration
             string slot,
             string attemptId)
         {
-            if (!string.Equals(
-                    slot,
-                    ExactA5Slot,
-                    StringComparison.Ordinal))
+            if (!TrustedRegressionSlots.RequiresRuntimeEntry(slot))
             {
                 return true;
             }

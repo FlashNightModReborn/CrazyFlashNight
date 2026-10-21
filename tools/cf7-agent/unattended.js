@@ -11,6 +11,8 @@ const ALLOWED_SLOTS = new Set([
   'cf7_agent_character_build',
   'cf7_agent_loot_target_full_v1',
   'cf7_agent_a5_material_shop_run',
+  'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
+  'cf7_agent_152_d69', 'cf7_agent_152_e69',
 ]);
 const A5_SLOT = 'cf7_agent_a5_material_shop_run';
 const A5_CANDIDATE_ID = 'a5';

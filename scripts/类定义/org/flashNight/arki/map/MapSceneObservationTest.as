@@ -58,10 +58,12 @@ class org.flashNight.arki.map.MapSceneObservationTest {
     private static function testObservation():Void {
         var bridge:Object = MapDomainBridge, sampler:Object = MapFactsSampler;
         var fields:Array = ["_installed", "_bootstrap", "_sessionToken", "_projection", "_sceneEpoch",
-            "_lastWorld", "_sceneCurrent", "_scenePrevious", "_confirmedSignature", "_force", "_json", "_acceptedRevision"];
+            "_lastWorld", "_lastSlot", "_lastSaveOwner", "_sceneCurrent", "_scenePrevious", "_confirmedSignature", "_force", "_json", "_acceptedRevision"];
         var saved:Object = {};
         for (var i:Number = 0; i < fields.length; i++) saved[fields[i]] = bridge[fields[i]];
         var oldWorld = _root.gameworld;
+        var oldSavePath = _root.savePath;
+        var oldSaveOwner = _root.存档系统;
         var first:MovieClip = _root.createEmptyMovieClip("__mapObserveFirst", _root.getNextHighestDepth());
         var second:MovieClip = _root.createEmptyMovieClip("__mapObserveSecond", _root.getNextHighestDepth());
         originalWriter = sampler.writeScene;
@@ -115,10 +117,21 @@ class org.flashNight.arki.map.MapSceneObservationTest {
             bridge._installed = true; compare("re-enabled observer sees the pending field change");
             benchmark(false);
             benchmark(true);
+            epoch = MapDomainBridge.getSceneEpoch();
+            bridge._projection = accepted;
+            _root.savePath = String(oldSavePath) + "_issue152_other_slot";
+            check(MapDomainBridge.getSceneEpoch() === epoch + 1 && MapDomainBridge.getProjection() == undefined,
+                "same-scene role switch invalidates old map and shop permissions");
+            epoch = MapDomainBridge.getSceneEpoch();
+            bridge._projection = accepted;
+            _root.存档系统 = {};
+            check(MapDomainBridge.getSceneEpoch() === epoch + 1 && MapDomainBridge.getProjection() == undefined,
+                "same-slot save-owner replacement invalidates old map and shop permissions");
         } finally {
             sampler.writeScene = originalWriter;
             for (i = 0; i < fields.length; i++) bridge[fields[i]] = saved[fields[i]];
             _root.gameworld = oldWorld;
+            _root.savePath = oldSavePath; _root.存档系统 = oldSaveOwner;
             first.removeMovieClip(); second.removeMovieClip();
             source = null; originalWriter = null;
         }

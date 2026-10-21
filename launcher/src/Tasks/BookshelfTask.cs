@@ -64,6 +64,16 @@ namespace CF7Launcher.Tasks
         private Action<string, JObject> _returnPresentation;
         private string _lastAppliedToken;
         private string _activeSlot;
+        private Func<string, bool> _automationSlotAdmission;
+        // Set only by verified isolated-regression composition, before startup.
+        internal void SetAutomationSlotAdmission(Func<string, bool> admission)
+        {
+            lock (_gate)
+            {
+                if (_automationSlotAdmission != null) throw new InvalidOperationException("automation_scope_already_bound");
+                _automationSlotAdmission = admission ?? throw new ArgumentNullException(nameof(admission));
+            }
+        }
         private Action<SettingsRecoveryAdmission> _settingsSourceApplied;
         private string _originalInstance, _originalToken;
         private Action _originalRevoked;
@@ -151,6 +161,7 @@ namespace CF7Launcher.Tasks
                     slots.Add(Path.GetFileNameWithoutExtension(path));
             foreach (var slot in slots.Where(IsPermanentSlot).OrderBy(s => s, StringComparer.Ordinal))
             {
+                if (_automationSlotAdmission != null && !_automationSlotAdmission(slot)) continue;
                 if (_saves.Archive.IsTombstoned(slot)) continue;
                 names.TryGetValue(slot, out var label);
                 if (string.IsNullOrEmpty(label) && _saves.Archive.TryLoadShadowSync(slot, out JObject snapshot, out _))
@@ -193,6 +204,10 @@ namespace CF7Launcher.Tasks
                     if (isWrite)
                     {
                         string kind = Text(payload["kind"]), target = Text(payload["target"]);
+                        if (_automationSlotAdmission != null
+                            && (((kind == "switch" || kind == "return") && !_automationSlotAdmission(target))
+                                || (kind == "play" && !_automationSlotAdmission(_activeSlot))))
+                        { RejectAndRemember(callId, cmd, instance, "automation_slot_denied"); return; }
                         if (kind == "play" && IsPlayableBook(target))
                             normalized["runSlot"] = "bookrun_" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
                                 _runNamespace + ":" + Text(payload["token"])))).Substring(0, 24).ToLowerInvariant();
@@ -204,6 +219,9 @@ namespace CF7Launcher.Tasks
                                 RejectAndRemember(callId,cmd,instance,"settings_recovery_required");return;
                             }
                             var resolved = _resolveSource != null ? _resolveSource(target) : _saves.Resolver.Resolve(target, _saves.SwfPath);
+                            if (kind == "settle" && _automationSlotAdmission != null
+                                && !_automationSlotAdmission(Text(resolved.Snapshot?["ext"]?["bookRun"]?["originSlot"])))
+                            { RejectAndRemember(callId, cmd, instance, "automation_slot_denied"); return; }
                             if (kind == "settle" && (resolved.Kind == DecisionKind.Empty || resolved.Kind == DecisionKind.Deleted))
                             {
                                 normalized["missingRun"] = true;

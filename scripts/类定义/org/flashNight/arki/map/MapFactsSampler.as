@@ -61,6 +61,10 @@ class org.flashNight.arki.map.MapFactsSampler {
         for (i = 0; i < bootstrap.infrastructureKeys.length; i++) {
             var infrastructureKey:String = String(bootstrap.infrastructureKeys[i]);
             value = Number(infrastructure[infrastructureKey]);
+            if (infrastructureKey == "自行车" || infrastructureKey == "摩托车" || infrastructureKey == "越野车") {
+                value = org.flashNight.arki.item.InfrastructureVehicleAccess.owned(infrastructure, infrastructureKey)
+                    ? value : 0;
+            }
             if (infrastructure != undefined) infrastructureFacts[infrastructureKey] = isNaN(value) || value < 0 ? 0 : value;
         }
         var gender:String = String(_root.性别 || "");

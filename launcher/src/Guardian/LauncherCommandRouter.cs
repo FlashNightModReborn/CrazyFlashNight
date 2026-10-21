@@ -24,6 +24,8 @@ namespace CF7Launcher.Guardian
     /// </summary>
     public class LauncherCommandRouter
     {
+        private bool _regressionAutomation;
+        internal void EnableRegressionAutomation() => _regressionAutomation = true;
         /// <summary>
         /// 固定 opener 共享的机械 wait 容器。
         /// 它不保存 tuple、source 或路由 handler，不能扩展为动态 opener registry。
@@ -360,6 +362,12 @@ namespace CF7Launcher.Guardian
                         }.ToString(Formatting.None));
                 case "materials":
                     return RouteMaterialUi();
+                case "bookshelf":
+                    return _regressionAutomation && CanAdmitPanel("bookshelf")
+                        && TrySendGameCommand("openBookshelf");
+                case "intelligence":
+                    return _regressionAutomation && OpenPanel("intelligence",
+                        BuildIntelligenceProductionInitData().ToString(Formatting.None));
                 default:
                     return false;
             }

@@ -276,7 +276,9 @@ _root.UI系统.NPC商店WebView.beginCollectionSnapshot = function(shopId:String
     // 交易计划是一次性的，显式重同步后必须重新预览；资源 lease 则只在切换商店或资源变化时轮换。
     this.batchPlan = null;
     this.tradePlan = null;
-    if (this.activeShopId == shopId && this.sessionNonce != undefined && this.sessionNonce != "") return;
+    if (this.activeShopId == shopId && this.sessionNonce != undefined && this.sessionNonce != ""
+            && org.flashNight.arki.item.NpcShopAccessService.isContextCurrent(this.accessContext)) return;
+    this.accessContext = org.flashNight.arki.item.NpcShopAccessService.captureContext();
     this.sessionSeq++;
     this.leaseSeq = 0;
     this.sessionNonce = "npc" + getTimer() + "." + this.sessionSeq;
@@ -1724,7 +1726,17 @@ _root.UI系统.NPC商店WebView.executeTradeCommit = function(params:Object):Obj
 };
 
 _root.UI系统.NPC商店WebView.execute = function(commandName:String, params:Object):Object {
+    // 每次预览与首写前重新核对当前模式；旧 snapshot / tradeToken 不保留书中服务资格。
+    if (commandName != "tooltip"
+            && !org.flashNight.arki.item.NpcShopAccessService.canAccess(
+                commandName == "batchPreview" ? String(this.activeShopId) : String(params.shopId))) {
+        return this.fail("access_denied");
+    }
     if (this.busy && commandName != "snapshot" && commandName != "tooltip" && commandName != "tradePreview") return this.fail("busy");
+    if (commandName != "snapshot" && commandName != "tooltip" && this.accessContext != undefined
+            && !org.flashNight.arki.item.NpcShopAccessService.isContextCurrent(this.accessContext)) {
+        return this.fail("stale_state");
+    }
     if (commandName == "snapshot") return this.executeSnapshot(params);
     if (commandName == "tooltip") return this.executeTooltip(params);
     if (commandName == "batchPreview") return this.executeBatchPreview(params);
@@ -1776,7 +1788,8 @@ _root.gameCommands["npcShopTradeCommit"] = function(params) { _root.UI系统.NPC
 
 _root.gameCommands["openNpcShop"] = function(params):Boolean {
     var shopId:String = params == undefined ? "" : String(params.shopId || "");
-    if (shopId == "" || _root.shops == undefined || _root.shops[shopId] == undefined) return false;
+    if (shopId == "" || _root.shops == undefined || _root.shops[shopId] == undefined
+            || !org.flashNight.arki.item.NpcShopAccessService.canAccess(shopId)) return false;
     if (_root.server == undefined || _root.server.sendSocketMessage == undefined) return false;
     var source:String = params.source == undefined ? "world_npc" : String(params.source);
     if (source != "world_npc" && source != "world_npc_dialogue"

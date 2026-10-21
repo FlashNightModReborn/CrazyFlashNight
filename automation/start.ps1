@@ -44,7 +44,9 @@ if ($unattendedRequested) {
         'cf7_agent_arena_calibration',
         'cf7_agent_character_build',
         'cf7_agent_loot_target_full_v1',
-        'cf7_agent_a5_material_shop_run'
+        'cf7_agent_a5_material_shop_run',
+        'cf7_agent_152_a28', 'cf7_agent_152_b29', 'cf7_agent_152_c68',
+        'cf7_agent_152_d69', 'cf7_agent_152_e69'
     )
     if ($UnattendedSlot -cnotin $allowedUnattendedSlots) {
         throw '-UnattendedSlot is not in the frozen unattended slot allowlist.'

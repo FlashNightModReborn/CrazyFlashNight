@@ -43,8 +43,9 @@
 - AS3 幻觉：~~`package org.flashNight.arki.bullet.Factory { class BulletFactory {} }`~~
 - AS2 导入：`import org.flashNight.arki.bullet.Factory.BulletFactory;`
 - AS2 支持通配符导入：`import org.flashNight.arki.bullet.Factory.*;`
-- **通配符 import 已覆盖某包时，禁止再对该包的类加显式 import**：`import pkg.*` 已解析包内所有类（含**会话期新建的同包类**——2026-06-24 实测经 wildcard 即解析，未触发 stale-index）；若再叠加 `import pkg.SomeClass`，编译报 **"叶名称已解析为导入的类"**（重复导入）。显式具体 import 仅用于**无 wildcard 覆盖**该包的 class 文件（同包类之间本就无需 import，靠同包可见性）。
+- **通配符 import 已覆盖某包时，禁止再对该包的类加显式 import**：`import pkg.*` 已解析包内所有类（含**会话期新建的同包类**——2026-06-24 实测经 wildcard 即解析，未触发 stale-index）；若再叠加 `import pkg.SomeClass`，编译报 **"叶名称已解析为导入的类"**（重复导入）。显式具体 import 仅用于**无 wildcard 覆盖**该包的 class 文件（同包短名仍以真实编译解析为准；新增静态服务未解析时使用 FQN，或在无 wildcard 覆盖的 class 文件中显式 import）。
 - **非 class 的 .as 文件（帧脚本等）必须使用通配符导入**：这些文件通过 `#include` 拼接为巨型上下文，明确导入具体 class 可能与其他一起 `#include` 的 .as 文件产生导入冲突，只能使用 `.*` 通配符形式
+- **新增同包静态服务的短名须真实编译**：2026-10-21 Issue 152 中，`NpcShopAccessService.canAccess` 的同包短名在 CS6 报“没有名为 NpcShopAccessService 的方法”；无 item wildcard 的 class 文件补显式 import 后重新编译 `0/0`。不要仅凭目录同包认定裸类名已解析，也不要向已有 wildcard 的上下文重复加具体 import。
 - **把类本身赋给 `Object` 时显式解析名称**：测试中 `var api:Object = BulletQueueProcessor` 这类裸类值引用，CS6 不一定按同包规则解析。使用完整限定名，或在没有对应 wildcard 的 class 文件中明确 import；不要把类型注解 / `new` 的解析规则外推到裸类值。
 
 ### 类型系统

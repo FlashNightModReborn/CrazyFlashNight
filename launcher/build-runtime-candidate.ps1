@@ -308,16 +308,30 @@ function Copy-Cf7CanonicalLfFile {
         New-Item -ItemType Directory -Path $destinationDirectory -Force | Out-Null
     }
     $bytes = [IO.File]::ReadAllBytes($Source)
-    $output = New-Object System.Collections.Generic.List[byte]
-    for ($i = 0; $i -lt $bytes.Length; $i++) {
-        if ($bytes[$i] -eq 13) {
-            if ($i + 1 -lt $bytes.Length -and $bytes[$i + 1] -eq 10) { continue }
-            $output.Add(10)
-        } else {
-            $output.Add($bytes[$i])
+    # Preserve the byte-level contract, including BOM and non-text bytes. Avoid
+    # millions of PowerShell interpreter iterations for the native source closure.
+    if (-not ('Cf7RuntimeCanonicalLfV1' -as [type])) {
+        Add-Type -TypeDefinition @'
+public static class Cf7RuntimeCanonicalLfV1 {
+    public static byte[] Normalize(byte[] source) {
+        byte[] output = new byte[source.Length];
+        int count = 0;
+        for (int i = 0; i < source.Length; i++) {
+            byte value = source[i];
+            if (value == 13) {
+                output[count++] = 10;
+                if (i + 1 < source.Length && source[i + 1] == 10) i++;
+            } else output[count++] = value;
         }
+        if (count == output.Length) return output;
+        byte[] trimmed = new byte[count];
+        System.Buffer.BlockCopy(output, 0, trimmed, 0, count);
+        return trimmed;
     }
-    [IO.File]::WriteAllBytes($Destination, $output.ToArray())
+}
+'@
+    }
+    [IO.File]::WriteAllBytes($Destination, [Cf7RuntimeCanonicalLfV1]::Normalize($bytes))
 }
 
 function Write-Cf7CandidateBootstrapLogTail {

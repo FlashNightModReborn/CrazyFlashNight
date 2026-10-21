@@ -19,6 +19,62 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
 {
     public sealed class CompositeAgentRuntimeActionPerformerTests
     {
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public async Task LauncherPixelsAuthorizeTimedMovementOnly(bool timed)
+        {
+            using var fixture = new PerformerFixture();
+            fixture.TreatTargetAsLauncher();
+            var action = fixture.Action(AgentCapabilitiesV1.PressKey,
+                timed ? (object)new { key = "s", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 25 }
+                    : new { key = "s", modifiers = Array.Empty<string>(), repeat = 1 });
+            Assert.True(fixture.Observations.TryGetFrame(fixture.Context, action, out var frame, out _));
+            frame.SourceLayer = SourceLayer.Launcher;
+            if (!timed) action.FrameId = null; // No-frame requests cannot bypass the registered target restriction.
+            var result = await fixture.PerformAsync(action);
+            Assert.Equal(timed ? ActionOutcome.InputDispatched : ActionOutcome.Rejected, result.Outcome);
+            if (!timed) Assert.Empty(fixture.Win32.SentBatches);
+        }
+
+        [Fact]
+        public async Task HeldDirectionSpansBatchesAndReleasesExactlyOnce()
+        {
+            using var fixture = new PerformerFixture();
+            var result = await fixture.PerformAsync(fixture.Action(AgentCapabilitiesV1.PressKey,
+                new { key = "s", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 50 }));
+            Assert.Equal(ActionOutcome.InputDispatched, result.Outcome);
+            var packets = fixture.Win32.SentBatches.SelectMany(batch => batch).ToArray();
+            Assert.Equal(2, packets.Count(packet => packet.Transition == NativeControlTransition.Down));
+            Assert.Single(packets.Where(packet => packet.Transition == NativeControlTransition.Up));
+            Assert.Equal(NativeControlTransition.Up, packets.Last().Transition);
+        }
+
+        [Fact]
+        public async Task HeldDirectionRejectsMissingFocusBeforeKeyDown()
+        {
+            using var fixture = new PerformerFixture();
+            fixture.Win32.FocusedHwnd = IntPtr.Zero;
+            var result = await fixture.PerformAsync(fixture.Action(AgentCapabilitiesV1.PressKey,
+                new { key = "s", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 50 }));
+            Assert.Equal(ActionOutcome.Rejected, result.Outcome);
+            Assert.Empty(fixture.Win32.SentBatches);
+        }
+
+        [Fact]
+        public async Task HeldDirectionCancellationReleasesOwnedKey()
+        {
+            using var fixture = new PerformerFixture();
+            using var cancellation = new CancellationTokenSource();
+            var operation = fixture.PerformAsync(fixture.Action(AgentCapabilitiesV1.PressKey,
+                new { key = "s", modifiers = Array.Empty<string>(), repeat = 1, durationMs = 2000 }), cancellation.Token);
+            Assert.NotEmpty(fixture.Win32.SentBatches);
+            cancellation.Cancel();
+            await Assert.ThrowsAnyAsync<OperationCanceledException>(() => operation);
+            Assert.True(fixture.Sink.WaitFor("deadline_exceeded"));
+            Assert.True(SpinWait.SpinUntil(() => fixture.Win32.SentBatches.Skip(1).SelectMany(batch => batch)
+                .Any(packet => packet.ControlId == "Key:83" && packet.Transition == NativeControlTransition.Up), TimeSpan.FromSeconds(1)));
+        }
         [Fact]
         public async Task ClickMapsFramePixelThroughContentAndVirtualDesktop()
         {
@@ -741,6 +797,13 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                 private set;
             }
 
+            private string _launcherTargetIdForTest;
+            internal void TreatTargetAsLauncher()
+            {
+                _launcherTargetIdForTest = TargetId;
+                RebuildPerformer();
+            }
+
             internal void ReplaceStructuredHost(
                 IAgentStructuredActionHost host)
             {
@@ -871,7 +934,8 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         Hair,
                         HairPreviews,
                         HairTargets,
-                        Coordinates);
+                        Coordinates,
+                        _launcherTargetIdForTest);
             }
 
             private WriteLease GuiLease(string capability)
@@ -981,6 +1045,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Gateway
                         new FrameEnvelope
                         {
                             FrameId = FrameId,
+                            SourceLayer = SourceLayer.WebOverlay,
                             ObservationId = ObservationId,
                             TargetId = TargetId,
                             SurfaceEpoch = 11,

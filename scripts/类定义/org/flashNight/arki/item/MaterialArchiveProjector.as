@@ -1,4 +1,5 @@
-﻿import org.flashNight.arki.item.EquipmentUtil;
+﻿import org.flashNight.arki.item.NpcShopAccessService;
+import org.flashNight.arki.item.EquipmentUtil;
 import org.flashNight.arki.item.ItemUtil;
 import org.flashNight.arki.item.obtain.ItemObtainIndex;
 import org.flashNight.arki.item.synthesis.SynthesisIndex;
@@ -169,6 +170,9 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         if (live == null || String(live.itemName) != materialName) {
             return shopAccessFailure(callId, "stale", "catalog_not_current");
         }
+        if (!NpcShopAccessService.canAccess(shopId)) {
+            return shopAccessFailure(callId, "deny", "access_denied");
+        }
         return {
             task:"material_shop_access_response",
             callId:callId,
@@ -276,6 +280,9 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
         var live:Object = exactLiveCatalogEntry(catalog, catalogIndex);
         if (live == null || String(live.itemName) != itemName) {
             return shopAccessFailure(callId, "stale", "catalog_not_current");
+        }
+        if (!NpcShopAccessService.canAccess(shopId)) {
+            return shopAccessFailure(callId, "deny", "access_denied");
         }
         return {task:"material_shop_access_response", callId:callId,
             success:true, v:1, decision:"allow", reason:"indexed_live_match",
@@ -1407,7 +1414,7 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
                 || countCurrentShopSources(records, materialName, shopId,
                     catalogIndex) != 1) return false;
         var shop:Object = _root.shops[shopId];
-        if (shop == undefined || shop == null
+        if (!NpcShopAccessService.canAccess(shopId) || shop == undefined || shop == null
                 || rawShopItemName(shop, catalogIndex) != materialName) return false;
         var live:Object = exactLiveCatalogEntry(catalog, catalogIndex);
         return live != null && String(live.itemName) == materialName;
@@ -1440,8 +1447,7 @@ class org.flashNight.arki.item.MaterialArchiveProjector {
     }
 
     private static function infrastructureUnlocked(infra:Object, key:String):Boolean {
-        if (infra == null || infra[key] == undefined || infra[key] == null) return false;
-        return Number(infra[key]) >= 1;
+        return org.flashNight.arki.item.InfrastructureVehicleAccess.owned(infra, key);
     }
 
     /**

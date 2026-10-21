@@ -98,35 +98,39 @@ EXPECTED_MISSING_STAGE_NAMES = frozenset(
     ("突围", "外交-隧道据点", "同盟卸货站", "外交-黑铁阁")
 )
 
+# Reviewed 2026-10-21 authoring totals; fixed identity/occurrence samples remain independent.
 EXPECTED_BASELINES = {
     "materialCatalog": {
-        "manifestFileCount": 52,
-        "itemCount": 1600,
-        "materialCount": 224,
+        "manifestFileCount": 58,
+        "itemCount": 1738,
+        "materialCount": 234
     },
-    "crafting": {"categoryCount": 12, "recipeCount": 282},
+    "crafting": {
+        "categoryCount": 14,
+        "recipeCount": 334
+    },
     "enemies": {
-        "manifestFileCount": 14,
-        "enemyCount": 214,
+        "manifestFileCount": 18,
+        "enemyCount": 232,
         "allDropOccurrenceCount": 219,
         "materialDropOccurrenceCount": 210,
         "materialSourceGroupCount": 119,
         "multiVariantMaterialSourceGroupCount": 70,
         "multiVariantMaterialOccurrenceCount": 161,
-        "beyondFirstMaterialOccurrenceCount": 91,
+        "beyondFirstMaterialOccurrenceCount": 91
     },
     "stages": {
         "manifestFolderOccurrenceCount": 19,
-        "catalogEntryOccurrenceCount": 230,
-        "uniqueStageCount": 212,
-        "stageDataFileCount": 208,
-        "allRewardOccurrenceCount": 1157,
+        "catalogEntryOccurrenceCount": 234,
+        "uniqueStageCount": 216,
+        "stageDataFileCount": 212,
+        "allRewardOccurrenceCount": 1150,
         "materialRewardOccurrenceCount": 331,
         "materialSourceGroupCount": 330,
         "multiVariantMaterialSourceGroupCount": 1,
         "multiVariantMaterialOccurrenceCount": 2,
-        "beyondFirstMaterialOccurrenceCount": 1,
-    },
+        "beyondFirstMaterialOccurrenceCount": 1
+    }
 }
 
 

@@ -21,6 +21,7 @@ using CF7Launcher.Bus;
 using CF7Launcher.Diagnostic;
 using CF7Launcher.Guardian.Hud;
 using CF7Launcher.Save;
+using CF7Launcher.AgentRuntime.TrustedRunner;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
@@ -276,8 +277,6 @@ namespace CF7Launcher.Guardian
             string expectedAttemptId,
             Func<bool> isShutdownAdmissionClosed = null)
         {
-            const string exactA5Slot =
-                "cf7_agent_a5_material_shop_run";
             const string fixedPayload =
                 "{\"task\":\"console\",\"command\":"
                 + "\"#func:_root.agentEnterResolvedSave()\"}\0";
@@ -293,10 +292,7 @@ namespace CF7Launcher.Guardian
             {
                 lock (_stateLock)
                 {
-                    if (!string.Equals(
-                            expectedSlot,
-                            exactA5Slot,
-                            StringComparison.Ordinal)
+                    if (!TrustedRegressionSlots.RequiresRuntimeEntry(expectedSlot)
                         || !string.Equals(
                             _pendingSlot,
                             expectedSlot,

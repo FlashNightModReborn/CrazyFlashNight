@@ -6,5 +6,5 @@ $ErrorActionPreference = 'Stop'
     -TemplateRelativePath 'scripts/test-runners/garage-purchase/TestLoader.as.template' `
     -SuiteRelativePaths @('scripts/类定义/org/flashNight/arki/ui/GaragePurchasePanelServiceTest.as') `
     -SuiteFqns @('org.flashNight.arki.ui.GaragePurchasePanelServiceTest') `
-    -ExpectedTracePatterns @('(?m)^GaragePurchasePanelServiceTest Tests Passed: 48\r?$', '(?m)^GaragePurchasePanelServiceTest Tests Failed: 0\r?$') `
-    -SuccessSummary '48/48 assertions' -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile
+    -ExpectedTracePatterns @('(?m)^GaragePurchasePanelServiceTest Tests Passed: 55\r?$', '(?m)^GaragePurchasePanelServiceTest Tests Failed: 0\r?$') `
+    -SuccessSummary '55/55 assertions' -TimeoutSeconds $TimeoutSeconds -SkipCompile:$SkipCompile

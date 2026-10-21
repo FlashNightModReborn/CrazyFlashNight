@@ -167,14 +167,20 @@ namespace CF7Launcher.Tasks
         {
             if (_state != HostState.Active) return;
             if (_index + 1 < _lines.Length) { _index++; Present(); return; }
-            // 已经在等待占位条上：模型未返回前继续点击不结束本组。
-            if (_lines[_index].IsPlaceholder) return;
             Line hold = null;
             Func<Line> provider = EndHoldLineProvider;
             if (provider != null)
             {
                 try { hold = provider(); }
                 catch (Exception ex) { LogManager.Log("[NativeDialogue] end hold: " + ex.Message); }
+            }
+            if (_lines[_index].IsPlaceholder)
+            {
+                // 仍在等待：留在原占位（不重复追加）；本轮已结束（provider 为 null）：
+                // 点占位条即按组末收尾，避免停在等待文案上无法离开。
+                if (hold != null) return;
+                EnterClosing("advance_past_end");
+                return;
             }
             if (hold != null)
             {

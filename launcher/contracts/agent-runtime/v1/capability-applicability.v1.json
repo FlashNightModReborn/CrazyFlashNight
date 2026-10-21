@@ -74,7 +74,7 @@
       "name": "input.press_key",
       "referenceName": "press_key",
       "modes": ["developer_interactive", "unattended_test", "player_assist"],
-      "surfaces": ["flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
+      "surfaces": ["launcher", "flash", "web_overlay", "native_hud", "wings_shell", "business_modal"],
       "requiresObservationGrant": true,
       "requiresWriteLease": true,
       "requiresSemanticProvider": false,

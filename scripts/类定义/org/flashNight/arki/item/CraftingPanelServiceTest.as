@@ -21,6 +21,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
     private static var failed:Number = 0;
 
     public static function runAllTests():Void {
+        org.flashNight.arki.item.NpcShopAccessFixture.install();
         passed = 0; failed = 0;
         setup();
         testOpenRequestWire();
@@ -56,6 +57,7 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
         testResponseWire();
         testResponseWireEscaping();
         testHandleDirectDispatch();
+        org.flashNight.arki.item.NpcShopAccessFixture.restore();
         trace("CraftingPanelServiceTest Tests Passed: " + passed);
         trace("CraftingPanelServiceTest Tests Failed: " + failed);
     }
@@ -1034,6 +1036,16 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
                 && allowed.error == undefined,
             "A4b exact source allows navigation even when locked and maxed");
 
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(String(request.shopId), true);
+        var storyDenied:Object = invokeMaterialShopAccess(request);
+        check(storyDenied.decision == "deny" && storyDenied.error == "access_denied",
+            "material route rechecks current shop eligibility after exact source proof");
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(String(request.shopId), false);
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(false);
+        var staleEligibility:Object = invokeMaterialShopAccess(request);
+        check(staleEligibility.error == "access_denied", "material route never uses a stale eligibility projection");
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(true);
+
         request = materialShopAccessRequest(snapshotId, 2147483647);
         var maxFid:Object = invokeMaterialShopAccess(request);
         check(exactShopAccessAllow(maxFid, request),
@@ -1285,6 +1297,15 @@ class org.flashNight.arki.item.CraftingPanelServiceTest {
 
         infrastructure.摩托车 = 1;
         var motorcycleAllowed:Object = invokeProcurementShopAccess(request);
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(String(request.shopId), true);
+        var storyDenied:Object = invokeProcurementShopAccess(request);
+        check(storyDenied.decision == "deny" && storyDenied.error == "access_denied",
+            "recipe-input route shares current shop eligibility with material navigation");
+        org.flashNight.arki.item.NpcShopAccessFixture.deny(String(request.shopId), false);
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(false);
+        var staleEligibility:Object = invokeProcurementShopAccess(request);
+        check(staleEligibility.error == "access_denied", "recipe-input route never uses a stale eligibility projection");
+        org.flashNight.arki.item.NpcShopAccessFixture.setReady(true);
         var equipmentRequest:Object = procurementShopAccessRequest(snapshotId, 51);
         equipmentRequest.materialName = "旧测试枪";
         equipmentRequest.catalogIndex = 1;

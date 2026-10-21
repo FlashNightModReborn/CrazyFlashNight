@@ -2273,9 +2273,9 @@ async function runPgCraftingProcurement(){
       &&procurementMessage.shopId==='迷之盔甲君'&&procurementMessage.catalogIndex===57,
     JSON.stringify({catalogDelta:v2CatalogAfter-v2CatalogBefore,
       detailDelta:v2DetailAfter-v2DetailBefore,navigation:procurementMessage}));
-  ok('PG procurement denied Host replacement returns to an interactive recipe owner with the motorcycle-specific explanation',
+  ok('PG procurement denied Host replacement preserves the recipe owner and explains merchant and vehicle eligibility',
     Panels.getActive()==='crafting'&&!CraftingPanel.debugState().procurementNavigation
-      &&__toasts.some(function(value){return value.indexOf('摩托车或越野车基建')>=0})
+      &&__toasts.some(function(value){return value.indexOf('解锁商人')>=0&&value.indexOf('摩托车或越野车')>=0})
       &&document.querySelector('.crafting-plan-btn')&&!document.querySelector('.crafting-plan-btn').disabled);
 
   window.__nextMaterialShopNavigationFailure='stale_source';

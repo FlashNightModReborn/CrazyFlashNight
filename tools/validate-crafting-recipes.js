@@ -127,7 +127,8 @@ function validate() {
             recipeCount++;
         });
     });
-    if (recipeCount !== 329) fail('expected 329 recipes, got ' + recipeCount);
+    // Includes craft.commune-armor.016-020 (3XF special-duty set).
+    if (recipeCount !== 334) fail('expected 334 recipes, got ' + recipeCount);
     process.stdout.write('Crafting recipe identity: ' + recipeCount
         + ' recipes / ' + seen.size + ' unique recipeIds passed\n');
 }

@@ -235,6 +235,19 @@ A3 自动准入以 [testing-guide.md](testing-guide.md) 的 `PG-IDENTITY-TRIPLE`
 
 上述水位当前只在同一 Launcher Host 进程生命周期内成立；A2 不提供 Host 进程崩溃/重启后的 durable unknown-write watermark。没有另行持久化协议与重启回读 Gate 时，不得把同进程 close/navigation/socket 证明外推为跨进程恢复能力。
 
+### NPC 商店的店级资格（Issue 152）
+
+本节最后核对代码基线：commit `e582cf62da63b8e1b6057df88aa0caf4eadf85b9` 加 2026-10-21 Issue 152 工作树；本节不授予正式 runtime 发布结论。
+
+`NpcShopAccessService` 是材料来源、配方采购、直接打开及 NPC 预览/提交共用的店级判定。书中店只接受 exact `书中-迷之盔甲君`、`repair-campus`、`outcome=active`、当前 `savePath` 和该书配置的关卡名；Lee、结束局、异槽和异关卡均拒绝。来源索引可见不代表可交易，不按名称包含“书中”授权，也不删除全局目录。
+
+普通远程访问采用“任一当前合法服务驻点”。范围由 [remote-access.json](../data/shops/remote-access.json) 显式绑定商店与现役地图驻点；C# `NpcShopAccessPolicy` 复用 `MapDomainService` / `MapRuleEvaluator` 的地点与人物条件，不要求证明当前 NPC 实体加载的 `worldReady`。固定远程联系人必须来自现役平板联系人，未映射的特殊商店不猜远程权限。AS2 当前世界中的真实 NPC 与其权威目录引用仍可提供现场服务，因此无车现场、普通生存和特殊 NPC 不被远程条件误锁。
+
+资格随同一地图事实投影返回 AS2，并绑定地图内容摘要。AS2 在导航与每次业务执行前以 `MapDomainBridge.isCurrent()` 复证；换槽或替换存档权威会推进 scene epoch 并退休旧资格。商店会话另绑定槽位、存档对象、书中局次与 scene epoch，旧 snapshot / collection lease / tradeToken 不能跨角色继承。预览后资格变化必须在首写前拒绝；未知写仍按既有流程核对，不因刷新或资格撤销而解除。
+
+合格商店继续开放完整目录，保留既有价格、情报锁、容量、限购及混合买卖；K 点商城不套用 NPC 地区条件。车辆资格由 `InfrastructureVehicleAccess` 统一解释：接受自有键中的合法有限整数、兼容旧数字串与布尔值，拒绝缺失、非法值、Infinity、对象强制转换和继承键；只读取，不修写玩家存档。
+
+
 ### 武器平衡展示摘要（只读附加字段）
 
 库存行、K 点商城目录行和 NPC 商店目录行可带可选 `balanceSummary`：`{state:"confirmed",weightLayers:Number,formula:1,level:Number}`。该字段由 AS2 从 ItemUtil 独立 balance 缓存和原始武器数据生成；必须同时命中严格 weapon balance v1、当前 profile 的 `status=confirmed`、`displayEligible=true`、当前已知 `workbookVersion`，并让绑定身份、profile、弹药/射击语义、工作簿版本及 14 项业务数字的 FNV-1a/UTF-16 digest 一致。库存按实例 tier 精确选择 `data_*`，商店固定 `data`；未知 tier、缺 profile、旧草案、黄/红、版本/digest 过期、多节点歧义或任一非有限输入一律**省略整个字段**，不发送 `null` 占位，也不回退基础 profile。

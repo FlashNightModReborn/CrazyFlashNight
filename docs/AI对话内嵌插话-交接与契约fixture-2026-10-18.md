@@ -13,7 +13,8 @@
 ## 1. 公共约定
 
 - 时序：文中延迟只是示意；规范的是事件顺序与“首句/首段早于 done/plan”。
-- `status` 可选；测试不得依赖其数量或文案。若发送，`stage ∈ {connecting, thinking, searching, drafting, waiting}`。
+- `status` 可选；测试不得依赖其数量或文案。若发送，`stage ∈ {connecting, thinking, searching, drafting, waiting}`；可选 `ui_hint` 为 ≤12 字进度提示，只影响等待占位，不写转录。
+- `line.interim` 可选；`true` 表示任务草案等待期的后端过渡话。它是正常 `add`（进已播/finalize），但 Host 越过它后仍以最新 `ui_hint` 占位等最终确认对话；缺省/false 为普通台词。
 - `line.seq`：每个 turn 从 0 开始单调递增；一个 turn 内不重复。`played[].seq`：同一 session 内不重复。
 - `split`：仅当一条模型正文被 165 硬上限拆成多段时出现；`index` 从 0 起，`count` 为总段数。自然多行不带。
 - 情绪统一用“普通”，避免依赖具体 NPC 白名单；真模型走查再验证真实情绪。
@@ -190,7 +191,8 @@ data: {"dialogue_instance_id":"11111111-1111-4111-8111-111111111111","session_id
 **假 LLM 行为**
 
 1. 先产生工具调用 `route_task_draft`（不是 JSONL；由既有任务链生成草案）。
-2. 草案就绪后，才输出以下 JSONL：
+2. prepare 完成（中间结果）时，后端用方向种子单独生成一条过渡话，以 `line(add, interim=true)` 推送；该句不属于下面的 JSONL 假流。
+3. 草案就绪后，才输出以下 JSONL：
 
 ```jsonl
 {"add":"行，那我直说了。","emo":"普通"}
@@ -207,16 +209,25 @@ data: {"stage":"thinking"}
 event: status
 data: {"stage":"drafting"}
 
-（草案生成期间不得出现任何 line；不得出现“我去准备一下”之类过渡台词）
+event: status
+data: {"stage":"drafting","ui_hint":"准备候选中"}
+
+event: status
+data: {"stage":"drafting","ui_hint":"拟定委托中"}
 
 event: line
-data: {"kind":"add","text":"行，那我直说了。","emotion":"普通","speaker":"Andy Law","seq":0}
+data: {"kind":"add","text":"我这儿正盘算着件事。","emotion":"普通","speaker":"Andy Law","seq":0,"interim":true}
+
+（过渡话只点方向、不报数字；草案终态先到时不发过渡话）
 
 event: line
-data: {"kind":"add","text":"城西的补给线断了，我需要有人去看一眼，顺便把货带回来。","emotion":"普通","speaker":"Andy Law","seq":1}
+data: {"kind":"add","text":"行，那我直说了。","emotion":"普通","speaker":"Andy Law","seq":1}
 
 event: line
-data: {"kind":"closing","text":"接不接，你自己想清楚。","emotion":"普通","speaker":"Andy Law","seq":2}
+data: {"kind":"add","text":"城西的补给线断了，我需要有人去看一眼，顺便把货带回来。","emotion":"普通","speaker":"Andy Law","seq":2}
+
+event: line
+data: {"kind":"closing","text":"接不接，你自己想清楚。","emotion":"普通","speaker":"Andy Law","seq":3}
 
 event: done
 data: {"dialogue_instance_id":"11111111-1111-4111-8111-111111111111","session_id":"<同上>","usage":{}}
@@ -224,7 +235,8 @@ data: {"dialogue_instance_id":"11111111-1111-4111-8111-111111111111","session_id
 
 **期望 Host / 后端**
 
-- 草案生成期间输入锁定并显示“（正在准备…）”；最终对话第一句开始显示才恢复可用。
+- 草案生成期间输入锁定并显示“（正在准备…）”；`ui_hint` 到达后占位原位显示该提示。
+- 过渡话上屏后即可插话；玩家越过过渡话而最终确认对话未到时，继续显示最新 `ui_hint` 占位，最终对话首句到达时原位替换占位。
 - 结束语表达“不接就搁着”，不要求固定措辞。
 - 玩家关闭对话后草案仍保留在 `agent_tasks`，终端可继续；不得写 `dialogue_overrides.json`。
 - 发布/确认/取消仍走既有任务工具链；本 fixture 不测发布写盘。

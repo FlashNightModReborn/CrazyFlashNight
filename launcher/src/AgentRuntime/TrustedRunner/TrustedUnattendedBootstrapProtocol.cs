@@ -94,7 +94,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                     _ => throw new InvalidDataException(
                         "trusted_runner_adapter_invalid")
                 };
-            if (!AllowedSlots.Contains(args[4]))
+            if (!AllowedSlots.Contains(args[4]) && !TrustedRegressionSlots.Contains(args[4]))
             {
                 throw new InvalidDataException(
                     "trusted_runner_slot_invalid");
@@ -141,7 +141,9 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             bool immutableCandidate = isolatedCandidate
                 && CandidateLeafPattern.IsMatch(
                     candidateLeaf);
-            bool valid = a5Slot
+            bool valid = TrustedRegressionSlots.Contains(slot)
+                ? formalRuntime || immutableCandidate
+                : a5Slot
                 ? formalRuntime
                     || canonicalA5Candidate
                 : formalRuntime
@@ -274,10 +276,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
             CredentialAcquisitionPolicyMaximumForSlot(
                 string slot)
         {
-            return string.Equals(
-                    slot,
-                    "cf7_agent_a5_material_shop_run",
-                    StringComparison.Ordinal)
+            return TrustedRegressionSlots.RequiresRuntimeEntry(slot)
                 ? A5CredentialAcquisitionPolicyMaximum
                 : DefaultCredentialAcquisitionPolicyMaximum;
         }

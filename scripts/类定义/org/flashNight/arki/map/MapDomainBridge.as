@@ -21,6 +21,8 @@ class org.flashNight.arki.map.MapDomainBridge {
     private static var _acceptedRevision:Number = -1;
     private static var _sceneEpoch:Number = 0;
     private static var _lastWorld:Object;
+    private static var _lastSlot:String;
+    private static var _lastSaveOwner:Object;
     private static var _sceneCurrent:Object = {};
     private static var _scenePrevious:Object;
     private static var _signature:String = "";
@@ -100,11 +102,13 @@ class org.flashNight.arki.map.MapDomainBridge {
         var scene:Object = _sceneCurrent;
         org.flashNight.arki.map.MapFactsSampler.writeScene(_root, scene);
         var previous:Object = _scenePrevious;
-        if (_lastWorld !== _root.gameworld || previous == null
+        if (_lastWorld !== _root.gameworld || _lastSlot !== String(_root.savePath)
+                || _lastSaveOwner !== _root.存档系统 || previous == null
                 || scene.stageFlag !== previous.stageFlag || scene.frameLabel !== previous.frameLabel
                 || scene.entrance !== previous.entrance || scene.mapFrame !== previous.mapFrame
                 || scene.inCombat !== previous.inCombat) {
             _lastWorld = _root.gameworld;
+            _lastSlot = String(_root.savePath); _lastSaveOwner = _root.存档系统;
             // current 会被下次观察重写；previous 只在场景实际变化时更新，禁止共用引用。
             _scenePrevious = {stageFlag:scene.stageFlag, frameLabel:scene.frameLabel,
                 entrance:scene.entrance, mapFrame:scene.mapFrame, inCombat:scene.inCombat};

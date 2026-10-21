@@ -18,6 +18,7 @@ using CF7Launcher.AgentRuntime.Observation;
 using CF7Launcher.AgentRuntime.Security;
 using CF7Launcher.AgentRuntime.Sessions;
 using CF7Launcher.AgentRuntime.Transport;
+using CF7Launcher.AgentRuntime.TrustedRunner;
 using CF7Launcher.AgentRuntime.Wings;
 using CF7Launcher.Guardian;
 using CF7Launcher.Tasks;
@@ -758,7 +759,8 @@ namespace CF7Launcher.AgentRuntime.Integration
                             structuredHost,
                             hair,
                             hairPreviews,
-                            hairTargets);
+                            hairTargets,
+                            launcherTargetId: targets.Launcher);
                 }
                 else
                 {
@@ -1576,11 +1578,7 @@ namespace CF7Launcher.AgentRuntime.Integration
                 if (allowPublish)
                 {
                     Func<bool> beforeCredentialCommit = null;
-                    if (string.Equals(
-                            unattendedBootstrap.Slot,
-                            TrustedUnattendedGameEntryGate
-                                .ExactA5Slot,
-                            StringComparison.Ordinal))
+                    if (TrustedRegressionSlots.RequiresRuntimeEntry(unattendedBootstrap.Slot))
                     {
                         beforeCredentialCommit = () =>
                             rendezvous != null

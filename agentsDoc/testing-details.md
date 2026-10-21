@@ -132,7 +132,7 @@
 **已审阅只读夹具的自动停止例外**：`run-focused-testloader.ps1 -AutoStopReadOnlyPlayer` 仅接受源码内封闭的 debt/probe domain、template 与 suite 集合；有真实存档、交易、奖励或 DeliveryUnknown 的测试不在其中。其失败仍失败。父事务持 mutex，保留本轮原始 trace/Compiler/SWF/失败 marker，经同一编译入口的 nonce 控制调用关闭 Test Movie，再由第二次 JSFL 调用确认无播放器；核对迟到产物并 byte-exact 恢复 scratch 后，才可清自己 exact-owned 的行为未知 marker。
 需要防御编辑器无响应时显式选 `-OwnedReadOnlyHost`：要求没有既有 Flash，使用既有不限时生命周期任务启动新编辑器，JSFL 检查并监视仅有可丢弃 TestLoader 文档。其他/未保存文档打开即 taint，拒绝自动结束。只可停止本轮 PID/创建时刻/任务程序/文档 lease 全部一致的宿主，确认进程消失、两任务空闲、产物静止并恢复原件后恢复本轮闸；不重放测试、不扩大到业务未知写。`student-repair` 默认使用该路径，完整图像导出是按需诊断，见 [70例专项](../scripts/test-runners/student-repair/README.md)。具体命令和失败保留以 [CS6 说明](../scripts/FlashCS6自动化编译.md#read-only-player-recovery) 为准。
 
-**import 规则**：以 [AS2 防幻觉规范](as2-anti-hallucination.md) 为准：`import pkg.*` 已覆盖该包时禁止再叠加具体类 import，同包 class 不要求重复 import；跨包且没有 wildcard 覆盖时才用具体 import。asLoader 的 `Action.Skill` 是已登记的常驻 CS6 L42 特例：该包 wildcard 被整体排除，只允许组装器白名单中的具体 imports；不得扩成全项目通则。非 class TestLoader template 继续只用包通配或 FQN，禁止具体类 import。
+**import 规则**：以 [AS2 防幻觉规范](as2-anti-hallucination.md) 为准：`import pkg.*` 已覆盖该包时禁止再叠加具体类 import，同包新增静态服务的短名须按真实 CS6 解析，未解析时使用 FQN 或在无 wildcard 覆盖的 class 文件中显式 import；跨包且没有 wildcard 覆盖时才用具体 import。asLoader 的 `Action.Skill` 是已登记的常驻 CS6 L42 特例：该包 wildcard 被整体排除，只允许组装器白名单中的具体 imports；不得扩成全项目通则。非 class TestLoader template 继续只用包通配或 FQN，禁止具体类 import。
 
 **FLA 时间轴结构变更**：改 symbol/FLA 时间轴结构（如 `asLoader.xml` 帧数/层数增删、塌缩）后必须关闭并重开该 FLA，关闭时选「不保存」以免内存旧版 clobber 磁盘；否则 publish 仍可能产旧时间轴。externalization 后只改外置 `.as`（CDATA）时 publish 会从盘重读、无需 reopen；时间轴结构变更则必须 reopen。CWS 内直接 grep 类名/trace 串无效，应读 `logs/launcher.log` 的 boot trace。
 
@@ -153,8 +153,8 @@ AS2 必须证明目标只扫描一次、来源/目标各一次 revision 与 inde
 - `ArrayInventoryIndexTest` 31/31（All/Shared，机器钉死；同步通知、可变视图隔离、callback 快照与 rollback）。
 - `EquipmentInventoryTest` 28/28（机器钉死）。
 - `InventoryPanelServiceTest` 194/194（机器钉死；取代文本中 131/138/142/144/147/170 等旧计数，旧值见归档）。
-- `CraftingPanelServiceTest` 168/168 + `SynthesisIndexTest` 18/18（机器钉死）。
-- `NpcShopPanelServiceTest` 66/66（机器钉死）。
+- `CraftingPanelServiceTest` 185/185 + `SynthesisIndexTest` 18/18（机器钉死；此处按 commit `e582cf62da63b8e1b6057df88aa0caf4eadf85b9` 加 2026-10-21 Issue 152 工作树核对现役 runner）。
+- `NpcShopPanelServiceTest` 108/108（机器钉死）。
 
 物品格协议施工须看到 `InventoryPanelServiceTest` 的现役机器钉值、合成/材料来源与用途施工须看到 `CraftingPanelServiceTest` + `SynthesisIndexTest` 的新鲜 Output Panel/trace 证据，不能只凭 publish marker。`-SkipCompile` 只证明静态合同。
 

@@ -69,6 +69,7 @@ function validBoundedString(value, maximumBytes) {
 }
 
 function validatePreparation(preparation) {
+  const regression = require("../../cf7-agent/regression-profile").resolve(preparation);
   if (!isPlainObject(preparation)
       || typeof preparation.resourcesRoot !== "string"
       || !path.isAbsolute(preparation.resourcesRoot)) {
@@ -77,9 +78,13 @@ function validatePreparation(preparation) {
   }
   const resourcesRoot = Evidence.assertExactDirectory(
     preparation.resourcesRoot, "trusted_runner_jsonl");
-  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", CANDIDATE_ID);
+  const formal = regression !== null && regression.candidateId === undefined;
+  const candidateId = regression ? regression.candidateId : CANDIDATE_ID;
+  const candidateRoot = formal ? undefined
+    : path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", candidateId);
+  const deploymentRoot = formal ? resourcesRoot : candidateRoot;
   if (preparation.candidateRoot !== undefined
-      && (typeof preparation.candidateRoot !== "string"
+      && (formal || typeof preparation.candidateRoot !== "string"
         || !path.isAbsolute(preparation.candidateRoot)
         || !samePath(preparation.candidateRoot, candidateRoot))) {
     fail("trusted_runner_candidate_root_mismatch",
@@ -88,7 +93,7 @@ function validatePreparation(preparation) {
         actual: preparation.candidateRoot,
       });
   }
-  Evidence.assertExactDirectory(candidateRoot, "trusted_runner_jsonl");
+  Evidence.assertExactDirectory(deploymentRoot, "trusted_runner_jsonl");
   const entry = path.join(resourcesRoot, "tools", "cf7-agent", "unattended.js");
   const entryArtifact = Evidence.readExactRegularFile(entry, {
     phase: "trusted_runner_jsonl",
@@ -107,8 +112,9 @@ function validatePreparation(preparation) {
       && !SHA256_RE.test(String(preparation.buildSha256))) {
     fail("trusted_runner_preparation_invalid", "preparation buildSha256 is malformed");
   }
-  return Object.freeze({ resourcesRoot, candidateRoot, entry,
-    entrySha256: entryArtifact.sha256 });
+  return Object.freeze({ resourcesRoot, candidateRoot, deploymentRoot, entry,
+    runtimeMode: formal ? "formal_runtime" : "isolated_candidate",
+    entrySha256: entryArtifact.sha256, ...(regression || {}) });
 }
 
 function normalizeEnvironment(options) {
@@ -180,8 +186,8 @@ function strictBase64(value) {
 }
 
 function expectedIdentity(preparation) {
-  const nested = isPlainObject(preparation.candidateIdentity)
-    ? preparation.candidateIdentity : null;
+  const nested = isPlainObject(preparation.runtimeIdentity) ? preparation.runtimeIdentity
+    : isPlainObject(preparation.candidateIdentity) ? preparation.candidateIdentity : null;
   const direct = {};
   ["runtimeMode", "processPath", "coreSha256", "buildIdentity", "payloadClosure"]
     .forEach((name) => {
@@ -221,9 +227,9 @@ function validateCompletion(value, preparation, paths) {
   exactKeys(value, ["schema", "runtimeMode", "processPath", "coreSha256",
     "buildIdentity", "payloadClosure", "guardianProcessId", "terminalReceipt"],
   "trusted_runner_completion_invalid");
-  const expectedProcess = path.join(paths.candidateRoot, "runtime",
+  const expectedProcess = path.join(paths.deploymentRoot, "runtime",
     "CRAZYFLASHER7MercenaryEmpire.Core.exe");
-  if (value.schema !== COMPLETION_SCHEMA || value.runtimeMode !== "isolated_candidate"
+  if (value.schema !== COMPLETION_SCHEMA || value.runtimeMode !== paths.runtimeMode
       || typeof value.processPath !== "string" || !path.isAbsolute(value.processPath)
       || !samePath(value.processPath, expectedProcess)
       || !SHA256_RE.test(String(value.coreSha256 || ""))
@@ -231,7 +237,7 @@ function validateCompletion(value, preparation, paths) {
       || !SHA256_RE.test(String(value.payloadClosure || ""))
       || !Number.isSafeInteger(value.guardianProcessId) || value.guardianProcessId < 1) {
     fail("trusted_runner_completion_invalid",
-      "completion identity is malformed or outside the exact A5 candidate", {
+      "completion identity is malformed or outside the selected deployment", {
         expectedProcess,
       });
   }
@@ -326,8 +332,9 @@ class TrustedRunnerJsonl {
     if (typeof spawnImpl !== "function") {
       fail("trusted_runner_spawn_invalid", "spawnImpl must be a function");
     }
-    const args = [this.paths.entry, "--adapter", "jsonl", "--slot", SLOT,
-      "--candidate-id", CANDIDATE_ID];
+    const args = [this.paths.entry, "--adapter", "jsonl", "--slot", this.paths.slot || SLOT];
+    if (this.paths.runtimeMode === "isolated_candidate")
+      args.push("--candidate-id", this.paths.candidateId || CANDIDATE_ID);
     try {
       this.child = spawnImpl(process.execPath, args, {
         cwd: this.paths.resourcesRoot,
@@ -555,7 +562,15 @@ class TrustedRunnerJsonl {
     this.responseIds.add(response.id);
     clearTimeout(pending.timer);
     this.pending.delete(response.id);
-    this._record("response", { response });
+    // Regression journeys can span many frames. Keep verified content hashes
+    // and metadata in the in-memory audit, rather than retaining every BGRA
+    // object's base64 a second time. The response delivered below stays exact.
+    const auditResponse = pending.method === "content.read" && this.paths.slot
+      && Object.hasOwn(response, "result")
+      ? { ...response, result: { result: response.result.result,
+        metadata: response.result.metadata, pixelBytesOmitted: true } }
+      : response;
+    this._record("response", { response: auditResponse });
     if (Object.hasOwn(response, "error")) {
       const error = new TrustedRunnerJsonlError("trusted_runner_rpc_error",
         response.error.message, { id: response.id, method: pending.method,

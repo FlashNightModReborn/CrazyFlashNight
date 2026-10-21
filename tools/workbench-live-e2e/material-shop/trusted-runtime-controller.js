@@ -26,6 +26,10 @@ const STALE_FOCUS_RETRY_DELAYS_MS = Object.freeze([100, 200, 400]);
 // ordinary RPC/write actions at 30s; only initial session.status receives a
 // bounded startup budget.
 const INITIAL_STATUS_TIMEOUT_MS = 90_000;
+// The regression entry verifies the complete selected bundle before Core
+// starts its separate 60s accepted-title/ready gate. On slow local disks that
+// verification consumed 52s; keep only this initial read within a 180s budget.
+const REGRESSION_INITIAL_STATUS_TIMEOUT_MS = 180_000;
 
 function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -124,15 +128,21 @@ function isRetryableStaleFocus(error) {
     && data.reconcileKind === "none";
 }
 
-function actionRetryDelays(error) {
+function actionRetryDelays(error, preparation) {
   if (isRetryableInputNotQuiescent(error)) {
     return INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS;
   }
   if (isRetryableStaleFocus(error)) return STALE_FOCUS_RETRY_DELAYS_MS;
+  const data = error && error.details && error.details.rpcError && error.details.rpcError.data;
+  if (require("../../cf7-agent/regression-profile").resolve(preparation)
+      && error.code === "trusted_runner_rpc_error" && isObject(data)
+      && data.reasonCode === "foreground_mismatch" && data.retryable === true
+      && data.reconcileKind === "none") return STALE_FOCUS_RETRY_DELAYS_MS;
   return null;
 }
 
 function assertPreparation(preparation) {
+  if (require("../../cf7-agent/regression-profile").resolve(preparation)) return preparation;
   if (!isObject(preparation)
       || typeof preparation.resourcesRoot !== "string"
       || !isObject(preparation.slots)
@@ -215,8 +225,10 @@ class TrustedRuntimeController {
   }
 
   async initialize() {
+    const timeout = require("../../cf7-agent/regression-profile").resolve(this.preparation)
+      ? REGRESSION_INITIAL_STATUS_TIMEOUT_MS : INITIAL_STATUS_TIMEOUT_MS;
     this.status = assertStatus(await this._call(
-      "session.status", {}, false, INITIAL_STATUS_TIMEOUT_MS));
+      "session.status", {}, false, timeout));
     return this;
   }
 
@@ -540,14 +552,24 @@ class TrustedRuntimeController {
       receipt = await this._reconcileAction(action, null);
       reconciled = true;
     }
-    return { action, receipt, reconciled, dispatchError, capture,
-      lease, ledger: this.getLedger(), rpcTranscript: this.getRpcTranscript() };
+    const result = { action, receipt, reconciled, dispatchError, capture, lease };
+    // A caller can request the complete audit at a checkpoint. Avoid cloning
+    // the whole accumulated transcript for every regression click.
+    return require("../../cf7-agent/regression-profile").resolve(this.preparation)
+      ? result : { ...result, ledger: this.getLedger(), rpcTranscript: this.getRpcTranscript() };
   }
 
   async openMaterials(reason) {
+    return this.openPanel("materials", reason || "Open the allow-listed materials route");
+  }
+
+  async openPanel(panel, reason) {
+    if (!["help", "map", "tasks", "team", "jukebox", "settings", "settings_camera_preview", "materials", "bookshelf", "intelligence"].includes(panel)) {
+      fail("trusted_runtime_panel_invalid", "Only a registered structured panel may be opened");
+    }
     return this._withFreshActionCapture(TARGET_KINDS.launcher, (capture) =>
       this._perform("panel.open", capture, "structured_action", {
-        panel: "materials",
+        panel,
       }, reason || "Open the allow-listed materials route"));
   }
 
@@ -557,7 +579,7 @@ class TrustedRuntimeController {
         const capture = await this.capture(kind);
         return await operation(capture);
       } catch (error) {
-        const delays = actionRetryDelays(error);
+        const delays = actionRetryDelays(error, this.preparation);
         if (!delays || attempt >= delays.length) {
           throw error;
         }
@@ -595,7 +617,10 @@ class TrustedRuntimeController {
   async pressKey(options) {
     const settings = options || {};
     const kind = settings.targetKind || TARGET_KINDS.webOverlay;
-    if (!INPUT_KINDS.has(kind)) {
+    const timed = settings.durationMs !== undefined;
+    const regressionLauncher = kind === TARGET_KINDS.launcher
+      && require("../../cf7-agent/regression-profile").resolve(this.preparation);
+    if (!INPUT_KINDS.has(kind) && !regressionLauncher) {
       fail("trusted_runtime_input_kind_invalid",
         "guarded key input is restricted to WebOverlay or NativeHud");
     }
@@ -608,9 +633,15 @@ class TrustedRuntimeController {
         || !Number.isInteger(repeat) || repeat < 1 || repeat > 16) {
       fail("trusted_runtime_key_invalid", "key, modifiers, or repeat is outside the exact input contract");
     }
+    if ((regressionLauncher && !timed) || (timed && (
+      !Number.isInteger(settings.durationMs) || settings.durationMs < 1 || settings.durationMs > 2000
+      || !["w", "a", "s", "d", "up", "down", "left", "right"].includes(key.toLowerCase())
+      || modifiers.length !== 0 || repeat !== 1)))
+      fail("trusted_runtime_key_invalid", "timed movement requires one unmodified direction for 1..2000ms");
     return this._withFreshActionCapture(kind, (capture) =>
       this._perform("input.press_key", capture, "gui_input", {
         key, modifiers: modifiers.slice(), repeat,
+        ...(timed ? { durationMs: settings.durationMs } : {}),
       }, settings.reason || "Use the observed material workbench keyboard control"));
   }
 
@@ -673,6 +704,7 @@ module.exports = {
   EXACT_SLOT,
   TARGET_KINDS,
   INITIAL_STATUS_TIMEOUT_MS,
+  REGRESSION_INITIAL_STATUS_TIMEOUT_MS,
   INPUT_NOT_QUIESCENT_RETRY_DELAYS_MS,
   STALE_FOCUS_RETRY_DELAYS_MS,
   WEB_OVERLAY_CAPTURE_RETRY_DELAYS_MS,

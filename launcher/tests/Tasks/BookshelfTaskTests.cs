@@ -9,6 +9,35 @@ namespace Launcher.Tests.Tasks
 {
     public sealed class BookshelfTaskTests
     {
+        [Theory]
+        [InlineData("switch")]
+        [InlineData("return")]
+        public void RegressionScopeRejectsPlayerDestinationBeforeResolution(string kind)
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted, _ => throw new InvalidOperationException("must not read a player destination"));
+            task.SetAutomationSlotAdmission(slot => slot == "cf7_agent_152_a28");
+            var request = Request("commit", kind:kind);
+            request["payload"]["target"] = "crazyflasher7_saves";
+            task.HandleWebRequest("commit", request);
+            Assert.Empty(sent);
+            Assert.Equal("automation_slot_denied", posted[0].Value<string>("error"));
+        }
+
+        [Fact]
+        public void RegressionScopeRejectsUnobservedBookOriginAndCannotBeRebound()
+        {
+            var sent = new List<JObject>(); var posted = new List<JObject>();
+            using var task = Create(sent, posted);
+            task.SetAutomationSlotAdmission(slot => slot == "cf7_agent_152_a28");
+            Assert.Throws<InvalidOperationException>(() => task.SetAutomationSlotAdmission(_ => true));
+            var request = Request("commit", kind:"play");
+            request["payload"]["target"] = "repair-campus";
+            task.HandleWebRequest("commit", request);
+            Assert.Empty(sent);
+            Assert.Equal("automation_slot_denied", posted[0].Value<string>("error"));
+        }
+
         [Fact]
         public void ReturnPresentationIsAdmittedByValidatedReceiptAndKeepsRecoveryIdentity()
         {

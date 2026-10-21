@@ -104,7 +104,8 @@ class org.flashNight.arki.ui.GaragePurchasePanelService {
     }
     private static function owned(session:Object):Boolean {
         var source:Object = session == null ? _session : session;
-        return source != null && Number(_root.基建系统.infrastructure[source.vehicle.name]) >= 1;
+        return source != null && org.flashNight.arki.item.InfrastructureVehicleAccess.owned(
+            _root.基建系统.infrastructure, String(source.vehicle.name));
     }
     private static function sameContext():Boolean {
         return _session != null && _session.saveOwner === _root.存档系统 && _session.slotKey === String(_root.savePath)

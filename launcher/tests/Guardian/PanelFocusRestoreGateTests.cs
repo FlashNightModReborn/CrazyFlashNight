@@ -6,6 +6,23 @@ namespace CF7Launcher.Tests.Guardian
     public class PanelFocusRestoreGateTests
     {
         [Fact]
+        public void NativeMenuOrModalBlocksQueuedAndReentrantRestoreWithoutConsumingDebounce()
+        {
+            var gate = new PanelFocusRestoreGate();
+            gate.BeginPanel();
+            Assert.False(gate.TryQueue(true, true, false, 1000, out _, nativeInteractionActive: true));
+            Assert.True(gate.TryQueue(true, true, false, 1001, out int generation));
+            // The menu can open after scheduling, or during synchronous activation.
+            Assert.False(gate.TryBeginExecution(generation, true, true, false, true, 1002, true));
+            Assert.False(gate.IsCurrentExecution(generation, true, true, false, true));
+            Assert.False(gate.TryCommitExecution(generation, true, true, false, 1003, true));
+            gate.Complete(generation);
+            Assert.True(gate.TryQueue(true, true, false, 1004, out generation));
+            Assert.True(gate.TryBeginExecution(generation, true, true, false, true, 1004));
+            Assert.True(gate.TryCommitExecution(generation, true, true, false, 1004));
+        }
+
+        [Fact]
         public void TryQueue_RequiresLiveForegroundTakingPanel()
         {
             PanelFocusRestoreGate gate = new PanelFocusRestoreGate();

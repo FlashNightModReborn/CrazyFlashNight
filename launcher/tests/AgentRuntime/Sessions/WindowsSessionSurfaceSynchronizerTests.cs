@@ -369,6 +369,27 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                 result.ReasonCodes);
         }
 
+        [Theory]
+        [InlineData(true, true, true)]
+        [InlineData(false, true, false)]
+        [InlineData(true, false, false)]
+        public void MetadataFlashUsesOnlyExplicitlyEnabledAndContainingLauncherInputRoot(bool guarded, bool contained, bool parentOwnsInput)
+        {
+            var fixture = new Fixture();
+            fixture.Controller.SetAttempt("attempt_sync_flash_aaaaa", fixture.Flash, "developer_slot", 1);
+            fixture.Specs.Add(fixture.LauncherSpec(guarded));
+            fixture.Specs.Add(fixture.FlashSpec(Array.Empty<ObservationMode>(), Array.Empty<InputMode>()));
+            fixture.Probe.Windows[1001] = Window(fixture.Launcher.ProcessId, 0, 96);
+            fixture.Probe.Windows[2001] = Window(fixture.Flash.ProcessId, 20, 144);
+            if (contained) fixture.Probe.Children.Add((1001, 2001));
+            fixture.Probe.Focus = new WindowsSessionFocusSnapshot(1001, 2001);
+            var result = fixture.Synchronizer.Refresh();
+            Assert.Equal(parentOwnsInput ? LauncherTarget : FlashTarget, result.ActiveTargetId);
+            var flash = Assert.Single(fixture.Controller.Snapshot.Surfaces, s => s.Kind == SurfaceKind.Flash);
+            Assert.Empty(flash.InputModes);
+            Assert.Empty(flash.ObservationModes);
+        }
+
         [Fact]
         public void EmbeddedFlashFocusWinsOverTopLevelForeground()
         {
@@ -632,7 +653,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                 get;
             }
 
-            public WindowsSessionSurfaceSpec LauncherSpec()
+            public WindowsSessionSurfaceSpec LauncherSpec(bool guarded = true)
             {
                 return new WindowsSessionSurfaceSpec(
                     LauncherTarget,
@@ -647,10 +668,7 @@ namespace CF7Launcher.Tests.AgentRuntime.Sessions
                     {
                         ObservationMode.WindowGraphicsCapture
                     },
-                    new[]
-                    {
-                        InputMode.SendInputGuarded
-                    },
+                    guarded ? new[] { InputMode.SendInputGuarded } : Array.Empty<InputMode>(),
                     0);
             }
 

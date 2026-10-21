@@ -37,12 +37,12 @@ namespace CF7Launcher.Guardian
         }
 
         internal bool TryQueue(bool takeForeground, bool panelMode, bool disposed,
-            long nowTick, out int generation)
+            long nowTick, out int generation, bool nativeInteractionActive = false)
         {
             lock (_sync)
             {
                 generation = _generation;
-                if (!takeForeground || !panelMode || disposed || generation <= 0)
+                if (!takeForeground || !panelMode || disposed || nativeInteractionActive || generation <= 0)
                     return false;
                 if (_queuedGeneration == generation
                     || IsDebouncedLocked(generation, nowTick))
@@ -53,11 +53,12 @@ namespace CF7Launcher.Guardian
         }
 
         internal bool TryBeginExecution(int scheduledGeneration, bool takeForeground,
-            bool panelMode, bool disposed, bool foregroundEligible, long nowTick)
+            bool panelMode, bool disposed, bool foregroundEligible, long nowTick,
+            bool nativeInteractionActive = false)
         {
             lock (_sync)
             {
-                if (!takeForeground || !panelMode || disposed || !foregroundEligible
+                if (!takeForeground || !panelMode || disposed || nativeInteractionActive || !foregroundEligible
                     || scheduledGeneration <= 0 || scheduledGeneration != _generation
                     || scheduledGeneration != _queuedGeneration
                     || IsDebouncedLocked(scheduledGeneration, nowTick))
@@ -67,11 +68,11 @@ namespace CF7Launcher.Guardian
         }
 
         internal bool TryCommitExecution(int scheduledGeneration, bool takeForeground,
-            bool panelMode, bool disposed, long nowTick)
+            bool panelMode, bool disposed, long nowTick, bool nativeInteractionActive = false)
         {
             lock (_sync)
             {
-                if (!takeForeground || !panelMode || disposed)
+                if (!takeForeground || !panelMode || disposed || nativeInteractionActive)
                     return false;
                 if (scheduledGeneration <= 0
                     || scheduledGeneration != _generation
@@ -86,11 +87,11 @@ namespace CF7Launcher.Guardian
         }
 
         internal bool IsCurrentExecution(int scheduledGeneration, bool takeForeground,
-            bool panelMode, bool disposed)
+            bool panelMode, bool disposed, bool nativeInteractionActive = false)
         {
             lock (_sync)
             {
-                return takeForeground && panelMode && !disposed
+                return takeForeground && panelMode && !disposed && !nativeInteractionActive
                     && scheduledGeneration > 0
                     && scheduledGeneration == _generation
                     && scheduledGeneration == _queuedGeneration;
