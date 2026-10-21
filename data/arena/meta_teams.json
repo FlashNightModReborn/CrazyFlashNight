@@ -7065,7 +7065,7 @@
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 40,
-          "weight": 151
+          "weight": 150
         },
         {
           "type": "兵种57",
@@ -7095,13 +7095,13 @@
           "weight": 43
         },
         {
-          "type": "兵种13",
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 22,
-          "weight": 31
+          "weight": 32
         },
         {
           "type": "兵种56",
@@ -7304,9 +7304,9 @@
           }
         },
         {
-          "type": "兵种13",
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "isHostile": true,
           "minLevel": 17,
           "maxLevel": 17,
@@ -46596,14 +46596,25 @@
           "name": "突击兵",
           "spritename": "敌人-军阀突击兵",
           "level": 20,
-          "count": 3,
+          "count": 2,
+          "random": false,
+          "isHostile": true,
+          "humanoid": false
+        },
+        {
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
+          "level": 20,
+          "count": 1,
           "random": false,
           "isHostile": true,
           "humanoid": false
         }
       ],
       "unitCount": 5,
-      "distinctTypes": 3,
+      "distinctTypes": 4,
       "avgLevel": 20,
       "levelMin": 20,
       "levelMax": 20,
@@ -57987,10 +57998,10 @@
       "factionConfidence": "rule",
       "members": [
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -58047,10 +58058,10 @@
       "factionConfidence": "rule",
       "members": [
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -58289,10 +58300,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 22,
           "count": 2,
           "random": false,
@@ -58413,10 +58424,10 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 22,
           "count": 3,
           "random": false,
@@ -58484,10 +58495,10 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 22,
           "count": 5,
           "random": false,
@@ -58793,10 +58804,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 17,
           "count": 2,
           "random": false,
@@ -59242,10 +59253,10 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 17,
           "count": 2,
           "random": false,
@@ -59631,10 +59642,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -59705,10 +59716,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 2,
           "random": false,
@@ -59788,10 +59799,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -59914,10 +59925,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -60017,10 +60028,10 @@
           }
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 3,
           "random": false,
@@ -61149,10 +61160,10 @@
           "humanoid": false
         },
         {
-          "type": "兵种13",
-          "id": 13,
-          "name": "野狗",
-          "spritename": "敌人-僵尸1-狗",
+          "type": "兵种477",
+          "id": 477,
+          "name": "军阀铁卫犬",
+          "spritename": "敌人-军阀铁卫犬",
           "level": 20,
           "count": 2,
           "random": false,

@@ -170,7 +170,12 @@ def accepted_entry(rendered,ref,inputs,native_record=None,native=None):
         variant["provenance"]["nativeRepresentationEvidence"]=native_record
     return entry
 def check_manifest(path, *, logical_output=None, superseded_inputs=False):
-    manifest=read(path); verify_digest(manifest,"manifestDigest")
+    manifest=read(path)
+    if "nativeDogSupplementalPromotion" in manifest:
+        spec=importlib.util.spec_from_file_location("cf7_native_dog_portrait_check",Path(__file__).with_name("promote-dog-portraits-v1.py"))
+        dogs=importlib.util.module_from_spec(spec);spec.loader.exec_module(dogs)
+        return dogs.check_manifest(path,logical_output=logical_output)
+    verify_digest(manifest,"manifestDigest")
     closure=manifest.get("directSupplementalPromotion",{}); verify_digest(closure,"closureDigest")
     if (closure.get("schema")!="cf7.direct-portrait-supplement.v1"
         or closure.get("status")!="human_accepted_direct_portraits_promoted"
@@ -242,6 +247,8 @@ def check_manifest(path, *, logical_output=None, superseded_inputs=False):
             raise ValueError("prior receipt contract changed: "+key)
     return manifest
 def promote():
+    if "nativeDogSupplementalPromotion" in read(OUTPUT/"manifest.json"):
+        check_manifest(OUTPUT/"manifest.json");print("Already superseded by verified native dog supplement");return
     data,approval=package(); base=read(EVIDENCE/"base-manifest.json"); verify_digest(base,"manifestDigest")
     native_record=artifact(EVIDENCE/"compatibility/native-render-report.json")
     native=native_package(native_record)

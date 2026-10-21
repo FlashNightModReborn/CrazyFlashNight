@@ -1,0 +1,46 @@
+{
+  "fixture": "Unchanged canonical source suite, isolated root include; no shared TestLoader mutation or game saves",
+  "swfSha256": "4CC25D1512718BD327AD590FB5114FF17C82DE5F792478F8F229C9AD571E0321",
+  "passed": 253,
+  "traceSha256": "3541149F1F024BE672F3DC9770AF436B9A398E7415DFCD233B27AB31CAE38646",
+  "failed": 0,
+  "playerPid": 11436,
+  "startedAtUtc": "2026-10-21T02:23:44.5687261Z",
+  "nonce": "d7a0e6a2260f43a7ad25eef46262dafb",
+  "inputs": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/Action/Melee/TwoDogsAssetTest.as",
+      "sha256": "904D42E372ED13B696F2E0534413563F746EE242B441AD9F91ED151BA0686154"
+    },
+    {
+      "path": "scripts/IronGuardFinalTwoDogsEntry.as",
+      "sha256": "4B6441328691A3E2B06EA9B6B385A7F373E30E4625C1C621378604EBC67A9125"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "9A128C4DB6F5812C0A8B2D09EE7B65D2D778FC764755688BA87E225CE2FED71B"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "EC144C69719D9E97273E0126713B892E4040829FAEC307811F96381AF2CB3F8D"
+    },
+    {
+      "path": "data/enemy_properties/军阀新人物.xml",
+      "sha256": "50F40722C690600D1AF263B1066A376D8E86D87F5D7A09EA2F1349C3DF22C762"
+    },
+    {
+      "path": "data/enemy_properties/两犬.xml",
+      "sha256": "20B2D09819BCA7CE5B75A79C1D6A24CE4F2659F1F93565D3AA568947CB409D66"
+    }
+  ],
+  "images": 18,
+  "mode": "two-dogs",
+  "freshRealCS6Compile": true,
+  "runtimeSha256": "9CDD2F9F880641CED00C2ADE8156E1A5476DB258D6B5D2A4A411E6AADDD3139D",
+  "completedAtUtc": "2026-10-21T02:23:51.6196404Z",
+  "runtime": "C:/Users/fs/Downloads/adboeflash cs6(1)/Adobe Flash CS6/Players/Debug/FlashPlayerDebugger.exe"
+}

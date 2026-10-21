@@ -1,0 +1,576 @@
+{
+  "kind": "敌人-军阀铁卫犬",
+  "owner": "flashswf\\arts\\new\\Codex专用素材",
+  "symbols": 73,
+  "runtimeSvgParts": 50,
+  "liveMouth": true,
+  "lampFrames": 2,
+  "deathLampOff": true,
+  "biteSupport": {
+    "scope": "attack four-paw braced pose; connected body and rigid limbs",
+    "inputs": [
+      {
+        "path": "tools\\warlord-dog-assets\\bite_support.py",
+        "sha256": "183f0c6f22cbb116e3ef6ca34f933446c8ce76d1aa95e441aaf84139c8bfdd3c"
+      },
+      {
+        "path": "tools\\warlord-dog-assets\\bite-support.json",
+        "sha256": "554b945b690f092ca48854c90e5b361c8fac6eefc506966057363f8dcc8e04d7"
+      },
+      {
+        "path": "tools\\warlord-dog-assets\\mouth-web.svg",
+        "sha256": "4bb7b8109a1b18c70695e90237269a990318b563836d43bd6d32d5189b00d6dc"
+      }
+    ]
+  },
+  "parts": {
+    "1801": {
+      "shapes": 2,
+      "segments": 8,
+      "masks": 0
+    },
+    "1811": {
+      "shapes": 2,
+      "segments": 712,
+      "masks": 0
+    },
+    "1812": {
+      "shapes": 2,
+      "segments": 703,
+      "masks": 0
+    },
+    "1813": {
+      "shapes": 2,
+      "segments": 429,
+      "masks": 0
+    },
+    "1814": {
+      "shapes": 3,
+      "segments": 714,
+      "masks": 0
+    },
+    "1815": {
+      "shapes": 2,
+      "segments": 1287,
+      "masks": 0
+    },
+    "1816": {
+      "shapes": 2,
+      "segments": 528,
+      "masks": 0
+    },
+    "1817": {
+      "shapes": 2,
+      "segments": 243,
+      "masks": 0
+    },
+    "1818": {
+      "shapes": 3,
+      "segments": 726,
+      "masks": 0
+    },
+    "1819": {
+      "shapes": 3,
+      "segments": 999,
+      "masks": 0
+    },
+    "1820": {
+      "shapes": 1,
+      "segments": 6,
+      "masks": 0
+    },
+    "1800": {
+      "shapes": 6,
+      "segments": 24,
+      "masks": 0
+    },
+    "1351": {
+      "shapes": 104,
+      "segments": 1485,
+      "masks": 0
+    },
+    "1352": {
+      "shapes": 101,
+      "segments": 1809,
+      "masks": 0
+    },
+    "1353": {
+      "shapes": 1,
+      "segments": 26,
+      "masks": 0
+    },
+    "1354": {
+      "shapes": 128,
+      "segments": 1996,
+      "masks": 0
+    },
+    "1355": {
+      "shapes": 1,
+      "segments": 77,
+      "masks": 0
+    },
+    "1356": {
+      "shapes": 128,
+      "segments": 2001,
+      "masks": 0
+    },
+    "1357": {
+      "shapes": 1,
+      "segments": 106,
+      "masks": 0
+    },
+    "1358": {
+      "shapes": 128,
+      "segments": 1886,
+      "masks": 0
+    },
+    "1359": {
+      "shapes": 1,
+      "segments": 115,
+      "masks": 0
+    },
+    "1360": {
+      "shapes": 128,
+      "segments": 1855,
+      "masks": 0
+    },
+    "1361": {
+      "shapes": 1,
+      "segments": 123,
+      "masks": 0
+    },
+    "1362": {
+      "shapes": 112,
+      "segments": 1453,
+      "masks": 0
+    },
+    "1363": {
+      "shapes": 117,
+      "segments": 1673,
+      "masks": 0
+    },
+    "1364": {
+      "shapes": 1,
+      "segments": 32,
+      "masks": 0
+    },
+    "1365": {
+      "shapes": 124,
+      "segments": 1788,
+      "masks": 0
+    },
+    "1366": {
+      "shapes": 1,
+      "segments": 56,
+      "masks": 0
+    },
+    "1367": {
+      "shapes": 122,
+      "segments": 1729,
+      "masks": 0
+    },
+    "1368": {
+      "shapes": 1,
+      "segments": 128,
+      "masks": 0
+    },
+    "1369": {
+      "shapes": 125,
+      "segments": 1696,
+      "masks": 0
+    },
+    "1370": {
+      "shapes": 1,
+      "segments": 133,
+      "masks": 0
+    },
+    "1371": {
+      "shapes": 124,
+      "segments": 1547,
+      "masks": 0
+    },
+    "1372": {
+      "shapes": 1,
+      "segments": 155,
+      "masks": 0
+    },
+    "1373": {
+      "shapes": 1,
+      "segments": 160,
+      "masks": 0
+    },
+    "1374": {
+      "shapes": 1,
+      "segments": 155,
+      "masks": 0
+    },
+    "1375": {
+      "shapes": 1,
+      "segments": 172,
+      "masks": 0
+    },
+    "1331": {
+      "shapes": 5,
+      "segments": 897,
+      "masks": 0
+    },
+    "1332": {
+      "shapes": 4,
+      "segments": 665,
+      "masks": 0
+    },
+    "1333": {
+      "shapes": 3,
+      "segments": 264,
+      "masks": 0
+    },
+    "1334": {
+      "shapes": 3,
+      "segments": 138,
+      "masks": 0
+    },
+    "1335": {
+      "shapes": 5,
+      "segments": 2934,
+      "masks": 0
+    },
+    "1336": {
+      "shapes": 4,
+      "segments": 1351,
+      "masks": 0
+    },
+    "1337": {
+      "shapes": 5,
+      "segments": 415,
+      "masks": 0
+    },
+    "1338": {
+      "shapes": 42,
+      "segments": 2900,
+      "masks": 0
+    },
+    "1339": {
+      "shapes": 36,
+      "segments": 386,
+      "masks": 0
+    },
+    "1340": {
+      "shapes": 12,
+      "segments": 43,
+      "masks": 0
+    },
+    "1341": {
+      "shapes": 5,
+      "segments": 38,
+      "masks": 0
+    },
+    "1342": {
+      "shapes": 42,
+      "segments": 210,
+      "masks": 0
+    },
+    "1343": {
+      "shapes": 3,
+      "segments": 23,
+      "masks": 0
+    }
+  },
+  "outputs": [
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\DOMDocument.xml",
+      "sha256": "0ed74f88af71d2fcbfb99c5b4ece20ac02bcfdd559ee4a109c935b9bb70e394c"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 113.xml",
+      "sha256": "8c68c7f3c6d49e07efb8af308637fcccc3cc7cacf937a33fd9ef42d520f5d28e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 15.xml",
+      "sha256": "ed5d4842e22ed455c283aa5022e5ce639a947905c1131345989817d9b4dd7a92"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 16.xml",
+      "sha256": "2371cf26b9e0694094bc82805c15295282abed41e6f219e9086d4742b45bb2f3"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 18.xml",
+      "sha256": "81dfbf11c0e4babfb765ac81568d4607cb26272a86bce9400e52708210cb5f8e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 19.xml",
+      "sha256": "111134fdba0cbccd08c0d5503637fb8ef22be9892a831e83600e495b0b74c436"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 195.xml",
+      "sha256": "995f2f7795eab8d4a6fda3e44627a3f4ffa6a3c84f57e6e92e9da54c71e338f5"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 2.xml",
+      "sha256": "47b09aa5aad6bb1ecf809860f2463f6a1ef4386257a723b9042c24052e6029a5"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 21.xml",
+      "sha256": "21cc8aacfc3c56269a95f25e8d9b5dba5c9a6112c86ed938a9d35335bdce7ca8"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 23.xml",
+      "sha256": "155b699a88581e1bbe8f4655c5c1a1ac7151a194a3723e12859d90f49ad928c7"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 24.xml",
+      "sha256": "9543d7252189655b1d60b95f07e3021ff2344f4dd9417e4e664299214b00ab60"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 26.xml",
+      "sha256": "445cd935c362e778b908acad696256c795228d8907336b5b513d5ed2dbc2f89c"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 32.xml",
+      "sha256": "f2f323a9657685ccedad7b07bb98a9afa580edef361e9bf1744aae8af4299552"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\Symbol 99.xml",
+      "sha256": "ffcea2b88a45ed192a5aee4513e30a04054efeee04373a56187129187586de65"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\共用\\思考标签.xml",
+      "sha256": "7aeee4c5cc2592b00296112d1fd04dbb6318d5ac52978dd2a8906087c3875f35"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1331.xml",
+      "sha256": "e3c264639c858546b481994255be26d04f29e90d385ca8f261d146b64112a57e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1332.xml",
+      "sha256": "3e8e0889e1b939adfbe2db399a359f72476a83bbc052abe6235fb4a920fe4ef5"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1333.xml",
+      "sha256": "9635e2517a9e48ddc09ba7a57167e056912fa04abd6754350121723c77f3274e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1334.xml",
+      "sha256": "72f93c3321732658fa222d02e3b61bb9f24a5c2652adf37dd53602a39a4fcff4"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1335.xml",
+      "sha256": "6d0405acc832578c5b60cc1f4159259b8324700c9a32b33837b1ab941df88878"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1336.xml",
+      "sha256": "8c5ccbd91ee932c568bae8c2d6be10eb705a9583a337db32fe7b9e1d77a2fa09"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1337.xml",
+      "sha256": "3be8e6a99e71741129e6a9de37cb97a46e6b3137086834ab3a648c545fbd76ae"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1338.xml",
+      "sha256": "c8eed6376cc7b1d5338c58285b813a3553a3b200a350ffa6800de0e6ac54a78b"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1339-熄灭.xml",
+      "sha256": "7e622fb06af8eb13e709d68f1a37dfbaf1019b9aa26a03cac03763831dffdc0f"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1339.xml",
+      "sha256": "b30c66d3858b8ea2a787e50f7ae580a247f3042191ee5046498a9d95b761d011"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1340.xml",
+      "sha256": "7edc5a1c85f55f7fb4edcf0033412103fdcf2c23f0d94a64bb84dc2a4cf2ac1e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1341.xml",
+      "sha256": "e8725fa6297dd3ac16f78453f974b367aedceb7ac755c70fa148e246fc430971"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1342.xml",
+      "sha256": "25528ef6f79f2eb056d7f4b4b0b3992d3799fa5e55d4a1c448eb23ce1ed3bda4"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1343.xml",
+      "sha256": "15d3bf060db41efcd4d484e2fbeda6e92800b258bc1f109d14d4bf2971e11f33"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1351.xml",
+      "sha256": "73985dc849e28949581fe00931abf97d015d6563d3ff48d769dabc1d157292ac"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1352.xml",
+      "sha256": "eabfb1323a9284f9c317f6f5c122056260f10c147a2e91231a260f4b7aad5e6d"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1353.xml",
+      "sha256": "269d5bb5386d9a4452937078b396c6b13c5320eec001e13aa0fdbc709a39c7b3"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1354.xml",
+      "sha256": "7b2a523c23c622e3b5d13812ed2abee8fc685e915614e968734332710ba381e8"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1355.xml",
+      "sha256": "a77211db3bc062fdb144888ae4fce2d50e2370551c874c45f1b70bf9f231c3f6"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1356.xml",
+      "sha256": "4094543abf49e8b4ad86a575bc49b3b6ca2c4f30374aafbf8b34d1afa1523512"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1357.xml",
+      "sha256": "ad828a5d8451a5ffb37e26ed7298e10bd24e5b5eda5f2f8d0b51f4fe17a85d22"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1358.xml",
+      "sha256": "3ca78cd21b41b77386a39355ede96d62f2ba3bcbf6da858e5935d36c50e125b9"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1359.xml",
+      "sha256": "181a61e1a61b231cd437c9095c79a791655f05ea34d9b65701c28817bc7615d0"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1360.xml",
+      "sha256": "8455a347a57701eb3dcc005517fc37c38a01c98af54c652beb4786b60c6cf60f"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1361.xml",
+      "sha256": "cea76652ddbff774d30d25b8de410d5be5156c21395756b25b742425d4d46f75"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1362.xml",
+      "sha256": "2ff074ecbf61350127b9357cca6b1767a3426c8666b013da8b79c1cab1734531"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1363.xml",
+      "sha256": "9a35fbae63a0ec025359b55a593893b1c0435852cb5361d82be1ba0bba819a12"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1364.xml",
+      "sha256": "580ac2b441b8e971b9ca51446f99b317b568ec4ebf3cb30c3877ad71e4f22c86"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1365.xml",
+      "sha256": "ba543e758e8168ac312a79cf6efa320c20929f2f68db33359b89d2c42b4711cd"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1366.xml",
+      "sha256": "ac68a16364b16bf38bbb1bf38be6800fb2c50178858dfbe2c7b8d62074bf389e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1367.xml",
+      "sha256": "4e33017dc03b18f781cb704cc19e256749cd865d6134edda1a9399920d6536cd"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1368.xml",
+      "sha256": "3c7606d97631ebe0829a55f6967dec965f8bb6d1a87d8aeeb0e9b062cee2ca87"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1369.xml",
+      "sha256": "32e3446cf6cdc2a579a378aeb8520fcce18ca93c87ab795ae9d8ac59874c5978"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1370.xml",
+      "sha256": "5edc96bdc47225f895362dbe7735b1f3dd4e28153e37a1a5f949b027a5566f31"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1371.xml",
+      "sha256": "cfe1962efb40984c340f264fb675e3934b7f2e68db6ab9a06113b39521f5bc2e"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1372.xml",
+      "sha256": "1aff101c97a57ae5602c633adb36a915f56d9d6b75fdf6d8be5f7249a99ae9cb"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1373.xml",
+      "sha256": "d1993a270912314b52505482a45c94e903434c1d238f23eff0c236289a54eaab"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1374.xml",
+      "sha256": "2af2912dfeb168e19de6e350aebe6dcd399b344d62e233afd8dc644944f9810a"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1375.xml",
+      "sha256": "525b0ccfd3474080faba1f791b088b9ddf1048c4bb7d8515e30364e478e191ac"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1800.xml",
+      "sha256": "1828eca29cbbe50ce8ae3327ab36381fe22c6670d003bc6bbce05261ec0db31a"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1801.xml",
+      "sha256": "ae0c76d42d8c9c3ffc1094aed30062c8b43b44e57401eac6f61de8a6ac9a4234"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1811.xml",
+      "sha256": "ff2dea5e3c2909c56314cb85985b3d691362ad9be45f46df322ae639703b70af"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1812.xml",
+      "sha256": "8538ebb762c5a1e0f7ae4926a1614570c17a9e856724d0b371b070dcc2a14b18"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1813.xml",
+      "sha256": "7e9fe76bbf3fb49ac7db39ec9635053d4c46e23c28354890d11c7e6f26b916aa"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1814.xml",
+      "sha256": "6233bb7b31bff3844fc1d55979b98ff2da5b544e0afb6ad7f75814c56929cad2"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1815.xml",
+      "sha256": "4c9df1a6fdc35f49af0d6e7e25939945eab00e9f216f5049902885650ba5b276"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1816.xml",
+      "sha256": "0cb2ede283bc4d74b843e939860927bb66e2756db7a5bb33dc758d594d952fac"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1817.xml",
+      "sha256": "72df57f2fe6b4e8ab8c8fb37e6be08212f251397610a96a01d2f53c5e85f74b5"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1818.xml",
+      "sha256": "5d8deb891cafe0a532b3b7b5b393e34b1e5edcde6752f62d0bb1cef3e5fa13f2"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1819.xml",
+      "sha256": "fcfe83990bc2e73156058b0031ce1975a37e316d3783b9352609f1c02a447f10"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\分件\\1820.xml",
+      "sha256": "e33f8313e953d2e9dfcea7107ae9f6ffa9ed4ce7577a08280673d2ac7aa4e08f"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\attack.xml",
+      "sha256": "1f848bba90249463cf7341166bbfd7d280b0d94d94d02b66eb9045beb489ac4d"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\death.xml",
+      "sha256": "e95486cda238c56b6e3c7a84337adb691d70dfc49e67c01acdf729d48c338172"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\down-thrown.xml",
+      "sha256": "22857b97b37f9fd93a40c4ba883d7814115f4521fce44c9e7ef1a6f1e9f01028"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\hit.xml",
+      "sha256": "304216cbcb2e12e2b47fe85844948f81e23137938ec5073ebb1bf03d429bfdd2"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\idle-dodge.xml",
+      "sha256": "0eded78d7fac4bb7c41df3b0784cb7f5b4bb9d71fff69145cd00ec32df4d8a72"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\knockdown.xml",
+      "sha256": "44cd1fbd5632a610938efbcf7be6c99bcb725e109881561f01be4d1f6c9e2e60"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\动作\\walk-run.xml",
+      "sha256": "08e52fb3d14994f33626d4757a873dfb85d8da1b27494c2b1e77e93a1d51bce5"
+    },
+    {
+      "path": "flashswf\\arts\\new\\Codex专用素材\\LIBRARY\\Codex\\铁卫犬\\敌人-军阀铁卫犬.xml",
+      "sha256": "a35e3660286fca78bf7bb4499b00b6f913b45c17c5cb91524bb7beb814183ee7"
+    }
+  ]
+}

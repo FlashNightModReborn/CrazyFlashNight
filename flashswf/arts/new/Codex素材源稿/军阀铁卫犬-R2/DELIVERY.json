@@ -1,0 +1,26 @@
+{
+  "release": "CF7-Warlord-R2-Animation",
+  "candidateStatus": "full-original-contract-candidate",
+  "variantIds": [
+    "03-warlord"
+  ],
+  "counts": {
+    "originalNormalSlots": 13,
+    "originalDeathSlots": 25,
+    "additionalStaticInstanceDrawings": 11,
+    "dynamicMouthTemplateSvg": 1,
+    "dynamicMouthRules": 1,
+    "totalRuntimeSvgFiles": 50,
+    "fixedDrawingSvgFiles": 49,
+    "editableClippedSources": 12
+  },
+  "direct13SlotReplacement": false,
+  "runtimeAssembly": "independent adapted rig plus required auxiliary instances and live mouth matrix evaluation",
+  "humanVisualApproval": "pending",
+  "flashCompiled": false,
+  "actualBrowserInteractionTested": false,
+  "sourceIntegrityPass": true,
+  "approvedR2Sha256": "39748c5ae9733a33f1aa182920fafe9d42424154d468f82b1449fe73b5b33851",
+  "adaptedRigSha256": "53b878733e2db85ed13c863b3911ee4769f808d5e31e4643e6b4105f5ceaf3ce",
+  "a2": "source-empty body frames56-89; transparent cleanup controller not executed"
+}

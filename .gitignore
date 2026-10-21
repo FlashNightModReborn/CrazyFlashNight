@@ -65,6 +65,8 @@ scripts/Cf6SoldierNativeHost.swf
 scripts/RockQueenNativeHost.swf
 scripts/TwoDogsNativeHost.swf
 scripts/PhoenixPhaseHost.swf
+scripts/WarlordDogHost.swf
+scripts/WarlordDogHost.html
 scripts/NewcomerRescueNativeHost.swf
 
 # Flash compile automation (generated/machine-specific)
@@ -223,3 +225,21 @@ tools/input-hook-diagnostic/obj/
 
 # Rebuilt native camera regression movie; XFL and suite remain source.
 /scripts/CameraLifecycleHost.swf
+
+# Generated native bite comparison fixture; canonical art remains in Codex XFL.
+/scripts/WarlordDogBiteHost/
+/scripts/WarlordDogBiteHost.swf
+
+/scripts/IronGuardMergedFunctional/
+/scripts/IronGuardMergedFunctional.swf
+/scripts/IronGuardMergedFunctionalEntry.as
+/scripts/IronGuardMergedTwoDogs/
+/scripts/IronGuardMergedTwoDogs.swf
+/scripts/IronGuardMergedTwoDogsEntry.as
+
+/scripts/IronGuardFinalFunctional/
+/scripts/IronGuardFinalFunctional.swf
+/scripts/IronGuardFinalFunctionalEntry.as
+/scripts/IronGuardFinalTwoDogs/
+/scripts/IronGuardFinalTwoDogs.swf
+/scripts/IronGuardFinalTwoDogsEntry.as

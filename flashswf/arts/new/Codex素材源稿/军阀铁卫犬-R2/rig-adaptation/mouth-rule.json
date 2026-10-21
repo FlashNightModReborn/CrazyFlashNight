@@ -1,0 +1,41 @@
+{
+  "componentId": 1800,
+  "depth": 215,
+  "body": "<path d=\"M 0 0 L 1 0 L 0 1 Z\" fill=\"#100f0d\"/>",
+  "anchors": {
+    "hinge": {
+      "depth": 230,
+      "local": [
+        60,
+        110
+      ]
+    },
+    "upper": {
+      "depth": 230,
+      "local": [
+        320,
+        107
+      ]
+    },
+    "lower": {
+      "depth": 235,
+      "local": [
+        205,
+        76
+      ]
+    }
+  },
+  "matrixOrder": "a,b,c,d,tx,ty",
+  "updateOrder": [
+    "load selected adapted frame placements",
+    "transform each local anchor by owning part matrix",
+    "construct affine triangle from hinge, upper and lower anchors",
+    "insert at depth 215 and depth-sort",
+    "apply whole-scene mirror last"
+  ],
+  "missingAnchorPolicy": "omit component if any required depth is absent",
+  "originalSlotCount": 13,
+  "additionalComponents": 1,
+  "runtimeImplementation": "scripts/mouth_adapter.py and embedded JS; not per-frame pre-baked",
+  "nativeFlashImplemented": false
+}

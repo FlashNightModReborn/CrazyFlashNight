@@ -888,3 +888,4 @@ _root.敌人二级函数.嘲讽 = function(target:MovieClip) {
 org.flashNight.arki.unit.UnitAI.Custom.FormerSheriffController.install(_root);
 org.flashNight.arki.unit.UnitAI.Custom.PhoenixPhaseController.install(_root);
 org.flashNight.arki.unit.UnitAI.Custom.WingTigerController.install(_root);
+org.flashNight.arki.unit.UnitAI.Custom.WarlordDogController.install(_root);

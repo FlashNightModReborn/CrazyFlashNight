@@ -1,7 +1,7 @@
 {
   "schema": "cf7.enemy-portrait-manifest.v1",
   "status": "human_accepted_portraits_promoted",
-  "generatedAt": "2026-10-13T12:17:35.451968Z",
+  "generatedAt": "2026-10-21T03:02:16.488949Z",
   "consumerContract": {
     "identityKey": "portraitRef + variantKey",
     "primaryFormat": "per-variant subject.preferredFormat; PNG is primary for embedded raster images or convolution filters; convolution SVG runtime loading is prohibited",
@@ -12,10 +12,10 @@
     "arenaCompatible": true
   },
   "counts": {
-    "identityCount": 228,
-    "variantCount": 229,
-    "humanAcceptedIdentityCount": 223,
-    "humanAcceptedVariantCount": 224,
+    "identityCount": 231,
+    "variantCount": 232,
+    "humanAcceptedIdentityCount": 226,
+    "humanAcceptedVariantCount": 227,
     "pendingHumanReviewIdentityCount": 2,
     "excludedUnimplementedIdentityCount": 1,
     "aliasedIdentityCount": 2,
@@ -23,7 +23,8 @@
     "arenaInventoryIdentityCount": 214,
     "arenaSupplementalIdentityCount": 5,
     "arenaCatalogIdentityCount": 214,
-    "directSupplementalIdentityCount": 2
+    "directSupplementalIdentityCount": 2,
+    "nativeDogSupplementalIdentityCount": 3
   },
   "sourceEnvelope": {
     "inputs": [
@@ -22213,6 +22214,252 @@
           }
         }
       }
+    },
+    "敌人-制式军警犬": {
+      "portraitRef": "敌人-制式军警犬",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-制式军警犬"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/c00ec75c0a818028d353a3d5.svg",
+              "bytes": 44880,
+              "sha256": "C00EC75C0A818028D353A3D5BD44FA3CC9727F8732362C0CDA1CAC5A16A84E3C",
+              "viewBox": [
+                1640,
+                10,
+                1200,
+                1200
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/84f3dd6a59141094fe48f36c.png",
+              "bytes": 105290,
+              "sha256": "84F3DD6A59141094FE48F36C712D4907B27BB61702580FD6843A9FA4BFB9DCDB",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                42,
+                472,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-制式军警犬::default",
+            "resolution": "user_authorized_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_right_facing_pose_matches_zombie_dog_reference",
+            "rasterOrientationTransform": "none",
+            "separateNewCropPixelReview": false,
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/authorization.json",
+              "bytes": 917,
+              "sha256": "62305F62008B72E5531E32E2733CDBB161D702FD9C155950A44BC6A19DA19DF2"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/source.json",
+              "bytes": 22112,
+              "sha256": "85B1861BC46B426BD3F9160DA49E81E57D7833D1D86FA52D3C3FE44462311086"
+            },
+            "sourceBankSha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851",
+            "spriteId": 223,
+            "frame": 1,
+            "zoom": 24,
+            "cropPixels": [
+              1640,
+              10,
+              2840,
+              1210
+            ],
+            "liveMouthSnapshot": false
+          }
+        }
+      }
+    },
+    "敌人-盗贼撕咬犬": {
+      "portraitRef": "敌人-盗贼撕咬犬",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-盗贼撕咬犬"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/1756298a09df3292ba643cd9.svg",
+              "bytes": 32259,
+              "sha256": "1756298A09DF3292BA643CD973B12A0F7B5EE65628F553052223413DC7324794",
+              "viewBox": [
+                1450,
+                -40,
+                1120,
+                1120
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/403af138421195960d61ed5a.png",
+              "bytes": 108009,
+              "sha256": "403AF138421195960D61ED5A6FBFD6F8B178D229A43E5A0B9C139D531A8CCCF4",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                58,
+                459,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-盗贼撕咬犬::default",
+            "resolution": "user_authorized_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_right_facing_pose_matches_zombie_dog_reference",
+            "rasterOrientationTransform": "none",
+            "separateNewCropPixelReview": false,
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/authorization.json",
+              "bytes": 917,
+              "sha256": "62305F62008B72E5531E32E2733CDBB161D702FD9C155950A44BC6A19DA19DF2"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/source.json",
+              "bytes": 22112,
+              "sha256": "85B1861BC46B426BD3F9160DA49E81E57D7833D1D86FA52D3C3FE44462311086"
+            },
+            "sourceBankSha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851",
+            "spriteId": 122,
+            "frame": 1,
+            "zoom": 24,
+            "cropPixels": [
+              1450,
+              -40,
+              2570,
+              1080
+            ],
+            "liveMouthSnapshot": false
+          }
+        }
+      }
+    },
+    "敌人-军阀铁卫犬": {
+      "portraitRef": "敌人-军阀铁卫犬",
+      "petIds": [],
+      "enemyIds": [
+        "敌人-军阀铁卫犬"
+      ],
+      "status": "ready",
+      "defaultVariant": "default",
+      "variants": {
+        "default": {
+          "status": "human_accepted",
+          "subject": {
+            "preferredFormat": "svg",
+            "svg": {
+              "url": "assets/enemy-portraits/subjects/bf5728a660deee3971669d49.svg",
+              "bytes": 473578,
+              "sha256": "BF5728A660DEEE3971669D4945053CEF72EA94077C702486A8F3B8DF61107AC9",
+              "viewBox": [
+                1660,
+                0,
+                1264,
+                1264
+              ],
+              "flipX": false,
+              "embeddedRasterCount": 0,
+              "isRasterHeavy": false,
+              "runtimeAllowed": true,
+              "convolutionFilterCount": 0
+            },
+            "pngFallback": {
+              "url": "assets/enemy-portraits/subjects/5e9c312cd71f2e8e95abbdd8.png",
+              "bytes": 132399,
+              "sha256": "5E9C312CD71F2E8E95ABBDD8EADC0D746B6F2EB00CC4729080DF6EA8D49B952B",
+              "size": [
+                512,
+                512
+              ],
+              "alphaExtrema": [
+                0,
+                255
+              ],
+              "visibleBounds": [
+                0,
+                19,
+                457,
+                512
+              ]
+            }
+          },
+          "provenance": {
+            "reviewKey": "敌人-军阀铁卫犬::default",
+            "resolution": "user_authorized_native_art_crop",
+            "decisionStatus": "explicit_user_authorized_integration",
+            "orientationAction": "keep",
+            "orientationSource": "native_right_facing_pose_matches_zombie_dog_reference",
+            "rasterOrientationTransform": "none",
+            "separateNewCropPixelReview": false,
+            "authorization": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/authorization.json",
+              "bytes": 917,
+              "sha256": "62305F62008B72E5531E32E2733CDBB161D702FD9C155950A44BC6A19DA19DF2"
+            },
+            "sourceEvidence": {
+              "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/source.json",
+              "bytes": 22112,
+              "sha256": "85B1861BC46B426BD3F9160DA49E81E57D7833D1D86FA52D3C3FE44462311086"
+            },
+            "sourceBankSha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851",
+            "spriteId": 33,
+            "frame": 1,
+            "zoom": 24,
+            "cropPixels": [
+              1660,
+              0,
+              2924,
+              1264
+            ],
+            "liveMouthSnapshot": true
+          }
+        }
+      }
     }
   },
   "supplementalPromotion": {
@@ -22373,5 +22620,33 @@
     },
     "closureDigest": "6A387C5AAF78894B7114CEB9FE99FAA65B1EB686A9DB8E49D1023D7818A5EE6D"
   },
-  "manifestDigest": "926622A3014A082D02C2A0B34CAA628819782C8D3E503BE8B439B1E3D58A372C"
+  "nativeDogSupplementalPromotion": {
+    "schema": "cf7.native-dog-portrait-supplement.v1",
+    "status": "explicitly_authorized_native_crops_integrated",
+    "baseManifest": {
+      "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/base-manifest.json",
+      "bytes": 1090331,
+      "sha256": "AD8166361E219AF6CD59000A24D6DF1043C01109C6CA63CCE08B5B7D75443273"
+    },
+    "baseReceipt": {
+      "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/base-promotion-receipt.json",
+      "bytes": 3696,
+      "sha256": "FCCE679896A79EB2E9957AD60BC24E0D42053ACE9A6129D0482D3A8CFE66E65E"
+    },
+    "renderReport": {
+      "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/render-report.json",
+      "bytes": 9506,
+      "sha256": "0A0D59D5BBD72CA505E29D20F6E9B38410AD53950DBD7292E695C6DA22D4AD81"
+    },
+    "portraitRefs": [
+      "敌人-军阀铁卫犬",
+      "敌人-制式军警犬",
+      "敌人-盗贼撕咬犬"
+    ],
+    "baseManifestDigest": "926622A3014A082D02C2A0B34CAA628819782C8D3E503BE8B439B1E3D58A372C",
+    "historicalCampaignEvidence": "preserved_without_recertification",
+    "separateNewCropPixelReview": false,
+    "closureDigest": "5C38A7C349E613EDB97D5CA68130154AC4372D7EEA716D279F15BC72F3F9E8CC"
+  },
+  "manifestDigest": "78EFE9DF1F366C5DC86EE127FAFF6A9925327127F5DD0C8E7CC4871BDD2D07FB"
 }

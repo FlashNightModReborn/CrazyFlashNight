@@ -1,0 +1,46 @@
+{
+  "mode": "functional",
+  "startedAtUtc": "2026-10-21T02:22:40.5484399Z",
+  "fixture": "Unchanged canonical source suite, isolated root include; no shared TestLoader mutation or game saves",
+  "runtime": "C:/Users/fs/Downloads/adboeflash cs6(1)/Adobe Flash CS6/Players/Debug/FlashPlayerDebugger.exe",
+  "traceSha256": "000879914B445DEA0D2B294E5E5F89CD0B4ED4E1D31A0413C29141962AD4A8E2",
+  "failed": 0,
+  "inputs": [
+    {
+      "path": "scripts/类定义/org/flashNight/arki/unit/UnitAI/Custom/WarlordDogTest.as",
+      "sha256": "E635A4DFD8111E49BEEE2390B2F7FFE4781591C627BA1BB8914F6F3AE4ED7578"
+    },
+    {
+      "path": "scripts/IronGuardFinalFunctionalEntry.as",
+      "sha256": "A2AD70ECC1E7AA3A29033782E4C38BB4023E36694216FD32A338BA8C60F857D0"
+    },
+    {
+      "path": "flashswf/arts/new/Codex专用素材.swf",
+      "sha256": "B50A502ED55B0360DC74BFEBECC23112914626714792A6C37B1A13D3AEDFD851"
+    },
+    {
+      "path": "scripts/asLoader.swf",
+      "sha256": "9A128C4DB6F5812C0A8B2D09EE7B65D2D778FC764755688BA87E225CE2FED71B"
+    },
+    {
+      "path": "data/units/units.json",
+      "sha256": "EC144C69719D9E97273E0126713B892E4040829FAEC307811F96381AF2CB3F8D"
+    },
+    {
+      "path": "data/enemy_properties/军阀新人物.xml",
+      "sha256": "50F40722C690600D1AF263B1066A376D8E86D87F5D7A09EA2F1349C3DF22C762"
+    },
+    {
+      "path": "data/enemy_properties/两犬.xml",
+      "sha256": "20B2D09819BCA7CE5B75A79C1D6A24CE4F2659F1F93565D3AA568947CB409D66"
+    }
+  ],
+  "images": 0,
+  "runtimeSha256": "9CDD2F9F880641CED00C2ADE8156E1A5476DB258D6B5D2A4A411E6AADDD3139D",
+  "completedAtUtc": "2026-10-21T02:22:44.6904903Z",
+  "playerPid": 33148,
+  "passed": 60,
+  "nonce": "75b0182bc5504038b250b11ecd0a494f",
+  "freshRealCS6Compile": true,
+  "swfSha256": "98AFA1E92EF0C7BB44D533E6D0F2AF797EEEB2E4A4F361E974293F52E08CF562"
+}

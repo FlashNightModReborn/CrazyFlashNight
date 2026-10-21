@@ -1,0 +1,20 @@
+{
+  "result": "PASS",
+  "metadataExcluded": 77,
+  "onlyNonMetadataChange": [
+    {
+      "tagIndex": 2159,
+      "tagCode": 59,
+      "spriteId": 719,
+      "changes": [
+        {
+          "at": 35992,
+          "before": 14,
+          "after": 15
+        }
+      ],
+      "class": "__Packages.org.flashNight.arki.unit.UnitAI.Custom.FormerSheriffController"
+    }
+  ],
+  "meaning": "The merged loader retains previous code and contains the upstream FormerSheriff14to15 loop correction"
+}

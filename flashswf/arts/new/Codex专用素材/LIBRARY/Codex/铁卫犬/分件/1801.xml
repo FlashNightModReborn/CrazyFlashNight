@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns="http://ns.adobe.com/xfl/2008/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Codex/铁卫犬/分件/1801" itemID="6af00000-9fa9b76e" symbolType="graphic">
+  <timeline>
+    <DOMTimeline name="1801">
+      <layers>
+        <DOMLayer name="原生矢量层" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728">
+              <elements>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#2C2721"/>
+                    </FillStyle>
+                  </fills>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke weight="5" scaleMode="normal" caps="round" joints="round">
+                        <fill>
+                          <SolidColor color="#171715"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge edges="!-960 0|260 80|40 -120|-320 -1080[-400 -1320 -500 -1180[-780 -740 -960 0" fillStyle0="1" strokeStyle="1"/>
+                  </edges>
+                </DOMShape>
+                <DOMShape isDrawingObject="true">
+                  <fills>
+                    <FillStyle index="1">
+                      <SolidColor color="#43392D"/>
+                    </FillStyle>
+                  </fills>
+                  <edges>
+                    <Edge edges="!-420 -980|-660 -300|-220 -260|-420 -980" fillStyle0="1"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

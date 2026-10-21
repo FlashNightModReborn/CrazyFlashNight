@@ -1,0 +1,2128 @@
+<?xml version='1.0' encoding='utf-8'?>
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Codex/铁卫犬/动作/hit" itemID="6b100000-6e173ec9">
+  <timeline>
+    <DOMTimeline name="hit">
+      <layers>
+        <DOMLayer name="Labels Layer" color="#43CDE6">
+          <frames>
+            <DOMFrame index="0" name="a0" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="1" duration="21" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="22" name="a1" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Script Layer" color="#48EA51">
+          <frames>
+            <DOMFrame index="0" duration="9" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="10" duration="20" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="30" keyMode="9728">
+              <Actionscript>
+                <script><![CDATA[_parent.动画完毕();
+]]></script>
+              </Actionscript>
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Layer 26" color="#CE59A6" current="true" isSelected="true">
+          <frames>
+            <DOMFrame index="0" duration="40" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/共用/Symbol 2" centerPoint3DX="70.6" centerPoint3DY="147.15">
+                  <matrix>
+                    <Matrix a="0.319610595703125" d="0.130126953125" tx="-16.05" ty="60.5"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load){
+   if(_root.是否阴影 == true)
+   {
+      this._visible = 1;
+   }
+   else
+   {
+      this._visible = 0;
+   }
+}
+]]></script>
+                  </Actionscript>
+                  <filters>
+                    <AdjustColorFilter/>
+                  </filters>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-240" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056616" b="0.04543" c="-0.04543" d="0.056616" tx="10.72787" ty="18.639055"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.064168" b="0.034029" c="-0.034029" d="0.064168" tx="18.692173" ty="5.092577"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="17.374" ty="12.361"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056616" b="0.04543" c="-0.04543" d="0.056616" tx="10.72787" ty="18.639055"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.064168" b="0.034029" c="-0.034029" d="0.064168" tx="18.692173" ty="5.092577"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1341" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="17.374" ty="12.361"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-235" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.062556" b="0.036825" c="-0.036825" d="0.062556" tx="6.063169" ty="30.252456"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.068391" b="0.024457" c="-0.024457" d="0.068391" tx="16.286319" ty="17.38181"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="21.004" ty="24.34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.062556" b="0.036825" c="-0.036825" d="0.062556" tx="6.063169" ty="30.252456"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.068391" b="0.024457" c="-0.024457" d="0.068391" tx="16.286319" ty="17.38181"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1340" name="part235">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="21.004" ty="24.34"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-230" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.056618" b="0.045428" c="-0.045428" d="0.056618" tx="7.663151" ty="21.298777"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.064169" b="0.034026" c="-0.034026" d="0.064169" tx="16.179042" ty="8.281624"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="16.648" ty="16.354"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.056618" b="0.045428" c="-0.045428" d="0.056618" tx="7.663151" ty="21.298777"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.064169" b="0.034026" c="-0.034026" d="0.064169" tx="16.179042" ty="8.281624"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1342" name="part230">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="16.648" ty="16.354"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-215" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="40">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1800" name="part215">
+                  <matrix>
+                    <Matrix/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(enterFrame) {
+    var head = _parent.part230;
+    var jaw = _parent.part235;
+    this._visible = head != undefined && jaw != undefined;
+    if (this._visible) {
+        var hinge = {x:60,y:110};
+        var upper = {x:320,y:107};
+        var lower = {x:205,y:76};
+        head.localToGlobal(hinge); _parent.globalToLocal(hinge);
+        head.localToGlobal(upper); _parent.globalToLocal(upper);
+        jaw.localToGlobal(lower); _parent.globalToLocal(lower);
+        var liveTransform = new flash.geom.Transform(this);
+        liveTransform.matrix = new flash.geom.Matrix(upper.x-hinge.x,upper.y-hinge.y,
+            lower.x-hinge.x,lower.y-hinge.y,hinge.x,hinge.y);
+    }
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-210" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056618" b="0.045428" c="-0.045428" d="0.056618" tx="19.983834" ty="14.990589"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.064169" b="0.034027" c="-0.034027" d="0.064169" tx="27.104794" ty="-0.229783"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="22.3108" ty="3.7216"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.056618" b="0.045428" c="-0.045428" d="0.056618" tx="19.983834" ty="14.990589"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.064169" b="0.034027" c="-0.034027" d="0.064169" tx="27.104794" ty="-0.229783"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1801" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="22.3108" ty="3.7216"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-200" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-7.737767" ty="23.201308"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="1.399374" ty="13.04087"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="1.402" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-7.737767" ty="23.201308"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="1.399374" ty="13.04087"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1339" name="part200">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="1.402" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <Actionscript>
+                    <script><![CDATA[onClipEvent(load) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}
+onClipEvent(enterFrame) {
+    gotoAndStop(_parent._parent.__ironGuard.ready && _parent._parent.hp > 0 ? 1 : 2);
+}]]></script>
+                  </Actionscript>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-190" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070458" b="-0.017465" c="0.017465" d="0.070458" tx="-1.973161" ty="60.680656"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071909" b="0.010224" c="-0.010224" d="0.071909" tx="5.247862" ty="60.019202"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="7.21" ty="62.092"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070458" b="-0.017465" c="0.017465" d="0.070458" tx="-1.973161" ty="60.680656"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071909" b="0.010224" c="-0.010224" d="0.071909" tx="5.247862" ty="60.019202"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1334" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="7.21" ty="62.092"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-180" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069187" b="-0.021966" c="0.021966" d="0.069187" tx="-5.383169" ty="58.33606"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06973" b="0.020328" c="-0.020328" d="0.06973" tx="3.722095" ty="56.169875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="4.669" ty="58.825"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069187" b="-0.021966" c="0.021966" d="0.069187" tx="-5.383169" ty="58.33606"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06973" b="0.020328" c="-0.020328" d="0.06973" tx="3.722095" ty="56.169875"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1333" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="4.669" ty="58.825"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-170" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069187" b="-0.021966" c="0.021966" d="0.069187" tx="-20.51677" ty="49.051063"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06973" b="0.020328" c="-0.020328" d="0.06973" tx="-3.673924" ty="40.017354"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-6.947" ty="45.394"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.069187" b="-0.021966" c="0.021966" d="0.069187" tx="-20.51677" ty="49.051063"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.06973" b="0.020328" c="-0.020328" d="0.06973" tx="-3.673924" ty="40.017354"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1332" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-6.947" ty="45.394"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-160" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070954" b="0.015326" c="-0.015326" d="0.070954" tx="-21.297252" ty="30.316438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="-10.592529" ty="22.577782"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-11.666" ty="27.244"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070954" b="0.015326" c="-0.015326" d="0.070954" tx="-21.297252" ty="30.316438"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="-10.592529" ty="22.577782"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1331" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-11.666" ty="27.244"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-155" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-7.737767" ty="23.201308"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="1.399374" ty="13.04087"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="1.402" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-7.737767" ty="23.201308"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="1.399374" ty="13.04087"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1820" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="1.402" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-150" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-34.258539" ty="61.435382"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-35.511192" ty="60.427889"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-36.713" ty="61.366"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-34.258539" ty="61.435382"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-35.511192" ty="60.427889"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1819" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-36.713" ty="61.366"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-140" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-37.162142" ty="61.435382"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-38.41649" ty="60.427889"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-39.617" ty="61.366"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-37.162142" ty="61.435382"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-38.41649" ty="60.427889"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1337" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-39.617" ty="61.366"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-130" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-43.332299" ty="50.18392"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-44.590247" ty="49.169862"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-45.788" ty="50.113"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-43.332299" ty="50.18392"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-44.590247" ty="49.169862"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1336" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-45.788" ty="50.113"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-120" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.063438" b="-0.035284" c="0.035284" d="0.063438" tx="-51.310534" ty="27.626009"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-40.595463" ty="25.56432"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-41.795" ty="26.518"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.063438" b="-0.035284" c="0.035284" d="0.063438" tx="-51.310534" ty="27.626009"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-40.595463" ty="25.56432"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1335" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-41.795" ty="26.518"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-110" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-23.673537" ty="22.159051"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="-14.458438" ty="15.006211"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-14.57" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072435" b="0.004738" c="-0.004738" d="0.072435" tx="-23.673537" ty="22.159051"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072081" b="-0.008933" c="0.008933" d="0.072081" tx="-14.458438" ty="15.006211"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1338" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-14.57" ty="19.258"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-105" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-56.056241" ty="16.767574"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-47.296874" ty="15.782583"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-47.24" ty="15.991"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" d="0.07259" tx="-56.056241" ty="16.767574"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-47.296874" ty="15.782583"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1343" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-47.24" ty="15.991"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-100" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-30.43546" ty="60.573581"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-29.325543" ty="56.436801"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-30.6872" ty="58.462"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-30.43546" ty="60.573581"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-29.325543" ty="56.436801"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1818" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-30.6872" ty="58.462"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-90" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-31.742044" ty="58.758802"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-30.632926" ty="54.62099"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-31.994" ty="56.647"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-31.742044" ty="58.758802"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-30.632926" ty="54.62099"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1817" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-31.994" ty="56.647"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-80" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-38.637907" ty="49.32195"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-37.533008" ty="45.178773"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-38.891" ty="47.209"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.07259" b="0.000001" c="-0.000001" d="0.07259" tx="-38.637907" ty="49.32195"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-37.533008" ty="45.178773"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1816" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-38.891" ty="47.209"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-70" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.063438" b="-0.035284" c="0.035284" d="0.063438" tx="-42.736734" ty="30.005396"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-31.722413" ty="26.29434"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-33.083" ty="28.333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.063438" b="-0.035284" c="0.035284" d="0.063438" tx="-42.736734" ty="30.005396"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072632" d="0.072632" tx="-31.722413" ty="26.29434"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1815" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="-33.083" ty="28.333"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-60" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="4.080717" ty="61.354371"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="11.453447" ty="55.645773"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="14.47" ty="59.188"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="4.080717" ty="61.354371"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="11.453447" ty="55.645773"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1814" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="14.47" ty="59.188"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-50" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="0.017993" ty="59.096389"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="9.337098" ty="51.504457"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="10.84" ty="56.284"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="0.017993" ty="59.096389"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="9.337098" ty="51.504457"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1813" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="10.84" ty="56.284"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-40" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="-8.475579" ty="50.225453"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="7.226855" ty="39.398375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="3.943" ty="46.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.071575" b="-0.0121" c="0.0121" d="0.071575" tx="-8.475579" ty="50.225453"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.066212" b="0.029857" c="-0.029857" d="0.066212" tx="7.226855" ty="39.398375"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1812" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="3.943" ty="46.12"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="R2原生分件-30" color="#4FFF4F">
+          <frames>
+            <DOMFrame index="0" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070953" b="0.015331" c="-0.015331" d="0.070953" tx="-8.103046" ty="39.908806"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="4" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072082" b="-0.008928" c="0.008928" d="0.072082" tx="4.174859" ty="29.530158"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" keyMode="9728" duration="16">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="2.128" ty="35.956"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="22" keyMode="9728" duration="4">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.070953" b="0.015331" c="-0.015331" d="0.070953" tx="-8.103046" ty="39.908806"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="26" keyMode="9728" duration="2">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.072082" b="-0.008928" c="0.008928" d="0.072082" tx="4.174859" ty="29.530158"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="28" keyMode="9728" duration="12">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Codex/铁卫犬/分件/1811" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.0726" d="0.0726" tx="2.128" ty="35.956"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                  <color>
+                    <Color redMultiplier="0.800781" greenMultiplier="0.800781" blueMultiplier="0.800781" alphaMultiplier="1" redOffset="0" greenOffset="0" blueOffset="0" alphaOffset="0"/>
+                  </color>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>

@@ -51,6 +51,9 @@ namespace CF7Launcher.Tests.Guardian.Hud.Loot
         [Theory]
         [InlineData("敌人-前治安官")]
         [InlineData("敌人-Codex黑仔")]
+        [InlineData("敌人-制式军警犬")]
+        [InlineData("敌人-盗贼撕咬犬")]
+        [InlineData("敌人-军阀铁卫犬")]
         public void TryGet_DirectPortrait_RendersVisibleImageWithTransparency(string portraitRef)
         {
             using (LootIconCatalog catalog = NewCatalog())

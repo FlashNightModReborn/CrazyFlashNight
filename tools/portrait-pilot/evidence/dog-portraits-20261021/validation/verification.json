@@ -1,0 +1,42 @@
+{
+  "scope": "Native source crops for475/476/477 only; prior dog art accepted and commit/push explicitly authorized",
+  "web": {
+    "cases": 24,
+    "failed": 0,
+    "maxPremultipliedRgbaMae": 4.032931219362747,
+    "receipt": {
+      "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/validation/web-result.json",
+      "bytes": 5323,
+      "sha256": "B2CCF1E01AB3374DA9156B7D23C107D367A25B77DE5727354D054D2375E6EF3D"
+    }
+  },
+  "native": {
+    "passed": 11,
+    "failed": 0,
+    "receipt": {
+      "path": "tools/portrait-pilot/evidence/dog-portraits-20261021/validation/native-result.trx",
+      "bytes": 19642,
+      "sha256": "5194EACBF4F0D8FF9BC173FAA9368F4FADE40AA8FEEAAA523FAB3D767868BAA7"
+    }
+  },
+  "sourceReplay": "3 source frames, PNG/SVG6representations byte identical",
+  "priorPortraitPreservation": "5/5 actual cases passed",
+  "materialEnemyCoverage": "78/78;210 occurrences;156bindings",
+  "resolver": "15/15",
+  "mercPortrait": "10/10",
+  "loot": {
+    "browser": "147/147",
+    "lazyCancel": "6/6"
+  },
+  "broadChecks": {
+    "arena": "35/36 perviewport; legacy all-catalog completeness failure",
+    "team": [
+      "222/223",
+      "222/223",
+      "221/223"
+    ],
+    "failureDetails": "See README, coverage-baseline.json and preserved local harness logs. No broad green claim."
+  },
+  "formalRuntimeDeployment": false,
+  "humanGameplayAcceptance": "Not performed by these image tests"
+}

@@ -1,0 +1,19 @@
+{
+  "schema": "cf7.native-portrait-task-authorization.v1",
+  "source": "direct human user message in this conversation",
+  "userText": "可行，给这3只狗照着僵尸犬的风格，都配上合适的头像，然后提交推送",
+  "acceptedArt": "Existing three native dog designs and the just-delivered Iron Guard bite/mouth adjustments",
+  "authorizedWork": [
+    "derive native head-and-shoulder portraits in the zombie-dog style",
+    "integrate all three portraits",
+    "commit and push the completed dog work"
+  ],
+  "portraitRefs": [
+    "敌人-制式军警犬",
+    "敌人-盗贼撕咬犬",
+    "敌人-军阀铁卫犬"
+  ],
+  "separateNewCropPixelReview": false,
+  "acceptanceMeaning": "Existing human-accepted native art plus explicit authorization to frame and integrate. No claim that the human has individually reviewed these newly cropped pixels.",
+  "formalRuntimeDeploymentAuthorized": false
+}
