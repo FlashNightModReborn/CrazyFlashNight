@@ -145,6 +145,9 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private const int EC_LEFTMARGIN = 0x0001;
         private const int EC_RIGHTMARGIN = 0x0002;
         private const int WM_GETMINMAXINFO = 0x0024;
+        /// <summary>选项态的输入框是单行不换行：滚轮改成横向滚。</summary>
+        private const int WM_MOUSEWHEEL = 0x020A;
+        private const int EM_LINESCROLL = 0x00B6;
         internal const float DesignHeight = 180f;
         internal const int ToggleWidthDesign = 52;
         internal const int ToggleHeightDesign = 30;
@@ -213,6 +216,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private Rectangle _actionRect = Rectangle.Empty;
         private Rectangle _fieldRect = Rectangle.Empty;
         private Rectangle _counterRect = Rectangle.Empty;
+        // 选项态：草案确认轮最后一条 add 上，正文区切成「我接了 / 我不接 / 单行输入」三行。
+        private Rectangle _acceptRect = Rectangle.Empty;
+        private Rectangle _rejectRect = Rectangle.Empty;
+        private bool _askAccept;
+        private bool _acceptHover;
+        private bool _rejectHover;
         private int _toggleWidthPx;
         private int _toggleHeightPx;
         private int _outerPaddingPx;
@@ -433,7 +442,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         private void UpdateCursor()
         {
             bool clickable = _expanded
-                ? (_chevronHover || (_actionHover && ActionEnabled))
+                ? (_chevronHover || (_actionHover && ActionEnabled)
+                    || ((_acceptHover || _rejectHover) && _model.Enabled))
                 : (_chevronHover && CanToggle);
             Cursor = clickable ? Cursors.Hand : Cursors.Default;
         }
@@ -456,6 +466,25 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             UpdateCursor();
             Invalidate();
         }
+
+        /// <summary>
+        /// 选项态开关（草案确认轮的最后一条 add）：正文区切成三行等高 ——
+        /// 「我接了」「我不接」两个按钮 + 单行不换行输入框。面板总高不变，靠压缩输入框腾位。
+        /// 关闭时恢复整块多行输入槽（正常换行）。
+        /// </summary>
+        internal void SetAskAccept(bool value)
+        {
+            if (_askAccept == value) return;
+            _askAccept = value;
+            _acceptHover = false;
+            _rejectHover = false;
+            if (_textBox != null) _textBox.WordWrap = !value;   // 选项态单行：超出横向滚动
+            ApplyLayout();
+            Invalidate();
+        }
+
+        /// <summary>当前是否处于选项态（测试观测）。</summary>
+        internal bool AskAcceptForTest { get { return _askAccept; } }
 
         /// <summary>当前文本（只读观测）。</summary>
         public string GetInputText()
@@ -645,6 +674,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (_model.CanSend) SendCurrentText();
         }
 
+        /// <summary>选项点击：固定文案当玩家输入发出去，与手动打字发送同一个出口（SendRequested）。</summary>
+        private void ChooseAccept(bool accept)
+        {
+            if (!_model.Enabled) return;
+            Action<string> handler = SendRequested;
+            if (handler == null) return;
+            ClearInput();
+            try { handler(accept ? "我接了" : "我不接"); }
+            catch { }
+        }
+
         private void SendCurrentText()
         {
             string text = _model.Text;
@@ -753,6 +793,13 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             PaintHeaderTitle(g, headerH);
 
+            // 选项态：两个选项行与输入槽同宽等高；主选项黑底白字，次选项浅底黑边。
+            if (_askAccept)
+            {
+                PaintChoiceRow(g, _acceptRect, "我接了", true, _acceptHover);
+                PaintChoiceRow(g, _rejectRect, "我不接", false, _rejectHover);
+            }
+
             // 输入槽：方角灰/黑边；聚焦只加粗为黑色 2px，不加颜色光晕。
             if (!_fieldRect.IsEmpty)
             {
@@ -784,6 +831,37 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
 
             DrawChamferedBorder(g, ClientRectangle,
                 Math.Max(6, (int)Math.Round(12 * ui)), Color.FromArgb(190, _bodyFore));
+        }
+
+        /// <summary>选项行：主选项黑底白字（与「发送」同色系），次选项浅底黑边；禁用时整体压灰。</summary>
+        private void PaintChoiceRow(Graphics g, Rectangle rect, string label, bool primary, bool hover)
+        {
+            if (rect.Width <= 0 || rect.Height <= 0) return;
+            bool enabled = _model.Enabled;
+            Color back, fore;
+            if (primary)
+            {
+                back = !enabled ? Color.FromArgb(150, 150, 150)
+                    : (hover ? Color.FromArgb(58, 58, 58) : _headerBack);
+                fore = _headerFore;
+            }
+            else
+            {
+                back = !enabled ? _fieldDisabledBack
+                    : (hover ? Color.FromArgb(226, 223, 216) : _fieldBack);
+                fore = enabled ? _bodyFore : _muted;
+            }
+            using (SolidBrush fill = new SolidBrush(back))
+                g.FillRectangle(fill, rect);
+            using (Pen edge = new Pen(primary ? back : _fieldBorder, Math.Max(1f, _uiScale)))
+            {
+                edge.Alignment = PenAlignment.Inset;
+                g.DrawRectangle(edge, rect.X, rect.Y, rect.Width - 1, rect.Height - 1);
+            }
+            if (_actionFont == null) return;
+            TextRenderer.DrawText(g, label, _actionFont, rect, fore,
+                TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter
+                | TextFormatFlags.NoPadding | TextFormatFlags.SingleLine);
         }
 
         /// <summary>展开态收起钮：与收起态同尺寸的长方形，浅灰底黑箭头，左上折角。</summary>
@@ -983,6 +1061,11 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 Collapse(true);
                 return;
             }
+            if (_askAccept)
+            {
+                if (_acceptRect.Contains(e.Location)) { ChooseAccept(true); return; }
+                if (_rejectRect.Contains(e.Location)) { ChooseAccept(false); return; }
+            }
             if (_actionRect.Contains(e.Location) && ActionEnabled)
             {
                 PerformAction();
@@ -996,10 +1079,15 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             base.OnMouseMove(e);
             bool chevronHover = _chevronRect.Contains(e.Location);
             bool actionHover = _expanded && _actionRect.Contains(e.Location) && ActionEnabled;
-            if (chevronHover != _chevronHover || actionHover != _actionHover)
+            bool acceptHover = _expanded && _askAccept && _acceptRect.Contains(e.Location);
+            bool rejectHover = _expanded && _askAccept && _rejectRect.Contains(e.Location);
+            if (chevronHover != _chevronHover || actionHover != _actionHover
+                || acceptHover != _acceptHover || rejectHover != _rejectHover)
             {
                 _chevronHover = chevronHover;
                 _actionHover = actionHover;
+                _acceptHover = acceptHover;
+                _rejectHover = rejectHover;
                 UpdateCursor();
                 Invalidate();
             }
@@ -1008,10 +1096,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         protected override void OnMouseLeave(EventArgs e)
         {
             base.OnMouseLeave(e);
-            if (_chevronHover || _actionHover)
+            if (_chevronHover || _actionHover || _acceptHover || _rejectHover)
             {
                 _chevronHover = false;
                 _actionHover = false;
+                _acceptHover = false;
+                _rejectHover = false;
                 UpdateCursor();
                 Invalidate();
             }
@@ -1120,6 +1210,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 _actionRect = Rectangle.Empty;
                 _fieldRect = Rectangle.Empty;
                 _counterRect = Rectangle.Empty;
+                _acceptRect = Rectangle.Empty;
+                _rejectRect = Rectangle.Empty;
                 BackColor = _headerBack;
                 if (_placeholderLabel != null) _placeholderLabel.Visible = false;
                 ApplyWindowRegion();
@@ -1137,15 +1229,34 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             int gap = Math.Max(4, (int)Math.Round(6 * ui));
             int footerTop = h - footerH;
 
-            // 输入框吃满头条与页脚之间的正文区，只留 6px 上下呼吸位；至少容纳三行。
+            // 正文区：普通态整块给输入框；选项态三等分（两个按钮 + 单行输入），面板总高不变。
             int bodyTop = headerH + gap;
             int bodyBottom = footerTop - gap;
             int fieldH = Math.Max(1, bodyBottom - bodyTop);
-            _fieldRect = new Rectangle(pad, bodyTop, Math.Max(80, w - pad * 2), fieldH);
+            int innerW = Math.Max(80, w - pad * 2);
+            if (_askAccept)
+            {
+                int rowGap = Math.Max(3, (int)Math.Round(4 * ui));
+                int rowH = Math.Max(1, (fieldH - rowGap * 2) / 3);
+                int inputTop = bodyTop + (rowH + rowGap) * 2;
+                _acceptRect = new Rectangle(pad, bodyTop, innerW, rowH);
+                _rejectRect = new Rectangle(pad, bodyTop + rowH + rowGap, innerW, rowH);
+                _fieldRect = new Rectangle(pad, inputTop, innerW,
+                    Math.Max(1, bodyBottom - inputTop));
+            }
+            else
+            {
+                _acceptRect = Rectangle.Empty;
+                _rejectRect = Rectangle.Empty;
+                _fieldRect = new Rectangle(pad, bodyTop, innerW, fieldH);
+            }
 
             int insetX = Math.Max(8, (int)Math.Round(12 * ui));
-            int insetY = Math.Max(4, (int)Math.Round(6 * ui));
-            int textH = Math.Max(1, fieldH - insetY * 2);
+            // 选项态只有一行高：上下内缩压到 3px，保证 14px 字形在一行里完整可见。
+            int insetY = _askAccept
+                ? Math.Max(2, (int)Math.Round(3 * ui))
+                : Math.Max(4, (int)Math.Round(6 * ui));
+            int textH = Math.Max(1, _fieldRect.Height - insetY * 2);
             _textBox.Bounds = new Rectangle(_fieldRect.Left + insetX, _fieldRect.Top + insetY,
                 Math.Max(40, _fieldRect.Width - insetX * 2), textH);
             if (_textBox.IsHandleCreated) ApplyTextBoxMargins();
@@ -1271,6 +1382,17 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
                 if (m.Msg == WM_IME_STARTCOMPOSITION) SetComposing(true);
                 else if (m.Msg == WM_IME_ENDCOMPOSITION) SetComposing(false);
                 else if (m.Msg == WM_IME_COMPOSITION) SetComposing(ProbeComposition(Handle));
+                else if (m.Msg == WM_MOUSEWHEEL && Multiline && !WordWrap)
+                {
+                    // 选项态的单行高输入框：滚轮改成横向滚，长句不用只靠左右方向键挪。
+                    int delta = (short)((long)m.WParam >> 16);
+                    if (delta != 0)
+                    {
+                        SendMessage(Handle, EM_LINESCROLL,
+                            (IntPtr)(-Math.Sign(delta) * 3), IntPtr.Zero);
+                        return;
+                    }
+                }
                 base.WndProc(ref m);
             }
         }

@@ -1352,6 +1352,124 @@ namespace CF7Launcher.Tests.Tasks
             "{\"mute\":false,\"end\":3,\"edits\":[{\"n\":2,\"kind\":\"edit\","
             + "\"lines\":[{\"text\":\"北边仓库昨晚丢了一批货。\",\"emotion\":\"普通\"}]}]}";
 
+        // ── 选项态（草案确认轮的最后一条 add）──────────────────────────────
+
+        [Fact]
+        public void AskAcceptTurnsOnAtLastAddBeforeClosing()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            // 草案已拟好：最终确认对话两条 add + 结束语；plan 无 end → 放弃原始剩余。
+            h.Transport.Script(
+                AddLine("委托是去北边仓库找回清单上的货。", 0)
+                + AddLine("接不接，你给个话。", 1)
+                + AddLine("不接就算了，这活先搁着。", 2, "closing")
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();          // $PC 打完
+            h.Advance();                                    // → 首句 add 上屏
+            Assert.Equal("委托是去北边仓库找回清单上的货。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);          // 后面还有 add，不是最后一条
+
+            h.Advance();                                    // → 第二条 add
+            Assert.Equal("接不接，你给个话。", h.Widget.CurrentFrame.Text);
+            Assert.True(h.Controller.AskAccept);           // 下一条是结束语 → 弹选项
+
+            h.Advance();                                    // → 结束语
+            Assert.Equal("不接就算了，这活先搁着。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);          // 进结束语即恢复普通输入条
+        }
+
+        [Fact]
+        public void AskAcceptTurnsOnAtLastAddWhenClosingMissing()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            // 后端没写结束语：靠 done 收流信号认出最后一条 add。
+            h.Transport.Script(
+                AddLine("委托是去北边仓库找回清单上的货。", 0)
+                + AddLine("接不接，你给个话。", 1)
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();          // $PC 打完
+            h.Advance();                                    // → 首句 add 上屏
+            Assert.Equal("委托是去北边仓库找回清单上的货。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
+
+            h.Advance();
+            Assert.Equal("接不接，你给个话。", h.Widget.CurrentFrame.Text);
+            Assert.True(h.Controller.AskAccept);           // done 已到且后面没有行
+        }
+
+        [Fact]
+        public void AskAcceptTurnsOnForDailyGroupAfterDraftingStatus()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。", "有事说事。");
+            // daily 组派活：后端不推 plan（orchestrator 只在 mode=="task" 推），
+            // 只推 status(drafting) + 最终确认对话 + 结束语。
+            h.Transport.Script(
+                "event: status\ndata: {\"stage\":\"drafting\",\"ui_hint\":\"拟定委托中\"}\n\n"
+                + AddLine("委托是去北边仓库找回清单上的货。", 0)
+                + AddLine("接不接，你给个话。", 1)
+                + AddLine("不接就算了，这活先搁着。", 2, "closing")
+                + Done());
+
+            Assert.True(h.Controller.Submit("有什么活吗？"));
+            h.Widget.CompleteCurrentLineTyping();          // $PC 打完
+            h.Advance();                                    // → 首句 add
+            Assert.Equal("委托是去北边仓库找回清单上的货。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);
+
+            h.Advance();                                    // → 第二条 add（最后一条）
+            Assert.Equal("接不接，你给个话。", h.Widget.CurrentFrame.Text);
+            Assert.True(h.Controller.AskAccept);           // 靠 status(drafting) 认出派活轮
+        }
+
+        [Fact]
+        public void AskAcceptStaysOffOutsideTaskDraftTurn()
+        {
+            using var h = new Harness();
+            h.AdoptBook("又是你。", "有事说事。");
+            h.Transport.Script(
+                AddLine("还能怎么样，老样子。", 0)
+                + AddLine("那就这样吧。", 1, "closing")
+                + Done());
+
+            Assert.True(h.Controller.Submit("最近怎么样？"));
+            h.Widget.CompleteCurrentLineTyping();          // $PC 打完
+            h.Advance();                                    // → AI 首句上屏
+            Assert.Equal("还能怎么样，老样子。", h.Widget.CurrentFrame.Text);
+            Assert.False(h.Controller.AskAccept);          // 日常轮即使紧邻结束语也不弹选项
+        }
+
+        [Fact]
+        public void AskAcceptTurnsOffWhenNewTurnStarts()
+        {
+            using var h = new Harness();
+            EnableTaskContext(h);
+            h.AdoptTaskBook(7, "task_pre", "200124", "你来了。", "先别急着答应。");
+            h.Transport.Script(
+                AddLine("接不接，你给个话。", 0)
+                + AddLine("不接就算了。", 1, "closing")
+                + "event: plan\ndata: {\"mute\":false}\n\n"
+                + Done());
+            Assert.True(h.Controller.Submit("你说。"));
+            h.Widget.CompleteCurrentLineTyping();          // $PC 打完
+            h.Advance();                                    // → 唯一一条 add 上屏
+            Assert.True(h.Controller.AskAccept);
+
+            // 玩家直接用选项回答：发送即收掉选项态。
+            Assert.True(h.Controller.Submit("我接了"));
+            Assert.False(h.Controller.AskAccept);
+        }
+
         [Fact]
         public void TaskBookParsesDialogueTaskIdAndAppendKeepsIt()
         {

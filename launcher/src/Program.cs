@@ -2965,6 +2965,8 @@ class Program
             dialogueInterject.ConfigRequired += () => showInterjectConfig(true);
             dialogueInterject.InputStateChanged += state =>
                 dialogueInterjectInput.Apply(state, dialogueInterject.PlaceholderFor(state));
+            // 草案确认轮的最后一条 add：输入条切成「我接了 / 我不接 / 单行输入」三行。
+            dialogueInterject.AskAcceptChanged += accept => interjectOverlay.SetAskAccept(accept);
             dialogueInterject.Attach();
             if (nativeHud != null)
                 nativeHud.InterjectInputForegroundProbe = () =>
