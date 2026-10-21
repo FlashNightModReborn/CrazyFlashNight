@@ -43,6 +43,7 @@
 - **地图/室友头像不读 `profiles/`**：动态头像槽 `kind==="roommateGender"` 走 `assets/map/roommate-male.webp` / `roommate-female.webp`（C# `MapAssetCandidates.cs:115`、web `map-panel.js:1954`、`_snapshotVersion>=4` 走 `_avatarAssetUrls[slot.id]`）；Flash 地图 UI 用 `flashswf/UI/地图界面/LIBRARY/头像合集/男室友.png`（元件内嵌）。**「室友.png」不在这些链路上。**
 - **`flashswf/portraits/profiles/generated-manifest.json` 零消费者**（全仓无引用，不参与运行期/测试），纯审计记录；`bake-npc-profiles.py --check` 在 HEAD 就已失败（首条 `A兵团士兵` 的 crop 源 `e_7cda072d452b.png` 已 WebP 化 → 第 39 行 `resolve_source` 直接抛错，**走不到**后续任何逻辑）⇒ 生成链路是既有坏点，不是新引入。
 - 跑覆盖门/生成器需**系统 Python 3.10**（`C:/Users/Akatosh/AppData/Local/Programs/Python/Python310/python.exe`，带 PIL 12.1.1）；managed 3.13.12 venv 没装 PIL。
+  ⚠ **2026-10-21 实测该路径已不存在**（用户名从 `Akatosh` 变 `123`）：本机现无带 Pillow 的 Python，managed venv `pip install Pillow` 被沙箱 SIGTERM ⇒ 图标烘焙类脚本暂时跑不了。用前先 `ls` 探路径，别照抄。
 
 ## 用户约定
 

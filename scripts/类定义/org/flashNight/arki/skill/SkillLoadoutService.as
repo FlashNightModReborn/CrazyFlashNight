@@ -705,9 +705,26 @@ class org.flashNight.arki.skill.SkillLoadoutService {
         return {table:table, tableLength:table.length, rows:rows, slots:slots,
             skillPointsExists:r.hasOwnProperty("技能点数"), skillPoints:r.技能点数,
             passiveExists:r.hasOwnProperty("主角被动技能"), passiveCache:r.主角被动技能,
+            passiveSnapshot:copyPassiveCache(r.主角被动技能),
             dirtyExists:dirtyExists, dirty:r.存档系统 == null ? undefined : r.存档系统.dirtyMark,
             originalValues:originalValues, dynamicMetadata:dynamicMetadata,
             signature:_signature, lastScan:_lastScan, revision:_revision};
+    }
+
+    // 被动缓存现在被原地合并（引用恒定），回滚必须按值还原内容，光换引用不够。
+    private static function copyPassiveCache(source:Object):Object {
+        if (source == null || typeof source != "object") return null;
+        var copy:Object = {};
+        for (var k:String in source) copy[k] = source[k];
+        return copy;
+    }
+
+    private static function restorePassiveCache(target:Object, snapshot:Object):Void {
+        var keys:Array = [];
+        var k:String;
+        for (k in target) keys.push(k);
+        for (var i:Number = 0; i < keys.length; i++) delete target[keys[i]];
+        for (k in snapshot) target[k] = snapshot[k];
     }
 
     private static function restoreTransactionState(before:Object):Void {
@@ -732,7 +749,13 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             if (before.slots[i].exists) r[slotKey] = before.slots[i].value;
         }
         if (before.skillPointsExists) r.技能点数 = before.skillPoints; else delete r.技能点数;
-        if (before.passiveExists) r.主角被动技能 = before.passiveCache; else delete r.主角被动技能;
+        if (before.passiveExists) {
+            if (before.passiveSnapshot != null && r.主角被动技能 != null && typeof r.主角被动技能 == "object"
+                && r.主角被动技能 == before.passiveCache) {
+                restorePassiveCache(r.主角被动技能, before.passiveSnapshot);
+            }
+            r.主角被动技能 = before.passiveCache;
+        } else delete r.主角被动技能;
         if (r.存档系统 != null) {
             if (before.dirtyExists) r.存档系统.dirtyMark = before.dirty; else delete r.存档系统.dirtyMark;
         }
@@ -817,7 +840,7 @@ class org.flashNight.arki.skill.SkillLoadoutService {
 
     private static function rebuildDomainState():Boolean {
         var r:Object = root();
-        var cache:Object = {};
+        var computed:Object = {};
         var seen:Object = {};
         var table:Array = r.主角技能表;
         for (var i:Number = 0; i < Math.min(SKILL_ROW_COUNT, table.length); i++) {
@@ -829,10 +852,18 @@ class org.flashNight.arki.skill.SkillLoadoutService {
             var level:Number = Number(table[i][1]);
             var enabled:Object = parseLegacyBoolean(table[i][4]);
             if (m != null && isPassive(m) && wholeInRange(level, 1, metadataMaxLevel(m)) && enabled.known) {
-                cache[key] = {技能名:key, 等级:level, 启用:enabled.value};
+                computed[key] = {技能名:key, 等级:level, 启用:enabled.value};
             }
         }
-        r.主角被动技能 = cache;
+        // 原地合并而非整体换对象：hero.被动技能 在出生时绑定同一引用（玩家模板迁移），
+        // 换新对象会让旧引用停留在过期缓存上（停用被动后搓招门槛仍读到 启用:true）。
+        var live:Object = (r.主角被动技能 != null && typeof r.主角被动技能 == "object") ? r.主角被动技能 : null;
+        if (live == null) { live = {}; r.主角被动技能 = live; }
+        var staleKeys:Array = [];
+        var k:String;
+        for (k in live) if (computed[k] == undefined) staleKeys.push(k);
+        for (i = 0; i < staleKeys.length; i++) delete live[staleKeys[i]];
+        for (k in computed) live[k] = computed[k];
         return recalculateDynamicCooldownDomain();
     }
 
