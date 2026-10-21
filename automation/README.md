@@ -129,8 +129,10 @@ Audio Platform v2 R4 不改变 start/operator 命令面。`sleep_resume` 收尾�
 A5 专用槽只接受两种 exact runtime binding：物化 `resources` 根必须携 `--candidate-id a5` 并解析到
 `resources/tmp/runtime-candidates/v2/a5`；canonical 根必须不携 `CandidateRoot` / candidate selector 并进入 `formal_runtime`。
 A5 拒绝普通 `c-*`、其他短叶与 unqualified runtime；旧槽仍接受 formal 或原有 immutable `c-*` candidate。
-Issue #152 的封闭回归槽仅允许显式、完整校验的 immutable `c-*` candidate，拒绝 formal runtime；交互会话入口见
+Issue #152 的封闭回归槽接受完整校验的正式 runtime，或显式选择的 immutable `c-*` candidate；交互会话入口见
 [`regression-session.js`](../tools/cf7-agent/README.md#interactive-regression-session)。这组槽沿用一次性的 accepted-title/ready 进档与发布凭据门，书架的角色目标和书中原角色限制在同一回归组。
+省略 candidate selector 即绑定正式根，不从人工开发者授权窗口取凭据；同一已授权测试旅程可连续完成启动、操作、保存退出与重启读回。
+这不扩大槽位、能力或业务准入，完整身份、closure、peer/nonce、未知写处理与可信退出校验继续生效。
 formal/candidate 均先校验完整 v2 manifest inventory、Core row/hash/size、build identity、payload closure 与无 reparse 的固定目录；
 随后执行所选 payload 自身的 `Core.exe --agent-unattended-runner`。这里的 formal 形状只是底层资格门；A5 仍没有可执行的
 formal admission/runner，禁止绕过材料适用性、一次性授权与同旅程证据链直接调用它。

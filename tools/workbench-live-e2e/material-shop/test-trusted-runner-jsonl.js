@@ -25,14 +25,15 @@ function sha256(bytes) {
   return crypto.createHash("sha256").update(bytes).digest("hex");
 }
 
-function fixture(t, regression = false) {
+function fixture(t, regression = false, formal = false) {
   const temporary = fs.mkdtempSync(path.join(fs.realpathSync.native(os.tmpdir()),
     "cf7-a5-jsonl-"));
   t.after(() => fs.rmSync(temporary, { recursive: true, force: true }));
   const resourcesRoot = path.join(temporary, "resources");
   const entry = path.join(resourcesRoot, "tools", "cf7-agent", "unattended.js");
   const candidateId = regression ? "c-0123456789ab-0123456789-i152" : "a5";
-  const candidateRoot = path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", candidateId);
+  const candidateRoot = formal ? resourcesRoot
+    : path.join(resourcesRoot, "tmp", "runtime-candidates", "v2", candidateId);
   const processPath = path.join(candidateRoot, "runtime", CORE_NAME);
   fs.mkdirSync(path.dirname(entry), { recursive: true });
   fs.mkdirSync(path.dirname(processPath), { recursive: true });
@@ -40,7 +41,7 @@ function fixture(t, regression = false) {
   const processBytes = Buffer.from("exact-a5-candidate-core-executable", "utf8");
   fs.writeFileSync(processPath, processBytes);
   const identity = {
-    runtimeMode: "isolated_candidate",
+    runtimeMode: formal ? "formal_runtime" : "isolated_candidate",
     processPath,
     coreSha256: sha256(Buffer.from("exact-a5-candidate-core-library", "utf8")),
     buildIdentity: "B".repeat(64),
@@ -54,10 +55,10 @@ function fixture(t, regression = false) {
     processSha256: sha256(processBytes),
     identity,
     preparation: {
-      ...(regression ? {schema:"cf7.regression-runtime.v1",candidateId,
+      ...(regression ? {schema:"cf7.regression-runtime.v1",...(formal?{}:{candidateId}),
         slots:{targetSlot:"cf7_agent_152_a28"}} : {}),
       resourcesRoot,
-      candidateRoot,
+      ...(formal ? {} : {candidateRoot}),
       runId: "a5-jsonl-test-run",
       buildSha256: "d".repeat(64),
       candidateIdentity: identity,
@@ -155,8 +156,8 @@ class FakeChild extends EventEmitter {
   }
 }
 
-function makeRunner(t, behavior, options, regression = false) {
-  const fx = fixture(t, regression);
+function makeRunner(t, behavior, options, regression = false, formal = false) {
+  const fx = fixture(t, regression, formal);
   const calls = [];
   let monotonicNow = 0;
   const spawnImpl = (executable, args, spawnOptions) => {
@@ -221,6 +222,31 @@ test("spawns only the exact materialized A5 wrapper and pairs out-of-order ids",
   assert.match(finished.transcriptSha256, /^[a-f0-9]{64}$/);
   assert.deepStrictEqual(finished.transcript, runner.getTranscript());
   assert.strictEqual(runner.uncertainWrite, false);
+});
+
+test("formal regression omits candidate selector and verifies the canonical normal exit", async (t) => {
+  const {fx,calls,runner}=makeRunner(t,{},undefined,true,true);
+  assert.deepEqual(calls[0].args,[fx.entry,"--adapter","jsonl","--slot","cf7_agent_152_a28"]);
+  const finished=await runner.finish();
+  assert.equal(finished.completion.runtimeMode,"formal_runtime");
+  assert.equal(finished.completion.processPath,path.join(fx.resourcesRoot,"runtime",CORE_NAME));
+  assert.equal(finished.exitCode,0);
+});
+
+test("formal regression rejects a candidate completion even when its bytes match", async (t) => {
+  const {runner}=makeRunner(t,{onEnd(child) {
+    const receipt=completionFor(child.fx);
+    receipt.runtimeMode="isolated_candidate";
+    child.completion(receipt); child.exit(0);
+  }},undefined,true,true);
+  await assertRejectCode(runner.finish(),"trusted_runner_completion_invalid");
+});
+
+test("formal regression cannot smuggle a candidate directory", (t) => {
+  const fx=fixture(t,true,true);
+  assert.throws(()=>createTrustedRunner({...fx.preparation,candidateRoot:fx.resourcesRoot},
+    {spawnImpl(){throw new Error("must not spawn");}}),
+  error=>error.code==="trusted_runner_candidate_root_mismatch");
 });
 
 test("paces the A5 JSONL stream before write and preserves shutdown headroom", async (t) => {

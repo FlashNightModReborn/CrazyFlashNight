@@ -5491,6 +5491,7 @@ namespace CF7Launcher.Guardian
         /// </summary>
         public void RequestPanelFocusRestoreAfterAppActivation()
         {
+            if (NativeInteractionActive) return;
             if (_panelMode || _panelHost?.ActivePanelName != null)
             {
                 QueuePanelFocusRestore("app_reactivated");
@@ -5501,7 +5502,7 @@ namespace CF7Launcher.Guardian
             {
                 BeginInvoke(new Action(() =>
                 {
-                    bool Eligible() => !_disposed && !_panelMode && _panelHost?.ActivePanelName == null
+                    bool Eligible() => !_disposed && !NativeInteractionActive && !_panelMode && _panelHost?.ActivePanelName == null
                         && _anchor.Visible && _owner.WindowState != FormWindowState.Minimized
                         && GetForegroundWindow() == _owner.Handle;
                     if (!Eligible()) return;
@@ -5518,6 +5519,7 @@ namespace CF7Launcher.Guardian
         [DllImport("user32.dll")]
         private static extern IntPtr GetFocus();
         internal Func<Func<bool>, bool> IdleFlashFocusRestorer;
+        private bool NativeInteractionActive => _owner is GuardianForm guardian && guardian.NativeInteractionActive;
 
         private void FlushDeferredPanelDelivery()
         {
@@ -5719,7 +5721,7 @@ namespace CF7Launcher.Guardian
         {
             int generation;
             if (!_panelFocusRestoreGate.TryQueue(_panelTakeForeground, _panelMode, _disposed,
-                    Environment.TickCount64, out generation))
+                    Environment.TickCount64, out generation, NativeInteractionActive))
                 return;
 
             if (CF7Launcher.Diagnostic.FocusTrace.Enabled)
@@ -5790,7 +5792,7 @@ namespace CF7Launcher.Guardian
 
             if (!_panelFocusRestoreGate.TryBeginExecution(generation,
                     _panelTakeForeground, _panelMode, _disposed, foregroundEligible,
-                    Environment.TickCount64))
+                    Environment.TickCount64, NativeInteractionActive))
             {
                 _panelFocusRestoreGate.Complete(generation);
                 if (!foregroundEligible)
@@ -5839,7 +5841,7 @@ namespace CF7Launcher.Guardian
                     // MoveFocus succeeds.  Foreground/MoveFocus failures stay immediately
                     // retryable on the next WM_ACTIVATEAPP(true).
                     if (!_panelFocusRestoreGate.IsCurrentExecution(generation,
-                            _panelTakeForeground, _panelMode, _disposed))
+                            _panelTakeForeground, _panelMode, _disposed, NativeInteractionActive))
                     {
                         controllerState = "stale";
                         return;
@@ -5848,7 +5850,7 @@ namespace CF7Launcher.Guardian
                     controllerState = "true";
                     if (!_panelFocusRestoreGate.TryCommitExecution(generation,
                             _panelTakeForeground, _panelMode, _disposed,
-                            Environment.TickCount64))
+                            Environment.TickCount64, NativeInteractionActive))
                         controllerState = "true_stale";
                 }
                 else

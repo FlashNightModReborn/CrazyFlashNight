@@ -68,6 +68,9 @@ namespace CF7Launcher.Guardian
 
         private NotifyIcon _trayIcon;
         private ContextMenuStrip _trayMenu;
+        private bool _trayMenuOpen;
+        internal bool NativeInteractionActive => _trayMenuOpen || _trayMenu?.Visible == true
+            || (Form.ActiveForm is Form active && active != this && active.Owner == this && active.Modal);
         private ToolStripMenuItem _wingsTrayItem;
         private ToolStripMenuItem _agentEnrollmentTrayItem;
         private Action _showWingsAction;
@@ -653,7 +656,7 @@ namespace CF7Launcher.Guardian
                     _vacuumWatchdogPolicy.OnSessionDeactivated();
                 }
                 _activationState.OnActivateApp(active);
-                if (active && _webOverlay != null)
+                if (active && _webOverlay != null && !NativeInteractionActive)
                     _webOverlay.RequestPanelFocusRestoreAfterAppActivation();
             }
             else if (m.Msg == WM_SIZE)
@@ -761,6 +764,7 @@ namespace CF7Launcher.Guardian
                 // 锁屏 / 安全桌面 / 快速用户切换期间，默认桌面侧前台恒为 NULL，看门狗须停
                 // ——否则整夜锁屏会刷上千条无效 [FgWatchdog] / [FocusRestore] 日志。
                 if (_sessionLocked) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
+                if (NativeInteractionActive) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
                 // 仅 Ready 态介入：bootstrap 期 Flash 未嵌入，谈不上前台回收。
                 if (!IsReadyForHotkey()) { _vacuumWatchdogPolicy.OnSuppressedTick(); return; }
                 // 最小化是用户的主动选择，不打扰。
@@ -851,6 +855,7 @@ namespace CF7Launcher.Guardian
         internal void BindPanelEscapeCapture(Func<Action> capture) { if(_kbHook!=null)_kbHook.CapturePanelEscapeAction=capture; }
         internal bool HasNativeEditFocus()
         {
+            if (NativeInteractionActive) return true;
             Form active=Form.ActiveForm;
             if(active!=null && active!=this && active.Owner==this && active.Modal)return true;
             Control control=active?.ActiveControl;
@@ -1154,6 +1159,13 @@ namespace CF7Launcher.Guardian
         private void SetupTrayIcon()
         {
             _trayMenu = new ContextMenuStrip();
+            _trayMenu.Opening += delegate { _trayMenuOpen = true; };
+            _trayMenu.Opened += delegate { LogManager.Log("[TrayMenu] opened"); };
+            _trayMenu.Closed += delegate(object sender, ToolStripDropDownClosedEventArgs e)
+            {
+                _trayMenuOpen = false;
+                LogManager.Log("[TrayMenu] closed reason=" + e.CloseReason);
+            };
             _trayMenu.Items.Add("显示", null, delegate { ShowMainWindow(); });
             _trayMenu.Items.Add("日志", null, delegate { ShowMainWindow(); if (!_logVisible) ToggleLog(); });
             _wingsTrayItem = new ToolStripMenuItem(

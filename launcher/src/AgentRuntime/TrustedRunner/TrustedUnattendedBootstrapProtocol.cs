@@ -142,7 +142,7 @@ namespace CF7Launcher.AgentRuntime.TrustedRunner
                 && CandidateLeafPattern.IsMatch(
                     candidateLeaf);
             bool valid = TrustedRegressionSlots.Contains(slot)
-                ? immutableCandidate
+                ? formalRuntime || immutableCandidate
                 : a5Slot
                 ? formalRuntime
                     || canonicalA5Candidate

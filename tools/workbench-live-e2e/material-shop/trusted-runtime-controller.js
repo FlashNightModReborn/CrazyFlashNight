@@ -26,7 +26,7 @@ const STALE_FOCUS_RETRY_DELAYS_MS = Object.freeze([100, 200, 400]);
 // ordinary RPC/write actions at 30s; only initial session.status receives a
 // bounded startup budget.
 const INITIAL_STATUS_TIMEOUT_MS = 90_000;
-// The isolated regression entry verifies the complete candidate before Core
+// The regression entry verifies the complete selected bundle before Core
 // starts its separate 60s accepted-title/ready gate. On slow local disks that
 // verification consumed 52s; keep only this initial read within a 180s budget.
 const REGRESSION_INITIAL_STATUS_TIMEOUT_MS = 180_000;

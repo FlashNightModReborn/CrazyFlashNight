@@ -14,14 +14,14 @@ namespace CF7Launcher.Tests.AgentRuntime.TrustedRunner
         [InlineData("cf7_agent_152_c68")]
         [InlineData("cf7_agent_152_d69")]
         [InlineData("cf7_agent_152_e69")]
-        public void RegressionEntryIsCandidateOnlyAndWaitsForRealRuntime(string slot)
+        public void RegressionEntrySupportsQualifiedFormalAndCandidateAndWaitsForRealRuntime(string slot)
         {
             Assert.Equal(slot, TrustedUnattendedRunnerOptions.Parse(new[] {
                 "--agent-unattended-runner", "--adapter", "jsonl", "--slot", slot }).Slot);
             TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(slot, "isolated_candidate",
                 @"C:\repo\tmp\runtime-candidates\v2\c-0123456789ab-0123456789-i152");
-            foreach (var mode in new[] { "formal_runtime", "unqualified_dev" })
-                Assert.Throws<InvalidDataException>(() => TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(slot, mode, @"C:\repo"));
+            TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(slot, "formal_runtime", @"C:\repo");
+            Assert.Throws<InvalidDataException>(() => TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(slot, "unqualified_dev", @"C:\repo"));
             Assert.Throws<InvalidDataException>(() => TrustedUnattendedRunnerOptions.ValidateRuntimeBinding(slot, "isolated_candidate", @"C:\repo\tmp\runtime-candidates\v2\a5"));
             Assert.Equal(TimeSpan.FromSeconds(60), TrustedUnattendedBootstrapLease.CredentialAcquisitionPolicyMaximumForSlot(slot));
             bool ready = false; int sends = 0;

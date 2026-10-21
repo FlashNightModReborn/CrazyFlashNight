@@ -66,10 +66,6 @@ function parseUnattendedArguments(argv) {
     );
   }
   const a5Slot = slot === A5_SLOT;
-  if (/^cf7_agent_152_/.test(slot) && candidateId === undefined) {
-    throw new UnattendedArgumentError('candidate_required',
-      'Regression slots require an explicit isolated candidate; formal runtime is not allowed.');
-  }
   if (
     (a5Slot
       && candidateId !== undefined

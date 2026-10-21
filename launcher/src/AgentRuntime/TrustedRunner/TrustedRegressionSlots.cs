@@ -2,7 +2,8 @@ using System;
 
 namespace CF7Launcher.AgentRuntime.TrustedRunner
 {
-    // A closed regression cohort. It never authorizes a player slot or formal runtime.
+    // A closed test cohort, shared by qualified candidate and formal acceptance.
+    // Deployment mode does not authorize a different slot or change business rules.
     internal static class TrustedRegressionSlots
     {
         internal static bool Contains(string slot) => slot is

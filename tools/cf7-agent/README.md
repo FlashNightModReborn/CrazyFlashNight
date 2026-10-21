@@ -402,8 +402,9 @@ The slot allow-list is:
   selector binds the verified canonical `formal_runtime`. It rejects ordinary
   `c-*` candidates and every other short leaf.
 - The closed Issue #152 cohort in [`regression-profile.js`](regression-profile.js)
-  requires an explicit immutable `c-*` candidate. Core independently checks the
-  same exact slots in `TrustedRegressionSlots`; formal runtime is refused.
+  accepts the verified canonical formal runtime when the candidate selector is
+  omitted, or an explicit immutable `c-*` candidate. Core independently checks
+  the same exact slots in `TrustedRegressionSlots`.
 
 ### Interactive regression session
 
@@ -415,6 +416,8 @@ const regression = require("./tools/cf7-agent/regression-session");
 const session = await regression.createSession({
   candidateId: "<verified immutable c-* leaf>", slot: "cf7_agent_152_a28"
 });
+// For post-promotion acceptance, omit candidateId:
+// const session = await regression.createSession({slot:"cf7_agent_152_a28"});
 await session.openPanel("materials", "Inspect the current test role's material sources");
 const capture = await session.capture("web_overlay");
 // Display regression.captureToPng(capture) in an ephemeral image viewer.
@@ -425,14 +428,19 @@ regression.writeAudit(session, "<absolute resources>/tmp/issue-152-acceptance/ru
 ```
 
 The wrapper binds the completion to the actual Core executable hash, build
-identity and payload closure. Launch still verifies the full candidate manifest.
+identity and payload closure. Launch still verifies the full selected manifest.
+Formal acceptance follows the same test-slot, accepted-title/ready, process/nonce
+and supported-shutdown checks. It does not need developer enrollment through a
+human-only dialog: the explicit trusted-runner invocation supplies the existing
+bounded test authority. The separate dialog remains for enrolling clients over
+ordinary player sessions; it is not a gate on this unattended test flow.
 Only this regression profile's first `session.status` read allows 180 seconds
 for wrapper verification plus Core startup; the A5 90-second startup budget,
 ordinary 30-second RPCs and Host credential/lease limits are unchanged.
 The session's `getRegressionBudget()` reports an eight-minute work window.
 After it ends, new input/panel actions fail before dispatch; reads and supported
 shutdown remain available. Reconcile any pending business result, finish normally,
-and resume the same isolated role with a fresh session. No credential renewal or
+and resume the same test role with a fresh session. No credential renewal or
 save reset is performed. Start a book journey with a fresh work window and return
 to its original role before rotating sessions.
 The verified regression cohort additionally advertises guarded input on the

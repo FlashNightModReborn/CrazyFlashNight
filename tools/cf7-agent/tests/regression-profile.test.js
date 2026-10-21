@@ -7,7 +7,7 @@ const {parseUnattendedArguments} = require("../unattended");
 const Profile = require("../regression-profile");
 const candidateId = "c-0123456789ab-0123456789-i152";
 
-test("regression qualification is closed, candidate-only, and consistent at every entry", () => {
+test("regression qualification is closed and supports verified formal or candidate at every entry", () => {
   const root = path.resolve(__dirname, "../../..");
   const ps = fs.readFileSync(path.join(root, "automation/start.ps1"), "utf8");
   const cs = fs.readFileSync(path.join(root, "launcher/src/AgentRuntime/TrustedRunner/TrustedRegressionSlots.cs"), "utf8");
@@ -15,10 +15,11 @@ test("regression qualification is closed, candidate-only, and consistent at ever
     assert(ps.includes("'" + slot + "'"));
     assert(cs.includes('"' + slot + '"'));
     assert.equal(parseUnattendedArguments(["--adapter", "jsonl", "--slot", slot, "--candidate-id", candidateId]).slot, slot);
-    assert.throws(() => parseUnattendedArguments(["--adapter", "jsonl", "--slot", slot]), e => e.code === "candidate_required");
+    assert.equal(parseUnattendedArguments(["--adapter", "jsonl", "--slot", slot]).candidateId, undefined);
     for (const candidate of ["a5", "c-near", "../runtime", "A5"])
       assert.throws(() => parseUnattendedArguments(["--adapter", "jsonl", "--slot", slot, "--candidate-id", candidate]));
     assert.deepEqual(Profile.resolve({schema:Profile.SCHEMA,resourcesRoot:root,candidateId,slots:{targetSlot:slot}}), {slot,candidateId});
+    assert.deepEqual(Profile.resolve({schema:Profile.SCHEMA,resourcesRoot:root,slots:{targetSlot:slot}}), {slot,candidateId:undefined});
   }
   for (const slot of ["crazyflasher7_saves", "cf7_agent_152_a28_near", "CF7_AGENT_152_A28", "cf7_agent_other"])
     assert.throws(() => Profile.resolve({schema:Profile.SCHEMA,resourcesRoot:root,candidateId,slots:{targetSlot:slot}}));

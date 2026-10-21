@@ -1,6 +1,6 @@
 "use strict";
 
-// Interactive, candidate-only adapter over the existing trusted runner. It does
+// Interactive adapter over the existing qualified formal/candidate trusted runner. It does
 // not enroll a client, read credentials, invoke business commands, or reset saves.
 const fs = require("node:fs");
 const path = require("node:path");
@@ -16,6 +16,33 @@ function createPreparation({ candidateId, slot }) {
   const preparation = { schema: Profile.SCHEMA, resourcesRoot, candidateId,
     slots: { targetSlot: slot } };
   Profile.resolve(preparation);
+  if (candidateId === undefined) {
+    const manifestFile = Evidence.readExactRegularFile(path.join(resourcesRoot,
+      "runtime/cf7-runtime-manifest.tsv"), {phase:"regression_session",maximumBytes:65536});
+    const lines = manifestFile.bytes.toString("utf8").replace(/^\uFEFF/, "").trimEnd().split(/\r?\n/);
+    assert.equal(lines[0], "cf7-runtime-manifest-v2");
+    function field(name) {
+      const rows = lines.slice(1).map(line=>line.split("\t")).filter(row=>row[0]===name);
+      assert.equal(rows.length, 1, "Expected one manifest " + name);
+      assert.equal(rows[0].length, 2);
+      assert(/^[A-Fa-f0-9]{64}$/.test(rows[0][1]), "Invalid manifest " + name);
+      return rows[0][1];
+    }
+    const core = Evidence.readExactRegularFile(path.join(resourcesRoot,
+      "runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe"),
+    {phase:"regression_session",maximumBytes:16*1024*1024});
+    const coreRows = lines.map(line=>line.split("\t")).filter(row=>row[0]==="file"
+      && row[1]==="runtime/CRAZYFLASHER7MercenaryEmpire.Core.exe");
+    assert.equal(coreRows.length, 1);
+    assert.equal(coreRows[0].length, 4);
+    assert.equal(coreRows[0][2], String(core.bytes.length));
+    assert.equal(coreRows[0][3].toLowerCase(), core.sha256);
+    preparation.runtimeIdentity = {runtimeMode:"formal_runtime",processPath:core.path,
+      coreSha256:core.sha256,buildIdentity:field("buildIdentityHash"),payloadClosure:field("payloadClosureHash")};
+    // The canonical bootstrap and trusted Core independently verify the complete
+    // manifest/consensus. These expectations bind the supported exit to this launch.
+    return preparation;
+  }
   preparation.candidateRoot = path.join(resourcesRoot, "tmp/runtime-candidates/v2", candidateId);
   Evidence.assertExactDirectory(preparation.candidateRoot, "regression_session");
   const metadataFile = Evidence.readExactRegularFile(
@@ -51,7 +78,7 @@ function bindWorkBudget(session, now = () => Number(process.hrtime.bigint() / 10
     const operation = session[name].bind(session);
     session[name] = (...args) => {
       if (session.getRegressionBudget().checkpointDue) {
-        const error = new Error("Regression work window ended; inspect/reconcile any pending business result, finish normally, then resume the current isolated role in a fresh session");
+        const error = new Error("Regression work window ended; inspect/reconcile any pending business result, finish normally, then resume the current test role in a fresh session");
         error.code = "regression_checkpoint_due";
         throw error;
       }

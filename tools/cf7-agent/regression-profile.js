@@ -12,7 +12,8 @@ const CANDIDATE = /^c-[0-9a-f]{12}-[0-9a-f]{10}-[a-z0-9][a-z0-9-]{0,31}$/;
 function resolve(preparation) {
   if (preparation?.schema !== SCHEMA) return null;
   assert(SLOTS.includes(preparation.slots?.targetSlot), "Regression target must belong to the closed test cohort");
-  assert(CANDIDATE.test(preparation.candidateId || ""), "Regression requires an immutable isolated candidate");
+  assert(preparation.candidateId === undefined || CANDIDATE.test(preparation.candidateId),
+    "Regression requires formal runtime or an immutable isolated candidate");
   assert(path.isAbsolute(preparation.resourcesRoot || ""), "Regression resourcesRoot must be absolute");
   return { slot: preparation.slots.targetSlot, candidateId: preparation.candidateId };
 }
