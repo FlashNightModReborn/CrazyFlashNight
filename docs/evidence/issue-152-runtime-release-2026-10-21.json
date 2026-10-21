@@ -1,0 +1,217 @@
+{
+  "schema": "issue152-formal-v2-bindings.v1",
+  "createdAtUtc": "2026-10-21T14:08:09.654Z",
+  "sourceCommit": "c1d9ab2576937aa2fa4eee8037a941bc5d69cb33",
+  "deploymentCommit": "255d9741ac0cdcac681c09e56472c076395f36e6",
+  "buildIdentity": "CB8FB5782F5357550F22FBD7843F11B992718F141F764BE32C316A9274A4C71C",
+  "payloadClosure": "CC914C718D95D5A1A62F9A9DE04CE2D9627A049B6B56532CB87A898D9786154C",
+  "coreDllSha256": "A3BBCD48EDF3540198735DC3EBBDEB885AF842D5C191DE546AE4D651C8563CA7",
+  "asLoaderSha256": "1023744D7F22114FE5E0E1A5182D8A5B35AC5E1E3BB76A9B599C47BE705373FA",
+  "humanAccepted": false,
+  "sourceTag": "refs/tags/runtime-build-v2/20261021-issue152-v2",
+  "requestId": "10E5B117A82B52E51DCA2E93CE76F31D574A647517D0D77AF9E03D4C97649606",
+  "releaseTreeOid": "3b6c4033bdea94531e055789b1fcf850cebf02c6",
+  "policy": {
+    "passed": true,
+    "checks": 47,
+    "sha256": "29773B692A66C47267D39FFE99CBDFE8FAE6164EFBC4BDADFF18C4118782E97D"
+  },
+  "quorum": {
+    "signers": 2,
+    "faultDomains": 2
+  },
+  "payloadFiles": 43,
+  "payloadBytes": 371405041,
+  "cloudRunUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39594152993",
+  "deployedAuditUrl": "https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/39597274412",
+  "tests": {
+    "focusedHostPassed": 54,
+    "nodePassed": 74,
+    "fullHost": {
+      "total": 7724,
+      "executed": 7694,
+      "passed": 7574,
+      "failed": 120,
+      "error": 0,
+      "timeout": 0,
+      "aborted": 0,
+      "inconclusive": 0,
+      "passedButRunAborted": 0,
+      "notRunnable": 0,
+      "notExecuted": 0,
+      "disconnected": 0,
+      "warning": 0,
+      "completed": 0,
+      "inProgress": 0,
+      "pending": 0
+    },
+    "allFullHostFailuresMissingFixtureRoot": true
+  },
+  "formalSessions": [
+    {
+      "file": "formal-v2-session-01-b-a-b.json",
+      "sha256": "B70C98301992FD7440DDA6D5C1DB87DBF9FBE6880E2F8407B9E278109B02B8CA",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "1H0Z-hTddjpNvobAcXKT6qT1JGxm_CvQeKCk-4NT4wU"
+      }
+    },
+    {
+      "file": "formal-v2-session-02-d69-diplomat.json",
+      "sha256": "9E7478215B6E87E17BBDCC0D04BC6688D2C741B66460A6963ED6F10820E0D9DA",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "YVnIB-Vv6ywCYntFpiHJtjKcI7-mGI8ulfBMaXYsssc"
+      }
+    },
+    {
+      "file": "formal-v2-session-03-d69-c68-denial-fixed-contact.json",
+      "sha256": "19F0FEF7E25BBB74CE656CE56F5C30E619B9B0330EBB17C6EF5EF3237282A692",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "rcRXogiXVwWcoD5iN5jZpNg2Yve47_HZKlD3fk4e9Xk"
+      }
+    },
+    {
+      "file": "formal-v2-session-04-e69-onsite.json",
+      "sha256": "7DEB07FF87CD8653C3DC376892066532F8AD007D936618F93F8173FE7DE353D3",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "QkomGN4XJjHCsmQUbsym_ddrYXBMjubaGaQjd85t8fo"
+      }
+    },
+    {
+      "file": "formal-v2-session-05-b29-restored-student-interrupted.json",
+      "sha256": "18BD8E85718C663DA81DC016537B6C337FA77A39E831CF1B59C480B6CE1CE9DC",
+      "normalCompletion": false,
+      "status": "interrupted_after_shop_close_capture"
+    },
+    {
+      "file": "formal-v2-session-06-campus-purchase-return.json",
+      "sha256": "6619274341BC8ED850710B7CB640F15FED6B150C3E4704FDBB9E4593D490BD7E",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "c5zJYrp9DanEYVaFwjtuCcyiYMhfNw55bpKrMTkAZWQ"
+      }
+    },
+    {
+      "file": "formal-v2-session-07-lee-denial-return.json",
+      "sha256": "57CDF6EABB39728376AFFE03E912D0210E43B575D086352DB4FDC549F392475C",
+      "normalCompletion": true,
+      "status": {
+        "projectRunning": true,
+        "qualificationState": "verified",
+        "lifecycleRef": "V8ML2cbvaglVGZwv6BxW1iiSqC7v1YXB2P1SoX3MyCE"
+      }
+    }
+  ],
+  "standardEntry": {
+    "scope": "no-argument start, B29 load, pause, character-build open, normal caption close",
+    "guardianProcessId": 21908,
+    "bootstrapExitCode": 0,
+    "guardianExitCode": 0,
+    "processPath": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\runtime\\CRAZYFLASHER7MercenaryEmpire.Core.exe",
+    "coreExeSha256": "3988B5F22F00880270BB2B8329F2E690C623887E6E0767483AE2D0EBF11621FE",
+    "uiSha256": "A7A48966CED25C9C72A94C8E63BD6B4743F5431970DA95CFF1DA497C6E3D75CA",
+    "exitSha256": "C200EFBECF36F5A849107E1D9A0AFA32E121D80A0CEBAB4B1588586B106F6D7B"
+  },
+  "finalReadback": {
+    "file": "formal-v2-played-save-readback-after-standard-entry.json",
+    "sha256": "E0355E90875E79C0C212F0CDDF5500C0CF5CD9E14EAE0D7AF49EB9CAFD5E711B",
+    "success": true,
+    "slots": [
+      {
+        "slot": "cf7_agent_152_a28",
+        "name": "152A·主线28·有摩托",
+        "money": 500000,
+        "glue": 0,
+        "scarf": 0,
+        "militaryCloth": 0,
+        "main": 28,
+        "motorcycle": 1,
+        "bookRun": null,
+        "expectedMatches": true
+      },
+      {
+        "slot": "cf7_agent_152_b29",
+        "name": "152B·主线29·有摩托",
+        "money": 494000,
+        "glue": 1,
+        "scarf": 0,
+        "militaryCloth": 0,
+        "main": 29,
+        "motorcycle": 1,
+        "bookRun": null,
+        "expectedMatches": true
+      },
+      {
+        "slot": "cf7_agent_152_c68",
+        "name": "152C·主线68·有摩托",
+        "money": 500000,
+        "glue": 0,
+        "scarf": 0,
+        "militaryCloth": 0,
+        "main": 68,
+        "motorcycle": 1,
+        "bookRun": null,
+        "expectedMatches": true
+      },
+      {
+        "slot": "cf7_agent_152_d69",
+        "name": "152D·主线69·有摩托",
+        "money": 480000,
+        "glue": 0,
+        "scarf": 1,
+        "militaryCloth": 0,
+        "main": 69,
+        "motorcycle": 1,
+        "bookRun": null,
+        "expectedMatches": true
+      },
+      {
+        "slot": "cf7_agent_152_e69",
+        "name": "152E·主线69·无载具",
+        "money": 494000,
+        "glue": 1,
+        "scarf": 0,
+        "militaryCloth": 0,
+        "main": 69,
+        "motorcycle": 0,
+        "bookRun": null,
+        "expectedMatches": true
+      }
+    ],
+    "preexistingFileDeltas": [
+      {
+        "path": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\CRAZYFLASHER7StandAloneStarter\\resources\\saves\\.launcher-version-marker.json",
+        "before": "8C036A3EAE6F5AC4DBFD8B25BB2E76CCAFA8E7C366D0D71D49237672F40A221D",
+        "after": "DFE1605276EDFA98FEE966547AA332DF5EB85077E7892E41E9E8D77748AC9DFD",
+        "launcherMarker": true
+      }
+    ]
+  },
+  "evidenceLimits": [
+    "humanAccepted=false; no required human enrollment in five-slot trusted test route",
+    "system tray physical shell interaction not independently replayed",
+    "full Host suite not all green: 120 missing evidence-root failures",
+    "no Lee/campus combat completion or hidden-ending claim",
+    "first standard-entry exit monitor lacked cached handle; repeat retained handle and obtained exit 0"
+  ],
+  "followupSourceBoundary": {
+    "validatedAsLoaderSha256": "1023744D7F22114FE5E0E1A5182D8A5B35AC5E1E3BB76A9B599C47BE705373FA",
+    "qualifiedByThisRun": false,
+    "runtimeRepublished": false,
+    "upstreamCommit": "8bdfd0c8e9fa114aa15eaa31e8913da389154984",
+    "scope": "Concurrent skills/dialogue and AS2/SWF changes integrated at documentation closeout"
+  }
+}

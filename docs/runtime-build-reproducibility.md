@@ -1235,3 +1235,10 @@ strict production policy 42/42，receipt SHA-256 `0C612DBA8C5CB91E481E2386A5E124
 - 合并后 Host **7043 passed / 27 skipped**、设置 Node **20/20**、Edge **150/150**、构建输入契约 **285/285**。交付 Core 与 Host 回归程序集逐字节一致，原生 DLL 与此前通过三项 GPU 用例的候选逐字节一致；未对新 release identity 重跑 GPU 用例，不把旧候选身份升级为新领域 E2E。
 - 部署提交 `9a0b716f92c6b9531e70aaa0765179bb4e90fd73` 已快进推送；[部署 Audit 38145275218](https://github.com/FlashNightModReborn/CrazyFlashNight/actions/runs/38145275218) **success**，独立重放 `state=promoted / deploymentChanged=true`、`mode=Index / signers=2 / faultDomains=2` 及相同闭包。
 - 无 candidate selector 的普通 `automation/start.ps1` 确认 `formal_runtime`、新 Core SHA/identity/closure，精确自有进程的窗口关闭与 exit **0** 通过；31 份存档/偏好指纹不变。可信无人值守路径另观察 Flash 握手与 reveal，但三次退出检查未通过（两次 `trusted_runner_shutdown_capture_failed`，一次 `trusted_runner_protocol_shutdown_exit_code_invalid`），负向原始记录保留；普通窗口关闭不代签该链。实战 CAS、真人画质/舒适度、弱机和完整业务 `standard_entry_verified` 仍 **PENDING**。
+
+<a id="issue152-release-20261021"></a>
+## 2026-10-21 商店资格与无人值守正式验收
+
+Issue #152 已完成两轮正式推广。第二轮冻结源 `c1d9ab2576937aa2fa4eee8037a941bc5d69cb33`、tag `runtime-build-v2/20261021-issue152-v2`，部署提交 `255d9741ac0cdcac681c09e56472c076395f36e6`；本机 X509 与 GitHub OIDC 独立故障域对同一 43 文件 closure 达成双 signer 共识，strict production policy **47/47**，唯一 writer 原子推广及部署 CI 成功。当前身份以 manifest/consensus 为准。
+
+正式 runtime 现复用受信五档 runner，启动与限定测试不依赖人工开发者注册；保留 exact peer、槽位、会话、能力与未知写边界。已实际执行商人门槛、换档、无载具现场、大学临时交易和大学/Lee 正常返回，并完成正式生产 SOL/shadow 读回；无参数启动另跑有限入口冒烟。完整身份、发布证明、回归限制与每段证据见[本次发布与自动验收](issue-152-发布与自动验收-2026-10-21.md)。全量 Host 仍有 120 项既有缺失 evidence root 的失败，真人观感与托盘系统外壳实体交互未补签，不由 promotion 反向代签。
