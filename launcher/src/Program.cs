@@ -2968,11 +2968,17 @@ class Program
             // 草案确认轮的最后一条 add：输入条切成「我接了 / 我不接 / 单行输入」三行。
             dialogueInterject.AskAcceptChanged += accept => interjectOverlay.SetAskAccept(accept);
             dialogueInterject.Attach();
+            Func<bool> interjectForegroundProbe = () =>
+                interjectOverlay.ShouldKeepHudPresented()
+                || (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed
+                    && interjectConfigWindow.ShouldKeepHudPresented());
             if (nativeHud != null)
-                nativeHud.InterjectInputForegroundProbe = () =>
-                    interjectOverlay.ShouldKeepHudPresented()
-                    || (interjectConfigWindow != null && !interjectConfigWindow.IsDisposed
-                        && interjectConfigWindow.ShouldKeepHudPresented());
+                nativeHud.InterjectInputForegroundProbe = interjectForegroundProbe;
+            // 血条/技能/buff 是另外三个 overlay，白名单要同源，否则点输入框时整块底部 UI 消失。
+            if (playerHudRuntime != null)
+                playerHudRuntime.SetInterjectInputForegroundProbe(interjectForegroundProbe);
+            else if (playerInfoSurface != null)
+                playerInfoSurface.InterjectInputForegroundProbe = interjectForegroundProbe;
             form.FormClosed += delegate
             {
                 dialogueInterject.Dispose();

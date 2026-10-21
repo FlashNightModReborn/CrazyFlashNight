@@ -94,6 +94,8 @@ internal sealed class PlayerInfoSplitSurface :
     private bool _shutdown;
     private bool _disposed;
     private bool _qualificationClockOwned;
+    /// <summary>插话输入浮窗前台探测：与主 HUD 同一判据；未注册时保持既有隐藏行为。</summary>
+    internal Func<bool>? InterjectInputForegroundProbe;
     [DllImport("gdi32.dll")] [return:MarshalAs(UnmanagedType.Bool)]
     private static extern bool GdiFlush();
     private long _repaintRequestCount;
@@ -583,6 +585,19 @@ internal sealed class PlayerInfoSplitSurface :
                 new { hwnd=Handle.ToInt64(), origin, retainedSize=_committedSize, desired });
         }
         else LogBestEffort("[PlayerInfoSplitSurface] retained-frame move failed nativeError="+Marshal.GetLastWin32Error());
+    }
+
+    protected override bool ShouldKeepPresentedOnOwnerDeactivate
+    {
+        get
+        {
+            try
+            {
+                Func<bool>? probe = InterjectInputForegroundProbe;
+                return probe != null && probe();
+            }
+            catch { return false; }
+        }
     }
 
     protected override void OnOwnerVisibilityChanged(bool ownerVisible)

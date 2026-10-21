@@ -72,6 +72,13 @@ internal sealed class PlayerHudRuntime : IPanelHudCompanion, IDisposable
         }
     }
     private void OnTick(object? sender, EventArgs args) => _controller.Tick(Environment.TickCount64);
+    /// <summary>把插话输入浮窗的前台探针分发给本组三个 surface（主 HUD 由宿主单独接线）。</summary>
+    internal void SetInterjectInputForegroundProbe(Func<bool> probe)
+    {
+        _bottom.InterjectInputForegroundProbe = probe;
+        _buffs.InterjectInputForegroundProbe = probe;
+        _resources.InterjectInputForegroundProbe = probe;
+    }
     internal void SetSharedWorld(WorldCompositorController? world)
     {
         if(ReferenceEquals(_world,world))return;

@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CF7Launcher.Guardian;
 using CF7Launcher.Guardian.Hud;
+using CF7Launcher.Guardian.Hud.PlayerInfo;
 using Xunit;
 
 namespace CF7Launcher.Tests.Guardian
@@ -202,6 +203,65 @@ namespace CF7Launcher.Tests.Guardian
                     finally
                     {
                         overlay.Dispose();
+                    }
+                }
+            });
+        }
+        [Fact]
+        public void PlayerHudRuntimeSharesInterjectProbeWithAllPlayerSurfaces()
+        {
+            RunOnSta(() =>
+            {
+                using (Form owner = NewOwner())
+                {
+                    var anchor = new Panel { Dock = DockStyle.Fill };
+                    owner.Controls.Add(anchor);
+                    owner.Show();
+                    string root = Path.GetFullPath(Path.Combine(
+                        AppContext.BaseDirectory, "..", "..", "..", ".."));
+                    using (var controller = new PlayerHudController(_ => true, () => true, action => action()))
+                    using (var resources = PlayerInfoSplitSurface.CreateFixture(owner, anchor, "full"))
+                    using (var main = new ProbeHud(owner, anchor))
+                    using (var runtime = new PlayerHudRuntime(
+                               owner, anchor, resources, controller,
+                               Path.Combine(root, "launcher", "web", "icons"), main))
+                    {
+                        runtime.SetInterjectInputForegroundProbe(() => true);
+                        foreach (OverlayBase surface in runtime.PresentationSurfaces)
+                            surface.HandleOwnerDeactivated();
+                        foreach (OverlayBase surface in runtime.PresentationSurfaces)
+                            Assert.True(surface.OwnerVisibleForTest);
+
+                        runtime.SetInterjectInputForegroundProbe(() => false);
+                        foreach (OverlayBase surface in runtime.PresentationSurfaces)
+                            surface.HandleOwnerDeactivated();
+                        foreach (OverlayBase surface in runtime.PresentationSurfaces)
+                            Assert.False(surface.OwnerVisibleForTest);
+                    }
+                }
+            });
+        }
+
+        [Fact]
+        public void PlayerInfoSurfaceProbeFailureFallsBackToHide()
+        {
+            RunOnSta(() =>
+            {
+                using (Form owner = NewOwner())
+                {
+                    var anchor = new Panel { Dock = DockStyle.Fill };
+                    owner.Controls.Add(anchor);
+                    owner.Show();
+                    using (var surface = PlayerInfoSplitSurface.CreateFixture(owner, anchor, "full"))
+                    {
+                        surface.InterjectInputForegroundProbe = () => true;
+                        surface.HandleOwnerDeactivated();
+                        Assert.True(surface.OwnerVisibleForTest);
+
+                        surface.InterjectInputForegroundProbe = () =>
+                            { throw new InvalidOperationException("probe"); };
+                        surface.HandleOwnerDeactivated();
+                        Assert.False(surface.OwnerVisibleForTest);
                     }
                 }
             });
