@@ -3126,6 +3126,10 @@ namespace CF7Launcher.Guardian
                     string panelToastHtml = parsed != null ? parsed.Value<string>("html") : null;
                     if (!string.IsNullOrEmpty(panelToastHtml)) AddMessage(panelToastHtml);
                 }
+                else if (type == "ragchat-autostart")
+                {
+                    HandleRagChatAutoStart(parsed, args.Source);
+                }
                 else if (type == "panel")
                 {
                     // 先匹配 type=="panel"——避免下面 jukebox 子串 fallback 把含 "panel":"jukebox" 字段的
@@ -6761,6 +6765,24 @@ namespace CF7Launcher.Guardian
             {
                 LogManager.Log("[WebTask] " + taskName + " threw: " + ex.Message);
             }
+        }
+
+        /// <summary>通讯终端设置页的「启动游戏时自动启动终端」开关；只接受当前面板文档本身的消息。</summary>
+        private void HandleRagChatAutoStart(JObject parsed, string source)
+        {
+            if (!CanAcceptPanelDocumentMessages || !_panelMode) return;
+            if (!string.Equals(source, _webView?.Source?.AbsoluteUri, StringComparison.OrdinalIgnoreCase))
+            {
+                LogManager.Log("[RagTerminal] autostart message rejected source=" + (source ?? "<null>"));
+                return;
+            }
+            if (parsed?["enabled"]?.Type != JTokenType.Boolean) return;
+            CF7Launcher.Config.UserPrefs prefs = _userPrefs;
+            if (prefs == null) return;
+            prefs.RagTerminalAutoStart = parsed.Value<bool>("enabled");
+            bool saved = prefs.Save();
+            LogManager.Log("event=rag_terminal_autostart_set enabled=" + prefs.RagTerminalAutoStart
+                + " saved=" + saved);
         }
 
         internal static bool IsWebTaskRouterIngressAllowed(

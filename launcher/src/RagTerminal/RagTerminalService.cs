@@ -32,6 +32,12 @@ namespace CF7Launcher.RagTerminal
         private readonly string _projectRoot;
         private readonly string _exePathOverride;
         private readonly Action<string> _processStarter;
+
+        /// <summary>「启动游戏时自动启动终端」的当前偏好；由宿主接线到 UserPrefs。
+        /// 只用于给面板页面地址带上初值与启动期判断，未接线时按关闭处理。</summary>
+        internal Func<bool> AutoStartPreferenceProvider;
+
+        private int _autoStartClaimed;
         private readonly HttpClient _http;
 
         internal int HealthProbeTimeoutMs { get; set; } = 1500;
@@ -266,6 +272,7 @@ namespace CF7Launcher.RagTerminal
                         return RagTerminalPrepareResult.Fail("rag_frontend_url_rejected",
                             "通讯终端返回的页面地址不可信，已拒绝打开。");
                     }
+                    frontendUrl = AppendTerminalAutoStartFlag(frontendUrl, ReadAutoStartPreference());
                     return RagTerminalPrepareResult.Ok(frontendUrl, response.Value<string>("mode"));
                 }
                 if (attempt == 0)
@@ -274,6 +281,50 @@ namespace CF7Launcher.RagTerminal
             InvalidateBoundBinding();
             LogManager.Log("[RagTerminal] bind failed slot=" + slotKey);
             return RagTerminalPrepareResult.Fail("rag_bind_failed", "通讯终端存档绑定失败，请稍后重试。");
+        }
+
+        /// <summary>给面板页面地址带上「自动启动终端」初值；只追加查询参数，不改 origin。</summary>
+        internal static string AppendTerminalAutoStartFlag(string url, bool enabled)
+        {
+            if (string.IsNullOrEmpty(url)) return url;
+            return url + (url.IndexOf('?') >= 0 ? "&" : "?")
+                + "terminalAutoStart=" + (enabled ? "1" : "0");
+        }
+
+        private bool ReadAutoStartPreference()
+        {
+            try
+            {
+                Func<bool> provider = AutoStartPreferenceProvider;
+                return provider != null && provider();
+            }
+            catch { return false; }
+        }
+
+        /// <summary>按偏好领取一次自动启动机会；同一进程只成功一次。</summary>
+        internal bool TryClaimAutoStart()
+        {
+            if (!ReadAutoStartPreference()) return false;
+            return Interlocked.Exchange(ref _autoStartClaimed, 1) == 0;
+        }
+
+        /// <summary>游戏进入 Ready 时按偏好自动拉起一次终端；同一进程只尝试一次。</summary>
+        internal void TryAutoStartOnLaunch()
+        {
+            if (!TryClaimAutoStart()) return;
+            System.Threading.ThreadPool.QueueUserWorkItem(delegate
+            {
+                try
+                {
+                    RagTerminalPrepareResult result = EnsureReadyAsync().GetAwaiter().GetResult();
+                    LogManager.Log("event=rag_terminal_autostart ok=" + result.Success
+                        + (result.Success ? "" : " error=" + result.Error));
+                }
+                catch (Exception ex)
+                {
+                    LogManager.Log("[RagTerminal] autostart threw: " + ex.Message);
+                }
+            });
         }
 
         /// <summary>best-effort 解绑（socket 断连等生命周期落点）；失败仅记日志。</summary>

@@ -1823,6 +1823,7 @@ class Program
         if (workerPolicy == null)
         {
             ragTerminalService = new CF7Launcher.RagTerminal.RagTerminalService(projectRoot, config.RagTerminalExePath);
+            ragTerminalService.AutoStartPreferenceProvider = () => userPrefs.RagTerminalAutoStart;
             commandRouter.SetRagTerminalService(ragTerminalService);
             socketServer.OnClientDisconnected += ragTerminalService.UnbindInBackground;
             // 可用性（exe 存在）在每次 AS2 连接就绪时重推一次；OnClientReady 重连即触发。
@@ -2944,13 +2945,20 @@ class Program
                 }
                 // 与聊天面板 iframe 同 origin + 同 WebView2 用户目录：直接共用 terminal 的 localStorage。
                 string url = RagTerminalService.LoopbackOrigin + "/config?popup=1&mode="
-                    + (autoMode ? "auto" : "edit");
+                    + (autoMode ? "auto" : "edit")
+                    + "&embedded=1&terminalAutoStart=" + (userPrefs.RagTerminalAutoStart ? "1" : "0");
                 var window = new CF7Launcher.Guardian.Hud.Dialogue.DialogueInterjectConfigWindow(
                     userDataFolder, url, autoMode, config.WebView2DeveloperMode,
                     webOverlay == null ? null : webOverlay.CreateSharedWebView2EnvironmentOptions());
                 interjectConfigWindow = window;
                 window.Saved += () => interjectController.NotifyLlmConfigSaved();
                 window.TextInputActiveChanged += active => form.SetTextInputActive(active);
+                window.AutoStartChanged += delegate(bool enabled)
+                {
+                    userPrefs.RagTerminalAutoStart = enabled;
+                    if (!userPrefs.Save())
+                        LogManager.Log("[RagTerminal] autostart pref save failed");
+                };
                 window.FormClosed += delegate
                 {
                     if (ReferenceEquals(interjectConfigWindow, window))
@@ -3629,6 +3637,9 @@ class Program
             StartupDiagnostics.Mark("launch.state", state + " silent=" + silentAtEmit
                 + (string.IsNullOrEmpty(smsg) ? "" : " msg=" + smsg));
             if (silentAtEmit) return;   // prewarm 活跃 + _pendingSlot==null 的 teardown 窗口 → 过滤
+            // 「启动游戏时自动启动终端」：每次游戏进入可玩态尝试一次，进程内只拉起一次。
+            if (string.Equals(state, "Ready", StringComparison.Ordinal))
+                ragTerminalService?.TryAutoStartOnLaunch();
             Newtonsoft.Json.Linq.JObject obj = new Newtonsoft.Json.Linq.JObject();
             obj["type"] = "bootstrap";
             obj["cmd"] = "state";

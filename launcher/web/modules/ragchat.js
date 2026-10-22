@@ -73,6 +73,14 @@
       '</div>';
     statusEl = root.querySelector('[data-ragchat="status"]');
     listen(root.querySelector('[data-ragchat="close"]'), 'click', closeTerminal);
+    // 终端设置页的「自动启动终端」勾选：iframe 只能 postMessage 给父页面，由这里转交宿主落盘。
+    listen(window, 'message', function (event) {
+      if (event.origin !== TRUSTED_ORIGIN) return;
+      var data = event.data || {};
+      if (data.type === 'ragchat-autostart' && typeof data.enabled === 'boolean') {
+        Bridge.send({ type: 'ragchat-autostart', enabled: data.enabled });
+      }
+    });
 
     var url = trustedUrl(data && data.frontend_url);
     if (!url) {

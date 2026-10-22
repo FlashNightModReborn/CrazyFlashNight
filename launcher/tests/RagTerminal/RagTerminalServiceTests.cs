@@ -239,7 +239,7 @@ namespace CF7Launcher.Tests.RagTerminal
             RagTerminalPrepareResult result = await service.BindAsync("save1");
 
             Assert.True(result.Success);
-            Assert.Equal("http://127.0.0.1:7077/?embedded=1", result.FrontendUrl);
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1&terminalAutoStart=0", result.FrontendUrl);
             Assert.Equal("embedded", result.Mode);
             Assert.Equal(2, bindCalls);
             Assert.Equal("{\"slot_key\":\"save1\"}", handler.Bodies[0]);
@@ -335,12 +335,53 @@ namespace CF7Launcher.Tests.RagTerminal
             RagTerminalPrepareResult result = await service.PrepareForPanelAsync("save1");
 
             Assert.True(result.Success);
-            Assert.Equal("http://127.0.0.1:7077/?embedded=1", result.FrontendUrl);
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1&terminalAutoStart=0", result.FrontendUrl);
             Assert.Equal("embedded", result.Mode);
             Assert.Empty(started);
             Assert.Equal(2, handler.Requests.Count);
             Assert.Equal("/api/health", handler.Requests[0].RequestUri.AbsolutePath);
             Assert.Equal("/api/integration/bind", handler.Requests[1].RequestUri.AbsolutePath);
+        }
+
+        [Fact]
+        public async Task BindAppendsAutoStartPreferenceToFrontendUrl()
+        {
+            var handler = new RagHttpStub(request => request.RequestUri.AbsolutePath == "/api/health"
+                ? RagHttpStub.Json("{\"status\":\"ok\",\"mode\":\"embedded\"}")
+                : RagHttpStub.Json("{\"ok\":true,\"frontend_url\":\"http://127.0.0.1:7077/?embedded=1\",\"mode\":\"embedded\"}"));
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null, handler, path => { });
+            service.AutoStartPreferenceProvider = () => true;
+
+            RagTerminalPrepareResult result = await service.PrepareForPanelAsync("save1");
+
+            Assert.True(result.Success);
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1&terminalAutoStart=1", result.FrontendUrl);
+        }
+
+        [Fact]
+        public void AutoStartFlagKeepsUrlShape()
+        {
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1&terminalAutoStart=0",
+                RagTerminalService.AppendTerminalAutoStartFlag("http://127.0.0.1:7077/?embedded=1", false));
+            Assert.Equal("http://127.0.0.1:7077/config?popup=1&terminalAutoStart=1",
+                RagTerminalService.AppendTerminalAutoStartFlag("http://127.0.0.1:7077/config?popup=1", true));
+            Assert.Equal("http://127.0.0.1:7077/?terminalAutoStart=1",
+                RagTerminalService.AppendTerminalAutoStartFlag("http://127.0.0.1:7077/", true));
+            Assert.Null(RagTerminalService.AppendTerminalAutoStartFlag(null, true));
+        }
+
+        [Fact]
+        public void AutoStartClaimHonorsPreferenceAndFiresOnce()
+        {
+            using var service = new RagTerminalService(@"C:\x\CrazyFlashNight", null,
+                new RagHttpStub(request => RagHttpStub.Json("{}")), path => { });
+            bool enabled = false;
+            service.AutoStartPreferenceProvider = () => enabled;
+
+            Assert.False(service.TryClaimAutoStart());
+            enabled = true;
+            Assert.True(service.TryClaimAutoStart());
+            Assert.False(service.TryClaimAutoStart());
         }
 
         [Fact]

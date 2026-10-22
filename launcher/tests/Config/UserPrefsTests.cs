@@ -40,6 +40,18 @@ namespace CF7Launcher.Tests.Config
         }
 
         [Fact]
+        public void RagTerminalAutoStartDefaultsOffAndSurvivesRestart()
+        {
+            var first = Reload();
+            Assert.False(first.RagTerminalAutoStart);
+            first.RagTerminalAutoStart = true;
+            Assert.True(first.Save());
+            Assert.Equal(JTokenType.Boolean,
+                JObject.Parse(File.ReadAllText(PreferenceFile))["ragTerminalAutoStart"].Type);
+            Assert.True(Reload().RagTerminalAutoStart);
+        }
+
+        [Fact]
         public void TutorialOptOutSurvivesRestartAndPreservesOtherPreferences()
         {
             var first = Reload();Assert.True(first.TutorialsAutoOpen);

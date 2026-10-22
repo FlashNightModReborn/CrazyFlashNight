@@ -47,6 +47,8 @@ namespace CF7Launcher.Config
         public bool ReducedPresentation { get; set; }
         public bool CasEnabled { get; set; } = true;
         public bool MotionFeedbackEnabled { get; set; }
+        /// <summary>游戏内设置页/插话配置窗的「启动游戏时自动启动终端」；默认不自动拉起。</summary>
+        public bool RagTerminalAutoStart { get; set; }
         public PerformancePolicy Performance { get; set; } = PerformancePolicy.Default;
         public PerformancePolicy PreviousPerformance { get; set; }
 
@@ -155,6 +157,8 @@ namespace CF7Launcher.Config
                     CasEnabled = obj.Value<bool>("casEnabled");
                 if (obj["motionFeedbackEnabled"]?.Type == JTokenType.Boolean)
                     MotionFeedbackEnabled = obj.Value<bool>("motionFeedbackEnabled");
+                if (obj["ragTerminalAutoStart"]?.Type == JTokenType.Boolean)
+                    RagTerminalAutoStart = obj.Value<bool>("ragTerminalAutoStart");
                 if (readPath == _legacyPath && _path != _legacyPath)
                 {
                     // One-shot migration: stop mutating repo-root prefs after first successful read.
@@ -177,6 +181,7 @@ namespace CF7Launcher.Config
                 ReducedPresentation = false;
                 CasEnabled = true;
                 MotionFeedbackEnabled = false;
+                RagTerminalAutoStart = false;
                 Performance = PerformancePolicy.Default;
                 PreviousPerformance = null;
             }
@@ -204,6 +209,7 @@ namespace CF7Launcher.Config
                 obj["reducedPresentation"] = ReducedPresentation;
                 obj["casEnabled"] = CasEnabled;
                 obj["motionFeedbackEnabled"] = MotionFeedbackEnabled;
+                obj["ragTerminalAutoStart"] = RagTerminalAutoStart;
                 obj["performance"] = Performance.ToJson();
                 obj["previousPerformance"] = PreviousPerformance?.ToJson();
                 if (!string.IsNullOrEmpty(SuppressedHighDpiWarningRaw))

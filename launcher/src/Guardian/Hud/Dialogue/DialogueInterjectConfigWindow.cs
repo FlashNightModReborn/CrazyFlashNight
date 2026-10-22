@@ -45,6 +45,8 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
         internal event Action Canceled;
         /// <summary>小窗是否处于文字输入态（宿主据此放行游戏热键）。</summary>
         internal event Action<bool> TextInputActiveChanged;
+        /// <summary>「启动游戏时自动启动终端」勾选变更；宿主负责落盘。</summary>
+        internal event Action<bool> AutoStartChanged;
 
         internal DialogueInterjectConfigWindow(string userDataFolder, string url,
             bool autoMode, bool developerMode,
@@ -210,6 +212,12 @@ namespace CF7Launcher.Guardian.Hud.Dialogue
             if (string.Equals(type, "llm-config-cancel", StringComparison.Ordinal))
             {
                 RequestCancel();
+                return;
+            }
+            if (string.Equals(type, "rag-terminal-autostart", StringComparison.Ordinal))
+            {
+                if (message["enabled"]?.Type == JTokenType.Boolean)
+                    AutoStartChanged?.Invoke(message.Value<bool>("enabled"));
             }
         }
 

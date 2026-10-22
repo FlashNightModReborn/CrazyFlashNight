@@ -9268,7 +9268,7 @@ namespace CF7Launcher.Tests.Guardian
             Assert.Equal("ragchat", harnessR.Host.ActivePanelName);
             JObject initData = (JObject)harnessR.LastOpenPayload["initData"];
             Assert.Equal("agent_console", initData.Value<string>("source"));
-            Assert.Equal("http://127.0.0.1:7077/?embedded=1", initData.Value<string>("frontend_url"));
+            Assert.Equal("http://127.0.0.1:7077/?embedded=1&terminalAutoStart=0", initData.Value<string>("frontend_url"));
             Assert.Equal("save1", initData.Value<string>("savePath"));
         }
 
